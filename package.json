@@ -2,8 +2,8 @@
   "name": "simple-trading-web-terminal",
   "version": "1.0.0",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.config.js",
-    "build": "webpack --config webpack.config.js"
+    "dev": "webpack-dev-server --config webpack.config.js --mode=development",
+    "build": "webpack --config webpack.config.js --mode=production"
   },
   "devDependencies": {
     "@babel/core": "^7.7.0",

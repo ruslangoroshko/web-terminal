@@ -1,12 +1,16 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
-  mode: 'production', // "production" | "development" | "none"
-  entry: './src/index', // string | object | array
+module.exports = (env, argv) => ({
+  mode: argv.mode,
+  entry: {
+    home: './src/index', 
+    // http: './src/http-layer', 
+    // WAMP: './src/WAMP-layer', 
+  },
   output: {
     path: path.resolve(__dirname, '../wwwroot'), // string
-    filename: 'bundle.js', // string
+    filename: '[name].js?[hash]', // string
     publicPath: '/', // string
   },
   module: {
@@ -52,4 +56,4 @@ module.exports = {
       title: 'Hello world - Shadi',
     }),
   ],
-};
+});
