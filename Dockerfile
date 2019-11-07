@@ -1,4 +1,4 @@
-FROM ${DOCKER_IMAGE_WEB_APP_HOSTING}:latest
+FROM monfex/web-app-hosting:latest
 WORKDIR /app
 COPY . /app
 ENTRYPOINT ["dotnet", "WebAppHosting.dll"]
