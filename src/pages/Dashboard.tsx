@@ -5,11 +5,16 @@ import { FlexContainer } from '../styles/FlexContainer';
 import { AccountModel } from '../types/Accounts';
 import { OpenPositionModel } from '../types/Positions';
 import { SectionTitle } from '../styles/Titles';
+import initConnection from '../services/websocketService';
 
 interface Props {}
 
 function Dashboard(props: Props) {
   const {} = props;
+
+  const onevent = (...args: any[]) => {
+    console.log(args);
+  };
 
   const [accounts, setAccounts] = useState<AccountModel[]>([]);
 
@@ -30,9 +35,16 @@ function Dashboard(props: Props) {
   const handleClosePosition = () => {};
 
   useEffect(() => {
-    API.getAccounts().then(response => {
-      setAccounts(response);
-    });
+    initConnection('wss://simpletrading-dev-api.monfex.biz/ws', 'bidask').then(
+      session => {
+        API.getAccounts().then(response => {
+          setAccounts(response);
+          response[0].instruments.forEach(item => {
+            session.subscribe(item.id, onevent);
+          });
+        });
+      }
+    );
   }, []);
 
   return (
@@ -48,6 +60,16 @@ function Dashboard(props: Props) {
             <Account>
               <span>Account id: {acc.id}</span>
             </Account>
+            <FlexContainer flexDirection="column">
+              <span>Instruments</span>
+              <FlexContainer flexWrap="wrap">
+                {acc.instruments.map(item => (
+                  <Instrument key={item.id}>
+                    Instrument id: {item.id}
+                  </Instrument>
+                ))}
+              </FlexContainer>
+            </FlexContainer>
             <FlexContainer>
               <Button onClick={handleOpenPosition}>Open</Button>
               <Button onClick={handleClosePosition}>Close</Button>
@@ -74,4 +96,8 @@ const Button = styled.button`
   background-color: #09b91e;
   padding: 10px;
   color: #fff;
+`;
+
+const Instrument = styled.p`
+  width: 100%;
 `;
