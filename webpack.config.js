@@ -28,13 +28,19 @@ module.exports = (env, argv) => ({
   stats: 'errors-only',
   devServer: {
     proxy: {
-      '/api': 'http://localhost:3000',
+      '/api': {
+        target: 'https://simpletrading-dev-api.monfex.biz/',
+        pathRewrite: {
+          '^/api': '',
+        },
+        changeOrigin: true,
+      },
     },
     contentBase: path.join(__dirname, 'public'),
     compress: true,
     historyApiFallback: true,
     hot: false,
-    https: false,
+    // https: true,
   },
   plugins: [
     new HtmlWebpackPlugin({

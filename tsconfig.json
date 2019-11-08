@@ -15,8 +15,6 @@
     "allowUnreachableCode": false,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true
