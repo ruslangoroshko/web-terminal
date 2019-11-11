@@ -8,7 +8,6 @@
     "strict": true,
     "esModuleInterop": true,
     "jsx": "react",
-    // "baseUrl": "./src",
     "module": "es6",
     "removeComments": true,
     "alwaysStrict": true,
