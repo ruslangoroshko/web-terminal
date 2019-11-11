@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = (env, argv) => ({
   mode: argv.mode,
@@ -44,7 +45,6 @@ module.exports = (env, argv) => ({
     compress: true,
     historyApiFallback: true,
     hot: false,
-    // https: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -54,6 +54,9 @@ module.exports = (env, argv) => ({
         viewport: 'width=device-width, initial-scale=1.0',
       },
       title: 'Hello world - Shadi',
+    }),
+    new webpack.DefinePlugin({
+      WS_HOST: JSON.stringify(argv.wshost),
     }),
   ],
 });

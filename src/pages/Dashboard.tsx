@@ -3,7 +3,6 @@ import API from '../helpers/API';
 import { FlexContainer } from '../styles/FlexContainer';
 import { AccountModel } from '../types/Accounts';
 import { OpenPositionModel } from '../types/Positions';
-import initConnection from '../services/websocketService';
 import {
   Button,
   CurrencyQuoteIcon,
@@ -17,15 +16,12 @@ import {
 } from '../styles/Pages/Dashboard';
 import currencyIcon from '../assets/images/currency.png';
 import graphPlaceholder from '../assets/images/graph-placeholder.png';
+import initConnection from '../services/websocketService';
 
 interface Props {}
 
 function Dashboard(props: Props) {
   const {} = props;
-
-  const onevent = (...args: any[]) => {
-    console.log(args);
-  };
 
   const [accounts, setAccounts] = useState<AccountModel[]>([]);
 
@@ -46,16 +42,17 @@ function Dashboard(props: Props) {
   const handleClosePosition = () => {};
 
   useEffect(() => {
-    initConnection('wss://simpletrading-dev-api.monfex.biz/ws', 'bidask').then(
-      session => {
-        API.getAccounts().then(response => {
-          setAccounts(response);
-          response[0].instruments.forEach(item => {
-            session.subscribe(item.id, onevent);
-          });
-        });
-      }
-    );
+    const session = initConnection(WS_HOST);
+    session.start();
+    console.log(session);
+    API.getAccounts().then(response => {
+      setAccounts(response);
+      response[0].instruments.forEach(item => {
+        // session.subscribe(item.id, args => {
+        //   console.log(args);
+        // });
+      });
+    });
   }, []);
 
   return (
