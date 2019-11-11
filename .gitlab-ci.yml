@@ -11,7 +11,7 @@ build:
   image: node:lts-alpine
   script:
     - npm i
-    - npm run build
+    - npm run build --wshost="wss://simpletrading-dev-api.monfex.biz/ws"
   only:
     - master
 
