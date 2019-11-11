@@ -11,7 +11,7 @@ build:
   image: node:lts-alpine
   script:
     - npm i
-    - webpack --config webpack.config.js --mode=production --wshost="wss://simpletrading-dev-api.monfex.biz/ws"
+    - npm run build --wshost=$DOCKER_WEB_SOCKER_CONNECTION_STRING
   only:
     - master
 
