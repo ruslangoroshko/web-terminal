@@ -21,12 +21,17 @@ module.exports = (env, argv) => ({
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
-        loader: 'file-loader',
+        use: [
+          'file-loader',
+          {
+            loader: 'image-webpack-loader',
+          },
+        ],
       },
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.png'],
+    extensions: ['.tsx', '.ts', '.js'],
   },
   devtool: 'source-map',
   target: 'web',
