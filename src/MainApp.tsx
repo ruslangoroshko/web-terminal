@@ -14,21 +14,20 @@ function MainApp(props: Props) {
   return (
     <>
       <Router>
-        <Navbar>
+        {/* <Navbar>
           <li>
             <Link to="/">Home</Link>
           </li>
           <li>
             <Link to="/dashboard">Dashboard</Link>
           </li>
-        </Navbar>
+        </Navbar> */}
         <Switch>
           <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/dashboard">
             <Dashboard />
           </Route>
+          {/* <Route path="/dashboard">
+          </Route> */}
         </Switch>
       </Router>
       <Global

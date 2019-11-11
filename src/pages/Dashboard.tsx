@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import API from '../helpers/API';
-import styled from '@emotion/styled';
 import { FlexContainer } from '../styles/FlexContainer';
 import { AccountModel } from '../types/Accounts';
 import { OpenPositionModel } from '../types/Positions';
 import { SectionTitle } from '../styles/Titles';
 import initConnection from '../services/websocketService';
+import {
+  AccountsList,
+  Account,
+  Instrument,
+  Button,
+  CurrencyQuoteIcon,
+  CurrencyQuoteTitle,
+  CurrencyQuoteInfo,
+  CurrencyWrapper,
+  AccountIndex,
+  AccountName,
+} from '../styles/Pages/Dashboard';
+import currencyIcon from '../assets/images/currency.png';
+import graphPlaceholder from '../assets/images/graph-placeholder.png';
 
 interface Props {}
 
@@ -50,54 +63,51 @@ function Dashboard(props: Props) {
   return (
     <FlexContainer
       width="100%"
-      height="calc(100vh - 48px)"
+      height="100vh"
       flexDirection="column"
+      backgroundColor="#2a344e"
     >
-      <SectionTitle>Dashboard</SectionTitle>
-      <AccountsList flexDirection="column">
-        {accounts.map(acc => (
-          <FlexContainer flexDirection="column" key={acc.id}>
-            <Account>
-              <span>Account id: {acc.id}</span>
-            </Account>
-            <FlexContainer flexDirection="column">
-              <span>Instruments</span>
-              <FlexContainer flexWrap="wrap">
-                {acc.instruments.map(item => (
-                  <Instrument key={item.id}>
-                    Instrument id: {item.id}
-                  </Instrument>
-                ))}
+      <FlexContainer
+        width="100%"
+        padding="20px"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        {accounts.length > 0 &&
+          accounts[0].instruments.map(instrument => (
+            <CurrencyWrapper key={instrument.id} padding="10px">
+              <FlexContainer alignItems="center" justifyContent="center">
+                <CurrencyQuoteIcon src={currencyIcon} />
+              </FlexContainer>
+              <FlexContainer flexDirection="column">
+                <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
+              </FlexContainer>
+            </CurrencyWrapper>
+          ))}
+      </FlexContainer>
+      <FlexContainer justifyContent="space-between" padding="20px">
+        <FlexContainer>
+          {accounts.map((acc, index) => (
+            <FlexContainer key={acc.id}>
+              <AccountIndex>{index + 1}</AccountIndex>
+              <FlexContainer flexDirection="column">
+                <AccountName>{acc.id}</AccountName>
               </FlexContainer>
             </FlexContainer>
-            <FlexContainer>
-              <Button onClick={handleOpenPosition}>Open</Button>
-              <Button onClick={handleClosePosition}>Close</Button>
-            </FlexContainer>
-          </FlexContainer>
-        ))}
-      </AccountsList>
+          ))}
+        </FlexContainer>
+        <FlexContainer>
+          <img src={graphPlaceholder}></img>
+        </FlexContainer>
+        <FlexContainer flexDirection="column">
+          <Button isBuy onClick={handleOpenPosition}>
+            Buy
+          </Button>
+          <Button onClick={handleClosePosition}>Sell</Button>
+        </FlexContainer>
+      </FlexContainer>
     </FlexContainer>
   );
 }
 
 export default Dashboard;
-
-const AccountsList = styled(FlexContainer)``;
-
-const Account = styled.div`
-  background-color: antiquewhite;
-  padding: 20px;
-  font-size: 22px;
-  color: black;
-`;
-
-const Button = styled.button`
-  background-color: #09b91e;
-  padding: 10px;
-  color: #fff;
-`;
-
-const Instrument = styled.p`
-  width: 100%;
-`;
