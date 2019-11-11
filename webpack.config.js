@@ -1,50 +1,50 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = (env, argv) => ({
   mode: argv.mode,
   entry: {
-    home: './src/index', 
-    // http: './src/http-layer', 
-    // WAMP: './src/WAMP-layer', 
+    home: './src/index.tsx',
   },
   output: {
-    path: path.resolve(__dirname, '../wwwroot'), // string
-    filename: '[name].js?[hash]', // string
-    publicPath: '/', // string
+    path: path.resolve(__dirname, '../wwwroot'),
+    filename: '[name].js?[hash]',
+    publicPath: '/',
   },
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
-        include: [path.resolve(__dirname, './')],
-        exclude: [],
-        loader: 'babel-loader',
-        options: {
-          presets: ['@babel/preset-env'],
-        },
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        loader: 'file-loader',
       },
     ],
   },
   resolve: {
-    modules: ['node_modules', path.resolve(__dirname, './')],
-    extensions: ['.js', '.json', '.jsx', '.css'],
-    alias: {},
+    extensions: ['.tsx', '.ts', '.js'],
   },
-  devtool: 'source-map', // enum
-  context: __dirname, // string (absolute path!)
-  target: 'web', // enum
-  externals: ['react'],
+  devtool: 'source-map',
+  target: 'web',
   stats: 'errors-only',
   devServer: {
     proxy: {
-      '/api': 'http://localhost:3000',
+      '/api': {
+        target: 'https://simpletrading-dev-api.monfex.biz/',
+        pathRewrite: {
+          '^/api': '',
+        },
+        changeOrigin: true,
+      },
     },
-    contentBase: path.join(__dirname, 'public'), // boolean | string | array, static file location
-    compress: true, // enable gzip compression
-    historyApiFallback: true, // true for index.html upon 404, object for multiple paths
-    hot: false, // hot module replacement. Depends on HotModuleReplacementPlugin
-    https: false, // true for self-signed, object for cert authority
+    contentBase: path.join(__dirname, 'public'),
+    compress: true,
+    historyApiFallback: true,
+    hot: false,
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -54,6 +54,9 @@ module.exports = (env, argv) => ({
         viewport: 'width=device-width, initial-scale=1.0',
       },
       title: 'Hello world - Shadi',
+    }),
+    new webpack.DefinePlugin({
+      WS_HOST: JSON.stringify(argv.wshost),
     }),
   ],
 });
