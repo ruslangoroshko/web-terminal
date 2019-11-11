@@ -3,19 +3,17 @@ import API from '../helpers/API';
 import { FlexContainer } from '../styles/FlexContainer';
 import { AccountModel } from '../types/Accounts';
 import { OpenPositionModel } from '../types/Positions';
-import { SectionTitle } from '../styles/Titles';
 import initConnection from '../services/websocketService';
 import {
-  AccountsList,
-  Account,
-  Instrument,
   Button,
   CurrencyQuoteIcon,
   CurrencyQuoteTitle,
-  CurrencyQuoteInfo,
   CurrencyWrapper,
   AccountIndex,
   AccountName,
+  AccountLeverage,
+  AccountBalance,
+  AccountWrapper,
 } from '../styles/Pages/Dashboard';
 import currencyIcon from '../assets/images/currency.png';
 import graphPlaceholder from '../assets/images/graph-placeholder.png';
@@ -86,14 +84,16 @@ function Dashboard(props: Props) {
           ))}
       </FlexContainer>
       <FlexContainer justifyContent="space-between" padding="20px">
-        <FlexContainer>
+        <FlexContainer flexDirection="column">
           {accounts.map((acc, index) => (
-            <FlexContainer key={acc.id}>
+            <AccountWrapper key={acc.id} padding="20px">
               <AccountIndex>{index + 1}</AccountIndex>
               <FlexContainer flexDirection="column">
                 <AccountName>{acc.id}</AccountName>
+                <AccountBalance>Balance: {acc.balance}</AccountBalance>
+                <AccountLeverage>Leverage: {acc.leverage}</AccountLeverage>
               </FlexContainer>
-            </FlexContainer>
+            </AccountWrapper>
           ))}
         </FlexContainer>
         <FlexContainer>

@@ -61,6 +61,12 @@ export const CurrencyWrapper = styled(FlexContainer)`
   border-radius: 4px;
 `;
 
+export const AccountWrapper = styled(FlexContainer)`
+  border: 1px solid lightgray;
+  padding: 20px;
+  border-radius: 10px;
+`;
+
 export const AccountIndex = styled.div`
   display: flex;
   justify-content: center;
@@ -78,4 +84,14 @@ export const AccountName = styled.p`
   font-size: 22px;
   color: #fff;
   margin-bottom: 10px;
+`;
+
+export const AccountLeverage = styled.span`
+  font-size: 20px;
+  color: #fff;
+`;
+
+export const AccountBalance = styled.span`
+  font-size: 30px;
+  color: antiquewhite;
 `;
