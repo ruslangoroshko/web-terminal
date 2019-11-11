@@ -1,6 +1,6 @@
 declare module '*.png' {
   const value: any;
-  export = value;
+  export default value;
 }
 
 declare const WS_HOST: string;
