@@ -15,8 +15,8 @@ import {
   AccountWrapper,
 } from '../styles/Pages/Dashboard';
 import initConnection from '../services/websocketService';
-// import currencyIcon from '../assets/images/currency.png';
-// import graphPlaceholder from '../assets/images/graph-placeholder.png';
+import currencyIcon from '../assets/images/currency.png';
+import graphPlaceholder from '../assets/images/graph-placeholder.png';
 
 interface Props {}
 
@@ -72,7 +72,7 @@ function Dashboard(props: Props) {
           accounts[0].instruments.map(instrument => (
             <CurrencyWrapper key={instrument.id} padding="10px">
               <FlexContainer alignItems="center" justifyContent="center">
-                <CurrencyQuoteIcon src={''} />
+                <CurrencyQuoteIcon src={currencyIcon} />
               </FlexContainer>
               <FlexContainer flexDirection="column">
                 <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
@@ -94,7 +94,7 @@ function Dashboard(props: Props) {
           ))}
         </FlexContainer>
         <FlexContainer>
-          <img src={''} />
+          <img src={graphPlaceholder}></img>
         </FlexContainer>
         <FlexContainer flexDirection="column">
           <Button isBuy onClick={handleOpenPosition}>
