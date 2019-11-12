@@ -55,7 +55,7 @@ export const CurrencyQuoteInfo = styled.div<{ isGrowth?: boolean }>`
   color: ${props => (props.isGrowth ? 'green' : 'red')};
 `;
 
-export const CurrencyWrapper = styled(FlexContainer)`
+export const QuotesFeedWrapper = styled(FlexContainer)`
   margin-right: 20px;
   background-color: #1c2438;
   border-radius: 4px;

@@ -7,7 +7,7 @@ import {
   Button,
   CurrencyQuoteIcon,
   CurrencyQuoteTitle,
-  CurrencyWrapper,
+  QuotesFeedWrapper,
   AccountIndex,
   AccountName,
   AccountLeverage,
@@ -17,14 +17,23 @@ import {
 import initConnection from '../services/websocketService';
 import currencyIcon from '../assets/images/currency.png';
 import graphPlaceholder from '../assets/images/graph-placeholder.png';
+import { Formik, Form, Field, FieldProps } from 'formik';
+import styled from '@emotion/styled';
 
 interface Props {}
+interface MyFormValues {
+  tp: OpenPositionModel['tp'];
+  sl: OpenPositionModel['sl'];
+}
 
 function Dashboard(props: Props) {
   const {} = props;
 
   const [accounts, setAccounts] = useState<AccountModel[]>([]);
-
+  const initialValues: MyFormValues = {
+    tp: 2,
+    sl: 3,
+  };
   const handleOpenPosition = () => {
     const newPosition: OpenPositionModel = {
       accountId: 'accountId',
@@ -43,7 +52,6 @@ function Dashboard(props: Props) {
 
   useEffect(() => {
     const session = initConnection(WS_HOST);
-    console.log(session);
     API.getAccounts().then(response => {
       setAccounts(response);
       response[0].instruments.forEach(item => {
@@ -69,33 +77,71 @@ function Dashboard(props: Props) {
       >
         {accounts.length > 0 &&
           accounts[0].instruments.map(instrument => (
-            <CurrencyWrapper key={instrument.id} padding="10px">
-              <FlexContainer alignItems="center" justifyContent="center">
-                <CurrencyQuoteIcon src={currencyIcon} />
-              </FlexContainer>
-              <FlexContainer flexDirection="column">
-                <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
-              </FlexContainer>
-            </CurrencyWrapper>
+            <>
+              <QuotesFeedWrapper key={instrument.id} padding="10px">
+                <FlexContainer alignItems="center" justifyContent="center">
+                  <CurrencyQuoteIcon src={currencyIcon} />
+                </FlexContainer>
+                <FlexContainer flexDirection="column">
+                  <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
+                </FlexContainer>
+              </QuotesFeedWrapper>
+            </>
           ))}
+        {accounts.length > 0 && (
+          <AccountWrapper padding="20px">
+            <FlexContainer flexDirection="column">
+              <AccountBalance>
+                Total balance: {accounts[0].balance}
+              </AccountBalance>
+              <AccountName>Account id: {accounts[0].id}</AccountName>
+              <AccountLeverage>
+                Leverage: {accounts[0].leverage}
+              </AccountLeverage>
+            </FlexContainer>
+          </AccountWrapper>
+        )}
       </FlexContainer>
       <FlexContainer justifyContent="space-between" padding="20px">
-        <FlexContainer flexDirection="column">
-          {accounts.map((acc, index) => (
-            <AccountWrapper key={acc.id} padding="20px">
-              <AccountIndex>{index + 1}</AccountIndex>
-              <FlexContainer flexDirection="column">
-                <AccountName>{acc.id}</AccountName>
-                <AccountBalance>Balance: {acc.balance}</AccountBalance>
-                <AccountLeverage>Leverage: {acc.leverage}</AccountLeverage>
-              </FlexContainer>
-            </AccountWrapper>
-          ))}
+        <FlexContainer flexDirection="column" width="200px">
+          dunno what's here
         </FlexContainer>
         <FlexContainer>
           <img src={graphPlaceholder}></img>
         </FlexContainer>
         <FlexContainer flexDirection="column">
+          <Formik
+            initialValues={initialValues}
+            onSubmit={(values, actions) => {
+              console.log({ values, actions });
+              actions.setSubmitting(false);
+            }}
+          >
+            {formikBag => (
+              <Form>
+                <Field type="text" name="tp">
+                  {({ field, form, meta }: FieldProps) => (
+                    <div>
+                      <Title>Take profit</Title>
+                      <input type="text" {...field} placeholder="Take profit" />
+                      {meta.touched && meta.error}
+                    </div>
+                  )}
+                </Field>
+                <Field
+                  type="text"
+                  name="sl"
+                  render={({ field, form, meta }: any) => (
+                    <div>
+                      <Title>Stop loss</Title>
+                      <input type="text" {...field} placeholder="Stop loss" />
+                      {meta.touched && meta.error}
+                    </div>
+                  )}
+                />
+              </Form>
+            )}
+          </Formik>
           <Button isBuy onClick={handleOpenPosition}>
             Buy
           </Button>
@@ -107,3 +153,7 @@ function Dashboard(props: Props) {
 }
 
 export default Dashboard;
+
+const Title = styled.span`
+  color: #fff;
+`;

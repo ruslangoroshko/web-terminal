@@ -3,10 +3,10 @@ export interface OpenPositionModel {
   instrumentId: string;
   operation: number;
   volume: number;
-  tp: number;
-  sl: number;
-  tpRate: number;
-  slRate: number;
+  tp?: number;
+  sl?: number;
+  tpRate?: number;
+  slRate?: number;
 }
 
 export interface OpenPositionResponseModel {
@@ -22,10 +22,10 @@ export interface PositionModel {
   openPrice: number;
   openDate: string;
   operation: number;
-  tp: number;
-  sl: number;
-  tpRate: number;
-  slRate: number;
+  tp?: number;
+  sl?: number;
+  tpRate?: number;
+  slRate?: number;
 }
 
 export interface ClosePositionModel {

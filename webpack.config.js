@@ -40,16 +40,21 @@ module.exports = (env, argv) => {
     devServer: {
       proxy: {
         '/api': {
-          target: 'https://simpletrading-dev-api.monfex.biz/',
+          target: 'https://simpletrading-api-dev.monfex.biz/',
           pathRewrite: {
             '^/api': '',
           },
+          changeOrigin: true,
+        },
+        '/signalr': {
+          target: 'https://simpletrading-api-dev.monfex.biz/',
           changeOrigin: true,
         },
       },
       contentBase: path.join(__dirname, 'public'),
       compress: true,
       historyApiFallback: true,
+      https: true,
       hot: false,
     },
     plugins: [
@@ -62,11 +67,14 @@ module.exports = (env, argv) => {
         title: 'Hello world - Shadi',
       }),
       new webpack.DefinePlugin({
-        WS_HOST: JSON.stringify(argv.wshost),
+        WS_HOST:
+          argv.mode === 'production'
+            ? JSON.stringify(argv.wshost)
+            : JSON.stringify('/signalr'),
         API_STRING:
           argv.mode === 'production'
             ? JSON.stringify(argv.apistring)
-            : JSON.stringify('/api'),
+            : JSON.stringify('/api/'),
       }),
     ],
   };
