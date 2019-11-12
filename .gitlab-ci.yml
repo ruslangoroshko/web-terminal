@@ -12,7 +12,7 @@ build:
   image: node:latest
   script:
     - npm i
-    - npm run build -- --wshost=$WEB_SOCKET_CONNECTION_STRING --api=$API_CONNECTION_STRING
+    - npm run build -- --wshost=$WEB_SOCKET_CONNECTION_STRING --apistring=$API_CONNECTION_STRING
   artifacts:
     paths:
       - ${BUILD_FOLDER}
