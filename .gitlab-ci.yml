@@ -7,10 +7,9 @@ stages:
   - test
   - publish
 
-build:
-  job: .pre
-  stage: build
-  image: node:latest
+prebuild:
+  stage: .pre
+  image: node:alpine
   script:
     - npm i
     - npm run build -- --wshost=$DOCKER_WEB_SOCKER_CONNECTION_STRING
