@@ -15,8 +15,8 @@ import {
   AccountWrapper,
 } from '../styles/Pages/Dashboard';
 import initConnection from '../services/websocketService';
-import currencyIcon from '../assets/images/currency.png';
-import graphPlaceholder from '../assets/images/graph-placeholder.png';
+import currencyIcon from '../assets/img/currency.png';
+import graphPlaceholder from '../assets/img/graph-placeholder.png';
 
 interface Props {}
 
