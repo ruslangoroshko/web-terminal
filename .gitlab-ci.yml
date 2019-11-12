@@ -22,7 +22,6 @@ prebuild:
 build:
   stage: build
   script:
-    - WORKDIR ${BUILD_FOLDER}
     - COPY ${BUILD_FOLDER} /app
 
   image: docker:latest
