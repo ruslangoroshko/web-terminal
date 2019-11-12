@@ -4,4 +4,4 @@ declare module '*.png' {
 }
 
 declare const WS_HOST: string;
-declare const API: string;
+declare const API_STRING: string;

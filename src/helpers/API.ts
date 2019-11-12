@@ -10,7 +10,7 @@ import { AccountModel } from '../types/Accounts';
 class API {
   openPosition = async (position: OpenPositionModel) => {
     const response = await axios.post<OpenPositionResponseModel>(
-      `${API}${API_LIST.POSITIONS.OPEN}`,
+      `${API_STRING}${API_LIST.POSITIONS.OPEN}`,
       position
     );
     return response.data;
@@ -18,7 +18,7 @@ class API {
 
   closePosition = async (position: ClosePositionModel) => {
     const response = await axios.post<OpenPositionResponseModel>(
-      `${API}${API_LIST.POSITIONS.CLOSE}`,
+      `${API_STRING}${API_LIST.POSITIONS.CLOSE}`,
       position
     );
     return response.data;
@@ -26,14 +26,14 @@ class API {
 
   getAccounts = async () => {
     const response = await axios.get<AccountModel[]>(
-      `${API}${API_LIST.ACCOUNTS.GET_ACCOUNTS}`
+      `${API_STRING}${API_LIST.ACCOUNTS.GET_ACCOUNTS}`
     );
     return response.data;
   };
 
   getAccountById = async (id: number) => {
     const response = await axios.get<AccountModel>(
-      `${API}${API_LIST.ACCOUNTS.GET_ACCOUNT_BY_ID}`,
+      `${API_STRING}${API_LIST.ACCOUNTS.GET_ACCOUNT_BY_ID}`,
       {
         params: {
           id,
@@ -45,7 +45,7 @@ class API {
 
   getHeaders = async () => {
     const response = await axios.get<string[]>(
-      `${API}${API_LIST.ACCOUNTS.GET_HEADERS}`
+      `${API_STRING}${API_LIST.ACCOUNTS.GET_HEADERS}`
     );
     return response.data;
   };
