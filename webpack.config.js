@@ -8,7 +8,7 @@ module.exports = (env, argv) => ({
     home: './src/index.tsx',
   },
   output: {
-    path: path.resolve(__dirname, '../wwwroot'),
+    path: path.resolve(__dirname, './wwwroot'),
     filename: '[name].js?[hash]',
   },
   module: {
