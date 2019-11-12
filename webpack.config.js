@@ -61,6 +61,10 @@ module.exports = (env, argv) => ({
     }),
     new webpack.DefinePlugin({
       WS_HOST: JSON.stringify(argv.wshost),
+      API:
+        argv.mode === 'production'
+          ? JSON.stringify(argv.api)
+          : JSON.stringify('/api'),
     }),
   ],
 });
