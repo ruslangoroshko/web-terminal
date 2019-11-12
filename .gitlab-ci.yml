@@ -1,5 +1,6 @@
 variables:
   DOCKER_IMAGE_TAG: monfex/simple-trading-web-terminal:1  
+  BUILD_FOLDER: wwwroot
 
 stages:
   - build
@@ -7,11 +8,25 @@ stages:
   - publish
 
 build:
+  job: .pre
   stage: build
   image: node:latest
   script:
     - npm i
     - npm run build -- --wshost=$DOCKER_WEB_SOCKER_CONNECTION_STRING
+  artifacts:
+    paths:
+      - ${BUILD_FOLDER}
+  only:
+    - master
+    
+build:
+  stage: build
+  image: monfex/web-app-hosting:1
+  script:
+    - COPY ${BUILD_FOLDER} /app
+
+  image: docker:latest
   only:
     - master
 
