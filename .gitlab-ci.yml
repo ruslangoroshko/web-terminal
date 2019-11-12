@@ -22,9 +22,8 @@ prebuild:
 build:
   stage: build
   script:
-    - COPY ${BUILD_FOLDER} /app
-
-  image: docker:latest
+    - ls ${BUILD_FOLDER}
+    - cp ${BUILD_FOLDER} /app
   only:
     - master
 
