@@ -9,7 +9,7 @@ stages:
 
 prebuild:
   stage: .pre
-  image: node:alpine
+  image: node:latest
   script:
     - npm i
     - npm run build -- --wshost=$DOCKER_WEB_SOCKER_CONNECTION_STRING
