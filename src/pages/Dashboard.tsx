@@ -43,7 +43,6 @@ function Dashboard(props: Props) {
 
   useEffect(() => {
     const session = initConnection(WS_HOST);
-    session.start();
     console.log(session);
     API.getAccounts().then(response => {
       setAccounts(response);
