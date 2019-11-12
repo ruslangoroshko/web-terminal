@@ -21,7 +21,6 @@ prebuild:
     
 build:
   stage: build
-  image: monfex/web-app-hosting:1
   script:
     - WORKDIR ${BUILD_FOLDER}
     - COPY ${BUILD_FOLDER} /app
