@@ -18,20 +18,14 @@ prebuild:
       - ${BUILD_FOLDER}
   only:
     - master
-    
-build:
-  stage: build
-  script:
-    - ls ${BUILD_FOLDER}
-    - cp ${BUILD_FOLDER} /app
-  only:
-    - master
 
 publish:
   stage: publish
   services:
     - docker:dind    
   script:      
+      - ls ${BUILD_FOLDER}
+      - ls
       - echo "$DOCKER_LOGIN"
       - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_LOGIN --password-stdin
       - docker build -t ${DOCKER_IMAGE_TAG} .
