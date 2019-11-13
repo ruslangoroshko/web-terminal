@@ -1,64 +1,82 @@
 import React, { useState, useEffect } from 'react';
 import API from '../helpers/API';
 import { FlexContainer } from '../styles/FlexContainer';
+import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 import { AccountModel } from '../types/Accounts';
-import { OpenPositionModel } from '../types/Positions';
 import {
-  Button,
   CurrencyQuoteIcon,
   CurrencyQuoteTitle,
   QuotesFeedWrapper,
-  AccountIndex,
   AccountName,
   AccountLeverage,
   AccountBalance,
-  AccountWrapper,
+  AccountBalanceTitle,
+  AccountNameTitle,
 } from '../styles/Pages/Dashboard';
 import initConnection from '../services/websocketService';
 import currencyIcon from '../assets/images/currency.png';
-import graphPlaceholder from '../assets/images/graph-placeholder.png';
-import { Formik, Form, Field, FieldProps } from 'formik';
+import OpenPosition from '../components/OpenPosition';
 import styled from '@emotion/styled';
+import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
+import { InstrumentModel } from '../types/Instruments';
+import AccordionItem from '../components/AccordionItem';
 
 interface Props {}
-interface MyFormValues {
-  tp: OpenPositionModel['tp'];
-  sl: OpenPositionModel['sl'];
+
+enum TabType {
+  ActivePositions,
+  PendingOrders,
+  History,
 }
 
 function Dashboard(props: Props) {
   const {} = props;
 
-  const [accounts, setAccounts] = useState<AccountModel[]>([]);
-  const initialValues: MyFormValues = {
-    tp: 2,
-    sl: 3,
-  };
-  const handleOpenPosition = () => {
-    const newPosition: OpenPositionModel = {
-      accountId: 'accountId',
-      instrumentId: 'instrumentId',
-      operation: 3,
-      sl: 20,
-      slRate: 1.5,
-      tp: 30,
-      tpRate: 1.2,
-      volume: 1000,
-    };
-    API.openPosition(newPosition);
+  const [account, setAccount] = useState<AccountModel>();
+
+  const [activeInstrument, setActiveInstrument] = useState<InstrumentModel>();
+
+  const [tabType, setTabType] = useState(TabType.ActivePositions);
+
+  const switchTabType = (tabType: TabType) => () => {
+    setTabType(tabType);
   };
 
-  const handleClosePosition = () => {};
+  const switchInstrument = (instrument: InstrumentModel) => () => {
+    setActiveInstrument(instrument);
+  };
+
+  const renderTabType = () => {
+    switch (tabType) {
+      case TabType.ActivePositions:
+        return <Test>ActivePositions</Test>;
+
+      case TabType.PendingOrders:
+        return <Test>PendingOrders</Test>;
+
+      case TabType.History:
+        return <Test>History</Test>;
+
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     const session = initConnection(WS_HOST);
+    session.on('bidask', (...args) => {
+      console.log(args);
+    });
     API.getAccounts().then(response => {
-      setAccounts(response);
-      response[0].instruments.forEach(item => {
-        // session.subscribe(item.id, args => {
-        //   console.log(args);
-        // });
-      });
+      setAccount(response[0]);
+      if (response[0].instruments.length) {
+        setActiveInstrument(response[0].instruments[0]);
+      }
+      // response[0].instruments.forEach(item => {
+      // session.subscribe(item.id, args => {
+      //   console.log(args);
+      // });
+      // });
     });
   }, []);
 
@@ -67,7 +85,7 @@ function Dashboard(props: Props) {
       width="100%"
       height="100vh"
       flexDirection="column"
-      backgroundColor="#2a344e"
+      backgroundColor="#191f2d"
     >
       <FlexContainer
         width="100%"
@@ -76,9 +94,16 @@ function Dashboard(props: Props) {
         justifyContent="space-between"
       >
         <FlexContainer>
-          {accounts.length > 0 &&
-            accounts[0].instruments.map(instrument => (
-              <QuotesFeedWrapper key={instrument.id} padding="10px">
+          {account &&
+            account.instruments.map(instrument => (
+              <QuotesFeedWrapper
+                isActive={
+                  activeInstrument && instrument.id === activeInstrument.id
+                }
+                key={instrument.id}
+                padding="10px"
+                onClick={switchInstrument(instrument)}
+              >
                 <FlexContainer alignItems="center" justifyContent="center">
                   <CurrencyQuoteIcon src={currencyIcon} />
                 </FlexContainer>
@@ -88,64 +113,71 @@ function Dashboard(props: Props) {
               </QuotesFeedWrapper>
             ))}
         </FlexContainer>
-        {accounts.length > 0 && (
-          <AccountWrapper padding="20px">
-            <FlexContainer flexDirection="column">
-              <AccountBalance>
-                Total balance: {accounts[0].balance}
-              </AccountBalance>
-              <AccountName>Account id: {accounts[0].id}</AccountName>
-              <AccountLeverage>
-                Leverage: {accounts[0].leverage}
-              </AccountLeverage>
+        {account && (
+          <FlexContainer padding="0 20px" alignItems="center">
+            <FlexContainer flexDirection="column" margin="0 20px 0 0">
+              <AccountBalanceTitle>Total balance</AccountBalanceTitle>
+              <AccountBalance>${account.balance}</AccountBalance>
             </FlexContainer>
-          </AccountWrapper>
+            <FlexContainer flexDirection="column" margin="0 20px 0 0">
+              <AccountNameTitle>Account id</AccountNameTitle>
+              <AccountName>{account.id}</AccountName>
+            </FlexContainer>
+            <FlexContainer flexDirection="column">
+              <AccountNameTitle>Leverage</AccountNameTitle>
+              <AccountLeverage>{account.leverage}</AccountLeverage>
+            </FlexContainer>
+          </FlexContainer>
         )}
       </FlexContainer>
       <FlexContainer justifyContent="space-between" padding="20px">
-        <FlexContainer flexDirection="column" width="200px">
-          dunno what's here
-        </FlexContainer>
-        <FlexContainer>
-          <img src={graphPlaceholder}></img>
-        </FlexContainer>
         <FlexContainer flexDirection="column">
-          <Formik
-            initialValues={initialValues}
-            onSubmit={(values, actions) => {
-              console.log({ values, actions });
-              actions.setSubmitting(false);
-            }}
-          >
-            {formikBag => (
-              <Form>
-                <Field type="text" name="tp">
-                  {({ field, form, meta }: FieldProps) => (
-                    <div>
-                      <Title>Take profit</Title>
-                      <input type="text" {...field} placeholder="Take profit" />
-                      {meta.touched && meta.error}
-                    </div>
-                  )}
-                </Field>
-                <Field
-                  type="text"
-                  name="sl"
-                  render={({ field, form, meta }: any) => (
-                    <div>
-                      <Title>Stop loss</Title>
-                      <input type="text" {...field} placeholder="Stop loss" />
-                      {meta.touched && meta.error}
-                    </div>
-                  )}
+          <FlexContainer margin="0 20px 20px 0">
+            <FlexContainer width="1500px" height="600px">
+              {activeInstrument && (
+                <TradingViewWidget
+                  symbol={`FX:${activeInstrument.base}${activeInstrument.quote}`}
+                  theme={Themes.DARK}
+                  autosize
                 />
-              </Form>
-            )}
-          </Formik>
-          <Button isBuy onClick={handleOpenPosition}>
-            Buy
-          </Button>
-          <Button onClick={handleClosePosition}>Sell</Button>
+              )}
+            </FlexContainer>
+          </FlexContainer>
+          <FlexContainer flexDirection="column">
+            <FlexContainer margin="0 0 20px">
+              <TabButton
+                onClick={switchTabType(TabType.ActivePositions)}
+                isActive={tabType === TabType.ActivePositions}
+              >
+                Active Positions
+              </TabButton>
+              <TabButton
+                onClick={switchTabType(TabType.PendingOrders)}
+                isActive={tabType === TabType.PendingOrders}
+              >
+                Pending orders
+              </TabButton>
+              <TabButton
+                onClick={switchTabType(TabType.History)}
+                isActive={tabType === TabType.History}
+              >
+                History
+              </TabButton>
+            </FlexContainer>
+            <FlexContainer>{renderTabType()}</FlexContainer>
+          </FlexContainer>
+        </FlexContainer>
+        <FlexContainer flexDirection="column" margin="0 0 20px">
+          {account &&
+            account.instruments.map(instrument => (
+              <AccordionItem key={instrument.id} title={instrument.name}>
+                <OpenPosition
+                  quoteName={instrument.quote}
+                  accountId={account.id}
+                  instrumentId={instrument.id}
+                ></OpenPosition>
+              </AccordionItem>
+            ))}
         </FlexContainer>
       </FlexContainer>
     </FlexContainer>
@@ -154,6 +186,23 @@ function Dashboard(props: Props) {
 
 export default Dashboard;
 
-const Title = styled.span`
+const TabButton = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
+  background-color: ${props => (props.isActive ? 'green' : 'darkblue')};
+  margin-right: 20px;
+  color: #fff;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-top: 1px solid #353c4d;
+  border-left: 1px solid #353c4d;
+  border-right: 1px solid #353c4d;
+  transition: background-color 0.2s ease;
+  pointer-events: ${props => (props.isActive ? 'none' : 'all')};
+
+  &:hover {
+    background-color: greenyellow;
+  }
+`;
+
+const Test = styled.span`
   color: #fff;
 `;

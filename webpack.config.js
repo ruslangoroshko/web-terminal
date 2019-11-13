@@ -40,7 +40,7 @@ module.exports = (env, argv) => {
     devServer: {
       proxy: {
         '/api': {
-          target: 'https://simpletrading-api-dev.monfex.biz/',
+          target: 'https://simpletrading-api-dev.monfex.biz',
           pathRewrite: {
             '^/api': '',
           },
@@ -74,7 +74,8 @@ module.exports = (env, argv) => {
         API_STRING:
           argv.mode === 'production'
             ? JSON.stringify(argv.apistring)
-            : JSON.stringify('/api/'),
+            : JSON.stringify('/api'),
+        AUTH_TOKEN: JSON.stringify('TraderID'),
       }),
     ],
   };

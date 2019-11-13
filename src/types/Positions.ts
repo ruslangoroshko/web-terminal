@@ -2,7 +2,7 @@ export interface OpenPositionModel {
   accountId: string;
   instrumentId: string;
   operation: number;
-  volume: number;
+  volume?: number;
   tp?: number;
   sl?: number;
   tpRate?: number;

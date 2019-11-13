@@ -11,26 +11,6 @@ export const Account = styled.div`
   color: black;
 `;
 
-export const Button = styled(ButtonWithoutStyles)<{ isBuy?: boolean }>`
-  background-color: ${props => (props.isBuy ? '#2dac41' : '#dc4933')};
-  padding: 10px;
-  color: #fff;
-  margin-bottom: 10px;
-  transition: background-color 0.2s ease;
-  width: 50px;
-  height: 50px;
-  border-radius: 4px;
-
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-
-  &:hover {
-    cursor: pointer;
-    background-color: ${props => (props.isBuy ? '#41ec5c' : '#ff7f6c')};
-  }
-`;
-
 export const Instrument = styled.p`
   width: 100%;
 `;
@@ -50,21 +30,23 @@ export const CurrencyQuoteIcon = styled.img`
 `;
 
 export const CurrencyQuoteInfo = styled.div<{ isGrowth?: boolean }>`
-  font-size: 14;
+  font-size: 14px;
   font-weight: normal;
   color: ${props => (props.isGrowth ? 'green' : 'red')};
 `;
 
-export const QuotesFeedWrapper = styled(FlexContainer)`
+export const QuotesFeedWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
   margin-right: 20px;
   background-color: #1c2438;
   border-radius: 4px;
-`;
+  border: 1px solid #353c4d;
 
-export const AccountWrapper = styled(FlexContainer)`
-  border: 1px solid lightgray;
-  padding: 20px;
-  border-radius: 10px;
+  background-image: ${props =>
+    props.isActive && 'linear-gradient(#535a6d, #1c2438)'};
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const AccountIndex = styled.div`
@@ -80,18 +62,22 @@ export const AccountIndex = styled.div`
   margin-right: 8px;
 `;
 
-export const AccountName = styled.p`
-  font-size: 22px;
-  color: #fff;
-  margin-bottom: 10px;
-`;
-
-export const AccountLeverage = styled.span`
-  font-size: 20px;
+export const AccountNameTitle = styled.span`
+  font-size: 12px;
   color: #fff;
 `;
 
-export const AccountBalance = styled.span`
+export const AccountName = styled.span`
   font-size: 30px;
-  color: antiquewhite;
+  color: #fff;
+`;
+
+export const AccountLeverage = styled(AccountName)``;
+
+export const AccountBalance = styled(AccountName)`
+  color: #ef7000;
+`;
+
+export const AccountBalanceTitle = styled(AccountBalance)`
+  font-size: 12px;
 `;

@@ -25,7 +25,6 @@ class API {
   };
 
   getAccounts = async () => {
-    console.log(`${API_STRING}${API_LIST.ACCOUNTS.GET_ACCOUNTS}`)
     const response = await axios.get<AccountModel[]>(
       `${API_STRING}${API_LIST.ACCOUNTS.GET_ACCOUNTS}`
     );

@@ -6,7 +6,6 @@ export const ButtonWithoutStyles = styled.button`
 
   &:hover,
   &:focus {
-    border: none;
     outline: none;
   }
 `;
