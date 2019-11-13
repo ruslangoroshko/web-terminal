@@ -95,9 +95,9 @@ function Dashboard(props: Props) {
         justifyContent="space-between"
       >
         <FlexContainer>
-          <img src={monfexLogo} alt="" />
-        </FlexContainer>
-        <FlexContainer>
+          <FlexContainer alignItems="center" margin="0 30px 0 0">
+            <img src={monfexLogo} alt="" width="100%" />
+          </FlexContainer>
           {account &&
             account.instruments.map(instrument => (
               <QuotesFeedWrapper
@@ -135,9 +135,9 @@ function Dashboard(props: Props) {
         )}
       </FlexContainer>
       <FlexContainer justifyContent="space-between" padding="20px">
-        <FlexContainer flexDirection="column">
+        <FlexContainer flexDirection="column" width="100%">
           <FlexContainer margin="0 20px 20px 0">
-            <FlexContainer width="1500px" height="600px">
+            <FlexContainer width="100%" height="600px">
               {activeInstrument && (
                 <TradingViewWidget
                   symbol={`FX:${activeInstrument.base}${activeInstrument.quote}`}
