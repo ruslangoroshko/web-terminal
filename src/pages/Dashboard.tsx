@@ -72,12 +72,12 @@ function Dashboard(props: Props) {
       <FlexContainer
         width="100%"
         padding="20px"
-        justifyContent="space-between"
         alignItems="center"
+        justifyContent="space-between"
       >
-        {accounts.length > 0 &&
-          accounts[0].instruments.map(instrument => (
-            <>
+        <FlexContainer>
+          {accounts.length > 0 &&
+            accounts[0].instruments.map(instrument => (
               <QuotesFeedWrapper key={instrument.id} padding="10px">
                 <FlexContainer alignItems="center" justifyContent="center">
                   <CurrencyQuoteIcon src={currencyIcon} />
@@ -86,8 +86,8 @@ function Dashboard(props: Props) {
                   <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
                 </FlexContainer>
               </QuotesFeedWrapper>
-            </>
-          ))}
+            ))}
+        </FlexContainer>
         {accounts.length > 0 && (
           <AccountWrapper padding="20px">
             <FlexContainer flexDirection="column">
