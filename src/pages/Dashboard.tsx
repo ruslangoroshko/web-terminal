@@ -20,6 +20,7 @@ import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { InstrumentModel } from '../types/Instruments';
 import AccordionItem from '../components/AccordionItem';
+import monfexLogo from '../assets/images/monfex-logo.png';
 
 interface Props {}
 
@@ -93,6 +94,9 @@ function Dashboard(props: Props) {
         alignItems="center"
         justifyContent="space-between"
       >
+        <FlexContainer>
+          <img src={monfexLogo} alt="" />
+        </FlexContainer>
         <FlexContainer>
           {account &&
             account.instruments.map(instrument => (

@@ -5,7 +5,8 @@ import Dashboard from './pages/Dashboard';
 import { Global, css } from '@emotion/core';
 import { reboot } from './styles/reboot';
 import injectInerceptors from './http/interceptors';
-
+import Helmet from 'react-helmet';
+import favicon from './assets/images/favicon.ico';
 interface Props {}
 
 function MainApp(props: Props) {
@@ -13,6 +14,9 @@ function MainApp(props: Props) {
   injectInerceptors();
   return (
     <>
+      <Helmet>
+        <link rel="shortcut icon" href={favicon} />
+      </Helmet>
       <Router>
         <Switch>
           <Route exact path="/">
