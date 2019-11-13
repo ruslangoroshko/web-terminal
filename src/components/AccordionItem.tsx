@@ -41,7 +41,7 @@ export default AccordionItem;
 const AccordionButton = styled(ButtonWithoutStyles)<{
   isActive: boolean;
 }>`
-  background-color: ${props => (props.isActive ? '#51586b' : '#484f62')};
+  background-color: ${props => (props.isActive ? '#b4b9c5' : '#484f62')};
   color: #fff;
   cursor: pointer;
   padding: 18px;
@@ -50,7 +50,7 @@ const AccordionButton = styled(ButtonWithoutStyles)<{
   transition: background-color 0.6s ease;
 
   &:hover {
-    background-color: #ccc;
+    background-color: #b4b9c5;
   }
 `;
 
