@@ -64,10 +64,10 @@ function Dashboard(props: Props) {
   };
 
   useEffect(() => {
-    // const session = initConnection(WS_HOST);
-    // session.on('bidask', (...args) => {
-    //   console.log(args);
-    // });
+    const session = initConnection(WS_HOST);
+    session.on('bidask', (...args) => {
+      console.log(args);
+    });
     API.getAccounts().then(response => {
       setAccount(response[0]);
       if (response[0].instruments.length) {

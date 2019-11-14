@@ -47,6 +47,7 @@ module.exports = (env, argv) => {
           changeOrigin: true,
         },
         '/signalr': {
+          // target: 'http://localhost:5678',
           target: 'https://simpletrading-api-dev.monfex.biz/',
           changeOrigin: true,
         },
