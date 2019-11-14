@@ -21,6 +21,7 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { InstrumentModel } from '../types/Instruments';
 import AccordionItem from '../components/AccordionItem';
 import monfexLogo from '../assets/images/monfex-logo.png';
+import { ResponseFromWebsocket, BidAskModel } from '../types/BIDASK';
 
 interface Props {}
 
@@ -65,8 +66,8 @@ function Dashboard(props: Props) {
 
   useEffect(() => {
     const session = initConnection(WS_HOST);
-    session.on('bidask', (...args) => {
-      console.log(args);
+    session.on('bidask', (response: ResponseFromWebsocket<BidAskModel>) => {
+      console.log(response.data[0]);
     });
     API.getAccounts().then(response => {
       setAccount(response[0]);
@@ -184,6 +185,7 @@ function Dashboard(props: Props) {
             ))}
         </FlexContainer>
       </FlexContainer>
+      <FlexContainer justifyContent="center"></FlexContainer>
     </FlexContainer>
   );
 }
@@ -210,3 +212,5 @@ const TabButton = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
 const Test = styled.span`
   color: #fff;
 `;
+
+const;
