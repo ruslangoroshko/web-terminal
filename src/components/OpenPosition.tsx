@@ -50,8 +50,7 @@ function OpenPosition(props: Props) {
 
   const handleOpenPosition = (values: OpenPositionModel, actions: any) => {
     actions.setSubmitting(false);
-
-    API.openPosition(values);
+    API.openPosition({ ...values, operation: openPositionOption });
   };
 
   const [openPositionOption, setOpenPositionOption] = useState(

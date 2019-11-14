@@ -21,7 +21,7 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { InstrumentModel } from '../types/Instruments';
 import AccordionItem from '../components/AccordionItem';
 import monfexLogo from '../assets/images/monfex-logo.png';
-import { ResponseFromWebsocket, BidAskModel } from '../types/BIDASK';
+import { ResponseFromWebsocket, BidAskModel } from '../types/BidAsk';
 
 interface Props {}
 
@@ -212,5 +212,3 @@ const TabButton = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
 const Test = styled.span`
   color: #fff;
 `;
-
-const;
