@@ -3,9 +3,9 @@ import {
   OpenPositionModel,
   OpenPositionResponseModel,
   ClosePositionModel,
-} from '../types/Positions';
+} from '../types/DTOModels/Positions.dto';
 import API_LIST from './apiList';
-import { AccountModel } from '../types/Accounts';
+import { AccountModel } from '../types/DTOModels/Accounts.dto';
 
 class API {
   openPosition = async (position: OpenPositionModel) => {

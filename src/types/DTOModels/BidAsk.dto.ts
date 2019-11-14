@@ -6,6 +6,6 @@ export interface BidAskModel {
 }
 
 export interface ResponseFromWebsocket<T> {
-    data: T[];
-    now: string;
+  data: T[];
+  now: string;
 }

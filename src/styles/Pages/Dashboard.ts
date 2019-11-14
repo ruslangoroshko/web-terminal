@@ -30,7 +30,7 @@ export const CurrencyQuoteIcon = styled.img`
 `;
 
 export const CurrencyQuoteInfo = styled.div<{ isGrowth?: boolean }>`
-  font-size: 14px;
+  font-size: 12px;
   font-weight: normal;
   color: ${props => (props.isGrowth ? 'green' : 'red')};
 `;

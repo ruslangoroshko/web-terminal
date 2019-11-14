@@ -46,16 +46,17 @@ module.exports = (env, argv) => {
           },
           changeOrigin: true,
         },
-        '/signalr': {
-          // target: 'http://localhost:5678',
-          target: 'https://simpletrading-api-dev.monfex.biz/',
-          changeOrigin: true,
-        },
+        // '/signalr': {
+        //   target: 'http://localhost:5678',
+        //   // target: 'https://simpletrading-api-dev.monfex.biz/',
+        //   changeOrigin: false,
+        //   logLevel: 'debug' // this what you want
+        // },
       },
       contentBase: path.join(__dirname, 'public'),
       compress: true,
       historyApiFallback: true,
-      https: true,
+      https: false,
       hot: false,
     },
     plugins: [
@@ -71,7 +72,7 @@ module.exports = (env, argv) => {
         WS_HOST:
           argv.mode === 'production'
             ? JSON.stringify(argv.wshost)
-            : JSON.stringify('/signalr'),
+            : JSON.stringify('http://localhost:5678/signalr'),
         API_STRING:
           argv.mode === 'production'
             ? JSON.stringify(argv.apistring)

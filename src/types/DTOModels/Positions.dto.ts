@@ -1,3 +1,5 @@
+import { TradeEngineOperationResult } from '../../enums/TradeEngineOperationResult';
+
 export interface OpenPositionModel {
   accountId: string;
   instrumentId: string;
@@ -10,7 +12,7 @@ export interface OpenPositionModel {
 }
 
 export interface OpenPositionResponseModel {
-  result: number;
+  result: TradeEngineOperationResult;
   position: PositionModel;
 }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { Formik, Form, Field, FieldProps } from 'formik';
-import { OpenPositionModel } from '../types/Positions';
+import { OpenPositionModel } from '../types/DTOModels/Positions.dto';
 import API from '../helpers/API';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
@@ -50,8 +50,7 @@ function OpenPosition(props: Props) {
 
   const handleOpenPosition = (values: OpenPositionModel, actions: any) => {
     actions.setSubmitting(false);
-
-    API.openPosition(values);
+    API.openPosition({ ...values, operation: openPositionOption });
   };
 
   const [openPositionOption, setOpenPositionOption] = useState(
