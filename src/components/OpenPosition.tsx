@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { Formik, Form, Field, FieldProps } from 'formik';
-import { OpenPositionModel } from '../types/DTOModels/Positions.dto';
+import { OpenPositionModel } from '../types/Positions';
 import API from '../helpers/API';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
@@ -12,12 +12,6 @@ interface Props {
   accountId: OpenPositionModel['accountId'];
   instrumentId: OpenPositionModel['instrumentId'];
 }
-
-// interface OpenPositionFormValues {
-//   volume: OpenPositionModel['volume'];
-//   tp: OpenPositionModel['tp'];
-//   sl: OpenPositionModel['sl'];
-// }
 
 enum OpenPositionOption {
   Buy,
@@ -64,7 +58,7 @@ function OpenPosition(props: Props) {
   };
 
   return (
-    <OpenPositionWrapper flexDirection="column" padding="10px 0">
+    <OpenPositionWrapper flexDirection="column" padding="10px 0" width="200px">
       <Formik
         initialValues={initialValues}
         onSubmit={handleOpenPosition}

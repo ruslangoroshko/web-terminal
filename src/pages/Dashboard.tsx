@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import API from '../helpers/API';
 import { FlexContainer } from '../styles/FlexContainer';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
-import { AccountModel } from '../types/DTOModels/Accounts.dto';
+import { AccountModelDTO } from '../types/Accounts';
 import {
   CurrencyQuoteIcon,
   CurrencyQuoteTitle,
@@ -19,35 +19,26 @@ import currencyIcon from '../assets/images/currency.png';
 import OpenPosition from '../components/OpenPosition';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
-import { InstrumentModel } from '../types/DTOModels/Instruments.dto';
+import { InstrumentModelDTO, InstrumentViewModel } from '../types/Instruments';
 import AccordionItem from '../components/AccordionItem';
 import monfexLogo from '../assets/images/monfex-logo.png';
-import { ResponseFromWebsocket, BidAskModel } from '../types/DTOModels/BidAsk.dto';
+import { BidAskModelDTO, BidAskViewModel } from '../types/BidAsk';
+import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
+import { TabType } from '../enums/TabType';
+import { Topics } from '../constants/websocketTopics';
 
 interface Props {}
-
-enum TabType {
-  ActivePositions,
-  PendingOrders,
-  History,
-}
-
-interface InstrumentModelWithQuotes extends InstrumentModel {
-  bidAsk?: BidAskModel;
-}
 
 function Dashboard(props: Props) {
   const {} = props;
 
-  const [account, setAccount] = useState<AccountModel>();
+  const [account, setAccount] = useState<AccountModelDTO>();
 
   const [activeInstrument, setActiveInstrument] = useState<
-    InstrumentModelWithQuotes
+    InstrumentViewModel
   >();
 
-  const [instruments, setInstruments] = useState<InstrumentModelWithQuotes[]>(
-    []
-  );
+  const [instruments, setInstruments] = useState<InstrumentViewModel[]>([]);
 
   const [tabType, setTabType] = useState(TabType.ActivePositions);
 
@@ -55,7 +46,7 @@ function Dashboard(props: Props) {
     setTabType(tabType);
   };
 
-  const switchInstrument = (instrument: InstrumentModel) => () => {
+  const switchInstrument = (instrument: InstrumentViewModel) => () => {
     setActiveInstrument(instrument);
   };
 
@@ -77,27 +68,38 @@ function Dashboard(props: Props) {
 
   useEffect(() => {
     const session = initConnection(WS_HOST);
-    session.on('bidask', (response: ResponseFromWebsocket<BidAskModel>) => {
-      setInstruments(prev =>
-        prev.map(item => {
-          const bidAsk = response.data[0];
-          if (item.id === bidAsk.id) {
-            const isGrowth =
-              +((bidAsk.ask + bidAsk.ask) * 0.5).toFixed(item.digits);
-            return {
-              ...item,
-              bidAsk: {
-                ...response.data[0],
-                prev: isGrowth,
-                isGrowth: item.bidAsk && item.bidAsk.prev > isGrowth,
-              },
-            };
-          }
-          return item;
-        })
-      );
-    });
-    session.on('accounts', resp => {
+    session.on(
+      Topics.BID_ASK,
+      (response: ResponseFromWebsocket<BidAskModelDTO>) => {
+        if (!response.data.length) {
+          return;
+        }
+        const newBidAsk = response.data[0];
+
+        setInstruments(instruments =>
+          instruments.map(instrument => {
+            if (instrument.id === newBidAsk.id) {
+              const growth = +((newBidAsk.ask + newBidAsk.ask) * 0.5).toFixed(
+                instrument.digits
+              );
+
+              return {
+                ...instrument,
+                bidAsk: {
+                  ...newBidAsk,
+                  prevGrowth: instrument.bidAsk
+                    ? instrument.bidAsk.growth
+                    : growth,
+                  growth,
+                },
+              };
+            }
+            return instrument;
+          })
+        );
+      }
+    );
+    session.on(Topics.ACCOUNTS, resp => {
       console.log('accounts', resp);
     });
     API.getAccounts().then(response => {
@@ -142,7 +144,12 @@ function Dashboard(props: Props) {
                   <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
                   {instrument.bidAsk ? (
                     <FlexContainer flexDirection="column">
-                      <CurrencyQuoteInfo isGrowth={instrument.bidAsk.isGrowth}>
+                      <CurrencyQuoteInfo
+                        isGrowth={
+                          instrument.bidAsk.growth >
+                          instrument.bidAsk.prevGrowth
+                        }
+                      >
                         {instrument.bidAsk.ask} / {instrument.bidAsk.bid}
                       </CurrencyQuoteInfo>
                       <span style={{ color: '#fff' }}>
@@ -164,7 +171,10 @@ function Dashboard(props: Props) {
           <FlexContainer padding="0 20px" alignItems="center">
             <FlexContainer flexDirection="column" margin="0 20px 0 0">
               <AccountBalanceTitle>Total balance</AccountBalanceTitle>
-              <AccountBalance>{account.currency}{account.balance}</AccountBalance>
+              <AccountBalance>
+                {account.currency}&nbsp;
+                {account.balance}
+              </AccountBalance>
             </FlexContainer>
             <FlexContainer flexDirection="column" margin="0 20px 0 0">
               <AccountNameTitle>Account id</AccountNameTitle>

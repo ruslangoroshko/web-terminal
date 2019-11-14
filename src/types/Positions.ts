@@ -1,4 +1,4 @@
-import { TradeEngineOperationResult } from '../../enums/TradeEngineOperationResult';
+import { TradeEngineOperationResult } from '../enums/TradeEngineOperationResult';
 
 export interface OpenPositionModel {
   accountId: string;
@@ -11,7 +11,7 @@ export interface OpenPositionModel {
   slRate?: number;
 }
 
-export interface OpenPositionResponseModel {
+export interface OpenPositionResponseDTO {
   result: TradeEngineOperationResult;
   position: PositionModel;
 }
