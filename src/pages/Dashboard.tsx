@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import API from '../helpers/API';
 import { FlexContainer } from '../styles/FlexContainer';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
-import { AccountModelDTO } from '../types/Accounts';
 import {
   CurrencyQuoteIcon,
   CurrencyQuoteTitle,
@@ -14,46 +12,57 @@ import {
   AccountNameTitle,
   CurrencyQuoteInfo,
 } from '../styles/Pages/Dashboard';
-import initConnection from '../services/websocketService';
 import currencyIcon from '../assets/images/currency.png';
 import OpenPosition from '../components/OpenPosition';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
-import { InstrumentModelDTO, InstrumentViewModel } from '../types/Instruments';
+import { InstrumentModelDTO } from '../types/Instruments';
 import AccordionItem from '../components/AccordionItem';
 import monfexLogo from '../assets/images/monfex-logo.png';
-import { BidAskModelDTO, BidAskViewModel } from '../types/BidAsk';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { TabType } from '../enums/TabType';
-import { Topics } from '../constants/websocketTopics';
+import Topics from '../constants/websocketTopics';
+import calculateGrowth from '../helpers/calculateGrowth';
+import { AccountModelWebSocketDTO } from '../types/Accounts';
+import { HubConnection } from '@aspnet/signalr';
+import { BidAskModelDTO } from '../types/BidAsk';
+import { PositionModelDTO } from '../types/Positions';
 
-interface Props {}
+interface Props {
+  activeSession: HubConnection;
+}
 
 function Dashboard(props: Props) {
-  const {} = props;
-
-  const [account, setAccount] = useState<AccountModelDTO>();
-
-  const [activeInstrument, setActiveInstrument] = useState<
-    InstrumentViewModel
-  >();
-
-  const [instruments, setInstruments] = useState<InstrumentViewModel[]>([]);
+  const { activeSession } = props;
 
   const [tabType, setTabType] = useState(TabType.ActivePositions);
+  const [account, setAccount] = useState<AccountModelWebSocketDTO>();
+  const [activeInstrument, setActiveInstrument] = useState<
+    InstrumentModelDTO
+  >();
+  const [instruments, setInstruments] = useState<InstrumentModelDTO[]>([]);
+  const [activePositions, setActivePositions] = useState<PositionModelDTO[]>(
+    []
+  );
 
   const switchTabType = (tabType: TabType) => () => {
     setTabType(tabType);
   };
 
-  const switchInstrument = (instrument: InstrumentViewModel) => () => {
+  const switchInstrument = (instrument: InstrumentModelDTO) => () => {
     setActiveInstrument(instrument);
   };
 
   const renderTabType = () => {
     switch (tabType) {
       case TabType.ActivePositions:
-        return <Test>ActivePositions</Test>;
+        return (
+          <ul>
+            {activePositions.map(pos => (
+              <li>{pos.openDate}</li>
+            ))}
+          </ul>
+        );
 
       case TabType.PendingOrders:
         return <Test>PendingOrders</Test>;
@@ -67,50 +76,78 @@ function Dashboard(props: Props) {
   };
 
   useEffect(() => {
-    const session = initConnection(WS_HOST);
-    session.on(
-      Topics.BID_ASK,
-      (response: ResponseFromWebsocket<BidAskModelDTO>) => {
-        if (!response.data.length) {
-          return;
-        }
-        const newBidAsk = response.data[0];
-
-        setInstruments(instruments =>
-          instruments.map(instrument => {
-            if (instrument.id === newBidAsk.id) {
-              const growth = +((newBidAsk.ask + newBidAsk.ask) * 0.5).toFixed(
-                instrument.digits
-              );
-
-              return {
-                ...instrument,
-                bidAsk: {
-                  ...newBidAsk,
-                  prevGrowth: instrument.bidAsk
-                    ? instrument.bidAsk.growth
-                    : growth,
-                  growth,
-                },
-              };
-            }
-            return instrument;
-          })
-        );
+    activeSession.on(
+      Topics.ACCOUNTS,
+      (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
+        setAccount(response.data[0]);
+        activeSession.send('accountId', {
+          accoundId: response.data[0].id,
+        });
       }
     );
-    session.on(Topics.ACCOUNTS, resp => {
-      console.log('accounts', resp);
-    });
-    API.getAccounts().then(response => {
-      setAccount(response[0]);
-      if (response[0].instruments.length) {
-        setActiveInstrument(response[0].instruments[0]);
-        setInstruments(response[0].instruments);
-      }
-    });
   }, []);
-  return (
+
+  useEffect(() => {
+    activeSession.on(
+      Topics.INSTRUMENTS,
+      (response: ResponseFromWebsocket<InstrumentModelDTO>) => {
+        if (response.data.length) {
+          const instruments = response.data;
+          setInstruments(instruments);
+          setActiveInstrument(instruments[0]);
+        }
+      }
+    );
+  }, [account]);
+
+  useEffect(() => {
+    if (activeInstrument) {
+      activeSession.on(
+        Topics.BID_ASK,
+        (response: ResponseFromWebsocket<BidAskModelDTO>) => {
+          if (!response.data.length) {
+            return;
+          }
+          const newBidAsk = response.data[0];
+
+          setInstruments(instruments =>
+            instruments.map(instrument => {
+              if (instrument.id === newBidAsk.id) {
+                const growth = calculateGrowth(
+                  newBidAsk.bid,
+                  newBidAsk.ask,
+                  instrument.digits
+                );
+                return {
+                  ...instrument,
+                  bidAsk: {
+                    ...newBidAsk,
+                    prevGrowth: instrument.bidAsk
+                      ? instrument.bidAsk.growth
+                      : growth,
+                    growth,
+                  },
+                };
+              }
+              return instrument;
+            })
+          );
+        }
+      );
+    }
+  }, [activeInstrument]);
+
+  useEffect(() => {
+    activeSession.on(
+      Topics.POSITIONS,
+      (response: ResponseFromWebsocket<PositionModelDTO>) => {
+        console.log('TCL: Dashboard -> response', response);
+        setActivePositions(response.data);
+      }
+    );
+  }, []);
+
+  return account ? (
     <FlexContainer
       width="100%"
       height="100vh"
@@ -140,7 +177,7 @@ function Dashboard(props: Props) {
                 <FlexContainer alignItems="center" justifyContent="center">
                   <CurrencyQuoteIcon src={currencyIcon} />
                 </FlexContainer>
-                <FlexContainer flexDirection="column">
+                <FlexContainer flexDirection="column" width="160px">
                   <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
                   {instrument.bidAsk ? (
                     <FlexContainer flexDirection="column">
@@ -153,39 +190,35 @@ function Dashboard(props: Props) {
                         {instrument.bidAsk.ask} / {instrument.bidAsk.bid}
                       </CurrencyQuoteInfo>
                       <span style={{ color: '#fff' }}>
-                        {
-                          +(
-                            (instrument.bidAsk.ask + instrument.bidAsk.ask) *
-                            0.5
-                          ).toFixed(instrument.digits)
-                        }
+                        {calculateGrowth(
+                          instrument.bidAsk.bid,
+                          instrument.bidAsk.ask,
+                          instrument.digits
+                        )}
                       </span>
                     </FlexContainer>
                   ) : null}
                 </FlexContainer>
-                <FlexContainer></FlexContainer>
               </QuotesFeedWrapper>
             ))}
         </FlexContainer>
-        {account && (
-          <FlexContainer padding="0 20px" alignItems="center">
-            <FlexContainer flexDirection="column" margin="0 20px 0 0">
-              <AccountBalanceTitle>Total balance</AccountBalanceTitle>
-              <AccountBalance>
-                {account.currency}&nbsp;
-                {account.balance}
-              </AccountBalance>
-            </FlexContainer>
-            <FlexContainer flexDirection="column" margin="0 20px 0 0">
-              <AccountNameTitle>Account id</AccountNameTitle>
-              <AccountName>{account.id}</AccountName>
-            </FlexContainer>
-            <FlexContainer flexDirection="column">
-              <AccountNameTitle>Leverage</AccountNameTitle>
-              <AccountLeverage>{account.leverage}</AccountLeverage>
-            </FlexContainer>
+        <FlexContainer padding="0 20px" alignItems="center">
+          <FlexContainer flexDirection="column" margin="0 20px 0 0">
+            <AccountBalanceTitle>Total balance</AccountBalanceTitle>
+            <AccountBalance>
+              {account.currency}&nbsp;
+              {account.balance}
+            </AccountBalance>
           </FlexContainer>
-        )}
+          <FlexContainer flexDirection="column" margin="0 20px 0 0">
+            <AccountNameTitle>Account id</AccountNameTitle>
+            <AccountName>{account.id}</AccountName>
+          </FlexContainer>
+          <FlexContainer flexDirection="column">
+            <AccountNameTitle>Leverage</AccountNameTitle>
+            <AccountLeverage>{account.leverage}</AccountLeverage>
+          </FlexContainer>
+        </FlexContainer>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" padding="20px">
         <FlexContainer flexDirection="column" width="100%">
@@ -224,9 +257,9 @@ function Dashboard(props: Props) {
             <FlexContainer>{renderTabType()}</FlexContainer>
           </FlexContainer>
         </FlexContainer>
-        <FlexContainer flexDirection="column" margin="0 0 20px">
-          {account &&
-            account.instruments.map(instrument => (
+        <FlexContainer flexDirection="column" margin="0 0 20px" width="400px">
+          {instruments.length > 0 &&
+            instruments.map(instrument => (
               <AccordionItem key={instrument.id} title={instrument.name}>
                 <OpenPosition
                   quoteName={instrument.quote}
@@ -239,7 +272,7 @@ function Dashboard(props: Props) {
       </FlexContainer>
       <FlexContainer justifyContent="center"></FlexContainer>
     </FlexContainer>
-  );
+  ) : null;
 }
 
 export default Dashboard;

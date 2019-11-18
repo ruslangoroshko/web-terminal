@@ -1,10 +1,10 @@
 export enum TradeEngineOperationResult {
   Ok,
   DayOff,
-  MinOperationLotViolated,
-  MaxOperationLotViolated,
-  MaxPositionByInstrumentViolated,
-  InsufficientMargin,
+  MinOperationVolumeViolated,
+  MaxOperationVolumeViolated,
+  MaxVolumePositionByInstrumentViolated,
+  InsufficientBalance,
   NoLiquidity,
   Unknown = 9999999,
 }

@@ -33,7 +33,7 @@ function OpenPosition(props: Props) {
     volume: yup
       .number()
       .nullable()
-      .required('Required lot'),
+      .required('Required any value'),
   });
 
   const initialValues: OpenPositionModel = {
@@ -58,7 +58,7 @@ function OpenPosition(props: Props) {
   };
 
   return (
-    <OpenPositionWrapper flexDirection="column" padding="10px 0" width="200px">
+    <OpenPositionWrapper flexDirection="column" padding="10px 0">
       <Formik
         initialValues={initialValues}
         onSubmit={handleOpenPosition}
@@ -90,12 +90,12 @@ function OpenPosition(props: Props) {
                     position="relative"
                     padding="0 0 20px 0"
                   >
-                    <InputLabel>Lot</InputLabel>
+                    <InputLabel>Volume</InputLabel>
                     <Input
                       type="text"
                       {...field}
                       value={field.value || ''}
-                      placeholder="Enter lot"
+                      placeholder="Enter value"
                     />
                     <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
                   </FlexContainer>

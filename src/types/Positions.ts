@@ -13,10 +13,10 @@ export interface OpenPositionModel {
 
 export interface OpenPositionResponseDTO {
   result: TradeEngineOperationResult;
-  position: PositionModel;
+  position: PositionModelDTO;
 }
 
-export interface PositionModel {
+export interface PositionModelDTO {
   id: number;
   accountId: string;
   instrument: string;

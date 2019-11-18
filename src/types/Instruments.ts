@@ -6,8 +6,5 @@ export interface InstrumentModelDTO {
   digits: number;
   base: string;
   quote: string;
-}
-
-export interface InstrumentViewModel extends InstrumentModelDTO {
   bidAsk?: BidAskViewModel;
 }

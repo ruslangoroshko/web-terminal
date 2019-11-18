@@ -6,7 +6,6 @@ const initConnection = (connectionString: string) => {
       accessTokenFactory: () => AUTH_TOKEN,
     })
     .build();
-  connection.start().catch(err => console.log(err));
   return connection;
 };
 
