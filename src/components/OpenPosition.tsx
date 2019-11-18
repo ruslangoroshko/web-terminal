@@ -13,12 +13,6 @@ interface Props {
   instrumentId: OpenPositionModel['instrumentId'];
 }
 
-// interface OpenPositionFormValues {
-//   volume: OpenPositionModel['volume'];
-//   tp: OpenPositionModel['tp'];
-//   sl: OpenPositionModel['sl'];
-// }
-
 enum OpenPositionOption {
   Buy,
   Sell,
@@ -39,7 +33,7 @@ function OpenPosition(props: Props) {
     volume: yup
       .number()
       .nullable()
-      .required('Required lot'),
+      .required('Required any value'),
   });
 
   const initialValues: OpenPositionModel = {
@@ -96,12 +90,12 @@ function OpenPosition(props: Props) {
                     position="relative"
                     padding="0 0 20px 0"
                   >
-                    <InputLabel>Lot</InputLabel>
+                    <InputLabel>Volume</InputLabel>
                     <Input
                       type="text"
                       {...field}
                       value={field.value || ''}
-                      placeholder="Enter lot"
+                      placeholder="Enter value"
                     />
                     <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
                   </FlexContainer>

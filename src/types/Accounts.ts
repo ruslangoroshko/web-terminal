@@ -1,8 +1,18 @@
-import { InstrumentModel } from './Instruments';
+import { InstrumentModelDTO } from './Instruments';
 
-export interface AccountModel {
+export interface AccountModelDTO {
   id: string;
   balance: number;
   leverage: number;
-  instruments: InstrumentModel[];
+  currency: string;
+  instruments: InstrumentModelDTO[];
+}
+
+export interface AccountModelWebSocketDTO {
+  id: string;
+  balance: number;
+  leverage: number;
+  currency: string;
+  bonus: number;
+  group: string;
 }

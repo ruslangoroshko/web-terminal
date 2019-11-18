@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import API from '../helpers/API';
 import { FlexContainer } from '../styles/FlexContainer';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
-import { AccountModel } from '../types/Accounts';
 import {
   CurrencyQuoteIcon,
   CurrencyQuoteTitle,
@@ -12,46 +10,60 @@ import {
   AccountBalance,
   AccountBalanceTitle,
   AccountNameTitle,
+  CurrencyQuoteInfo,
 } from '../styles/Pages/Dashboard';
-import initConnection from '../services/websocketService';
 import currencyIcon from '../assets/images/currency.png';
 import OpenPosition from '../components/OpenPosition';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
-import { InstrumentModel } from '../types/Instruments';
+import { InstrumentModelDTO } from '../types/Instruments';
 import AccordionItem from '../components/AccordionItem';
 import monfexLogo from '../assets/images/monfex-logo.png';
+import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
+import { TabType } from '../enums/TabType';
+import Topics from '../constants/websocketTopics';
+import calculateGrowth from '../helpers/calculateGrowth';
+import { AccountModelWebSocketDTO } from '../types/Accounts';
+import { HubConnection } from '@aspnet/signalr';
+import { BidAskModelDTO } from '../types/BidAsk';
+import { PositionModelDTO } from '../types/Positions';
 import { ResponseFromWebsocket, BidAskModel } from '../types/BidAsk';
 
-interface Props {}
-
-enum TabType {
-  ActivePositions,
-  PendingOrders,
-  History,
+interface Props {
+  activeSession: HubConnection;
 }
 
 function Dashboard(props: Props) {
-  const {} = props;
-
-  const [account, setAccount] = useState<AccountModel>();
-
-  const [activeInstrument, setActiveInstrument] = useState<InstrumentModel>();
+  const { activeSession } = props;
 
   const [tabType, setTabType] = useState(TabType.ActivePositions);
+  const [account, setAccount] = useState<AccountModelWebSocketDTO>();
+  const [activeInstrument, setActiveInstrument] = useState<
+    InstrumentModelDTO
+  >();
+  const [instruments, setInstruments] = useState<InstrumentModelDTO[]>([]);
+  const [activePositions, setActivePositions] = useState<PositionModelDTO[]>(
+    []
+  );
 
   const switchTabType = (tabType: TabType) => () => {
     setTabType(tabType);
   };
 
-  const switchInstrument = (instrument: InstrumentModel) => () => {
+  const switchInstrument = (instrument: InstrumentModelDTO) => () => {
     setActiveInstrument(instrument);
   };
 
   const renderTabType = () => {
     switch (tabType) {
       case TabType.ActivePositions:
-        return <Test>ActivePositions</Test>;
+        return (
+          <ul>
+            {activePositions.map(pos => (
+              <li>{pos.openDate}</li>
+            ))}
+          </ul>
+        );
 
       case TabType.PendingOrders:
         return <Test>PendingOrders</Test>;
@@ -65,24 +77,78 @@ function Dashboard(props: Props) {
   };
 
   useEffect(() => {
-    const session = initConnection(WS_HOST);
-    session.on('bidask', (response: ResponseFromWebsocket<BidAskModel>) => {
-      console.log(response.data[0]);
-    });
-    API.getAccounts().then(response => {
-      setAccount(response[0]);
-      if (response[0].instruments.length) {
-        setActiveInstrument(response[0].instruments[0]);
+    activeSession.on(
+      Topics.ACCOUNTS,
+      (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
+        setAccount(response.data[0]);
+        activeSession.send('accountId', {
+          accoundId: response.data[0].id,
+        });
       }
-      // response[0].instruments.forEach(item => {
-      // session.subscribe(item.id, args => {
-      //   console.log(args);
-      // });
-      // });
-    });
+    );
   }, []);
 
-  return (
+  useEffect(() => {
+    activeSession.on(
+      Topics.INSTRUMENTS,
+      (response: ResponseFromWebsocket<InstrumentModelDTO>) => {
+        if (response.data.length) {
+          const instruments = response.data;
+          setInstruments(instruments);
+          setActiveInstrument(instruments[0]);
+        }
+      }
+    );
+  }, [account]);
+
+  useEffect(() => {
+    if (activeInstrument) {
+      activeSession.on(
+        Topics.BID_ASK,
+        (response: ResponseFromWebsocket<BidAskModelDTO>) => {
+          if (!response.data.length) {
+            return;
+          }
+          const newBidAsk = response.data[0];
+
+          setInstruments(instruments =>
+            instruments.map(instrument => {
+              if (instrument.id === newBidAsk.id) {
+                const growth = calculateGrowth(
+                  newBidAsk.bid,
+                  newBidAsk.ask,
+                  instrument.digits
+                );
+                return {
+                  ...instrument,
+                  bidAsk: {
+                    ...newBidAsk,
+                    prevGrowth: instrument.bidAsk
+                      ? instrument.bidAsk.growth
+                      : growth,
+                    growth,
+                  },
+                };
+              }
+              return instrument;
+            })
+          );
+        }
+      );
+    }
+  }, [activeInstrument]);
+
+  useEffect(() => {
+    activeSession.on(
+      Topics.POSITIONS,
+      (response: ResponseFromWebsocket<PositionModelDTO>) => {
+        console.log('TCL: Dashboard -> response', response);
+        setActivePositions(response.data);
+      }
+    );
+  }, []);
+
+  return account ? (
     <FlexContainer
       width="100%"
       height="100vh"
@@ -99,8 +165,8 @@ function Dashboard(props: Props) {
           <FlexContainer alignItems="center" margin="0 30px 0 0">
             <img src={monfexLogo} alt="" width="100%" />
           </FlexContainer>
-          {account &&
-            account.instruments.map(instrument => (
+          {instruments.length > 0 &&
+            instruments.map(instrument => (
               <QuotesFeedWrapper
                 isActive={
                   activeInstrument && instrument.id === activeInstrument.id
@@ -112,28 +178,48 @@ function Dashboard(props: Props) {
                 <FlexContainer alignItems="center" justifyContent="center">
                   <CurrencyQuoteIcon src={currencyIcon} />
                 </FlexContainer>
-                <FlexContainer flexDirection="column">
+                <FlexContainer flexDirection="column" width="160px">
                   <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
+                  {instrument.bidAsk ? (
+                    <FlexContainer flexDirection="column">
+                      <CurrencyQuoteInfo
+                        isGrowth={
+                          instrument.bidAsk.growth >
+                          instrument.bidAsk.prevGrowth
+                        }
+                      >
+                        {instrument.bidAsk.ask} / {instrument.bidAsk.bid}
+                      </CurrencyQuoteInfo>
+                      <span style={{ color: '#fff' }}>
+                        {calculateGrowth(
+                          instrument.bidAsk.bid,
+                          instrument.bidAsk.ask,
+                          instrument.digits
+                        )}
+                      </span>
+                    </FlexContainer>
+                  ) : null}
                 </FlexContainer>
               </QuotesFeedWrapper>
             ))}
         </FlexContainer>
-        {account && (
-          <FlexContainer padding="0 20px" alignItems="center">
-            <FlexContainer flexDirection="column" margin="0 20px 0 0">
-              <AccountBalanceTitle>Total balance</AccountBalanceTitle>
-              <AccountBalance>${account.balance}</AccountBalance>
-            </FlexContainer>
-            <FlexContainer flexDirection="column" margin="0 20px 0 0">
-              <AccountNameTitle>Account id</AccountNameTitle>
-              <AccountName>{account.id}</AccountName>
-            </FlexContainer>
-            <FlexContainer flexDirection="column">
-              <AccountNameTitle>Leverage</AccountNameTitle>
-              <AccountLeverage>{account.leverage}</AccountLeverage>
-            </FlexContainer>
+        <FlexContainer padding="0 20px" alignItems="center">
+          <FlexContainer flexDirection="column" margin="0 20px 0 0">
+            <AccountBalanceTitle>Total balance</AccountBalanceTitle>
+            <AccountBalance>
+              {account.currency}&nbsp;
+              {account.balance}
+            </AccountBalance>
           </FlexContainer>
-        )}
+          <FlexContainer flexDirection="column" margin="0 20px 0 0">
+            <AccountNameTitle>Account id</AccountNameTitle>
+            <AccountName>{account.id}</AccountName>
+          </FlexContainer>
+          <FlexContainer flexDirection="column">
+            <AccountNameTitle>Leverage</AccountNameTitle>
+            <AccountLeverage>{account.leverage}</AccountLeverage>
+          </FlexContainer>
+        </FlexContainer>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" padding="20px">
         <FlexContainer flexDirection="column" width="100%">
@@ -172,9 +258,9 @@ function Dashboard(props: Props) {
             <FlexContainer>{renderTabType()}</FlexContainer>
           </FlexContainer>
         </FlexContainer>
-        <FlexContainer flexDirection="column" margin="0 0 20px">
-          {account &&
-            account.instruments.map(instrument => (
+        <FlexContainer flexDirection="column" margin="0 0 20px" width="400px">
+          {instruments.length > 0 &&
+            instruments.map(instrument => (
               <AccordionItem key={instrument.id} title={instrument.name}>
                 <OpenPosition
                   quoteName={instrument.quote}
@@ -187,7 +273,7 @@ function Dashboard(props: Props) {
       </FlexContainer>
       <FlexContainer justifyContent="center"></FlexContainer>
     </FlexContainer>
-  );
+  ) : null;
 }
 
 export default Dashboard;

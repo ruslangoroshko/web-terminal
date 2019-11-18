@@ -1,15 +1,15 @@
 import axios from 'axios';
 import {
   OpenPositionModel,
-  OpenPositionResponseModel,
+  OpenPositionResponseDTO,
   ClosePositionModel,
 } from '../types/Positions';
 import API_LIST from './apiList';
-import { AccountModel } from '../types/Accounts';
+import { AccountModelDTO } from '../types/Accounts';
 
 class API {
   openPosition = async (position: OpenPositionModel) => {
-    const response = await axios.post<OpenPositionResponseModel>(
+    const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.POSITIONS.OPEN}`,
       position
     );
@@ -17,7 +17,7 @@ class API {
   };
 
   closePosition = async (position: ClosePositionModel) => {
-    const response = await axios.post<OpenPositionResponseModel>(
+    const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.POSITIONS.CLOSE}`,
       position
     );
@@ -25,14 +25,14 @@ class API {
   };
 
   getAccounts = async () => {
-    const response = await axios.get<AccountModel[]>(
+    const response = await axios.get<AccountModelDTO[]>(
       `${API_STRING}${API_LIST.ACCOUNTS.GET_ACCOUNTS}`
     );
     return response.data;
   };
 
   getAccountById = async (id: number) => {
-    const response = await axios.get<AccountModel>(
+    const response = await axios.get<AccountModelDTO>(
       `${API_STRING}${API_LIST.ACCOUNTS.GET_ACCOUNT_BY_ID}`,
       {
         params: {

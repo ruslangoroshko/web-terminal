@@ -24,7 +24,7 @@ const AccordionItem: FC<Props> = props => {
   }
 
   return (
-    <FlexContainer flexDirection="column">
+    <FlexContainer flexDirection="column" width="100%">
       <AccordionButton isActive={isActive} onClick={toggleAccordion}>
         <Title>{title}</Title>
         {/* <Chevron className={`${setRotate}`} width={10} fill={'#777'} /> */}

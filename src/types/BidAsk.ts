@@ -1,11 +1,11 @@
-export interface BidAskModel {
+export interface BidAskModelDTO {
   ask: number;
   bid: number;
   dt: string;
   id: string;
 }
 
-export interface ResponseFromWebsocket<T> {
-    data: T[];
-    now: string;
+export interface BidAskViewModel extends BidAskModelDTO {
+  growth: number;
+  prevGrowth: number;
 }
