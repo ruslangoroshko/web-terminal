@@ -1,4 +1,4 @@
 ﻿/node_modules
 /.git
 /wwwroot
-.vs/slnx.sqlite
+/.vs
