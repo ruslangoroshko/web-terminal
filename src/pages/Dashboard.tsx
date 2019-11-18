@@ -27,7 +27,6 @@ import { AccountModelWebSocketDTO } from '../types/Accounts';
 import { HubConnection } from '@aspnet/signalr';
 import { BidAskModelDTO } from '../types/BidAsk';
 import { PositionModelDTO } from '../types/Positions';
-import { ResponseFromWebsocket, BidAskModel } from '../types/BidAsk';
 
 interface Props {
   activeSession: HubConnection;
