@@ -99,18 +99,14 @@ function Dashboard(props: Props) {
     activeSession.on(
       Topics.ACTIVE_POSITIONS,
       (response: ResponseFromWebsocket<ActivePositionModelWSDTO>) => {
-        console.log(
-          'TCL: Dashboard -> ACTIVE_POSITIONS',
-          response.data[0].positions
-        );
         setActivePositions(response.data[0].positions);
       }
     );
 
     activeSession.on(
       Topics.UPDATE_ACCOUNT,
-      (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
-        setAccount(response.data[0]);
+      (response: any) => {
+        setAccount(response.data);
       }
     );
   }, []);
@@ -241,7 +237,7 @@ function Dashboard(props: Props) {
       <FlexContainer justifyContent="space-between" padding="20px">
         <FlexContainer flexDirection="column" width="100%">
           <FlexContainer margin="0 20px 20px 0">
-            <FlexContainer width="100%" height="600px">
+            <FlexContainer width="100%" height="500px">
               {activeInstrument && (
                 <TradingViewWidget
                   symbol={`FX:${activeInstrument.base}${activeInstrument.quote}`}
