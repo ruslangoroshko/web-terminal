@@ -26,7 +26,7 @@ import calculateGrowth from '../helpers/calculateGrowth';
 import { AccountModelWebSocketDTO } from '../types/Accounts';
 import { HubConnection } from '@aspnet/signalr';
 import { BidAskModelDTO } from '../types/BidAsk';
-import { PositionModelDTO } from '../types/Positions';
+import { PositionModelDTO, ActivePositionModelWSDTO } from '../types/Positions';
 import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
 import Fields from '../constants/fields';
 
@@ -59,21 +59,19 @@ function Dashboard(props: Props) {
     switch (tabType) {
       case TabType.ActivePositions:
         return (
-          <ul>
+          <List>
             {activePositions.map(pos => (
-              <li>
-                {pos.openDate}, TPSL:&nbsp;
-                {/* {calculateFloatingProfitAndLoss({
-                  costs: 0,
-                  openPrice: pos.openPrice,
-                  investment: account ? account.balance : 0,
-                  currentPrice: activeInstrument!.bidAsk!.ask,
-                  leverage: account!.leverage,
-                  side: 1,
-                })} */}
+              <li key={pos.id}>
+                {(Object.keys(pos) as Array<keyof typeof pos>).map(
+                  (key, index, arr) => (
+                    <Test key={key}>{`${key}: ${pos[key]}${
+                      index !== arr.length - 1 ? ' | ' : ''
+                    }`}</Test>
+                  )
+                )}
               </li>
             ))}
-          </ul>
+          </List>
         );
 
       case TabType.PendingOrders:
@@ -95,6 +93,24 @@ function Dashboard(props: Props) {
         activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: response.data[0].id,
         });
+      }
+    );
+
+    activeSession.on(
+      Topics.ACTIVE_POSITIONS,
+      (response: ResponseFromWebsocket<ActivePositionModelWSDTO>) => {
+        console.log(
+          'TCL: Dashboard -> ACTIVE_POSITIONS',
+          response.data[0].positions
+        );
+        setActivePositions(response.data[0].positions);
+      }
+    );
+
+    activeSession.on(
+      Topics.UPDATE_ACCOUNT,
+      (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
+        setAccount(response.data[0]);
       }
     );
   }, []);
@@ -148,16 +164,6 @@ function Dashboard(props: Props) {
       );
     }
   }, [activeInstrument]);
-
-  useEffect(() => {
-    activeSession.on(
-      Topics.POSITIONS,
-      (response: ResponseFromWebsocket<PositionModelDTO>) => {
-        console.log('TCL: Dashboard -> response', response);
-        setActivePositions(response.data);
-      }
-    );
-  }, []);
 
   return account ? (
     <FlexContainer
@@ -308,4 +314,8 @@ const TabButton = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
 
 const Test = styled.span`
   color: #fff;
+`;
+
+const List = styled.ul`
+  padding: 10px 0;
 `;

@@ -1,7 +1,7 @@
 const Topics = {
   BID_ASK: 'bidask',
   ACCOUNTS: 'accounts',
-  POSITION_OPENED: 'positionopened',
+  ACTIVE_POSITIONS: 'positionsactive',
   POSITION_CLOSED: 'positionclosed',
   UPDATE_ACCOUNT: 'updateaccount',
   INSTRUMENTS: 'instruments',

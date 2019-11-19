@@ -34,3 +34,8 @@ export interface ClosePositionModel {
   accountId: string;
   positionId: number;
 }
+
+export interface ActivePositionModelWSDTO {
+  accountId: string;
+  positions: PositionModelDTO[];
+}
