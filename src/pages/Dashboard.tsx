@@ -28,6 +28,7 @@ import { HubConnection } from '@aspnet/signalr';
 import { BidAskModelDTO } from '../types/BidAsk';
 import { PositionModelDTO } from '../types/Positions';
 import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
+import Fields from '../constants/fields';
 
 interface Props {
   activeSession: HubConnection;
@@ -92,7 +93,7 @@ function Dashboard(props: Props) {
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
         setAccount(response.data[0]);
         activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
-          accoundId: response.data[0].id,
+          [Fields.ACCOUNT_ID]: response.data[0].id,
         });
       }
     );
