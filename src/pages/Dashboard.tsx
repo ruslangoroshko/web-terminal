@@ -26,9 +26,14 @@ import calculateGrowth from '../helpers/calculateGrowth';
 import { AccountModelWebSocketDTO } from '../types/Accounts';
 import { HubConnection } from '@aspnet/signalr';
 import { BidAskModelDTO } from '../types/BidAsk';
-import { PositionModelDTO, ActivePositionModelWSDTO } from '../types/Positions';
+import {
+  PositionModelDTO,
+  ActivePositionModelWSDTO,
+  ClosePositionModel,
+} from '../types/Positions';
 import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
 import Fields from '../constants/fields';
+import API from '../helpers/API';
 
 interface Props {
   activeSession: HubConnection;
@@ -69,6 +74,14 @@ function Dashboard(props: Props) {
                     }`}</Test>
                   )
                 )}
+                <ButtonWithoutStyles
+                  onClick={closePosition({
+                    positionId: pos.id,
+                    accountId: pos.accountId,
+                  })}
+                >
+                  close Position
+                </ButtonWithoutStyles>
               </li>
             ))}
           </List>
@@ -83,6 +96,13 @@ function Dashboard(props: Props) {
       default:
         return null;
     }
+  };
+
+  const closePosition = ({
+    accountId,
+    positionId,
+  }: ClosePositionModel) => () => {
+    API.closePosition({ accountId, positionId });
   };
 
   useEffect(() => {
@@ -103,12 +123,9 @@ function Dashboard(props: Props) {
       }
     );
 
-    activeSession.on(
-      Topics.UPDATE_ACCOUNT,
-      (response: any) => {
-        setAccount(response.data);
-      }
-    );
+    activeSession.on(Topics.UPDATE_ACCOUNT, (response: any) => {
+      setAccount(response.data);
+    });
   }, []);
 
   useEffect(() => {
