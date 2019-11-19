@@ -27,6 +27,7 @@ import { AccountModelWebSocketDTO } from '../types/Accounts';
 import { HubConnection } from '@aspnet/signalr';
 import { BidAskModelDTO } from '../types/BidAsk';
 import { PositionModelDTO } from '../types/Positions';
+import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
 
 interface Props {
   activeSession: HubConnection;
@@ -59,7 +60,17 @@ function Dashboard(props: Props) {
         return (
           <ul>
             {activePositions.map(pos => (
-              <li>{pos.openDate}</li>
+              <li>
+                {pos.openDate}, TPSL:&nbsp;
+                {/* {calculateFloatingProfitAndLoss({
+                  costs: 0,
+                  openPrice: pos.openPrice,
+                  investment: account ? account.balance : 0,
+                  currentPrice: activeInstrument!.bidAsk!.ask,
+                  leverage: account!.leverage,
+                  side: 1,
+                })} */}
+              </li>
             ))}
           </ul>
         );
@@ -80,7 +91,7 @@ function Dashboard(props: Props) {
       Topics.ACCOUNTS,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
         setAccount(response.data[0]);
-        activeSession.send('accountId', {
+        activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
           accoundId: response.data[0].id,
         });
       }
