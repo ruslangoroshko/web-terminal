@@ -9,6 +9,7 @@ const Topics = {
   GROUPS: 'groups',
   POSITIONS: 'positions',
   FAIL: 'fail',
+  SET_ACTIVE_ACCOUNT: 'SetActiveAccount',
 };
 
 Object.freeze(Topics);
