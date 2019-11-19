@@ -77,7 +77,7 @@ function Dashboard(props: Props) {
                 <ButtonWithoutStyles
                   onClick={closePosition({
                     positionId: pos.id,
-                    accountId: pos.accountId,
+                    accountId: account!.id,
                   })}
                 >
                   close Position
