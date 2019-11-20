@@ -29,6 +29,7 @@ function Instrument({
   isActive,
 }: Props) {
   const { quotes } = useContext(QuotesContext);
+  // TODO: remove this typo hack
   const quote = quotes[instrument.id] as BidAskViewModel;
 
   const context = useContext(QuotesContext);
