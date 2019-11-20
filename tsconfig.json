@@ -13,7 +13,7 @@
     "alwaysStrict": true,
     "allowUnreachableCode": false,
     "noImplicitAny": true,
-    "noImplicitThis": true,
+    "noImplicitThis": false,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true

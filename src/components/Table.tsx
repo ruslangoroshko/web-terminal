@@ -54,6 +54,7 @@ const Table: FC<Props> = ({
             {headerGroup.headers.map(column => (
               <Th {...column.getHeaderProps()}>{column.render('Header')}</Th>
             ))}
+            <Th>Floating P&amp;L</Th>
           </tr>
         ))}
       </thead>
