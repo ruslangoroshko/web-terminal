@@ -15,7 +15,7 @@ function calculateFloatingProfitAndLoss({
   openPrice,
   side,
 }: FloatingPNL) {
-  return (currentPrice / openPrice - 1) * investment * leverage * side + costs;
+  return +((currentPrice / openPrice - 1) * investment * leverage * side + costs).toFixed(2);
 }
 
 export default calculateFloatingProfitAndLoss;

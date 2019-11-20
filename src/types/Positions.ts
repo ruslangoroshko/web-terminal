@@ -1,4 +1,5 @@
 import { TradeEngineOperationResult } from '../enums/TradeEngineOperationResult';
+import { AskBidEnum } from '../enums/AskBid';
 
 export interface OpenPositionModel {
   accountId: string;
@@ -18,16 +19,17 @@ export interface OpenPositionResponseDTO {
 
 export interface PositionModelDTO {
   id: number;
-  accountId: string;
-  instrument: string;
   volume: number;
   openPrice: number;
   openDate: string;
-  operation: number;
-  tp?: number;
-  sl?: number;
-  tpRate?: number;
-  slRate?: number;
+  instrument: string;
+  type: AskBidEnum;
+  swap: number;
+  comission: number;
+  takeProfitInCurrency?: number;
+  stopLossInCurrency?: number;
+  takeProfitRate?: number;
+  stopLossRate?: number;
 }
 
 export interface ClosePositionModel {

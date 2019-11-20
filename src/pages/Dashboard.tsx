@@ -34,6 +34,7 @@ import Fields from '../constants/fields';
 import API from '../helpers/API';
 import TradingGraph from '../components/TradingGraph';
 import Instrument from '../components/Instrument';
+import Table from '../components/Table';
 
 interface Props {
   activeSession: HubConnection;
@@ -65,28 +66,86 @@ function Dashboard(props: Props) {
   const renderTabType = () => {
     switch (tabType) {
       case TabType.ActivePositions:
+        const columns = [
+          {
+            accessor: 'id',
+            Header: 'Id',
+          },
+          {
+            accessor: 'volume',
+            Header: 'Volume',
+          },
+          {
+            accessor: 'openPrice',
+            Header: 'openPrice',
+          },
+          {
+            accessor: 'openDate',
+            Header: 'openDate',
+          },
+          {
+            accessor: 'instrument',
+            Header: 'instrument',
+          },
+          {
+            accessor: 'type',
+            Header: 'type',
+          },
+          {
+            accessor: 'swap',
+            Header: 'swap',
+          },
+          {
+            accessor: 'comission',
+            Header: 'comission',
+          },
+          {
+            accessor: 'takeProfitInCurrency',
+            Header: 'takeProfitInCurrency',
+          },
+          {
+            accessor: 'stopLossInCurrency',
+            Header: 'stopLossInCurrency',
+          },
+          {
+            accessor: 'takeProfitRate',
+            Header: 'takeProfitRate',
+          },
+          {
+            accessor: 'stopLossRate',
+            Header: 'stopLossRate',
+          },
+        ];
         return (
-          <List>
-            {activePositions.map(pos => (
-              <li key={pos.id}>
-                {(Object.keys(pos) as Array<keyof typeof pos>).map(
-                  (key, index, arr) => (
-                    <Test key={key}>{`${key}: ${pos[key]}${
-                      index !== arr.length - 1 ? ' | ' : ''
-                    }`}</Test>
-                  )
-                )}
-                <ButtonWithoutStyles
-                  onClick={closePosition({
-                    positionId: pos.id,
-                    accountId: account!.id,
-                  })}
-                >
-                  close Position
-                </ButtonWithoutStyles>
-              </li>
-            ))}
-          </List>
+          <Table
+            columns={columns}
+            data={activePositions}
+            closePosition={closePosition}
+            instrumentId={activeInstrument ? activeInstrument.id : ''}
+            balance={account!.balance}
+            leverage={account!.leverage}
+          ></Table>
+          // <List>
+          //   {activePositions.map(pos => (
+          //     <li key={pos.id}>
+          //       {(Object.keys(pos) as Array<keyof typeof pos>).map(
+          //         (key, index, arr) => (
+          //           <Test key={key}>{`${key}: ${pos[key]}${
+          //             index !== arr.length - 1 ? ' | ' : ''
+          //           }`}</Test>
+          //         )
+          //       )}
+          //       <ButtonWithoutStyles
+          //         onClick={closePosition({
+          //           positionId: pos.id,
+          //           accountId: account!.id,
+          //         })}
+          //       >
+          //         close Position
+          //       </ButtonWithoutStyles>
+          //     </li>
+          //   ))}
+          // </List>
         );
 
       case TabType.PendingOrders:
@@ -100,11 +159,8 @@ function Dashboard(props: Props) {
     }
   };
 
-  const closePosition = ({
-    accountId,
-    positionId,
-  }: ClosePositionModel) => () => {
-    API.closePosition({ accountId, positionId });
+  const closePosition = (positionId: number) => () => {
+    API.closePosition({ accountId: account!.id, positionId });
   };
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   QuotesFeedWrapper,
   CurrencyQuoteIcon,
@@ -13,6 +13,7 @@ import Topics from '../constants/websocketTopics';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { BidAskModelDTO } from '../types/BidAsk';
 import { HubConnection } from '@aspnet/signalr';
+import { QuotesContext } from '../store/QuotesProvider';
 
 interface Props {
   activeSession: HubConnection;
@@ -27,7 +28,10 @@ function Instrument({
   switchInstrument,
   isActive,
 }: Props) {
-  const [quote, setQuote] = useState<BidAskModelDTO>();
+  const { quotes } = useContext(QuotesContext);
+  const quote = quotes[instrument.id];
+
+  const context = useContext(QuotesContext);
 
   useEffect(() => {
     if (instrument) {
@@ -40,13 +44,12 @@ function Instrument({
 
           const newBidAsk = response.data[0];
           if (newBidAsk.id === instrument.id) {
-            setQuote(newBidAsk);
+            context.setQuote(newBidAsk);
           }
         }
       );
     }
   }, [instrument]);
-
   return (
     <QuotesFeedWrapper
       isActive={isActive}
