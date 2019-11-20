@@ -11,7 +11,7 @@ import { InstrumentModelDTO } from '../types/Instruments';
 import currencyIcon from '../assets/images/currency.png';
 import Topics from '../constants/websocketTopics';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
-import { BidAskModelDTO } from '../types/BidAsk';
+import { BidAskModelDTO, BidAskViewModel } from '../types/BidAsk';
 import { HubConnection } from '@aspnet/signalr';
 import { QuotesContext } from '../store/QuotesProvider';
 
@@ -29,7 +29,7 @@ function Instrument({
   isActive,
 }: Props) {
   const { quotes } = useContext(QuotesContext);
-  const quote = quotes[instrument.id];
+  const quote = quotes[instrument.id] as BidAskViewModel;
 
   const context = useContext(QuotesContext);
 
