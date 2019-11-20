@@ -9,3 +9,7 @@ export interface BidAskViewModel extends BidAskModelDTO {
   growth: number;
   prevGrowth: number;
 }
+
+export interface BidAskKeyValueList {
+  [key: string]: BidAskModelDTO;
+}

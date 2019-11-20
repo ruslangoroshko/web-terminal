@@ -7,10 +7,11 @@ export const MainAppConsumer = MainAppContext.Consumer;
 interface Props {}
 
 const MainAppProvider: FC<Props> = ({ children }) => {
-  const [state] = useState({});
-
+  const [state] = useState({})
   return (
-    <MainAppContext.Provider value={state}>{children}</MainAppContext.Provider>
+    <MainAppContext.Provider value={state}>
+      {children}
+    </MainAppContext.Provider>
   );
 };
 

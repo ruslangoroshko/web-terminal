@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
-import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 import {
   CurrencyQuoteIcon,
   CurrencyQuoteTitle,
@@ -12,7 +11,6 @@ import {
   AccountNameTitle,
   CurrencyQuoteInfo,
 } from '../styles/Pages/Dashboard';
-import currencyIcon from '../assets/images/currency.png';
 import OpenPosition from '../components/OpenPosition';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
@@ -34,6 +32,8 @@ import {
 import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
 import Fields from '../constants/fields';
 import API from '../helpers/API';
+import TradingGraph from '../components/TradingGraph';
+import Instrument from '../components/Instrument';
 
 interface Props {
   activeSession: HubConnection;
@@ -44,20 +44,22 @@ function Dashboard(props: Props) {
 
   const [tabType, setTabType] = useState(TabType.ActivePositions);
   const [account, setAccount] = useState<AccountModelWebSocketDTO>();
-  const [activeInstrument, setActiveInstrument] = useState<
-    InstrumentModelDTO
-  >();
-  const [instruments, setInstruments] = useState<InstrumentModelDTO[]>([]);
+
   const [activePositions, setActivePositions] = useState<PositionModelDTO[]>(
     []
   );
 
-  const switchTabType = (tabType: TabType) => () => {
-    setTabType(tabType);
-  };
+  const [activeInstrument, setActiveInstrument] = useState<
+    InstrumentModelDTO
+  >();
+  const [instruments, setInstruments] = useState<InstrumentModelDTO[]>([]);
 
   const switchInstrument = (instrument: InstrumentModelDTO) => () => {
     setActiveInstrument(instrument);
+  };
+
+  const switchTabType = (tabType: TabType) => () => {
+    setTabType(tabType);
   };
 
   const renderTabType = () => {
@@ -141,43 +143,6 @@ function Dashboard(props: Props) {
     );
   }, [account]);
 
-  useEffect(() => {
-    if (activeInstrument) {
-      activeSession.on(
-        Topics.BID_ASK,
-        (response: ResponseFromWebsocket<BidAskModelDTO>) => {
-          if (!response.data.length) {
-            return;
-          }
-          const newBidAsk = response.data[0];
-
-          setInstruments(instruments =>
-            instruments.map(instrument => {
-              if (instrument.id === newBidAsk.id) {
-                const growth = calculateGrowth(
-                  newBidAsk.bid,
-                  newBidAsk.ask,
-                  instrument.digits
-                );
-                return {
-                  ...instrument,
-                  bidAsk: {
-                    ...newBidAsk,
-                    prevGrowth: instrument.bidAsk
-                      ? instrument.bidAsk.growth
-                      : growth,
-                    growth,
-                  },
-                };
-              }
-              return instrument;
-            })
-          );
-        }
-      );
-    }
-  }, [activeInstrument]);
-
   return account ? (
     <FlexContainer
       width="100%"
@@ -195,43 +160,15 @@ function Dashboard(props: Props) {
           <FlexContainer alignItems="center" margin="0 30px 0 0">
             <img src={monfexLogo} alt="" width="100%" />
           </FlexContainer>
-          {instruments.length > 0 &&
-            instruments.map(instrument => (
-              <QuotesFeedWrapper
-                isActive={
-                  activeInstrument && instrument.id === activeInstrument.id
-                }
-                key={instrument.id}
-                padding="10px"
-                onClick={switchInstrument(instrument)}
-              >
-                <FlexContainer alignItems="center" justifyContent="center">
-                  <CurrencyQuoteIcon src={currencyIcon} />
-                </FlexContainer>
-                <FlexContainer flexDirection="column" width="160px">
-                  <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
-                  {instrument.bidAsk ? (
-                    <FlexContainer flexDirection="column">
-                      <CurrencyQuoteInfo
-                        isGrowth={
-                          instrument.bidAsk.growth >
-                          instrument.bidAsk.prevGrowth
-                        }
-                      >
-                        {instrument.bidAsk.ask} / {instrument.bidAsk.bid}
-                      </CurrencyQuoteInfo>
-                      <span style={{ color: '#fff' }}>
-                        {calculateGrowth(
-                          instrument.bidAsk.bid,
-                          instrument.bidAsk.ask,
-                          instrument.digits
-                        )}
-                      </span>
-                    </FlexContainer>
-                  ) : null}
-                </FlexContainer>
-              </QuotesFeedWrapper>
-            ))}
+          {instruments.map(item => (
+            <Instrument
+              isActive={activeInstrument && activeInstrument.id === item.id}
+              key={item.id}
+              activeSession={activeSession}
+              switchInstrument={switchInstrument}
+              instrument={item}
+            />
+          ))}
         </FlexContainer>
         <FlexContainer padding="0 20px" alignItems="center">
           <FlexContainer flexDirection="column" margin="0 20px 0 0">
@@ -256,11 +193,7 @@ function Dashboard(props: Props) {
           <FlexContainer margin="0 20px 20px 0">
             <FlexContainer width="100%" height="500px">
               {activeInstrument && (
-                <TradingViewWidget
-                  symbol={`FX:${activeInstrument.base}${activeInstrument.quote}`}
-                  theme={Themes.DARK}
-                  autosize
-                />
+                <TradingGraph activeInstrument={activeInstrument} />
               )}
             </FlexContainer>
           </FlexContainer>
@@ -289,16 +222,15 @@ function Dashboard(props: Props) {
           </FlexContainer>
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 0 20px" width="400px">
-          {instruments.length > 0 &&
-            instruments.map(instrument => (
-              <AccordionItem key={instrument.id} title={instrument.name}>
-                <OpenPosition
-                  quoteName={instrument.quote}
-                  accountId={account.id}
-                  instrumentId={instrument.id}
-                ></OpenPosition>
-              </AccordionItem>
-            ))}
+          {instruments.map(instrument => (
+            <AccordionItem key={instrument.id} title={instrument.name}>
+              <OpenPosition
+                quoteName={instrument.quote}
+                accountId={account.id}
+                instrumentId={instrument.id}
+              ></OpenPosition>
+            </AccordionItem>
+          ))}
         </FlexContainer>
       </FlexContainer>
       <FlexContainer justifyContent="center"></FlexContainer>
