@@ -24,6 +24,9 @@ function MainApp(props: Props) {
       setActiveSession(connection);
       setIsLoading(false);
     });
+    connection.onclose(error => {
+      console.log(error);
+    });
   };
 
   useEffect(() => {

@@ -38,7 +38,7 @@ function Instrument({
     if (instrument) {
       activeSession.on(
         Topics.BID_ASK,
-        (response: ResponseFromWebsocket<BidAskModelDTO>) => {
+        (response: ResponseFromWebsocket<BidAskModelDTO[]>) => {
           if (!response.data.length) {
             return;
           }

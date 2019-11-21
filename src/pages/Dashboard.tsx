@@ -14,7 +14,7 @@ import {
 import OpenPosition from '../components/OpenPosition';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
-import { InstrumentModelDTO } from '../types/Instruments';
+import { InstrumentModelDTO, InstrumentModelWSDTO } from '../types/Instruments';
 import AccordionItem from '../components/AccordionItem';
 import monfexLogo from '../assets/images/monfex-logo.png';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
@@ -166,7 +166,7 @@ function Dashboard(props: Props) {
   useEffect(() => {
     activeSession.on(
       Topics.ACCOUNTS,
-      (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
+      (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
         setAccount(response.data[0]);
         activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: response.data[0].id,
@@ -176,7 +176,7 @@ function Dashboard(props: Props) {
 
     activeSession.on(
       Topics.ACTIVE_POSITIONS,
-      (response: ResponseFromWebsocket<ActivePositionModelWSDTO>) => {
+      (response: ResponseFromWebsocket<ActivePositionModelWSDTO[]>) => {
         setActivePositions(response.data[0].positions);
       }
     );
@@ -187,16 +187,18 @@ function Dashboard(props: Props) {
   }, []);
 
   useEffect(() => {
-    activeSession.on(
-      Topics.INSTRUMENTS,
-      (response: ResponseFromWebsocket<InstrumentModelDTO>) => {
-        if (response.data.length) {
-          const instruments = response.data;
-          setInstruments(instruments);
-          setActiveInstrument(instruments[0]);
+    if (account) {
+      activeSession.on(
+        Topics.INSTRUMENTS,
+        (response: ResponseFromWebsocket<InstrumentModelWSDTO>) => {
+          if (response.data && response.data.accountId === account.id) {
+            const { instruments } = response.data;
+            setInstruments(instruments);
+            setActiveInstrument(instruments[0]);
+          }
         }
-      }
-    );
+      );
+    }
   }, [account]);
 
   return account ? (
