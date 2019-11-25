@@ -7,6 +7,7 @@ const API_LIST = {
     GET_ACCOUNTS: '/Accounts',
     GET_ACCOUNT_BY_ID: '/Accounts/ById',
     GET_HEADERS: '/Headers',
+    AUTHENTICATE: '/Accounts/Authenticate',
   },
 };
 

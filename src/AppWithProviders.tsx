@@ -7,9 +7,11 @@ interface Props {}
 
 const AppWithProviders: FC<Props> = () => {
   return (
-    <QuotesProvider>
-      <MainApp></MainApp>
-    </QuotesProvider>
+    <MainAppProvider>
+      <QuotesProvider>
+        <MainApp></MainApp>
+      </QuotesProvider>
+    </MainAppProvider>
   );
 };
 

@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import {
-  CurrencyQuoteIcon,
-  CurrencyQuoteTitle,
-  QuotesFeedWrapper,
   AccountName,
   AccountLeverage,
   AccountBalance,
   AccountBalanceTitle,
   AccountNameTitle,
-  CurrencyQuoteInfo,
 } from '../styles/Pages/Dashboard';
 import OpenPosition from '../components/OpenPosition';
 import styled from '@emotion/styled';
@@ -20,28 +16,18 @@ import monfexLogo from '../assets/images/monfex-logo.png';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { TabType } from '../enums/TabType';
 import Topics from '../constants/websocketTopics';
-import calculateGrowth from '../helpers/calculateGrowth';
 import { AccountModelWebSocketDTO } from '../types/Accounts';
-import { HubConnection } from '@aspnet/signalr';
-import { BidAskModelDTO } from '../types/BidAsk';
-import {
-  PositionModelDTO,
-  ActivePositionModelWSDTO,
-  ClosePositionModel,
-} from '../types/Positions';
-import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
+import { PositionModelDTO, ActivePositionModelWSDTO } from '../types/Positions';
 import Fields from '../constants/fields';
 import API from '../helpers/API';
 import TradingGraph from '../components/TradingGraph';
 import Instrument from '../components/Instrument';
 import Table from '../components/Table';
+import { MainAppContext } from '../store/MainAppProvider';
 
-interface Props {
-  activeSession: HubConnection;
-}
-
-function Dashboard(props: Props) {
-  const { activeSession } = props;
+function Dashboard() {
+  const { isLoading } = useContext(MainAppContext);
+  const { activeSession } = useContext(MainAppContext);
 
   const [tabType, setTabType] = useState(TabType.ActivePositions);
   const [account, setAccount] = useState<AccountModelWebSocketDTO>();
@@ -164,30 +150,32 @@ function Dashboard(props: Props) {
   };
 
   useEffect(() => {
-    activeSession.on(
-      Topics.ACCOUNTS,
-      (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
-        setAccount(response.data[0]);
-        activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: response.data[0].id,
-        });
-      }
-    );
+    if (activeSession) {
+      activeSession.on(
+        Topics.ACCOUNTS,
+        (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
+          setAccount(response.data[0]);
+          activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
+            [Fields.ACCOUNT_ID]: response.data[0].id,
+          });
+        }
+      );
 
-    activeSession.on(
-      Topics.ACTIVE_POSITIONS,
-      (response: ResponseFromWebsocket<ActivePositionModelWSDTO[]>) => {
-        setActivePositions(response.data[0].positions);
-      }
-    );
+      activeSession.on(
+        Topics.ACTIVE_POSITIONS,
+        (response: ResponseFromWebsocket<ActivePositionModelWSDTO[]>) => {
+          setActivePositions(response.data[0].positions);
+        }
+      );
 
-    activeSession.on(Topics.UPDATE_ACCOUNT, (response: any) => {
-      setAccount(response.data);
-    });
-  }, []);
+      activeSession.on(Topics.UPDATE_ACCOUNT, (response: any) => {
+        setAccount(response.data);
+      });
+    }
+  }, [activeSession]);
 
   useEffect(() => {
-    if (account) {
+    if (account && activeSession) {
       activeSession.on(
         Topics.INSTRUMENTS,
         (response: ResponseFromWebsocket<InstrumentModelWSDTO>) => {
@@ -201,7 +189,7 @@ function Dashboard(props: Props) {
     }
   }, [account]);
 
-  return account ? (
+  return !isLoading && account ? (
     <FlexContainer
       width="100%"
       height="100vh"
@@ -218,15 +206,16 @@ function Dashboard(props: Props) {
           <FlexContainer alignItems="center" margin="0 30px 0 0">
             <img src={monfexLogo} alt="" width="100%" />
           </FlexContainer>
-          {instruments.map(item => (
-            <Instrument
-              isActive={activeInstrument && activeInstrument.id === item.id}
-              key={item.id}
-              activeSession={activeSession}
-              switchInstrument={switchInstrument}
-              instrument={item}
-            />
-          ))}
+          {activeSession &&
+            instruments.map(item => (
+              <Instrument
+                isActive={activeInstrument && activeInstrument.id === item.id}
+                key={item.id}
+                activeSession={activeSession}
+                switchInstrument={switchInstrument}
+                instrument={item}
+              />
+            ))}
         </FlexContainer>
         <FlexContainer padding="0 20px" alignItems="center">
           <FlexContainer flexDirection="column" margin="0 20px 0 0">
@@ -317,8 +306,4 @@ const TabButton = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
 
 const Test = styled.span`
   color: #fff;
-`;
-
-const List = styled.ul`
-  padding: 10px 0;
 `;

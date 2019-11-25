@@ -6,6 +6,7 @@ import {
 } from '../types/Positions';
 import API_LIST from './apiList';
 import { AccountModelDTO } from '../types/Accounts';
+import { UserAuthenticate, UserAuthenticateResponse } from '../types/UserInfo';
 
 class API {
   openPosition = async (position: OpenPositionModel) => {
@@ -46,6 +47,14 @@ class API {
   getHeaders = async () => {
     const response = await axios.get<string[]>(
       `${API_STRING}${API_LIST.ACCOUNTS.GET_HEADERS}`
+    );
+    return response.data;
+  };
+
+  authenticate = async (credentials: UserAuthenticate) => {
+    const response = await axios.post<UserAuthenticateResponse>(
+      `${API_STRING}${API_LIST.ACCOUNTS.AUTHENTICATE}`,
+      credentials
     );
     return response.data;
   };
