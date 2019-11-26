@@ -24,6 +24,7 @@ import TradingGraph from '../components/TradingGraph';
 import Instrument from '../components/Instrument';
 import Table from '../components/Table';
 import { MainAppContext } from '../store/MainAppProvider';
+import TVChartContainer from '../containers/ChartContainer';
 
 function Dashboard() {
   const { isLoading } = useContext(MainAppContext);
@@ -240,7 +241,8 @@ function Dashboard() {
           <FlexContainer margin="0 20px 20px 0">
             <FlexContainer width="100%" height="500px">
               {activeInstrument && (
-                <TradingGraph activeInstrument={activeInstrument} />
+                // <TradingGraph activeInstrument={activeInstrument} />
+                <TVChartContainer />
               )}
             </FlexContainer>
           </FlexContainer>

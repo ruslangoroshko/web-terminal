@@ -26,7 +26,7 @@ const MainAppProvider: FC<Props> = ({ children }) => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
 
   const signIn = (credentials: UserAuthenticate) => {
-    API.authenticate(credentials).then(response => {
+    API.authenticate(credentials).then(async response => {
       // TODO: find out enums of response
       if (response.result !== -1) {
         setAuthorized(true);
