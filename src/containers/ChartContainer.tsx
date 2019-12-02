@@ -1,13 +1,14 @@
-import React, { FC, useEffect } from 'react';
-import Datafeed from '../vendor/index';
+import React, { FC, useEffect, useContext } from 'react';
+
 import {
   ChartingLibraryWidgetOptions,
   LanguageCode,
-  IChartingLibraryWidget,
   widget,
-  IBasicDataFeed,
 } from '../vendor/charting_library/charting_library.min';
 import { FlexContainer } from '../styles/FlexContainer';
+import { MainAppContext } from '../store/MainAppProvider';
+import DataFeedService from '../services/dataFeedService';
+import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 
 export interface ChartContainerProps {
   symbol: ChartingLibraryWidgetOptions['symbol'];
@@ -33,11 +34,12 @@ function getLanguageFromURL(): LanguageCode | null {
     : (decodeURIComponent(results[1].replace(/\+/g, ' ')) as LanguageCode);
 }
 
+const containerId = 'tv_chart_container';
+
 const defaultProps: ChartContainerProps = {
   symbol: 'Coinbase:BTC/USD',
-  interval: '1',
-  containerId: 'tv_chart_container',
-  //   datafeedUrl: 'https://demo_feed.tradingview.com',
+  interval: supportedResolutions[0],
+  containerId: containerId,
   library_path: CHARTING_LIBRARY_PATH,
   chartsStorageUrl: 'https://saveload.tradingview.com',
   chartsStorageApiVersion: '1.1',
@@ -48,17 +50,22 @@ const defaultProps: ChartContainerProps = {
   studiesOverrides: {},
 };
 
-const ChartContainer: FC<Partial<ChartContainerProps>> = () => {
+interface IProps {
+  intrumentId: string;
+}
+
+const ChartContainer: FC<IProps> = ({ intrumentId }) => {
+  const { activeSession } = useContext(MainAppContext);
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: defaultProps.symbol,
       // BEWARE: no trailing slash is expected in feed URL
       // tslint:disable-next-line:no-any
-      datafeed: Datafeed as IBasicDataFeed,
+      datafeed: new DataFeedService(activeSession!, intrumentId),
       interval: defaultProps.interval,
       container_id: defaultProps.containerId,
       library_path: defaultProps.library_path,
-
+      // toolbar_bg: '#131722',
       locale: getLanguageFromURL() || 'en',
       disabled_features: ['use_localstorage_for_settings'],
       enabled_features: ['study_templates'],
@@ -83,22 +90,21 @@ const ChartContainer: FC<Partial<ChartContainerProps>> = () => {
 
     let tvWidget = new widget(widgetOptions);
 
-    tvWidget.onChartReady(() => {
-      tvWidget.headerReady().then(() => {
-        const button = tvWidget.createButton();
-        button.setAttribute('title', 'Click to show a notification popup');
-        button.classList.add('apply-common-tooltip');
-        button.addEventListener('click', () =>
-          tvWidget.showNoticeDialog({
-            title: 'Notification',
-            body: 'TradingView Charting Library API works correctly',
-            callback: () => {
-              console.log('Noticed!');
-            },
-          })
-        );
-        button.innerHTML = 'Check API';
-      });
+    tvWidget.onChartReady(async () => {
+      await tvWidget.headerReady();
+      const button = tvWidget.createButton();
+      button.setAttribute('title', 'Click to show a notification popup');
+      button.classList.add('apply-common-tooltip');
+      button.addEventListener('click', () =>
+        tvWidget.showNoticeDialog({
+          title: 'Notification',
+          body: 'TradingView Charting Library API works correctly',
+          callback: () => {
+            console.log('Noticed!');
+          },
+        })
+      );
+      button.innerHTML = 'Check API';
     });
     return () => {
       tvWidget.remove();

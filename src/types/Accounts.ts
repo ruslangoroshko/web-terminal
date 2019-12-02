@@ -11,8 +11,5 @@ export interface AccountModelDTO {
 export interface AccountModelWebSocketDTO {
   id: string;
   balance: number;
-  leverage: number;
   currency: string;
-  bonus: number;
-  group: string;
 }

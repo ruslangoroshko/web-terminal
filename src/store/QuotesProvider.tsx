@@ -1,10 +1,10 @@
 import React, { useState, FC } from 'react';
-import { BidAskKeyValueList, BidAskModelDTO } from '../types/BidAsk';
+import { BidAskKeyValueList, BidAskModelWSDTO } from '../types/BidAsk';
 import throttle from '../helpers/throttle';
 
 interface ContextProps {
   quotes: BidAskKeyValueList;
-  setQuote: (quote: BidAskModelDTO) => void;
+  setQuote: (quote: BidAskModelWSDTO) => void;
 }
 
 export const QuotesContext = React.createContext<ContextProps>(

@@ -10,7 +10,7 @@ interface IProps {
 type Props = IProps;
 
 function RouteWrapper(props: Props) {
-  const { component: Component } = props;
+  const { component: Component, ...otherProps } = props;
   const { isAuthorized } = useContext(MainAppContext);
   const location = useLocation();
   if (isAuthorized && location.pathname === Page.SIGN_IN) {
@@ -20,7 +20,7 @@ function RouteWrapper(props: Props) {
   }
 
   return (
-    <Route {...props} render={routeProps => <Component {...routeProps} />} />
+    <Route {...otherProps} render={routeProps => <Component {...routeProps} />} />
   );
 }
 

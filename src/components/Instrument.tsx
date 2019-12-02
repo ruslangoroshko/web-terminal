@@ -11,9 +11,10 @@ import { InstrumentModelDTO } from '../types/Instruments';
 import currencyIcon from '../assets/images/currency.png';
 import Topics from '../constants/websocketTopics';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
-import { BidAskModelDTO, BidAskViewModel } from '../types/BidAsk';
+import { BidAskModelWSDTO } from '../types/BidAsk';
 import { HubConnection } from '@aspnet/signalr';
 import { QuotesContext } from '../store/QuotesProvider';
+import { AskBidEnum } from '../enums/AskBid';
 
 interface Props {
   activeSession: HubConnection;
@@ -30,7 +31,7 @@ function Instrument({
 }: Props) {
   const { quotes } = useContext(QuotesContext);
   // TODO: remove this typo hack
-  const quote = quotes[instrument.id] as BidAskViewModel;
+  const quote = quotes[instrument.id];
 
   const context = useContext(QuotesContext);
 
@@ -38,7 +39,7 @@ function Instrument({
     if (instrument) {
       activeSession.on(
         Topics.BID_ASK,
-        (response: ResponseFromWebsocket<BidAskModelDTO[]>) => {
+        (response: ResponseFromWebsocket<BidAskModelWSDTO[]>) => {
           if (!response.data.length) {
             return;
           }
@@ -65,11 +66,11 @@ function Instrument({
         <FlexContainer flexDirection="column">
           {quote && (
             <>
-              <CurrencyQuoteInfo isGrowth={quote.growth > quote.prevGrowth}>
+              <CurrencyQuoteInfo isGrowth={quote.dir === AskBidEnum.Buy}>
                 {quote.ask} / {quote.bid}
               </CurrencyQuoteInfo>
               <span style={{ color: '#fff' }}>
-                {calculateGrowth(quote.bid, quote.ask, instrument.digits)}
+                {calculateGrowth(quote.bid.c, quote.ask.c, instrument.digits)}
               </span>
             </>
           )}

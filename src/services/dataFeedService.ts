@@ -1,5 +1,3 @@
-import historyProvider from './historyProvider';
-import stream from './stream';
 import {
   OnReadyCallback,
   SearchSymbolsCallback,
@@ -7,45 +5,51 @@ import {
   ErrorCallback,
   LibrarySymbolInfo,
   ResolutionString,
+  HistoryCallback,
   SubscribeBarsCallback,
   ResolutionBackValues,
   GetMarksCallback,
   Mark,
   TimescaleMark,
   ServerTimeCallback,
-  HistoryCallback,
-} from './charting_library/charting_library.min';
+  IBasicDataFeed,
+  HistoryDepth,
+} from '../vendor/charting_library/charting_library.min';
 
-const supportedResolutions: ResolutionString[] = [
-  '1',
-  '3',
-  '5',
-  '15',
-  '30',
-  '60',
-  '120',
-  '240',
-  'D',
-];
+import historyProvider from './historyProvider';
 
-const config = {
-  supported_resolutions: supportedResolutions,
-};
+import StreamingService from './streamingService';
+import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
+import { HubConnection } from '@aspnet/signalr';
 
-export default {
-  onReady: (callback: OnReadyCallback) => {
+class DataFeedService implements IBasicDataFeed {
+  static config = {
+    supported_resolutions: supportedResolutions,
+  };
+
+  activeSession: HubConnection;
+  stream: StreamingService;
+  instrumentId: string;
+
+  constructor(activeSession: HubConnection, instrumentId: string) {
+    this.activeSession = activeSession;
+    this.instrumentId = instrumentId;
+    this.stream = new StreamingService(this.activeSession);
+  }
+
+  onReady = (callback: OnReadyCallback) => {
     console.log('=====onReady running');
-    setTimeout(() => callback(config), 0);
-  },
-  searchSymbols: (
+    setTimeout(() => callback(DataFeedService.config), 0);
+  };
+  searchSymbols = (
     userInput: string,
     exchange: string,
     symbolType: string,
     onResult: SearchSymbolsCallback
   ) => {
     console.log('====Search Symbols running');
-  },
-  resolveSymbol: (
+  };
+  resolveSymbol = (
     symbolName: string,
     onResolve: ResolveCallback,
     onError: ErrorCallback
@@ -83,40 +87,35 @@ export default {
     }, 0);
 
     // onResolveErrorCallback('Not feeling it today')
-  },
-  getBars: function(
+  };
+  getBars = async (
     symbolInfo: LibrarySymbolInfo,
     resolution: ResolutionString,
     rangeStartDate: number,
     rangeEndDate: number,
     onResult: HistoryCallback,
-    onError: ErrorCallback,
-    isFirstCall: boolean
-  ) {
+    onError: ErrorCallback
+  ) => {
     console.log('=====getBars running');
-    // console.log('function args',arguments)
-    // console.log(`Requesting bars between ${new Date(from * 1000).toISOString()} and ${new Date(to * 1000).toISOString()}`)
-    historyProvider
-      .getBars(
-        symbolInfo,
+
+    try {
+      const bars = await historyProvider.getBars(
         resolution,
         rangeStartDate,
         rangeEndDate,
-        isFirstCall
-      )
-      .then(bars => {
-        if (bars.length) {
-          onResult(bars, { noData: false });
-        } else {
-          onResult(bars, { noData: true });
-        }
-      })
-      .catch(err => {
-        console.log({ err });
-        onError(err);
-      });
-  },
-  subscribeBars: (
+        this.instrumentId
+      );
+      if (bars.length) {
+        onResult(bars, { noData: false });
+      } else {
+        onResult(bars, { noData: true });
+      }
+    } catch (err) {
+      console.log(err);
+      onError(err);
+    }
+  };
+  subscribeBars = (
     symbolInfo: LibrarySymbolInfo,
     resolution: ResolutionString,
     onTick: SubscribeBarsCallback,
@@ -124,20 +123,20 @@ export default {
     onResetCacheNeededCallback: () => void
   ) => {
     console.log('=====subscribeBars runnning');
-    stream.subscribeBars(
+    this.stream.subscribeBars(
       symbolInfo,
       resolution,
       onTick,
       listenerGuid,
       onResetCacheNeededCallback
     );
-  },
-  unsubscribeBars: (subscriberUID: string) => {
+  };
+  unsubscribeBars = (subscriberUID: string) => {
     console.log('=====unsubscribeBars running');
 
-    stream.unsubscribeBars(subscriberUID);
-  },
-  calculateHistoryDepth: (
+    this.stream.unsubscribeBars(subscriberUID);
+  };
+  calculateHistoryDepth = (
     resolution: ResolutionString,
     resolutionBack: ResolutionBackValues,
     intervalBack: number
@@ -146,11 +145,11 @@ export default {
     console.log('=====calculateHistoryDepth running');
     // while optional, this makes sure we request 24 hours of minute data at a time
     // CryptoCompare's minute data endpoint will throw an error if we request data beyond 7 days in the past, and return no data
-    return +resolution < 60
-      ? { resolutionBack: 'D', intervalBack: '1' }
-      : undefined;
-  },
-  getMarks: (
+    const historyDepth: HistoryDepth = { resolutionBack: 'D', intervalBack: 1 };
+
+    return +resolution < 60 ? historyDepth : undefined;
+  };
+  getMarks = (
     symbolInfo: LibrarySymbolInfo,
     from: number,
     to: number,
@@ -159,8 +158,8 @@ export default {
   ) => {
     //optional
     console.log('=====getMarks running');
-  },
-  getTimeScaleMarks: (
+  };
+  getTimeScaleMarks = (
     symbolInfo: LibrarySymbolInfo,
     from: number,
     to: number,
@@ -169,8 +168,10 @@ export default {
   ) => {
     //optional
     console.log('=====getTimeScaleMarks running');
-  },
-  getServerTime: (callback: ServerTimeCallback) => {
+  };
+  getServerTime = (callback: ServerTimeCallback) => {
     console.log('=====getServerTime running');
-  },
-};
+  };
+}
+
+export default DataFeedService;

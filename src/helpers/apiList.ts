@@ -9,6 +9,12 @@ const API_LIST = {
     GET_HEADERS: '/Headers',
     AUTHENTICATE: '/Accounts/Authenticate',
   },
+  TRADER: {
+    AUTHENTICATE: '/Trader/Authenticate',
+  },
+  PRICE_HISTORY: {
+    CANDLES: '/PriceHistory/Candles',
+  },
 };
 
 Object.freeze(API_LIST);

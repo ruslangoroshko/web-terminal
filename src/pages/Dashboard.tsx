@@ -20,7 +20,6 @@ import { AccountModelWebSocketDTO } from '../types/Accounts';
 import { PositionModelDTO, ActivePositionModelWSDTO } from '../types/Positions';
 import Fields from '../constants/fields';
 import API from '../helpers/API';
-import TradingGraph from '../components/TradingGraph';
 import Instrument from '../components/Instrument';
 import Table from '../components/Table';
 import { MainAppContext } from '../store/MainAppProvider';
@@ -110,7 +109,7 @@ function Dashboard() {
             closePosition={closePosition}
             instrumentId={activeInstrument ? activeInstrument.id : ''}
             balance={account!.balance}
-            leverage={account!.leverage}
+            leverage={activeInstrument!.leverage}
           ></Table>
           // <List>
           //   {activePositions.map(pos => (
@@ -230,10 +229,6 @@ function Dashboard() {
             <AccountNameTitle>Account id</AccountNameTitle>
             <AccountName>{account.id}</AccountName>
           </FlexContainer>
-          <FlexContainer flexDirection="column">
-            <AccountNameTitle>Leverage</AccountNameTitle>
-            <AccountLeverage>{account.leverage}</AccountLeverage>
-          </FlexContainer>
         </FlexContainer>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" padding="20px">
@@ -242,7 +237,7 @@ function Dashboard() {
             <FlexContainer width="100%" height="500px">
               {activeInstrument && (
                 // <TradingGraph activeInstrument={activeInstrument} />
-                <TVChartContainer />
+                <TVChartContainer intrumentId={activeInstrument.id} />
               )}
             </FlexContainer>
           </FlexContainer>

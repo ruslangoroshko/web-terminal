@@ -7,8 +7,17 @@ import {
 import API_LIST from './apiList';
 import { AccountModelDTO } from '../types/Accounts';
 import { UserAuthenticate, UserAuthenticateResponse } from '../types/UserInfo';
+import { HistoryCandlesType, CandleDTO } from '../types/HistoryTypes';
 
 class API {
+  convertParamsToFormData = (params: any) => {
+    const formData = new FormData();
+    Object.keys(params).forEach(key => {
+      formData.append(key, params[key]);
+    });
+    return formData;
+  };
+
   openPosition = async (position: OpenPositionModel) => {
     const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.POSITIONS.OPEN}`,
@@ -53,10 +62,27 @@ class API {
 
   authenticate = async (credentials: UserAuthenticate) => {
     const response = await axios.post<UserAuthenticateResponse>(
-      `${API_STRING}${API_LIST.ACCOUNTS.AUTHENTICATE}`,
+      `${API_STRING}${API_LIST.TRADER.AUTHENTICATE}`,
       credentials
     );
     return response.data;
+  };
+
+  getPriceHistory = async (params: HistoryCandlesType) => {
+    const response = await axios.get<CandleDTO[]>(
+      `${API_STRING}${API_LIST.PRICE_HISTORY.CANDLES}`,
+      {
+        params,
+      }
+    );
+    const bars = response.data.map(item => ({
+      time: item.d,
+      low: item.l,
+      high: item.h,
+      open: item.o,
+      close: item.c,
+    }));
+    return bars;
   };
 }
 

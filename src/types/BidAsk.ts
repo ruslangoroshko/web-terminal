@@ -1,15 +1,20 @@
-export interface BidAskModelDTO {
-  ask: number;
-  bid: number;
-  dt: string;
-  id: string;
-}
+import { AskBidEnum } from '../enums/AskBid';
 
-export interface BidAskViewModel extends BidAskModelDTO {
-  growth: number;
-  prevGrowth: number;
+export interface BidAskModelWSDTO {
+  id: string;
+  bid: HLOC;
+  ask: HLOC;
+  dt: number;
+  dir: AskBidEnum;
 }
 
 export interface BidAskKeyValueList {
-  [key: string]: BidAskModelDTO;
+  [key: string]: BidAskModelWSDTO;
+}
+
+export interface HLOC {
+  h: number;
+  l: number;
+  o: number;
+  c: number;
 }

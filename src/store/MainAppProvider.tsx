@@ -3,6 +3,7 @@ import { UserAuthenticate } from '../types/UserInfo';
 import API from '../helpers/API';
 import initConnection from '../services/websocketService';
 import { HubConnection } from '@aspnet/signalr';
+import Topics from '../constants/websocketTopics';
 
 interface ContextProps {
   token: string;
@@ -25,23 +26,21 @@ const MainAppProvider: FC<Props> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeSession, setActiveSession] = useState<HubConnection>();
 
-  const signIn = (credentials: UserAuthenticate) => {
-    API.authenticate(credentials).then(async response => {
-      // TODO: find out enums of response
-      if (response.result !== -1) {
-        setAuthorized(true);
-        setToken(response.data.token);
-        handleInitConnection(response.data.token);
-      }
-    });
+  const signIn = async (credentials: UserAuthenticate) => {
+    const response = await API.authenticate(credentials);
+    if (response.result !== -1) {
+      setAuthorized(true);
+      setToken(response.data.token);
+      handleInitConnection(response.data.token);
+    }
   };
 
-  const handleInitConnection = (token: string) => {
-    const connection = initConnection(WS_HOST, token);
-    connection.start().then(asd => {
-      setActiveSession(connection);
-      setIsLoading(false);
-    });
+  const handleInitConnection = async (token: string) => {
+    const connection = initConnection(WS_HOST);
+    await connection.start();
+    await connection.send(Topics.INIT, token);
+    setActiveSession(connection);
+    setIsLoading(false);
 
     connection.onclose(error => {
       console.log(error);
