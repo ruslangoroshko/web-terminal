@@ -67,7 +67,7 @@ function Instrument({
           {quote && (
             <>
               <CurrencyQuoteInfo isGrowth={quote.dir === AskBidEnum.Buy}>
-                {quote.ask} / {quote.bid}
+                {quote.ask.c} / {quote.bid.c}
               </CurrencyQuoteInfo>
               <span style={{ color: '#fff' }}>
                 {calculateGrowth(quote.bid.c, quote.ask.c, instrument.digits)}
