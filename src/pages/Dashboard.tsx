@@ -102,37 +102,37 @@ function Dashboard() {
             Header: 'stopLossRate',
           },
         ];
-        return (
+        return activeInstrument ? (
           <Table
             columns={columns}
             data={activePositions}
             closePosition={closePosition}
             instrumentId={activeInstrument ? activeInstrument.id : ''}
             balance={account!.balance}
-            leverage={activeInstrument!.leverage}
+            leverage={activeInstrument.leverage}
           ></Table>
-          // <List>
-          //   {activePositions.map(pos => (
-          //     <li key={pos.id}>
-          //       {(Object.keys(pos) as Array<keyof typeof pos>).map(
-          //         (key, index, arr) => (
-          //           <Test key={key}>{`${key}: ${pos[key]}${
-          //             index !== arr.length - 1 ? ' | ' : ''
-          //           }`}</Test>
-          //         )
-          //       )}
-          //       <ButtonWithoutStyles
-          //         onClick={closePosition({
-          //           positionId: pos.id,
-          //           accountId: account!.id,
-          //         })}
-          //       >
-          //         close Position
-          //       </ButtonWithoutStyles>
-          //     </li>
-          //   ))}
-          // </List>
-        );
+        ) : // <List>
+        //   {activePositions.map(pos => (
+        //     <li key={pos.id}>
+        //       {(Object.keys(pos) as Array<keyof typeof pos>).map(
+        //         (key, index, arr) => (
+        //           <Test key={key}>{`${key}: ${pos[key]}${
+        //             index !== arr.length - 1 ? ' | ' : ''
+        //           }`}</Test>
+        //         )
+        //       )}
+        //       <ButtonWithoutStyles
+        //         onClick={closePosition({
+        //           positionId: pos.id,
+        //           accountId: account!.id,
+        //         })}
+        //       >
+        //         close Position
+        //       </ButtonWithoutStyles>
+        //     </li>
+        //   ))}
+        // </List>
+        null;
 
       case TabType.PendingOrders:
         return <Test>PendingOrders</Test>;
