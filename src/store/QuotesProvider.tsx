@@ -17,14 +17,14 @@ interface Props {}
 
 const QuotesProvider: FC<Props> = ({ children }) => {
   const [quotes, setQuotes] = useState<BidAskKeyValueList>({});
-  const setQuoteByThrottle = throttle(quote => {
+  const setQuote = (quote: BidAskModelWSDTO) => {
     setQuotes(prevQuotes => ({
       ...prevQuotes,
       [quote.id]: quote,
     }));
-  }, 200);
+  };
   return (
-    <QuotesContext.Provider value={{ quotes, setQuote: setQuoteByThrottle }}>
+    <QuotesContext.Provider value={{ quotes, setQuote }}>
       {children}
     </QuotesContext.Provider>
   );
