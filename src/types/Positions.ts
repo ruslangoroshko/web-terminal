@@ -5,7 +5,8 @@ export interface OpenPositionModel {
   accountId: string;
   instrumentId: string;
   operation: number;
-  volume?: number;
+  amount: number;
+  multiplier: number;
   tp?: number;
   sl?: number;
   tpRate?: number;
@@ -19,7 +20,7 @@ export interface OpenPositionResponseDTO {
 
 export interface PositionModelDTO {
   id: number;
-  volume: number;
+  amount: number;
   openPrice: number;
   openDate: string;
   instrument: string;

@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
-import { InstrumentModelDTO } from '../types/Instruments';
+import { InstrumentModelWSDTO } from '../types/Instruments';
 
 interface Props {
-  activeInstrument: InstrumentModelDTO;
+  activeInstrument: InstrumentModelWSDTO;
 }
 
 function TradingGraph(props: Props) {

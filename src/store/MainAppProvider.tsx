@@ -1,17 +1,19 @@
 import React, { useState, FC, useEffect } from 'react';
-import { UserAuthenticate } from '../types/UserInfo';
+import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
 import API from '../helpers/API';
 import initConnection from '../services/websocketService';
 import { HubConnection } from '@aspnet/signalr';
 import Topics from '../constants/websocketTopics';
 import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import Axios from 'axios';
+import RequestHeaders from '../constants/headers';
 
 interface ContextProps {
   token: string;
   isAuthorized: boolean;
   signIn: (credentials: UserAuthenticate) => Promise<unknown>;
-  signUp: (credentials: UserAuthenticate) => Promise<unknown>;
+  signUp: (credentials: UserRegistration) => Promise<unknown>;
   activeSession: HubConnection | undefined;
   isLoading: boolean;
 }
@@ -52,7 +54,7 @@ const MainAppProvider: FC<Props> = ({ children }) => {
       }
     });
 
-  const signUp = (credentials: UserAuthenticate) =>
+  const signUp = (credentials: UserRegistration) =>
     new Promise(async (resolve, reject) => {
       const response = await API.signUpNewTrader(credentials);
       if (
@@ -73,7 +75,10 @@ const MainAppProvider: FC<Props> = ({ children }) => {
     await connection.send(Topics.INIT, token);
     setActiveSession(connection);
     setIsLoading(false);
-
+    connection.on(Topics.UNAUTHORIZED, () => {
+      localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+      setAuthorized(false);
+    });
     connection.onclose(error => {
       console.log(error);
       handleInitConnection(token);
@@ -87,6 +92,10 @@ const MainAppProvider: FC<Props> = ({ children }) => {
       handleInitConnection(token);
     }
   }, [activeSession]);
+
+  useEffect(() => {
+    Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = token;
+  }, [token]);
   return (
     <MainAppContext.Provider
       value={{

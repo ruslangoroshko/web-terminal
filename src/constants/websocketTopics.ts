@@ -11,6 +11,7 @@ const Topics = {
   FAIL: 'fail',
   SET_ACTIVE_ACCOUNT: 'SetActiveAccount',
   INIT: 'init',
+  UNAUTHORIZED: 'unauthorized',
 };
 
 Object.freeze(Topics);

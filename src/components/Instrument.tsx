@@ -7,7 +7,7 @@ import {
 } from '../styles/Pages/Dashboard';
 import { FlexContainer } from '../styles/FlexContainer';
 import calculateGrowth from '../helpers/calculateGrowth';
-import { InstrumentModelDTO } from '../types/Instruments';
+import { InstrumentModelWSDTO } from '../types/Instruments';
 import currencyIcon from '../assets/images/currency.png';
 import Topics from '../constants/websocketTopics';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
@@ -18,8 +18,8 @@ import { AskBidEnum } from '../enums/AskBid';
 
 interface Props {
   activeSession: HubConnection;
-  switchInstrument: (arg0: InstrumentModelDTO) => () => void;
-  instrument: InstrumentModelDTO;
+  switchInstrument: (arg0: InstrumentModelWSDTO) => () => void;
+  instrument: InstrumentModelWSDTO;
   isActive?: boolean;
 }
 
@@ -30,9 +30,7 @@ function Instrument({
   isActive,
 }: Props) {
   const { quotes } = useContext(QuotesContext);
-  // TODO: remove this typo hack
   const quote = quotes[instrument.id];
-
   const context = useContext(QuotesContext);
 
   useEffect(() => {
@@ -64,16 +62,15 @@ function Instrument({
       <FlexContainer flexDirection="column" width="160px">
         <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
         <FlexContainer flexDirection="column">
-          {quote && (
-            <>
-              <CurrencyQuoteInfo isGrowth={quote.dir === AskBidEnum.Sell}>
-                {quote.ask.c} / {quote.bid.c}
-              </CurrencyQuoteInfo>
-              <span style={{ color: '#fff' }}>
-                {calculateGrowth(quote.bid.c, quote.ask.c, instrument.digits)}
-              </span>
-            </>
-          )}
+          <CurrencyQuoteInfo isGrowth={quote && quote.dir === AskBidEnum.Sell}>
+            {quote ? quote.ask.c : instrument.ask} /&nbsp;
+            {quote ? quote.bid.c : instrument.bid}
+          </CurrencyQuoteInfo>
+          {quote ? (
+            <span style={{ color: '#fff' }}>
+              {calculateGrowth(quote.bid.c, quote.ask.c, instrument.digits)}
+            </span>
+          ) : null}
         </FlexContainer>
       </FlexContainer>
     </QuotesFeedWrapper>

@@ -6,53 +6,60 @@ import API from '../helpers/API';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import * as yup from 'yup';
+import Fields from '../constants/fields';
+import { AskBidEnum } from '../enums/AskBid';
 
 interface Props {
   quoteName: string;
   accountId: OpenPositionModel['accountId'];
   instrumentId: OpenPositionModel['instrumentId'];
+  multiplier: OpenPositionModel['multiplier'];
 }
 
-enum OpenPositionOption {
-  Buy,
-  Sell,
+interface OpenModelRate {
+  slRate: OpenPositionModel['slRate'];
+  tpRate: OpenPositionModel['tpRate'];
+  amount: OpenPositionModel['amount'];
+  multiplier: OpenPositionModel['multiplier'];
+}
+
+interface OpenModel {
+  sl: OpenPositionModel['sl'];
+  tp: OpenPositionModel['tp'];
+  amount: OpenPositionModel['amount'];
+  multiplier: OpenPositionModel['multiplier'];
 }
 
 function OpenPosition(props: Props) {
-  const { quoteName, accountId, instrumentId } = props;
-
-  const validationSchema = yup.object().shape({
-    tp: yup
-      .string()
-      .nullable()
-      .required('Required take profit'),
-    sl: yup
-      .string()
-      .nullable()
-      .required('Required stop loss'),
-    volume: yup
-      .number()
-      .nullable()
-      .required('Required any value'),
-  });
+  const { quoteName, accountId, instrumentId, multiplier } = props;
+  const [isRate, setRate] = useState(false);
 
   const initialValues: OpenPositionModel = {
     accountId,
     instrumentId,
-    operation: 3,
+    operation: AskBidEnum.Buy,
+    multiplier,
+    amount: 0,
   };
+
+  const validationSchema = yup.object().shape<OpenModel | OpenModelRate>({
+    amount: yup.number().required('Required amount'),
+    multiplier: yup.number().required('Required amount'),
+    tp: yup.number(),
+    tpRate: yup.number(),
+    sl: yup.number(),
+    slRate: yup.number(),
+  });
 
   const handleOpenPosition = (values: OpenPositionModel, actions: any) => {
     actions.setSubmitting(false);
     API.openPosition({ ...values, operation: openPositionOption });
   };
 
-  const [openPositionOption, setOpenPositionOption] = useState(
-    OpenPositionOption.Buy
-  );
+  const [openPositionOption, setOpenPositionOption] = useState(AskBidEnum.Buy);
 
   const switchOpenPositionOption = (
-    newOpenPositionOption: OpenPositionOption
+    newOpenPositionOption: AskBidEnum
   ) => () => {
     setOpenPositionOption(newOpenPositionOption);
   };
@@ -70,27 +77,27 @@ function OpenPosition(props: Props) {
               <FlexContainer margin="0 0 10px">
                 <BuyButton
                   type="button"
-                  isActive={openPositionOption === OpenPositionOption.Buy}
-                  onClick={switchOpenPositionOption(OpenPositionOption.Buy)}
+                  isActive={openPositionOption === AskBidEnum.Buy}
+                  onClick={switchOpenPositionOption(AskBidEnum.Buy)}
                 >
                   Buy
                 </BuyButton>
                 <SellButton
                   type="button"
-                  isActive={openPositionOption === OpenPositionOption.Sell}
-                  onClick={switchOpenPositionOption(OpenPositionOption.Sell)}
+                  isActive={openPositionOption === AskBidEnum.Sell}
+                  onClick={switchOpenPositionOption(AskBidEnum.Sell)}
                 >
                   Sell
                 </SellButton>
               </FlexContainer>
-              <Field type="text" name="volume">
-                {({ field, form, meta }: FieldProps) => (
+              <Field type="text" name={Fields.AMOUNT}>
+                {({ field, meta }: FieldProps) => (
                   <FlexContainer
                     flexDirection="column"
                     position="relative"
-                    padding="0 0 20px 0"
+                    padding="0 0 4px 0"
                   >
-                    <InputLabel>Volume</InputLabel>
+                    <InputLabel>Amount</InputLabel>
                     <Input
                       type="text"
                       {...field}
@@ -101,14 +108,35 @@ function OpenPosition(props: Props) {
                   </FlexContainer>
                 )}
               </Field>
-              <FlexContainer justifyContent="space-between" margin="0 0 20px">
-                <Field type="text" name="tp">
-                  {({ field, form, meta }: FieldProps) => (
+              <Field type="text" name={Fields.MULTIPLIER}>
+                {({ field, meta }: FieldProps) => (
+                  <FlexContainer
+                    flexDirection="column"
+                    position="relative"
+                    padding="0 0 4px 0"
+                  >
+                    <InputLabel>Multiplier</InputLabel>
+                    <Input
+                      type="text"
+                      {...field}
+                      value={field.value || ''}
+                      disabled
+                    />
+                    <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
+                  </FlexContainer>
+                )}
+              </Field>
+              <FlexContainer justifyContent="space-between" margin="0 0 4px">
+                <Field
+                  type="text"
+                  name={isRate ? Fields.TAKE_PROFIT_RATE : Fields.TAKE_PROFIT}
+                >
+                  {({ field, meta }: FieldProps) => (
                     <FlexContainer
                       flexDirection="column"
                       margin="0 10px 0 0"
                       position="relative"
-                      padding="0 0 20px 0"
+                      padding="0 0 4px 0"
                     >
                       <InputLabel>Take profit</InputLabel>
                       <Input
@@ -121,12 +149,15 @@ function OpenPosition(props: Props) {
                     </FlexContainer>
                   )}
                 </Field>
-                <Field type="text" name="sl">
-                  {({ field, form, meta }: FieldProps) => (
+                <Field
+                  type="text"
+                  name={isRate ? Fields.STOP_LOSS_RATE : Fields.STOP_LOSS}
+                >
+                  {({ field, meta }: FieldProps) => (
                     <FlexContainer
                       flexDirection="column"
                       position="relative"
-                      padding="0 0 20px 0"
+                      padding="0 0 4px 0"
                     >
                       <InputLabel>Stop loss</InputLabel>
                       <Input
@@ -142,10 +173,7 @@ function OpenPosition(props: Props) {
               </FlexContainer>
               <SubmitButton
                 type="submit"
-                disabled={
-                  //   !formikBag.touched ||
-                  !formikBag.isValid || formikBag.isSubmitting
-                }
+                disabled={!formikBag.isValid || formikBag.isSubmitting}
               >
                 Open {quoteName} position
               </SubmitButton>

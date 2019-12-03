@@ -1,5 +1,5 @@
 export interface UserAuthenticate {
-  email: string;
+  userName: string;
   password: string;
 }
 
@@ -7,7 +7,7 @@ export interface UserAuthenticate {
 export interface UserRegistration {
   email: string;
   password: string;
-  repeatPassword: string;
+  repeatPassword?: string;
 }
 
 export interface UserAuthenticateResponse {

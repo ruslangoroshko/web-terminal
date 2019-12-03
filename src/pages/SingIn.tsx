@@ -14,12 +14,12 @@ function SingIn(props: Props) {
   const {} = props;
 
   const validationSchema = yup.object().shape<UserAuthenticate>({
-    email: yup.string().required('Required any value'),
+    userName: yup.string().required('Required any value'),
     password: yup.string().required('Required any value'),
   });
 
   const initialValues: UserAuthenticate = {
-    email: '',
+    userName: '',
     password: '',
   };
 
@@ -43,7 +43,7 @@ function SingIn(props: Props) {
         {formikBag => (
           <CustomForm>
             <FlexContainer flexDirection="column">
-              <Field type="text" name={Fields.EMAIL}>
+              <Field type="text" name={Fields.USERNAME}>
                 {({ field, meta }: FieldProps) => (
                   <FlexContainer
                     position="relative"

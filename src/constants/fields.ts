@@ -4,6 +4,12 @@ const Fields = {
   EMAIL: 'email',
   PASSWORD: 'password',
   REPEAT_PASSWORD: 'repeatPassword',
+  TAKE_PROFIT: 'tp',
+  TAKE_PROFIT_RATE: 'tpRate',
+  STOP_LOSS: 'sl',
+  STOP_LOSS_RATE: 'slRate',
+  AMOUNT: 'amount',
+  MULTIPLIER: 'multiplier',
 };
 
 Object.freeze(Fields);

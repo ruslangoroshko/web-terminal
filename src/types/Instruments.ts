@@ -1,4 +1,4 @@
-export interface InstrumentModelDTO {
+export interface InstrumentModelWSDTO {
   id: string;
   name: string;
   digits: number;
@@ -7,13 +7,17 @@ export interface InstrumentModelDTO {
   dayOff: DayOff[];
   minOperationVolume: number;
   maxOperationVolume: number;
+  amountStepSize: number;
   maxPositionVolume: number;
+  multiplier: Multiplier;
   leverage: number;
+  bid?: number;
+  ask?: number;
 }
 
 export interface InstrumentModelWSDTO {
   accountId: string;
-  instruments: InstrumentModelDTO[];
+  instruments: InstrumentModelWSDTO[];
 }
 
 interface DayOff {
@@ -21,4 +25,14 @@ interface DayOff {
   timeFrom: string;
   dowTo: string;
   timeTo: string;
+}
+
+interface Multiplier {
+  length: number;
+  longLength: number;
+  rank: number;
+  syncRoot: {};
+  isReadOnly: boolean;
+  isFixedSize: boolean;
+  isSynchronized: boolean;
 }

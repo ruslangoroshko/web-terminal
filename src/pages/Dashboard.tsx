@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import {
   AccountName,
-  AccountLeverage,
   AccountBalance,
   AccountBalanceTitle,
   AccountNameTitle,
@@ -10,7 +9,6 @@ import {
 import OpenPosition from '../components/OpenPosition';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
-import { InstrumentModelDTO, InstrumentModelWSDTO } from '../types/Instruments';
 import AccordionItem from '../components/AccordionItem';
 import monfexLogo from '../assets/images/monfex-logo.png';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
@@ -24,6 +22,7 @@ import Instrument from '../components/Instrument';
 import Table from '../components/Table';
 import { MainAppContext } from '../store/MainAppProvider';
 import TVChartContainer from '../containers/ChartContainer';
+import { InstrumentModelWSDTO } from '../types/Instruments';
 
 function Dashboard() {
   const { isLoading } = useContext(MainAppContext);
@@ -37,11 +36,11 @@ function Dashboard() {
   );
 
   const [activeInstrument, setActiveInstrument] = useState<
-    InstrumentModelDTO
+    InstrumentModelWSDTO
   >();
-  const [instruments, setInstruments] = useState<InstrumentModelDTO[]>([]);
+  const [instruments, setInstruments] = useState<InstrumentModelWSDTO[]>([]);
 
-  const switchInstrument = (instrument: InstrumentModelDTO) => () => {
+  const switchInstrument = (instrument: InstrumentModelWSDTO) => () => {
     setActiveInstrument(instrument);
   };
 
@@ -111,28 +110,7 @@ function Dashboard() {
             balance={account!.balance}
             leverage={activeInstrument.leverage}
           ></Table>
-        ) : // <List>
-        //   {activePositions.map(pos => (
-        //     <li key={pos.id}>
-        //       {(Object.keys(pos) as Array<keyof typeof pos>).map(
-        //         (key, index, arr) => (
-        //           <Test key={key}>{`${key}: ${pos[key]}${
-        //             index !== arr.length - 1 ? ' | ' : ''
-        //           }`}</Test>
-        //         )
-        //       )}
-        //       <ButtonWithoutStyles
-        //         onClick={closePosition({
-        //           positionId: pos.id,
-        //           accountId: account!.id,
-        //         })}
-        //       >
-        //         close Position
-        //       </ButtonWithoutStyles>
-        //     </li>
-        //   ))}
-        // </List>
-        null;
+        ) : null;
 
       case TabType.PendingOrders:
         return <Test>PendingOrders</Test>;
@@ -272,6 +250,10 @@ function Dashboard() {
                 quoteName={instrument.quote}
                 accountId={account.id}
                 instrumentId={instrument.id}
+                multiplier={
+                  instrument.multiplier.longLength ||
+                  instrument.multiplier.length
+                }
               ></OpenPosition>
             </AccordionItem>
           ))}

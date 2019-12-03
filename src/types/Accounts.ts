@@ -1,11 +1,11 @@
-import { InstrumentModelDTO } from './Instruments';
+import { InstrumentModelWSDTO } from './Instruments';
 
 export interface AccountModelDTO {
   id: string;
   balance: number;
   leverage: number;
   currency: string;
-  instruments: InstrumentModelDTO[];
+  instruments: InstrumentModelWSDTO[];
 }
 
 export interface AccountModelWebSocketDTO {

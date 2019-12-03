@@ -6,7 +6,11 @@ import {
 } from '../types/Positions';
 import API_LIST from './apiList';
 import { AccountModelDTO } from '../types/Accounts';
-import { UserAuthenticate, UserAuthenticateResponse } from '../types/UserInfo';
+import {
+  UserAuthenticate,
+  UserAuthenticateResponse,
+  UserRegistration,
+} from '../types/UserInfo';
 import { HistoryCandlesType, CandleDTO } from '../types/HistoryTypes';
 
 class API {
@@ -68,14 +72,13 @@ class API {
     return response.data;
   };
 
-  signUpNewTrader = async (credentials: UserAuthenticate) => {
+  signUpNewTrader = async (credentials: UserRegistration) => {
     const response = await axios.post<UserAuthenticateResponse>(
       `${API_STRING}${API_LIST.TRADER.REGISTER}`,
       credentials
     );
     return response.data;
   };
-
 
   getPriceHistory = async (params: HistoryCandlesType) => {
     const response = await axios.get<CandleDTO[]>(
