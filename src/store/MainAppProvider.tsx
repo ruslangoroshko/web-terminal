@@ -1,9 +1,10 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useEffect } from 'react';
 import { UserAuthenticate } from '../types/UserInfo';
 import API from '../helpers/API';
 import initConnection from '../services/websocketService';
 import { HubConnection } from '@aspnet/signalr';
 import Topics from '../constants/websocketTopics';
+import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
 
 interface ContextProps {
   token: string;
@@ -22,15 +23,23 @@ export const MainAppConsumer = MainAppContext.Consumer;
 interface Props {}
 
 const MainAppProvider: FC<Props> = ({ children }) => {
-  const [token, setToken] = useState('');
+  const tokenFromStorage = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
+  const [token, setToken] = useState(
+    tokenFromStorage === null ? '' : tokenFromStorage
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [activeSession, setActiveSession] = useState<HubConnection>();
+
+  const setTokenHandler = (token: string) => {
+    localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, token);
+    setToken(token);
+  };
 
   const signIn = async (credentials: UserAuthenticate) => {
     const response = await API.authenticate(credentials);
     if (response.result !== -1) {
       setAuthorized(true);
-      setToken(response.data.token);
+      setTokenHandler(response.data.token);
       handleInitConnection(response.data.token);
     }
   };
@@ -47,8 +56,13 @@ const MainAppProvider: FC<Props> = ({ children }) => {
     });
   };
 
-  const [isAuthorized, setAuthorized] = useState(false);
+  const [isAuthorized, setAuthorized] = useState(!!token);
 
+  useEffect(() => {
+    if (!activeSession) {
+      handleInitConnection(token);
+    }
+  }, [activeSession]);
   return (
     <MainAppContext.Provider
       value={{
