@@ -76,7 +76,7 @@ class API {
       }
     );
     const bars = response.data.map(item => ({
-      time: item.d,
+      time: item.d * 1000,
       low: item.l,
       high: item.h,
       open: item.o,

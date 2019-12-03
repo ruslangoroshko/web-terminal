@@ -34,7 +34,7 @@ class DataFeedService implements IBasicDataFeed {
   constructor(activeSession: HubConnection, instrumentId: string) {
     this.activeSession = activeSession;
     this.instrumentId = instrumentId;
-    this.stream = new StreamingService(this.activeSession);
+    this.stream = new StreamingService(this.activeSession, this.instrumentId);
   }
 
   onReady = (callback: OnReadyCallback) => {
@@ -54,33 +54,26 @@ class DataFeedService implements IBasicDataFeed {
     onResolve: ResolveCallback,
     onError: ErrorCallback
   ) => {
-    // expects a symbolInfo object in response
     console.log('======resolveSymbol running');
-    // console.log('resolveSymbol:',{symbolName})
-    const split_data = symbolName.split(/[:/]/);
-    // console.log({split_data})
     const symbol_stub: LibrarySymbolInfo = {
-      full_name: symbolName,
+      full_name: this.instrumentId,
       listed_exchange: '',
-      name: symbolName,
+      name: this.instrumentId,
       description: '',
-      type: 'crypto',
+      type: 'stock',
       session: '24x7',
       timezone: 'Etc/UTC',
-      ticker: symbolName,
-      exchange: split_data[0],
+      ticker: this.instrumentId,
+      exchange: this.instrumentId,
       minmov: 1,
-      pricescale: 100000000,
+      pricescale: 100000,
       has_intraday: true,
-      intraday_multipliers: ['1', '60'],
+      has_seconds: true,
+      intraday_multipliers: ['1S', '1', '60'],
       supported_resolutions: supportedResolutions,
-      volume_precision: 8,
       data_status: 'streaming',
     };
 
-    if (split_data[2] && split_data[2].match(/USD|EUR|JPY|AUD|GBP|KRW|CNY/)) {
-      symbol_stub.pricescale = 100;
-    }
     setTimeout(function() {
       onResolve(symbol_stub);
       console.log('Resolving that symbol....', symbol_stub);
@@ -106,6 +99,9 @@ class DataFeedService implements IBasicDataFeed {
         this.instrumentId
       );
       if (bars.length) {
+        historyProvider.history[symbolInfo.name] = {
+          lastBar: bars[bars.length - 1],
+        };
         onResult(bars, { noData: false });
       } else {
         onResult(bars, { noData: true });

@@ -66,7 +66,7 @@ function Instrument({
         <FlexContainer flexDirection="column">
           {quote && (
             <>
-              <CurrencyQuoteInfo isGrowth={quote.dir === AskBidEnum.Buy}>
+              <CurrencyQuoteInfo isGrowth={quote.dir === AskBidEnum.Sell}>
                 {quote.ask.c} / {quote.bid.c}
               </CurrencyQuoteInfo>
               <span style={{ color: '#fff' }}>

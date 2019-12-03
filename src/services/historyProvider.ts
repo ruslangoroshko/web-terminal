@@ -47,7 +47,7 @@ export default {
     const params: HistoryCandlesType = {
       candleType: resolutionEnum,
       // TODO: FIXME: hardcode
-      bidOrAsk: AskBidEnum.Sell,
+      bidOrAsk: AskBidEnum.Buy,
       fromDate: rangeStartDate,
       toDate: rangeEndDate,
       instrumentId,
