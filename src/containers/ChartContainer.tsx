@@ -16,8 +16,8 @@ export interface ChartContainerProps {
 
   // BEWARE: no trailing slash is expected in feed URL
   library_path: ChartingLibraryWidgetOptions['library_path'];
-  chartsStorageUrl: ChartingLibraryWidgetOptions['charts_storage_url'];
-  chartsStorageApiVersion: ChartingLibraryWidgetOptions['charts_storage_api_version'];
+  // chartsStorageUrl: ChartingLibraryWidgetOptions['charts_storage_url'];
+  // chartsStorageApiVersion: ChartingLibraryWidgetOptions['charts_storage_api_version'];
   clientId: ChartingLibraryWidgetOptions['client_id'];
   userId: ChartingLibraryWidgetOptions['user_id'];
   fullscreen: ChartingLibraryWidgetOptions['fullscreen'];
@@ -41,8 +41,8 @@ const defaultProps: ChartContainerProps = {
   interval: supportedResolutions[0],
   containerId: containerId,
   library_path: CHARTING_LIBRARY_PATH,
-  chartsStorageUrl: 'https://saveload.tradingview.com',
-  chartsStorageApiVersion: '1.1',
+  // chartsStorageUrl: 'https://saveload.tradingview.com',
+  // chartsStorageApiVersion: '1.1',
   clientId: 'tradingview.com',
   userId: 'public_user_id',
   fullscreen: false,
@@ -69,8 +69,8 @@ const ChartContainer: FC<IProps> = ({ intrumentId }) => {
       locale: getLanguageFromURL() || 'en',
       disabled_features: ['use_localstorage_for_settings'],
       enabled_features: ['study_templates'],
-      charts_storage_url: defaultProps.chartsStorageUrl,
-      charts_storage_api_version: defaultProps.chartsStorageApiVersion,
+      // charts_storage_url: defaultProps.chartsStorageUrl,
+      // charts_storage_api_version: defaultProps.chartsStorageApiVersion,
       client_id: defaultProps.clientId,
       user_id: defaultProps.userId,
       fullscreen: defaultProps.fullscreen,
