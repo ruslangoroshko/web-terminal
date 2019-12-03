@@ -1,24 +1,16 @@
 import React, { useContext } from 'react';
-import {
-  Formik,
-  Field,
-  Form,
-  FieldProps,
-  FormikValues,
-  FieldMetaProps,
-  FormikHelpers,
-} from 'formik';
+import { Formik, Field, Form, FieldProps, FormikHelpers } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { MainAppContext } from '../store/MainAppProvider';
-import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
+import { UserRegistration } from '../types/UserInfo';
 import * as yup from 'yup';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import Fields from '../constants/fields';
 
 interface Props {}
 
-function SingUp(props: Props) {
+function SignUp(props: Props) {
   const {} = props;
 
   const validationSchema = yup.object().shape<UserRegistration>({
@@ -135,7 +127,7 @@ function SingUp(props: Props) {
   );
 }
 
-export default SingUp;
+export default SignUp;
 
 const CustomForm = styled(Form)`
   margin: 0;

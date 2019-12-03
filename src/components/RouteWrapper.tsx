@@ -1,26 +1,29 @@
 import React, { useContext, FunctionComponent } from 'react';
-import { Route, Redirect, useLocation } from 'react-router';
+import { Route, Redirect } from 'react-router';
 import Page from '../constants/Pages';
 import { MainAppContext } from '../store/MainAppProvider';
 
 interface IProps {
   component: FunctionComponent<any>;
+  authRequired: boolean;
 }
 
 type Props = IProps;
 
 function RouteWrapper(props: Props) {
-  const { component: Component, ...otherProps } = props;
+  const { component: Component, authRequired, ...otherProps } = props;
   const { isAuthorized } = useContext(MainAppContext);
-  const location = useLocation();
-  if (isAuthorized && location.pathname === Page.SIGN_IN) {
+  if (isAuthorized && !authRequired) {
     return <Redirect to={Page.DASHBOARD} />;
-  } else if (!isAuthorized && location.pathname !== Page.SIGN_IN) {
+  } else if (!isAuthorized && authRequired) {
     return <Redirect to={Page.SIGN_IN} />;
   }
 
   return (
-    <Route {...otherProps} render={routeProps => <Component {...routeProps} />} />
+    <Route
+      {...otherProps}
+      render={routeProps => <Component {...routeProps} />}
+    />
   );
 }
 
