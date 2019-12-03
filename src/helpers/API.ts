@@ -23,9 +23,10 @@ class API {
   };
 
   openPosition = async (position: OpenPositionModel) => {
+    const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.POSITIONS.OPEN}`,
-      position
+      formData
     );
     return response.data;
   };

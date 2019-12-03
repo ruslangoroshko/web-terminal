@@ -43,7 +43,7 @@ function OpenPosition(props: Props) {
   };
 
   const validationSchema = yup.object().shape<OpenModel | OpenModelRate>({
-    amount: yup.number().required('Required amount'),
+    amount: yup.number().min(1).required('Required amount'),
     multiplier: yup.number().required('Required amount'),
     tp: yup.number(),
     tpRate: yup.number(),
