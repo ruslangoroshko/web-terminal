@@ -1,6 +1,13 @@
 export interface UserAuthenticate {
-  userName: string;
+  email: string;
   password: string;
+}
+
+
+export interface UserRegistration {
+  email: string;
+  password: string;
+  repeatPassword: string;
 }
 
 export interface UserAuthenticateResponse {

@@ -1,35 +1,56 @@
 import React, { useContext } from 'react';
-import { Formik, Field, Form, FieldProps, FormikValues } from 'formik';
+import {
+  Formik,
+  Field,
+  Form,
+  FieldProps,
+  FormikValues,
+  FieldMetaProps,
+  FormikHelpers,
+} from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { MainAppContext } from '../store/MainAppProvider';
-import { UserAuthenticate } from '../types/UserInfo';
+import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
 import * as yup from 'yup';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import Fields from '../constants/fields';
 
 interface Props {}
 
-function SingIn(props: Props) {
+function SingUp(props: Props) {
   const {} = props;
 
-  const validationSchema = yup.object().shape<UserAuthenticate>({
+  const validationSchema = yup.object().shape<UserRegistration>({
     email: yup.string().required('Required any value'),
-    password: yup.string().required('Required any value'),
+    password: yup
+      .string()
+      .required('Required any value')
+      .min(8, 'min 8 characters')
+      .matches(/^(?=.*\d)(?=.*[a-zA-Z])/, 'min one number and one symbol'),
+    repeatPassword: yup
+      .string()
+      .oneOf([yup.ref(Fields.PASSWORD), null], 'Passwords must match'),
   });
 
-  const initialValues: UserAuthenticate = {
+  const initialValues: UserRegistration = {
     email: '',
     password: '',
+    repeatPassword: '',
   };
 
-  const { signIn } = useContext(MainAppContext);
+  const { signUp } = useContext(MainAppContext);
 
-  const handleSubmit = async (credentials: UserAuthenticate) => {
+  const handleSubmit = async (
+    { email, password }: UserRegistration,
+    { setStatus, setSubmitting }: FormikHelpers<UserRegistration>
+  ) => {
+    setSubmitting(true);
     try {
-      await signIn(credentials);
+      await signUp({ email, password });
     } catch (error) {
-      debugger;
+      setStatus(error);
+      setSubmitting(false);
     }
   };
 
@@ -73,18 +94,38 @@ function SingIn(props: Props) {
                       type="password"
                       {...field}
                       value={field.value || ''}
-                      placeholder="Enter value"
+                      placeholder="Enter password"
                     />
                     <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
                   </FlexContainer>
                 )}
               </Field>
-
+              <Field type="text" name={Fields.REPEAT_PASSWORD}>
+                {({ field, meta }: FieldProps) => (
+                  <FlexContainer
+                    position="relative"
+                    padding="0 0 20px 0"
+                    flexDirection="column"
+                  >
+                    <InputLabel>Repeat password</InputLabel>
+                    <Input
+                      type="password"
+                      {...field}
+                      value={field.value || ''}
+                      placeholder="Repeat password"
+                    />
+                    <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
+                  </FlexContainer>
+                )}
+              </Field>
+              {formikBag.status && (
+                <ErrorMessage>{formikBag.status}</ErrorMessage>
+              )}
               <SubmitButton
                 type="submit"
                 disabled={!formikBag.isValid || formikBag.isSubmitting}
               >
-                Sign in
+                Sign up
               </SubmitButton>
             </FlexContainer>
           </CustomForm>
@@ -94,7 +135,7 @@ function SingIn(props: Props) {
   );
 }
 
-export default SingIn;
+export default SingUp;
 
 const CustomForm = styled(Form)`
   margin: 0;
@@ -126,6 +167,7 @@ const ErrorMessage = styled.span`
   color: red;
   position: absolute;
   bottom: 0;
+  font-size: 10px;
 `;
 
 const Input = styled.input`

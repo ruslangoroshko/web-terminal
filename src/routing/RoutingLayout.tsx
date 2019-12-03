@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import { Switch, Router } from 'react-router';
 import routesList from '../constants/routesList';
-import { MainAppContext } from '../store/MainAppProvider';
 import RouteWrapper from '../components/RouteWrapper';
 import { appHistory } from './history';
 

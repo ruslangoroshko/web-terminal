@@ -68,6 +68,15 @@ class API {
     return response.data;
   };
 
+  signUpNewTrader = async (credentials: UserAuthenticate) => {
+    const response = await axios.post<UserAuthenticateResponse>(
+      `${API_STRING}${API_LIST.TRADER.REGISTER}`,
+      credentials
+    );
+    return response.data;
+  };
+
+
   getPriceHistory = async (params: HistoryCandlesType) => {
     const response = await axios.get<CandleDTO[]>(
       `${API_STRING}${API_LIST.PRICE_HISTORY.CANDLES}`,

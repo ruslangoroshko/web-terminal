@@ -11,6 +11,7 @@ const API_LIST = {
   },
   TRADER: {
     AUTHENTICATE: '/Trader/Authenticate',
+    REGISTER: '/Trader/Register',
   },
   PRICE_HISTORY: {
     CANDLES: '/PriceHistory/Candles',

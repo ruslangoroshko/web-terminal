@@ -5,11 +5,13 @@ import initConnection from '../services/websocketService';
 import { HubConnection } from '@aspnet/signalr';
 import Topics from '../constants/websocketTopics';
 import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 
 interface ContextProps {
   token: string;
   isAuthorized: boolean;
-  signIn: (credentials: UserAuthenticate) => void;
+  signIn: (credentials: UserAuthenticate) => Promise<unknown>;
+  signUp: (credentials: UserAuthenticate) => Promise<unknown>;
   activeSession: HubConnection | undefined;
   isLoading: boolean;
 }
@@ -35,14 +37,35 @@ const MainAppProvider: FC<Props> = ({ children }) => {
     setToken(token);
   };
 
-  const signIn = async (credentials: UserAuthenticate) => {
-    const response = await API.authenticate(credentials);
-    if (response.result !== -1) {
-      setAuthorized(true);
-      setTokenHandler(response.data.token);
-      handleInitConnection(response.data.token);
-    }
-  };
+  const signIn = (credentials: UserAuthenticate) =>
+    new Promise(async (resolve, reject) => {
+      const response = await API.authenticate(credentials);
+      if (
+        response.result === OperationApiResponseCodes.InvalidUserNameOrPassword
+      ) {
+        reject();
+      } else {
+        setAuthorized(true);
+        setTokenHandler(response.data.token);
+        handleInitConnection(response.data.token);
+        resolve();
+      }
+    });
+
+  const signUp = (credentials: UserAuthenticate) =>
+    new Promise(async (resolve, reject) => {
+      const response = await API.signUpNewTrader(credentials);
+      if (
+        response.result === OperationApiResponseCodes.InvalidUserNameOrPassword
+      ) {
+        reject('Invalid username or password');
+      } else {
+        setAuthorized(true);
+        setTokenHandler(response.data.token);
+        handleInitConnection(response.data.token);
+        resolve();
+      }
+    });
 
   const handleInitConnection = async (token: string) => {
     const connection = initConnection(WS_HOST);
@@ -53,6 +76,7 @@ const MainAppProvider: FC<Props> = ({ children }) => {
 
     connection.onclose(error => {
       console.log(error);
+      handleInitConnection(token);
     });
   };
 
@@ -71,6 +95,7 @@ const MainAppProvider: FC<Props> = ({ children }) => {
         isAuthorized,
         activeSession,
         isLoading,
+        signUp,
       }}
     >
       {children}
