@@ -1,16 +1,16 @@
-import React, { useState, useRef, FC } from 'react';
+import React, { useState, useRef, FC, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { FlexContainer } from '../styles/FlexContainer';
 
 interface Props {
   title: string;
+  isActiveInit?: boolean;
 }
 
 const AccordionItem: FC<Props> = props => {
-  const { title, children } = props;
-
-  const [isActive, setActiveState] = useState(false);
+  const { title, children, isActiveInit } = props;
+  const [isActive, setActiveState] = useState(!!isActiveInit);
   const [maxHeight, setHeightState] = useState('0px');
   //   const [setRotate, setRotateState] = useState('accordion__icon');
 
@@ -18,11 +18,16 @@ const AccordionItem: FC<Props> = props => {
   function toggleAccordion() {
     setActiveState(!isActive);
     if (content.current) {
-      setHeightState(isActive ? '0px' : `${content.current!.scrollHeight}px`);
+      setHeightState(isActive ? '0px' : `${content.current.scrollHeight}px`);
     }
     // setRotateState(isActive ? 'accordion__icon' : 'accordion__icon rotate');
   }
 
+  useEffect(() => {
+    if (content.current) {
+      setHeightState(!isActive ? '0px' : `${content.current.scrollHeight}px`);
+    }
+  }, []);
   return (
     <FlexContainer flexDirection="column" width="100%">
       <AccordionButton isActive={isActive} onClick={toggleAccordion}>

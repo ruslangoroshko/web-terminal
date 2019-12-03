@@ -244,16 +244,17 @@ function Dashboard() {
           </FlexContainer>
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 0 20px" width="400px">
-          {instruments.map(instrument => (
-            <AccordionItem key={instrument.id} title={instrument.name}>
+          {instruments.map((instrument, index) => (
+            <AccordionItem
+              key={instrument.id}
+              title={instrument.name}
+              isActiveInit={index === 0}
+            >
               <OpenPosition
                 quoteName={instrument.quote}
                 accountId={account.id}
-                instrumentId={instrument.id}
-                multiplier={
-                  instrument.multiplier.longLength ||
-                  instrument.multiplier.length
-                }
+                instrument={instrument}
+                multiplier={instrument.multiplier[0]}
               ></OpenPosition>
             </AccordionItem>
           ))}

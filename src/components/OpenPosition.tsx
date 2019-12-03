@@ -8,11 +8,12 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import * as yup from 'yup';
 import Fields from '../constants/fields';
 import { AskBidEnum } from '../enums/AskBid';
+import { InstrumentModelWSDTO } from '../types/Instruments';
 
 interface Props {
   quoteName: string;
   accountId: OpenPositionModel['accountId'];
-  instrumentId: OpenPositionModel['instrumentId'];
+  instrument: InstrumentModelWSDTO;
   multiplier: OpenPositionModel['multiplier'];
 }
 
@@ -31,19 +32,23 @@ interface OpenModel {
 }
 
 function OpenPosition(props: Props) {
-  const { quoteName, accountId, instrumentId, multiplier } = props;
+  const { quoteName, accountId, instrument, multiplier } = props;
   const [isRate, setRate] = useState(false);
 
   const initialValues: OpenPositionModel = {
     accountId,
-    instrumentId,
+    instrumentId: instrument.id,
     operation: AskBidEnum.Buy,
     multiplier,
     amount: 0,
   };
 
   const validationSchema = yup.object().shape<OpenModel | OpenModelRate>({
-    amount: yup.number().min(1).required('Required amount'),
+    amount: yup
+      .number()
+      .min(instrument.minOperationVolume, 'minOperationVolume')
+      .max(instrument.maxOperationVolume, 'maxOperationVolume')
+      .required('Required amount'),
     multiplier: yup.number().required('Required amount'),
     tp: yup.number(),
     tpRate: yup.number(),

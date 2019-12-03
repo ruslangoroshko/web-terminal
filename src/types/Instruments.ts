@@ -9,7 +9,7 @@ export interface InstrumentModelWSDTO {
   maxOperationVolume: number;
   amountStepSize: number;
   maxPositionVolume: number;
-  multiplier: Multiplier;
+  multiplier: number[];
   leverage: number;
   bid?: number;
   ask?: number;
@@ -25,14 +25,4 @@ interface DayOff {
   timeFrom: string;
   dowTo: string;
   timeTo: string;
-}
-
-interface Multiplier {
-  length: number;
-  longLength: number;
-  rank: number;
-  syncRoot: {};
-  isReadOnly: boolean;
-  isFixedSize: boolean;
-  isSynchronized: boolean;
 }
