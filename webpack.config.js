@@ -4,7 +4,6 @@ const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = (env, argv) => {
-  console.log(argv);
   return {
     mode: argv.mode,
     entry: {
@@ -54,7 +53,6 @@ module.exports = (env, argv) => {
         //   logLevel: 'debug' // this what you want
         // },
       },
-      // contentBase: path.join(__dirname, './src/vendor/charting_library/'),
       compress: true,
       historyApiFallback: true,
       https: false,
@@ -81,10 +79,10 @@ module.exports = (env, argv) => {
         AUTH_TOKEN: JSON.stringify('TraderID'),
         CHARTING_LIBRARY_PATH:
           argv.mode === 'production'
-            ? JSON.stringify('/charting_library/')
+            ? JSON.stringify('./charting_library/')
             : JSON.stringify('./src/vendor/charting_library/'),
       }),
-      new CopyPlugin([{ from: './src/vendor/charting_library', to: '/' }]),
+      new CopyPlugin([{ from: './src/vendor/charting_library/', to: 'charting_library' }]),
     ],
   };
 };
