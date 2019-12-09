@@ -88,7 +88,7 @@ const MainAppProvider: FC<Props> = ({ children }) => {
   const [isAuthorized, setAuthorized] = useState(!!token);
 
   useEffect(() => {
-    if (!activeSession) {
+    if (!activeSession && isAuthorized) {
       handleInitConnection(token);
     }
   }, [activeSession]);

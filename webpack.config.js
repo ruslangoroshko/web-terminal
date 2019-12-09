@@ -40,18 +40,12 @@ module.exports = (env, argv) => {
     devServer: {
       proxy: {
         '/api': {
-          target: 'https://simpletrading-api-dev.monfex.biz',
+          target: 'https://simpletrading-api-dev-b.monfex.biz',
           pathRewrite: {
             '^/api': '',
           },
           changeOrigin: true,
         },
-        // '/signalr': {
-        //   target: 'http://localhost:5678',
-        //   // target: 'https://simpletrading-api-dev.monfex.biz/',
-        //   changeOrigin: false,
-        //   logLevel: 'debug' // this what you want
-        // },
       },
       compress: true,
       historyApiFallback: true,

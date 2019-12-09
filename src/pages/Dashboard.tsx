@@ -15,7 +15,6 @@ import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { TabType } from '../enums/TabType';
 import Topics from '../constants/websocketTopics';
 import { AccountModelWebSocketDTO } from '../types/Accounts';
-import { PositionModelDTO, ActivePositionModelWSDTO } from '../types/Positions';
 import Fields from '../constants/fields';
 import API from '../helpers/API';
 import Instrument from '../components/Instrument';
@@ -23,6 +22,7 @@ import Table from '../components/Table';
 import { MainAppContext } from '../store/MainAppProvider';
 import TVChartContainer from '../containers/ChartContainer';
 import { InstrumentModelWSDTO } from '../types/Instruments';
+import { PositionModelWSDTO } from '../types/Positions';
 
 function Dashboard() {
   const { isLoading } = useContext(MainAppContext);
@@ -31,7 +31,7 @@ function Dashboard() {
   const [tabType, setTabType] = useState(TabType.ActivePositions);
   const [account, setAccount] = useState<AccountModelWebSocketDTO>();
 
-  const [activePositions, setActivePositions] = useState<PositionModelDTO[]>(
+  const [activePositions, setActivePositions] = useState<PositionModelWSDTO[]>(
     []
   );
 
@@ -108,7 +108,7 @@ function Dashboard() {
             closePosition={closePosition}
             instrumentId={activeInstrument ? activeInstrument.id : ''}
             balance={account!.balance}
-            leverage={activeInstrument.leverage}
+            leverage={activeInstrument.multiplier[0]}
           ></Table>
         ) : null;
 
@@ -139,13 +139,6 @@ function Dashboard() {
         }
       );
 
-      activeSession.on(
-        Topics.ACTIVE_POSITIONS,
-        (response: ResponseFromWebsocket<ActivePositionModelWSDTO[]>) => {
-          setActivePositions(response.data[0].positions);
-        }
-      );
-
       activeSession.on(Topics.UPDATE_ACCOUNT, (response: any) => {
         setAccount(response.data);
       });
@@ -156,11 +149,18 @@ function Dashboard() {
     if (account && activeSession) {
       activeSession.on(
         Topics.INSTRUMENTS,
-        (response: ResponseFromWebsocket<InstrumentModelWSDTO>) => {
-          if (response.data && response.data.accountId === account.id) {
-            const { instruments } = response.data;
-            setInstruments(instruments);
-            setActiveInstrument(instruments[0]);
+        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
+          if (response.accountId === account.id) {
+            setInstruments(response.data);
+            setActiveInstrument(response.data[0]);
+          }
+        }
+      );
+      activeSession.on(
+        Topics.ACTIVE_POSITIONS,
+        (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
+          if (response.accountId === account.id) {
+            setActivePositions(response.data);
           }
         }
       );

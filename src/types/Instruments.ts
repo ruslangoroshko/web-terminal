@@ -10,14 +10,8 @@ export interface InstrumentModelWSDTO {
   amountStepSize: number;
   maxPositionVolume: number;
   multiplier: number[];
-  leverage: number;
   bid?: number;
   ask?: number;
-}
-
-export interface InstrumentModelWSDTO {
-  accountId: string;
-  instruments: InstrumentModelWSDTO[];
 }
 
 interface DayOff {

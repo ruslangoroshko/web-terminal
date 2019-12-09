@@ -12,4 +12,5 @@ export interface AccountModelWebSocketDTO {
   id: string;
   balance: number;
   currency: string;
+  digits: number;
 }
