@@ -5,6 +5,7 @@ import injectInerceptors from './http/interceptors';
 import Helmet from 'react-helmet';
 import favicon from './assets/images/favicon.ico';
 import RoutingLayout from './routing/RoutingLayout';
+import ColorsPallete from './styles/colorPallete';
 
 interface Props {}
 
@@ -25,6 +26,9 @@ function MainApp(props: Props) {
           html {
             font-size: 14px;
             line-height: 1.4;
+          }
+          .group-wWM3zP_M- {
+            background: red !important;
           }
         `}
       />

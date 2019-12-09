@@ -23,10 +23,13 @@ import { MainAppContext } from '../store/MainAppProvider';
 import TVChartContainer from '../containers/ChartContainer';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { PositionModelWSDTO } from '../types/Positions';
+import ColorsPallete from '../styles/colorPallete';
 
 function Dashboard() {
   const { isLoading } = useContext(MainAppContext);
   const { activeSession } = useContext(MainAppContext);
+
+  const [testColor, setTestColor] = useState(ColorsPallete.RAZZMATAZZ);
 
   const [tabType, setTabType] = useState(TabType.ActivePositions);
   const [account, setAccount] = useState<AccountModelWebSocketDTO>();

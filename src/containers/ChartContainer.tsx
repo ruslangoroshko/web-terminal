@@ -4,11 +4,14 @@ import {
   ChartingLibraryWidgetOptions,
   LanguageCode,
   widget,
+  SeriesStyle,
 } from '../vendor/charting_library/charting_library.min';
 import { FlexContainer } from '../styles/FlexContainer';
 import { MainAppContext } from '../store/MainAppProvider';
 import DataFeedService from '../services/dataFeedService';
 import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
+import { LineStyles } from '../enums/TradingViewStyles';
+import ColorsPallete from '../styles/colorPallete';
 
 export interface ChartContainerProps {
   symbol: ChartingLibraryWidgetOptions['symbol'];
@@ -65,7 +68,6 @@ const ChartContainer: FC<IProps> = ({ intrumentId }) => {
       interval: defaultProps.interval,
       container_id: defaultProps.containerId,
       library_path: defaultProps.library_path,
-      // toolbar_bg: '#131722',
       locale: getLanguageFromURL() || 'en',
       disabled_features: [
         'use_localstorage_for_settings',
@@ -87,14 +89,30 @@ const ChartContainer: FC<IProps> = ({ intrumentId }) => {
       studies_overrides: defaultProps.studiesOverrides,
       overrides: {
         'mainSeriesProperties.showCountdown': true,
-        'paneProperties.background': '#131722',
-        'paneProperties.vertGridProperties.color': '#363c4e',
-        'paneProperties.horzGridProperties.color': '#363c4e',
         'symbolWatermarkProperties.transparency': 90,
         'scalesProperties.textColor': '#AAA',
+        'mainSeriesProperties.style': SeriesStyle.Area,
         'mainSeriesProperties.candleStyle.wickUpColor': '#336854',
         'mainSeriesProperties.candleStyle.wickDownColor': '#7f323f',
+        'mainSeriesProperties.lineStyle.color': ColorsPallete.MINT,
+        'mainSeriesProperties.lineStyle.linestyle': LineStyles.LINESTYLE_SOLID,
+        'mainSeriesProperties.lineStyle.linewidth': 3,
+        'mainSeriesProperties.lineStyle.priceSource': 'close',
+        'mainSeriesProperties.areaStyle.color1': 'rgba(0, 224, 255, 0.12)',
+        'mainSeriesProperties.areaStyle.color2': 'rgba(0, 224, 255, 0.12)',
+        'mainSeriesProperties.areaStyle.linecolor': ColorsPallete.MINT,
+        'mainSeriesProperties.areaStyle.linestyle': LineStyles.LINESTYLE_SOLID,
+        'mainSeriesProperties.areaStyle.linewidth': 3,
+        'mainSeriesProperties.areaStyle.priceSource': 'close',
+        'scalesProperties.backgroundColor': '#191e1e',
+        'paneProperties.background': '#191e1e',
+        'paneProperties.vertGridProperties.color': '#353939',
+        'paneProperties.vertGridProperties.style': LineStyles.LINESTYLE_SOLID,
+        'paneProperties.horzGridProperties.color': '#353939',
+        'paneProperties.horzGridProperties.style': LineStyles.LINESTYLE_SOLID,
+        'linetoolnote.backgroundColor': ColorsPallete.RAZZMATAZZ,
       },
+      theme: 'Dark',
     };
 
     let tvWidget = new widget(widgetOptions);

@@ -69,6 +69,7 @@ class DataFeedService implements IBasicDataFeed {
       pricescale: 100000,
       has_intraday: true,
       has_seconds: true,
+      has_no_volume: true,
       intraday_multipliers: ['1S', '1', '60'],
       supported_resolutions: supportedResolutions,
       data_status: 'streaming',
