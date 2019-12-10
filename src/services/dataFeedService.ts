@@ -21,6 +21,7 @@ import historyProvider from './historyProvider';
 import StreamingService from './streamingService';
 import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import { HubConnection } from '@aspnet/signalr';
+import { InstrumentModelWSDTO } from '../types/Instruments';
 
 class DataFeedService implements IBasicDataFeed {
   static config = {
@@ -29,16 +30,13 @@ class DataFeedService implements IBasicDataFeed {
 
   activeSession: HubConnection;
   stream: StreamingService;
-  instrumentId: string;
 
-  constructor(activeSession: HubConnection, instrumentId: string) {
+  constructor(activeSession: HubConnection, instrument: InstrumentModelWSDTO) {
     this.activeSession = activeSession;
-    this.instrumentId = instrumentId;
-    this.stream = new StreamingService(this.activeSession, this.instrumentId);
+    this.stream = new StreamingService(this.activeSession, instrument.id);
   }
 
   onReady = (callback: OnReadyCallback) => {
-    console.log('=====onReady running');
     setTimeout(() => callback(DataFeedService.config), 0);
   };
   searchSymbols = (
@@ -54,17 +52,16 @@ class DataFeedService implements IBasicDataFeed {
     onResolve: ResolveCallback,
     onError: ErrorCallback
   ) => {
-    console.log('======resolveSymbol running');
     const symbol_stub: LibrarySymbolInfo = {
-      full_name: this.instrumentId,
+      full_name: symbolName,
       listed_exchange: '',
-      name: this.instrumentId,
+      name: symbolName,
       description: '',
       type: 'stock',
       session: '24x7',
       timezone: 'Etc/UTC',
-      ticker: this.instrumentId,
-      exchange: this.instrumentId,
+      ticker: symbolName,
+      exchange: symbolName,
       minmov: 1,
       pricescale: 100000,
       has_intraday: true,
@@ -90,14 +87,15 @@ class DataFeedService implements IBasicDataFeed {
     onResult: HistoryCallback,
     onError: ErrorCallback
   ) => {
-    console.log('=====getBars running');
+    console.log('TCL: DataFeedService -> symbolInfo', symbolInfo);
+    console.log('TCL: DataFeedService -> resolution', resolution);
 
     try {
       const bars = await historyProvider.getBars(
         resolution,
         rangeStartDate,
         rangeEndDate,
-        this.instrumentId
+        symbolInfo.name
       );
       if (bars.length) {
         historyProvider.history[symbolInfo.name] = {
@@ -108,7 +106,6 @@ class DataFeedService implements IBasicDataFeed {
         onResult(bars, { noData: true });
       }
     } catch (err) {
-      console.log(err);
       onError(err);
     }
   };
@@ -119,7 +116,7 @@ class DataFeedService implements IBasicDataFeed {
     listenerGuid: string,
     onResetCacheNeededCallback: () => void
   ) => {
-    console.log('=====subscribeBars runnning');
+    console.log('TCL: DataFeedService -> listenerGuid', listenerGuid);
     this.stream.subscribeBars(
       symbolInfo,
       resolution,
@@ -129,9 +126,13 @@ class DataFeedService implements IBasicDataFeed {
     );
   };
   unsubscribeBars = (subscriberUID: string) => {
-    console.log('=====unsubscribeBars running');
+    console.log(
+      'TCL: DataFeedService -> unsubscribeBars -> subscriberUID',
+      subscriberUID
+    );
+    const uid = subscriberUID.split(' ')[1];
 
-    this.stream.unsubscribeBars(subscriberUID);
+    this.stream.unsubscribeBars(uid);
   };
   calculateHistoryDepth = (
     resolution: ResolutionString,
@@ -139,7 +140,6 @@ class DataFeedService implements IBasicDataFeed {
     intervalBack: number
   ) => {
     //optional
-    console.log('=====calculateHistoryDepth running');
     // while optional, this makes sure we request 24 hours of minute data at a time
     // CryptoCompare's minute data endpoint will throw an error if we request data beyond 7 days in the past, and return no data
     const historyDepth: HistoryDepth = { resolutionBack: 'D', intervalBack: 1 };

@@ -1,10 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import {
-  QuotesFeedWrapper,
-  CurrencyQuoteIcon,
-  CurrencyQuoteTitle,
-  CurrencyQuoteInfo,
-} from '../styles/Pages/Dashboard';
+import React, { useEffect, useContext } from 'react';
+
 import { FlexContainer } from '../styles/FlexContainer';
 import calculateGrowth from '../helpers/calculateGrowth';
 import { InstrumentModelWSDTO } from '../types/Instruments';
@@ -15,6 +10,12 @@ import { BidAskModelWSDTO } from '../types/BidAsk';
 import { HubConnection } from '@aspnet/signalr';
 import { QuotesContext } from '../store/QuotesProvider';
 import { AskBidEnum } from '../enums/AskBid';
+import {
+  QuotesFeedWrapper,
+  CurrencyQuoteIcon,
+  CurrencyQuoteTitle,
+  CurrencyQuoteInfo,
+} from '../styles/InstrumentComponentStyle';
 
 interface Props {
   activeSession: HubConnection;
@@ -62,15 +63,11 @@ function Instrument({
       <FlexContainer flexDirection="column" width="160px">
         <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
         <FlexContainer flexDirection="column">
-          <CurrencyQuoteInfo isGrowth={quote && quote.dir === AskBidEnum.Sell}>
-            {quote ? quote.ask.c : instrument.ask} /&nbsp;
-            {quote ? quote.bid.c : instrument.bid}
-          </CurrencyQuoteInfo>
-          {quote ? (
-            <span style={{ color: '#fff' }}>
+          {quote && (
+            <CurrencyQuoteInfo isGrowth={quote.dir === AskBidEnum.Sell}>
               {calculateGrowth(quote.bid.c, quote.ask.c, instrument.digits)}
-            </span>
-          ) : null}
+            </CurrencyQuoteInfo>
+          )}
         </FlexContainer>
       </FlexContainer>
     </QuotesFeedWrapper>

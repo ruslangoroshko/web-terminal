@@ -22,7 +22,7 @@ function MainApp(props: Props) {
       <Global
         styles={css`
           ${reboot};
-
+          @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic,cyrillic-ext');
           html {
             font-size: 14px;
             line-height: 1.4;

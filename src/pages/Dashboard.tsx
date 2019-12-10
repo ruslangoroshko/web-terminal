@@ -23,14 +23,14 @@ import { MainAppContext } from '../store/MainAppProvider';
 import TVChartContainer from '../containers/ChartContainer';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { PositionModelWSDTO } from '../types/Positions';
-import ColorsPallete from '../styles/colorPallete';
+import { IChartingLibraryWidget } from '../vendor/charting_library/charting_library.min';
+import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 
 function Dashboard() {
   const { isLoading } = useContext(MainAppContext);
   const { activeSession } = useContext(MainAppContext);
 
-  const [testColor, setTestColor] = useState(ColorsPallete.RAZZMATAZZ);
-
+  const [tradingWidget, setTradingWidget] = useState<IChartingLibraryWidget>();
   const [tabType, setTabType] = useState(TabType.ActivePositions);
   const [account, setAccount] = useState<AccountModelWebSocketDTO>();
 
@@ -45,10 +45,17 @@ function Dashboard() {
 
   const switchInstrument = (instrument: InstrumentModelWSDTO) => () => {
     setActiveInstrument(instrument);
+    if (tradingWidget) {
+      tradingWidget.setSymbol(instrument.id, supportedResolutions[0], () => {});
+    }
   };
 
   const switchTabType = (tabType: TabType) => () => {
     setTabType(tabType);
+  };
+
+  const tradingWidgetCallback = (callbackWidget: IChartingLibraryWidget) => {
+    setTradingWidget(callbackWidget);
   };
 
   const renderTabType = () => {
@@ -116,10 +123,10 @@ function Dashboard() {
         ) : null;
 
       case TabType.PendingOrders:
-        return <Test>PendingOrders</Test>;
+        return <div>PendingOrders</div>;
 
       case TabType.History:
-        return <Test>History</Test>;
+        return <div>History</div>;
 
       default:
         return null;
@@ -142,9 +149,12 @@ function Dashboard() {
         }
       );
 
-      activeSession.on(Topics.UPDATE_ACCOUNT, (response: any) => {
-        setAccount(response.data);
-      });
+      activeSession.on(
+        Topics.UPDATE_ACCOUNT,
+        (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
+          setAccount(response.data);
+        }
+      );
     }
   }, [activeSession]);
 
@@ -187,16 +197,6 @@ function Dashboard() {
           <FlexContainer alignItems="center" margin="0 30px 0 0">
             <img src={monfexLogo} alt="" width="100%" />
           </FlexContainer>
-          {activeSession &&
-            instruments.map(item => (
-              <Instrument
-                isActive={activeInstrument && activeInstrument.id === item.id}
-                key={item.id}
-                activeSession={activeSession}
-                switchInstrument={switchInstrument}
-                instrument={item}
-              />
-            ))}
         </FlexContainer>
         <FlexContainer padding="0 20px" alignItems="center">
           <FlexContainer flexDirection="column" margin="0 20px 0 0">
@@ -215,11 +215,27 @@ function Dashboard() {
       <FlexContainer justifyContent="space-between" padding="20px">
         <FlexContainer flexDirection="column" width="100%">
           <FlexContainer margin="0 20px 20px 0">
-            <FlexContainer width="100%" height="500px">
+            <FlexContainer width="100%" height="500px" position="relative">
               {activeInstrument && (
-                // <TradingGraph activeInstrument={activeInstrument} />
-                <TVChartContainer intrumentId={activeInstrument.id} />
+                <TVChartContainer
+                  intrument={activeInstrument}
+                  tradingWidgetCallback={tradingWidgetCallback}
+                />
               )}
+              <InstrumentsWrapper position="absolute">
+                {activeSession &&
+                  instruments.map(item => (
+                    <Instrument
+                      isActive={
+                        activeInstrument && activeInstrument.id === item.id
+                      }
+                      key={item.id}
+                      activeSession={activeSession}
+                      switchInstrument={switchInstrument}
+                      instrument={item}
+                    />
+                  ))}
+              </InstrumentsWrapper>
             </FlexContainer>
           </FlexContainer>
           <FlexContainer flexDirection="column">
@@ -287,6 +303,7 @@ const TabButton = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
   }
 `;
 
-const Test = styled.span`
-  color: #fff;
+const InstrumentsWrapper = styled(FlexContainer)`
+  top: 8px;
+  left: 8px;
 `;

@@ -69,6 +69,7 @@ class StreamingService {
     onResetCacheNeededCallback: () => void
   ) => {
     this.currentBarGuid = listenerGuid;
+    this.instrumentId = symbolInfo.name;
     const currentSubscriptionBar = {
       symbolInfo,
       resolution,

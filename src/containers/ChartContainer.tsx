@@ -5,6 +5,7 @@ import {
   LanguageCode,
   widget,
   SeriesStyle,
+  IChartingLibraryWidget,
 } from '../vendor/charting_library/charting_library.min';
 import { FlexContainer } from '../styles/FlexContainer';
 import { MainAppContext } from '../store/MainAppProvider';
@@ -12,20 +13,16 @@ import DataFeedService from '../services/dataFeedService';
 import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import { LineStyles } from '../enums/TradingViewStyles';
 import ColorsPallete from '../styles/colorPallete';
+import { InstrumentModelWSDTO } from '../types/Instruments';
 
 export interface ChartContainerProps {
-  symbol: ChartingLibraryWidgetOptions['symbol'];
   interval: ChartingLibraryWidgetOptions['interval'];
-
   // BEWARE: no trailing slash is expected in feed URL
   library_path: ChartingLibraryWidgetOptions['library_path'];
-  // chartsStorageUrl: ChartingLibraryWidgetOptions['charts_storage_url'];
-  // chartsStorageApiVersion: ChartingLibraryWidgetOptions['charts_storage_api_version'];
   clientId: ChartingLibraryWidgetOptions['client_id'];
   userId: ChartingLibraryWidgetOptions['user_id'];
   fullscreen: ChartingLibraryWidgetOptions['fullscreen'];
   autosize: ChartingLibraryWidgetOptions['autosize'];
-  studiesOverrides: ChartingLibraryWidgetOptions['studies_overrides'];
   containerId: ChartingLibraryWidgetOptions['container_id'];
 }
 
@@ -40,53 +37,46 @@ function getLanguageFromURL(): LanguageCode | null {
 const containerId = 'tv_chart_container';
 
 const defaultProps: ChartContainerProps = {
-  symbol: 'Coinbase:BTC/USD',
   interval: supportedResolutions[0],
   containerId: containerId,
   library_path: CHARTING_LIBRARY_PATH,
-  // chartsStorageUrl: 'https://saveload.tradingview.com',
-  // chartsStorageApiVersion: '1.1',
   clientId: 'tradingview.com',
   userId: 'public_user_id',
   fullscreen: false,
   autosize: true,
-  studiesOverrides: {},
 };
 
 interface IProps {
-  intrumentId: string;
+  intrument: InstrumentModelWSDTO;
+  tradingWidgetCallback: (arg0: IChartingLibraryWidget) => void;
 }
 
-const ChartContainer: FC<IProps> = ({ intrumentId }) => {
+const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
   const { activeSession } = useContext(MainAppContext);
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
-      symbol: defaultProps.symbol,
+      symbol: intrument.id,
       // BEWARE: no trailing slash is expected in feed URL
-      // tslint:disable-next-line:no-any
-      datafeed: new DataFeedService(activeSession!, intrumentId),
+      datafeed: new DataFeedService(activeSession!, intrument),
       interval: defaultProps.interval,
       container_id: defaultProps.containerId,
       library_path: defaultProps.library_path,
       locale: getLanguageFromURL() || 'en',
       disabled_features: [
+        'header_widget',
+        'legend_widget',
+        'timeframes_toolbar',
         'use_localstorage_for_settings',
-        'volume_force_overlay',
-        'compare_symbol',
         'border_around_the_chart',
-        'header_saveload',
         'left_toolbar',
         'control_bar',
-        'legend_widget',
+        'symbol_info',
+        'context_menus',
       ],
-      // enabled_features: ['study_templates'],
-      // charts_storage_url: defaultProps.chartsStorageUrl,
-      // charts_storage_api_version: defaultProps.chartsStorageApiVersion,
       client_id: defaultProps.clientId,
       user_id: defaultProps.userId,
       fullscreen: defaultProps.fullscreen,
       autosize: defaultProps.autosize,
-      studies_overrides: defaultProps.studiesOverrides,
       overrides: {
         'mainSeriesProperties.showCountdown': true,
         'symbolWatermarkProperties.transparency': 90,
@@ -107,9 +97,17 @@ const ChartContainer: FC<IProps> = ({ intrumentId }) => {
         'scalesProperties.backgroundColor': '#191e1e',
         'paneProperties.background': '#191e1e',
         'paneProperties.vertGridProperties.color': '#353939',
-        'paneProperties.vertGridProperties.style': LineStyles.LINESTYLE_SOLID,
+        'paneProperties.vertGridProperties.style': LineStyles.LINESTYLE_DOTTED,
         'paneProperties.horzGridProperties.color': '#353939',
-        'paneProperties.horzGridProperties.style': LineStyles.LINESTYLE_SOLID,
+        'paneProperties.horzGridProperties.style': LineStyles.LINESTYLE_DOTTED,
+        'paneProperties.legendProperties.showStudyArguments': false,
+        'paneProperties.legendProperties.showStudyTitles': false,
+        'paneProperties.legendProperties.showStudyValues': false,
+        'paneProperties.legendProperties.showSeriesTitle': false,
+        'paneProperties.legendProperties.showSeriesOHLC': false,
+        'paneProperties.legendProperties.showLegend': false,
+        'paneProperties.legendProperties.showBarChange': false,
+        'paneProperties.legendProperties.showOnlyPriceSource': false,
         'linetoolnote.backgroundColor': ColorsPallete.RAZZMATAZZ,
       },
       theme: 'Dark',
@@ -118,20 +116,10 @@ const ChartContainer: FC<IProps> = ({ intrumentId }) => {
     let tvWidget = new widget(widgetOptions);
 
     tvWidget.onChartReady(async () => {
-      await tvWidget.headerReady();
-      const button = tvWidget.createButton();
-      button.setAttribute('title', 'Click to show a notification popup');
-      button.classList.add('apply-common-tooltip');
-      button.addEventListener('click', () =>
-        tvWidget.showNoticeDialog({
-          title: 'Notification',
-          body: 'TradingView Charting Library API works correctly',
-          callback: () => {
-            console.log('Noticed!');
-          },
-        })
-      );
-      button.innerHTML = 'Check API';
+      tvWidget.chart().crossHairMoved(({ time, price }) => {
+        console.log({ time, price });
+      });
+      tradingWidgetCallback(tvWidget);
     });
     return () => {
       tvWidget.remove();
