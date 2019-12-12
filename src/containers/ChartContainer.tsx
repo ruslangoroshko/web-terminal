@@ -62,6 +62,7 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
       container_id: defaultProps.containerId,
       library_path: defaultProps.library_path,
       locale: getLanguageFromURL() || 'en',
+
       disabled_features: [
         'header_widget',
         'legend_widget',
@@ -80,7 +81,6 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
       overrides: {
         'mainSeriesProperties.showCountdown': true,
         'symbolWatermarkProperties.transparency': 90,
-        'scalesProperties.textColor': '#AAA',
         'mainSeriesProperties.style': SeriesStyle.Area,
         'mainSeriesProperties.candleStyle.wickUpColor': '#336854',
         'mainSeriesProperties.candleStyle.wickDownColor': '#7f323f',
@@ -94,7 +94,6 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'mainSeriesProperties.areaStyle.linestyle': LineStyles.LINESTYLE_SOLID,
         'mainSeriesProperties.areaStyle.linewidth': 3,
         'mainSeriesProperties.areaStyle.priceSource': 'close',
-        'scalesProperties.backgroundColor': '#191e1e',
         'paneProperties.background': '#191e1e',
         'paneProperties.vertGridProperties.color': '#353939',
         'paneProperties.vertGridProperties.style': LineStyles.LINESTYLE_DOTTED,
@@ -109,11 +108,16 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'paneProperties.legendProperties.showBarChange': false,
         'paneProperties.legendProperties.showOnlyPriceSource': false,
         'linetoolnote.backgroundColor': ColorsPallete.RAZZMATAZZ,
+        'scalesProperties.lineColor': 'transparent',
+        'scalesProperties.textColor': '#AAA',
+        'scalesProperties.backgroundColor': 'transparent',
+        'mainSeriesProperties.priceLineColor': '#fff',
+        'mainSeriesProperties.priceLineWidth': 2,
       },
       theme: 'Dark',
     };
 
-    let tvWidget = new widget(widgetOptions);
+    const tvWidget = new widget(widgetOptions);
 
     tvWidget.onChartReady(async () => {
       tvWidget.chart().crossHairMoved(({ time, price }) => {

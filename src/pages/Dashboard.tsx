@@ -25,10 +25,13 @@ import { InstrumentModelWSDTO } from '../types/Instruments';
 import { PositionModelWSDTO } from '../types/Positions';
 import { IChartingLibraryWidget } from '../vendor/charting_library/charting_library.min';
 import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
+import ChartTimeScale from '../components/ChartTimeScale';
+import CollapsableWrapper from '../components/CollapsableWrapper';
 
 function Dashboard() {
   const { isLoading } = useContext(MainAppContext);
   const { activeSession } = useContext(MainAppContext);
+  const [resolution, setResolution] = useState(supportedResolutions[0]);
 
   const [tradingWidget, setTradingWidget] = useState<IChartingLibraryWidget>();
   const [tabType, setTabType] = useState(TabType.ActivePositions);
@@ -45,8 +48,10 @@ function Dashboard() {
 
   const switchInstrument = (instrument: InstrumentModelWSDTO) => () => {
     setActiveInstrument(instrument);
+
+    // TODO: wait for prettier support "optional chaining"
     if (tradingWidget) {
-      tradingWidget.setSymbol(instrument.id, supportedResolutions[0], () => {});
+      tradingWidget.setSymbol(instrument.id, resolution, () => {});
     }
   };
 
@@ -56,6 +61,13 @@ function Dashboard() {
 
   const tradingWidgetCallback = (callbackWidget: IChartingLibraryWidget) => {
     setTradingWidget(callbackWidget);
+  };
+
+  const setTimeScale = (resolution: string) => {
+    setResolution(resolution);
+    if (tradingWidget) {
+      tradingWidget.setSymbol(activeInstrument!.id, resolution, () => {});
+    }
   };
 
   const renderTabType = () => {
@@ -213,9 +225,16 @@ function Dashboard() {
         </FlexContainer>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" padding="20px">
-        <FlexContainer flexDirection="column" width="100%">
-          <FlexContainer margin="0 20px 20px 0">
-            <FlexContainer width="100%" height="500px" position="relative">
+        <FlexContainer flexDirection="column" width="100%" height="100%">
+          <FlexContainer margin="0 20px 20px 0" height="100%">
+            <FlexContainer
+              width="100%"
+              height="100%"
+              minHeight="400px"
+              position="relative"
+              padding="34px 0 40px 0"
+              backgroundColor="#191e1e"
+            >
               {activeInstrument && (
                 <TVChartContainer
                   intrument={activeInstrument}
@@ -236,31 +255,39 @@ function Dashboard() {
                     />
                   ))}
               </InstrumentsWrapper>
+              <TimeScaleWrapper>
+                <ChartTimeScale
+                  activeResolution={resolution}
+                  setTimeScale={setTimeScale}
+                ></ChartTimeScale>
+              </TimeScaleWrapper>
             </FlexContainer>
           </FlexContainer>
-          <FlexContainer flexDirection="column">
-            <FlexContainer margin="0 0 20px">
-              <TabButton
-                onClick={switchTabType(TabType.ActivePositions)}
-                isActive={tabType === TabType.ActivePositions}
-              >
-                Active Positions
-              </TabButton>
-              <TabButton
-                onClick={switchTabType(TabType.PendingOrders)}
-                isActive={tabType === TabType.PendingOrders}
-              >
-                Pending orders
-              </TabButton>
-              <TabButton
-                onClick={switchTabType(TabType.History)}
-                isActive={tabType === TabType.History}
-              >
-                History
-              </TabButton>
+          <CollapsableWrapper>
+            <FlexContainer flexDirection="column">
+              <FlexContainer margin="0 0 20px" width="100%">
+                <TabButton
+                  onClick={switchTabType(TabType.ActivePositions)}
+                  isActive={tabType === TabType.ActivePositions}
+                >
+                  Active Positions
+                </TabButton>
+                <TabButton
+                  onClick={switchTabType(TabType.PendingOrders)}
+                  isActive={tabType === TabType.PendingOrders}
+                >
+                  Pending orders
+                </TabButton>
+                <TabButton
+                  onClick={switchTabType(TabType.History)}
+                  isActive={tabType === TabType.History}
+                >
+                  History
+                </TabButton>
+              </FlexContainer>
+              <FlexContainer>{renderTabType()}</FlexContainer>
             </FlexContainer>
-            <FlexContainer>{renderTabType()}</FlexContainer>
-          </FlexContainer>
+          </CollapsableWrapper>
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 0 20px" width="400px">
           {instruments.map((instrument, index) => (
@@ -304,6 +331,14 @@ const TabButton = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
 `;
 
 const InstrumentsWrapper = styled(FlexContainer)`
+  position: absolute;
   top: 8px;
   left: 8px;
+`;
+
+const TimeScaleWrapper = styled.div`
+  position: absolute;
+  bottom: 8px;
+  left: 60px;
+  z-index: 102;
 `;

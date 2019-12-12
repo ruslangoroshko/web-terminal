@@ -5,7 +5,6 @@ import injectInerceptors from './http/interceptors';
 import Helmet from 'react-helmet';
 import favicon from './assets/images/favicon.ico';
 import RoutingLayout from './routing/RoutingLayout';
-import ColorsPallete from './styles/colorPallete';
 
 interface Props {}
 

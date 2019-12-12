@@ -29,6 +29,11 @@ module.exports = (env, argv) => {
             },
           ],
         },
+        {
+          test: /\.svg$/,
+          include: path.resolve(__dirname, 'src/assets/svg/'),
+          use: ['svg-sprite-loader', 'svgo-loader'],
+        },
       ],
     },
     resolve: {
@@ -76,7 +81,9 @@ module.exports = (env, argv) => {
             ? JSON.stringify('./charting_library/')
             : JSON.stringify('./src/vendor/charting_library/'),
       }),
-      new CopyPlugin([{ from: './src/vendor/charting_library/', to: 'charting_library' }]),
+      new CopyPlugin([
+        { from: './src/vendor/charting_library/', to: 'charting_library' },
+      ]),
     ],
   };
 };

@@ -8,6 +8,11 @@ declare module '*.ico' {
   export default value;
 }
 
+declare module '*.svg' {
+  const value: any;
+  export default value;
+}
+
 
 declare const WS_HOST: string;
 declare const API_STRING: string;
