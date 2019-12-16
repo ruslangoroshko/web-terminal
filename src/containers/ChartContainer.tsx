@@ -106,6 +106,7 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'paneProperties.legendProperties.showLegend': false,
         'paneProperties.legendProperties.showBarChange': false,
         'paneProperties.legendProperties.showOnlyPriceSource': false,
+        'paneProperties.axisProperties.autoScale': true,
         'linetoolnote.backgroundColor': ColorsPallete.RAZZMATAZZ,
         'scalesProperties.lineColor': 'transparent',
         'scalesProperties.textColor': '#AAA',

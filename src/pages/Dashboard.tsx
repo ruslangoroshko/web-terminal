@@ -27,6 +27,7 @@ import { IChartingLibraryWidget } from '../vendor/charting_library/charting_libr
 import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import ChartTimeScale from '../components/ChartTimeScale';
 import CollapsableWrapper from '../components/CollapsableWrapper';
+import { v4 } from 'uuid';
 
 function Dashboard() {
   const { isLoading } = useContext(MainAppContext);
@@ -130,8 +131,7 @@ function Dashboard() {
             data={activePositions}
             closePosition={closePosition}
             instrumentId={activeInstrument ? activeInstrument.id : ''}
-            balance={account!.balance}
-            leverage={activeInstrument.multiplier[0]}
+            multiplier={activeInstrument.multiplier[0]}
           ></Table>
         ) : null;
 
@@ -147,7 +147,7 @@ function Dashboard() {
   };
 
   const closePosition = (positionId: number) => () => {
-    API.closePosition({ accountId: account!.id, positionId });
+    API.closePosition({ accountId: account!.id, positionId, processId: v4() });
   };
 
   useEffect(() => {

@@ -32,9 +32,11 @@ class API {
   };
 
   closePosition = async (position: ClosePositionModel) => {
+    const formData = this.convertParamsToFormData(position);
+
     const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.POSITIONS.CLOSE}`,
-      position
+      formData
     );
     return response.data;
   };

@@ -12,8 +12,7 @@ interface Props {
   columns: Column<any>[];
   closePosition: (positionId: number) => () => void;
   instrumentId: string;
-  balance: number;
-  leverage: number;
+  multiplier: number;
 }
 
 const Table: FC<Props> = ({
@@ -21,8 +20,7 @@ const Table: FC<Props> = ({
   data,
   closePosition,
   instrumentId,
-  balance,
-  leverage,
+  multiplier: leverage,
 }) => {
   // Use the state and functions returned from useTable to build your UI
   const {

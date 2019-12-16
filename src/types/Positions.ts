@@ -37,4 +37,5 @@ export interface PositionModelWSDTO {
 export interface ClosePositionModel {
   accountId: string;
   positionId: number;
+  processId: string;
 }
