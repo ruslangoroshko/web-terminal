@@ -75,14 +75,17 @@ function Dashboard() {
   const renderTabType = () => {
     switch (tabType) {
       case TabType.ActivePositions:
-        const columns = [
+        const columns: Array<{
+          accessor: keyof PositionModelWSDTO;
+          Header: string;
+        }> = [
           {
             accessor: 'id',
             Header: 'Id',
           },
           {
-            accessor: 'volume',
-            Header: 'Volume',
+            accessor: 'investmentAmount',
+            Header: 'investmentAmount',
           },
           {
             accessor: 'openPrice',
@@ -97,16 +100,12 @@ function Dashboard() {
             Header: 'instrument',
           },
           {
-            accessor: 'type',
-            Header: 'type',
-          },
-          {
             accessor: 'swap',
             Header: 'swap',
           },
           {
-            accessor: 'comission',
-            Header: 'comission',
+            accessor: 'commission',
+            Header: 'commission',
           },
           {
             accessor: 'takeProfitInCurrency',

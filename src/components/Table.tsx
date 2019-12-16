@@ -68,12 +68,14 @@ const Table: FC<Props> = ({
               })}
               <Td>
                 {calcPnL({
-                  investment: balance,
+                  investment: row.values.investmentAmount,
                   leverage,
-                  costs: row.values.swap + row.values.comission,
+                  costs: row.values.swap + row.values.commission,
                   side: row.values.type === AskBidEnum.Buy ? 1 : -1,
                   currentPrice:
-                    row.values.type === AskBidEnum.Buy ? quote.ask : quote.bid,
+                    row.values.operation === AskBidEnum.Buy
+                      ? quote.ask.c
+                      : quote.bid.c,
                   openPrice: row.values.openPrice,
                 })}
               </Td>

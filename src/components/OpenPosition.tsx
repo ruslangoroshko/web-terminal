@@ -52,8 +52,8 @@ function OpenPosition(props: Props) {
   const validationSchema = yup.object().shape<OpenModel | OpenModelRate>({
     investmentAmount: yup
       .number()
-      .min(instrument.minOperationVolume, 'minOperationVolume')
-      .max(instrument.maxOperationVolume, 'maxOperationVolume')
+      .min(instrument.minOperationVolume / multiplier, 'minOperationVolume')
+      .max(instrument.maxOperationVolume / multiplier, 'maxOperationVolume')
       .required('Required amount'),
     multiplier: yup.number().required('Required amount'),
     tp: yup.number(),
