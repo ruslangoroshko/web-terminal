@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { Formik, Form, Field, FieldProps } from 'formik';
 import { OpenPositionModel } from '../types/Positions';
@@ -10,6 +10,8 @@ import Fields from '../constants/fields';
 import { AskBidEnum } from '../enums/AskBid';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { v4 } from 'uuid';
+import { MainAppContext } from '../store/MainAppProvider';
+import { QuotesContext } from '../store/QuotesProvider';
 
 interface Props {
   quoteName: string;
@@ -21,14 +23,14 @@ interface Props {
 interface OpenModelRate {
   slRate: OpenPositionModel['slRate'];
   tpRate: OpenPositionModel['tpRate'];
-  amount: OpenPositionModel['amount'];
+  amount: OpenPositionModel['investmentAmount'];
   multiplier: OpenPositionModel['multiplier'];
 }
 
 interface OpenModel {
   sl: OpenPositionModel['sl'];
   tp: OpenPositionModel['tp'];
-  amount: OpenPositionModel['amount'];
+  amount: OpenPositionModel['investmentAmount'];
   multiplier: OpenPositionModel['multiplier'];
 }
 
@@ -36,20 +38,22 @@ function OpenPosition(props: Props) {
   const { quoteName, accountId, instrument, multiplier } = props;
   const [isRate, setRate] = useState(false);
 
+  const { quotes } = useContext(QuotesContext);
+
   const initialValues: OpenPositionModel = {
     processId: v4(),
     accountId,
     instrumentId: instrument.id,
     operation: AskBidEnum.Buy,
     multiplier,
-    amount: 0,
+    investmentAmount: 0,
   };
 
   const validationSchema = yup.object().shape<OpenModel | OpenModelRate>({
     amount: yup
       .number()
-      .min(instrument.minOperationVolume / multiplier, 'minOperationVolume')
-      .max(instrument.maxOperationVolume / multiplier, 'maxOperationVolume')
+      .min(instrument.minOperationVolume, 'minOperationVolume')
+      .max(instrument.maxOperationVolume, 'maxOperationVolume')
       .required('Required amount'),
     multiplier: yup.number().required('Required amount'),
     tp: yup.number(),

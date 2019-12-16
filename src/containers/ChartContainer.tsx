@@ -1,5 +1,4 @@
 import React, { FC, useEffect, useContext } from 'react';
-
 import {
   ChartingLibraryWidgetOptions,
   LanguageCode,

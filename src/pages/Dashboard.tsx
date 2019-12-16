@@ -45,6 +45,7 @@ function Dashboard() {
     InstrumentModelWSDTO
   >();
   const [instruments, setInstruments] = useState<InstrumentModelWSDTO[]>([]);
+  const [connectionId, setConnectionId] = useState<string>('');
 
   const switchInstrument = (instrument: InstrumentModelWSDTO) => () => {
     setActiveInstrument(instrument);
@@ -155,6 +156,8 @@ function Dashboard() {
         Topics.ACCOUNTS,
         (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
           setAccount(response.data[0]);
+          // @ts-ignore
+          setConnectionId(activeSession.connection.transport.webSocket.url.split('id=')[1]);
           activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
             [Fields.ACCOUNT_ID]: response.data[0].id,
           });
@@ -212,6 +215,10 @@ function Dashboard() {
         </FlexContainer>
         <FlexContainer padding="0 20px" alignItems="center">
           <FlexContainer flexDirection="column" margin="0 20px 0 0">
+            <AccountNameTitle>Connection id</AccountNameTitle>
+            <AccountName>{connectionId}</AccountName>
+          </FlexContainer>
+          <FlexContainer flexDirection="column" margin="0 20px 0 0">
             <AccountBalanceTitle>Total balance</AccountBalanceTitle>
             <AccountBalance>
               {account.currency}&nbsp;
@@ -263,31 +270,29 @@ function Dashboard() {
               </TimeScaleWrapper>
             </FlexContainer>
           </FlexContainer>
-          <CollapsableWrapper>
-            <FlexContainer flexDirection="column">
-              <FlexContainer margin="0 0 20px" width="100%">
-                <TabButton
-                  onClick={switchTabType(TabType.ActivePositions)}
-                  isActive={tabType === TabType.ActivePositions}
-                >
-                  Active Positions
-                </TabButton>
-                <TabButton
-                  onClick={switchTabType(TabType.PendingOrders)}
-                  isActive={tabType === TabType.PendingOrders}
-                >
-                  Pending orders
-                </TabButton>
-                <TabButton
-                  onClick={switchTabType(TabType.History)}
-                  isActive={tabType === TabType.History}
-                >
-                  History
-                </TabButton>
-              </FlexContainer>
-              <FlexContainer>{renderTabType()}</FlexContainer>
+          <FlexContainer flexDirection="column">
+            <FlexContainer margin="0 0 20px" width="100%">
+              <TabButton
+                onClick={switchTabType(TabType.ActivePositions)}
+                isActive={tabType === TabType.ActivePositions}
+              >
+                Active Positions
+              </TabButton>
+              <TabButton
+                onClick={switchTabType(TabType.PendingOrders)}
+                isActive={tabType === TabType.PendingOrders}
+              >
+                Pending orders
+              </TabButton>
+              <TabButton
+                onClick={switchTabType(TabType.History)}
+                isActive={tabType === TabType.History}
+              >
+                History
+              </TabButton>
             </FlexContainer>
-          </CollapsableWrapper>
+            <FlexContainer>{renderTabType()}</FlexContainer>
+          </FlexContainer>
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 0 20px" width="400px">
           {instruments.map((instrument, index) => (

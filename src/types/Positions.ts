@@ -5,7 +5,7 @@ export interface OpenPositionModel {
   accountId: string;
   instrumentId: string;
   operation: number;
-  amount: number;
+  investmentAmount: number;
   multiplier: number;
   tp?: number;
   sl?: number;
