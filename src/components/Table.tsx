@@ -72,8 +72,8 @@ const Table: FC<Props> = ({
                   side: row.values.type === AskBidEnum.Buy ? 1 : -1,
                   currentPrice:
                     row.values.operation === AskBidEnum.Buy
-                      ? quote.ask.c
-                      : quote.bid.c,
+                      ? quote.bid.c
+                      : quote.ask.c,
                   openPrice: row.values.openPrice,
                 })}
               </Td>
