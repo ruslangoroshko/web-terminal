@@ -23,14 +23,14 @@ interface Props {
 interface OpenModelRate {
   slRate: OpenPositionModel['slRate'];
   tpRate: OpenPositionModel['tpRate'];
-  amount: OpenPositionModel['investmentAmount'];
+  investmentAmount: OpenPositionModel['investmentAmount'];
   multiplier: OpenPositionModel['multiplier'];
 }
 
 interface OpenModel {
   sl: OpenPositionModel['sl'];
   tp: OpenPositionModel['tp'];
-  amount: OpenPositionModel['investmentAmount'];
+  investmentAmount: OpenPositionModel['investmentAmount'];
   multiplier: OpenPositionModel['multiplier'];
 }
 
@@ -50,7 +50,7 @@ function OpenPosition(props: Props) {
   };
 
   const validationSchema = yup.object().shape<OpenModel | OpenModelRate>({
-    amount: yup
+    investmentAmount: yup
       .number()
       .min(instrument.minOperationVolume, 'minOperationVolume')
       .max(instrument.maxOperationVolume, 'maxOperationVolume')

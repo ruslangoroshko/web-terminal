@@ -65,9 +65,10 @@ function Dashboard() {
   };
 
   const setTimeScale = (resolution: string) => {
-    setResolution(resolution);
     if (tradingWidget) {
-      tradingWidget.setSymbol(activeInstrument!.id, resolution, () => {});
+      tradingWidget.setSymbol(activeInstrument!.id, resolution, () => {
+        setResolution(resolution);
+      });
     }
   };
 
@@ -156,8 +157,10 @@ function Dashboard() {
         Topics.ACCOUNTS,
         (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
           setAccount(response.data[0]);
-          // @ts-ignore
-          setConnectionId(activeSession.connection.transport.webSocket.url.split('id=')[1]);
+          setConnectionId(
+            // @ts-ignore
+            activeSession.connection.transport.webSocket.url.split('id=')[1]
+          );
           activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
             [Fields.ACCOUNT_ID]: response.data[0].id,
           });

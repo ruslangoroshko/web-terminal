@@ -1,4 +1,4 @@
-import { TradeEngineOperationResult } from '../enums/TradeEngineOperationResult';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 
 export interface OpenPositionModel {
   processId: string;
@@ -14,7 +14,7 @@ export interface OpenPositionModel {
 }
 
 export interface OpenPositionResponseDTO {
-  result: TradeEngineOperationResult;
+  result: OperationApiResponseCodes;
   position: PositionModelWSDTO;
 }
 

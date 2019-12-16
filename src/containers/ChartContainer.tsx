@@ -61,7 +61,7 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
       container_id: defaultProps.containerId,
       library_path: defaultProps.library_path,
       locale: getLanguageFromURL() || 'en',
-
+      debug: true,
       disabled_features: [
         'header_widget',
         'legend_widget',
@@ -69,10 +69,10 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'use_localstorage_for_settings',
         'border_around_the_chart',
         'left_toolbar',
-        'control_bar',
         'symbol_info',
         'context_menus',
       ],
+      enabled_features: ['move_logo_to_main_pane'],
       client_id: defaultProps.clientId,
       user_id: defaultProps.userId,
       fullscreen: defaultProps.fullscreen,

@@ -26,6 +26,10 @@ import { InstrumentModelWSDTO } from '../types/Instruments';
 class DataFeedService implements IBasicDataFeed {
   static config = {
     supported_resolutions: supportedResolutions,
+    supports_search: false,
+    supports_group_request: false,
+    supports_marks: false,
+    supports_timescale_marks: false,
   };
 
   activeSession: HubConnection;
@@ -66,8 +70,9 @@ class DataFeedService implements IBasicDataFeed {
       pricescale: 100000,
       has_intraday: true,
       has_seconds: true,
+      has_daily: true,
+      has_weekly_and_monthly: true,
       has_no_volume: true,
-      intraday_multipliers: ['1S', '1', '60'],
       supported_resolutions: supportedResolutions,
       data_status: 'streaming',
     };
