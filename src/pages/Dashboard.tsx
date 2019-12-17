@@ -194,6 +194,20 @@ function Dashboard() {
           }
         }
       );
+      activeSession.on(
+        Topics.UPDATE_ACCOUNT,
+        (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
+          if (response.accountId === account.id) {
+            const newActivePositions = activePositions.map(item => {
+              if (item.id === response.data.id) {
+                return response.data;
+              }
+              return item;
+            });
+            setActivePositions(newActivePositions);
+          }
+        }
+      );
     }
   }, [account]);
 

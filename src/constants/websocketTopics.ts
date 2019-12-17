@@ -12,6 +12,7 @@ const Topics = {
   SET_ACTIVE_ACCOUNT: 'SetActiveAccount',
   INIT: 'init',
   UNAUTHORIZED: 'unauthorized',
+  UPDATE_ACTIVE_POSITION: 'updateactiveposition',
 };
 
 Object.freeze(Topics);

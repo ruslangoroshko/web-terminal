@@ -32,6 +32,7 @@ export interface PositionModelWSDTO {
   stopLossInCurrency?: number;
   takeProfitRate?: number;
   stopLossRate?: number;
+  timeStamp: number;
 }
 
 export interface ClosePositionModel {
