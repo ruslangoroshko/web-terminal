@@ -217,6 +217,7 @@ function Dashboard() {
       height="100vh"
       flexDirection="column"
       backgroundColor="#191f2d"
+      padding="20px"
     >
       <FlexContainer
         width="100%"
@@ -247,12 +248,12 @@ function Dashboard() {
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
-      <FlexContainer justifyContent="space-between" padding="20px">
-        <FlexContainer flexDirection="column" width="100%" height="100%">
-          <FlexContainer margin="0 20px 20px 0" height="100%">
+      <FlexContainer justifyContent="space-between" padding="20px" width="100%">
+        <FlexContainer flexDirection="column" height="100%" width="calc(75% - 20px)">
+          <FlexContainer margin="0 20px 20px 0" height="100%" width="100%">
             <FlexContainer
-              width="100%"
               height="100%"
+              width="100%"
               minHeight="400px"
               position="relative"
               padding="34px 0 40px 0"
@@ -286,31 +287,8 @@ function Dashboard() {
               </TimeScaleWrapper>
             </FlexContainer>
           </FlexContainer>
-          <FlexContainer flexDirection="column">
-            <FlexContainer margin="0 0 20px" width="100%">
-              <TabButton
-                onClick={switchTabType(TabType.ActivePositions)}
-                isActive={tabType === TabType.ActivePositions}
-              >
-                Active Positions
-              </TabButton>
-              <TabButton
-                onClick={switchTabType(TabType.PendingOrders)}
-                isActive={tabType === TabType.PendingOrders}
-              >
-                Pending orders
-              </TabButton>
-              <TabButton
-                onClick={switchTabType(TabType.History)}
-                isActive={tabType === TabType.History}
-              >
-                History
-              </TabButton>
-            </FlexContainer>
-            <FlexContainer>{renderTabType()}</FlexContainer>
-          </FlexContainer>
         </FlexContainer>
-        <FlexContainer flexDirection="column" margin="0 0 20px" width="400px">
+        <FlexContainer flexDirection="column" margin="0 0 20px" width="25%">
           {instruments.map((instrument, index) => (
             <AccordionItem
               key={instrument.id}
@@ -327,7 +305,29 @@ function Dashboard() {
           ))}
         </FlexContainer>
       </FlexContainer>
-      <FlexContainer justifyContent="center"></FlexContainer>
+      <FlexContainer flexDirection="column">
+        <FlexContainer margin="0 0 20px" width="100%">
+          <TabButton
+            onClick={switchTabType(TabType.ActivePositions)}
+            isActive={tabType === TabType.ActivePositions}
+          >
+            Active Positions
+          </TabButton>
+          <TabButton
+            onClick={switchTabType(TabType.PendingOrders)}
+            isActive={tabType === TabType.PendingOrders}
+          >
+            Pending orders
+          </TabButton>
+          <TabButton
+            onClick={switchTabType(TabType.History)}
+            isActive={tabType === TabType.History}
+          >
+            History
+          </TabButton>
+        </FlexContainer>
+        <FlexContainer>{renderTabType()}</FlexContainer>
+      </FlexContainer>
     </FlexContainer>
   ) : null;
 }
