@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, Fragment } from 'react';
 
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
@@ -43,7 +43,7 @@ const Table: FC<Props> = ({
       ))}
       <FlexContainer>
         {data.map((row, i) => (
-          <>
+          <Fragment key={row.id}>
             {Object.values(row).map(item => (
               <TdDiv>{item}</TdDiv>
             ))}
@@ -63,7 +63,7 @@ const Table: FC<Props> = ({
                 close Position
               </ButtonWithoutStyles>
             </TdDiv>
-          </>
+          </Fragment>
         ))}
       </FlexContainer>
     </FlexContainer>

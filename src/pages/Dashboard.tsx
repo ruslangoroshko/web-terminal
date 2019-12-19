@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
-import OpenPosition from '../components/OpenPosition';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
-import AccordionItem from '../components/AccordionItem';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { TabType } from '../enums/TabType';
 import Topics from '../constants/websocketTopics';
@@ -18,11 +16,11 @@ import { InstrumentModelWSDTO } from '../types/Instruments';
 import { PositionModelWSDTO } from '../types/Positions';
 import { IChartingLibraryWidget } from '../vendor/charting_library/charting_library.min';
 import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
-import ChartTimeScale from '../components/ChartTimeScale';
 import { v4 } from 'uuid';
 import SvgIcon from '../components/SvgIcon';
 import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';
 import ActiveInstrument from '../components/ActiveInstrument';
+import BuySellPanel from '../components/BuySellPanel';
 
 function Dashboard() {
   const { isLoading, account, setAccount, activeSession } = useContext(
@@ -253,7 +251,7 @@ function Dashboard() {
         </FlexContainer>
       </FlexContainer>
       <GridWrapper>
-        <ChartWrapper height="456px">
+        <ChartWrapper height="456px" backgroundColor="#191e1e">
           {activeInstrument && (
             <TVChartContainer
               intrument={activeInstrument}
@@ -261,16 +259,9 @@ function Dashboard() {
             />
           )}
         </ChartWrapper>
-        <BuySellPanel>
-          {activeInstrument && (
-            <OpenPosition
-              quoteName={activeInstrument.quote}
-              accountId={activeInstrument.id}
-              instrument={activeInstrument}
-              multiplier={activeInstrument.multiplier[0]}
-            ></OpenPosition>
-          )}
-        </BuySellPanel>
+        <BuySellPanelWrapper>
+          {activeInstrument && <BuySellPanel currencySymbol="$"></BuySellPanel>}
+        </BuySellPanelWrapper>
         <ChartInstruments>asd</ChartInstruments>
       </GridWrapper>
       <FlexContainer flexDirection="column">
@@ -332,6 +323,8 @@ const GridWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 172px;
   width: 100%;
+  grid-gap: 1px;
+  border-color: #383c3f;
 `;
 
 const ChartWrapper = styled(FlexContainer)`
@@ -344,7 +337,7 @@ const ChartInstruments = styled(FlexContainer)`
   grid-column: 1 / span 1;
 `;
 
-const BuySellPanel = styled(FlexContainer)`
+const BuySellPanelWrapper = styled(FlexContainer)`
   grid-row: 1 / span 2;
   grid-column: 2 / span 1;
 `;

@@ -72,7 +72,10 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'symbol_info',
         'context_menus',
       ],
-      enabled_features: ['move_logo_to_main_pane'],
+      enabled_features: [
+        'move_logo_to_main_pane',
+        'remove_library_container_border',
+      ],
       client_id: defaultProps.clientId,
       user_id: defaultProps.userId,
       fullscreen: defaultProps.fullscreen,
