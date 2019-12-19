@@ -11,8 +11,6 @@ export const QuotesContext = React.createContext<ContextProps>(
   {} as ContextProps
 );
 
-export const QuotesConsumer = QuotesContext.Consumer;
-
 interface Props {}
 
 const QuotesProvider: FC<Props> = ({ children }) => {

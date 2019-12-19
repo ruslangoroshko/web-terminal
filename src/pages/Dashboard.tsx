@@ -1,16 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
-import {
-  AccountName,
-  AccountBalance,
-  AccountBalanceTitle,
-  AccountNameTitle,
-} from '../styles/Pages/Dashboard';
 import OpenPosition from '../components/OpenPosition';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import AccordionItem from '../components/AccordionItem';
-import monfexLogo from '../assets/images/monfex-logo.png';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { TabType } from '../enums/TabType';
 import Topics from '../constants/websocketTopics';
@@ -26,17 +19,19 @@ import { PositionModelWSDTO } from '../types/Positions';
 import { IChartingLibraryWidget } from '../vendor/charting_library/charting_library.min';
 import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import ChartTimeScale from '../components/ChartTimeScale';
-import CollapsableWrapper from '../components/CollapsableWrapper';
 import { v4 } from 'uuid';
+import SvgIcon from '../components/SvgIcon';
+import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';
+import ActiveInstrument from '../components/ActiveInstrument';
 
 function Dashboard() {
-  const { isLoading } = useContext(MainAppContext);
-  const { activeSession } = useContext(MainAppContext);
+  const { isLoading, account, setAccount, activeSession } = useContext(
+    MainAppContext
+  );
   const [resolution, setResolution] = useState(supportedResolutions[0]);
 
   const [tradingWidget, setTradingWidget] = useState<IChartingLibraryWidget>();
   const [tabType, setTabType] = useState(TabType.ActivePositions);
-  const [account, setAccount] = useState<AccountModelWebSocketDTO>();
 
   const [activePositions, setActivePositions] = useState<PositionModelWSDTO[]>(
     []
@@ -46,7 +41,7 @@ function Dashboard() {
     InstrumentModelWSDTO
   >();
   const [instruments, setInstruments] = useState<InstrumentModelWSDTO[]>([]);
-  const [connectionId, setConnectionId] = useState<string>('');
+  const [, setConnectionId] = useState<string>('');
 
   const switchInstrument = (instrument: InstrumentModelWSDTO) => () => {
     setActiveInstrument(instrument);
@@ -211,100 +206,73 @@ function Dashboard() {
     }
   }, [account]);
 
-  return !isLoading && account ? (
+  const handleRemoveInstrument = (instrumentId: string) => () => {
+    throw new Error('handleRemoveInstrument');
+  };
+
+  const handleAddNewInstrument = () => {
+    throw new Error('handleAddNewInstrument');
+  };
+
+  return !isLoading && account && activeSession ? (
     <FlexContainer
       width="100%"
-      height="100vh"
+      height="100%"
       flexDirection="column"
-      backgroundColor="#191f2d"
-      padding="20px"
+      backgroundColor="#262A2D"
     >
       <FlexContainer
+        padding="8px 0 8px 8px"
         width="100%"
-        padding="20px"
-        alignItems="center"
-        justifyContent="space-between"
+        flexDirection="column"
       >
+        <FlexContainer margin="0 0 24px 0">
+          <FlexContainer padding="4px 4px 4px 0">
+            {instruments.map(item => (
+              <Instrument
+                activeSession={activeSession}
+                instrument={item}
+                key={item.id}
+                isActive={item.id === activeInstrument?.id}
+                handleClose={handleRemoveInstrument(item.id)}
+                switchInstrument={switchInstrument(item)}
+                positionsLength={activePositions.length}
+              />
+            ))}
+          </FlexContainer>
+          <FlexContainer>
+            <AddIntrumentButton onClick={handleAddNewInstrument}>
+              <SvgIcon {...IconAddInstrument} />
+            </AddIntrumentButton>
+          </FlexContainer>
+        </FlexContainer>
         <FlexContainer>
-          <FlexContainer alignItems="center" margin="0 30px 0 0">
-            <img src={monfexLogo} alt="" width="100%" />
-          </FlexContainer>
-        </FlexContainer>
-        <FlexContainer padding="0 20px" alignItems="center">
-          <FlexContainer flexDirection="column" margin="0 20px 0 0">
-            <AccountNameTitle>Connection id</AccountNameTitle>
-            <AccountName>{connectionId}</AccountName>
-          </FlexContainer>
-          <FlexContainer flexDirection="column" margin="0 20px 0 0">
-            <AccountBalanceTitle>Total balance</AccountBalanceTitle>
-            <AccountBalance>
-              {account.currency}&nbsp;
-              {account.balance}
-            </AccountBalance>
-          </FlexContainer>
-          <FlexContainer flexDirection="column" margin="0 20px 0 0">
-            <AccountNameTitle>Account id</AccountNameTitle>
-            <AccountName>{account.id}</AccountName>
-          </FlexContainer>
+          {activeInstrument && (
+            <ActiveInstrument instrument={activeInstrument} />
+          )}
         </FlexContainer>
       </FlexContainer>
-      <FlexContainer justifyContent="space-between" padding="20px" width="100%">
-        <FlexContainer flexDirection="column" height="100%" width="calc(75% - 20px)">
-          <FlexContainer margin="0 20px 20px 0" height="100%" width="100%">
-            <FlexContainer
-              height="100%"
-              width="100%"
-              minHeight="400px"
-              position="relative"
-              padding="34px 0 40px 0"
-              backgroundColor="#191e1e"
-            >
-              {activeInstrument && (
-                <TVChartContainer
-                  intrument={activeInstrument}
-                  tradingWidgetCallback={tradingWidgetCallback}
-                />
-              )}
-              <InstrumentsWrapper position="absolute">
-                {activeSession &&
-                  instruments.map(item => (
-                    <Instrument
-                      isActive={
-                        activeInstrument && activeInstrument.id === item.id
-                      }
-                      key={item.id}
-                      activeSession={activeSession}
-                      switchInstrument={switchInstrument}
-                      instrument={item}
-                    />
-                  ))}
-              </InstrumentsWrapper>
-              <TimeScaleWrapper>
-                <ChartTimeScale
-                  activeResolution={resolution}
-                  setTimeScale={setTimeScale}
-                ></ChartTimeScale>
-              </TimeScaleWrapper>
-            </FlexContainer>
-          </FlexContainer>
-        </FlexContainer>
-        <FlexContainer flexDirection="column" margin="0 0 20px" width="25%">
-          {instruments.map((instrument, index) => (
-            <AccordionItem
-              key={instrument.id}
-              title={instrument.name}
-              isActiveInit={index === 0}
-            >
-              <OpenPosition
-                quoteName={instrument.quote}
-                accountId={account.id}
-                instrument={instrument}
-                multiplier={instrument.multiplier[0]}
-              ></OpenPosition>
-            </AccordionItem>
-          ))}
-        </FlexContainer>
-      </FlexContainer>
+      <GridWrapper>
+        <ChartWrapper height="456px">
+          {activeInstrument && (
+            <TVChartContainer
+              intrument={activeInstrument}
+              tradingWidgetCallback={tradingWidgetCallback}
+            />
+          )}
+        </ChartWrapper>
+        <BuySellPanel>
+          {activeInstrument && (
+            <OpenPosition
+              quoteName={activeInstrument.quote}
+              accountId={activeInstrument.id}
+              instrument={activeInstrument}
+              multiplier={activeInstrument.multiplier[0]}
+            ></OpenPosition>
+          )}
+        </BuySellPanel>
+        <ChartInstruments>asd</ChartInstruments>
+      </GridWrapper>
       <FlexContainer flexDirection="column">
         <FlexContainer margin="0 0 20px" width="100%">
           <TabButton
@@ -351,15 +319,32 @@ const TabButton = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
   }
 `;
 
-const InstrumentsWrapper = styled(FlexContainer)`
-  position: absolute;
-  top: 8px;
-  left: 8px;
+const AddIntrumentButton = styled(ButtonWithoutStyles)`
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  border-radius: 2px;
 `;
 
-const TimeScaleWrapper = styled.div`
-  position: absolute;
-  bottom: 8px;
-  left: 60px;
-  z-index: 102;
+const GridWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 172px;
+  width: 100%;
+`;
+
+const ChartWrapper = styled(FlexContainer)`
+  grid-row: 1 / span 1;
+  grid-column: 1 / span 1;
+`;
+
+const ChartInstruments = styled(FlexContainer)`
+  grid-row: 2 / span 1;
+  grid-column: 1 / span 1;
+`;
+
+const BuySellPanel = styled(FlexContainer)`
+  grid-row: 1 / span 2;
+  grid-column: 2 / span 1;
 `;

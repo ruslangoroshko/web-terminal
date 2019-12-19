@@ -8,6 +8,7 @@ import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import Axios from 'axios';
 import RequestHeaders from '../constants/headers';
+import { AccountModelWebSocketDTO } from '../types/Accounts';
 
 interface ContextProps {
   token: string;
@@ -16,13 +17,13 @@ interface ContextProps {
   signUp: (credentials: UserRegistration) => Promise<unknown>;
   activeSession: HubConnection | undefined;
   isLoading: boolean;
+  account?: AccountModelWebSocketDTO;
+  setAccount: (acc: AccountModelWebSocketDTO) => void;
 }
 // TODO: find out how to avoid typo hack;
 export const MainAppContext = React.createContext<ContextProps>(
   {} as ContextProps
 );
-
-export const MainAppConsumer = MainAppContext.Consumer;
 
 interface Props {}
 
@@ -33,6 +34,7 @@ const MainAppProvider: FC<Props> = ({ children }) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [activeSession, setActiveSession] = useState<HubConnection>();
+  const [account, setAccount] = useState<AccountModelWebSocketDTO>();
 
   const setTokenHandler = (token: string) => {
     localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, token);
@@ -105,6 +107,8 @@ const MainAppProvider: FC<Props> = ({ children }) => {
         activeSession,
         isLoading,
         signUp,
+        account,
+        setAccount,
       }}
     >
       {children}

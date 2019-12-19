@@ -1,23 +1,45 @@
 import React from 'react';
-import { Switch, Router } from 'react-router';
-import routesList from '../constants/routesList';
+import routesList, { RouteLayoutType } from '../constants/routesList';
 import RouteWrapper from '../components/RouteWrapper';
-import { appHistory } from './history';
+import { useLocation } from 'react-router-dom';
+import AuthorizedContainer from '../containers/AuthorizedContainer';
+import { FlexContainer } from '../styles/FlexContainer';
 
 interface Props {}
 
 function RoutingLayout(props: Props) {
   const {} = props;
+  const location = useLocation();
+  const allRoutes = routesList.map(route => (
+    <RouteWrapper key={route.path} {...route} />
+  ));
 
-  return (
-    <Router history={appHistory}>
-      <Switch>
-        {routesList.map(route => (
-          <RouteWrapper key={route.path} {...route} />
-        ))}
-      </Switch>
-    </Router>
-  );
+  const currentRoute = routesList.find(item => location.pathname === item.path);
+
+  let layoutType = RouteLayoutType.SignUp;
+
+  if (currentRoute) {
+    layoutType = currentRoute.layoutType;
+  }
+
+  switch (layoutType) {
+    case RouteLayoutType.Authorized:
+      return <AuthorizedContainer>{allRoutes}</AuthorizedContainer>;
+
+    case RouteLayoutType.SignUp:
+      return (
+        <FlexContainer height="100vh" width="100%">
+          {allRoutes}
+        </FlexContainer>
+      );
+
+    default:
+      return (
+        <FlexContainer height="100vh" width="100%">
+          {allRoutes}
+        </FlexContainer>
+      );
+  }
 }
 
 export default RoutingLayout;

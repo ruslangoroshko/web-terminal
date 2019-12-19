@@ -2,20 +2,21 @@ import React, { useContext, FunctionComponent } from 'react';
 import { Route, Redirect } from 'react-router';
 import Page from '../constants/Pages';
 import { MainAppContext } from '../store/MainAppProvider';
+import { RouteLayoutType } from '../constants/routesList';
 
 interface IProps {
   component: FunctionComponent<any>;
-  authRequired: boolean;
+  layoutType: RouteLayoutType;
 }
 
 type Props = IProps;
 
 function RouteWrapper(props: Props) {
-  const { component: Component, authRequired, ...otherProps } = props;
+  const { component: Component, layoutType, ...otherProps } = props;
   const { isAuthorized } = useContext(MainAppContext);
-  if (isAuthorized && !authRequired) {
+  if (isAuthorized && layoutType === RouteLayoutType.SignUp) {
     return <Redirect to={Page.DASHBOARD} />;
-  } else if (!isAuthorized && authRequired) {
+  } else if (!isAuthorized && layoutType === RouteLayoutType.Authorized) {
     return <Redirect to={Page.SIGN_IN} />;
   }
 

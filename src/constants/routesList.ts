@@ -3,24 +3,30 @@ import SingIn from '../pages/SingIn';
 import Page from './Pages';
 import SignUp from '../pages/SingUp';
 
+export enum RouteLayoutType {
+  Authorized,
+  SignUp,
+  Page404
+}
+
 const routesList = [
   {
     component: Dashboard,
     path: Page.DASHBOARD,
     exact: true,
-    authRequired: true,
+    layoutType: RouteLayoutType.Authorized
   },
   {
     component: SingIn,
     path: Page.SIGN_IN,
     exact: true,
-    authRequired: false,
+    layoutType: RouteLayoutType.SignUp
   },
   {
     component: SignUp,
     path: Page.SIGN_UP,
     exact: true,
-    authRequired: false,
+    layoutType: RouteLayoutType.SignUp
   },
 ];
 

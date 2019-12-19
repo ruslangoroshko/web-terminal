@@ -34,7 +34,7 @@ function SingIn(props: Props) {
   };
 
   return (
-    <FlexContainer justifyContent="center" alignItems="center" height="100vh">
+    <FlexContainer justifyContent="center" alignItems="center" height="100%" width="100%">
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}

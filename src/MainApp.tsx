@@ -5,6 +5,8 @@ import injectInerceptors from './http/interceptors';
 import Helmet from 'react-helmet';
 import favicon from './assets/images/favicon.ico';
 import RoutingLayout from './routing/RoutingLayout';
+import { Router, Switch } from 'react-router-dom';
+import { appHistory } from './routing/history';
 
 interface Props {}
 
@@ -17,7 +19,11 @@ function MainApp(props: Props) {
       <Helmet>
         <link rel="shortcut icon" href={favicon} />
       </Helmet>
-      <RoutingLayout></RoutingLayout>
+      <Router history={appHistory}>
+        <Switch>
+          <RoutingLayout></RoutingLayout>
+        </Switch>
+      </Router>
       <Global
         styles={css`
           ${reboot};

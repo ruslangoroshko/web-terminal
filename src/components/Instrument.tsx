@@ -16,12 +16,18 @@ import {
   CurrencyQuoteTitle,
   CurrencyQuoteInfo,
 } from '../styles/InstrumentComponentStyle';
+import IconClose from '../assets/svg/icon-instrument-close.svg';
+import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
+import SvgIcon from './SvgIcon';
+import styled from '@emotion/styled';
 
 interface Props {
   activeSession: HubConnection;
-  switchInstrument: (arg0: InstrumentModelWSDTO) => () => void;
+  switchInstrument: () => void;
   instrument: InstrumentModelWSDTO;
   isActive?: boolean;
+  handleClose: () => void;
+  positionsLength: number;
 }
 
 function Instrument({
@@ -29,49 +35,75 @@ function Instrument({
   instrument,
   switchInstrument,
   isActive,
+  handleClose,
+  positionsLength = 0,
 }: Props) {
   const { quotes } = useContext(QuotesContext);
   const quote = quotes[instrument.id];
   const context = useContext(QuotesContext);
 
   useEffect(() => {
-    if (instrument) {
-      activeSession.on(
-        Topics.BID_ASK,
-        (response: ResponseFromWebsocket<BidAskModelWSDTO[]>) => {
-          if (!response.data.length) {
-            return;
-          }
-
-          const newBidAsk = response.data[0];
-          if (newBidAsk.id === instrument.id) {
-            context.setQuote(newBidAsk);
-          }
+    activeSession.on(
+      Topics.BID_ASK,
+      (response: ResponseFromWebsocket<BidAskModelWSDTO[]>) => {
+        if (!response.data.length) {
+          return;
         }
-      );
-    }
+
+        const newBidAsk = response.data[0];
+        if (newBidAsk.id === instrument.id) {
+          context.setQuote(newBidAsk);
+        }
+      }
+    );
   }, [instrument]);
+
   return (
     <QuotesFeedWrapper
       isActive={isActive}
-      padding="10px"
-      onClick={switchInstrument(instrument)}
+      padding="8px 12px"
+      onClick={switchInstrument}
+      width="200px"
+      height="28px"
+      margin="0 4px 0 0"
+      alignItems="center"
+      justifyContent="space-between"
     >
-      <FlexContainer alignItems="center" justifyContent="center">
-        <CurrencyQuoteIcon src={currencyIcon} />
-      </FlexContainer>
-      <FlexContainer flexDirection="column" width="160px">
-        <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
-        <FlexContainer flexDirection="column">
-          {quote && (
-            <CurrencyQuoteInfo isGrowth={quote.dir === AskBidEnum.Sell}>
-              {calculateGrowth(quote.bid.c, quote.ask.c, instrument.digits)}
-            </CurrencyQuoteInfo>
-          )}
-        </FlexContainer>
+      <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
+      <FlexContainer alignItems="center">
+        {quote && <CurrencyQuoteInfo>{quote.bid.c}</CurrencyQuoteInfo>}
+        <PositionsCounter
+          justifyContent="center"
+          alignItems="center"
+          width="20px"
+          height="16px"
+          position="relative"
+        >
+          {positionsLength}
+        </PositionsCounter>
+        <ButtonWithoutStyles onClick={handleClose}>
+          <SvgIcon {...IconClose}></SvgIcon>
+        </ButtonWithoutStyles>
       </FlexContainer>
     </QuotesFeedWrapper>
   );
 }
 
 export default Instrument;
+
+const PositionsCounter = styled(FlexContainer)`
+  font-size: 11px;
+  line-height: 14px;
+  color: #ffffff;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+  }
+`;
