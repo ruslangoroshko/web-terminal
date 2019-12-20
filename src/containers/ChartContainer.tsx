@@ -109,13 +109,13 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'paneProperties.legendProperties.showLegend': false,
         'paneProperties.legendProperties.showBarChange': false,
         'paneProperties.legendProperties.showOnlyPriceSource': false,
-        'paneProperties.axisProperties.autoScale': true,
         'linetoolnote.backgroundColor': ColorsPallete.RAZZMATAZZ,
         'scalesProperties.lineColor': 'transparent',
         'scalesProperties.textColor': '#AAA',
         'scalesProperties.backgroundColor': 'transparent',
         'mainSeriesProperties.priceLineColor': '#fff',
         'mainSeriesProperties.priceLineWidth': 2,
+        'timeScale.rightOffset': 5,
       },
       theme: 'Dark',
     };
@@ -123,9 +123,6 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
     const tvWidget = new widget(widgetOptions);
 
     tvWidget.onChartReady(async () => {
-      tvWidget.chart().crossHairMoved(({ time, price }) => {
-        console.log({ time, price });
-      });
       tradingWidgetCallback(tvWidget);
     });
     return () => {

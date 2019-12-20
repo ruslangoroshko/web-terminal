@@ -12,7 +12,7 @@ function ChartSettingsButtons(props: Props) {
   const {} = props;
 
   return (
-    <FlexContainer>
+    <FlexContainer alignItems="center">
       <SettingsButton>
         <SvgIcon {...IconSettings} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
       </SettingsButton>

@@ -274,7 +274,9 @@ function Dashboard() {
             activeResolution={resolution}
             setTimeScale={setTimeScale}
           ></ChartTimeScale>
-          <ChartTimeFomat></ChartTimeFomat>
+          {tradingWidget && (
+            <ChartTimeFomat tvWidget={tradingWidget}></ChartTimeFomat>
+          )}
         </ChartInstruments>
       </GridWrapper>
     </FlexContainer>

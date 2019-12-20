@@ -37,7 +37,7 @@ const ChartTimeScale: FC<Props> = props => {
   };
 
   return (
-    <ChartTimeScaleWrapper padding="2px">
+    <ChartTimeScaleWrapper padding="2px" alignItems="center">
       {supportedResolutions.map(item => (
         <TimeScaleItem
           isActive={item === activeResolution}
