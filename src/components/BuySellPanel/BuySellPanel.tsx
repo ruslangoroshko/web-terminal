@@ -1,11 +1,11 @@
 import React from 'react';
-import { FlexContainer } from '../styles/FlexContainer';
+import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import MaskedInput from 'react-text-mask';
-import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
-import SvgIcon from './SvgIcon';
-import IconShevronUp from '../assets/svg/icon-shevron-up.svg';
-import IconShevronDown from '../assets/svg/icon-shevron-down.svg';
+import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import SvgIcon from '../SvgIcon';
+import IconShevronUp from '../../assets/svg/icon-shevron-up.svg';
+import IconShevronDown from '../../assets/svg/icon-shevron-down.svg';
 
 interface Props {
   currencySymbol: string;
@@ -128,10 +128,6 @@ function BuySellPanel(props: Props) {
 }
 
 export default BuySellPanel;
-
-const Dropdown = styled(FlexContainer)`
-  margin-bottom: 14px;
-`;
 
 const ButtonAutoClosePurchase = styled(ButtonWithoutStyles)`
   height: 40px;

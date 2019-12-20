@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
-import { FlexContainer } from '../styles/FlexContainer';
-import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
+import { FlexContainer } from '../../styles/FlexContainer';
+import { supportedResolutions } from '../../constants/supportedResolutionsTimeScale';
 import styled from '@emotion/styled';
-import ColorsPallete from '../styles/colorPallete';
-import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
+import ColorsPallete from '../../styles/colorPallete';
 
 interface Props {
   activeResolution: string;

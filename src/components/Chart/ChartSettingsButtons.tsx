@@ -1,10 +1,10 @@
 import React from 'react';
-import { FlexContainer } from '../styles/FlexContainer';
+import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
-import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
-import SvgIcon from './SvgIcon';
-import IconSettings from '../assets/svg/icon-chart-settings.svg';
-import IconLineStyle from '../assets/svg/icon-chart-line-style.svg';
+import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import SvgIcon from '../SvgIcon';
+import IconSettings from '../../assets/svg/icon-chart-settings.svg';
+import IconLineStyle from '../../assets/svg/icon-chart-line-style.svg';
 
 interface Props {}
 

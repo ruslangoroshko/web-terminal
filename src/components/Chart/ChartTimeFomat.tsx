@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { FlexContainer } from '../styles/FlexContainer';
+import { FlexContainer } from '../../styles/FlexContainer';
 import { TimeScaleItem } from './ChartTimeScale';
-import { IChartingLibraryWidget } from '../vendor/charting_library/charting_library.min';
+import { IChartingLibraryWidget } from '../../vendor/charting_library/charting_library.min';
 
 interface Props {
   tvWidget: IChartingLibraryWidget;

@@ -20,10 +20,11 @@ import { v4 } from 'uuid';
 import SvgIcon from '../components/SvgIcon';
 import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';
 import ActiveInstrument from '../components/ActiveInstrument';
-import BuySellPanel from '../components/BuySellPanel';
-import ChartTimeScale from '../components/ChartTimeScale';
-import ChartSettingsButtons from '../components/ChartSettingsButtons';
-import ChartTimeFomat from '../components/ChartTimeFomat';
+import BuySellPanel from '../components/BuySellPanel/BuySellPanel';
+import ChartTimeScale from '../components/Chart/ChartTimeScale';
+import ChartSettingsButtons from '../components/Chart/ChartSettingsButtons';
+import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
+import AutoClosePopup from '../components/BuySellPanel/AutoClosePopup';
 
 function Dashboard() {
   const { isLoading, account, setAccount, activeSession } = useContext(
