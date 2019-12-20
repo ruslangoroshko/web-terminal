@@ -4,6 +4,7 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
+import PnLTypeDropdown from './PnLTypeDropdown';
 
 interface Props {
   toggle: () => void;
@@ -41,6 +42,7 @@ function AutoClosePopup(props: Props) {
       >
         <PlusSign>+</PlusSign>
         <InputPnL placeholder="Non Set"></InputPnL>
+        <PnLTypeDropdown></PnLTypeDropdown>
       </InputWrapper>
       <FlexContainer
         margin="0 0 6px 0"
