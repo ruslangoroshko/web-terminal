@@ -3,6 +3,7 @@ import { FlexContainer } from '../styles/FlexContainer';
 import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import styled from '@emotion/styled';
 import ColorsPallete from '../styles/colorPallete';
+import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 
 interface Props {
   activeResolution: string;
@@ -16,58 +17,70 @@ const ChartTimeScale: FC<Props> = props => {
     setTimeScale(resolution);
   };
 
+  const renderTextResolution = (resolution: string) => {
+    switch (resolution) {
+      case '1':
+        return '1 MIN';
+
+      case '60':
+        return '1 HOUR';
+
+      case '1D':
+        return '1 DAY';
+
+      case '1M':
+        return '1 MONTH';
+
+      default:
+        return resolution;
+    }
+  };
+
   return (
-    <TimeScaleWrapper>
+    <ChartTimeScaleWrapper padding="8px 12px">
       {supportedResolutions.map(item => (
         <TimeScaleItem
           isActive={item === activeResolution}
-          onClick={handleChangeResolution(item)}
           key={item}
+          onClick={handleChangeResolution(item)}
         >
-          {item}
+          {renderTextResolution(item)}
         </TimeScaleItem>
       ))}
-    </TimeScaleWrapper>
+    </ChartTimeScaleWrapper>
   );
 };
 
 export default ChartTimeScale;
 
-const TimeScaleWrapper = styled(FlexContainer)`
-  /* Rectangle 135 */
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    backdrop-filter: blur(12px);
-    background: rgba(255, 255, 255, 0.06);
-    z-index: -1;
-  }
-  border-radius: 2px;
-  position: relative;
-  padding: 2px;
+const ChartTimeScaleWrapper = styled(FlexContainer)`
+  border-right: 1px solid #383c3f;
+  border-left: 1px solid #383c3f;
 `;
 
 const TimeScaleItem = styled(FlexContainer)<{ isActive: boolean }>`
-  padding: 6px;
-  height: 100%;
-  width: 86px;
-  background-color: ${props =>
-    props.isActive ? ColorsPallete.BLUE_STONE : 'transparent'};
+  padding: 4px 10px;
+  height: 28px;
   border-radius: 2px;
   justify-content: center;
   align-items: center;
   font-family: 'Roboto', sans-serif;
-  font-weight: bold;
   font-size: 12px;
   line-height: 16px;
   text-transform: uppercase;
-  color: ${props => (props.isActive ? '#fff' : 'rgba(255, 255, 255, 0.6)')};
+  color: ${props =>
+    props.isActive ? ColorsPallete.EASTERN_BLUE : 'rgba(255, 255, 255, 0.6)'};
+  border: ${props => (props.isActive ? '1px solid #21B3A4' : 'none')};
+  border-right: ${props =>
+    props.isActive
+      ? '1px solid #21B3A4'
+      : '1px solid rgba(255, 255, 255, 0.08)'};
 
   &:hover {
     background-color: ${ColorsPallete.BLUE_STONE};
+    cursor: pointer;
+  }
+  &:last-of-type {
+    border-right: ${props => (props.isActive ? '1px solid #21B3A4' : 'none')};
   }
 `;

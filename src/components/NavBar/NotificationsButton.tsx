@@ -10,7 +10,7 @@ function NotificationsButton(props: Props) {
   const handleClick = () => {};
   return (
     <ButtonWithoutStyles onClick={handleClick}>
-      <SvgIcon {...IconNotifications} />
+      <SvgIcon {...IconNotifications} fill="#FFFFFF" />
     </ButtonWithoutStyles>
   );
 }

@@ -32,7 +32,19 @@ module.exports = (env, argv) => {
         {
           test: /\.svg$/,
           include: path.resolve(__dirname, 'src/assets/svg/'),
-          use: ['svg-sprite-loader', 'svgo-loader'],
+          use: [
+            'svg-sprite-loader',
+            {
+              loader: 'svgo-loader',
+              options: {
+                plugins: [
+                  {
+                    removeAttrs: { attrs: '(stroke|fill)' },
+                  },
+                ],
+              },
+            },
+          ],
         },
       ],
     },

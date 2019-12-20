@@ -96,7 +96,7 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'mainSeriesProperties.areaStyle.linestyle': LineStyles.LINESTYLE_SOLID,
         'mainSeriesProperties.areaStyle.linewidth': 3,
         'mainSeriesProperties.areaStyle.priceSource': 'close',
-        'paneProperties.background': '#191e1e',
+        'paneProperties.background': '#1A1E22',
         'paneProperties.vertGridProperties.color': '#353939',
         'paneProperties.vertGridProperties.style': LineStyles.LINESTYLE_DOTTED,
         'paneProperties.horzGridProperties.color': '#353939',

@@ -21,6 +21,7 @@ import SvgIcon from '../components/SvgIcon';
 import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';
 import ActiveInstrument from '../components/ActiveInstrument';
 import BuySellPanel from '../components/BuySellPanel';
+import ChartTimeScale from '../components/ChartTimeScale';
 
 function Dashboard() {
   const { isLoading, account, setAccount, activeSession } = useContext(
@@ -240,7 +241,7 @@ function Dashboard() {
           </FlexContainer>
           <FlexContainer>
             <AddIntrumentButton onClick={handleAddNewInstrument}>
-              <SvgIcon {...IconAddInstrument} />
+              <SvgIcon {...IconAddInstrument} fill="rgba(255, 255, 255, 0.6)" />
             </AddIntrumentButton>
           </FlexContainer>
         </FlexContainer>
@@ -262,31 +263,13 @@ function Dashboard() {
         <BuySellPanelWrapper>
           {activeInstrument && <BuySellPanel currencySymbol="$"></BuySellPanel>}
         </BuySellPanelWrapper>
-        <ChartInstruments>asd</ChartInstruments>
+        <ChartInstruments backgroundColor="#1A1E22">
+          <ChartTimeScale
+            activeResolution={resolution}
+            setTimeScale={setTimeScale}
+          ></ChartTimeScale>
+        </ChartInstruments>
       </GridWrapper>
-      <FlexContainer flexDirection="column">
-        <FlexContainer margin="0 0 20px" width="100%">
-          <TabButton
-            onClick={switchTabType(TabType.ActivePositions)}
-            isActive={tabType === TabType.ActivePositions}
-          >
-            Active Positions
-          </TabButton>
-          <TabButton
-            onClick={switchTabType(TabType.PendingOrders)}
-            isActive={tabType === TabType.PendingOrders}
-          >
-            Pending orders
-          </TabButton>
-          <TabButton
-            onClick={switchTabType(TabType.History)}
-            isActive={tabType === TabType.History}
-          >
-            History
-          </TabButton>
-        </FlexContainer>
-        <FlexContainer>{renderTabType()}</FlexContainer>
-      </FlexContainer>
     </FlexContainer>
   ) : null;
 }

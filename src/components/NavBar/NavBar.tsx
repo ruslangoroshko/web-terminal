@@ -8,8 +8,6 @@ import NotificationsButton from './NotificationsButton';
 import LanguageButton from './LanguageButton';
 import UserProfileButton from './UserProfileButton';
 import DepositButton from './DepositButton';
-import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import SvgIcon from '../SvgIcon';
 import MoreButton from './MoreButton';
 import AccountBalances from './AccountBalances';
 import { MainAppContext } from '../../store/MainAppProvider';
@@ -23,7 +21,7 @@ function NavBar(props: Props) {
 
   return (
     <FlexContainer
-      padding="8px 8px 8px 20px"
+      padding="8px 0 8px 20px"
       alignItems="center"
       width="100%"
       height="40px"
@@ -35,7 +33,6 @@ function NavBar(props: Props) {
       <FlexContainer alignItems="center">
         <img src={monfexLogo} alt="" width="100%" />
       </FlexContainer>
-
       <FlexContainer>
         <FlexContainer alignItems="center" margin="0 20px 0 0">
           {account && (

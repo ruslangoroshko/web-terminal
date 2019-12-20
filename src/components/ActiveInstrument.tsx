@@ -136,11 +136,8 @@ const BidText = styled.span`
 `;
 
 const GrowthText = styled.span<{ isGrowth: boolean }>`
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 19px;
-  color: #ffffff;
-  margin-right: 10px;
+  font-size: 12px;
+  line-height: 14px;
   color: ${props =>
     props.isGrowth ? ColorsPallete.MINT : ColorsPallete.RAZZMATAZZ};
 `;

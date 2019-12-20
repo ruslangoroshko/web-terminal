@@ -10,7 +10,7 @@ function SwitchThemeButton(props: Props) {
   const handleClick = () => {};
   return (
     <ButtonWithoutStyles onClick={handleClick}>
-      <SvgIcon {...IconSwitchTheme} />
+      <SvgIcon {...IconSwitchTheme} fill="#FFFFFF" />
     </ButtonWithoutStyles>
   );
 }

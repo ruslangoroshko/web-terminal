@@ -20,7 +20,7 @@ function BottomNavBarButton(props: Props) {
         padding="12px 0 8px"
       >
         <FlexContainer margin="0 0 4px 0">
-          <SvgIcon {...iconProps}></SvgIcon>
+          <SvgIcon {...iconProps} fill="#C4C4C4"></SvgIcon>
         </FlexContainer>
         <Title>{title}</Title>
       </FlexContainer>

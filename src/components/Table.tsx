@@ -39,7 +39,7 @@ const Table: FC<Props> = ({
   return (
     <FlexContainer>
       {columns.map(column => (
-        <TdDiv>{column.Header}</TdDiv>
+        <TdDiv key={column.Header}>{column.Header}</TdDiv>
       ))}
       <FlexContainer>
         {data.map((row, i) => (

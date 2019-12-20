@@ -3,7 +3,7 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
-import IconLangEn from '../../assets/svg/icon-navbar-user.svg';
+import IconUser from '../../assets/svg/icon-navbar-user.svg';
 
 interface Props {}
 
@@ -11,9 +11,13 @@ function UserProfileButton(props: Props) {
   const {} = props;
 
   return (
-    <UserProfileWrapper justifyContent="center" alignItems="center" width="24px">
+    <UserProfileWrapper
+      justifyContent="center"
+      alignItems="center"
+      width="24px"
+    >
       <ButtonWithoutStyles>
-        <SvgIcon {...IconLangEn} width={12} height={14} />
+        <SvgIcon {...IconUser} width={12} height={14} fill="#FFFFFF" />
       </ButtonWithoutStyles>
     </UserProfileWrapper>
   );

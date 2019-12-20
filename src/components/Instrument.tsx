@@ -82,7 +82,7 @@ function Instrument({
           {positionsLength}
         </PositionsCounter>
         <ButtonWithoutStyles onClick={handleClose}>
-          <SvgIcon {...IconClose}></SvgIcon>
+          <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
         </ButtonWithoutStyles>
       </FlexContainer>
     </QuotesFeedWrapper>
@@ -95,6 +95,7 @@ const PositionsCounter = styled(FlexContainer)`
   font-size: 11px;
   line-height: 14px;
   color: #ffffff;
+  margin-right: 4px;
 
   &:before {
     content: '';

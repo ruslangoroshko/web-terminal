@@ -1,7 +1,7 @@
 import React from 'react';
-import IconLangEn from '../../assets/svg/icon-navbar-lang-en.svg';
+import IconLangEn from '../../assets/images/lang-en.png';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import SvgIcon from '../SvgIcon';
+import styled from '@emotion/styled';
 
 interface Props {}
 
@@ -10,9 +10,13 @@ function LanguageButton(props: Props) {
 
   return (
     <ButtonWithoutStyles>
-      <SvgIcon {...IconLangEn} />
+      <Img src={IconLangEn} />
     </ButtonWithoutStyles>
   );
 }
 
 export default LanguageButton;
+
+const Img = styled.img`
+  border-radius: 50%;
+`;
