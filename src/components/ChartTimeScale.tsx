@@ -37,7 +37,7 @@ const ChartTimeScale: FC<Props> = props => {
   };
 
   return (
-    <ChartTimeScaleWrapper padding="8px 12px">
+    <ChartTimeScaleWrapper padding="2px">
       {supportedResolutions.map(item => (
         <TimeScaleItem
           isActive={item === activeResolution}
@@ -58,8 +58,8 @@ const ChartTimeScaleWrapper = styled(FlexContainer)`
   border-left: 1px solid #383c3f;
 `;
 
-const TimeScaleItem = styled(FlexContainer)<{ isActive: boolean }>`
-  padding: 4px 10px;
+export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
+  padding: 4px 12px;
   height: 28px;
   border-radius: 2px;
   justify-content: center;

@@ -22,6 +22,8 @@ import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';
 import ActiveInstrument from '../components/ActiveInstrument';
 import BuySellPanel from '../components/BuySellPanel';
 import ChartTimeScale from '../components/ChartTimeScale';
+import ChartSettingsButtons from '../components/ChartSettingsButtons';
+import ChartTimeFomat from '../components/ChartTimeFomat';
 
 function Dashboard() {
   const { isLoading, account, setAccount, activeSession } = useContext(
@@ -263,11 +265,16 @@ function Dashboard() {
         <BuySellPanelWrapper>
           {activeInstrument && <BuySellPanel currencySymbol="$"></BuySellPanel>}
         </BuySellPanelWrapper>
-        <ChartInstruments backgroundColor="#1A1E22">
+        <ChartInstruments
+          backgroundColor="#1A1E22"
+          justifyContent="space-between"
+        >
+          <ChartSettingsButtons></ChartSettingsButtons>
           <ChartTimeScale
             activeResolution={resolution}
             setTimeScale={setTimeScale}
           ></ChartTimeScale>
+          <ChartTimeFomat></ChartTimeFomat>
         </ChartInstruments>
       </GridWrapper>
     </FlexContainer>
@@ -275,23 +282,6 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
-const TabButton = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
-  background-color: ${props => (props.isActive ? 'green' : 'darkblue')};
-  margin-right: 20px;
-  color: #fff;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  border-top: 1px solid #353c4d;
-  border-left: 1px solid #353c4d;
-  border-right: 1px solid #353c4d;
-  transition: background-color 0.2s ease;
-  pointer-events: ${props => (props.isActive ? 'none' : 'all')};
-
-  &:hover {
-    background-color: greenyellow;
-  }
-`;
 
 const AddIntrumentButton = styled(ButtonWithoutStyles)`
   width: 36px;
@@ -304,9 +294,11 @@ const AddIntrumentButton = styled(ButtonWithoutStyles)`
 
 const GridWrapper = styled.div`
   display: grid;
+  border-collapse: collapse;
   grid-template-columns: 1fr 172px;
   width: 100%;
-  grid-gap: 1px;
+  grid-row-gap: 0;
+  grid-column-gap: 1px;
   border-color: #383c3f;
 `;
 
