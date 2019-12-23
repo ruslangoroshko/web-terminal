@@ -8,6 +8,7 @@ import IconShevronUp from '../../assets/svg/icon-shevron-up.svg';
 import IconShevronDown from '../../assets/svg/icon-shevron-down.svg';
 import Toggle from '../Toggle';
 import AutoClosePopup from './AutoClosePopup';
+import PurchaseAtPopup from './PurchaseAtPopup';
 
 interface Props {
   currencySymbol: string;
@@ -112,7 +113,22 @@ function BuySellPanel(props: Props) {
           i
         </InfoIcon>
       </FlexContainer>
-      <ButtonAutoClosePurchase>Set</ButtonAutoClosePurchase>
+      <FlexContainer position="relative">
+        <Toggle>
+          {({ on, toggle }) => (
+            <>
+              <ButtonAutoClosePurchase onClick={toggle}>
+                Set
+              </ButtonAutoClosePurchase>
+              {on && (
+                <FlexContainer position="absolute" top="20px" right="100%">
+                  <PurchaseAtPopup toggle={toggle}></PurchaseAtPopup>
+                </FlexContainer>
+              )}
+            </>
+          )}
+        </Toggle>
+      </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
         <Label>VOLUME</Label>
         <ValueText>

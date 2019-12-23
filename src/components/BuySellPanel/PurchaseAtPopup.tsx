@@ -14,7 +14,7 @@ interface Props {
   toggle: () => void;
 }
 
-function AutoClosePopup(props: Props) {
+function PurchaseAtPopup(props: Props) {
   const { toggle } = props;
   return (
     <Wrapper
@@ -27,7 +27,7 @@ function AutoClosePopup(props: Props) {
         <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
       </ButtonClose>
       <PrimaryTextParagraph marginBottom="16px">
-        Set Autoclose
+        Purchase At
       </PrimaryTextParagraph>
       <FlexContainer
         margin="0 0 6px 0"
@@ -40,61 +40,68 @@ function AutoClosePopup(props: Props) {
           color="rgba(255, 255, 255, 0.3)"
           textTransform="uppercase"
         >
-          When Profit is
+          When Price is
         </PrimaryTextSpan>
         <InfoIcon width="14px" justifyContent="center" alignItems="center">
           i
         </InfoIcon>
       </FlexContainer>
       <InputWrapper
-        padding="8px 32px 8px 22px"
         margin="0 0 16px 0"
         height="32px"
         width="100%"
         position="relative"
+        justifyContent="space-between"
       >
-        <PlusSign>+</PlusSign>
         <InputPnL placeholder="Non Set"></InputPnL>
-        <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown></PnLTypeDropdown>
+        <FlexContainer>
+          <ButtonIncreaseDecreasePrice>
+            <PrimaryTextSpan
+              fontSize="16px"
+              fontWeight="bold"
+              color="rgba(255, 255, 255, 0.5)"
+            >
+              -
+            </PrimaryTextSpan>
+          </ButtonIncreaseDecreasePrice>
+          <ButtonIncreaseDecreasePrice>
+            <PrimaryTextSpan
+              fontSize="16px"
+              fontWeight="bold"
+              color="rgba(255, 255, 255, 0.5)"
+            >
+              +
+            </PrimaryTextSpan>
+          </ButtonIncreaseDecreasePrice>
         </FlexContainer>
       </InputWrapper>
       <FlexContainer
-        margin="0 0 6px 0"
-        alignItems="center"
         justifyContent="space-between"
+        alignItems="center"
+        margin="0 0 16px 0"
       >
         <PrimaryTextSpan
+          color="rgba(255, 255, 255, 0.3)"
           fontSize="11px"
           lineHeight="12px"
-          color="rgba(255, 255, 255, 0.3)"
-          textTransform="uppercase"
         >
-          When Loss is
+          Current price
         </PrimaryTextSpan>
-        <InfoIcon width="14px" justifyContent="center" alignItems="center">
-          i
-        </InfoIcon>
+        <PrimaryTextSpan
+          textDecoration="underline"
+          color="rgba(255, 255, 255, 0.8)"
+          fontSize="11px"
+          lineHeight="12px"
+        >
+          1.3124
+        </PrimaryTextSpan>
       </FlexContainer>
-      <InputWrapper
-        padding="8px 32px 8px 22px"
-        margin="0 0 16px 0"
-        height="32px"
-        width="100%"
-        position="relative"
-      >
-        <PlusSign>-</PlusSign>
-        <InputPnL placeholder="Non Set"></InputPnL>
-        <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown></PnLTypeDropdown>
-        </FlexContainer>
-      </InputWrapper>
       <ButtonApply>Apply</ButtonApply>
     </Wrapper>
   );
 }
 
-export default AutoClosePopup;
+export default PurchaseAtPopup;
 
 const Wrapper = styled(FlexContainer)`
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.25),
@@ -141,7 +148,7 @@ const InputPnL = styled.input`
   font-size: 14px;
   line-height: 16px;
   color: #ffffff;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 0 8px 8px;
 
   &:-webkit-input-placeholder {
     color: #fff;
@@ -179,15 +186,9 @@ const InputWrapper = styled(FlexContainer)`
   }
 `;
 
-const PlusSign = styled.span`
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 16px;
-  color: #ffffff;
-  position: absolute;
-  top: 50%;
-  left: 8px;
-  transform: translateY(-50%);
+const ButtonIncreaseDecreasePrice = styled(ButtonWithoutStyles)`
+  padding: 0 4px;
+  height: 100%;
 `;
 
 const ButtonApply = styled(ButtonWithoutStyles)`
