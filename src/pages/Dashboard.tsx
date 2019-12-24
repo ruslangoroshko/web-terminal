@@ -264,7 +264,15 @@ function Dashboard() {
           )}
         </ChartWrapper>
         <BuySellPanelWrapper>
-          {activeInstrument && <BuySellPanel currencySymbol="$"></BuySellPanel>}
+          {activeInstrument && (
+            <BuySellPanel
+              currencySymbol="$"
+              instrument={activeInstrument}
+              accountId={account.id}
+              multiplier={activeInstrument.multiplier[0]}
+              
+            ></BuySellPanel>
+          )}
         </BuySellPanelWrapper>
         <ChartInstruments
           backgroundColor="#1A1E22"

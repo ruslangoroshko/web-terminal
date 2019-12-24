@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, ChangeEvent, useContext } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
@@ -9,13 +9,75 @@ import {
   PrimaryTextParagraph,
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
+import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
+import Fields from '../../constants/fields';
+import { OpenPositionModelFormik } from '../../types/Positions';
+import { BuySellContext } from '../../store/BuySellProvider';
 
 interface Props {
   toggle: () => void;
+  setFieldValue: (field: any, value: any) => void;
+  values: OpenPositionModelFormik;
 }
 
 function AutoClosePopup(props: Props) {
-  const { toggle } = props;
+  const { toggle, setFieldValue } = props;
+
+  const {
+    setTakeProfitValue,
+    setStopLossValue,
+    takeProfitValue,
+    stopLossValue,
+    autoCloseProfit,
+    autoCloseLoss,
+    setAutoCloseLoss,
+    setAutoCloseProfit,
+  } = useContext(BuySellContext);
+
+  const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
+    setTakeProfitValue(e.target.value);
+  };
+
+  const handleChangeLoss = (e: ChangeEvent<HTMLInputElement>) => {
+    setStopLossValue(e.target.value);
+  };
+
+  const handleApply = () => {
+    let fieldProfit = Fields.TAKE_PROFIT;
+    let fieldLoss = Fields.TAKE_PROFIT;
+
+    switch (takeProfitValue) {
+      case AutoCloseTypesEnum.Profit:
+        fieldProfit = Fields.TAKE_PROFIT;
+        break;
+      case AutoCloseTypesEnum.Percent:
+        fieldProfit = Fields.TAKE_PROFIT_RATE;
+        break;
+      case AutoCloseTypesEnum.Price:
+        fieldProfit = Fields.TAKE_PROFIT_PRICE;
+        break;
+      default:
+        break;
+    }
+
+    switch (stopLossValue) {
+      case AutoCloseTypesEnum.Profit:
+        fieldLoss = Fields.TAKE_PROFIT;
+        break;
+      case AutoCloseTypesEnum.Percent:
+        fieldLoss = Fields.TAKE_PROFIT_RATE;
+        break;
+      case AutoCloseTypesEnum.Price:
+        fieldLoss = Fields.TAKE_PROFIT_PRICE;
+        break;
+      default:
+        break;
+    }
+    setFieldValue(fieldProfit, takeProfitValue);
+    setFieldValue(fieldLoss, stopLossValue);
+    toggle();
+  };
+
   return (
     <Wrapper
       position="relative"
@@ -54,9 +116,18 @@ function AutoClosePopup(props: Props) {
         position="relative"
       >
         <PlusSign>+</PlusSign>
-        <InputPnL placeholder="Non Set"></InputPnL>
+
+        <InputPnL
+          placeholder="Non Set"
+          onChange={handleChangeProfit}
+          value={takeProfitValue}
+        ></InputPnL>
+
         <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown></PnLTypeDropdown>
+          <PnLTypeDropdown
+            autoClose={autoCloseProfit}
+            setAutoClose={setAutoCloseProfit}
+          ></PnLTypeDropdown>
         </FlexContainer>
       </InputWrapper>
       <FlexContainer
@@ -84,12 +155,19 @@ function AutoClosePopup(props: Props) {
         position="relative"
       >
         <PlusSign>-</PlusSign>
-        <InputPnL placeholder="Non Set"></InputPnL>
+        <InputPnL
+          placeholder="Non Set"
+          value={stopLossValue}
+          onChange={handleChangeLoss}
+        ></InputPnL>
         <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown></PnLTypeDropdown>
+          <PnLTypeDropdown
+            autoClose={autoCloseLoss}
+            setAutoClose={setAutoCloseLoss}
+          ></PnLTypeDropdown>
         </FlexContainer>
       </InputWrapper>
-      <ButtonApply>Apply</ButtonApply>
+      <ButtonApply onClick={handleApply}>Apply</ButtonApply>
     </Wrapper>
   );
 }

@@ -1,6 +1,5 @@
 import React, { useState, FC } from 'react';
 import { BidAskKeyValueList, BidAskModelWSDTO } from '../types/BidAsk';
-import throttle from '../helpers/throttle';
 
 interface ContextProps {
   quotes: BidAskKeyValueList;

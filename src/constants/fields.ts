@@ -6,8 +6,10 @@ const Fields = {
   REPEAT_PASSWORD: 'repeatPassword',
   TAKE_PROFIT: 'tp',
   TAKE_PROFIT_RATE: 'tpRate',
+  TAKE_PROFIT_PRICE: 'tpPrice',
   STOP_LOSS: 'sl',
   STOP_LOSS_RATE: 'slRate',
+  STOP_LOSS_PRICE: 'slPrice',
   AMOUNT: 'investmentAmount',
   MULTIPLIER: 'multiplier',
 };

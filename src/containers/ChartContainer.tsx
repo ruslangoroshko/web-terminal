@@ -61,7 +61,7 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
       container_id: defaultProps.containerId,
       library_path: defaultProps.library_path,
       locale: getLanguageFromURL() || 'en',
-      debug: true,
+      // debug: true,
       disabled_features: [
         'header_widget',
         'legend_widget',

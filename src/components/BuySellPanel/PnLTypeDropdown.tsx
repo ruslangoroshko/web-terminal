@@ -8,11 +8,20 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SvgIcon from '../SvgIcon';
 
 import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
+import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 
-interface Props {}
+interface Props {
+  autoClose: AutoCloseTypesEnum;
+  setAutoClose: (arg0: AutoCloseTypesEnum) => void;
+}
 
 function PnLTypeDropdown(props: Props) {
-  const {} = props;
+  const { autoClose, setAutoClose } = props;
+
+  const handleAutoClose = (autoClose: AutoCloseTypesEnum, toggle: () => void) => () => {
+    setAutoClose(autoClose);
+    toggle();
+  };
 
   return (
     <Toggle>
@@ -20,7 +29,7 @@ function PnLTypeDropdown(props: Props) {
         <FlexContainer position="relative">
           <DropdownButton isActive={on} onClick={toggle}>
             <PrimaryTextSpan marginRight="4px" color="rgba(255, 255, 255, 0.5)">
-              $
+              {autoClose}
             </PrimaryTextSpan>
             <SvgIcon
               {...IconShevronDown}
@@ -37,54 +46,28 @@ function PnLTypeDropdown(props: Props) {
               right="0"
               flexDirection="column"
             >
-              <ProfitPercentPrice
-                justifyContent="space-between"
-                padding="0 8px 8px 4px"
-                margin="0 0 8px 0"
-              >
-                <PrimaryTextSpan fontSize="12px" lineHeight="14px">
-                  Profit
-                </PrimaryTextSpan>
-                <PrimaryTextSpan
-                  fontSize="12px"
-                  lineHeight="14px"
-                  opacity="0.5"
+              {(Object.keys(AutoCloseTypesEnum) as Array<
+                keyof typeof AutoCloseTypesEnum
+              >).map(key => (
+                <ProfitPercentPrice
+                  key={key}
+                  justifyContent="space-between"
+                  padding="0 8px 8px 4px"
+                  margin="0 0 8px 0"
+                  onClick={handleAutoClose(AutoCloseTypesEnum[key], toggle)}
                 >
-                  $
-                </PrimaryTextSpan>
-              </ProfitPercentPrice>
-              <ProfitPercentPrice
-                justifyContent="space-between"
-                padding="0 8px 8px 4px"
-                margin="0 0 8px 0"
-              >
-                <PrimaryTextSpan fontSize="12px" lineHeight="14px">
-                  Percent
-                </PrimaryTextSpan>
-                <PrimaryTextSpan
-                  fontSize="12px"
-                  lineHeight="14px"
-                  opacity="0.5"
-                >
-                  %
-                </PrimaryTextSpan>
-              </ProfitPercentPrice>
-              <ProfitPercentPrice
-                justifyContent="space-between"
-                padding="0 8px 8px 4px"
-                margin="0 0 8px 0"
-              >
-                <PrimaryTextSpan fontSize="12px" lineHeight="14px">
-                  Price
-                </PrimaryTextSpan>
-                <PrimaryTextSpan
-                  fontSize="12px"
-                  lineHeight="14px"
-                  opacity="0.5"
-                >
-                  =
-                </PrimaryTextSpan>
-              </ProfitPercentPrice>
+                  <PrimaryTextSpan
+                    fontSize="12px"
+                    lineHeight="14px"
+                    opacity="0.5"
+                  >
+                    {key}
+                  </PrimaryTextSpan>
+                  <PrimaryTextSpan fontSize="12px" lineHeight="14px">
+                    {AutoCloseTypesEnum[key]}
+                  </PrimaryTextSpan>
+                </ProfitPercentPrice>
+              ))}
             </ProfitPercentPriceWrapper>
           )}
         </FlexContainer>

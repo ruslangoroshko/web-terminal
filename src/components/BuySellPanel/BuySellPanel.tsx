@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import MaskedInput from 'react-text-mask';
@@ -9,13 +9,68 @@ import IconShevronDown from '../../assets/svg/icon-shevron-down.svg';
 import Toggle from '../Toggle';
 import AutoClosePopup from './AutoClosePopup';
 import PurchaseAtPopup from './PurchaseAtPopup';
+import * as yup from 'yup';
+import { v4 } from 'uuid';
+import {
+  OpenPositionModel,
+  OpenPositionModelFormik,
+} from '../../types/Positions';
+import { InstrumentModelWSDTO } from '../../types/Instruments';
+import { AskBidEnum } from '../../enums/AskBid';
+import API from '../../helpers/API';
+import NotificationTooltip from '../NotificationTooltip';
+import { PrimaryTextSpan } from '../../styles/TextsElements';
+import { Formik, Field, FieldProps, ErrorMessage, Form } from 'formik';
+import Fields from '../../constants/fields';
 
 interface Props {
   currencySymbol: string;
+  accountId: OpenPositionModel['accountId'];
+  instrument: InstrumentModelWSDTO;
+  multiplier: OpenPositionModel['multiplier'];
+}
+
+interface OpenModel {
+  sl: OpenPositionModel['sl'];
+  tp: OpenPositionModel['tp'];
+  slRate: OpenPositionModel['slRate'];
+  tpRate: OpenPositionModel['tpRate'];
+  investmentAmount: OpenPositionModel['investmentAmount'];
+  multiplier: OpenPositionModel['multiplier'];
 }
 
 function BuySellPanel(props: Props) {
-  const { currencySymbol } = props;
+  const { currencySymbol, accountId, instrument, multiplier } = props;
+
+  const initialValues: OpenPositionModelFormik = {
+    processId: v4(),
+    accountId,
+    instrumentId: instrument.id,
+    operation: AskBidEnum.Buy,
+    multiplier,
+    investmentAmount: '',
+  };
+
+  const validationSchema = yup.object().shape<OpenModel>({
+    investmentAmount: yup
+      .number()
+      .min(instrument.minOperationVolume / multiplier, 'minOperationVolume')
+      .max(instrument.maxOperationVolume / multiplier, 'maxOperationVolume')
+      .required('Required amount'),
+    multiplier: yup.number().required('Required amount'),
+    tp: yup.number(),
+    tpRate: yup.number(),
+    sl: yup.number(),
+    slRate: yup.number(),
+  });
+
+  const handleOpenPosition = (
+    values: OpenPositionModelFormik,
+    actions: any
+  ) => {
+    actions.setSubmitting(false);
+    // API.openPosition({ ...values, operation: openPositionOption });
+  };
 
   return (
     <FlexContainer
@@ -23,139 +78,241 @@ function BuySellPanel(props: Props) {
       flexDirection="column"
       backgroundColor="#1A1E22"
     >
-      <FlexContainer
-        justifyContent="space-between"
-        flexWrap="wrap"
-        margin="0 0 4px 0"
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleOpenPosition}
+        validationSchema={validationSchema}
       >
-        <Label>Invest</Label>
-        <InfoIcon
-          justifyContent="center"
-          alignItems="center"
-          width="14px"
-          height="14px"
-        >
-          i
-        </InfoIcon>
-      </FlexContainer>
-      <MaskedInput
-        mask={[currencySymbol, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-        showMask={false}
-        guide={false}
-        placeholder={currencySymbol}
-        render={(ref, props) => <InvestInput ref={ref} {...props} />}
-      ></MaskedInput>
-      <FlexContainer
-        justifyContent="space-between"
-        flexWrap="wrap"
-        margin="0 0 4px 0"
-      >
-        <Label>Leverage</Label>
-        <InfoIcon
-          justifyContent="center"
-          alignItems="center"
-          width="14px"
-          height="14px"
-        >
-          i
-        </InfoIcon>
-      </FlexContainer>
-      <MaskedInput
-        mask={['x', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-        showMask={false}
-        guide={false}
-        placeholder="x"
-        render={(ref, props) => <InvestInput ref={ref} {...props} />}
-      ></MaskedInput>
-      <FlexContainer
-        justifyContent="space-between"
-        flexWrap="wrap"
-        margin="0 0 4px 0"
-      >
-        <Label>Autoclose</Label>
-        <InfoIcon
-          justifyContent="center"
-          alignItems="center"
-          width="14px"
-          height="14px"
-        >
-          i
-        </InfoIcon>
-      </FlexContainer>
-      <FlexContainer position="relative">
-        <Toggle>
-          {({ on, toggle }) => (
-            <>
-              <ButtonAutoClosePurchase onClick={toggle}>
-                Set
-              </ButtonAutoClosePurchase>
-              {on && (
-                <FlexContainer position="absolute" top="20px" right="100%">
-                  <AutoClosePopup toggle={toggle}></AutoClosePopup>
+        {({ isSubmitting, isValid, setFieldValue, values }) => (
+          <CustomForm>
+            <FlexContainer
+              justifyContent="space-between"
+              flexWrap="wrap"
+              margin="0 0 4px 0"
+            >
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                textTransform="uppercase"
+                opacity="0.3"
+              >
+                Invest
+              </PrimaryTextSpan>
+              <InfoIcon
+                justifyContent="center"
+                alignItems="center"
+                width="14px"
+                height="14px"
+              >
+                i
+              </InfoIcon>
+            </FlexContainer>
+            <Field type="text" name={Fields.AMOUNT}>
+              {({ field }: FieldProps) => (
+                <FlexContainer
+                  flexDirection="column"
+                  position="relative"
+                  padding="0 0 4px 0"
+                >
+                  <MaskedInput
+                    {...field}
+                    mask={[
+                      currencySymbol,
+                      /\d/,
+                      /\d/,
+                      /\d/,
+                      /\d/,
+                      /\d/,
+                      /\d/,
+                      /\d/,
+                      /\d/,
+                    ]}
+                    showMask={false}
+                    guide={false}
+                    placeholder={currencySymbol}
+                    render={(ref, props) => (
+                      <InvestInput ref={ref} {...props} />
+                    )}
+                  ></MaskedInput>
                 </FlexContainer>
               )}
-            </>
-          )}
-        </Toggle>
-      </FlexContainer>
-      <FlexContainer
-        justifyContent="space-between"
-        flexWrap="wrap"
-        margin="0 0 4px 0"
-      >
-        <Label>Purchase at</Label>
-        <InfoIcon
-          justifyContent="center"
-          alignItems="center"
-          width="14px"
-          height="14px"
-        >
-          i
-        </InfoIcon>
-      </FlexContainer>
-      <FlexContainer position="relative">
-        <Toggle>
-          {({ on, toggle }) => (
-            <>
-              <ButtonAutoClosePurchase onClick={toggle}>
-                Set
-              </ButtonAutoClosePurchase>
-              {on && (
-                <FlexContainer position="absolute" top="20px" right="100%">
-                  <PurchaseAtPopup toggle={toggle}></PurchaseAtPopup>
-                </FlexContainer>
-              )}
-            </>
-          )}
-        </Toggle>
-      </FlexContainer>
-      <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
-        <Label>VOLUME</Label>
-        <ValueText>
-          {currencySymbol}
-          {1000200}
-        </ValueText>
-      </FlexContainer>
-      <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
-        <Label>Spread</Label>
-        <ValueText>
-          {currencySymbol}
-          {1.3}
-        </ValueText>
-      </FlexContainer>
+            </Field>
 
-      <ButtonBuy>
-        <FlexContainer margin="0 8px 0 0">
-          <SvgIcon {...IconShevronUp} fill="#003A38"></SvgIcon>
-        </FlexContainer>
-        Buy
-      </ButtonBuy>
-      <ButtonSell>
-        <FlexContainer margin="0 8px 0 0">
-          <SvgIcon {...IconShevronDown} fill="#fff"></SvgIcon>
-        </FlexContainer>
-        Sell
-      </ButtonSell>
+            <FlexContainer
+              justifyContent="space-between"
+              flexWrap="wrap"
+              margin="0 0 4px 0"
+            >
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                textTransform="uppercase"
+                opacity="0.3"
+              >
+                Leverage
+              </PrimaryTextSpan>
+              <NotificationTooltip
+                bgColor="#000000"
+                textColor="#fff"
+                classNameTooltip="leverage"
+              >
+                The amount you’d like to invest
+              </NotificationTooltip>
+            </FlexContainer>
+            <Field type="text" name={Fields.MULTIPLIER}>
+              {({ field }: FieldProps) => (
+                <FlexContainer
+                  flexDirection="column"
+                  position="relative"
+                  padding="0 0 4px 0"
+                >
+                  <MaskedInput
+                    {...field}
+                    disabled={true}
+                    mask={['x', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+                    showMask={false}
+                    guide={false}
+                    placeholder="x"
+                    render={(ref, props) => (
+                      <InvestInput ref={ref} {...props} />
+                    )}
+                  ></MaskedInput>
+                </FlexContainer>
+              )}
+            </Field>
+            <FlexContainer
+              justifyContent="space-between"
+              flexWrap="wrap"
+              margin="0 0 4px 0"
+            >
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                textTransform="uppercase"
+                opacity="0.3"
+              >
+                Autoclose
+              </PrimaryTextSpan>
+              <InfoIcon
+                justifyContent="center"
+                alignItems="center"
+                width="14px"
+                height="14px"
+              >
+                i
+              </InfoIcon>
+            </FlexContainer>
+            <FlexContainer position="relative">
+              <Toggle>
+                {({ on, toggle }) => (
+                  <>
+                    <ButtonAutoClosePurchase onClick={toggle}>
+                      Set
+                    </ButtonAutoClosePurchase>
+                    {on && (
+                      <FlexContainer
+                        position="absolute"
+                        top="20px"
+                        right="100%"
+                      >
+                        <AutoClosePopup
+                          toggle={toggle}
+                          setFieldValue={setFieldValue}
+                          values={values}
+                        ></AutoClosePopup>
+                      </FlexContainer>
+                    )}
+                  </>
+                )}
+              </Toggle>
+            </FlexContainer>
+            <FlexContainer
+              justifyContent="space-between"
+              flexWrap="wrap"
+              margin="0 0 4px 0"
+            >
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                textTransform="uppercase"
+                opacity="0.3"
+              >
+                Purchase at
+              </PrimaryTextSpan>
+              <InfoIcon
+                justifyContent="center"
+                alignItems="center"
+                width="14px"
+                height="14px"
+              >
+                i
+              </InfoIcon>
+            </FlexContainer>
+            <FlexContainer position="relative">
+              <Toggle>
+                {({ on, toggle }) => (
+                  <>
+                    <ButtonAutoClosePurchase onClick={toggle}>
+                      Set
+                    </ButtonAutoClosePurchase>
+                    {on && (
+                      <FlexContainer
+                        position="absolute"
+                        top="20px"
+                        right="100%"
+                      >
+                        <PurchaseAtPopup toggle={toggle}></PurchaseAtPopup>
+                      </FlexContainer>
+                    )}
+                  </>
+                )}
+              </Toggle>
+            </FlexContainer>
+            <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                textTransform="uppercase"
+                opacity="0.3"
+              >
+                VOLUME
+              </PrimaryTextSpan>
+              <ValueText>
+                {currencySymbol}
+                {1000200}
+              </ValueText>
+            </FlexContainer>
+            <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                textTransform="uppercase"
+                opacity="0.3"
+              >
+                Spread
+              </PrimaryTextSpan>
+              <ValueText>
+                {currencySymbol}
+                {1.3}
+              </ValueText>
+            </FlexContainer>
+            <FlexContainer flexDirection="column">
+              <ButtonBuy type="button" disabled={!isValid || isSubmitting}>
+                <FlexContainer margin="0 8px 0 0">
+                  <SvgIcon {...IconShevronUp} fill="#003A38"></SvgIcon>
+                </FlexContainer>
+                Buy
+              </ButtonBuy>
+              <ButtonSell type="button" disabled={!isValid || isSubmitting}>
+                <FlexContainer margin="0 8px 0 0">
+                  <SvgIcon {...IconShevronDown} fill="#fff"></SvgIcon>
+                </FlexContainer>
+                Sell
+              </ButtonSell>
+            </FlexContainer>
+          </CustomForm>
+        )}
+      </Formik>
     </FlexContainer>
   );
 }
@@ -209,14 +366,6 @@ const InvestInput = styled.input`
   }
 `;
 
-const Label = styled.span`
-  font-size: 11px;
-  line-height: 12px;
-  text-transform: uppercase;
-  color: #ffffff;
-  opacity: 0.3;
-`;
-
 const InfoIcon = styled(FlexContainer)`
   font-size: 11px;
   border-radius: 50%;
@@ -251,4 +400,8 @@ const ButtonBuy = styled(ButtonSell)`
     inset 0px -3px 6px rgba(0, 255, 242, 0.26);
   color: #003a38;
   margin-bottom: 8px;
+`;
+
+const CustomForm = styled(Form)`
+  margin: 0;
 `;

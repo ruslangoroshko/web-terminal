@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-interface Props {
+export interface FlexContainerProps {
   justifyContent?: 'center' | 'flex-start' | 'flex-end' | 'space-between';
   flexDirection?: 'column' | 'row';
   alignItems?: 'center' | 'flex-start' | 'flex-end';
@@ -11,6 +11,7 @@ interface Props {
   padding?: string;
   margin?: string;
   backgroundColor?: string;
+  textColor?: string;
   position?: 'relative' | 'absolute' | 'sticky' | 'static';
   top?: string;
   bottom?: string;
@@ -18,7 +19,7 @@ interface Props {
   left?: string;
 }
 
-export const FlexContainer = styled.div<Props>`
+export const FlexContainer = styled.div<FlexContainerProps>`
   display: flex;
   position: ${props => props.position};
   justify-content: ${props => props.justifyContent};
@@ -31,6 +32,7 @@ export const FlexContainer = styled.div<Props>`
   flex-wrap: ${props => props.flexWrap};
   flex-direction: ${props => props.flexDirection};
   background-color: ${props => props.backgroundColor};
+  color: ${props => props.textColor};
   top: ${props => props.top};
   right: ${props => props.right};
   bottom: ${props => props.bottom};

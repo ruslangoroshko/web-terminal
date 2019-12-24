@@ -13,6 +13,20 @@ export interface OpenPositionModel {
   slRate?: number;
 }
 
+
+export interface OpenPositionModelFormik {
+  processId: string;
+  accountId: string;
+  instrumentId: string;
+  operation: number;
+  investmentAmount: string;
+  multiplier: number;
+  tp?: string;
+  sl?: string;
+  tpRate?: string;
+  slRate?: string;
+}
+
 export interface OpenPositionResponseDTO {
   result: OperationApiResponseCodes;
   position: PositionModelWSDTO;

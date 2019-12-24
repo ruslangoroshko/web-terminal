@@ -1,4 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
+import { appHistory } from '../routing/history';
+import Page from '../constants/Pages';
 
 const injectInerceptors = () => {
   axios.interceptors.request.use(
@@ -6,6 +8,9 @@ const injectInerceptors = () => {
       return config;
     },
     function(error: AxiosError) {
+      if (error.response?.status === 401) {
+        appHistory.push(Page.SIGN_IN);
+      }
       return Promise.reject(error);
     }
   );
