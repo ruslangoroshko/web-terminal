@@ -25,6 +25,8 @@ import ChartTimeScale from '../components/Chart/ChartTimeScale';
 import ChartSettingsButtons from '../components/Chart/ChartSettingsButtons';
 import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
 import AutoClosePopup from '../components/BuySellPanel/AutoClosePopup';
+import { QuotesContext } from '../store/QuotesProvider';
+import { AskBidEnum } from '../enums/AskBid';
 
 function Dashboard() {
   const { isLoading, account, setAccount, activeSession } = useContext(
@@ -43,7 +45,6 @@ function Dashboard() {
     InstrumentModelWSDTO
   >();
   const [instruments, setInstruments] = useState<InstrumentModelWSDTO[]>([]);
-  const [, setConnectionId] = useState<string>('');
 
   const switchInstrument = (instrument: InstrumentModelWSDTO) => () => {
     setActiveInstrument(instrument);
@@ -52,10 +53,6 @@ function Dashboard() {
     if (tradingWidget) {
       tradingWidget.setSymbol(instrument.id, resolution, () => {});
     }
-  };
-
-  const switchTabType = (tabType: TabType) => () => {
-    setTabType(tabType);
   };
 
   const tradingWidgetCallback = (callbackWidget: IChartingLibraryWidget) => {
@@ -69,6 +66,7 @@ function Dashboard() {
       });
     }
   };
+  const { setQuote } = useContext(QuotesContext);
 
   const renderTabType = () => {
     switch (tabType) {
@@ -153,10 +151,6 @@ function Dashboard() {
         Topics.ACCOUNTS,
         (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
           setAccount(response.data[0]);
-          setConnectionId(
-            // @ts-ignore
-            activeSession.connection.transport.webSocket.url.split('id=')[1]
-          );
           activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
             [Fields.ACCOUNT_ID]: response.data[0].id,
           });
@@ -178,6 +172,23 @@ function Dashboard() {
         Topics.INSTRUMENTS,
         (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
           if (response.accountId === account.id) {
+            setQuote({
+              ask: {
+                c: response.data[0].ask,
+                h: 0,
+                l: 0,
+                o: 0,
+              },
+              bid: {
+                c: response.data[0].bid,
+                h: 0,
+                l: 0,
+                o: 0,
+              },
+              dir: AskBidEnum.Buy,
+              dt: Date.now(),
+              id: response.data[0].id,
+            });
             setInstruments(response.data);
             setActiveInstrument(response.data[0]);
           }
@@ -266,11 +277,11 @@ function Dashboard() {
         <BuySellPanelWrapper>
           {activeInstrument && (
             <BuySellPanel
-              currencySymbol="$"
+              currencySymbol={account.symbol}
               instrument={activeInstrument}
               accountId={account.id}
               multiplier={activeInstrument.multiplier[0]}
-              
+              digits={account.digits}
             ></BuySellPanel>
           )}
         </BuySellPanelWrapper>

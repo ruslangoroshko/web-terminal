@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import MaskedInput from 'react-text-mask';
@@ -22,12 +22,14 @@ import NotificationTooltip from '../NotificationTooltip';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { Formik, Field, FieldProps, ErrorMessage, Form } from 'formik';
 import Fields from '../../constants/fields';
+import { QuotesContext } from '../../store/QuotesProvider';
 
 interface Props {
   currencySymbol: string;
   accountId: OpenPositionModel['accountId'];
   instrument: InstrumentModelWSDTO;
   multiplier: OpenPositionModel['multiplier'];
+  digits: number;
 }
 
 interface OpenModel {
@@ -40,7 +42,7 @@ interface OpenModel {
 }
 
 function BuySellPanel(props: Props) {
-  const { currencySymbol, accountId, instrument, multiplier } = props;
+  const { currencySymbol, accountId, instrument, multiplier, digits } = props;
 
   const initialValues: OpenPositionModelFormik = {
     processId: v4(),
@@ -71,6 +73,8 @@ function BuySellPanel(props: Props) {
     actions.setSubmitting(false);
     // API.openPosition({ ...values, operation: openPositionOption });
   };
+
+  const { quotes } = useContext(QuotesContext);
 
   return (
     <FlexContainer
@@ -293,7 +297,9 @@ function BuySellPanel(props: Props) {
               </PrimaryTextSpan>
               <ValueText>
                 {currencySymbol}
-                {1.3}
+                {Math.abs(
+                  quotes[instrument.id].bid.c - quotes[instrument.id].ask.c
+                ).toFixed(digits)}
               </ValueText>
             </FlexContainer>
             <FlexContainer flexDirection="column">
