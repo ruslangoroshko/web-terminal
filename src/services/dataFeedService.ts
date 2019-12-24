@@ -82,9 +82,8 @@ class DataFeedService implements IBasicDataFeed {
       onResolve(symbol_stub);
       console.log('Resolving that symbol....', symbol_stub);
     }, 0);
-
-    // onResolveErrorCallback('Not feeling it today')
   };
+
   getBars = async (
     symbolInfo: LibrarySymbolInfo,
     resolution: ResolutionString,
@@ -93,9 +92,6 @@ class DataFeedService implements IBasicDataFeed {
     onResult: HistoryCallback,
     onError: ErrorCallback
   ) => {
-    console.log('TCL: DataFeedService -> symbolInfo', symbolInfo);
-    console.log('TCL: DataFeedService -> resolution', resolution);
-
     try {
       const bars = await historyProvider.getBars(
         resolution,

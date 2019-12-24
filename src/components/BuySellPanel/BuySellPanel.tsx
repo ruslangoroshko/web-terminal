@@ -210,7 +210,7 @@ function BuySellPanel(props: Props) {
               <Toggle>
                 {({ on, toggle }) => (
                   <>
-                    <ButtonAutoClosePurchase onClick={toggle}>
+                    <ButtonAutoClosePurchase onClick={toggle} type="button">
                       Set
                     </ButtonAutoClosePurchase>
                     {on && (
@@ -256,7 +256,7 @@ function BuySellPanel(props: Props) {
               <Toggle>
                 {({ on, toggle }) => (
                   <>
-                    <ButtonAutoClosePurchase onClick={toggle}>
+                    <ButtonAutoClosePurchase onClick={toggle} type="button">
                       Set
                     </ButtonAutoClosePurchase>
                     {on && (

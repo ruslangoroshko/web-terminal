@@ -27,6 +27,7 @@ import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
 import AutoClosePopup from '../components/BuySellPanel/AutoClosePopup';
 import { QuotesContext } from '../store/QuotesProvider';
 import { AskBidEnum } from '../enums/AskBid';
+import { UserAccountContext } from '../store/UserAccountProvider';
 
 function Dashboard() {
   const { isLoading, account, setAccount, activeSession } = useContext(
@@ -37,8 +38,8 @@ function Dashboard() {
   const [tradingWidget, setTradingWidget] = useState<IChartingLibraryWidget>();
   const [tabType, setTabType] = useState(TabType.ActivePositions);
 
-  const [activePositions, setActivePositions] = useState<PositionModelWSDTO[]>(
-    []
+  const { activePositions, setActivePositions } = useContext(
+    UserAccountContext
   );
 
   const [activeInstrument, setActiveInstrument] = useState<
@@ -238,6 +239,7 @@ function Dashboard() {
         padding="8px 0 8px 8px"
         width="100%"
         flexDirection="column"
+        margin="0 0 20px 0"
       >
         <FlexContainer margin="0 0 24px 0">
           <FlexContainer padding="4px 4px 4px 0">

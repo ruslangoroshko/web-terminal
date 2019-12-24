@@ -11,6 +11,7 @@ import DepositButton from './DepositButton';
 import MoreButton from './MoreButton';
 import AccountBalances from './AccountBalances';
 import { MainAppContext } from '../../store/MainAppProvider';
+import { UserAccountContext } from '../../store/UserAccountProvider';
 
 interface Props {}
 
@@ -18,6 +19,7 @@ function NavBar(props: Props) {
   const {} = props;
 
   const { account } = useContext(MainAppContext);
+  const { totalProfil } = useContext(UserAccountContext);
 
   return (
     <FlexContainer
@@ -39,9 +41,9 @@ function NavBar(props: Props) {
           {account && (
             <AccountBalances
               available={account.balance}
-              currency={account.currency}
+              symbol={account.symbol}
               invest={account.balance}
-              profit={account.balance}
+              profit={totalProfil}
               total={account.balance}
             />
           )}

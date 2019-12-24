@@ -6,38 +6,42 @@ import ColorsPallete from '../../styles/colorPallete';
 interface Props {
   available: number;
   invest: number;
-  profit: number;
+  profit: string;
   total: number;
-  currency: string;
+  symbol: string;
 }
 
 function AccountBalances(props: Props) {
-  const { available, total, invest, profit, currency } = props;
+  const { available, total, invest, profit, symbol } = props;
 
   return (
     <>
       <AmountWrapper>
         <LabelText>Available:</LabelText>
         <LabelValue>
-          {available} {currency}
+          {symbol}
+          {available}
         </LabelValue>
       </AmountWrapper>
       <AmountWrapper>
         <LabelText>Invest:</LabelText>
         <LabelValue>
-          {invest} {currency}
+          {symbol}
+          {invest}
         </LabelValue>
       </AmountWrapper>
       <AmountWrapper>
         <LabelText>Profit:</LabelText>
-        <ProfitValue isGrowth={profit >= 0}>
-          {profit} {currency}
+        <ProfitValue isGrowth={+profit >= 0}>
+          {symbol}
+          {profit}
         </ProfitValue>
       </AmountWrapper>
       <AmountWrapper>
         <LabelText>Total:</LabelText>
         <LabelValue>
-          {total} {currency}
+          {symbol}
+          {total}
         </LabelValue>
       </AmountWrapper>
     </>

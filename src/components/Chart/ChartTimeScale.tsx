@@ -75,6 +75,8 @@ export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
       ? '1px solid #21B3A4'
       : '1px solid rgba(255, 255, 255, 0.08)'};
 
+  background-color: ${props => props.isActive && '#1A1E22'};
+
   &:hover {
     background-color: ${ColorsPallete.BLUE_STONE};
     cursor: pointer;
