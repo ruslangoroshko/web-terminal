@@ -75,6 +75,7 @@ class DataFeedService implements IBasicDataFeed {
       has_no_volume: true,
       supported_resolutions: supportedResolutions,
       data_status: 'streaming',
+      format: 'price',
     };
 
     setTimeout(function() {
