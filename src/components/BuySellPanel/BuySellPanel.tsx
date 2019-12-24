@@ -80,7 +80,7 @@ function BuySellPanel(props: Props) {
     <FlexContainer
       padding="16px"
       flexDirection="column"
-      backgroundColor="#1A1E22"
+      backgroundColor="#232830"
     >
       <Formik
         initialValues={initialValues}

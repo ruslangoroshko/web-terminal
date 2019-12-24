@@ -29,6 +29,7 @@ function NavBar(props: Props) {
       top="0"
       backgroundColor={ColorsPallete.BLUE_STONE}
       justifyContent="space-between"
+      zIndex="105"
     >
       <FlexContainer alignItems="center">
         <img src={monfexLogo} alt="" width="100%" />

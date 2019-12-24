@@ -32,9 +32,8 @@ function MainApp(props: Props) {
             font-size: 14px;
             line-height: 1.4;
           }
-          .group-wWM3zP_M- {
-            background: red !important;
-          }
+
+
         `}
       />
     </>

@@ -17,6 +17,7 @@ export interface FlexContainerProps {
   bottom?: string;
   right?: string;
   left?: string;
+  zIndex?: string;
 }
 
 export const FlexContainer = styled.div<FlexContainerProps>`
@@ -37,4 +38,5 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   right: ${props => props.right};
   bottom: ${props => props.bottom};
   left: ${props => props.left};
+  z-index: ${props  => props.zIndex};
 `;

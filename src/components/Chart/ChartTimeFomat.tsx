@@ -82,7 +82,7 @@ function ChartTimeFomat(props: Props) {
 export default ChartTimeFomat;
 
 const ChartTimeScaleWrapper = styled(FlexContainer)`
-  border-left: 1px solid #383c3f;
+  border-left: 1px solid #1a1e22;
 `;
 
 // paneProperties.axisProperties.autoScale: true

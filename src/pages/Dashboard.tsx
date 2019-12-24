@@ -232,7 +232,7 @@ function Dashboard() {
       width="100%"
       height="100%"
       flexDirection="column"
-      backgroundColor="#262A2D"
+      backgroundColor="#232830"
     >
       <FlexContainer
         padding="8px 0 8px 8px"
@@ -266,7 +266,7 @@ function Dashboard() {
         </FlexContainer>
       </FlexContainer>
       <GridWrapper>
-        <ChartWrapper height="456px" backgroundColor="#191e1e">
+        <ChartWrapper>
           {activeInstrument && (
             <TVChartContainer
               intrument={activeInstrument}
@@ -286,7 +286,7 @@ function Dashboard() {
           )}
         </BuySellPanelWrapper>
         <ChartInstruments
-          backgroundColor="#1A1E22"
+          backgroundColor="#232830"
           justifyContent="space-between"
         >
           <ChartSettingsButtons></ChartSettingsButtons>
@@ -316,17 +316,23 @@ const AddIntrumentButton = styled(ButtonWithoutStyles)`
 
 const GridWrapper = styled.div`
   display: grid;
+  border-top: 2px solid #1a1e22;
   border-collapse: collapse;
   grid-template-columns: 1fr 172px;
+  grid-template-rows: 1fr 32px;
   width: 100%;
+  height: 100%;
   grid-row-gap: 0;
   grid-column-gap: 1px;
-  border-color: #383c3f;
 `;
 
 const ChartWrapper = styled(FlexContainer)`
   grid-row: 1 / span 1;
   grid-column: 1 / span 1;
+  background: linear-gradient(0deg, #232830, #232830),
+    linear-gradient(291.49deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.62) 99.76%);
+  border-right: 1px solid #1a1e22;
+  border-bottom: 1px solid #1a1e22;
 `;
 
 const ChartInstruments = styled(FlexContainer)`

@@ -61,6 +61,7 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
       container_id: defaultProps.containerId,
       library_path: defaultProps.library_path,
       locale: getLanguageFromURL() || 'en',
+      custom_css_url: 'custom_trading_view_styles.css',
       // debug: true,
       disabled_features: [
         'header_widget',
@@ -71,9 +72,9 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'left_toolbar',
         'symbol_info',
         'context_menus',
+        'main_series_scale_menu',
       ],
       enabled_features: [
-        'move_logo_to_main_pane',
         'remove_library_container_border',
       ],
       client_id: defaultProps.clientId,
@@ -96,7 +97,6 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'mainSeriesProperties.areaStyle.linestyle': LineStyles.LINESTYLE_SOLID,
         'mainSeriesProperties.areaStyle.linewidth': 3,
         'mainSeriesProperties.areaStyle.priceSource': 'close',
-        'paneProperties.background': '#1A1E22',
         'paneProperties.vertGridProperties.color': '#353939',
         'paneProperties.vertGridProperties.style': LineStyles.LINESTYLE_DOTTED,
         'paneProperties.horzGridProperties.color': '#353939',
@@ -111,13 +111,13 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'paneProperties.legendProperties.showOnlyPriceSource': false,
         'linetoolnote.backgroundColor': ColorsPallete.RAZZMATAZZ,
         'scalesProperties.lineColor': 'transparent',
-        'scalesProperties.textColor': '#AAA',
+        'scalesProperties.textColor': 'rgba(255, 255, 255, 0.2)',
         'scalesProperties.backgroundColor': 'transparent',
+        'paneProperties.background': 'rgba(0,0,0,0)',
         'mainSeriesProperties.priceLineColor': '#fff',
         'mainSeriesProperties.priceLineWidth': 2,
         'timeScale.rightOffset': 5,
       },
-      theme: 'Dark',
     };
 
     const tvWidget = new widget(widgetOptions);

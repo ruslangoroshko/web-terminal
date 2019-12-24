@@ -53,8 +53,8 @@ const ChartTimeScale: FC<Props> = props => {
 export default ChartTimeScale;
 
 const ChartTimeScaleWrapper = styled(FlexContainer)`
-  border-right: 1px solid #383c3f;
-  border-left: 1px solid #383c3f;
+  border-right: 1px solid #1a1e22;
+  border-left: 1px solid #1a1e22;
 `;
 
 export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
