@@ -18,6 +18,8 @@ function BottomNavBar(props: Props) {
       height="100%"
       width="60px"
       backgroundColor="#232830"
+      zIndex="103"
+      position="relative"
     >
       <BottomNavBarButton iconProps={MarketsIcon} title="Markets" />
       <BottomNavBarButton iconProps={PortfolioIcon} title="Portfolio" />
@@ -31,4 +33,5 @@ export default BottomNavBar;
 const BottonNavBarWrapper = styled(FlexContainer)`
   box-shadow: 2px 0px 0px #1a1e22;
   border-right: 2px solid #1a1e22;
+  min-width: 60px;
 `;

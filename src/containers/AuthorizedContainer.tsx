@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import NavBar from '../components/NavBar/NavBar';
 import BottomNavBar from '../components/NavBar/BottomNavBar';
+import ResizableContainer from '../components/NavBarTabs/ResizableContainer';
 
 interface Props {}
 
@@ -13,7 +14,8 @@ const AuthorizedContainer: FC<Props> = props => {
       <NavBar></NavBar>
       <FlexContainer height="100%">
         <BottomNavBar></BottomNavBar>
-        <FlexContainer height="100%" width="100%">{children}</FlexContainer>
+        <ResizableContainer></ResizableContainer>
+        <FlexContainer position="relative" height="100%" width="100%" zIndex="101">{children}</FlexContainer>
       </FlexContainer>
     </FlexContainer>
   );
