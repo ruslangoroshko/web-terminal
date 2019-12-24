@@ -23,6 +23,7 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { Formik, Field, FieldProps, ErrorMessage, Form } from 'formik';
 import Fields from '../../constants/fields';
 import { QuotesContext } from '../../store/QuotesProvider';
+import { BuySellContext } from '../../store/BuySellProvider';
 
 interface Props {
   currencySymbol: string;
@@ -52,6 +53,12 @@ function BuySellPanel(props: Props) {
     multiplier,
     investmentAmount: '',
   };
+  const {
+    takeProfitValue,
+    stopLossValue,
+    autoCloseLoss,
+    autoCloseProfit,
+  } = useContext(BuySellContext);
 
   const validationSchema = yup.object().shape<OpenModel>({
     investmentAmount: yup
@@ -67,14 +74,34 @@ function BuySellPanel(props: Props) {
   });
 
   const handleOpenPosition = (
-    values: OpenPositionModelFormik,
-    actions: any
-  ) => {
+    submitForm: () => Promise<void>,
+    operation: AskBidEnum,
+    setFieldValue: any
+  ) => () => {
+    setFieldValue(Fields.OPERATION, operation);
+    submitForm();
+  };
+
+  const handleSubmit = (values: OpenPositionModelFormik, actions: any) => {
     actions.setSubmitting(false);
-    // API.openPosition({ ...values, operation: openPositionOption });
+
+    API.openPosition({
+      ...values,
+      investmentAmount: +values.investmentAmount,
+    });
   };
 
   const { quotes } = useContext(QuotesContext);
+
+  const calculateVolume = (values: OpenPositionModelFormik) => {
+    return +values.investmentAmount;
+  };
+
+  const calculateSpread = () => {
+    return Math.abs(
+      quotes[instrument.id].bid.c - quotes[instrument.id].ask.c
+    ).toFixed(digits);
+  };
 
   return (
     <FlexContainer
@@ -84,10 +111,10 @@ function BuySellPanel(props: Props) {
     >
       <Formik
         initialValues={initialValues}
-        onSubmit={handleOpenPosition}
+        onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
-        {({ isSubmitting, isValid, setFieldValue, values }) => (
+        {({ isSubmitting, isValid, setFieldValue, values, submitForm }) => (
           <CustomForm>
             <FlexContainer
               justifyContent="space-between"
@@ -113,32 +140,26 @@ function BuySellPanel(props: Props) {
             </FlexContainer>
             <Field type="text" name={Fields.AMOUNT}>
               {({ field }: FieldProps) => (
-                <FlexContainer
-                  flexDirection="column"
+                <InvestedAmoutInputWrapper
+                  padding="4px"
+                  margin="0 0 14px 0"
                   position="relative"
-                  padding="0 0 4px 0"
+                  alignItems="center"
+                  zIndex="100"
                 >
+                  <PrimaryTextSpan fontWeight="bold" marginRight="2px">
+                    {currencySymbol}
+                  </PrimaryTextSpan>
                   <MaskedInput
                     {...field}
-                    mask={[
-                      currencySymbol,
-                      /\d/,
-                      /\d/,
-                      /\d/,
-                      /\d/,
-                      /\d/,
-                      /\d/,
-                      /\d/,
-                      /\d/,
-                    ]}
-                    showMask={false}
+                    mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+                    showMask={true}
                     guide={false}
-                    placeholder={currencySymbol}
                     render={(ref, props) => (
                       <InvestInput ref={ref} {...props} />
                     )}
                   ></MaskedInput>
-                </FlexContainer>
+                </InvestedAmoutInputWrapper>
               )}
             </Field>
 
@@ -265,7 +286,13 @@ function BuySellPanel(props: Props) {
                         top="20px"
                         right="100%"
                       >
-                        <PurchaseAtPopup toggle={toggle}></PurchaseAtPopup>
+                        <PurchaseAtPopup
+                          toggle={toggle}
+                          setFieldValue={setFieldValue}
+                          // @ts-ignore
+                          purchaseAtValue={values.purchaseAt}
+                          instrumentId={instrument.id}
+                        ></PurchaseAtPopup>
                       </FlexContainer>
                     )}
                   </>
@@ -283,7 +310,7 @@ function BuySellPanel(props: Props) {
               </PrimaryTextSpan>
               <ValueText>
                 {currencySymbol}
-                {1000200}
+                {calculateVolume(values)}
               </ValueText>
             </FlexContainer>
             <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
@@ -297,13 +324,19 @@ function BuySellPanel(props: Props) {
               </PrimaryTextSpan>
               <ValueText>
                 {currencySymbol}
-                {Math.abs(
-                  quotes[instrument.id].bid.c - quotes[instrument.id].ask.c
-                ).toFixed(digits)}
+                {calculateSpread()}
               </ValueText>
             </FlexContainer>
             <FlexContainer flexDirection="column">
-              <ButtonBuy type="button" disabled={!isValid || isSubmitting}>
+              <ButtonBuy
+                type="button"
+                disabled={!isValid || isSubmitting}
+                onClick={handleOpenPosition(
+                  submitForm,
+                  AskBidEnum.Buy,
+                  setFieldValue
+                )}
+              >
                 <FlexContainer margin="0 8px 0 0">
                   <SvgIcon {...IconShevronUp} fill="#003A38"></SvgIcon>
                 </FlexContainer>
@@ -337,39 +370,15 @@ const ButtonAutoClosePurchase = styled(ButtonWithoutStyles)`
 `;
 
 const InvestInput = styled.input`
-  padding: 4px;
-  height: 40px;
+  height: 100%;
   width: 100%;
   outline: none;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  border: none;
   background-color: transparent;
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
   color: #ffffff;
-  margin-bottom: 14px;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(255, 255, 255, 0.06);
-  }
-  ::-webkit-input-placeholder {
-    color: #fff;
-  }
-
-  :-ms-input-placeholder {
-    color: #fff;
-  }
-
-  ::placeholder {
-    color: #fff;
-  }
 `;
 
 const InfoIcon = styled(FlexContainer)`
@@ -410,4 +419,20 @@ const ButtonBuy = styled(ButtonSell)`
 
 const CustomForm = styled(Form)`
   margin: 0;
+`;
+
+const InvestedAmoutInputWrapper = styled(FlexContainer)`
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.06);
+    z-index: -1;
+  }
 `;

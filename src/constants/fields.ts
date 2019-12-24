@@ -12,6 +12,8 @@ const Fields = {
   STOP_LOSS_PRICE: 'slPrice',
   AMOUNT: 'investmentAmount',
   MULTIPLIER: 'multiplier',
+  PURCHASE_AT: 'purchaseAt',
+  OPERATION: 'operation',
 };
 
 Object.freeze(Fields);

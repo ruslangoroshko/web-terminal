@@ -42,6 +42,10 @@ const BuySellProvider: FC<Props> = ({ children }) => {
     handleAutoCloseProfit(autoCloseProfit);
   };
 
+  const setPurchaseAt = () => {
+
+  }
+
   const [takeProfitValue, setTakeProfitValue] = useState('');
   const [stopLossValue, setStopLossValue] = useState('');
 

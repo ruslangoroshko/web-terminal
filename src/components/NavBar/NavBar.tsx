@@ -26,7 +26,7 @@ function NavBar(props: Props) {
       padding="8px 0 8px 20px"
       alignItems="center"
       width="100%"
-      height="40px"
+      height="48px"
       position="sticky"
       top="0"
       backgroundColor={ColorsPallete.BLUE_STONE}

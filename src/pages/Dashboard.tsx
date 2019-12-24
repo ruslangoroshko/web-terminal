@@ -24,7 +24,6 @@ import BuySellPanel from '../components/BuySellPanel/BuySellPanel';
 import ChartTimeScale from '../components/Chart/ChartTimeScale';
 import ChartSettingsButtons from '../components/Chart/ChartSettingsButtons';
 import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
-import AutoClosePopup from '../components/BuySellPanel/AutoClosePopup';
 import { QuotesContext } from '../store/QuotesProvider';
 import { AskBidEnum } from '../enums/AskBid';
 import { UserAccountContext } from '../store/UserAccountProvider';
@@ -49,11 +48,7 @@ function Dashboard() {
 
   const switchInstrument = (instrument: InstrumentModelWSDTO) => () => {
     setActiveInstrument(instrument);
-
-    // TODO: wait for prettier support "optional chaining"
-    if (tradingWidget) {
-      tradingWidget.setSymbol(instrument.id, resolution, () => {});
-    }
+    tradingWidget?.setSymbol(instrument.id, resolution, () => {});
   };
 
   const tradingWidgetCallback = (callbackWidget: IChartingLibraryWidget) => {
@@ -61,11 +56,9 @@ function Dashboard() {
   };
 
   const setTimeScale = (resolution: string) => {
-    if (tradingWidget) {
-      tradingWidget.setSymbol(activeInstrument!.id, resolution, () => {
-        setResolution(resolution);
-      });
-    }
+    tradingWidget?.setSymbol(activeInstrument!.id, resolution, () => {
+      setResolution(resolution);
+    });
   };
   const { setQuote } = useContext(QuotesContext);
 
@@ -147,77 +140,73 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    if (activeSession) {
-      activeSession.on(
-        Topics.ACCOUNTS,
-        (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
-          setAccount(response.data[0]);
-          activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
-            [Fields.ACCOUNT_ID]: response.data[0].id,
-          });
-        }
-      );
+    activeSession?.on(
+      Topics.ACCOUNTS,
+      (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
+        setAccount(response.data[0]);
+        activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
+          [Fields.ACCOUNT_ID]: response.data[0].id,
+        });
+      }
+    );
 
-      activeSession.on(
-        Topics.UPDATE_ACCOUNT,
-        (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
-          setAccount(response.data);
-        }
-      );
-    }
+    activeSession?.on(
+      Topics.UPDATE_ACCOUNT,
+      (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
+        setAccount(response.data);
+      }
+    );
   }, [activeSession]);
 
   useEffect(() => {
-    if (account && activeSession) {
-      activeSession.on(
-        Topics.INSTRUMENTS,
-        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-          if (response.accountId === account.id) {
-            setQuote({
-              ask: {
-                c: response.data[0].ask,
-                h: 0,
-                l: 0,
-                o: 0,
-              },
-              bid: {
-                c: response.data[0].bid,
-                h: 0,
-                l: 0,
-                o: 0,
-              },
-              dir: AskBidEnum.Buy,
-              dt: Date.now(),
-              id: response.data[0].id,
-            });
-            setInstruments(response.data);
-            setActiveInstrument(response.data[0]);
-          }
+    activeSession?.on(
+      Topics.INSTRUMENTS,
+      (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
+        if (response.accountId === account?.id) {
+          setQuote({
+            ask: {
+              c: response.data[0].ask,
+              h: 0,
+              l: 0,
+              o: 0,
+            },
+            bid: {
+              c: response.data[0].bid,
+              h: 0,
+              l: 0,
+              o: 0,
+            },
+            dir: AskBidEnum.Buy,
+            dt: Date.now(),
+            id: response.data[0].id,
+          });
+          setInstruments(response.data);
+          setActiveInstrument(response.data[0]);
         }
-      );
-      activeSession.on(
-        Topics.ACTIVE_POSITIONS,
-        (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
-          if (response.accountId === account.id) {
-            setActivePositions(response.data);
-          }
+      }
+    );
+    activeSession?.on(
+      Topics.ACTIVE_POSITIONS,
+      (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
+        if (response.accountId === account?.id) {
+          setActivePositions(response.data);
         }
-      );
-      activeSession.on(
-        Topics.UPDATE_ACCOUNT,
-        (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
-          if (response.accountId === account.id) {
-            const newActivePositions = activePositions.map(item => {
-              if (item.id === response.data.id) {
-                return response.data;
-              }
-              return item;
-            });
-            setActivePositions(newActivePositions);
-          }
+      }
+    );
+    activeSession?.on(
+      Topics.UPDATE_ACCOUNT,
+      (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
+        if (response.accountId === account?.id) {
+          const newActivePositions = activePositions.map(item => {
+            if (item.id === response.data.id) {
+              return response.data;
+            }
+            return item;
+          });
+          setActivePositions(newActivePositions);
         }
-      );
-    }
+      }
+    );
   }, [account]);
 
   const handleRemoveInstrument = (instrumentId: string) => () => {
@@ -251,7 +240,9 @@ function Dashboard() {
                 isActive={item.id === activeInstrument?.id}
                 handleClose={handleRemoveInstrument(item.id)}
                 switchInstrument={switchInstrument(item)}
-                positionsLength={activePositions.length}
+                positionsLength={
+                  activePositions.filter(ap => item.id === ap.instrument).length
+                }
               />
             ))}
           </FlexContainer>

@@ -1,30 +1,22 @@
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 
-export interface OpenPositionModel {
+interface OpenPositionModelInit {
   processId: string;
   accountId: string;
   instrumentId: string;
   operation: number;
-  investmentAmount: number;
   multiplier: number;
   tp?: number;
   sl?: number;
   tpRate?: number;
   slRate?: number;
 }
+export interface OpenPositionModel extends OpenPositionModelInit {
+  investmentAmount: number;
+}
 
-
-export interface OpenPositionModelFormik {
-  processId: string;
-  accountId: string;
-  instrumentId: string;
-  operation: number;
+export interface OpenPositionModelFormik extends OpenPositionModelInit {
   investmentAmount: string;
-  multiplier: number;
-  tp?: string;
-  sl?: string;
-  tpRate?: string;
-  slRate?: string;
 }
 
 export interface OpenPositionResponseDTO {

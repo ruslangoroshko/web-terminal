@@ -72,15 +72,17 @@ function Instrument({
       <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
       <FlexContainer alignItems="center">
         {quote && <CurrencyQuoteInfo>{quote.bid.c}</CurrencyQuoteInfo>}
-        <PositionsCounter
-          justifyContent="center"
-          alignItems="center"
-          width="20px"
-          height="16px"
-          position="relative"
-        >
-          {positionsLength}
-        </PositionsCounter>
+        {positionsLength > 0 && (
+          <PositionsCounter
+            justifyContent="center"
+            alignItems="center"
+            width="20px"
+            height="16px"
+            position="relative"
+          >
+            {positionsLength}
+          </PositionsCounter>
+        )}
         <ButtonWithoutStyles onClick={handleClose}>
           <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
         </ButtonWithoutStyles>

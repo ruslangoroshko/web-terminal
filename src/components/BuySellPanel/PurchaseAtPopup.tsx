@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent, useContext } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
@@ -9,13 +9,26 @@ import {
   PrimaryTextParagraph,
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
+import MaskedInput from 'react-text-mask';
+import Fields from '../../constants/fields';
+import { QuotesContext } from '../../store/QuotesProvider';
 
 interface Props {
   toggle: () => void;
+  setFieldValue: (field: any, value: any) => void;
+  purchaseAtValue: string;
+  instrumentId: string;
 }
 
 function PurchaseAtPopup(props: Props) {
-  const { toggle } = props;
+  const { toggle, setFieldValue, purchaseAtValue, instrumentId } = props;
+
+  const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
+    setFieldValue(Fields.PURCHASE_AT, e.target.value);
+  };
+
+  const { quotes } = useContext(QuotesContext);
+
   return (
     <Wrapper
       position="relative"
@@ -53,7 +66,15 @@ function PurchaseAtPopup(props: Props) {
         position="relative"
         justifyContent="space-between"
       >
-        <InputPnL placeholder="Non Set"></InputPnL>
+        <MaskedInput
+          mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+          showMask={false}
+          onChange={handleChangePurchaseAt}
+          value={purchaseAtValue}
+          guide={false}
+          placeholder="Non Set"
+          render={(ref, props) => <InputPnL ref={ref} {...props}></InputPnL>}
+        ></MaskedInput>
         <FlexContainer>
           <ButtonIncreaseDecreasePrice>
             <PrimaryTextSpan
@@ -93,7 +114,7 @@ function PurchaseAtPopup(props: Props) {
           fontSize="11px"
           lineHeight="12px"
         >
-          1.3124
+          {quotes[instrumentId].bid.c}
         </PrimaryTextSpan>
       </FlexContainer>
       <ButtonApply>Apply</ButtonApply>

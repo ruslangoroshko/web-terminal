@@ -13,6 +13,7 @@ import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import Fields from '../../constants/fields';
 import { OpenPositionModelFormik } from '../../types/Positions';
 import { BuySellContext } from '../../store/BuySellProvider';
+import MaskedInput from 'react-text-mask';
 
 interface Props {
   toggle: () => void;
@@ -44,7 +45,7 @@ function AutoClosePopup(props: Props) {
 
   const handleApply = () => {
     let fieldProfit = Fields.TAKE_PROFIT;
-    let fieldLoss = Fields.TAKE_PROFIT;
+    let fieldLoss = Fields.STOP_LOSS;
 
     switch (takeProfitValue) {
       case AutoCloseTypesEnum.Profit:
@@ -62,13 +63,13 @@ function AutoClosePopup(props: Props) {
 
     switch (stopLossValue) {
       case AutoCloseTypesEnum.Profit:
-        fieldLoss = Fields.TAKE_PROFIT;
+        fieldLoss = Fields.STOP_LOSS;
         break;
       case AutoCloseTypesEnum.Percent:
-        fieldLoss = Fields.TAKE_PROFIT_RATE;
+        fieldLoss = Fields.STOP_LOSS_RATE;
         break;
       case AutoCloseTypesEnum.Price:
-        fieldLoss = Fields.TAKE_PROFIT_PRICE;
+        fieldLoss = Fields.STOP_LOSS_PRICE;
         break;
       default:
         break;
@@ -116,13 +117,15 @@ function AutoClosePopup(props: Props) {
         position="relative"
       >
         <PlusSign>+</PlusSign>
-
-        <InputPnL
-          placeholder="Non Set"
+        <MaskedInput
+          mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+          showMask={false}
           onChange={handleChangeProfit}
           value={takeProfitValue}
-        ></InputPnL>
-
+          guide={false}
+          placeholder="Non Set"
+          render={(ref, props) => <InputPnL ref={ref} {...props}></InputPnL>}
+        ></MaskedInput>
         <FlexContainer position="absolute" right="2px" top="2px">
           <PnLTypeDropdown
             autoClose={autoCloseProfit}
@@ -155,11 +158,15 @@ function AutoClosePopup(props: Props) {
         position="relative"
       >
         <PlusSign>-</PlusSign>
-        <InputPnL
+        <MaskedInput
+          mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+          showMask={false}
           placeholder="Non Set"
-          value={stopLossValue}
           onChange={handleChangeLoss}
-        ></InputPnL>
+          value={stopLossValue}
+          guide={false}
+          render={(ref, props) => <InputPnL ref={ref} {...props}></InputPnL>}
+        ></MaskedInput>
         <FlexContainer position="absolute" right="2px" top="2px">
           <PnLTypeDropdown
             autoClose={autoCloseLoss}
