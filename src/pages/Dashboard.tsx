@@ -27,6 +27,7 @@ import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
 import { QuotesContext } from '../store/QuotesProvider';
 import { AskBidEnum } from '../enums/AskBid';
 import { UserAccountContext } from '../store/UserAccountProvider';
+import TestBg from '../assets/images/test.png';
 
 function Dashboard() {
   const { isLoading, account, setAccount, activeSession } = useContext(
@@ -322,10 +323,11 @@ const GridWrapper = styled.div`
 const ChartWrapper = styled(FlexContainer)`
   grid-row: 1 / span 1;
   grid-column: 1 / span 1;
-  background: linear-gradient(0deg, #232830, #232830),
-    linear-gradient(291.49deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.62) 99.76%);
+  /* background: linear-gradient(0deg, #232830, #232830),
+    linear-gradient(291.49deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.62) 99.76%); */
   border-right: 1px solid #1a1e22;
   border-bottom: 1px solid #1a1e22;
+  background-image: url(${TestBg}) center center no-repeat;
 `;
 
 const ChartInstruments = styled(FlexContainer)`
