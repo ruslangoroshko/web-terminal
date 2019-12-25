@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import ColorsPallete from '../../styles/colorPallete';
 import monfexLogo from '../../assets/images/monfex-logo.png';
@@ -10,16 +10,15 @@ import UserProfileButton from './UserProfileButton';
 import DepositButton from './DepositButton';
 import MoreButton from './MoreButton';
 import AccountBalances from './AccountBalances';
-import { MainAppContext } from '../../store/MainAppProvider';
-import { UserAccountContext } from '../../store/UserAccountProvider';
+import { useStores } from '../../hooks/useStores';
+import { observer } from 'mobx-react-lite';
 
 interface Props {}
 
-function NavBar(props: Props) {
+const NavBar: FC<Props> = observer(props => {
   const {} = props;
 
-  const { account } = useContext(MainAppContext);
-  const { totalProfil } = useContext(UserAccountContext);
+  const { mainAppStore, quotesStore } = useStores();
 
   return (
     <FlexContainer
@@ -38,13 +37,13 @@ function NavBar(props: Props) {
       </FlexContainer>
       <FlexContainer>
         <FlexContainer alignItems="center" margin="0 20px 0 0">
-          {account && (
+          {mainAppStore.account && (
             <AccountBalances
-              available={account.balance}
-              symbol={account.symbol}
-              invest={account.balance}
-              profit={totalProfil}
-              total={account.balance}
+              available={mainAppStore.account.balance}
+              symbol={mainAppStore.account.symbol}
+              invest={mainAppStore.account.balance}
+              profit={quotesStore.profit}
+              total={mainAppStore.account.balance}
             />
           )}
         </FlexContainer>
@@ -67,8 +66,7 @@ function NavBar(props: Props) {
       </FlexContainer>
     </FlexContainer>
   );
-}
-
+});
 export default NavBar;
 
 const NavBarButtonsWrapper = styled(FlexContainer)`

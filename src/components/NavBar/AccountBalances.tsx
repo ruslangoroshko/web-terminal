@@ -73,5 +73,5 @@ const LabelValue = styled.span`
 
 const ProfitValue = styled(LabelValue)<{ isGrowth: boolean }>`
   color: ${props =>
-    props.isGrowth ? ColorsPallete.MINT : ColorsPallete.RAZZMATAZZ};
+    props.isGrowth ? ColorsPallete.MINT : ColorsPallete.WILD_WATERLEMON};
 `;

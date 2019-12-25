@@ -4,10 +4,10 @@ import styled from '@emotion/styled';
 import baseImg from '../assets/images/base.png';
 import quoteImg from '../assets/images/quote.png';
 import ColorsPallete from '../styles/colorPallete';
-import { QuotesContext } from '../store/QuotesProvider';
 import { AskBidEnum } from '../enums/AskBid';
 import calculateGrowth from '../helpers/calculateGrowth';
 import { InstrumentModelWSDTO } from '../types/Instruments';
+import { useStores } from '../hooks/useStores';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -16,8 +16,9 @@ interface Props {
 const ActiveInstrument: FC<Props> = props => {
   const { instrument } = props;
 
-  const { quotes } = useContext(QuotesContext);
-  const quote = quotes[instrument.id] || {
+  const { quotesStore } = useStores();
+
+  const quote = quotesStore.quotes[instrument.id] || {
     ask: {
       c: 0,
     },

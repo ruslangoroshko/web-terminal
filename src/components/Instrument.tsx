@@ -1,18 +1,12 @@
 import React, { useEffect, useContext } from 'react';
-
 import { FlexContainer } from '../styles/FlexContainer';
-import calculateGrowth from '../helpers/calculateGrowth';
 import { InstrumentModelWSDTO } from '../types/Instruments';
-import currencyIcon from '../assets/images/currency.png';
 import Topics from '../constants/websocketTopics';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { BidAskModelWSDTO } from '../types/BidAsk';
 import { HubConnection } from '@aspnet/signalr';
-import { QuotesContext } from '../store/QuotesProvider';
-import { AskBidEnum } from '../enums/AskBid';
 import {
   QuotesFeedWrapper,
-  CurrencyQuoteIcon,
   CurrencyQuoteTitle,
   CurrencyQuoteInfo,
 } from '../styles/InstrumentComponentStyle';
@@ -20,6 +14,7 @@ import IconClose from '../assets/svg/icon-instrument-close.svg';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
 import styled from '@emotion/styled';
+import { useStores } from '../hooks/useStores';
 
 interface Props {
   activeSession: HubConnection;
@@ -38,9 +33,8 @@ function Instrument({
   handleClose,
   positionsLength = 0,
 }: Props) {
-  const { quotes } = useContext(QuotesContext);
-  const quote = quotes[instrument.id];
-  const context = useContext(QuotesContext);
+  const { quotesStore } = useStores();
+  const quote = quotesStore.quotes[instrument.id];
 
   useEffect(() => {
     activeSession.on(
@@ -52,7 +46,7 @@ function Instrument({
 
         const newBidAsk = response.data[0];
         if (newBidAsk.id === instrument.id) {
-          context.setQuote(newBidAsk);
+          quotesStore.setQuote(newBidAsk);
         }
       }
     );

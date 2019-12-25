@@ -4,12 +4,11 @@ import RouteWrapper from '../components/RouteWrapper';
 import { useLocation } from 'react-router-dom';
 import AuthorizedContainer from '../containers/AuthorizedContainer';
 import { FlexContainer } from '../styles/FlexContainer';
+import { observer } from 'mobx-react-lite';
 
-interface Props {}
-
-function RoutingLayout(props: Props) {
-  const {} = props;
+const RoutingLayout = observer(() => {
   const location = useLocation();
+
   const allRoutes = routesList.map(route => (
     <RouteWrapper key={route.path} {...route} />
   ));
@@ -40,6 +39,6 @@ function RoutingLayout(props: Props) {
         </FlexContainer>
       );
   }
-}
+});
 
 export default RoutingLayout;

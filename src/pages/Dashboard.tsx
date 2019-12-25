@@ -10,7 +10,6 @@ import Fields from '../constants/fields';
 import API from '../helpers/API';
 import Instrument from '../components/Instrument';
 import Table from '../components/Table';
-import { MainAppContext } from '../store/MainAppProvider';
 import TVChartContainer from '../containers/ChartContainer';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { PositionModelWSDTO } from '../types/Positions';
@@ -24,22 +23,19 @@ import BuySellPanel from '../components/BuySellPanel/BuySellPanel';
 import ChartTimeScale from '../components/Chart/ChartTimeScale';
 import ChartSettingsButtons from '../components/Chart/ChartSettingsButtons';
 import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
-import { QuotesContext } from '../store/QuotesProvider';
 import { AskBidEnum } from '../enums/AskBid';
-import { UserAccountContext } from '../store/UserAccountProvider';
+import { useStores } from '../hooks/useStores';
+import { observer } from 'mobx-react-lite';
+import TestBg from '../assets/images/test.png';
 
-function Dashboard() {
-  const { isLoading, account, setAccount, activeSession } = useContext(
-    MainAppContext
-  );
+const Dashboard = observer(() => {
+  const { mainAppStore } = useStores();
   const [resolution, setResolution] = useState(supportedResolutions[0]);
 
   const [tradingWidget, setTradingWidget] = useState<IChartingLibraryWidget>();
   const [tabType, setTabType] = useState(TabType.ActivePositions);
 
-  const { activePositions, setActivePositions } = useContext(
-    UserAccountContext
-  );
+  const { quotesStore } = useStores();
 
   const [activeInstrument, setActiveInstrument] = useState<
     InstrumentModelWSDTO
@@ -60,7 +56,6 @@ function Dashboard() {
       setResolution(resolution);
     });
   };
-  const { setQuote } = useContext(QuotesContext);
 
   const renderTabType = () => {
     switch (tabType) {
@@ -117,7 +112,7 @@ function Dashboard() {
         return activeInstrument ? (
           <Table
             columns={columns}
-            data={activePositions}
+            data={quotesStore.activePositions}
             closePosition={closePosition}
             instrumentId={activeInstrument ? activeInstrument.id : ''}
             multiplier={activeInstrument.multiplier[0]}
@@ -136,34 +131,38 @@ function Dashboard() {
   };
 
   const closePosition = (positionId: number) => () => {
-    API.closePosition({ accountId: account!.id, positionId, processId: v4() });
+    API.closePosition({
+      accountId: mainAppStore.account!.id,
+      positionId,
+      processId: v4(),
+    });
   };
 
   useEffect(() => {
-    activeSession?.on(
+    mainAppStore.activeSession?.on(
       Topics.ACCOUNTS,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
-        setAccount(response.data[0]);
-        activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
+        mainAppStore.setAccount(response.data[0]);
+        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: response.data[0].id,
         });
       }
     );
 
-    activeSession?.on(
+    mainAppStore.activeSession?.on(
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
-        setAccount(response.data);
+        mainAppStore.setAccount(response.data);
       }
     );
-  }, [activeSession]);
+  }, [mainAppStore.activeSession]);
 
   useEffect(() => {
-    activeSession?.on(
+    mainAppStore.activeSession?.on(
       Topics.INSTRUMENTS,
       (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-        if (response.accountId === account?.id) {
-          setQuote({
+        if (response.accountId === mainAppStore.account?.id) {
+          quotesStore.setQuote({
             ask: {
               c: response.data[0].ask,
               h: 0,
@@ -185,29 +184,29 @@ function Dashboard() {
         }
       }
     );
-    activeSession?.on(
+    mainAppStore.activeSession?.on(
       Topics.ACTIVE_POSITIONS,
       (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
-        if (response.accountId === account?.id) {
-          setActivePositions(response.data);
+        if (response.accountId === mainAppStore.account?.id) {
+          quotesStore.activePositions = response.data;
         }
       }
     );
-    activeSession?.on(
+    mainAppStore.activeSession?.on(
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
-        if (response.accountId === account?.id) {
-          const newActivePositions = activePositions.map(item => {
+        if (response.accountId === mainAppStore.account?.id) {
+          const newActivePositions = quotesStore.activePositions.map(item => {
             if (item.id === response.data.id) {
               return response.data;
             }
             return item;
           });
-          setActivePositions(newActivePositions);
+          quotesStore.activePositions = newActivePositions;
         }
       }
     );
-  }, [account]);
+  }, [mainAppStore.account]);
 
   const handleRemoveInstrument = (instrumentId: string) => () => {
     throw new Error('handleRemoveInstrument');
@@ -216,8 +215,9 @@ function Dashboard() {
   const handleAddNewInstrument = () => {
     throw new Error('handleAddNewInstrument');
   };
-
-  return !isLoading && account && activeSession ? (
+  return !mainAppStore.isLoading &&
+    mainAppStore.account &&
+    mainAppStore.activeSession ? (
     <FlexContainer
       width="100%"
       height="100%"
@@ -234,14 +234,16 @@ function Dashboard() {
           <FlexContainer padding="4px 4px 4px 0">
             {instruments.map(item => (
               <Instrument
-                activeSession={activeSession}
+                activeSession={mainAppStore.activeSession!}
                 instrument={item}
                 key={item.id}
                 isActive={item.id === activeInstrument?.id}
                 handleClose={handleRemoveInstrument(item.id)}
                 switchInstrument={switchInstrument(item)}
                 positionsLength={
-                  activePositions.filter(ap => item.id === ap.instrument).length
+                  quotesStore.activePositions.filter(
+                    ap => item.id === ap.instrument
+                  ).length
                 }
               />
             ))}
@@ -270,11 +272,11 @@ function Dashboard() {
         <BuySellPanelWrapper>
           {activeInstrument && (
             <BuySellPanel
-              currencySymbol={account.symbol}
+              currencySymbol={mainAppStore.account.symbol}
               instrument={activeInstrument}
-              accountId={account.id}
+              accountId={mainAppStore.account.id}
               multiplier={activeInstrument.multiplier[0]}
-              digits={account.digits}
+              digits={mainAppStore.account.digits}
             ></BuySellPanel>
           )}
         </BuySellPanelWrapper>
@@ -294,7 +296,7 @@ function Dashboard() {
       </GridWrapper>
     </FlexContainer>
   ) : null;
-}
+});
 
 export default Dashboard;
 
@@ -322,10 +324,11 @@ const GridWrapper = styled.div`
 const ChartWrapper = styled(FlexContainer)`
   grid-row: 1 / span 1;
   grid-column: 1 / span 1;
-  background: linear-gradient(0deg, #232830, #232830),
-    linear-gradient(291.49deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.62) 99.76%);
+  /* background: linear-gradient(0deg, #232830, #232830),
+    linear-gradient(291.49deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.62) 99.76%); */
   border-right: 1px solid #1a1e22;
   border-bottom: 1px solid #1a1e22;
+  background-image: url(${TestBg}) center center no-repeat;
 `;
 
 const ChartInstruments = styled(FlexContainer)`

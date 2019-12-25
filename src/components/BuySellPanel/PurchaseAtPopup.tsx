@@ -11,7 +11,7 @@ import {
 } from '../../styles/TextsElements';
 import MaskedInput from 'react-text-mask';
 import Fields from '../../constants/fields';
-import { QuotesContext } from '../../store/QuotesProvider';
+import { useStores } from '../../hooks/useStores';
 
 interface Props {
   toggle: () => void;
@@ -27,7 +27,7 @@ function PurchaseAtPopup(props: Props) {
     setFieldValue(Fields.PURCHASE_AT, e.target.value);
   };
 
-  const { quotes } = useContext(QuotesContext);
+  const { quotesStore } = useStores();
 
   return (
     <Wrapper
@@ -114,7 +114,7 @@ function PurchaseAtPopup(props: Props) {
           fontSize="11px"
           lineHeight="12px"
         >
-          {quotes[instrumentId].bid.c}
+          {quotesStore.quotes[instrumentId].bid.c}
         </PrimaryTextSpan>
       </FlexContainer>
       <ButtonApply>Apply</ButtonApply>

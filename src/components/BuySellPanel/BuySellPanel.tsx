@@ -22,8 +22,7 @@ import NotificationTooltip from '../NotificationTooltip';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { Formik, Field, FieldProps, ErrorMessage, Form } from 'formik';
 import Fields from '../../constants/fields';
-import { QuotesContext } from '../../store/QuotesProvider';
-import { BuySellContext } from '../../store/BuySellProvider';
+import { useStores } from '../../hooks/useStores';
 
 interface Props {
   currencySymbol: string;
@@ -53,12 +52,6 @@ function BuySellPanel(props: Props) {
     multiplier,
     investmentAmount: '',
   };
-  const {
-    takeProfitValue,
-    stopLossValue,
-    autoCloseLoss,
-    autoCloseProfit,
-  } = useContext(BuySellContext);
 
   const validationSchema = yup.object().shape<OpenModel>({
     investmentAmount: yup
@@ -91,7 +84,7 @@ function BuySellPanel(props: Props) {
     });
   };
 
-  const { quotes } = useContext(QuotesContext);
+  const { quotesStore } = useStores();
 
   const calculateVolume = (values: OpenPositionModelFormik) => {
     return +values.investmentAmount;
@@ -99,7 +92,8 @@ function BuySellPanel(props: Props) {
 
   const calculateSpread = () => {
     return Math.abs(
-      quotes[instrument.id].bid.c - quotes[instrument.id].ask.c
+      quotesStore.quotes[instrument.id].bid.c -
+        quotesStore.quotes[instrument.id].ask.c
     ).toFixed(digits);
   };
 
