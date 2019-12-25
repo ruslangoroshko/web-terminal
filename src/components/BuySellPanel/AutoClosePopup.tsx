@@ -12,8 +12,8 @@ import {
 import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import Fields from '../../constants/fields';
 import { OpenPositionModelFormik } from '../../types/Positions';
-import { BuySellContext } from '../../store/BuySellProvider';
 import MaskedInput from 'react-text-mask';
+import { useStores } from '../../hooks/useStores';
 
 interface Props {
   toggle: () => void;
@@ -24,30 +24,21 @@ interface Props {
 function AutoClosePopup(props: Props) {
   const { toggle, setFieldValue } = props;
 
-  const {
-    setTakeProfitValue,
-    setStopLossValue,
-    takeProfitValue,
-    stopLossValue,
-    autoCloseProfit,
-    autoCloseLoss,
-    setAutoCloseLoss,
-    setAutoCloseProfit,
-  } = useContext(BuySellContext);
+  const { buySellStore } = useStores();
 
   const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
-    setTakeProfitValue(e.target.value);
+    buySellStore.takeProfitValue = e.target.value;
   };
 
   const handleChangeLoss = (e: ChangeEvent<HTMLInputElement>) => {
-    setStopLossValue(e.target.value);
+    buySellStore.stopLossValue = e.target.value;
   };
 
   const handleApply = () => {
     let fieldProfit = Fields.TAKE_PROFIT;
     let fieldLoss = Fields.STOP_LOSS;
 
-    switch (takeProfitValue) {
+    switch (buySellStore.takeProfitValue) {
       case AutoCloseTypesEnum.Profit:
         fieldProfit = Fields.TAKE_PROFIT;
         break;
@@ -61,7 +52,7 @@ function AutoClosePopup(props: Props) {
         break;
     }
 
-    switch (stopLossValue) {
+    switch (buySellStore.stopLossValue) {
       case AutoCloseTypesEnum.Profit:
         fieldLoss = Fields.STOP_LOSS;
         break;
@@ -74,8 +65,8 @@ function AutoClosePopup(props: Props) {
       default:
         break;
     }
-    setFieldValue(fieldProfit, takeProfitValue);
-    setFieldValue(fieldLoss, stopLossValue);
+    setFieldValue(fieldProfit, buySellStore.takeProfitValue);
+    setFieldValue(fieldLoss, buySellStore.stopLossValue);
     toggle();
   };
 
@@ -121,16 +112,13 @@ function AutoClosePopup(props: Props) {
           mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
           showMask={false}
           onChange={handleChangeProfit}
-          value={takeProfitValue}
+          value={buySellStore.takeProfitValue}
           guide={false}
           placeholder="Non Set"
           render={(ref, props) => <InputPnL ref={ref} {...props}></InputPnL>}
         ></MaskedInput>
         <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown
-            autoClose={autoCloseProfit}
-            setAutoClose={setAutoCloseProfit}
-          ></PnLTypeDropdown>
+          <PnLTypeDropdown pnlType="profit"></PnLTypeDropdown>
         </FlexContainer>
       </InputWrapper>
       <FlexContainer
@@ -163,15 +151,12 @@ function AutoClosePopup(props: Props) {
           showMask={false}
           placeholder="Non Set"
           onChange={handleChangeLoss}
-          value={stopLossValue}
+          value={buySellStore.stopLossValue}
           guide={false}
           render={(ref, props) => <InputPnL ref={ref} {...props}></InputPnL>}
         ></MaskedInput>
         <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown
-            autoClose={autoCloseLoss}
-            setAutoClose={setAutoCloseLoss}
-          ></PnLTypeDropdown>
+          <PnLTypeDropdown pnlType="loss"></PnLTypeDropdown>
         </FlexContainer>
       </InputWrapper>
       <ButtonApply onClick={handleApply}>Apply</ButtonApply>

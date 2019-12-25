@@ -10,7 +10,6 @@ import Fields from '../constants/fields';
 import { AskBidEnum } from '../enums/AskBid';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { v4 } from 'uuid';
-import { QuotesContext } from '../store/QuotesProvider';
 
 interface Props {
   quoteName: string;
@@ -36,8 +35,6 @@ interface OpenModel {
 function OpenPosition(props: Props) {
   const { quoteName, accountId, instrument, multiplier } = props;
   const [isRate, setRate] = useState(false);
-
-  const { quotes } = useContext(QuotesContext);
 
   const initialValues: OpenPositionModel = {
     processId: v4(),

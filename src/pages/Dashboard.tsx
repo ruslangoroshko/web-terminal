@@ -23,9 +23,7 @@ import BuySellPanel from '../components/BuySellPanel/BuySellPanel';
 import ChartTimeScale from '../components/Chart/ChartTimeScale';
 import ChartSettingsButtons from '../components/Chart/ChartSettingsButtons';
 import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
-import { QuotesContext } from '../store/QuotesProvider';
 import { AskBidEnum } from '../enums/AskBid';
-import { UserAccountContext } from '../store/UserAccountProvider';
 import { useStores } from '../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import TestBg from '../assets/images/test.png';
@@ -37,9 +35,7 @@ const Dashboard = observer(() => {
   const [tradingWidget, setTradingWidget] = useState<IChartingLibraryWidget>();
   const [tabType, setTabType] = useState(TabType.ActivePositions);
 
-  const { activePositions, setActivePositions } = useContext(
-    UserAccountContext
-  );
+  const { quotesStore } = useStores();
 
   const [activeInstrument, setActiveInstrument] = useState<
     InstrumentModelWSDTO
@@ -60,7 +56,6 @@ const Dashboard = observer(() => {
       setResolution(resolution);
     });
   };
-  const { setQuote } = useContext(QuotesContext);
 
   const renderTabType = () => {
     switch (tabType) {
@@ -117,7 +112,7 @@ const Dashboard = observer(() => {
         return activeInstrument ? (
           <Table
             columns={columns}
-            data={activePositions}
+            data={quotesStore.activePositions}
             closePosition={closePosition}
             instrumentId={activeInstrument ? activeInstrument.id : ''}
             multiplier={activeInstrument.multiplier[0]}
@@ -167,7 +162,7 @@ const Dashboard = observer(() => {
       Topics.INSTRUMENTS,
       (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
         if (response.accountId === mainAppStore.account?.id) {
-          setQuote({
+          quotesStore.setQuote({
             ask: {
               c: response.data[0].ask,
               h: 0,
@@ -193,7 +188,7 @@ const Dashboard = observer(() => {
       Topics.ACTIVE_POSITIONS,
       (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
         if (response.accountId === mainAppStore.account?.id) {
-          setActivePositions(response.data);
+          quotesStore.activePositions = response.data;
         }
       }
     );
@@ -201,13 +196,13 @@ const Dashboard = observer(() => {
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
         if (response.accountId === mainAppStore.account?.id) {
-          const newActivePositions = activePositions.map(item => {
+          const newActivePositions = quotesStore.activePositions.map(item => {
             if (item.id === response.data.id) {
               return response.data;
             }
             return item;
           });
-          setActivePositions(newActivePositions);
+          quotesStore.activePositions = newActivePositions;
         }
       }
     );
@@ -220,7 +215,6 @@ const Dashboard = observer(() => {
   const handleAddNewInstrument = () => {
     throw new Error('handleAddNewInstrument');
   };
-  console.log('asdasd', mainAppStore);
   return !mainAppStore.isLoading &&
     mainAppStore.account &&
     mainAppStore.activeSession ? (
@@ -247,7 +241,9 @@ const Dashboard = observer(() => {
                 handleClose={handleRemoveInstrument(item.id)}
                 switchInstrument={switchInstrument(item)}
                 positionsLength={
-                  activePositions.filter(ap => item.id === ap.instrument).length
+                  quotesStore.activePositions.filter(
+                    ap => item.id === ap.instrument
+                  ).length
                 }
               />
             ))}

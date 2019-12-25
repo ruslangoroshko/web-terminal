@@ -9,17 +9,31 @@ import SvgIcon from '../SvgIcon';
 
 import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
 import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
+import { useStores } from '../../hooks/useStores';
 
 interface Props {
-  autoClose: AutoCloseTypesEnum;
-  setAutoClose: (arg0: AutoCloseTypesEnum) => void;
+  pnlType: 'profit' | 'loss';
 }
 
 function PnLTypeDropdown(props: Props) {
-  const { autoClose, setAutoClose } = props;
+  const { pnlType } = props;
 
-  const handleAutoClose = (autoClose: AutoCloseTypesEnum, toggle: () => void) => () => {
-    setAutoClose(autoClose);
+  const { buySellStore } = useStores();
+
+  const autoClose =
+    pnlType === 'profit'
+      ? buySellStore.autoCloseProfit
+      : buySellStore.autoCloseLoss;
+
+  const handleAutoClose = (
+    autoClose: AutoCloseTypesEnum,
+    toggle: () => void
+  ) => () => {
+    if (pnlType === 'profit') {
+      buySellStore.autoCloseProfit = autoClose;
+    } else {
+      buySellStore.autoCloseLoss = autoClose;
+    }
     toggle();
   };
 

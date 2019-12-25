@@ -1,12 +1,11 @@
-import React, { FC, useContext, Fragment } from 'react';
-
+import React, { FC, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
-import { QuotesContext } from '../store/QuotesProvider';
 import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
 import { AskBidEnum } from '../enums/AskBid';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PositionModelWSDTO } from '../types/Positions';
+import { useStores } from '../hooks/useStores';
 
 interface Props {
   data: PositionModelWSDTO[];
@@ -25,9 +24,9 @@ const Table: FC<Props> = ({
 }) => {
   console.log('TCL: data', data);
 
-  const { quotes } = useContext(QuotesContext);
+  const { quotesStore } = useStores();
 
-  const quote = quotes[instrumentId] || {
+  const quote = quotesStore.quotes[instrumentId] || {
     ask: 0,
     bid: 0,
   };
@@ -42,7 +41,7 @@ const Table: FC<Props> = ({
         <TdDiv key={column.Header}>{column.Header}</TdDiv>
       ))}
       <FlexContainer>
-        {data.map((row, i) => (
+        {data.map(row => (
           <Fragment key={row.id}>
             {Object.values(row).map(item => (
               <TdDiv>{item}</TdDiv>
