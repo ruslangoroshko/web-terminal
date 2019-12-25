@@ -2,11 +2,11 @@ import React, { useContext } from 'react';
 import { Formik, Field, Form, FieldProps, FormikHelpers } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
-import { MainAppContext } from '../store/MainAppProvider';
 import { UserRegistration } from '../types/UserInfo';
 import * as yup from 'yup';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import Fields from '../constants/fields';
+import { useStores } from '../hooks/useStores';
 
 interface Props {}
 
@@ -31,7 +31,7 @@ function SignUp(props: Props) {
     repeatPassword: '',
   };
 
-  const { signUp } = useContext(MainAppContext);
+  const { mainAppStore } = useStores();
 
   const handleSubmit = async (
     { email, password }: UserRegistration,
@@ -39,7 +39,7 @@ function SignUp(props: Props) {
   ) => {
     setSubmitting(true);
     try {
-      await signUp({ email, password });
+      await mainAppStore.signUp({ email, password });
     } catch (error) {
       setStatus(error);
       setSubmitting(false);

@@ -8,10 +8,7 @@ import RoutingLayout from './routing/RoutingLayout';
 import { Router, Switch } from 'react-router-dom';
 import { appHistory } from './routing/history';
 
-interface Props {}
-
-function MainApp(props: Props) {
-  const {} = props;
+const MainApp = () => {
   injectInerceptors();
 
   return (
@@ -32,12 +29,10 @@ function MainApp(props: Props) {
             font-size: 14px;
             line-height: 1.4;
           }
-
-
         `}
       />
     </>
   );
-}
+};
 
 export default MainApp;

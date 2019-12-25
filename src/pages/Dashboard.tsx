@@ -10,7 +10,6 @@ import Fields from '../constants/fields';
 import API from '../helpers/API';
 import Instrument from '../components/Instrument';
 import Table from '../components/Table';
-import { MainAppContext } from '../store/MainAppProvider';
 import TVChartContainer from '../containers/ChartContainer';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { PositionModelWSDTO } from '../types/Positions';
@@ -27,12 +26,12 @@ import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
 import { QuotesContext } from '../store/QuotesProvider';
 import { AskBidEnum } from '../enums/AskBid';
 import { UserAccountContext } from '../store/UserAccountProvider';
+import { useStores } from '../hooks/useStores';
+import { observer } from 'mobx-react-lite';
 import TestBg from '../assets/images/test.png';
 
-function Dashboard() {
-  const { isLoading, account, setAccount, activeSession } = useContext(
-    MainAppContext
-  );
+const Dashboard = observer(() => {
+  const { mainAppStore } = useStores();
   const [resolution, setResolution] = useState(supportedResolutions[0]);
 
   const [tradingWidget, setTradingWidget] = useState<IChartingLibraryWidget>();
@@ -137,33 +136,37 @@ function Dashboard() {
   };
 
   const closePosition = (positionId: number) => () => {
-    API.closePosition({ accountId: account!.id, positionId, processId: v4() });
+    API.closePosition({
+      accountId: mainAppStore.account!.id,
+      positionId,
+      processId: v4(),
+    });
   };
 
   useEffect(() => {
-    activeSession?.on(
+    mainAppStore.activeSession?.on(
       Topics.ACCOUNTS,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
-        setAccount(response.data[0]);
-        activeSession.send(Topics.SET_ACTIVE_ACCOUNT, {
+        mainAppStore.setAccount(response.data[0]);
+        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: response.data[0].id,
         });
       }
     );
 
-    activeSession?.on(
+    mainAppStore.activeSession?.on(
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
-        setAccount(response.data);
+        mainAppStore.setAccount(response.data);
       }
     );
-  }, [activeSession]);
+  }, [mainAppStore.activeSession]);
 
   useEffect(() => {
-    activeSession?.on(
+    mainAppStore.activeSession?.on(
       Topics.INSTRUMENTS,
       (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-        if (response.accountId === account?.id) {
+        if (response.accountId === mainAppStore.account?.id) {
           setQuote({
             ask: {
               c: response.data[0].ask,
@@ -186,18 +189,18 @@ function Dashboard() {
         }
       }
     );
-    activeSession?.on(
+    mainAppStore.activeSession?.on(
       Topics.ACTIVE_POSITIONS,
       (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
-        if (response.accountId === account?.id) {
+        if (response.accountId === mainAppStore.account?.id) {
           setActivePositions(response.data);
         }
       }
     );
-    activeSession?.on(
+    mainAppStore.activeSession?.on(
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
-        if (response.accountId === account?.id) {
+        if (response.accountId === mainAppStore.account?.id) {
           const newActivePositions = activePositions.map(item => {
             if (item.id === response.data.id) {
               return response.data;
@@ -208,7 +211,7 @@ function Dashboard() {
         }
       }
     );
-  }, [account]);
+  }, [mainAppStore.account]);
 
   const handleRemoveInstrument = (instrumentId: string) => () => {
     throw new Error('handleRemoveInstrument');
@@ -217,8 +220,10 @@ function Dashboard() {
   const handleAddNewInstrument = () => {
     throw new Error('handleAddNewInstrument');
   };
-
-  return !isLoading && account && activeSession ? (
+  console.log('asdasd', mainAppStore);
+  return !mainAppStore.isLoading &&
+    mainAppStore.account &&
+    mainAppStore.activeSession ? (
     <FlexContainer
       width="100%"
       height="100%"
@@ -235,7 +240,7 @@ function Dashboard() {
           <FlexContainer padding="4px 4px 4px 0">
             {instruments.map(item => (
               <Instrument
-                activeSession={activeSession}
+                activeSession={mainAppStore.activeSession!}
                 instrument={item}
                 key={item.id}
                 isActive={item.id === activeInstrument?.id}
@@ -271,11 +276,11 @@ function Dashboard() {
         <BuySellPanelWrapper>
           {activeInstrument && (
             <BuySellPanel
-              currencySymbol={account.symbol}
+              currencySymbol={mainAppStore.account.symbol}
               instrument={activeInstrument}
-              accountId={account.id}
+              accountId={mainAppStore.account.id}
               multiplier={activeInstrument.multiplier[0]}
-              digits={account.digits}
+              digits={mainAppStore.account.digits}
             ></BuySellPanel>
           )}
         </BuySellPanelWrapper>
@@ -295,7 +300,7 @@ function Dashboard() {
       </GridWrapper>
     </FlexContainer>
   ) : null;
-}
+});
 
 export default Dashboard;
 
