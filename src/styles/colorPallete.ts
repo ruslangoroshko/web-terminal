@@ -6,6 +6,7 @@ const ColorsPallete = {
   BLUE_STONE: '#005E5E',
   DEEP_TEAL: '#003A38',
   BUNKER: '#162323',
+  WILD_WATERLEMON: '#ff557e',
 };
 
 Object.freeze(ColorsPallete);
