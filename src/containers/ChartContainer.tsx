@@ -7,12 +7,12 @@ import {
   IChartingLibraryWidget,
 } from '../vendor/charting_library/charting_library.min';
 import { FlexContainer } from '../styles/FlexContainer';
-import { MainAppContext } from '../store/MainAppProvider';
 import DataFeedService from '../services/dataFeedService';
 import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import { LineStyles } from '../enums/TradingViewStyles';
 import ColorsPallete from '../styles/colorPallete';
 import { InstrumentModelWSDTO } from '../types/Instruments';
+import { useStores } from '../hooks/useStores';
 
 export interface ChartContainerProps {
   interval: ChartingLibraryWidgetOptions['interval'];
@@ -51,12 +51,12 @@ interface IProps {
 }
 
 const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
-  const { activeSession } = useContext(MainAppContext);
+  const { mainAppStore } = useStores();
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: intrument.id,
       // BEWARE: no trailing slash is expected in feed URL
-      datafeed: new DataFeedService(activeSession!, intrument),
+      datafeed: new DataFeedService(mainAppStore.activeSession!, intrument),
       interval: defaultProps.interval,
       container_id: defaultProps.containerId,
       library_path: defaultProps.library_path,
@@ -74,9 +74,7 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'context_menus',
         'main_series_scale_menu',
       ],
-      enabled_features: [
-        'remove_library_container_border',
-      ],
+      enabled_features: ['remove_library_container_border'],
       client_id: defaultProps.clientId,
       user_id: defaultProps.userId,
       fullscreen: defaultProps.fullscreen,

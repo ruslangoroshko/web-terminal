@@ -10,7 +10,6 @@ import Fields from '../constants/fields';
 import { AskBidEnum } from '../enums/AskBid';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { v4 } from 'uuid';
-import { MainAppContext } from '../store/MainAppProvider';
 import { QuotesContext } from '../store/QuotesProvider';
 
 interface Props {

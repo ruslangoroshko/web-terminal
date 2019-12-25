@@ -1,17 +1,16 @@
-import React from 'react';
+import React, { FC } from 'react';
 import routesList, { RouteLayoutType } from '../constants/routesList';
 import RouteWrapper from '../components/RouteWrapper';
 import { useLocation } from 'react-router-dom';
 import AuthorizedContainer from '../containers/AuthorizedContainer';
 import { FlexContainer } from '../styles/FlexContainer';
+import { observer, Observer } from 'mobx-react-lite';
 
-interface Props {}
-
-function RoutingLayout(props: Props) {
-  const {} = props;
+const RoutingLayout: FC = observer(() => {
   const location = useLocation();
+  
   const allRoutes = routesList.map(route => (
-    <RouteWrapper key={route.path} {...route} />
+    <Observer key={route.path}>{() => <RouteWrapper {...route} />}</Observer>
   ));
 
   const currentRoute = routesList.find(item => location.pathname === item.path);
@@ -21,7 +20,7 @@ function RoutingLayout(props: Props) {
   if (currentRoute) {
     layoutType = currentRoute.layoutType;
   }
-
+  console.log(layoutType);
   switch (layoutType) {
     case RouteLayoutType.Authorized:
       return <AuthorizedContainer>{allRoutes}</AuthorizedContainer>;
@@ -40,6 +39,6 @@ function RoutingLayout(props: Props) {
         </FlexContainer>
       );
   }
-}
+});
 
 export default RoutingLayout;

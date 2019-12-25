@@ -1,18 +1,15 @@
-import React, { useContext } from 'react';
-import { Formik, Field, Form, FieldProps, FormikValues } from 'formik';
+import React from 'react';
+import { Formik, Field, Form, FieldProps } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
-import { MainAppContext } from '../store/MainAppProvider';
 import { UserAuthenticate } from '../types/UserInfo';
 import * as yup from 'yup';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import Fields from '../constants/fields';
+import { useStores } from '../hooks/useStores';
+import { observer } from 'mobx-react-lite';
 
-interface Props {}
-
-function SingIn(props: Props) {
-  const {} = props;
-
+const SingIn = observer(() => {
   const validationSchema = yup.object().shape<UserAuthenticate>({
     userName: yup.string().required('Required any value'),
     password: yup.string().required('Required any value'),
@@ -23,18 +20,19 @@ function SingIn(props: Props) {
     password: '',
   };
 
-  const { signIn } = useContext(MainAppContext);
+  const { mainAppStore } = useStores();
 
   const handleSubmit = async (credentials: UserAuthenticate) => {
-    try {
-      await signIn(credentials);
-    } catch (error) {
-      debugger;
-    }
+    mainAppStore.signIn(credentials);
   };
 
   return (
-    <FlexContainer justifyContent="center" alignItems="center" height="100%" width="100%">
+    <FlexContainer
+      justifyContent="center"
+      alignItems="center"
+      height="100%"
+      width="100%"
+    >
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}
@@ -92,7 +90,7 @@ function SingIn(props: Props) {
       </Formik>
     </FlexContainer>
   );
-}
+});
 
 export default SingIn;
 

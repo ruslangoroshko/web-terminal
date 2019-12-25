@@ -1,8 +1,9 @@
-import React, { useContext, FunctionComponent } from 'react';
+import React, { FunctionComponent, FC } from 'react';
 import { Route, Redirect } from 'react-router';
 import Page from '../constants/Pages';
-import { MainAppContext } from '../store/MainAppProvider';
 import { RouteLayoutType } from '../constants/routesList';
+import { useStores } from '../hooks/useStores';
+import { observer } from 'mobx-react-lite';
 
 interface IProps {
   component: FunctionComponent<any>;
@@ -11,12 +12,18 @@ interface IProps {
 
 type Props = IProps;
 
-function RouteWrapper(props: Props) {
+const RouteWrapper: FC<Props> = observer(props => {
   const { component: Component, layoutType, ...otherProps } = props;
-  const { isAuthorized } = useContext(MainAppContext);
-  if (isAuthorized && layoutType === RouteLayoutType.SignUp) {
+  const { mainAppStore } = useStores();
+
+  console.log('TCL: mainAppStore.isAuthorized', mainAppStore.isAuthorized);
+  
+  if (mainAppStore.isAuthorized && layoutType === RouteLayoutType.SignUp) {
     return <Redirect to={Page.DASHBOARD} />;
-  } else if (!isAuthorized && layoutType === RouteLayoutType.Authorized) {
+  } else if (
+    !mainAppStore.isAuthorized &&
+    layoutType === RouteLayoutType.Authorized
+  ) {
     return <Redirect to={Page.SIGN_IN} />;
   }
 
@@ -26,6 +33,6 @@ function RouteWrapper(props: Props) {
       render={routeProps => <Component {...routeProps} />}
     />
   );
-}
+});
 
 export default RouteWrapper;
