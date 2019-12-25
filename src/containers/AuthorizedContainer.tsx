@@ -1,14 +1,52 @@
 import React, { FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import NavBar from '../components/NavBar/NavBar';
-import BottomNavBar from '../components/NavBar/BottomNavBar';
-import ResizableContainer from '../components/NavBarTabs/ResizableContainer';
+import SideBar from '../components/NavBar/SideBar';
+import ResizableContainer from '../components/ResizableContainer';
 import { observer } from 'mobx-react-lite';
+import { useStores } from '../hooks/useStores';
+import { SideBarTabType } from '../enums/SideBarTabType';
+import Portfolio from '../components/SideBarTabs/Portfolio';
 
 interface Props {}
 
 const AuthorizedContainer: FC<Props> = observer(props => {
   const { children } = props;
+  const { tabsStore } = useStores();
+
+  const renderTabByType = () => {
+    if (tabsStore.sideBarTabType === null) {
+      return null;
+    }
+
+    // Careful, typings !11!!!1
+
+    switch (tabsStore.sideBarTabType!) {
+      case SideBarTabType.Portfolio:
+        return (
+          <ResizableContainer>
+            <Portfolio></Portfolio>
+          </ResizableContainer>
+        );
+
+      case SideBarTabType.Markets:
+        return (
+          <ResizableContainer>
+            <Portfolio></Portfolio>
+          </ResizableContainer>
+        );
+
+      case SideBarTabType.History:
+        return (
+          <ResizableContainer>
+            <Portfolio></Portfolio>
+          </ResizableContainer>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <FlexContainer
@@ -19,8 +57,8 @@ const AuthorizedContainer: FC<Props> = observer(props => {
     >
       <NavBar></NavBar>
       <FlexContainer height="100%">
-        <BottomNavBar></BottomNavBar>
-        <ResizableContainer></ResizableContainer>
+        <SideBar></SideBar>
+        {renderTabByType()}
         <FlexContainer
           position="relative"
           height="100%"

@@ -9,13 +9,14 @@ interface Props {
   iconProps: any;
   title: string;
   isActive?: boolean;
+  setSideBarActive: () => void;
 }
 
-function BottomNavBarButton(props: Props) {
-  const { iconProps, title, isActive } = props;
-  const switchBottomInstruments = () => {};
+function SideBarButton(props: Props) {
+  const { iconProps, title, isActive, setSideBarActive } = props;
+
   return (
-    <ButtonWithoutStyles onClick={switchBottomInstruments}>
+    <ButtonWithoutStyles onClick={setSideBarActive}>
       <FlexContainer
         flexDirection="column"
         alignItems="center"
@@ -33,7 +34,7 @@ function BottomNavBarButton(props: Props) {
   );
 }
 
-export default BottomNavBarButton;
+export default SideBarButton;
 
 const Title = styled.span<{ isActive?: boolean }>`
   font-size: 11px;

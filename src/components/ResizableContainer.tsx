@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
-import { FlexContainer, FlexContainerProps } from '../../styles/FlexContainer';
-import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import { PrimaryTextSpan } from '../../styles/TextsElements';
+import React, { FC } from 'react';
+import { FlexContainer, FlexContainerProps } from '../styles/FlexContainer';
+import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
-import SvgIcon from '../SvgIcon';
-import IconExpand from '../../assets/svg/icon-tabs-fullscreen.svg';
-import IconClose from '../../assets/svg/icon-popup-close.svg';
-import Toggle from '../Toggle';
+import SvgIcon from './SvgIcon';
+import IconExpand from '../assets/svg/icon-tabs-fullscreen.svg';
+import IconClose from '../assets/svg/icon-popup-close.svg';
+import Toggle from './Toggle';
+import { observer } from 'mobx-react-lite';
+import { useStores } from '../hooks/useStores';
 
 interface Props {}
 
-function ResizableContainer(props: Props) {
-  const {} = props;
-
+const ResizableContainer: FC<Props> = observer(props => {
+  const { children } = props;
+  const { tabsStore } = useStores();
   return (
     <Toggle>
       {({ on, toggle }) => (
@@ -27,7 +28,6 @@ function ResizableContainer(props: Props) {
             top="0"
             right="0"
             bottom="0"
-            backgroundColor="rgba(0,0,0, 0.5)"
             width="calc(100vw - 60px)"
             isExpanded={on}
             justifyContent="flex-end"
@@ -39,19 +39,20 @@ function ResizableContainer(props: Props) {
                   fill="rgba(255, 255, 255, 0.6)"
                 ></SvgIcon>
               </IconButton>
-              <IconButton>
+              <IconButton onClick={tabsStore.closeAnyTab}>
                 <SvgIcon
                   {...IconClose}
                   fill="rgba(255, 255, 255, 0.6)"
                 ></SvgIcon>
               </IconButton>
             </FlexContainer>
+            {children}
           </ResizableContainerWrapper>
         </RelativeWrapper>
       )}
     </Toggle>
   );
-}
+});
 
 export default ResizableContainer;
 

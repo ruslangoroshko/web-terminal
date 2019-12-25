@@ -29,6 +29,10 @@ const MainApp = () => {
             font-size: 14px;
             line-height: 1.4;
           }
+
+          body {
+            background-color: #232830;
+          }
         `}
       />
     </>

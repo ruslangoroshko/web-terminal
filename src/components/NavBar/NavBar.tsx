@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import ColorsPallete from '../../styles/colorPallete';
 import monfexLogo from '../../assets/images/monfex-logo.png';
@@ -11,10 +11,11 @@ import DepositButton from './DepositButton';
 import MoreButton from './MoreButton';
 import AccountBalances from './AccountBalances';
 import { useStores } from '../../hooks/useStores';
+import { observer } from 'mobx-react-lite';
 
 interface Props {}
 
-function NavBar(props: Props) {
+const NavBar: FC<Props> = observer(props => {
   const {} = props;
 
   const { mainAppStore, quotesStore } = useStores();
@@ -65,8 +66,7 @@ function NavBar(props: Props) {
       </FlexContainer>
     </FlexContainer>
   );
-}
-
+});
 export default NavBar;
 
 const NavBarButtonsWrapper = styled(FlexContainer)`
