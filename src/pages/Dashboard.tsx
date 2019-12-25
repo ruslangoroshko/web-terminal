@@ -219,7 +219,7 @@ const Dashboard = observer(() => {
   const handleAddNewInstrument = () => {
     throw new Error('handleAddNewInstrument');
   };
-
+  console.log('asdasd', mainAppStore);
   return !mainAppStore.isLoading &&
     mainAppStore.account &&
     mainAppStore.activeSession ? (

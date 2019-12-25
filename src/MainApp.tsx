@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Global, css } from '@emotion/core';
 import { reboot } from './styles/reboot';
 import injectInerceptors from './http/interceptors';
@@ -7,12 +7,8 @@ import favicon from './assets/images/favicon.ico';
 import RoutingLayout from './routing/RoutingLayout';
 import { Router, Switch } from 'react-router-dom';
 import { appHistory } from './routing/history';
-import { observer } from 'mobx-react-lite';
 
-interface Props {}
-
-const MainApp: FC<Props> = observer(props => {
-  const {} = props;
+const MainApp = () => {
   injectInerceptors();
 
   return (
@@ -37,6 +33,6 @@ const MainApp: FC<Props> = observer(props => {
       />
     </>
   );
-});
+};
 
 export default MainApp;

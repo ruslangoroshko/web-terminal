@@ -2,11 +2,13 @@ import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
 import { AccountModelWebSocketDTO } from '../types/Accounts';
 import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
-import { action } from 'mobx';
+import { action, observable } from 'mobx';
 import API from '../helpers/API';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import initConnection from '../services/websocketService';
 import Topics from '../constants/websocketTopics';
+import Axios from 'axios';
+import RequestHeaders from '../constants/headers';
 
 interface MainAppStoreProps {
   token: string;
@@ -20,23 +22,32 @@ interface MainAppStoreProps {
 }
 
 export class MainAppStore implements MainAppStoreProps {
-  token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
-  account?: AccountModelWebSocketDTO;
-  isLoading = false;
-  isAuthorized = false;
-  activeSession?: HubConnection;
+  @observable isLoading = false;
+  @observable isAuthorized = false;
+  @observable activeSession?: HubConnection;
+  @observable account?: AccountModelWebSocketDTO;
+
+  token = '';
 
   constructor() {
+    this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
+    Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
     this.handleInitConnection(this.token);
   }
 
   handleInitConnection = async (token: string) => {
     const connection = initConnection(WS_HOST);
     await connection.start();
-    await connection.send(Topics.INIT, token);
-    this.activeSession = connection;
 
-    this.isLoading = false;
+    try {
+      await connection.send(Topics.INIT, token);
+      this.activeSession = connection;
+      this.isLoading = false;
+      this.isAuthorized = true;
+    } catch (error) {
+      this.isAuthorized = false;
+    }
+
     connection.on(Topics.UNAUTHORIZED, () => {
       localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
       this.isAuthorized = false;
@@ -69,6 +80,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   setTokenHandler = (token: string) => {
     localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, token);
+    Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = token;
     this.token = token;
   };
 
