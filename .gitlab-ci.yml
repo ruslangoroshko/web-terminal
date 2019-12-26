@@ -21,6 +21,7 @@ build:
     - master
 
 publish:
+  tags: [monfex]
   stage: publish
   services:
     - docker:dind    
