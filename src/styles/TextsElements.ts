@@ -14,7 +14,7 @@ interface PrimaryTextType {
 }
 
 export const PrimaryTextSpan = styled.span<PrimaryTextType>`
-  font-style: ${props => props.fontStyle || 'normal'};
+  font-style: ${props => props.fontStyle};
   font-weight: ${props => props.fontWeight || 'normal'};
   font-size: ${props => props.fontSize || '14px'};
   line-height: ${props => props.lineHeight || '120%'};
@@ -27,8 +27,8 @@ export const PrimaryTextSpan = styled.span<PrimaryTextType>`
 `;
 
 export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
-  font-style: ${props => props.fontStyle || 'normal'};
-  font-weight: ${props => props.fontWeight || 'bold'};
+  font-style: ${props => props.fontStyle};
+  font-weight: ${props => props.fontWeight};
   font-size: ${props => props.fontSize || '16px'};
   line-height: ${props => props.lineHeight || '120%'};
   color: ${props => props.color || '#ffffff'};
@@ -43,7 +43,7 @@ export const QuoteText = styled(PrimaryTextSpan)<
   PrimaryTextType & { isGrowth?: boolean }
 >`
   font-style: ${props => props.fontStyle || 'normal'};
-  font-weight: ${props => props.fontWeight || 'bold'};
+  font-weight: ${props => props.fontWeight || 'normal'};
   font-size: ${props => props.fontSize || '16px'};
   line-height: ${props => props.lineHeight || '120%'};
   color: ${props => (props.isGrowth ? '#3BFF8A' : '#FF557E')};

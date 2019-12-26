@@ -1,10 +1,9 @@
-import React, { useEffect, useContext, FC } from 'react';
+import React, { useEffect, FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import Topics from '../constants/websocketTopics';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { BidAskModelWSDTO } from '../types/BidAsk';
-import { HubConnection } from '@aspnet/signalr';
 import {
   QuotesFeedWrapper,
   CurrencyQuoteTitle,
@@ -18,7 +17,6 @@ import { useStores } from '../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 
 interface Props {
-  activeSession: HubConnection;
   switchInstrument: () => void;
   instrument: InstrumentModelWSDTO;
   isActive?: boolean;
@@ -28,18 +26,18 @@ interface Props {
 
 const Instrument: FC<Props> = observer(
   ({
-    activeSession,
     instrument,
     switchInstrument,
     isActive,
     handleClose,
     positionsLength = 0,
   }) => {
-    const { quotesStore } = useStores();
+    const { quotesStore, mainAppStore } = useStores();
+
     const quote = quotesStore.quotes[instrument.id];
 
     useEffect(() => {
-      activeSession.on(
+      mainAppStore.activeSession?.on(
         Topics.BID_ASK,
         (response: ResponseFromWebsocket<BidAskModelWSDTO[]>) => {
           if (!response.data.length) {

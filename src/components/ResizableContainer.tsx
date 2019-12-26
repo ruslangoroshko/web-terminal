@@ -18,7 +18,7 @@ const ResizableContainer: FC = observer(props => {
   return (
     <RelativeWrapper
       position="relative"
-      width="320px"
+      width="100%"
       height="100%"
       zIndex="102"
       isActive={tabsStore.sideBarTabType !== null}
@@ -44,6 +44,12 @@ const RelativeWrapper = styled(FlexContainer)<
   max-width: ${props => (props.isActive ? '320px' : '0')};
   overflow: hidden;
   transition: max-width 0.3s linear;
+  background: radial-gradient(
+      100% 100% at 100% 0%,
+      rgba(186, 213, 255, 0.096) 0%,
+      rgba(186, 213, 255, 0) 100%
+    ),
+    #232830;
 `;
 
 const IconButton = styled(ButtonWithoutStyles)`

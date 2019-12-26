@@ -107,6 +107,7 @@ function BuySellPanel(props: Props) {
         initialValues={initialValues}
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
+        enableReinitialize
       >
         {({ isSubmitting, isValid, setFieldValue, values, submitForm }) => (
           <CustomForm>

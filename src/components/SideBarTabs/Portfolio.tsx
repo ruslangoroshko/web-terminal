@@ -7,16 +7,19 @@ import {
   QuoteText,
 } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
+import { useStores } from '../../hooks/useStores';
+import InstrumentInfo from './InstrumentInfo';
+import { getNumberSign } from '../../helpers/getNumberSign';
 
 interface Props {}
 
 const Portfolio: FC<Props> = props => {
   const {} = props;
-
+  const { quotesStore, mainAppStore } = useStores();
   return (
     <PortfolioWrapper padding="12px 16px" flexDirection="column">
       <FlexContainer margin="0 0 28px">
-        <TabPortfolitButton>
+        <TabPortfolitButton isActive>
           <PrimaryTextSpan
             fontSize="12px"
             lineHeight="16px"
@@ -52,7 +55,9 @@ const Portfolio: FC<Props> = props => {
           fontWeight="bold"
           marginBottom="20px"
         >
-          +$1,659.26
+          {getNumberSign(quotesStore.profit)}
+          {mainAppStore.account?.symbol}
+          {quotesStore.profit}
         </QuoteText>
         <FlexContainer>
           <FlexContainer flexDirection="column" margin="0 38px 20px 0">
@@ -69,7 +74,8 @@ const Portfolio: FC<Props> = props => {
               lineHeight="16px"
               fontWeight="bold"
             >
-              $1,659.26
+              {mainAppStore.account?.symbol}
+              {quotesStore.invest}
             </PrimaryTextSpan>
           </FlexContainer>
           <FlexContainer flexDirection="column">
@@ -86,20 +92,25 @@ const Portfolio: FC<Props> = props => {
               lineHeight="16px"
               fontWeight="bold"
             >
-              $51,659.26
+              {mainAppStore.account?.symbol}
+              {quotesStore.totalEquity}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
-      <FlexContainer flexDirection="column"></FlexContainer>
+      <FlexContainer flexDirection="column">
+        {quotesStore.activePositions.map(item => (
+          <InstrumentInfo key={item.id} {...item} />
+        ))}
+      </FlexContainer>
     </PortfolioWrapper>
   );
 };
 
 export default Portfolio;
 
-const TabPortfolitButton = styled(ButtonWithoutStyles)`
-  border-bottom: 1px solid #eeff00;
+const TabPortfolitButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
+  border-bottom: ${props => (props.isActive ? '1px solid #eeff00' : 'none')};
   margin-right: 16px;
 
   &:last-of-type {
@@ -109,9 +120,4 @@ const TabPortfolitButton = styled(ButtonWithoutStyles)`
 
 const PortfolioWrapper = styled(FlexContainer)`
   min-width: 320px;
-  background: radial-gradient(
-    100% 100% at 0% 0%,
-    rgba(60, 255, 138, 0.102) 0%,
-    rgba(60, 255, 138, 0) 100%
-  );
 `;

@@ -3,34 +3,24 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
+import { useStores } from '../../hooks/useStores';
 
 interface Props {}
 
 const PortfolioExpanded: FC<Props> = props => {
   const {} = props;
-
+  const { tabsStore } = useStores();
+  const closeExpanded = () => {
+    tabsStore.isTabExpanded = false;
+  };
   return (
     <PortfolioWrapper padding="12px 16px">
-      <FlexContainer>
-        <TabPortfolitButton>
-          <PrimaryTextSpan
-            fontSize="12px"
-            lineHeight="16px"
-            textTransform="uppercase"
-            color="#fff"
-          >
-            Portfolio
+      <FlexContainer justifyContent="center" alignItems="center">
+        <ButtonWithoutStyles onClick={closeExpanded}>
+          <PrimaryTextSpan fontSize="24px" color="#fff">
+            CLICK ME TO CLOSE ME
           </PrimaryTextSpan>
-        </TabPortfolitButton>
-        <TabPortfolitButton>
-          <PrimaryTextSpan
-            fontSize="12px"
-            lineHeight="16px"
-            textTransform="uppercase"
-          >
-            Orders
-          </PrimaryTextSpan>
-        </TabPortfolitButton>
+        </ButtonWithoutStyles>
       </FlexContainer>
     </PortfolioWrapper>
   );

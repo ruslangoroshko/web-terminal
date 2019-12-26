@@ -8,12 +8,18 @@ interface IQuotesStore {
   quotes: BidAskKeyValueList;
   activePositions: PositionModelWSDTO[];
   totalProfit: number;
+  available: number;
+  invest: number;
+  total: number;
+  totalEquity: number;
+  profit: number;
 }
 
 export class QuotesStore implements IQuotesStore {
   @observable quotes: BidAskKeyValueList = {};
   @observable activePositions: PositionModelWSDTO[] = [];
   @observable totalProfit = 0;
+  @observable available = 0;
 
   @action
   setQuote = (quote: BidAskModelWSDTO) => {
@@ -22,7 +28,7 @@ export class QuotesStore implements IQuotesStore {
 
   @computed
   get profit() {
-    return this.activePositions
+    return +this.activePositions
       .reduce(
         (acc, prev) =>
           acc +
@@ -40,5 +46,22 @@ export class QuotesStore implements IQuotesStore {
         0
       )
       .toFixed(2);
+  }
+
+  @computed
+  get invest() {
+    return +this.activePositions
+      .reduce((acc, prev) => acc + prev.investmentAmount, 0)
+      .toFixed(2);
+  }
+
+  @computed
+  get total() {
+    return +(+this.profit + this.available).toFixed(2);
+  }
+
+  @computed
+  get totalEquity() {
+    return +(+this.profit + this.invest).toFixed(2);
   }
 }
