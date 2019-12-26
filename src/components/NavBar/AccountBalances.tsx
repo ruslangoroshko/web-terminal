@@ -6,7 +6,7 @@ import ColorsPallete from '../../styles/colorPallete';
 interface Props {
   available: number;
   invest: number;
-  profit: string;
+  profit: number;
   total: number;
   symbol: string;
 }
@@ -73,5 +73,5 @@ const LabelValue = styled.span`
 
 const ProfitValue = styled(LabelValue)<{ isGrowth: boolean }>`
   color: ${props =>
-    props.isGrowth ? ColorsPallete.MINT : ColorsPallete.WILD_WATERLEMON};
+    props.isGrowth ? '#3CFF8A' : ColorsPallete.WILD_WATERLEMON};
 `;

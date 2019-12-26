@@ -1,20 +1,20 @@
 const API_LIST = {
   POSITIONS: {
-    OPEN: '/Positions/Open',
-    CLOSE: '/Positions/Close',
+    OPEN: 'api/v1/Positions/Open',
+    CLOSE: 'api/v1/Positions/Close',
   },
   ACCOUNTS: {
-    GET_ACCOUNTS: '/Accounts',
-    GET_ACCOUNT_BY_ID: '/Accounts/ById',
-    GET_HEADERS: '/Headers',
-    AUTHENTICATE: '/Accounts/Authenticate',
+    GET_ACCOUNTS: 'api/v1/Accounts',
+    GET_ACCOUNT_BY_ID: 'api/v1/Accounts/ById',
+    GET_HEADERS: 'api/v1/Headers',
+    AUTHENTICATE: 'api/v1/Accounts/Authenticate',
   },
   TRADER: {
-    AUTHENTICATE: '/Trader/Authenticate',
-    REGISTER: '/Trader/Register',
+    AUTHENTICATE: 'api/v1/Trader/Authenticate',
+    REGISTER: 'api/v1/Trader/Register',
   },
   PRICE_HISTORY: {
-    CANDLES: '/PriceHistory/Candles',
+    CANDLES: 'api/v1/PriceHistory/Candles',
   },
 };
 

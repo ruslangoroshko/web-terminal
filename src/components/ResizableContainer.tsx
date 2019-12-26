@@ -1,73 +1,55 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { FlexContainer, FlexContainerProps } from '../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
 import SvgIcon from './SvgIcon';
 import IconExpand from '../assets/svg/icon-tabs-fullscreen.svg';
 import IconClose from '../assets/svg/icon-popup-close.svg';
-import Toggle from './Toggle';
 import { observer } from 'mobx-react-lite';
 import { useStores } from '../hooks/useStores';
 
-interface Props {}
-
-const ResizableContainer: FC<Props> = observer(props => {
+const ResizableContainer: FC = observer(props => {
   const { children } = props;
   const { tabsStore } = useStores();
+  const toggleExpandtab = () => {
+    tabsStore.isTabExpanded = !tabsStore.isTabExpanded;
+  };
+
   return (
-    <Toggle>
-      {({ on, toggle }) => (
-        <RelativeWrapper
-          position="relative"
-          width="320px"
-          height="100%"
-          zIndex="102"
-        >
-          <ResizableContainerWrapper
-            position="absolute"
-            top="0"
-            right="0"
-            bottom="0"
-            width="calc(100vw - 60px)"
-            isExpanded={on}
-            justifyContent="flex-end"
-          >
-            <FlexContainer position="absolute" top="12px" right="12px">
-              <IconButton onClick={toggle}>
-                <SvgIcon
-                  {...IconExpand}
-                  fill="rgba(255, 255, 255, 0.6)"
-                ></SvgIcon>
-              </IconButton>
-              <IconButton onClick={tabsStore.closeAnyTab}>
-                <SvgIcon
-                  {...IconClose}
-                  fill="rgba(255, 255, 255, 0.6)"
-                ></SvgIcon>
-              </IconButton>
-            </FlexContainer>
-            {children}
-          </ResizableContainerWrapper>
-        </RelativeWrapper>
-      )}
-    </Toggle>
+    <RelativeWrapper
+      position="relative"
+      width="100%"
+      height="100%"
+      zIndex="102"
+      isActive={tabsStore.sideBarTabType !== null}
+    >
+      <FlexContainer position="absolute" top="12px" right="12px">
+        <IconButton onClick={toggleExpandtab}>
+          <SvgIcon {...IconExpand} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
+        </IconButton>
+        <IconButton onClick={tabsStore.closeAnyTab}>
+          <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
+        </IconButton>
+      </FlexContainer>
+      {children}
+    </RelativeWrapper>
   );
 });
 
 export default ResizableContainer;
 
-const ResizableContainerWrapper = styled(FlexContainer)<
-  FlexContainerProps & { isExpanded: boolean }
+const RelativeWrapper = styled(FlexContainer)<
+  FlexContainerProps & { isActive?: boolean }
 >`
-  transform: ${props =>
-    props.isExpanded ? 'translateX(calc(100% - 320px))' : 'translateX(0)'};
-  backface-visibility: hidden;
-  will-change: transform;
-  transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
-`;
-
-const RelativeWrapper = styled(FlexContainer)`
-  min-width: 320px;
+  max-width: ${props => (props.isActive ? '320px' : '0')};
+  overflow: hidden;
+  transition: max-width 0.3s linear;
+  background: radial-gradient(
+      100% 100% at 100% 0%,
+      rgba(186, 213, 255, 0.096) 0%,
+      rgba(186, 213, 255, 0) 100%
+    ),
+    #232830;
 `;
 
 const IconButton = styled(ButtonWithoutStyles)`

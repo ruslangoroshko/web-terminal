@@ -143,6 +143,8 @@ const Dashboard = observer(() => {
       Topics.ACCOUNTS,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
         mainAppStore.setAccount(response.data[0]);
+        quotesStore.available = response.data[0].balance;
+
         mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: response.data[0].id,
         });
@@ -152,6 +154,7 @@ const Dashboard = observer(() => {
     mainAppStore.activeSession?.on(
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
+        quotesStore.available = response.data.balance;
         mainAppStore.setAccount(response.data);
       }
     );
@@ -162,22 +165,24 @@ const Dashboard = observer(() => {
       Topics.INSTRUMENTS,
       (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
         if (response.accountId === mainAppStore.account?.id) {
-          quotesStore.setQuote({
-            ask: {
-              c: response.data[0].ask,
-              h: 0,
-              l: 0,
-              o: 0,
-            },
-            bid: {
-              c: response.data[0].bid,
-              h: 0,
-              l: 0,
-              o: 0,
-            },
-            dir: AskBidEnum.Buy,
-            dt: Date.now(),
-            id: response.data[0].id,
+          response.data.forEach(item => {
+            quotesStore.setQuote({
+              ask: {
+                c: item.ask,
+                h: 0,
+                l: 0,
+                o: 0,
+              },
+              bid: {
+                c: item.bid,
+                h: 0,
+                l: 0,
+                o: 0,
+              },
+              dir: AskBidEnum.Buy,
+              dt: Date.now(),
+              id: item.id,
+            });
           });
           setInstruments(response.data);
           setActiveInstrument(response.data[0]);
@@ -234,7 +239,6 @@ const Dashboard = observer(() => {
           <FlexContainer padding="4px 4px 4px 0">
             {instruments.map(item => (
               <Instrument
-                activeSession={mainAppStore.activeSession!}
                 instrument={item}
                 key={item.id}
                 isActive={item.id === activeInstrument?.id}

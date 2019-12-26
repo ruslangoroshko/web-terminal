@@ -1,10 +1,9 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import Topics from '../constants/websocketTopics';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { BidAskModelWSDTO } from '../types/BidAsk';
-import { HubConnection } from '@aspnet/signalr';
 import {
   QuotesFeedWrapper,
   CurrencyQuoteTitle,
@@ -15,9 +14,9 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
 import styled from '@emotion/styled';
 import { useStores } from '../hooks/useStores';
+import { observer } from 'mobx-react-lite';
 
 interface Props {
-  activeSession: HubConnection;
   switchInstrument: () => void;
   instrument: InstrumentModelWSDTO;
   isActive?: boolean;
@@ -25,65 +24,67 @@ interface Props {
   positionsLength: number;
 }
 
-function Instrument({
-  activeSession,
-  instrument,
-  switchInstrument,
-  isActive,
-  handleClose,
-  positionsLength = 0,
-}: Props) {
-  const { quotesStore } = useStores();
-  const quote = quotesStore.quotes[instrument.id];
+const Instrument: FC<Props> = observer(
+  ({
+    instrument,
+    switchInstrument,
+    isActive,
+    handleClose,
+    positionsLength = 0,
+  }) => {
+    const { quotesStore, mainAppStore } = useStores();
 
-  useEffect(() => {
-    activeSession.on(
-      Topics.BID_ASK,
-      (response: ResponseFromWebsocket<BidAskModelWSDTO[]>) => {
-        if (!response.data.length) {
-          return;
-        }
+    const quote = quotesStore.quotes[instrument.id];
 
-        const newBidAsk = response.data[0];
-        if (newBidAsk.id === instrument.id) {
-          quotesStore.setQuote(newBidAsk);
+    useEffect(() => {
+      mainAppStore.activeSession?.on(
+        Topics.BID_ASK,
+        (response: ResponseFromWebsocket<BidAskModelWSDTO[]>) => {
+          if (!response.data.length) {
+            return;
+          }
+
+          const newBidAsk = response.data[0];
+          if (newBidAsk.id === instrument.id) {
+            quotesStore.setQuote(newBidAsk);
+          }
         }
-      }
+      );
+    }, [instrument]);
+
+    return (
+      <QuotesFeedWrapper
+        isActive={isActive}
+        padding="8px 12px"
+        onClick={switchInstrument}
+        width="200px"
+        height="28px"
+        margin="0 4px 0 0"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
+        <FlexContainer alignItems="center">
+          {quote && <CurrencyQuoteInfo>{quote.bid.c}</CurrencyQuoteInfo>}
+          {positionsLength > 0 && (
+            <PositionsCounter
+              justifyContent="center"
+              alignItems="center"
+              width="20px"
+              height="16px"
+              position="relative"
+            >
+              {positionsLength}
+            </PositionsCounter>
+          )}
+          <ButtonWithoutStyles onClick={handleClose}>
+            <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
+          </ButtonWithoutStyles>
+        </FlexContainer>
+      </QuotesFeedWrapper>
     );
-  }, [instrument]);
-
-  return (
-    <QuotesFeedWrapper
-      isActive={isActive}
-      padding="8px 12px"
-      onClick={switchInstrument}
-      width="200px"
-      height="28px"
-      margin="0 4px 0 0"
-      alignItems="center"
-      justifyContent="space-between"
-    >
-      <CurrencyQuoteTitle>{instrument.name}</CurrencyQuoteTitle>
-      <FlexContainer alignItems="center">
-        {quote && <CurrencyQuoteInfo>{quote.bid.c}</CurrencyQuoteInfo>}
-        {positionsLength > 0 && (
-          <PositionsCounter
-            justifyContent="center"
-            alignItems="center"
-            width="20px"
-            height="16px"
-            position="relative"
-          >
-            {positionsLength}
-          </PositionsCounter>
-        )}
-        <ButtonWithoutStyles onClick={handleClose}>
-          <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
-        </ButtonWithoutStyles>
-      </FlexContainer>
-    </QuotesFeedWrapper>
-  );
-}
+  }
+);
 
 export default Instrument;
 

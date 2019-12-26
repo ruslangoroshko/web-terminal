@@ -13,7 +13,11 @@ import { observer } from 'mobx-react-lite';
 const SideBar = observer(() => {
   const { tabsStore } = useStores();
   const setSideBarActive = (tabType: SideBarTabType) => () => {
-    tabsStore.sideBarTabType = tabType;
+    if (tabsStore.sideBarTabType === tabType) {
+      tabsStore.sideBarTabType = null;
+    } else {
+      tabsStore.sideBarTabType = tabType;
+    }
   };
   return (
     <BottonNavBarWrapper
@@ -21,7 +25,7 @@ const SideBar = observer(() => {
       height="100%"
       width="60px"
       backgroundColor="#232830"
-      zIndex="103"
+      zIndex="104"
       position="relative"
     >
       <SideBarButton

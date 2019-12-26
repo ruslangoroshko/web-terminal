@@ -39,11 +39,11 @@ const NavBar: FC<Props> = observer(props => {
         <FlexContainer alignItems="center" margin="0 20px 0 0">
           {mainAppStore.account && (
             <AccountBalances
-              available={mainAppStore.account.balance}
+              available={quotesStore.available}
               symbol={mainAppStore.account.symbol}
-              invest={mainAppStore.account.balance}
+              invest={quotesStore.invest}
               profit={quotesStore.profit}
-              total={mainAppStore.account.balance}
+              total={quotesStore.total}
             />
           )}
         </FlexContainer>
