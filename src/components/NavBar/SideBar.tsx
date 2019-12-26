@@ -21,7 +21,7 @@ const SideBar = observer(() => {
       height="100%"
       width="60px"
       backgroundColor="#232830"
-      zIndex="103"
+      zIndex="104"
       position="relative"
     >
       <SideBarButton
