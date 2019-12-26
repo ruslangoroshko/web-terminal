@@ -8,7 +8,8 @@ stages:
   - publish
 
 build:
-  stage: build
+  tags: [monfex]
+  stage: build  
   image: node:latest
   script:
     - npm i
