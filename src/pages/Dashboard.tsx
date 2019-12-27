@@ -272,7 +272,6 @@ const Dashboard = observer(() => {
               currencySymbol={mainAppStore.account.symbol}
               instrument={activeInstrument}
               accountId={mainAppStore.account.id}
-              multiplier={activeInstrument.multiplier[0]}
               digits={mainAppStore.account.digits}
             ></BuySellPanel>
           )}
