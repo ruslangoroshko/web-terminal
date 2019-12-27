@@ -59,8 +59,7 @@ function BuySellPanel(props: Props) {
     investmentAmount: yup
       .number()
       .min(
-        300,
-        //   instrument.minOperationVolume / initialValues.multiplier,
+        instrument.minOperationVolume / initialValues.multiplier,
         'minOperationVolume'
       )
       .max(
