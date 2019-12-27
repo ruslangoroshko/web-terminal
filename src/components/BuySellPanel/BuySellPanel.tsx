@@ -23,12 +23,14 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { Formik, Field, FieldProps, ErrorMessage, Form } from 'formik';
 import Fields from '../../constants/fields';
 import { useStores } from '../../hooks/useStores';
+import ColorsPallete from '../../styles/colorPallete';
+import ErropPopup from '../ErropPopup';
+import MultiplierDropdown from './MultiplierDropdown';
 
 interface Props {
   currencySymbol: string;
   accountId: OpenPositionModel['accountId'];
   instrument: InstrumentModelWSDTO;
-  multiplier: OpenPositionModel['multiplier'];
   digits: number;
 }
 
@@ -42,22 +44,28 @@ interface OpenModel {
 }
 
 function BuySellPanel(props: Props) {
-  const { currencySymbol, accountId, instrument, multiplier, digits } = props;
+  const { currencySymbol, accountId, instrument, digits } = props;
 
   const initialValues: OpenPositionModelFormik = {
     processId: v4(),
     accountId,
     instrumentId: instrument.id,
     operation: AskBidEnum.Buy,
-    multiplier,
+    multiplier: instrument.multiplier[0],
     investmentAmount: '',
   };
 
   const validationSchema = yup.object().shape<OpenModel>({
     investmentAmount: yup
       .number()
-      .min(instrument.minOperationVolume / multiplier, 'minOperationVolume')
-      .max(instrument.maxOperationVolume / multiplier, 'maxOperationVolume')
+      .min(
+        instrument.minOperationVolume / initialValues.multiplier,
+        'minOperationVolume'
+      )
+      .max(
+        instrument.maxOperationVolume / initialValues.multiplier,
+        'maxOperationVolume'
+      )
       .required('Required amount'),
     multiplier: yup.number().required('Required amount'),
     tp: yup.number(),
@@ -134,7 +142,7 @@ function BuySellPanel(props: Props) {
               </InfoIcon>
             </FlexContainer>
             <Field type="text" name={Fields.AMOUNT}>
-              {({ field }: FieldProps) => (
+              {({ field, meta }: FieldProps) => (
                 <InvestedAmoutInputWrapper
                   padding="4px"
                   margin="0 0 14px 0"
@@ -142,6 +150,16 @@ function BuySellPanel(props: Props) {
                   alignItems="center"
                   zIndex="100"
                 >
+                  {meta.touched && meta.error && (
+                    <ErropPopup
+                      textColor="#fff"
+                      bgColor={ColorsPallete.RAZZMATAZZ}
+                      classNameTooltip={Fields.AMOUNT}
+                    >
+                      This value is higher or lower than the one currently
+                      allowed
+                    </ErropPopup>
+                  )}
                   <PrimaryTextSpan fontWeight="bold" marginRight="2px">
                     {currencySymbol}
                   </PrimaryTextSpan>
@@ -179,27 +197,11 @@ function BuySellPanel(props: Props) {
                 The amount you’d like to invest
               </NotificationTooltip>
             </FlexContainer>
-            <Field type="text" name={Fields.MULTIPLIER}>
-              {({ field }: FieldProps) => (
-                <FlexContainer
-                  flexDirection="column"
-                  position="relative"
-                  padding="0 0 4px 0"
-                >
-                  <MaskedInput
-                    {...field}
-                    disabled={true}
-                    mask={['x', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-                    showMask={false}
-                    guide={false}
-                    placeholder="x"
-                    render={(ref, props) => (
-                      <InvestInput ref={ref} {...props} />
-                    )}
-                  ></MaskedInput>
-                </FlexContainer>
-              )}
-            </Field>
+            <MultiplierDropdown
+              multipliers={instrument.multiplier}
+              selectedMultiplier={values.multiplier}
+              setFieldValue={setFieldValue}
+            ></MultiplierDropdown>
             <FlexContainer
               justifyContent="space-between"
               flexWrap="wrap"
@@ -227,7 +229,13 @@ function BuySellPanel(props: Props) {
                 {({ on, toggle }) => (
                   <>
                     <ButtonAutoClosePurchase onClick={toggle} type="button">
-                      Set
+                      {values.sl || values.slRate || values.tp || values.tpRate
+                        ? `+${currencySymbol}${values.tp ||
+                            values.tpRate ||
+                            'Non Set'} -${currencySymbol}${values.sl ||
+                            values.slRate ||
+                            'Non Set'}`
+                        : 'Set'}
                     </ButtonAutoClosePurchase>
                     {on && (
                       <FlexContainer
@@ -429,5 +437,9 @@ const InvestedAmoutInputWrapper = styled(FlexContainer)`
     right: 0;
     background-color: rgba(255, 255, 255, 0.06);
     z-index: -1;
+  }
+
+  &:focus-within {
+    border: 1px solid #21b3a4;
   }
 `;

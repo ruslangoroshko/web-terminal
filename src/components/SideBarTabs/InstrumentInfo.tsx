@@ -144,7 +144,6 @@ const InstrumentInfo: FC<Props> = observer(props => {
 export default InstrumentInfo;
 
 const InstrumentInfoWrapper = styled(FlexContainer)`
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
 `;
 
 const SetSLTPButton = styled(ButtonWithoutStyles)`

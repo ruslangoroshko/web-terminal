@@ -53,7 +53,5 @@ const SideBar = observer(() => {
 export default SideBar;
 
 const BottonNavBarWrapper = styled(FlexContainer)`
-  box-shadow: 2px 0px 0px #1a1e22;
-  border-right: 2px solid #1a1e22;
   min-width: 60px;
 `;

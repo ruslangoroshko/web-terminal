@@ -29,10 +29,9 @@ import { observer } from 'mobx-react-lite';
 import TestBg from '../assets/images/test.png';
 
 const Dashboard = observer(() => {
-  const { mainAppStore } = useStores();
+  const { mainAppStore, tradingViewStore } = useStores();
   const [resolution, setResolution] = useState(supportedResolutions[0]);
 
-  const [tradingWidget, setTradingWidget] = useState<IChartingLibraryWidget>();
   const [tabType, setTabType] = useState(TabType.ActivePositions);
 
   const { quotesStore } = useStores();
@@ -44,15 +43,11 @@ const Dashboard = observer(() => {
 
   const switchInstrument = (instrument: InstrumentModelWSDTO) => () => {
     setActiveInstrument(instrument);
-    tradingWidget?.setSymbol(instrument.id, resolution, () => {});
-  };
-
-  const tradingWidgetCallback = (callbackWidget: IChartingLibraryWidget) => {
-    setTradingWidget(callbackWidget);
+    tradingViewStore.tradingWidget?.chart().setSymbol(instrument.id, () => {});
   };
 
   const setTimeScale = (resolution: string) => {
-    tradingWidget?.setSymbol(activeInstrument!.id, resolution, () => {
+    tradingViewStore.tradingWidget?.chart().setResolution(resolution, () => {
       setResolution(resolution);
     });
   };
@@ -220,6 +215,7 @@ const Dashboard = observer(() => {
   const handleAddNewInstrument = () => {
     throw new Error('handleAddNewInstrument');
   };
+
   return !mainAppStore.isLoading &&
     mainAppStore.account &&
     mainAppStore.activeSession ? (
@@ -267,10 +263,7 @@ const Dashboard = observer(() => {
       <GridWrapper>
         <ChartWrapper>
           {activeInstrument && (
-            <TVChartContainer
-              intrument={activeInstrument}
-              tradingWidgetCallback={tradingWidgetCallback}
-            />
+            <TVChartContainer intrument={activeInstrument} />
           )}
         </ChartWrapper>
         <BuySellPanelWrapper>
@@ -279,7 +272,6 @@ const Dashboard = observer(() => {
               currencySymbol={mainAppStore.account.symbol}
               instrument={activeInstrument}
               accountId={mainAppStore.account.id}
-              multiplier={activeInstrument.multiplier[0]}
               digits={mainAppStore.account.digits}
             ></BuySellPanel>
           )}
@@ -293,8 +285,10 @@ const Dashboard = observer(() => {
             activeResolution={resolution}
             setTimeScale={setTimeScale}
           ></ChartTimeScale>
-          {tradingWidget && (
-            <ChartTimeFomat tvWidget={tradingWidget}></ChartTimeFomat>
+          {tradingViewStore.tradingWidget && (
+            <ChartTimeFomat
+              tvWidget={tradingViewStore.tradingWidget}
+            ></ChartTimeFomat>
           )}
         </ChartInstruments>
       </GridWrapper>
@@ -315,7 +309,6 @@ const AddIntrumentButton = styled(ButtonWithoutStyles)`
 
 const GridWrapper = styled.div`
   display: grid;
-  border-top: 2px solid #1a1e22;
   border-collapse: collapse;
   grid-template-columns: 1fr 172px;
   grid-template-rows: 1fr 32px;
@@ -330,8 +323,6 @@ const ChartWrapper = styled(FlexContainer)`
   grid-column: 1 / span 1;
   /* background: linear-gradient(0deg, #232830, #232830),
     linear-gradient(291.49deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.62) 99.76%); */
-  border-right: 1px solid #1a1e22;
-  border-bottom: 1px solid #1a1e22;
   background-image: url(${TestBg}) center center no-repeat;
 `;
 

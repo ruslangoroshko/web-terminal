@@ -8,6 +8,7 @@ export interface FlexContainerProps {
   width?: string;
   height?: string;
   minHeight?: string;
+  maxHeight?: string;
   padding?: string;
   margin?: string;
   backgroundColor?: string;
@@ -28,6 +29,7 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   width: ${props => props.width};
   height: ${props => props.height};
   min-height: ${props => props.minHeight};
+  max-height: ${props => props.maxHeight};
   padding: ${props => props.padding};
   margin: ${props => props.margin};
   flex-wrap: ${props => props.flexWrap};
