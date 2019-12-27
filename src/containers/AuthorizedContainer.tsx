@@ -71,7 +71,7 @@ const AuthorizedContainer: FC<Props> = observer(props => {
       <NavBar></NavBar>
       <FlexContainer height="100%">
         <SideBar></SideBar>
-        <ResizableContainerWrapper
+        <TabsLayoutWrapper
           position="absolute"
           top="0"
           right="calc(100% - 60px)"
@@ -81,7 +81,7 @@ const AuthorizedContainer: FC<Props> = observer(props => {
           zIndex="103"
         >
           {renderExpandedTabByType()}
-        </ResizableContainerWrapper>
+        </TabsLayoutWrapper>
         <ResizableContainer>{renderTabByType()}</ResizableContainer>
         <FlexContainer
           position="relative"
@@ -98,7 +98,7 @@ const AuthorizedContainer: FC<Props> = observer(props => {
 
 export default AuthorizedContainer;
 
-const ResizableContainerWrapper = styled(FlexContainer)<
+const TabsLayoutWrapper = styled(FlexContainer)<
   FlexContainerProps & { isExpanded: boolean }
 >`
   transform: ${props =>

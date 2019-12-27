@@ -14,17 +14,6 @@ import ColorsPallete from '../styles/colorPallete';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { useStores } from '../hooks/useStores';
 
-export interface ChartContainerProps {
-  interval: ChartingLibraryWidgetOptions['interval'];
-  // BEWARE: no trailing slash is expected in feed URL
-  library_path: ChartingLibraryWidgetOptions['library_path'];
-  clientId: ChartingLibraryWidgetOptions['client_id'];
-  userId: ChartingLibraryWidgetOptions['user_id'];
-  fullscreen: ChartingLibraryWidgetOptions['fullscreen'];
-  autosize: ChartingLibraryWidgetOptions['autosize'];
-  containerId: ChartingLibraryWidgetOptions['container_id'];
-}
-
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
   const results = regex.exec(location.search);
@@ -34,16 +23,6 @@ function getLanguageFromURL(): LanguageCode | null {
 }
 
 const containerId = 'tv_chart_container';
-
-const defaultProps: ChartContainerProps = {
-  interval: supportedResolutions[0],
-  containerId: containerId,
-  library_path: CHARTING_LIBRARY_PATH,
-  clientId: 'tradingview.com',
-  userId: 'public_user_id',
-  fullscreen: false,
-  autosize: true,
-};
 
 interface IProps {
   intrument: InstrumentModelWSDTO;
@@ -57,9 +36,9 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
       symbol: intrument.id,
       // BEWARE: no trailing slash is expected in feed URL
       datafeed: new DataFeedService(mainAppStore.activeSession!, intrument),
-      interval: defaultProps.interval,
-      container_id: defaultProps.containerId,
-      library_path: defaultProps.library_path,
+      interval: supportedResolutions[0],
+      container_id: containerId,
+      library_path: CHARTING_LIBRARY_PATH,
       locale: getLanguageFromURL() || 'en',
       custom_css_url: 'custom_trading_view_styles.css',
       // debug: true,
@@ -75,10 +54,8 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'main_series_scale_menu',
       ],
       enabled_features: ['remove_library_container_border'],
-      client_id: defaultProps.clientId,
-      user_id: defaultProps.userId,
-      fullscreen: defaultProps.fullscreen,
-      autosize: defaultProps.autosize,
+      fullscreen: false,
+      autosize: true,
       overrides: {
         'mainSeriesProperties.showCountdown': true,
         'symbolWatermarkProperties.transparency': 90,
@@ -128,9 +105,7 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
     };
   }, []);
 
-  return (
-    <FlexContainer width="100%" height="100%" id={defaultProps.containerId} />
-  );
+  return <FlexContainer width="100%" height="100%" id={containerId} />;
 };
 
 export default ChartContainer;
