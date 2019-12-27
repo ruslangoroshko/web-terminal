@@ -59,7 +59,7 @@ const Portfolio: FC<Props> = observer(props => {
           >
             {getNumberSign(quotesStore.profit)}
             {mainAppStore.account?.symbol}
-            {quotesStore.profit}
+            {quotesStore.profit.toFixed(2)}
           </QuoteText>
           <FlexContainer>
             <FlexContainer flexDirection="column" margin="0 38px 20px 0">
@@ -95,7 +95,7 @@ const Portfolio: FC<Props> = observer(props => {
                 fontWeight="bold"
               >
                 {mainAppStore.account?.symbol}
-                {quotesStore.totalEquity}
+                {quotesStore.totalEquity.toFixed(2)}
               </PrimaryTextSpan>
             </FlexContainer>
           </FlexContainer>

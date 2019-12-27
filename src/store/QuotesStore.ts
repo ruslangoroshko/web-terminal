@@ -28,40 +28,39 @@ export class QuotesStore implements IQuotesStore {
 
   @computed
   get profit() {
-    return +this.activePositions
-      .reduce(
-        (acc, prev) =>
-          acc +
-          calculateFloatingProfitAndLoss({
-            investment: prev.investmentAmount,
-            leverage: prev.multiplier,
-            costs: prev.swap + prev.commission,
-            side: prev.operation === AskBidEnum.Buy ? 1 : -1,
-            currentPrice:
-              prev.operation === AskBidEnum.Buy
-                ? this.quotes[prev.instrument].bid.c
-                : this.quotes[prev.instrument].ask.c,
-            openPrice: prev.openPrice,
-          }),
-        0
-      )
-      .toFixed(2);
+    return this.activePositions.reduce(
+      (acc, prev) =>
+        acc +
+        calculateFloatingProfitAndLoss({
+          investment: prev.investmentAmount,
+          leverage: prev.multiplier,
+          costs: prev.swap + prev.commission,
+          side: prev.operation === AskBidEnum.Buy ? 1 : -1,
+          currentPrice:
+            prev.operation === AskBidEnum.Buy
+              ? this.quotes[prev.instrument].bid.c
+              : this.quotes[prev.instrument].ask.c,
+          openPrice: prev.openPrice,
+        }),
+      0
+    );
   }
 
   @computed
   get invest() {
-    return +this.activePositions
-      .reduce((acc, prev) => acc + prev.investmentAmount, 0)
-      .toFixed(2);
+    return this.activePositions.reduce(
+      (acc, prev) => acc + prev.investmentAmount,
+      0
+    );
   }
 
   @computed
   get total() {
-    return +(+this.profit + this.available).toFixed(2);
+    return +this.profit + this.available;
   }
 
   @computed
   get totalEquity() {
-    return +(+this.profit + this.invest).toFixed(2);
+    return +this.profit + this.invest;
   }
 }

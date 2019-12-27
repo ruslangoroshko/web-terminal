@@ -27,7 +27,6 @@ function ChartSettingsButtons(props: Props) {
 export default ChartSettingsButtons;
 
 const SettingsButton = styled(ButtonWithoutStyles)`
-  border-right: 1px solid #1a1e22;
   padding: 8px;
   color: rgba(255, 255, 255, 0.6);
   font-size: 12px;

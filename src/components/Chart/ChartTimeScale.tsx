@@ -53,8 +53,6 @@ const ChartTimeScale: FC<Props> = props => {
 export default ChartTimeScale;
 
 const ChartTimeScaleWrapper = styled(FlexContainer)`
-  border-right: 1px solid #1a1e22;
-  border-left: 1px solid #1a1e22;
 `;
 
 export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
@@ -70,10 +68,6 @@ export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
   color: ${props =>
     props.isActive ? ColorsPallete.EASTERN_BLUE : 'rgba(255, 255, 255, 0.6)'};
   border: ${props => (props.isActive ? '1px solid #21B3A4' : 'none')};
-  border-right: ${props =>
-    props.isActive
-      ? '1px solid #21B3A4'
-      : '1px solid rgba(255, 255, 255, 0.08)'};
 
   background-color: ${props => props.isActive && '#1A1E22'};
 
@@ -81,7 +75,5 @@ export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
     background-color: ${ColorsPallete.BLUE_STONE};
     cursor: pointer;
   }
-  &:last-of-type {
-    border-right: ${props => (props.isActive ? '1px solid #21B3A4' : 'none')};
-  }
+
 `;

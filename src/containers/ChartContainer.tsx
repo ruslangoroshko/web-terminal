@@ -26,11 +26,10 @@ const containerId = 'tv_chart_container';
 
 interface IProps {
   intrument: InstrumentModelWSDTO;
-  tradingWidgetCallback: (arg0: IChartingLibraryWidget) => void;
 }
 
-const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
-  const { mainAppStore } = useStores();
+const ChartContainer: FC<IProps> = ({ intrument }) => {
+  const { mainAppStore, tradingViewStore } = useStores();
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: intrument.id,
@@ -41,6 +40,12 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
       library_path: CHARTING_LIBRARY_PATH,
       locale: getLanguageFromURL() || 'en',
       custom_css_url: 'custom_trading_view_styles.css',
+      time_frames: [
+        { text: '10y', resolution: '6M', description: '10 Years' },
+        { text: '1y', resolution: 'W', description: '1 Years', title: '1yr' },
+        { text: '1m', resolution: 'D', description: '1 Month' },
+        { text: '1d', resolution: '1', description: '1 Days' },
+      ],
       // debug: true,
       disabled_features: [
         'header_widget',
@@ -72,6 +77,7 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
         'mainSeriesProperties.areaStyle.linestyle': LineStyles.LINESTYLE_SOLID,
         'mainSeriesProperties.areaStyle.linewidth': 3,
         'mainSeriesProperties.areaStyle.priceSource': 'close',
+        'paneProperties.axisProperties.autoScale': false,
         'paneProperties.vertGridProperties.color': '#353939',
         'paneProperties.vertGridProperties.style': LineStyles.LINESTYLE_DOTTED,
         'paneProperties.horzGridProperties.color': '#353939',
@@ -98,7 +104,7 @@ const ChartContainer: FC<IProps> = ({ intrument, tradingWidgetCallback }) => {
     const tvWidget = new widget(widgetOptions);
 
     tvWidget.onChartReady(async () => {
-      tradingWidgetCallback(tvWidget);
+      tradingViewStore.tradingWidget = tvWidget;
     });
     return () => {
       tvWidget.remove();

@@ -6,8 +6,6 @@ import API from '../helpers/API';
 import { CandleTypeEnum } from '../enums/CandleType';
 import { HistoryCandlesType } from '../types/HistoryTypes';
 import { AskBidEnum } from '../enums/AskBid';
-import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
-import minimumTime from '../constants/minimumTime';
 
 interface HistoryObj {
   [key: string]: any;
@@ -26,28 +24,26 @@ export default {
     let resolutionEnum = CandleTypeEnum.Min;
 
     switch (resolution) {
-      case supportedResolutions[0]:
+      case '1':
         resolutionEnum = CandleTypeEnum.Min;
         break;
 
-      case supportedResolutions[1]:
+      case '60':
         resolutionEnum = CandleTypeEnum.Hour;
         break;
 
-      case supportedResolutions[2]:
+      case '1D':
         resolutionEnum = CandleTypeEnum.Day;
         break;
 
-      case supportedResolutions[3]:
+      case '1M':
         resolutionEnum = CandleTypeEnum.Month;
         break;
 
       default:
         break;
     }
-    if (rangeStartDate <= minimumTime) {
-      rangeStartDate = minimumTime;
-    }
+
     const params: HistoryCandlesType = {
       candleType: resolutionEnum,
       // TODO: FIXME: hardcode

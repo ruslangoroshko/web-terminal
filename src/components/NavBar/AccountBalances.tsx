@@ -20,28 +20,28 @@ function AccountBalances(props: Props) {
         <LabelText>Available:</LabelText>
         <LabelValue>
           {symbol}
-          {available}
+          {available.toFixed(2)}
         </LabelValue>
       </AmountWrapper>
       <AmountWrapper>
         <LabelText>Invest:</LabelText>
         <LabelValue>
           {symbol}
-          {invest}
+          {invest.toFixed(2)}
         </LabelValue>
       </AmountWrapper>
       <AmountWrapper>
         <LabelText>Profit:</LabelText>
         <ProfitValue isGrowth={+profit >= 0}>
           {symbol}
-          {profit}
+          {profit.toFixed(2)}
         </ProfitValue>
       </AmountWrapper>
       <AmountWrapper>
         <LabelText>Total:</LabelText>
         <LabelValue>
           {symbol}
-          {total}
+          {total.toFixed(2)}
         </LabelValue>
       </AmountWrapper>
     </>

@@ -22,6 +22,7 @@ import StreamingService from './streamingService';
 import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import { HubConnection } from '@aspnet/signalr';
 import { InstrumentModelWSDTO } from '../types/Instruments';
+import minimumTime from '../constants/minimumTime';
 
 class DataFeedService implements IBasicDataFeed {
   static config = {
@@ -118,7 +119,6 @@ class DataFeedService implements IBasicDataFeed {
     listenerGuid: string,
     onResetCacheNeededCallback: () => void
   ) => {
-    console.log('TCL: DataFeedService -> listenerGuid', listenerGuid);
     this.stream.subscribeBars(
       symbolInfo,
       resolution,
@@ -128,10 +128,6 @@ class DataFeedService implements IBasicDataFeed {
     );
   };
   unsubscribeBars = (subscriberUID: string) => {
-    console.log(
-      'TCL: DataFeedService -> unsubscribeBars -> subscriberUID',
-      subscriberUID
-    );
     const uid = subscriberUID.split(' ')[1];
 
     this.stream.unsubscribeBars(uid);
@@ -141,12 +137,18 @@ class DataFeedService implements IBasicDataFeed {
     resolutionBack: ResolutionBackValues,
     intervalBack: number
   ) => {
-    //optional
-    // while optional, this makes sure we request 24 hours of minute data at a time
-    // CryptoCompare's minute data endpoint will throw an error if we request data beyond 7 days in the past, and return no data
-    const historyDepth: HistoryDepth = { resolutionBack: 'D', intervalBack: 1 };
-
-    return +resolution < 60 ? historyDepth : undefined;
+    switch (resolution) {
+      case '1D':
+        return {
+          resolutionBack: 'M' as ResolutionBackValues,
+          intervalBack: 6,
+        };
+      case '1M':
+        return {
+          resolutionBack: 'M' as ResolutionBackValues,
+          intervalBack: 6,
+        };
+    }
   };
   getMarks = (
     symbolInfo: LibrarySymbolInfo,
@@ -174,3 +176,22 @@ class DataFeedService implements IBasicDataFeed {
 }
 
 export default DataFeedService;
+
+function periodLengthSeconds(
+  resolution: string,
+  requiredPeriodsCount: number
+): number {
+  let daysCount = 0;
+
+  if (resolution === 'D' || resolution === '1D') {
+    daysCount = requiredPeriodsCount;
+  } else if (resolution === 'M' || resolution === '1M') {
+    daysCount = 31 * requiredPeriodsCount;
+  } else if (resolution === 'W' || resolution === '1W') {
+    daysCount = 7 * requiredPeriodsCount;
+  } else {
+    daysCount = (requiredPeriodsCount * parseInt(resolution)) / (24 * 60);
+  }
+
+  return daysCount * 24 * 60 * 60;
+}
