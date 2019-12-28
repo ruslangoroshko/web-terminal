@@ -25,10 +25,11 @@ import ChartSettingsButtons from '../components/Chart/ChartSettingsButtons';
 import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
 import { AskBidEnum } from '../enums/AskBid';
 import { useStores } from '../hooks/useStores';
-import { observer } from 'mobx-react-lite';
 import TestBg from '../assets/images/test.png';
+import Toggle from '../components/Toggle';
+import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
 
-const Dashboard = observer(() => {
+const Dashboard = () => {
   const { mainAppStore, tradingViewStore } = useStores();
   const [resolution, setResolution] = useState(supportedResolutions[0]);
 
@@ -220,19 +221,22 @@ const Dashboard = observer(() => {
     mainAppStore.account &&
     mainAppStore.activeSession ? (
     <FlexContainer
-      width="100%"
       height="100%"
       flexDirection="column"
       backgroundColor="#232830"
     >
       <FlexContainer
         padding="8px 0 8px 8px"
-        width="100%"
         flexDirection="column"
         margin="0 0 20px 0"
       >
         <FlexContainer margin="0 0 24px 0">
-          <FlexContainer padding="4px 4px 4px 0">
+          <FlexContainer
+            padding="4px 4px 4px 0"
+            maxWidth="90%"
+            overflow="hidden"
+            flexWrap="wrap"
+          >
             {instruments.map(item => (
               <Instrument
                 instrument={item}
@@ -240,18 +244,23 @@ const Dashboard = observer(() => {
                 isActive={item.id === activeInstrument?.id}
                 handleClose={handleRemoveInstrument(item.id)}
                 switchInstrument={switchInstrument(item)}
-                positionsLength={
-                  quotesStore.activePositions.filter(
-                    ap => item.id === ap.instrument
-                  ).length
-                }
               />
             ))}
           </FlexContainer>
-          <FlexContainer>
-            <AddIntrumentButton onClick={handleAddNewInstrument}>
-              <SvgIcon {...IconAddInstrument} fill="rgba(255, 255, 255, 0.6)" />
-            </AddIntrumentButton>
+          <FlexContainer position="relative">
+            <Toggle>
+              {({ on, toggle }) => (
+                <>
+                  <AddIntrumentButton onClick={toggle}>
+                    <SvgIcon
+                      {...IconAddInstrument}
+                      fill="rgba(255, 255, 255, 0.6)"
+                    />
+                  </AddIntrumentButton>
+                  {on && <AddInstrumentsPopup />}
+                </>
+              )}
+            </Toggle>
           </FlexContainer>
         </FlexContainer>
         <FlexContainer>
@@ -294,7 +303,7 @@ const Dashboard = observer(() => {
       </GridWrapper>
     </FlexContainer>
   ) : null;
-});
+};
 
 export default Dashboard;
 

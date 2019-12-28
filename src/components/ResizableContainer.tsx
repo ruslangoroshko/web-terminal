@@ -45,7 +45,7 @@ const RelativeWrapper = styled(FlexContainer)<
   overflow: hidden;
   transition: max-width 0.2s ease-in;
   backface-visibility: hidden;
-  will-change: max-height;
+  will-change: max-width, width;
   background: radial-gradient(
       100% 100% at 100% 0%,
       rgba(186, 213, 255, 0.096) 0%,

@@ -64,7 +64,7 @@ const AuthorizedContainer: FC<Props> = observer(props => {
   return (
     <FlexContainer
       height="100vh"
-      width="100%"
+      width="100vw"
       position="relative"
       flexDirection="column"
     >

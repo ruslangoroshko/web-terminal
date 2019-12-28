@@ -26,6 +26,7 @@ import { useStores } from '../../hooks/useStores';
 import ColorsPallete from '../../styles/colorPallete';
 import ErropPopup from '../ErropPopup';
 import MultiplierDropdown from './MultiplierDropdown';
+import InvestAmountDropdown from './InvestAmountDropdown';
 
 interface Props {
   currencySymbol: string;
@@ -105,6 +106,14 @@ function BuySellPanel(props: Props) {
     ).toFixed(digits);
   };
 
+  const handleChangeInputAmount = (
+    setFieldValue: any,
+    value: any,
+    increase = false
+  ) => () => {
+    setFieldValue(Fields.AMOUNT, increase ? +value + 1 : +value - 1);
+  };
+
   return (
     <FlexContainer
       padding="16px"
@@ -144,7 +153,7 @@ function BuySellPanel(props: Props) {
             <Field type="text" name={Fields.AMOUNT}>
               {({ field, meta }: FieldProps) => (
                 <InvestedAmoutInputWrapper
-                  padding="4px"
+                  padding="0 0 0 4px"
                   margin="0 0 14px 0"
                   position="relative"
                   alignItems="center"
@@ -163,15 +172,47 @@ function BuySellPanel(props: Props) {
                   <PrimaryTextSpan fontWeight="bold" marginRight="2px">
                     {currencySymbol}
                   </PrimaryTextSpan>
-                  <MaskedInput
-                    {...field}
-                    mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-                    showMask={true}
-                    guide={false}
-                    render={(ref, props) => (
-                      <InvestInput ref={ref} {...props} />
-                    )}
-                  ></MaskedInput>
+
+                  <FlexContainer alignItems="center">
+                    <MaskedInput
+                      {...field}
+                      mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+                      showMask={true}
+                      guide={false}
+                      render={(ref, props) => (
+                        <>
+                          <InvestInput ref={ref} {...props} />
+                          <InvestAmountDropdown
+                            setFieldValue={setFieldValue}
+                            symbol={currencySymbol}
+                          />
+                        </>
+                      )}
+                    ></MaskedInput>
+                    <PlusMinusButtonWrapper flexDirection="column">
+                      <PlusButton
+                        onClick={handleChangeInputAmount(
+                          setFieldValue,
+                          values.investmentAmount,
+                          true
+                        )}
+                      >
+                        <PrimaryTextSpan color="#fff" fontWeight="bold">
+                          +
+                        </PrimaryTextSpan>
+                      </PlusButton>
+                      <MinusButton
+                        onClick={handleChangeInputAmount(
+                          setFieldValue,
+                          values.investmentAmount
+                        )}
+                      >
+                        <PrimaryTextSpan color="#fff" fontWeight="bold">
+                          -
+                        </PrimaryTextSpan>
+                      </MinusButton>
+                    </PlusMinusButtonWrapper>
+                  </FlexContainer>
                 </InvestedAmoutInputWrapper>
               )}
             </Field>
@@ -382,6 +423,11 @@ const InvestInput = styled.input`
   font-size: 14px;
   line-height: 16px;
   color: #ffffff;
+
+  &:focus + .investAmountDropdown {
+    opacity: 1;
+    visibility: visible;
+  }
 `;
 
 const InfoIcon = styled(FlexContainer)`
@@ -442,4 +488,19 @@ const InvestedAmoutInputWrapper = styled(FlexContainer)`
   &:focus-within {
     border: 1px solid #21b3a4;
   }
+`;
+
+const MinusButton = styled(ButtonWithoutStyles)`
+  display: flex;
+  padding: 2px 4px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const PlusButton = styled(MinusButton)`
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const PlusMinusButtonWrapper = styled(FlexContainer)`
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
 `;

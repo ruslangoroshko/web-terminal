@@ -18,15 +18,17 @@ const ActiveInstrument: FC<Props> = props => {
 
   const { quotesStore } = useStores();
 
-  const quote = quotesStore.quotes[instrument.id] || {
-    ask: {
-      c: 0,
-    },
-    bid: {
-      c: 0,
-    },
-  };
-  return (
+  // const quote = quotesStore.quotes[instrument.id] || {
+  //   ask: {
+  //     c: 0,
+  //   },
+  //   bid: {
+  //     c: 0,
+  //   },
+  // };
+
+  const quote = quotesStore.quotesList.find(q => q.id === instrument.id);
+  return quote ? (
     <FlexContainer>
       <FlexContainer
         height="60px"
@@ -76,7 +78,7 @@ const ActiveInstrument: FC<Props> = props => {
         </FlexContainer>
       </FlexContainer>
     </FlexContainer>
-  );
+  ) : null;
 };
 
 export default ActiveInstrument;
