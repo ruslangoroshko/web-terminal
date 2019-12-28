@@ -21,21 +21,17 @@ interface Props {
   instrument: InstrumentModelWSDTO;
   isActive?: boolean;
   handleClose: () => void;
-  positionsLength: number;
 }
 
 const Instrument: FC<Props> = observer(
-  ({
-    instrument,
-    switchInstrument,
-    isActive,
-    handleClose,
-    positionsLength = 0,
-  }) => {
+  ({ instrument, switchInstrument, isActive, handleClose }) => {
     const { quotesStore, mainAppStore } = useStores();
 
     const quote = quotesStore.quotes[instrument.id];
-
+    const positionsLength = quotesStore.activePositions.filter(
+      position => position.instrument === instrument.id
+    ).length;
+    
     useEffect(() => {
       mainAppStore.activeSession?.on(
         Topics.BID_ASK,
@@ -43,11 +39,9 @@ const Instrument: FC<Props> = observer(
           if (!response.data.length) {
             return;
           }
-
-          const newBidAsk = response.data[0];
-          if (newBidAsk.id === instrument.id) {
-            quotesStore.setQuote(newBidAsk);
-          }
+          response.data.forEach(item => {
+            quotesStore.setQuote(item);
+          });
         }
       );
     }, [instrument]);

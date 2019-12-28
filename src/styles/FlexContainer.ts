@@ -9,6 +9,7 @@ export interface FlexContainerProps {
   height?: string;
   minHeight?: string;
   maxHeight?: string;
+  maxWidth?: string;
   padding?: string;
   margin?: string;
   backgroundColor?: string;
@@ -19,6 +20,7 @@ export interface FlexContainerProps {
   right?: string;
   left?: string;
   zIndex?: string;
+  overflow?: 'hidden' | 'visible' | 'auto';
 }
 
 export const FlexContainer = styled.div<FlexContainerProps>`
@@ -30,6 +32,7 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   height: ${props => props.height};
   min-height: ${props => props.minHeight};
   max-height: ${props => props.maxHeight};
+  max-width: ${props => props.maxWidth};
   padding: ${props => props.padding};
   margin: ${props => props.margin};
   flex-wrap: ${props => props.flexWrap};
@@ -40,5 +43,6 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   right: ${props => props.right};
   bottom: ${props => props.bottom};
   left: ${props => props.left};
-  z-index: ${props  => props.zIndex};
+  z-index: ${props => props.zIndex};
+  overflow: ${props => props.overflow};
 `;
