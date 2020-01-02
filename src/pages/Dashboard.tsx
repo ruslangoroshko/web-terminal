@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
@@ -9,11 +9,9 @@ import { AccountModelWebSocketDTO } from '../types/Accounts';
 import Fields from '../constants/fields';
 import API from '../helpers/API';
 import Instrument from '../components/Instrument';
-import Table from '../components/Table';
 import TVChartContainer from '../containers/ChartContainer';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { PositionModelWSDTO } from '../types/Positions';
-import { IChartingLibraryWidget } from '../vendor/charting_library/charting_library.min';
 import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import { v4 } from 'uuid';
 import SvgIcon from '../components/SvgIcon';
@@ -25,15 +23,15 @@ import ChartSettingsButtons from '../components/Chart/ChartSettingsButtons';
 import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
 import { AskBidEnum } from '../enums/AskBid';
 import { useStores } from '../hooks/useStores';
-import TestBg from '../assets/images/test.png';
 import Toggle from '../components/Toggle';
 import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
+import { Observer } from 'mobx-react-lite';
 
 const Dashboard = () => {
   const { mainAppStore, tradingViewStore } = useStores();
   const [resolution, setResolution] = useState(supportedResolutions[0]);
 
-  const [tabType, setTabType] = useState(TabType.ActivePositions);
+  const [tabType] = useState(TabType.ActivePositions);
 
   const { quotesStore } = useStores();
 
@@ -51,79 +49,6 @@ const Dashboard = () => {
     tradingViewStore.tradingWidget?.chart().setResolution(resolution, () => {
       setResolution(resolution);
     });
-  };
-
-  const renderTabType = () => {
-    switch (tabType) {
-      case TabType.ActivePositions:
-        const columns: Array<{
-          accessor: keyof PositionModelWSDTO;
-          Header: string;
-        }> = [
-          {
-            accessor: 'id',
-            Header: 'Id',
-          },
-          {
-            accessor: 'investmentAmount',
-            Header: 'investmentAmount',
-          },
-          {
-            accessor: 'openPrice',
-            Header: 'openPrice',
-          },
-          {
-            accessor: 'openDate',
-            Header: 'openDate',
-          },
-          {
-            accessor: 'instrument',
-            Header: 'instrument',
-          },
-          {
-            accessor: 'swap',
-            Header: 'swap',
-          },
-          {
-            accessor: 'commission',
-            Header: 'commission',
-          },
-          {
-            accessor: 'takeProfitInCurrency',
-            Header: 'takeProfitInCurrency',
-          },
-          {
-            accessor: 'stopLossInCurrency',
-            Header: 'stopLossInCurrency',
-          },
-          {
-            accessor: 'takeProfitRate',
-            Header: 'takeProfitRate',
-          },
-          {
-            accessor: 'stopLossRate',
-            Header: 'stopLossRate',
-          },
-        ];
-        return activeInstrument ? (
-          <Table
-            columns={columns}
-            data={quotesStore.activePositions}
-            closePosition={closePosition}
-            instrumentId={activeInstrument ? activeInstrument.id : ''}
-            multiplier={activeInstrument.multiplier[0]}
-          ></Table>
-        ) : null;
-
-      case TabType.PendingOrders:
-        return <div>PendingOrders</div>;
-
-      case TabType.History:
-        return <div>History</div>;
-
-      default:
-        return null;
-    }
   };
 
   const closePosition = (positionId: number) => () => {
@@ -209,34 +134,17 @@ const Dashboard = () => {
     );
   }, [mainAppStore.account]);
 
-  const handleRemoveInstrument = (instrumentId: string) => () => {
+  const handleRemoveInstrument = (asd: string) => () => {
     throw new Error('handleRemoveInstrument');
-  };
-
-  const handleAddNewInstrument = () => {
-    throw new Error('handleAddNewInstrument');
   };
 
   return !mainAppStore.isLoading &&
     mainAppStore.account &&
     mainAppStore.activeSession ? (
-    <FlexContainer
-      height="100%"
-      flexDirection="column"
-      backgroundColor="#232830"
-    >
-      <FlexContainer
-        padding="8px 0 8px 8px"
-        flexDirection="column"
-        margin="0 0 20px 0"
-      >
-        <FlexContainer margin="0 0 24px 0">
-          <FlexContainer
-            padding="4px 4px 4px 0"
-            maxWidth="90%"
-            overflow="hidden"
-            flexWrap="wrap"
-          >
+    <DashboardWrapper height="100%" width="100%" flexDirection="column">
+      <FlexContainer flexDirection="column" margin="0 0 20px 0">
+        <FlexContainer>
+          <FlexContainer maxWidth="90%" overflow="hidden" flexWrap="wrap">
             {instruments.map(item => (
               <Instrument
                 instrument={item}
@@ -257,17 +165,22 @@ const Dashboard = () => {
                       fill="rgba(255, 255, 255, 0.6)"
                     />
                   </AddIntrumentButton>
-                  {on && <AddInstrumentsPopup />}
+                  {on && (
+                    <AddInstrumentsPopup
+                      toggle={toggle}
+                      instruments={instruments}
+                    />
+                  )}
                 </>
               )}
             </Toggle>
           </FlexContainer>
         </FlexContainer>
-        <FlexContainer>
+        <ActiveInstrumentWrapper position="relative" padding="24px 20px">
           {activeInstrument && (
             <ActiveInstrument instrument={activeInstrument} />
           )}
-        </FlexContainer>
+        </ActiveInstrumentWrapper>
       </FlexContainer>
       <GridWrapper>
         <ChartWrapper>
@@ -285,36 +198,53 @@ const Dashboard = () => {
             ></BuySellPanel>
           )}
         </BuySellPanelWrapper>
-        <ChartInstruments
-          backgroundColor="#232830"
-          justifyContent="space-between"
-        >
-          <ChartSettingsButtons></ChartSettingsButtons>
-          <ChartTimeScale
-            activeResolution={resolution}
-            setTimeScale={setTimeScale}
-          ></ChartTimeScale>
-          {tradingViewStore.tradingWidget && (
-            <ChartTimeFomat
-              tvWidget={tradingViewStore.tradingWidget}
-            ></ChartTimeFomat>
+        <Observer>
+          {() => (
+            <ChartInstruments justifyContent="space-between">
+              <ChartSettingsButtons></ChartSettingsButtons>
+              <ChartTimeScale
+                activeResolution={resolution}
+                setTimeScale={setTimeScale}
+              ></ChartTimeScale>
+              {tradingViewStore.tradingWidget && (
+                <ChartTimeFomat
+                  tvWidget={tradingViewStore.tradingWidget}
+                ></ChartTimeFomat>
+              )}
+            </ChartInstruments>
           )}
-        </ChartInstruments>
+        </Observer>
       </GridWrapper>
-    </FlexContainer>
+    </DashboardWrapper>
   ) : null;
 };
 
 export default Dashboard;
 
-const AddIntrumentButton = styled(ButtonWithoutStyles)`
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  border-radius: 2px;
+const DashboardWrapper = styled(FlexContainer)`
+  border-radius: 4px;
 `;
+
+const ActiveInstrumentWrapper = styled(FlexContainer)`
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.17) 0%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    opacity: 0.3;
+  }
+`;
+
+const AddIntrumentButton = styled(ButtonWithoutStyles)``;
 
 const GridWrapper = styled.div`
   display: grid;
@@ -330,9 +260,6 @@ const GridWrapper = styled.div`
 const ChartWrapper = styled(FlexContainer)`
   grid-row: 1 / span 1;
   grid-column: 1 / span 1;
-  /* background: linear-gradient(0deg, #232830, #232830),
-    linear-gradient(291.49deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.62) 99.76%); */
-  background-image: url(${TestBg}) center center no-repeat;
 `;
 
 const ChartInstruments = styled(FlexContainer)`

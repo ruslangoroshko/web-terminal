@@ -115,11 +115,7 @@ function BuySellPanel(props: Props) {
   };
 
   return (
-    <FlexContainer
-      padding="16px"
-      flexDirection="column"
-      backgroundColor="#232830"
-    >
+    <FlexContainer padding="16px" flexDirection="column">
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}
@@ -161,7 +157,7 @@ function BuySellPanel(props: Props) {
                 >
                   {meta.touched && meta.error && (
                     <ErropPopup
-                      textColor="#fff"
+                      textColor="#fffccc"
                       bgColor={ColorsPallete.RAZZMATAZZ}
                       classNameTooltip={Fields.AMOUNT}
                     >
@@ -197,9 +193,7 @@ function BuySellPanel(props: Props) {
                           true
                         )}
                       >
-                        <PrimaryTextSpan color="#fff" fontWeight="bold">
-                          +
-                        </PrimaryTextSpan>
+                        <PrimaryTextSpan fontWeight="bold">+</PrimaryTextSpan>
                       </PlusButton>
                       <MinusButton
                         onClick={handleChangeInputAmount(
@@ -207,9 +201,7 @@ function BuySellPanel(props: Props) {
                           values.investmentAmount
                         )}
                       >
-                        <PrimaryTextSpan color="#fff" fontWeight="bold">
-                          -
-                        </PrimaryTextSpan>
+                        <PrimaryTextSpan fontWeight="bold">-</PrimaryTextSpan>
                       </MinusButton>
                     </PlusMinusButtonWrapper>
                   </FlexContainer>

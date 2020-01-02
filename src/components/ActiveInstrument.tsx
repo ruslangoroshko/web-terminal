@@ -1,13 +1,14 @@
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import baseImg from '../assets/images/base.png';
 import quoteImg from '../assets/images/quote.png';
-import ColorsPallete from '../styles/colorPallete';
 import { AskBidEnum } from '../enums/AskBid';
 import calculateGrowth from '../helpers/calculateGrowth';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { useStores } from '../hooks/useStores';
+import { Observer } from 'mobx-react-lite';
+import { PrimaryTextSpan, QuoteText } from '../styles/TextsElements';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -18,17 +19,7 @@ const ActiveInstrument: FC<Props> = props => {
 
   const { quotesStore } = useStores();
 
-  // const quote = quotesStore.quotes[instrument.id] || {
-  //   ask: {
-  //     c: 0,
-  //   },
-  //   bid: {
-  //     c: 0,
-  //   },
-  // };
-
-  const quote = quotesStore.quotesList.find(q => q.id === instrument.id);
-  return quote ? (
+  return quotesStore.quotes[instrument.id] ? (
     <FlexContainer>
       <FlexContainer
         height="60px"
@@ -44,35 +35,85 @@ const ActiveInstrument: FC<Props> = props => {
         </QuoteImgWrapper>
       </FlexContainer>
       <FlexContainer flexDirection="column" margin="0 52px 0 0">
-        <ActiveInstrumentTitle>{instrument.name}</ActiveInstrumentTitle>
-        <ActiveInstrumentFullTitle>{instrument.name}</ActiveInstrumentFullTitle>
+        <PrimaryTextSpan
+          fontWeight="bold"
+          fontSize="16px"
+          textTransform="uppercase"
+          marginBottom="4px"
+        >
+          {instrument.name}
+        </PrimaryTextSpan>
+        <PrimaryTextSpan
+          fontSize="12px"
+          color="rgba(255, 255, 255, 0.4)"
+          marginBottom="8px"
+        >
+          {instrument.name}
+        </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column" margin="0 70px 0 0">
         <FlexContainer margin="0 0 12px" alignItems="center">
-          <BidText>{quote.bid.c}</BidText>
-          <GrowthText isGrowth={quote.dir === AskBidEnum.Buy}>
-            {`${quote.dir === AskBidEnum.Buy ? '+' : '-'}${calculateGrowth(
-              quote.bid.c,
-              quote.ask.c,
-              instrument.digits
-            )}`}
-          </GrowthText>
+          <Observer>
+            {() => (
+              <>
+                <PrimaryTextSpan
+                  fontWeight="bold"
+                  fontSize="16px"
+                  marginRight="10px"
+                >
+                  {quotesStore.quotes[instrument.id].bid.c}
+                </PrimaryTextSpan>
+                <QuoteText
+                  fontSize="12px"
+                  isGrowth={
+                    quotesStore.quotes[instrument.id].dir === AskBidEnum.Buy
+                  }
+                >
+                  {`${
+                    quotesStore.quotes[instrument.id].dir === AskBidEnum.Buy
+                      ? '+'
+                      : '-'
+                  }${calculateGrowth(
+                    quotesStore.quotes[instrument.id].bid.c,
+                    quotesStore.quotes[instrument.id].ask.c,
+                    instrument.digits
+                  )}`}
+                </QuoteText>
+              </>
+            )}
+          </Observer>
         </FlexContainer>
         <FlexContainer flexWrap="wrap">
           <FlexContainer margin="0 0 4px 0" width="100%">
             <LabelWrapper>
-              <SecondaryTextLabel>Bid</SecondaryTextLabel>
+              <PrimaryTextSpan fontSize="12px" color="rgba(255, 255, 255, 0.4)">
+                Bid
+              </PrimaryTextSpan>
             </LabelWrapper>
             <LabelWrapper>
-              <PrimaryTextValue>{quote.bid.c}</PrimaryTextValue>
+              <Observer>
+                {() => (
+                  <PrimaryTextSpan fontSize="12px">
+                    {quotesStore.quotes[instrument.id].bid.c}
+                  </PrimaryTextSpan>
+                )}
+              </Observer>
             </LabelWrapper>
           </FlexContainer>
           <FlexContainer>
             <LabelWrapper>
-              <SecondaryTextLabel>Ask</SecondaryTextLabel>
+              <PrimaryTextSpan fontSize="12px" color="rgba(255, 255, 255, 0.4)">
+                Ask
+              </PrimaryTextSpan>
             </LabelWrapper>
             <LabelWrapper>
-              <PrimaryTextValue>{quote.ask.c}</PrimaryTextValue>
+              <Observer>
+                {() => (
+                  <PrimaryTextSpan fontSize="12px">
+                    {quotesStore.quotes[instrument.id].ask.c}
+                  </PrimaryTextSpan>
+                )}
+              </Observer>
             </LabelWrapper>
           </FlexContainer>
         </FlexContainer>
@@ -113,52 +154,7 @@ const QuoteImgWrapper = styled(FlexContainer)`
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
 `;
 
-const ActiveInstrumentTitle = styled.span`
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 19px;
-  text-transform: uppercase;
-  color: #ffffff;
-  margin-bottom: 4px;
-`;
-
-const ActiveInstrumentFullTitle = styled.span`
-  font-size: 12px;
-  line-height: 14px;
-  color: #ffffff;
-  margin-bottom: 8px;
-  opacity: 0.4;
-`;
-
-const BidText = styled.span`
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 19px;
-  color: #ffffff;
-  margin-right: 10px;
-`;
-
-const GrowthText = styled.span<{ isGrowth: boolean }>`
-  font-size: 12px;
-  line-height: 14px;
-  color: ${props =>
-    props.isGrowth ? ColorsPallete.MINT : ColorsPallete.RAZZMATAZZ};
-`;
-
 const LabelWrapper = styled.div`
   width: 22px;
   margin-right: 8px;
-`;
-
-const SecondaryTextLabel = styled.span`
-  font-size: 12px;
-  line-height: 14px;
-  color: #ffffff;
-  opacity: 0.4;
-`;
-
-const PrimaryTextValue = styled.span`
-  font-size: 12px;
-  line-height: 14px;
-  color: #ffffff;
 `;

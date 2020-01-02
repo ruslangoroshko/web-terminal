@@ -4,9 +4,8 @@ import RouteWrapper from '../components/RouteWrapper';
 import { useLocation } from 'react-router-dom';
 import AuthorizedContainer from '../containers/AuthorizedContainer';
 import { FlexContainer } from '../styles/FlexContainer';
-import { observer } from 'mobx-react-lite';
 
-const RoutingLayout = observer(() => {
+const RoutingLayout = () => {
   const location = useLocation();
 
   const allRoutes = routesList.map(route => (
@@ -39,6 +38,6 @@ const RoutingLayout = observer(() => {
         </FlexContainer>
       );
   }
-});
+};
 
 export default RoutingLayout;

@@ -46,12 +46,11 @@ const RelativeWrapper = styled(FlexContainer)<
   transition: max-width 0.2s ease-in;
   backface-visibility: hidden;
   will-change: max-width, width;
-  background: radial-gradient(
-      100% 100% at 100% 0%,
-      rgba(186, 213, 255, 0.096) 0%,
-      rgba(186, 213, 255, 0) 100%
-    ),
-    #232830;
+  background: linear-gradient(
+    270deg,
+    rgba(0, 0, 0, 0.16) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
 `;
 
 const IconButton = styled(ButtonWithoutStyles)`

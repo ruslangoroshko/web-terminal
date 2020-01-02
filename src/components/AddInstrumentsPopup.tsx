@@ -1,41 +1,112 @@
-import React, { FC } from 'react';
-import { observer } from 'mobx-react-lite';
+import React, { FC, ChangeEvent, useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import IconSearch from '../assets/svg/icon-instrument-search.svg';
 import IconClose from '../assets/svg/icon-instrument-close.svg';
+import IconMarketsTop from '../assets/svg/icon-instrument-markets-top.svg';
+import IconMarketsFiat from '../assets/svg/icon-instrument-markets-fiat.svg';
+import IconMarketsStocks from '../assets/svg/icon-instrument-markets-stocks.svg';
+import IconMarketsCrypto from '../assets/svg/icon-instrument-markets-crypto.svg';
 import SvgIcon from './SvgIcon';
+import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
+import { PrimaryTextSpan } from '../styles/TextsElements';
+import { InstrumentModelWSDTO } from '../types/Instruments';
+import InstrumentRow from './InstrumentRow';
 
-interface Props {}
+interface Props {
+  toggle: () => void;
+  instruments: InstrumentModelWSDTO[];
+}
 
-const AddInstrumentsPopup: FC<Props> = observer(props => {
-  const {} = props;
+const AddInstrumentsPopup: FC<Props> = props => {
+  const { toggle, instruments } = props;
+
+  const [filteredInstruments, setInstruments] = useState(instruments);
+
+  const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    const searchValue = e.target.value.toLowerCase();
+    setInstruments(
+      instruments.filter(
+        item => !searchValue || item.id.toLowerCase().includes(searchValue)
+      )
+    );
+  };
 
   return (
     <AddInstrumentsPopupWrapper
       width="320px"
-      position="relative"
+      position="absolute"
       alignItems="center"
       flexDirection="column"
+      top="0"
+      left="0"
     >
-      <FlexContainer padding="12px 12px 0 20px" margin="0 0 20px 0" width="100%">
+      <FlexContainer
+        padding="12px 12px 0 20px"
+        margin="0 0 20px 0"
+        width="100%"
+      >
         <FlexContainer margin="0 6px 0 0">
           <SvgIcon {...IconSearch} fill="rgba(255, 255, 255, 0.5)"></SvgIcon>
         </FlexContainer>
-        <SearchInput />
+        <SearchInput onChange={handleChangeSearch} />
         <FlexContainer>
-          <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.5)"></SvgIcon>
+          <ButtonWithoutStyles onClick={toggle}>
+            <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.5)"></SvgIcon>
+          </ButtonWithoutStyles>
         </FlexContainer>
+      </FlexContainer>
+      <FlexContainer margin="0 0 8px 0">
+        <FlexContainer margin="0 20px 0 0">
+          <FlexContainer margin="0 4px 0 0">
+            <SvgIcon {...IconMarketsTop} fill="#fff" />
+          </FlexContainer>
+          <PrimaryTextSpan fontSize="12px" lineHeight="14px" color="#fff">
+            Top
+          </PrimaryTextSpan>
+        </FlexContainer>
+        <FlexContainer margin="0 20px 0 0">
+          <FlexContainer margin="0 4px 0 0">
+            <SvgIcon {...IconMarketsStocks} fill="#fff" />
+          </FlexContainer>
+          <PrimaryTextSpan fontSize="12px" lineHeight="14px" color="#fff">
+            Stocks
+          </PrimaryTextSpan>
+        </FlexContainer>
+        <FlexContainer margin="0 20px 0 0">
+          <FlexContainer margin="0 4px 0 0">
+            <SvgIcon {...IconMarketsFiat} fill="#fff" />
+          </FlexContainer>
+          <PrimaryTextSpan fontSize="12px" lineHeight="14px" color="#fff">
+            Fiat
+          </PrimaryTextSpan>
+        </FlexContainer>
+        <FlexContainer>
+          <FlexContainer margin="0 4px 0 0">
+            <SvgIcon {...IconMarketsCrypto} fill="#fff" />
+          </FlexContainer>
+          <PrimaryTextSpan fontSize="12px" lineHeight="14px" color="#fff">
+            Crypto
+          </PrimaryTextSpan>
+        </FlexContainer>
+      </FlexContainer>
+      <FlexContainer padding="16px" flexDirection="column" width="100%">
+        {filteredInstruments.map(instrument => (
+          <InstrumentRow
+            key={instrument.id}
+            instrument={instrument}
+          ></InstrumentRow>
+        ))}
       </FlexContainer>
     </AddInstrumentsPopupWrapper>
   );
-});
+};
 
 export default AddInstrumentsPopup;
 
 const AddInstrumentsPopupWrapper = styled(FlexContainer)`
-  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.25),
-    0px 6px 12px rgba(28, 33, 33, 0.24);
+  box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.09),
+    0px 8px 16px rgba(37, 38, 54, 0.24);
   backdrop-filter: blur(12px);
   border-radius: 2px;
 
@@ -47,7 +118,7 @@ const AddInstrumentsPopupWrapper = styled(FlexContainer)`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(11, 14, 19, 0.61);
+    background-color: rgba(0, 0, 0, 0.34);
   }
 `;
 
@@ -62,6 +133,7 @@ const SearchInput = styled.input`
   color: white;
   font-size: 12px;
   line-height: 14px;
+  transition: border-bottom 0.2s ease;
 
   &:focus {
     content: '';

@@ -28,7 +28,6 @@ const NavBar: FC<Props> = observer(props => {
       height="48px"
       position="sticky"
       top="0"
-      backgroundColor={ColorsPallete.BLUE_STONE}
       justifyContent="space-between"
       zIndex="105"
     >

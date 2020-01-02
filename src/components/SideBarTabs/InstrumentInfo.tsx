@@ -47,15 +47,14 @@ const InstrumentInfo: FC<Props> = observer(props => {
 
   const { quotesStore, mainAppStore } = useStores();
 
-  const symbol = mainAppStore.account?.symbol;
-
-  const quote = quotesStore.quotes[instrument];
   const PnL = calculateFloatingProfitAndLoss({
     investment: investmentAmount,
     leverage: multiplier,
     costs: swap + commission,
     side: isBuy ? 1 : -1,
-    currentPrice: isBuy ? quote.bid.c : quote.ask.c,
+    currentPrice: isBuy
+      ? quotesStore.quotes[instrument].bid.c
+      : quotesStore.quotes[instrument].ask.c,
     openPrice: openPrice,
   });
 
@@ -86,12 +85,11 @@ const InstrumentInfo: FC<Props> = observer(props => {
       </FlexContainer>
       <FlexContainer flexDirection="column" alignItems="flex-end">
         <PrimaryTextSpan
-          color="#ffffff"
           marginBottom="4px"
           fontSize="12px"
           lineHeight="14px"
         >
-          {symbol}
+          {mainAppStore.account?.symbol}
           {investmentAmount}
         </PrimaryTextSpan>
         <PrimaryTextSpan
@@ -110,7 +108,7 @@ const InstrumentInfo: FC<Props> = observer(props => {
           lineHeight="14px"
         >
           {PnL >= 0 ? '+' : '-'}
-          {symbol}
+          {mainAppStore.account?.symbol}
           {Math.abs(PnL)}
         </QuoteText>
         <PrimaryTextSpan
@@ -122,7 +120,7 @@ const InstrumentInfo: FC<Props> = observer(props => {
           {calculateInPercent(investmentAmount, PnL)}
         </PrimaryTextSpan>
         <SetSLTPButton>
-          <PrimaryTextSpan color="#fff" fontSize="12px" lineHeight="14px">
+          <PrimaryTextSpan fontSize="12px" lineHeight="14px">
             Set SL/TP
           </PrimaryTextSpan>
         </SetSLTPButton>
@@ -143,8 +141,7 @@ const InstrumentInfo: FC<Props> = observer(props => {
 
 export default InstrumentInfo;
 
-const InstrumentInfoWrapper = styled(FlexContainer)`
-`;
+const InstrumentInfoWrapper = styled(FlexContainer)``;
 
 const SetSLTPButton = styled(ButtonWithoutStyles)`
   border-radius: 3px;
