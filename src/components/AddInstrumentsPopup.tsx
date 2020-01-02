@@ -40,6 +40,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
       flexDirection="column"
       top="0"
       left="0"
+      zIndex="105"
     >
       <FlexContainer
         padding="12px 12px 0 20px"

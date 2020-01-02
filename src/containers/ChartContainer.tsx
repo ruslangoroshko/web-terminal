@@ -1,10 +1,9 @@
-import React, { FC, useEffect, useContext } from 'react';
+import React, { FC, useEffect } from 'react';
 import {
   ChartingLibraryWidgetOptions,
   LanguageCode,
   widget,
   SeriesStyle,
-  IChartingLibraryWidget,
 } from '../vendor/charting_library/charting_library.min';
 import { FlexContainer } from '../styles/FlexContainer';
 import DataFeedService from '../services/dataFeedService';
@@ -62,7 +61,6 @@ const ChartContainer: FC<IProps> = ({ intrument }) => {
       fullscreen: false,
       autosize: true,
       overrides: {
-        'mainSeriesProperties.showCountdown': true,
         'symbolWatermarkProperties.transparency': 90,
         'mainSeriesProperties.style': SeriesStyle.Area,
         'mainSeriesProperties.candleStyle.wickUpColor': '#336854',
@@ -71,16 +69,16 @@ const ChartContainer: FC<IProps> = ({ intrument }) => {
         'mainSeriesProperties.lineStyle.linestyle': LineStyles.LINESTYLE_SOLID,
         'mainSeriesProperties.lineStyle.linewidth': 3,
         'mainSeriesProperties.lineStyle.priceSource': 'close',
-        'mainSeriesProperties.areaStyle.color1': 'rgba(0, 224, 255, 0.12)',
-        'mainSeriesProperties.areaStyle.color2': 'rgba(0, 224, 255, 0.12)',
+        'mainSeriesProperties.areaStyle.color1': 'rgba(0, 255, 221, 0.08)',
+        'mainSeriesProperties.areaStyle.color2': 'rgba(0, 255, 221, 0.08)',
         'mainSeriesProperties.areaStyle.linecolor': ColorsPallete.MINT,
         'mainSeriesProperties.areaStyle.linestyle': LineStyles.LINESTYLE_SOLID,
         'mainSeriesProperties.areaStyle.linewidth': 3,
         'mainSeriesProperties.areaStyle.priceSource': 'close',
         'paneProperties.axisProperties.autoScale': false,
-        'paneProperties.vertGridProperties.color': '#353939',
+        'paneProperties.vertGridProperties.color': 'rgba(255, 255, 255, 0.08)',
         'paneProperties.vertGridProperties.style': LineStyles.LINESTYLE_DOTTED,
-        'paneProperties.horzGridProperties.color': '#353939',
+        'paneProperties.horzGridProperties.color': 'rgba(255, 255, 255, 0.08)',
         'paneProperties.horzGridProperties.style': LineStyles.LINESTYLE_DOTTED,
         'paneProperties.legendProperties.showStudyArguments': false,
         'paneProperties.legendProperties.showStudyTitles': false,

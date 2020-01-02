@@ -16,6 +16,10 @@ const API_LIST = {
   PRICE_HISTORY: {
     CANDLES: '/api/v1/PriceHistory/Candles',
   },
+  KEY_VALUE: {
+    GET: '/api/v1/KeyValue',
+    POST: '/api/v1/KeyValue',
+  },
 };
 
 Object.freeze(API_LIST);

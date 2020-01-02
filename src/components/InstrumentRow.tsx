@@ -12,6 +12,7 @@ import { Observer } from 'mobx-react-lite';
 import IconMarketsFavourites from '../assets/svg/icon-instrument-favourites.svg';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
+import { toggleFavouriteInstrument } from '../helpers/activeInstrumentsHelper';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -20,11 +21,20 @@ interface Props {
 const InstrumentRow: FC<Props> = props => {
   const { instrument } = props;
 
-  const { quotesStore } = useStores();
+  const { quotesStore, instrumentsStore } = useStores();
+
+  const toggleFavourite = () => {
+    toggleFavouriteInstrument({ instrumentsStore, newId: instrument.id });
+  };
 
   return (
     <InstrumentRowWrapper key={instrument.id} alignItems="center">
-      <FlexContainer margin="0 8px 0 0" position="relative" width="32px" height="32px">
+      <FlexContainer
+        margin="0 8px 0 0"
+        position="relative"
+        width="32px"
+        height="32px"
+      >
         <BaseImgWrapper>
           <img src={baseImg} width={16}></img>
         </BaseImgWrapper>
@@ -87,8 +97,19 @@ const InstrumentRow: FC<Props> = props => {
           )}
         </Observer>
       </FlexContainer>
-      <ButtonWithoutStyles>
-        <SvgIcon {...IconMarketsFavourites} fill="rgba(255, 255, 255, 0.5)" />
+      <ButtonWithoutStyles onClick={toggleFavourite}>
+        <Observer>
+          {() => (
+            <SvgIcon
+              {...IconMarketsFavourites}
+              fill={
+                instrumentsStore.activeInstrumentsIds.includes(instrument.id)
+                  ? '#FFFCCC'
+                  : 'rgba(255, 255, 255, 0.5)'
+              }
+            />
+          )}
+        </Observer>
       </ButtonWithoutStyles>
     </InstrumentRowWrapper>
   );

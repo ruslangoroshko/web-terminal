@@ -99,6 +99,27 @@ class API {
     }));
     return bars;
   };
+
+  getKeyValue = async (key: string) => {
+    const response = await axios.get<string>(
+      `${API_STRING}${API_LIST.KEY_VALUE.GET}`,
+      {
+        params: {
+          key,
+        },
+      }
+    );
+    return response.data;
+  };
+
+  setKeyValue = async (params: { key: string; value: string }) => {
+    const formData = this.convertParamsToFormData(params);
+    const response = await axios.post<void>(
+      `${API_STRING}${API_LIST.KEY_VALUE.POST}`,
+      formData
+    );
+    return response.data;
+  };
 }
 
 export default new API();
