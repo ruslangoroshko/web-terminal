@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import MaskedInput from 'react-text-mask';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
-import IconShevronUp from '../../assets/svg/icon-shevron-up.svg';
-import IconShevronDown from '../../assets/svg/icon-shevron-down.svg';
+import IconShevronBuy from '../../assets/svg/icon-buy-sell-shevron-buy.svg';
+import IconShevronSell from '../../assets/svg/icon-buy-sell-shevron-sell.svg';
 import Toggle from '../Toggle';
 import AutoClosePopup from './AutoClosePopup';
 import PurchaseAtPopup from './PurchaseAtPopup';
@@ -115,11 +115,7 @@ function BuySellPanel(props: Props) {
   };
 
   return (
-    <FlexContainer
-      padding="16px"
-      flexDirection="column"
-      backgroundColor="#232830"
-    >
+    <FlexContainer padding="16px" flexDirection="column">
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}
@@ -161,7 +157,7 @@ function BuySellPanel(props: Props) {
                 >
                   {meta.touched && meta.error && (
                     <ErropPopup
-                      textColor="#fff"
+                      textColor="#fffccc"
                       bgColor={ColorsPallete.RAZZMATAZZ}
                       classNameTooltip={Fields.AMOUNT}
                     >
@@ -197,9 +193,7 @@ function BuySellPanel(props: Props) {
                           true
                         )}
                       >
-                        <PrimaryTextSpan color="#fff" fontWeight="bold">
-                          +
-                        </PrimaryTextSpan>
+                        <PrimaryTextSpan fontWeight="bold">+</PrimaryTextSpan>
                       </PlusButton>
                       <MinusButton
                         onClick={handleChangeInputAmount(
@@ -207,9 +201,7 @@ function BuySellPanel(props: Props) {
                           values.investmentAmount
                         )}
                       >
-                        <PrimaryTextSpan color="#fff" fontWeight="bold">
-                          -
-                        </PrimaryTextSpan>
+                        <PrimaryTextSpan fontWeight="bold">-</PrimaryTextSpan>
                       </MinusButton>
                     </PlusMinusButtonWrapper>
                   </FlexContainer>
@@ -382,13 +374,13 @@ function BuySellPanel(props: Props) {
                 )}
               >
                 <FlexContainer margin="0 8px 0 0">
-                  <SvgIcon {...IconShevronUp} fill="#003A38"></SvgIcon>
+                  <SvgIcon {...IconShevronBuy} fill="#003A38"></SvgIcon>
                 </FlexContainer>
                 Buy
               </ButtonBuy>
               <ButtonSell type="button" disabled={!isValid || isSubmitting}>
                 <FlexContainer margin="0 8px 0 0">
-                  <SvgIcon {...IconShevronDown} fill="#fff"></SvgIcon>
+                  <SvgIcon {...IconShevronSell} fill="#fff"></SvgIcon>
                 </FlexContainer>
                 Sell
               </ButtonSell>

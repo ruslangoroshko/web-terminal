@@ -31,7 +31,7 @@ const MainApp = () => {
           }
 
           body {
-            background-color: #232830;
+            background-color: #180923;
           }
         `}
       />

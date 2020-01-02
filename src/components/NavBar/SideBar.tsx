@@ -24,7 +24,6 @@ const SideBar = observer(() => {
       flexDirection="column"
       height="100%"
       width="60px"
-      backgroundColor="#232830"
       zIndex="104"
       position="relative"
     >

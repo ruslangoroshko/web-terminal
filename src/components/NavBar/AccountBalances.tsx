@@ -2,6 +2,7 @@ import React from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import ColorsPallete from '../../styles/colorPallete';
+import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
 
 interface Props {
   available: number;
@@ -17,32 +18,56 @@ function AccountBalances(props: Props) {
   return (
     <>
       <AmountWrapper>
-        <LabelText>Available:</LabelText>
-        <LabelValue>
+        <PrimaryTextSpan
+          marginRight="8px"
+          color="rgba(255, 255, 255, 0.4)"
+          fontSize="12px"
+        >
+          Available:
+        </PrimaryTextSpan>
+        <PrimaryTextSpan fontSize="12px">
           {symbol}
           {available.toFixed(2)}
-        </LabelValue>
+        </PrimaryTextSpan>
       </AmountWrapper>
       <AmountWrapper>
-        <LabelText>Invest:</LabelText>
-        <LabelValue>
+        <PrimaryTextSpan
+          marginRight="8px"
+          color="rgba(255, 255, 255, 0.4)"
+          fontSize="12px"
+        >
+          Invest:
+        </PrimaryTextSpan>
+        <PrimaryTextSpan fontSize="12px">
           {symbol}
           {invest.toFixed(2)}
-        </LabelValue>
+        </PrimaryTextSpan>
       </AmountWrapper>
       <AmountWrapper>
-        <LabelText>Profit:</LabelText>
-        <ProfitValue isGrowth={+profit >= 0}>
+        <PrimaryTextSpan
+          marginRight="8px"
+          color="rgba(255, 255, 255, 0.4)"
+          fontSize="12px"
+        >
+          Profit:
+        </PrimaryTextSpan>
+        <QuoteText isGrowth={+profit >= 0} fontSize="12px">
           {symbol}
           {profit.toFixed(2)}
-        </ProfitValue>
+        </QuoteText>
       </AmountWrapper>
       <AmountWrapper>
-        <LabelText>Total:</LabelText>
-        <LabelValue>
+        <PrimaryTextSpan
+          marginRight="8px"
+          color="rgba(255, 255, 255, 0.4)"
+          fontSize="12px"
+        >
+          Total:
+        </PrimaryTextSpan>
+        <PrimaryTextSpan fontSize="12px">
           {symbol}
           {total.toFixed(2)}
-        </LabelValue>
+        </PrimaryTextSpan>
       </AmountWrapper>
     </>
   );
@@ -55,23 +80,4 @@ const AmountWrapper = styled(FlexContainer)`
   &:last-of-type {
     margin-right: 0;
   }
-`;
-
-const LabelText = styled.span`
-  font-size: 12px;
-  line-height: 14px;
-  color: #ffffff;
-  opacity: 0.4;
-  margin-right: 8px;
-`;
-
-const LabelValue = styled.span`
-  font-size: 12px;
-  line-height: 14px;
-  color: #ffffff;
-`;
-
-const ProfitValue = styled(LabelValue)<{ isGrowth: boolean }>`
-  color: ${props =>
-    props.isGrowth ? '#3CFF8A' : ColorsPallete.WILD_WATERLEMON};
 `;

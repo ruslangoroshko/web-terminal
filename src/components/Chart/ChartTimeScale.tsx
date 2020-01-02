@@ -52,8 +52,7 @@ const ChartTimeScale: FC<Props> = props => {
 
 export default ChartTimeScale;
 
-const ChartTimeScaleWrapper = styled(FlexContainer)`
-`;
+const ChartTimeScaleWrapper = styled(FlexContainer)``;
 
 export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
   padding: 4px 12px;
@@ -65,15 +64,13 @@ export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
   font-size: 12px;
   line-height: 16px;
   text-transform: uppercase;
-  color: ${props =>
-    props.isActive ? ColorsPallete.EASTERN_BLUE : 'rgba(255, 255, 255, 0.6)'};
+  color: ${props => (props.isActive ? '#21B3A4' : 'rgba(255, 255, 255, 0.6)')};
   border: ${props => (props.isActive ? '1px solid #21B3A4' : 'none')};
-
-  background-color: ${props => props.isActive && '#1A1E22'};
+  backdrop-filter: blur(8px);
+  background-color: ${props => props.isActive && 'rgba(33, 179, 164, 0.04);'};
 
   &:hover {
-    background-color: ${ColorsPallete.BLUE_STONE};
+    background-color: rgba(33, 179, 164, 0.04);
     cursor: pointer;
   }
-
 `;

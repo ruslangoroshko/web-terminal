@@ -6,7 +6,6 @@ import { AskBidEnum } from '../enums/AskBid';
 
 interface IQuotesStore {
   quotes: BidAskKeyValueList;
-  quotesList: BidAskModelWSDTO[];
   activePositions: PositionModelWSDTO[];
   totalProfit: number;
   available: number;
@@ -18,7 +17,6 @@ interface IQuotesStore {
 
 export class QuotesStore implements IQuotesStore {
   @observable quotes: BidAskKeyValueList = {};
-  @observable quotesList: BidAskModelWSDTO[] = [];
   @observable activePositions: PositionModelWSDTO[] = [];
   @observable totalProfit = 0;
   @observable available = 0;

@@ -4,6 +4,7 @@ import { createContext } from 'react';
 import { BuySellStore } from './BuySellStore';
 import { TabsStore } from './TabsStore';
 import { TradingViewStore } from './TradingViewStore';
+import { InstrumentsStore } from './InstrumentsStore';
 
 export const StoresContext = createContext({
   quotesStore: new QuotesStore(),
@@ -11,6 +12,7 @@ export const StoresContext = createContext({
   buySellStore: new BuySellStore(),
   tabsStore: new TabsStore(),
   tradingViewStore: new TradingViewStore(),
+  instrumentsStore: new InstrumentsStore(),
 });
 
 export type StoresContextType = typeof StoresContext;
