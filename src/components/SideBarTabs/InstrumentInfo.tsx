@@ -78,7 +78,10 @@ const InstrumentInfo: FC<Props> = observer(props => {
           <FlexContainer margin="0 4px 0 0">
             <SvgIcon {...Icon} fill={isBuy ? '#00FFDD' : '#ED145B'} />
           </FlexContainer>
-          <PrimaryTextSpan color={isBuy ? '#00FFDD' : '#ED145B'}>
+          <PrimaryTextSpan
+            fontSize="10px"
+            color={isBuy ? '#00FFDD' : '#ED145B'}
+          >
             {isBuy ? 'Buy' : 'Sell'}
           </PrimaryTextSpan>
         </FlexContainer>
@@ -87,7 +90,7 @@ const InstrumentInfo: FC<Props> = observer(props => {
           fontSize="10px"
           lineHeight="12px"
         >
-          Open {portfolioDateString(openDate)}
+          {portfolioDateString(openDate)}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column" alignItems="flex-end">
@@ -129,7 +132,7 @@ const InstrumentInfo: FC<Props> = observer(props => {
               {calculateInPercent(investmentAmount, PnL)}
             </PrimaryTextSpan>
           </FlexContainer>
-          <FlexContainer>
+          <FlexContainer alignItems="flex-start">
             <ButtonWithoutStyles>
               <InfoIcon
                 width="14px"
@@ -188,6 +191,6 @@ const InfoIcon = styled(FlexContainer)`
   font-size: 11px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.2);
-  color: white;
+  color: #fffccc;
   font-style: italic;
 `;

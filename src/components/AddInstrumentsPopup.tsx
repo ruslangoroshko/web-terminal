@@ -137,7 +137,7 @@ const SearchInput = styled.input`
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   margin-right: 2px;
   width: 100%;
-  color: white;
+  color: #fffccc;
   font-size: 12px;
   line-height: 14px;
   transition: border-bottom 0.2s ease;

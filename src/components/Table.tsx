@@ -72,6 +72,6 @@ export default Table;
 
 const TdDiv = styled.div`
   flex: 1;
-  color: white;
+  color: #fffccc;
   padding: 10px;
 `;
