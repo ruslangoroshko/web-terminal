@@ -7,34 +7,33 @@ import { AskBidEnum } from '../../enums/AskBid';
 import SvgIcon from '../SvgIcon';
 import IconShevronDown from '../../assets/svg/icon-shevron-logo-down.svg';
 import IconShevronUp from '../../assets/svg/icon-shevron-logo-up.svg';
-import IconClose from '../../assets/svg/icon-instrument-close.svg';
+import IconSettings from '../../assets/svg/icon-settings.svg';
 import test from '../../assets/images/test2.png';
 import { useStores } from '../../hooks/useStores';
 import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { portfolioDateString } from '../../helpers/portfolioDateString';
+import API from '../../helpers/API';
+import { PositionModelWSDTO } from '../../types/Positions';
+import { getProcessId } from '../../helpers/getProcessId';
 
 interface Props {
-  instrument: string;
-  operation: AskBidEnum;
-  multiplier: number;
-  investmentAmount: number;
-  openPrice: number;
-  openDate: number;
-  swap: number;
-  commission: number;
+  position: PositionModelWSDTO;
 }
 
 const InstrumentInfo: FC<Props> = observer(props => {
   const {
-    instrument,
-    investmentAmount,
-    multiplier,
-    openDate,
-    openPrice,
-    operation,
-    commission,
-    swap,
+    position: {
+      instrument,
+      investmentAmount,
+      multiplier,
+      openDate,
+      openPrice,
+      operation,
+      commission,
+      swap,
+      id,
+    },
   } = props;
 
   const isBuy = operation === AskBidEnum.Buy;
@@ -57,6 +56,14 @@ const InstrumentInfo: FC<Props> = observer(props => {
       : quotesStore.quotes[instrument].ask.c,
     openPrice: openPrice,
   });
+
+  const closePosition = () => {
+    API.closePosition({
+      accountId: mainAppStore.account!.id,
+      positionId: id,
+      processId: getProcessId(),
+    });
+  };
 
   return (
     <InstrumentInfoWrapper padding="8px 0" justifyContent="space-between">
@@ -84,11 +91,7 @@ const InstrumentInfo: FC<Props> = observer(props => {
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column" alignItems="flex-end">
-        <PrimaryTextSpan
-          marginBottom="4px"
-          fontSize="12px"
-          lineHeight="14px"
-        >
+        <PrimaryTextSpan marginBottom="4px" fontSize="12px" lineHeight="14px">
           {mainAppStore.account?.symbol}
           {investmentAmount}
         </PrimaryTextSpan>
@@ -100,40 +103,56 @@ const InstrumentInfo: FC<Props> = observer(props => {
           x{multiplier}
         </PrimaryTextSpan>
       </FlexContainer>
-      <FlexContainer flexDirection="column" alignItems="flex-end">
-        <QuoteText
-          isGrowth={PnL >= 0}
-          marginBottom="4px"
-          fontSize="12px"
-          lineHeight="14px"
-        >
-          {PnL >= 0 ? '+' : '-'}
-          {mainAppStore.account?.symbol}
-          {Math.abs(PnL)}
-        </QuoteText>
-        <PrimaryTextSpan
-          marginBottom="6px"
-          fontSize="10px"
-          lineHeight="12px"
-          color="rgba(255, 255, 255, 0.5)"
-        >
-          {calculateInPercent(investmentAmount, PnL)}
-        </PrimaryTextSpan>
-        <SetSLTPButton>
-          <PrimaryTextSpan fontSize="12px" lineHeight="14px">
-            Set SL/TP
-          </PrimaryTextSpan>
-        </SetSLTPButton>
-      </FlexContainer>
-      <FlexContainer flexDirection="column" justifyContent="space-between">
-        <ButtonWithoutStyles>
-          <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)" />
-        </ButtonWithoutStyles>
-        <ButtonWithoutStyles>
-          <InfoIcon width="14px" justifyContent="center" alignItems="center">
-            i
-          </InfoIcon>
-        </ButtonWithoutStyles>
+      <FlexContainer flexDirection="column">
+        <FlexContainer justifyContent="flex-end" margin="0 0 8px 0">
+          <FlexContainer
+            flexDirection="column"
+            alignItems="flex-end"
+            margin="0 8px 0 0"
+          >
+            <QuoteText
+              isGrowth={PnL >= 0}
+              marginBottom="4px"
+              fontSize="12px"
+              lineHeight="14px"
+            >
+              {PnL >= 0 ? '+' : '-'}
+              {mainAppStore.account?.symbol}
+              {Math.abs(PnL)}
+            </QuoteText>
+            <PrimaryTextSpan
+              marginBottom="6px"
+              fontSize="10px"
+              lineHeight="12px"
+              color="rgba(255, 255, 255, 0.5)"
+            >
+              {calculateInPercent(investmentAmount, PnL)}
+            </PrimaryTextSpan>
+          </FlexContainer>
+          <FlexContainer>
+            <ButtonWithoutStyles>
+              <InfoIcon
+                width="14px"
+                justifyContent="center"
+                alignItems="center"
+              >
+                i
+              </InfoIcon>
+            </ButtonWithoutStyles>
+          </FlexContainer>
+        </FlexContainer>
+        <FlexContainer>
+          <FlexContainer margin="0 8px 0 0">
+            <ButtonWithoutStyles>
+              <SvgIcon {...IconSettings} fill="rgba(255, 255, 255, 0.6)" />
+            </ButtonWithoutStyles>
+          </FlexContainer>
+          <SetSLTPButton onClick={closePosition}>
+            <PrimaryTextSpan fontSize="12px" lineHeight="14px">
+              Close
+            </PrimaryTextSpan>
+          </SetSLTPButton>
+        </FlexContainer>
       </FlexContainer>
     </InstrumentInfoWrapper>
   );
@@ -148,6 +167,7 @@ const SetSLTPButton = styled(ButtonWithoutStyles)`
   padding: 4px 8px;
   position: relative;
   overflow: hidden;
+  transition: background-color 0.2s ease;
 
   &:before {
     position: absolute;
@@ -157,6 +177,10 @@ const SetSLTPButton = styled(ButtonWithoutStyles)`
     left: 0;
     bottom: 0;
     background: rgba(255, 255, 255, 0.12);
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.12);
   }
 `;
 

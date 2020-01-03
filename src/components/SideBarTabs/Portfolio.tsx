@@ -116,7 +116,7 @@ const Portfolio: FC<Props> = props => {
         {() => (
           <ActivePositionsWrapper flexDirection="column">
             {quotesStore.activePositions.map(item => (
-              <InstrumentInfo key={item.id} {...item} />
+              <InstrumentInfo key={item.id} position={item} />
             ))}
           </ActivePositionsWrapper>
         )}

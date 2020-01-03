@@ -11,6 +11,7 @@ export class InstrumentsStore implements ContextProps {
   @observable instruments: InstrumentModelWSDTO[] = [];
   @observable activeInstrumentsIds: string[] = [];
   @observable activeInstrument?: InstrumentModelWSDTO;
+  @observable filteredInstrumentsSearch: InstrumentModelWSDTO[] = [];
 
   @computed get activeInstruments() {
     return this.instruments.filter(item =>

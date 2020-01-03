@@ -5,14 +5,11 @@ import { InstrumentModelWSDTO } from '../types/Instruments';
 import { FlexContainer } from '../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
+import { observer } from 'mobx-react-lite';
 
-interface Props {
-  instruments: InstrumentModelWSDTO[];
-}
+interface Props {}
 
-const InstrumentsScrollWrapper: FC<Props> = props => {
-  const { instruments } = props;
-
+const InstrumentsScrollWrapper: FC<Props> = observer(props => {
   const { instrumentsStore, tradingViewStore } = useStores();
 
   const handleRemoveInstrument = (itemId: string) => () => {
@@ -25,8 +22,8 @@ const InstrumentsScrollWrapper: FC<Props> = props => {
   };
 
   return (
-    <FlexContainer width="100%">
-      {instruments.map(item => (
+    <FlexContainer padding="0 8px">
+      {instrumentsStore.activeInstruments.map(item => (
         <Instrument
           instrument={item}
           key={item.id}
@@ -37,7 +34,7 @@ const InstrumentsScrollWrapper: FC<Props> = props => {
       ))}
     </FlexContainer>
   );
-};
+});
 
 export default InstrumentsScrollWrapper;
 

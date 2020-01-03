@@ -122,32 +122,21 @@ const Dashboard = observer(() => {
     <DashboardWrapper height="100%" width="100%" flexDirection="column">
       <FlexContainer flexDirection="column" margin="0 0 20px 0">
         <FlexContainer>
-          <InstrumentsScrollWrapper
-            instruments={instrumentsStore.activeInstruments}
-          ></InstrumentsScrollWrapper>
+          <InstrumentsScrollWrapper></InstrumentsScrollWrapper>
           <FlexContainer position="relative" alignItems="center">
-            <Observer>
-              {() => (
-                <Toggle>
-                  {({ on, toggle }) => (
-                    <>
-                      <AddIntrumentButton onClick={toggle}>
-                        <SvgIcon
-                          {...IconAddInstrument}
-                          fill="rgba(255, 255, 255, 0.6)"
-                        />
-                      </AddIntrumentButton>
-                      {on && (
-                        <AddInstrumentsPopup
-                          toggle={toggle}
-                          instruments={instrumentsStore.instruments}
-                        />
-                      )}
-                    </>
-                  )}
-                </Toggle>
+            <Toggle>
+              {({ on, toggle }) => (
+                <>
+                  <AddIntrumentButton onClick={toggle}>
+                    <SvgIcon
+                      {...IconAddInstrument}
+                      fill="rgba(255, 255, 255, 0.6)"
+                    />
+                  </AddIntrumentButton>
+                  {on && <AddInstrumentsPopup toggle={toggle} />}
+                </>
               )}
-            </Observer>
+            </Toggle>
           </FlexContainer>
         </FlexContainer>
         <ActiveInstrumentWrapper position="relative" padding="24px 20px">
@@ -211,9 +200,7 @@ export default Dashboard;
 const DashboardWrapper = styled(FlexContainer)``;
 
 const ActiveInstrumentWrapper = styled(FlexContainer)`
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-
-  &:before {
+  /* &:before {
     content: '';
     position: absolute;
     top: 0;
@@ -226,7 +213,7 @@ const ActiveInstrumentWrapper = styled(FlexContainer)`
       rgba(0, 0, 0, 0) 100%
     );
     opacity: 0.3;
-  }
+  } */
 `;
 
 const AddIntrumentButton = styled(ButtonWithoutStyles)`

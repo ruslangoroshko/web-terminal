@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent, useState } from 'react';
+import React, { FC, ChangeEvent, useState, useEffect } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import IconSearch from '../assets/svg/icon-instrument-search.svg';
@@ -10,27 +10,27 @@ import IconMarketsCrypto from '../assets/svg/icon-instrument-markets-crypto.svg'
 import SvgIcon from './SvgIcon';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { PrimaryTextSpan } from '../styles/TextsElements';
-import { InstrumentModelWSDTO } from '../types/Instruments';
 import InstrumentRow from './InstrumentRow';
+import { useStores } from '../hooks/useStores';
+import { Observer } from 'mobx-react-lite';
 
 interface Props {
   toggle: () => void;
-  instruments: InstrumentModelWSDTO[];
 }
 
 const AddInstrumentsPopup: FC<Props> = props => {
-  const { toggle, instruments } = props;
-
-  const [filteredInstruments, setInstruments] = useState(instruments);
+  const { toggle } = props;
+  const { instrumentsStore } = useStores();
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value.toLowerCase();
-    setInstruments(
-      instruments.filter(
-        item => !searchValue || item.id.toLowerCase().includes(searchValue)
-      )
+    instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments.filter(
+      item => !searchValue || item.id.toLowerCase().includes(searchValue)
     );
   };
+  useEffect(() => {
+    instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments;
+  }, []);
 
   return (
     <AddInstrumentsPopupWrapper
@@ -92,12 +92,18 @@ const AddInstrumentsPopup: FC<Props> = props => {
         </FlexContainer>
       </FlexContainer>
       <FlexContainer padding="16px" flexDirection="column" width="100%">
-        {filteredInstruments.map(instrument => (
-          <InstrumentRow
-            key={instrument.id}
-            instrument={instrument}
-          ></InstrumentRow>
-        ))}
+        <Observer>
+          {() => (
+            <>
+              {instrumentsStore.filteredInstrumentsSearch.map(instrument => (
+                <InstrumentRow
+                  key={instrument.id}
+                  instrument={instrument}
+                ></InstrumentRow>
+              ))}
+            </>
+          )}
+        </Observer>
       </FlexContainer>
     </AddInstrumentsPopupWrapper>
   );
