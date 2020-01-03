@@ -7,6 +7,7 @@ import favicon from './assets/images/favicon.ico';
 import RoutingLayout from './routing/RoutingLayout';
 import { Router, Switch } from 'react-router-dom';
 import { appHistory } from './routing/history';
+import { slickSliderStyles } from './styles/slickSlider';
 
 const MainApp = () => {
   injectInerceptors();
@@ -23,15 +24,17 @@ const MainApp = () => {
       </Router>
       <Global
         styles={css`
-          ${reboot};
           @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic,cyrillic-ext');
+          ${reboot};
+          ${slickSliderStyles};
           html {
             font-size: 14px;
             line-height: 1.4;
+            font-family: 'Roboto', sans-serif;
           }
 
           body {
-            background-color: #180923;
+            background-color: #1c2026;
           }
         `}
       />

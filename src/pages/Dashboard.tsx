@@ -6,7 +6,6 @@ import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import Topics from '../constants/websocketTopics';
 import { AccountModelWebSocketDTO } from '../types/Accounts';
 import Fields from '../constants/fields';
-import Instrument from '../components/Instrument';
 import TVChartContainer from '../containers/ChartContainer';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { PositionModelWSDTO } from '../types/Positions';
@@ -23,9 +22,8 @@ import { useStores } from '../hooks/useStores';
 import Toggle from '../components/Toggle';
 import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
 import { Observer, observer } from 'mobx-react-lite';
-import API from '../helpers/API';
-import KeysInApi from '../constants/keysInApi';
 import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
+import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -34,11 +32,6 @@ const Dashboard = observer(() => {
   const [resolution, setResolution] = useState(supportedResolutions[0]);
 
   const { quotesStore, instrumentsStore } = useStores();
-
-  const switchInstrument = (instrument: InstrumentModelWSDTO) => () => {
-    instrumentsStore.activeInstrument = instrument;
-    tradingViewStore.tradingWidget?.chart().setSymbol(instrument.id, () => {});
-  };
 
   const setTimeScale = (resolution: string) => {
     tradingViewStore.tradingWidget?.chart().setResolution(resolution, () => {
@@ -123,35 +116,15 @@ const Dashboard = observer(() => {
     }
   }, [mainAppStore.account]);
 
-  const handleRemoveInstrument = (itemId: string) => () => {
-    throw new Error(`handleRemoveInstrument ${itemId}`);
-  };
-
   return !mainAppStore.isLoading &&
     mainAppStore.account &&
     mainAppStore.activeSession ? (
     <DashboardWrapper height="100%" width="100%" flexDirection="column">
       <FlexContainer flexDirection="column" margin="0 0 20px 0">
         <FlexContainer>
-          <FlexContainer maxWidth="90%" overflow="hidden" flexWrap="wrap">
-            <Observer>
-              {() => (
-                <>
-                  {instrumentsStore.activeInstruments.map(item => (
-                    <Instrument
-                      instrument={item}
-                      key={item.id}
-                      isActive={
-                        item.id === instrumentsStore.activeInstrument?.id
-                      }
-                      handleClose={handleRemoveInstrument(item.id)}
-                      switchInstrument={switchInstrument(item)}
-                    />
-                  ))}
-                </>
-              )}
-            </Observer>
-          </FlexContainer>
+          <InstrumentsScrollWrapper
+            instruments={instrumentsStore.activeInstruments}
+          ></InstrumentsScrollWrapper>
           <FlexContainer position="relative" alignItems="center">
             <Observer>
               {() => (

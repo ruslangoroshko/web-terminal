@@ -4,18 +4,15 @@ import { InstrumentModelWSDTO } from '../types/Instruments';
 import Topics from '../constants/websocketTopics';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { BidAskModelWSDTO } from '../types/BidAsk';
-import {
-  QuotesFeedWrapper,
-  CurrencyQuoteTitle,
-  CurrencyQuoteInfo,
-} from '../styles/InstrumentComponentStyle';
 import IconClose from '../assets/svg/icon-instrument-close.svg';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
 import styled from '@emotion/styled';
 import { useStores } from '../hooks/useStores';
 import { observer, Observer } from 'mobx-react-lite';
-import { PrimaryTextSpan } from '../styles/TextsElements';
+import { PrimaryTextSpan, QuoteText } from '../styles/TextsElements';
+import calculateGrowth from '../helpers/calculateGrowth';
+import { AskBidEnum } from '../enums/AskBid';
 
 interface Props {
   switchInstrument: () => void;
@@ -49,71 +46,88 @@ const Instrument: FC<Props> = ({
   return (
     <QuotesFeedWrapper
       isActive={isActive}
-      padding="6px 8px"
+      padding="6px 0 6px 8px"
       onClick={switchInstrument}
-      width="200px"
-      height="28px"
+      width="128px"
+      height="40px"
       alignItems="center"
       justifyContent="space-between"
     >
-      <PrimaryTextSpan fontSize="12px">{instrument.name}</PrimaryTextSpan>
-      <FlexContainer alignItems="center">
-        {quotesStore.quotes[instrument.id] && (
-          <Observer>
-            {() => (
-              <PrimaryTextSpan fontSize="12px" color="rgba(255, 255, 255, 0.4)">
-                {quotesStore.quotes[instrument.id].bid.c}
-              </PrimaryTextSpan>
-            )}
-          </Observer>
-        )}
-        {/* TODO: check updates */}
+      <FlexContainer
+        height="24px"
+        width="24px"
+        position="relative"
+        margin="0 6px 0 0"
+      ></FlexContainer>
+      {quotesStore.quotes[instrument.id] && (
         <Observer>
-          {() => {
-            const positionsLength = quotesStore.activePositions.filter(
-              position => position.instrument === instrument.id
-            ).length;
-            return (
-              <>
-                {positionsLength > 0 && (
-                  <PositionsCounter
-                    justifyContent="center"
-                    alignItems="center"
-                    width="20px"
-                    height="16px"
-                    position="relative"
-                  >
-                    {positionsLength}
-                  </PositionsCounter>
+          {() => (
+            <FlexContainer margin="0 8px 0 0" flexDirection="column">
+              <PrimaryTextSpan fontSize="12px">
+                {instrument.name}
+              </PrimaryTextSpan>
+              <QuoteText
+                fontSize="11px"
+                lineHeight="14px"
+                isGrowth={
+                  quotesStore.quotes[instrument.id].dir === AskBidEnum.Buy
+                }
+              >
+                {calculateGrowth(
+                  quotesStore.quotes[instrument.id].bid.c,
+                  quotesStore.quotes[instrument.id].ask.c,
+                  mainAppStore.account?.digits
                 )}
-              </>
-            );
-          }}
+              </QuoteText>
+            </FlexContainer>
+          )}
         </Observer>
+      )}
+      <SmallBorderToCloseIcon padding="0 8px 0 0" isActive={isActive}>
         <ButtonWithoutStyles onClick={handleClose}>
           <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
         </ButtonWithoutStyles>
-      </FlexContainer>
+      </SmallBorderToCloseIcon>
     </QuotesFeedWrapper>
   );
 };
 
 export default Instrument;
 
-const PositionsCounter = styled(FlexContainer)`
-  font-size: 11px;
-  line-height: 14px;
-  color: #ffffff;
-  margin-right: 4px;
+const QuotesFeedWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
+  position: relative;
+  align-items: center;
+  box-shadow: ${props =>
+    props.isActive ? 'inset 0px 1px 0px #00ffdd' : 'none'};
+  border-radius: 0px 0px 3px 3px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease;
 
   &:before {
     content: '';
+    transition: background-color 0.2s ease;
     position: absolute;
     top: 0;
-    bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 2px;
+    bottom: 0;
+    background: ${props =>
+      props.isActive
+        ? 'radial-gradient(50.41% 50% at 50% 0%, rgba(0, 255, 221, 0.08) 0%, rgba(0, 255, 221, 0) 100%), rgba(255, 255, 255, 0.04)'
+        : 'none'};
   }
+
+  &:hover {
+    cursor: pointer;
+
+    &:before {
+      background-color: ${props =>
+        !props.isActive && 'rgba(255, 255, 255, 0.08)'};
+    }
+  }
+`;
+
+const SmallBorderToCloseIcon = styled(FlexContainer)<{ isActive?: boolean }>`
+  /* border-right: ${props =>
+    props.isActive ? 'none' : '1px solid rgba(0, 0, 0, 0.2)'}; */
 `;

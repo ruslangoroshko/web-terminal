@@ -3,6 +3,7 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import ColorsPallete from '../../styles/colorPallete';
 import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
+import { getNumberSign } from '../../helpers/getNumberSign';
 
 interface Props {
   available: number;
@@ -52,8 +53,9 @@ function AccountBalances(props: Props) {
           Profit:
         </PrimaryTextSpan>
         <QuoteText isGrowth={+profit >= 0} fontSize="12px">
+          {getNumberSign(profit)}
           {symbol}
-          {profit.toFixed(2)}
+          {Math.abs(profit).toFixed(2)}
         </QuoteText>
       </AmountWrapper>
       <AmountWrapper>

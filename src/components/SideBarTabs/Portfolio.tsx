@@ -52,7 +52,7 @@ const Portfolio: FC<Props> = props => {
           <Observer>
             {() => (
               <QuoteText
-                isGrowth={true}
+                isGrowth={quotesStore.profit >= 0}
                 fontSize="24px"
                 lineHeight="28px"
                 fontWeight="bold"
@@ -60,7 +60,7 @@ const Portfolio: FC<Props> = props => {
               >
                 {getNumberSign(quotesStore.profit)}
                 {mainAppStore.account?.symbol}
-                {quotesStore.profit.toFixed(2)}
+                {Math.abs(quotesStore.profit).toFixed(2)}
               </QuoteText>
             )}
           </Observer>
