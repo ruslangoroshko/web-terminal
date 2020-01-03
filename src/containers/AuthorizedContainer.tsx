@@ -123,5 +123,7 @@ const SideBarAndPageContentWrapper = styled(FlexContainer)`
       rgba(255, 252, 204, 0) 100%
     ),
     #252636;
-  border-top-left-radius: 4px;
+  box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  border-top-left-radius: 8px;
 `;

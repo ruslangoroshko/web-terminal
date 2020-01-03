@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
-import ColorsPallete from '../../styles/colorPallete';
-import monfexLogo from '../../assets/images/monfex-logo.png';
+import MonfexLogo from '../../assets/svg/logo-monfex.svg';
 import styled from '@emotion/styled';
 import SwitchThemeButton from './SwitchThemeButton';
 import NotificationsButton from './NotificationsButton';
@@ -12,12 +11,11 @@ import MoreButton from './MoreButton';
 import AccountBalances from './AccountBalances';
 import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
+import SvgIcon from '../SvgIcon';
 
 interface Props {}
 
 const NavBar: FC<Props> = observer(props => {
-  const {} = props;
-
   const { mainAppStore, quotesStore } = useStores();
 
   return (
@@ -32,7 +30,7 @@ const NavBar: FC<Props> = observer(props => {
       zIndex="105"
     >
       <FlexContainer alignItems="center">
-        <img src={monfexLogo} alt="" width="100%" />
+        <SvgIcon {...MonfexLogo} fill="#21B3A4" />
       </FlexContainer>
       <FlexContainer>
         <FlexContainer alignItems="center" margin="0 20px 0 0">

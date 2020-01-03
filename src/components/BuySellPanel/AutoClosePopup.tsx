@@ -188,7 +188,7 @@ const InfoIcon = styled(FlexContainer)`
   font-size: 11px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.2);
-  color: white;
+  color: #fffccc;
   font-style: italic;
 `;
 

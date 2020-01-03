@@ -41,7 +41,7 @@ const InvestAmountDropdown: FC<Props> = observer(props => {
           alignItems="center"
           onClick={handleChangeAmount(item)}
         >
-          <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="white">
+          <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="#fffccc">
             {symbol}
             {item}
           </PrimaryTextSpan>
@@ -59,7 +59,7 @@ const InvestAmountDropdown: FC<Props> = observer(props => {
         >
           Available Balance
         </PrimaryTextParagraph>
-        <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="white">
+        <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="#fffccc">
           {symbol}
           {quotesStore.available}
         </PrimaryTextSpan>

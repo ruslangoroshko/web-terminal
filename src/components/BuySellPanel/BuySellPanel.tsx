@@ -287,54 +287,7 @@ function BuySellPanel(props: Props) {
                 )}
               </Toggle>
             </FlexContainer>
-            <FlexContainer
-              justifyContent="space-between"
-              flexWrap="wrap"
-              margin="0 0 4px 0"
-            >
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                textTransform="uppercase"
-                opacity="0.3"
-              >
-                Purchase at
-              </PrimaryTextSpan>
-              <InfoIcon
-                justifyContent="center"
-                alignItems="center"
-                width="14px"
-                height="14px"
-              >
-                i
-              </InfoIcon>
-            </FlexContainer>
-            <FlexContainer position="relative">
-              <Toggle>
-                {({ on, toggle }) => (
-                  <>
-                    <ButtonAutoClosePurchase onClick={toggle} type="button">
-                      Set
-                    </ButtonAutoClosePurchase>
-                    {on && (
-                      <FlexContainer
-                        position="absolute"
-                        top="20px"
-                        right="100%"
-                      >
-                        <PurchaseAtPopup
-                          toggle={toggle}
-                          setFieldValue={setFieldValue}
-                          // @ts-ignore
-                          purchaseAtValue={values.purchaseAt}
-                          instrumentId={instrument.id}
-                        ></PurchaseAtPopup>
-                      </FlexContainer>
-                    )}
-                  </>
-                )}
-              </Toggle>
-            </FlexContainer>
+
             <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
               <PrimaryTextSpan
                 fontSize="11px"
@@ -385,6 +338,54 @@ function BuySellPanel(props: Props) {
                 Sell
               </ButtonSell>
             </FlexContainer>
+            <FlexContainer
+              justifyContent="space-between"
+              flexWrap="wrap"
+              margin="0 0 4px 0"
+            >
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                textTransform="uppercase"
+                opacity="0.3"
+              >
+                Purchase at
+              </PrimaryTextSpan>
+              <InfoIcon
+                justifyContent="center"
+                alignItems="center"
+                width="14px"
+                height="14px"
+              >
+                i
+              </InfoIcon>
+            </FlexContainer>
+            <FlexContainer position="relative">
+              <Toggle>
+                {({ on, toggle }) => (
+                  <>
+                    <ButtonAutoClosePurchase onClick={toggle} type="button">
+                      Set
+                    </ButtonAutoClosePurchase>
+                    {on && (
+                      <FlexContainer
+                        position="absolute"
+                        top="20px"
+                        right="100%"
+                      >
+                        <PurchaseAtPopup
+                          toggle={toggle}
+                          setFieldValue={setFieldValue}
+                          // @ts-ignore
+                          purchaseAtValue={values.purchaseAt}
+                          instrumentId={instrument.id}
+                        ></PurchaseAtPopup>
+                      </FlexContainer>
+                    )}
+                  </>
+                )}
+              </Toggle>
+            </FlexContainer>
           </CustomForm>
         )}
       </Formik>
@@ -426,7 +427,7 @@ const InfoIcon = styled(FlexContainer)`
   font-size: 11px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.2);
-  color: white;
+  color: #fffccc;
   font-style: italic;
 `;
 
@@ -448,6 +449,7 @@ const ButtonSell = styled(ButtonWithoutStyles)`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 18px;
 `;
 
 const ButtonBuy = styled(ButtonSell)`
