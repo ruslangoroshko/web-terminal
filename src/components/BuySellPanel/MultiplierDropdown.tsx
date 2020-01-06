@@ -52,7 +52,7 @@ function MultiplierDropdown(props: Props) {
                     fontWeight="bold"
                     color="#fffccc"
                   >
-                    x{multiplier}
+                    &times;{multiplier}
                   </PrimaryTextSpan>
                 </DropDownItem>
               ))}
