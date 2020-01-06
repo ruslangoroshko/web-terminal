@@ -70,13 +70,13 @@ const Dashboard = observer(() => {
             response.data.forEach(item => {
               quotesStore.setQuote({
                 ask: {
-                  c: item.ask,
+                  c: item.ask || 0,
                   h: 0,
                   l: 0,
                   o: 0,
                 },
                 bid: {
-                  c: item.bid,
+                  c: item.bid || 0,
                   h: 0,
                   l: 0,
                   o: 0,
@@ -174,7 +174,6 @@ const Dashboard = observer(() => {
                   ></BuySellPanel>
                 )}
               </BuySellPanelWrapper>
-
               <ChartInstruments justifyContent="space-between">
                 <ChartSettingsButtons></ChartSettingsButtons>
                 <ChartTimeScale

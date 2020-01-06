@@ -10,8 +10,10 @@ export interface InstrumentModelWSDTO {
   amountStepSize: number;
   maxPositionVolume: number;
   multiplier: number[];
-  bid: number;
-  ask: number;
+  bid?: number;
+  ask?: number;
+  tickSize?: number;
+  chng?: number;
 }
 
 interface DayOff {

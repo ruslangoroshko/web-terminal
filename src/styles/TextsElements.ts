@@ -14,6 +14,7 @@ interface PrimaryTextType {
 }
 
 export const PrimaryTextSpan = styled.span<PrimaryTextType>`
+  font-family: 'Roboto', sans-serif;
   font-style: ${props => props.fontStyle};
   font-weight: ${props => props.fontWeight || 'normal'};
   font-size: ${props => props.fontSize || '14px'};
@@ -27,6 +28,7 @@ export const PrimaryTextSpan = styled.span<PrimaryTextType>`
 `;
 
 export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
+  font-family: 'Roboto', sans-serif;
   font-style: ${props => props.fontStyle};
   font-weight: ${props => props.fontWeight};
   font-size: ${props => props.fontSize || '16px'};
@@ -42,6 +44,7 @@ export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
 export const QuoteText = styled(PrimaryTextSpan)<
   PrimaryTextType & { isGrowth?: boolean }
 >`
+  font-family: 'Roboto', sans-serif;
   font-style: ${props => props.fontStyle || 'normal'};
   font-weight: ${props => props.fontWeight || 'normal'};
   font-size: ${props => props.fontSize || '16px'};

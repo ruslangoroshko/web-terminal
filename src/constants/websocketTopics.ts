@@ -13,6 +13,7 @@ const Topics = {
   INIT: 'init',
   UNAUTHORIZED: 'unauthorized',
   UPDATE_ACTIVE_POSITION: 'updateactiveposition',
+  PRICE_CHANGE: 'pricechange',
 };
 
 Object.freeze(Topics);

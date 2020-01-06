@@ -10,6 +10,7 @@ interface OpenPositionModelInit {
   sl?: number;
   tpRate?: number;
   slRate?: number;
+  purchaseAt?: number;
 }
 export interface OpenPositionModel extends OpenPositionModelInit {
   investmentAmount: number;

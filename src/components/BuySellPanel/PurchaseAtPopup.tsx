@@ -12,11 +12,12 @@ import {
 import MaskedInput from 'react-text-mask';
 import Fields from '../../constants/fields';
 import { useStores } from '../../hooks/useStores';
+import { Observer } from 'mobx-react-lite';
 
 interface Props {
   toggle: () => void;
   setFieldValue: (field: any, value: any) => void;
-  purchaseAtValue: string;
+  purchaseAtValue?: number;
   instrumentId: string;
 }
 
@@ -114,7 +115,9 @@ function PurchaseAtPopup(props: Props) {
           fontSize="11px"
           lineHeight="12px"
         >
-          {quotesStore.quotes[instrumentId].bid.c}
+          <Observer>
+            {() => <>{quotesStore.quotes[instrumentId].bid.c}</>}
+          </Observer>
         </PrimaryTextSpan>
       </FlexContainer>
       <ButtonApply>Apply</ButtonApply>

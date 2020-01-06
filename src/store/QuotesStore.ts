@@ -20,12 +20,12 @@ export class QuotesStore implements IQuotesStore {
   @observable activePositions: PositionModelWSDTO[] = [];
   @observable totalProfit = 0;
   @observable available = 0;
-
+  
   @action
   setQuote = (quote: BidAskModelWSDTO) => {
     this.quotes[quote.id] = quote;
   };
-  
+
   @computed
   get profit() {
     return this.activePositions.reduce(

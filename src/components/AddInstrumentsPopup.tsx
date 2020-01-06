@@ -91,7 +91,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
           </PrimaryTextSpan>
         </FlexContainer>
       </FlexContainer>
-      <FlexContainer padding="16px" flexDirection="column" width="100%">
+      <FlexContainer padding="16px" flexDirection="column" width="100%" height="320px">
         <Observer>
           {() => (
             <>

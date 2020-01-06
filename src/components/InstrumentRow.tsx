@@ -83,15 +83,7 @@ const InstrumentRow: FC<Props> = props => {
                 fontSize="12px"
                 lineHeight="14px"
               >
-                {`${
-                  quotesStore.quotes[instrument.id].dir === AskBidEnum.Buy
-                    ? '+'
-                    : '-'
-                }${calculateGrowth(
-                  quotesStore.quotes[instrument.id].bid.c,
-                  quotesStore.quotes[instrument.id].ask.c,
-                  instrument.digits
-                )}`}
+                {instrument.chng}
               </QuoteText>
             </>
           )}
