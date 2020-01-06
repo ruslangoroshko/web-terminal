@@ -118,7 +118,7 @@ function BuySellPanel(props: Props) {
         enableReinitialize
       >
         {({ isSubmitting, isValid, setFieldValue, values, submitForm }) => (
-          <CustomForm>
+          <CustomForm autoComplete="off">
             <FlexContainer
               justifyContent="space-between"
               flexWrap="wrap"

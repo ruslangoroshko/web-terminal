@@ -8,7 +8,7 @@ import {
 } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
-import InstrumentInfo from './InstrumentInfo';
+import InstrumentInfoPortfolioTab from './InstrumentInfo';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { Observer } from 'mobx-react-lite';
 
@@ -116,7 +116,7 @@ const Portfolio: FC<Props> = props => {
         {() => (
           <ActivePositionsWrapper flexDirection="column">
             {quotesStore.activePositions.map(item => (
-              <InstrumentInfo key={item.id} position={item} />
+              <InstrumentInfoPortfolioTab key={item.id} position={item} />
             ))}
           </ActivePositionsWrapper>
         )}
