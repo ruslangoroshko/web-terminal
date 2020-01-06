@@ -21,7 +21,7 @@ interface Props {
   position: PositionModelWSDTO;
 }
 
-const InstrumentInfo: FC<Props> = observer(props => {
+const InstrumentInfoPortfolioTab: FC<Props> = observer(props => {
   const {
     position: {
       instrument,
@@ -74,7 +74,7 @@ const InstrumentInfo: FC<Props> = observer(props => {
         <PrimaryTextSpan fontSize="12px" lineHeight="14px" marginBottom="2px">
           {instrument}
         </PrimaryTextSpan>
-        <FlexContainer margin="0 0 12px 0">
+        <FlexContainer margin="0 0 12px 0" alignItems="center">
           <FlexContainer margin="0 4px 0 0">
             <SvgIcon {...Icon} fill={isBuy ? '#00FFDD' : '#ED145B'} />
           </FlexContainer>
@@ -103,7 +103,7 @@ const InstrumentInfo: FC<Props> = observer(props => {
           fontSize="10px"
           lineHeight="12px"
         >
-          x{multiplier}
+          &times;{multiplier}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column">
@@ -161,7 +161,7 @@ const InstrumentInfo: FC<Props> = observer(props => {
   );
 });
 
-export default InstrumentInfo;
+export default InstrumentInfoPortfolioTab;
 
 const InstrumentInfoWrapper = styled(FlexContainer)``;
 
