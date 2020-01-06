@@ -1,11 +1,12 @@
 import * as signalR from '@aspnet/signalr';
+import { MessagePackHubProtocol } from '@aspnet/signalr-protocol-msgpack';
 
 const initConnection = (connectionString: string) => {
   const connection = new signalR.HubConnectionBuilder()
     .withUrl(connectionString)
-    // .withUrl(connectionString, {
-    //   accessTokenFactory: () => token,
-    // })
+    .withHubProtocol(
+      IS_LIVE ? new MessagePackHubProtocol() : new signalR.JsonHubProtocol()
+    )
     .build();
   return connection;
 };

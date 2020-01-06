@@ -26,8 +26,8 @@ function MultiplierDropdown(props: Props) {
       {({ on, toggle }) => (
         <FlexContainer position="relative" margin="0 0 14px 0">
           <MultiplierButton isActive={on} onClick={toggle} type="button">
-            <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="#fffccc">
-              x{selectedMultiplier}
+            <PrimaryTextSpan fontWeight="bold" color="#fffccc">
+              &times;{selectedMultiplier}
             </PrimaryTextSpan>
           </MultiplierButton>
           {on && (

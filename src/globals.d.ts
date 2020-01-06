@@ -18,5 +18,6 @@ declare const WS_HOST: string;
 declare const API_STRING: string;
 declare const AUTH_TOKEN: string;
 declare const CHARTING_LIBRARY_PATH: string;
+declare const IS_LIVE: string;
 
-declare module 'react-tradingview-widget';
+// declare module 'react-tradingview-widget';

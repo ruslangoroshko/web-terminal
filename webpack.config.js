@@ -92,6 +92,7 @@ module.exports = (env, argv) => {
           argv.mode === 'production'
             ? JSON.stringify('./charting_library/')
             : JSON.stringify('./src/vendor/charting_library/'),
+        IS_LIVE: argv.mode === 'production',
       }),
       new CopyPlugin([
         { from: './src/vendor/charting_library/', to: 'charting_library' },

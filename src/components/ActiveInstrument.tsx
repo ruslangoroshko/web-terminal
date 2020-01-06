@@ -91,13 +91,11 @@ const ActiveInstrument: FC<Props> = props => {
               </PrimaryTextSpan>
             </LabelWrapper>
             <LabelWrapper>
-              <Observer>
-                {() => (
-                  <PrimaryTextSpan fontSize="12px">
-                    {quotesStore.quotes[instrument.id].bid.c}
-                  </PrimaryTextSpan>
-                )}
-              </Observer>
+              <PrimaryTextSpan fontSize="12px">
+                <Observer>
+                  {() => <>{quotesStore.quotes[instrument.id].bid.c}</>}
+                </Observer>
+              </PrimaryTextSpan>
             </LabelWrapper>
           </FlexContainer>
           <FlexContainer>
@@ -107,13 +105,11 @@ const ActiveInstrument: FC<Props> = props => {
               </PrimaryTextSpan>
             </LabelWrapper>
             <LabelWrapper>
-              <Observer>
-                {() => (
-                  <PrimaryTextSpan fontSize="12px">
-                    {quotesStore.quotes[instrument.id].ask.c}
-                  </PrimaryTextSpan>
-                )}
-              </Observer>
+              <PrimaryTextSpan fontSize="12px">
+                <Observer>
+                  {() => <>{quotesStore.quotes[instrument.id].ask.c}</>}
+                </Observer>
+              </PrimaryTextSpan>
             </LabelWrapper>
           </FlexContainer>
         </FlexContainer>

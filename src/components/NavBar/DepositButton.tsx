@@ -14,9 +14,8 @@ function DepositButton(props: Props) {
 export default DepositButton;
 
 const ButtonWrapper = styled(ButtonWithoutStyles)`
-  background: linear-gradient(0deg, #21b3a4, #21b3a4);
+  background: linear-gradient(0deg, #00FFF2, #00FFF2);
   padding: 4px 16px;
-  color: ${ColorsPallete.DEEP_TEAL};
   border-radius: 4px;
   font-weight: bold;
   font-size: 12px;

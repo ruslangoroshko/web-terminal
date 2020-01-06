@@ -27,6 +27,7 @@ import ColorsPallete from '../../styles/colorPallete';
 import ErropPopup from '../ErropPopup';
 import MultiplierDropdown from './MultiplierDropdown';
 import InvestAmountDropdown from './InvestAmountDropdown';
+import { Observer } from 'mobx-react-lite';
 
 interface Props {
   currencySymbol: string;
@@ -99,19 +100,13 @@ function BuySellPanel(props: Props) {
     return +values.investmentAmount;
   };
 
-  const calculateSpread = () => {
-    return Math.abs(
-      quotesStore.quotes[instrument.id].bid.c -
-        quotesStore.quotes[instrument.id].ask.c
-    ).toFixed(digits);
-  };
-
   const handleChangeInputAmount = (
     setFieldValue: any,
     value: any,
     increase = false
   ) => () => {
-    setFieldValue(Fields.AMOUNT, increase ? +value + 1 : +value - 1);
+    const newValue = increase ? +value + 1 : +value - 1;
+    setFieldValue(Fields.AMOUNT, newValue);
   };
 
   return (
@@ -187,6 +182,7 @@ function BuySellPanel(props: Props) {
                     ></MaskedInput>
                     <PlusMinusButtonWrapper flexDirection="column">
                       <PlusButton
+                        type="button"
                         onClick={handleChangeInputAmount(
                           setFieldValue,
                           values.investmentAmount,
@@ -196,6 +192,7 @@ function BuySellPanel(props: Props) {
                         <PrimaryTextSpan fontWeight="bold">+</PrimaryTextSpan>
                       </PlusButton>
                       <MinusButton
+                        type="button"
                         onClick={handleChangeInputAmount(
                           setFieldValue,
                           values.investmentAmount
@@ -262,13 +259,18 @@ function BuySellPanel(props: Props) {
                 {({ on, toggle }) => (
                   <>
                     <ButtonAutoClosePurchase onClick={toggle} type="button">
-                      {values.sl || values.slRate || values.tp || values.tpRate
-                        ? `+${currencySymbol}${values.tp ||
-                            values.tpRate ||
-                            'Non Set'} -${currencySymbol}${values.sl ||
-                            values.slRate ||
-                            'Non Set'}`
-                        : 'Set'}
+                      <PrimaryTextSpan color="#fffccc">
+                        {values.sl ||
+                        values.slRate ||
+                        values.tp ||
+                        values.tpRate
+                          ? `+${currencySymbol}${values.tp ||
+                              values.tpRate ||
+                              'Non Set'} -${currencySymbol}${values.sl ||
+                              values.slRate ||
+                              'Non Set'}`
+                          : 'Set'}
+                      </PrimaryTextSpan>
                     </ButtonAutoClosePurchase>
                     {on && (
                       <FlexContainer
@@ -311,10 +313,17 @@ function BuySellPanel(props: Props) {
               >
                 Spread
               </PrimaryTextSpan>
-              <ValueText>
-                {currencySymbol}
-                {calculateSpread()}
-              </ValueText>
+              <Observer>
+                {() => (
+                  <ValueText>
+                    {currencySymbol}
+                    {Math.abs(
+                      quotesStore.quotes[instrument.id].bid.c -
+                        quotesStore.quotes[instrument.id].ask.c
+                    ).toFixed(digits)}
+                  </ValueText>
+                )}
+              </Observer>
             </FlexContainer>
             <FlexContainer flexDirection="column">
               <ButtonBuy
@@ -365,7 +374,9 @@ function BuySellPanel(props: Props) {
                 {({ on, toggle }) => (
                   <>
                     <ButtonAutoClosePurchase onClick={toggle} type="button">
-                      Set
+                      <PrimaryTextSpan color="#fffccc">
+                        Purchase at
+                      </PrimaryTextSpan>
                     </ButtonAutoClosePurchase>
                     {on && (
                       <FlexContainer
@@ -376,7 +387,6 @@ function BuySellPanel(props: Props) {
                         <PurchaseAtPopup
                           toggle={toggle}
                           setFieldValue={setFieldValue}
-                          // @ts-ignore
                           purchaseAtValue={values.purchaseAt}
                           instrumentId={instrument.id}
                         ></PurchaseAtPopup>
@@ -400,9 +410,6 @@ const ButtonAutoClosePurchase = styled(ButtonWithoutStyles)`
   background: rgba(255, 255, 255, 0.12);
   border-radius: 4px;
   width: 100%;
-  font-size: 14px;
-  line-height: 24px;
-  color: #ffffff;
   margin-bottom: 14px;
 `;
 
