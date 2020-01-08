@@ -1,56 +1,38 @@
 import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
-import { supportedResolutions } from '../../constants/supportedResolutionsTimeScale';
 import styled from '@emotion/styled';
-import ColorsPallete from '../../styles/colorPallete';
+import { supportedResolutions } from '../../constants/supportedTimeScales';
 
 interface Props {
-  activeResolution: string;
-  setTimeScale: (arg0: string) => void;
+  activeInterval: string;
+  setResolutionScale: (arg0: string) => void;
 }
 
-const ChartTimeScale: FC<Props> = props => {
-  const { activeResolution, setTimeScale } = props;
+const ChartResolutionTimeScale: FC<Props> = props => {
+  const { activeInterval, setResolutionScale } = props;
 
-  const handleChangeResolution = (resolution: string) => () => {
-    setTimeScale(resolution);
-  };
-
-  const renderTextResolution = (resolution: string) => {
-    switch (resolution) {
-      case '1':
-        return '1 MIN';
-
-      case '60':
-        return '1 HOUR';
-
-      case '1D':
-        return '1 DAY';
-
-      case '1M':
-        return '1 MONTH';
-
-      default:
-        return resolution;
-    }
+  const handleChangeResolution = (interval: string) => () => {
+    setResolutionScale(interval);
   };
 
   return (
     <ChartTimeScaleWrapper padding="2px" alignItems="center">
-      {supportedResolutions.map(item => (
+      {(Object.keys(supportedResolutions) as Array<
+        keyof typeof supportedResolutions
+      >).map((key, i) => (
         <TimeScaleItem
-          isActive={item === activeResolution}
-          key={item}
-          onClick={handleChangeResolution(item)}
+          isActive={key === activeInterval}
+          key={key}
+          onClick={handleChangeResolution(supportedResolutions[key])}
         >
-          {renderTextResolution(item)}
+          {key}
         </TimeScaleItem>
       ))}
     </ChartTimeScaleWrapper>
   );
 };
 
-export default ChartTimeScale;
+export default ChartResolutionTimeScale;
 
 const ChartTimeScaleWrapper = styled(FlexContainer)``;
 

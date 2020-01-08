@@ -13,20 +13,21 @@ import {
   TimescaleMark,
   ServerTimeCallback,
   IBasicDataFeed,
-  HistoryDepth,
 } from '../vendor/charting_library/charting_library.min';
 
 import historyProvider from './historyProvider';
 
 import StreamingService from './streamingService';
-import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import { HubConnection } from '@aspnet/signalr';
 import { InstrumentModelWSDTO } from '../types/Instruments';
-import minimumTime from '../constants/minimumTime';
+import {
+  supportedInterval,
+  supportedResolutions,
+} from '../constants/supportedTimeScales';
 
 class DataFeedService implements IBasicDataFeed {
   static config = {
-    supported_resolutions: supportedResolutions,
+    supported_resolutions: Object.values(supportedInterval),
     supports_search: false,
     supports_group_request: false,
     supports_marks: false,
@@ -74,7 +75,7 @@ class DataFeedService implements IBasicDataFeed {
       has_daily: true,
       has_weekly_and_monthly: true,
       has_no_volume: true,
-      supported_resolutions: supportedResolutions,
+      supported_resolutions: Object.values(supportedInterval),
       data_status: 'streaming',
       format: 'price',
     };
@@ -99,6 +100,10 @@ class DataFeedService implements IBasicDataFeed {
         rangeStartDate,
         rangeEndDate,
         symbolInfo.name
+      );
+      console.log(
+        new Date(rangeStartDate * 1000),
+        new Date(rangeEndDate * 1000)
       );
       if (bars.length) {
         historyProvider.history[symbolInfo.name] = {
@@ -138,15 +143,34 @@ class DataFeedService implements IBasicDataFeed {
     intervalBack: number
   ) => {
     switch (resolution) {
-      case '1D':
+      case supportedResolutions['1M']:
         return {
           resolutionBack: 'M' as ResolutionBackValues,
-          intervalBack: 6,
+          intervalBack: 12,
         };
-      case '1M':
+
+      case supportedResolutions['YTD']:
         return {
           resolutionBack: 'M' as ResolutionBackValues,
-          intervalBack: 6,
+          intervalBack: 24,
+        };
+
+      case supportedResolutions['1Y']:
+        return {
+          resolutionBack: 'M' as ResolutionBackValues,
+          intervalBack: 36,
+        };
+
+      case supportedResolutions['3Y']:
+        return {
+          resolutionBack: 'M' as ResolutionBackValues,
+          intervalBack: 72,
+        };
+
+      case supportedResolutions['All']:
+        return {
+          resolutionBack: 'M' as ResolutionBackValues,
+          intervalBack: 100,
         };
     }
   };
