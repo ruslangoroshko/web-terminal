@@ -130,6 +130,7 @@ export default PurchaseAtPopup;
 const Wrapper = styled(FlexContainer)`
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.25),
     0px 6px 12px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-radius: 4px;
   background-color: rgba(0, 0, 0, 0.4);

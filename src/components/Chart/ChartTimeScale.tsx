@@ -112,6 +112,7 @@ export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
   text-transform: uppercase;
   color: ${props => (props.isActive ? '#21B3A4' : 'rgba(255, 255, 255, 0.6)')};
   border: ${props => (props.isActive ? '1px solid #21B3A4' : 'none')};
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   background-color: ${props => props.isActive && 'rgba(33, 179, 164, 0.04);'};
 
