@@ -25,32 +25,20 @@ export default {
     let resolutionEnum = CandleTypeEnum.Min;
     // https://monfex.atlassian.net/wiki/spaces/PROD/pages/163938392/Settings
     switch (resolution) {
-      case supportedResolutions['1D']:
+      case supportedResolutions['1 minute']:
         resolutionEnum = CandleTypeEnum.Min;
         break;
 
-      case supportedResolutions['5D']:
+      case supportedResolutions['1 hour']:
         resolutionEnum = CandleTypeEnum.Hour;
         break;
 
-      case supportedResolutions['1M']:
-        resolutionEnum = CandleTypeEnum.Hour;
-        break;
-
-      case supportedResolutions['YTD']:
+      case supportedResolutions['1 day']:
         resolutionEnum = CandleTypeEnum.Day;
         break;
 
-      case supportedResolutions['1Y']:
+      case supportedResolutions['1 month']:
         resolutionEnum = CandleTypeEnum.Day;
-        break;
-
-      case supportedResolutions['3Y']:
-        resolutionEnum = CandleTypeEnum.Month;
-        break;
-
-      case supportedResolutions['All']:
-        resolutionEnum = CandleTypeEnum.Month;
         break;
 
       default:

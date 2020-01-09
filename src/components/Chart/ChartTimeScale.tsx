@@ -1,29 +1,98 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
-import { supportedResolutions } from '../../constants/supportedTimeScales';
+import {
+  supportedInterval,
+  supportedResolutions,
+} from '../../constants/supportedTimeScales';
+import { BASIC_RESOLUTION } from '../../constants/defaultChartValues';
+import moment from 'moment';
+import { useStores } from '../../hooks/useStores';
 
-interface Props {
-  activeInterval: string;
-  setResolutionScale: (arg0: string) => void;
-}
+interface Props {}
 
-const ChartResolutionTimeScale: FC<Props> = props => {
-  const { activeInterval, setResolutionScale } = props;
+const ChartIntervalTimeScale: FC<Props> = props => {
+  const [resolution, setResolution] = useState(BASIC_RESOLUTION);
+  const [interval, setInterval] = useState(supportedInterval['1D']);
+  const { tradingViewStore } = useStores();
 
-  const handleChangeResolution = (interval: string) => () => {
-    setResolutionScale(interval);
+  const handleChangeResolution = (newInterval: string) => () => {
+    let from = moment();
+    let newResolution = supportedResolutions['1 minute'];
+
+    switch (newInterval) {
+      case supportedInterval['1D']:
+        from = moment().subtract(1, 'd');
+        newResolution = supportedResolutions['1 minute'];
+        break;
+
+      case supportedInterval['5D']:
+        from = moment().subtract(5, 'd');
+        newResolution = supportedResolutions['5 minutes'];
+        break;
+
+      case supportedInterval['1M']:
+        from = moment().subtract(1, 'M');
+        newResolution = supportedResolutions['1 hour'];
+        break;
+
+      case supportedInterval['YTD']:
+        from = moment().subtract(new Date().getUTCMonth(), 'M');
+        newResolution = supportedResolutions['1 day'];
+        break;
+
+      case supportedInterval['1Y']:
+        from = moment().subtract(1, 'year');
+        newResolution = supportedResolutions['1 day'];
+        break;
+
+      case supportedInterval['3Y']:
+        from = moment().subtract(1, 'y');
+        newResolution = supportedResolutions['1 day'];
+        break;
+
+      case supportedInterval['All']:
+        from = moment().subtract(1, 'y');
+        newResolution = supportedResolutions['1 day'];
+        break;
+
+      default:
+        break;
+    }
+    setInterval(newInterval);
+
+    if (newResolution === resolution) {
+      console.log('from', new Date(from.valueOf()));
+      tradingViewStore.tradingWidget?.chart().setVisibleRange({
+        from: from.valueOf() / 1000,
+        to: moment().valueOf() / 1000,
+      });
+      console.log(
+        'from',
+        tradingViewStore.tradingWidget?.chart().getVisibleRange()
+      );
+    } else {
+      setResolution(newResolution);
+      tradingViewStore.tradingWidget
+        ?.chart()
+        .setResolution(newResolution, () => {
+          tradingViewStore.tradingWidget?.chart().setVisibleRange({
+            from: from.valueOf() / 1000,
+            to: moment().valueOf() / 1000,
+          });
+        });
+    }
   };
 
   return (
     <ChartTimeScaleWrapper padding="2px" alignItems="center">
-      {(Object.keys(supportedResolutions) as Array<
-        keyof typeof supportedResolutions
-      >).map((key, i) => (
+      {(Object.keys(supportedInterval) as Array<
+        keyof typeof supportedInterval
+      >).map(key => (
         <TimeScaleItem
-          isActive={key === activeInterval}
+          isActive={supportedInterval[key] === interval}
           key={key}
-          onClick={handleChangeResolution(supportedResolutions[key])}
+          onClick={handleChangeResolution(supportedInterval[key])}
         >
           {key}
         </TimeScaleItem>
@@ -32,7 +101,7 @@ const ChartResolutionTimeScale: FC<Props> = props => {
   );
 };
 
-export default ChartResolutionTimeScale;
+export default ChartIntervalTimeScale;
 
 const ChartTimeScaleWrapper = styled(FlexContainer)``;
 

@@ -11,7 +11,8 @@ import { LineStyles } from '../enums/TradingViewStyles';
 import ColorsPallete from '../styles/colorPallete';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { useStores } from '../hooks/useStores';
-import { supportedInterval } from '../constants/supportedTimeScales';
+import { supportedResolutions } from '../constants/supportedTimeScales';
+import { BASIC_RESOLUTION } from '../constants/defaultChartValues';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -33,7 +34,7 @@ const ChartContainer: FC<IProps> = ({ intrument }) => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: intrument.id,
       datafeed: new DataFeedService(mainAppStore.activeSession!, intrument),
-      interval: supportedInterval["1 second"],
+      interval: BASIC_RESOLUTION,
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
       locale: getLanguageFromURL() || 'en',

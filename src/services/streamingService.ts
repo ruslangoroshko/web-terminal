@@ -74,8 +74,8 @@ class StreamingService {
       symbolInfo,
       resolution,
       onTick,
-      lastBar: historyProvider.history[symbolInfo.name]
-        ? historyProvider.history[symbolInfo.name].lastBar
+      lastBar: historyProvider.history[`${symbolInfo.name}${resolution}`]
+        ? historyProvider.history[`${symbolInfo.name}${resolution}`].lastBar
         : { time: 0 },
       listenerGuid,
     };

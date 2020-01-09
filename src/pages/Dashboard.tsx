@@ -13,7 +13,7 @@ import SvgIcon from '../components/SvgIcon';
 import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';
 import ActiveInstrument from '../components/ActiveInstrument';
 import BuySellPanel from '../components/BuySellPanel/BuySellPanel';
-import ChartResolutionTimeScale from '../components/Chart/ChartTimeScale';
+import ChartIntervalTimeScale from '../components/Chart/ChartTimeScale';
 import ChartSettingsButtons from '../components/Chart/ChartSettingsButtons';
 import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
 import { AskBidEnum } from '../enums/AskBid';
@@ -27,23 +27,15 @@ import {
   supportedInterval,
   supportedResolutions,
 } from '../constants/supportedTimeScales';
+import moment from 'moment';
+import { BASIC_RESOLUTION } from '../constants/defaultChartValues';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
 const Dashboard = observer(() => {
   const { mainAppStore, tradingViewStore } = useStores();
-  const [resolution, setResolution] = useState(supportedResolutions['1D']);
-  const [interval, setInterval] = useState(supportedInterval['1 second']);
 
   const { quotesStore, instrumentsStore } = useStores();
-
-  const setResolutionScale = (newResolution: string) => {
-    console.log('TCL: setResolutionScale -> newResolution', newResolution);
-
-    tradingViewStore.tradingWidget?.chart().setResolution(newResolution, () => {
-      setResolution(newResolution);
-    });
-  };
 
   useEffect(() => {
     mainAppStore.activeSession?.on(
@@ -182,10 +174,7 @@ const Dashboard = observer(() => {
               </BuySellPanelWrapper>
               <ChartInstruments justifyContent="space-between">
                 <ChartSettingsButtons></ChartSettingsButtons>
-                <ChartResolutionTimeScale
-                  activeInterval={resolution}
-                  setResolutionScale={setResolutionScale}
-                ></ChartResolutionTimeScale>
+                <ChartIntervalTimeScale></ChartIntervalTimeScale>
                 {tradingViewStore.tradingWidget && (
                   <ChartTimeFomat
                     tvWidget={tradingViewStore.tradingWidget}
