@@ -171,16 +171,7 @@ const SetSLTPButton = styled(ButtonWithoutStyles)`
   position: relative;
   overflow: hidden;
   transition: background-color 0.2s ease;
-
-  &:before {
-    position: absolute;
-    content: '';
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.12);
-  }
+  background-color: rgba(255, 255, 255, 0.12);
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.12);

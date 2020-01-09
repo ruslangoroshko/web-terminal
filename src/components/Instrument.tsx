@@ -102,28 +102,16 @@ const QuotesFeedWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
   border-radius: 0px 0px 3px 3px;
   overflow: hidden;
   transition: box-shadow 0.2s ease, background-color 0.2s ease;
-
-  &:before {
-    content: '';
-    transition: background-color 0.2s ease;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: ${props =>
-      props.isActive
-        ? 'radial-gradient(50.41% 50% at 50% 0%, rgba(0, 255, 221, 0.08) 0%, rgba(0, 255, 221, 0) 100%), rgba(255, 255, 255, 0.04)'
-        : 'none'};
-  }
+  background: ${props =>
+    props.isActive
+      ? 'radial-gradient(50.41% 50% at 50% 0%, rgba(0, 255, 221, 0.08) 0%, rgba(0, 255, 221, 0) 100%), rgba(255, 255, 255, 0.04)'
+      : 'none'};
 
   &:hover {
     cursor: pointer;
 
-    &:before {
-      background-color: ${props =>
-        !props.isActive && 'rgba(255, 255, 255, 0.08)'};
-    }
+    background-color: ${props =>
+      !props.isActive && 'rgba(255, 255, 255, 0.08)'};
   }
 `;
 
