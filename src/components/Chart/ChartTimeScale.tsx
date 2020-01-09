@@ -19,7 +19,7 @@ const ChartIntervalTimeScale: FC<Props> = props => {
   const handleChangeResolution = (newInterval: string) => () => {
     let from = moment();
     let newResolution = supportedResolutions['1 minute'];
-
+    debugger;
     switch (newInterval) {
       case supportedInterval['1D']:
         from = moment().subtract(1, 'd');
@@ -62,15 +62,10 @@ const ChartIntervalTimeScale: FC<Props> = props => {
     setInterval(newInterval);
 
     if (newResolution === resolution) {
-      console.log('from', new Date(from.valueOf()));
       tradingViewStore.tradingWidget?.chart().setVisibleRange({
         from: from.valueOf() / 1000,
         to: moment().valueOf() / 1000,
       });
-      console.log(
-        'from',
-        tradingViewStore.tradingWidget?.chart().getVisibleRange()
-      );
     } else {
       setResolution(newResolution);
       tradingViewStore.tradingWidget

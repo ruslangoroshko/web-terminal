@@ -91,7 +91,12 @@ const AddInstrumentsPopup: FC<Props> = props => {
           </PrimaryTextSpan>
         </FlexContainer>
       </FlexContainer>
-      <FlexContainer padding="16px" flexDirection="column" width="100%" height="320px">
+      <InstrumentsWrapper
+        padding="16px"
+        flexDirection="column"
+        width="100%"
+        height="320px"
+      >
         <Observer>
           {() => (
             <>
@@ -104,7 +109,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
             </>
           )}
         </Observer>
-      </FlexContainer>
+      </InstrumentsWrapper>
     </AddInstrumentsPopupWrapper>
   );
 };
@@ -127,6 +132,10 @@ const AddInstrumentsPopupWrapper = styled(FlexContainer)`
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.34);
   }
+`;
+
+const InstrumentsWrapper = styled(FlexContainer)`
+  overflow-y: auto;
 `;
 
 const SearchInput = styled.input`
