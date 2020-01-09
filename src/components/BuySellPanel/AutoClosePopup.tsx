@@ -169,10 +169,13 @@ export default AutoClosePopup;
 const Wrapper = styled(FlexContainer)`
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.25),
     0px 6px 12px rgba(0, 0, 0, 0.25);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
   border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.8);
+
+  @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+  }
 `;
 
 const InfoIcon = styled(FlexContainer)`
@@ -228,7 +231,6 @@ const InputWrapper = styled(FlexContainer)`
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
   background-color: rgba(255, 255, 255, 0.06);
-
 `;
 
 const PlusSign = styled.span`

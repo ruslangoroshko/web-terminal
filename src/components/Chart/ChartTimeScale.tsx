@@ -114,6 +114,7 @@ export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
   border: ${props => (props.isActive ? '1px solid #21B3A4' : 'none')};
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
+  
   background-color: ${props => props.isActive && 'rgba(33, 179, 164, 0.04);'};
 
   &:hover {

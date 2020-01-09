@@ -119,10 +119,13 @@ export default AddInstrumentsPopup;
 const AddInstrumentsPopupWrapper = styled(FlexContainer)`
   box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.09),
     0px 8px 16px rgba(37, 38, 54, 0.24);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
   border-radius: 2px;
-  background-color: rgba(0, 0, 0, 0.34);
+  background-color: rgba(0, 0, 0, 0.8);
+
+  @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+    background-color: rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(12px);
+  }
 `;
 
 const InstrumentsWrapper = styled(FlexContainer)`
