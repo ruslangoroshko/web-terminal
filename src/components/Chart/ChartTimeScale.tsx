@@ -1,56 +1,102 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
-import { supportedResolutions } from '../../constants/supportedResolutionsTimeScale';
 import styled from '@emotion/styled';
-import ColorsPallete from '../../styles/colorPallete';
+import {
+  supportedInterval,
+  supportedResolutions,
+} from '../../constants/supportedTimeScales';
+import { BASIC_RESOLUTION } from '../../constants/defaultChartValues';
+import moment from 'moment';
+import { useStores } from '../../hooks/useStores';
 
-interface Props {
-  activeResolution: string;
-  setTimeScale: (arg0: string) => void;
-}
+interface Props {}
 
-const ChartTimeScale: FC<Props> = props => {
-  const { activeResolution, setTimeScale } = props;
+const ChartIntervalTimeScale: FC<Props> = props => {
+  const [resolution, setResolution] = useState(BASIC_RESOLUTION);
+  const [interval, setInterval] = useState(supportedInterval['1D']);
+  const { tradingViewStore } = useStores();
 
-  const handleChangeResolution = (resolution: string) => () => {
-    setTimeScale(resolution);
-  };
+  const handleChangeResolution = (newInterval: string) => () => {
+    let from = moment();
+    let newResolution = supportedResolutions['1 minute'];
+    debugger;
+    switch (newInterval) {
+      case supportedInterval['1D']:
+        from = moment().subtract(1, 'd');
+        newResolution = supportedResolutions['1 minute'];
+        break;
 
-  const renderTextResolution = (resolution: string) => {
-    switch (resolution) {
-      case '1':
-        return '1 MIN';
+      case supportedInterval['5D']:
+        from = moment().subtract(5, 'd');
+        newResolution = supportedResolutions['5 minutes'];
+        break;
 
-      case '60':
-        return '1 HOUR';
+      case supportedInterval['1M']:
+        from = moment().subtract(1, 'M');
+        newResolution = supportedResolutions['1 hour'];
+        break;
 
-      case '1D':
-        return '1 DAY';
+      case supportedInterval['YTD']:
+        from = moment().subtract(new Date().getUTCMonth(), 'M');
+        newResolution = supportedResolutions['1 day'];
+        break;
 
-      case '1M':
-        return '1 MONTH';
+      case supportedInterval['1Y']:
+        from = moment().subtract(1, 'year');
+        newResolution = supportedResolutions['1 day'];
+        break;
+
+      case supportedInterval['3Y']:
+        from = moment().subtract(1, 'y');
+        newResolution = supportedResolutions['1 day'];
+        break;
+
+      case supportedInterval['All']:
+        from = moment().subtract(1, 'y');
+        newResolution = supportedResolutions['1 day'];
+        break;
 
       default:
-        return resolution;
+        break;
+    }
+    setInterval(newInterval);
+
+    if (newResolution === resolution) {
+      tradingViewStore.tradingWidget?.chart().setVisibleRange({
+        from: from.valueOf() / 1000,
+        to: moment().valueOf() / 1000,
+      });
+    } else {
+      setResolution(newResolution);
+      tradingViewStore.tradingWidget
+        ?.chart()
+        .setResolution(newResolution, () => {
+          tradingViewStore.tradingWidget?.chart().setVisibleRange({
+            from: from.valueOf() / 1000,
+            to: moment().valueOf() / 1000,
+          });
+        });
     }
   };
 
   return (
     <ChartTimeScaleWrapper padding="2px" alignItems="center">
-      {supportedResolutions.map(item => (
+      {(Object.keys(supportedInterval) as Array<
+        keyof typeof supportedInterval
+      >).map(key => (
         <TimeScaleItem
-          isActive={item === activeResolution}
-          key={item}
-          onClick={handleChangeResolution(item)}
+          isActive={supportedInterval[key] === interval}
+          key={key}
+          onClick={handleChangeResolution(supportedInterval[key])}
         >
-          {renderTextResolution(item)}
+          {key}
         </TimeScaleItem>
       ))}
     </ChartTimeScaleWrapper>
   );
 };
 
-export default ChartTimeScale;
+export default ChartIntervalTimeScale;
 
 const ChartTimeScaleWrapper = styled(FlexContainer)``;
 

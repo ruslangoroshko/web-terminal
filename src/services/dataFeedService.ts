@@ -13,20 +13,18 @@ import {
   TimescaleMark,
   ServerTimeCallback,
   IBasicDataFeed,
-  HistoryDepth,
 } from '../vendor/charting_library/charting_library.min';
 
 import historyProvider from './historyProvider';
 
 import StreamingService from './streamingService';
-import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import { HubConnection } from '@aspnet/signalr';
 import { InstrumentModelWSDTO } from '../types/Instruments';
-import minimumTime from '../constants/minimumTime';
+import { supportedResolutions } from '../constants/supportedTimeScales';
 
 class DataFeedService implements IBasicDataFeed {
   static config = {
-    supported_resolutions: supportedResolutions,
+    supported_resolutions: Object.values(supportedResolutions),
     supports_search: false,
     supports_group_request: false,
     supports_marks: false,
@@ -70,11 +68,11 @@ class DataFeedService implements IBasicDataFeed {
       minmov: 1,
       pricescale: 100000,
       has_intraday: true,
-      has_seconds: true,
-      has_daily: true,
+      intraday_multipliers: [supportedResolutions['1 minute']],
       has_weekly_and_monthly: true,
       has_no_volume: true,
-      supported_resolutions: supportedResolutions,
+      has_empty_bars: false,
+      supported_resolutions: Object.values(supportedResolutions),
       data_status: 'streaming',
       format: 'price',
     };
@@ -100,8 +98,9 @@ class DataFeedService implements IBasicDataFeed {
         rangeEndDate,
         symbolInfo.name
       );
+
       if (bars.length) {
-        historyProvider.history[symbolInfo.name] = {
+        historyProvider.history[`${symbolInfo.name}${resolution}`] = {
           lastBar: bars[bars.length - 1],
         };
         onResult(bars, { noData: false });
@@ -138,15 +137,28 @@ class DataFeedService implements IBasicDataFeed {
     intervalBack: number
   ) => {
     switch (resolution) {
-      case '1D':
+      // case supportedResolutions['5 minutes']:
+      //   return {
+      //     resolutionBack: 'D' as ResolutionBackValues,
+      //     intervalBack: 5,
+      //   };
+
+      // case supportedResolutions['1 hour']:
+      //   return {
+      //     resolutionBack: 'D' as ResolutionBackValues,
+      //     intervalBack: 2,
+      //   };
+
+      // case supportedResolutions['1 day']:
+      //   return {
+      //     resolutionBack: 'D' as ResolutionBackValues,
+      //     intervalBack: 2,
+      //   };
+
+      case supportedResolutions['1 month']:
         return {
           resolutionBack: 'M' as ResolutionBackValues,
-          intervalBack: 6,
-        };
-      case '1M':
-        return {
-          resolutionBack: 'M' as ResolutionBackValues,
-          intervalBack: 6,
+          intervalBack: 2,
         };
     }
   };

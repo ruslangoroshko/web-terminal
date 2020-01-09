@@ -9,12 +9,11 @@ import Fields from '../constants/fields';
 import TVChartContainer from '../containers/ChartContainer';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { PositionModelWSDTO } from '../types/Positions';
-import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import SvgIcon from '../components/SvgIcon';
 import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';
 import ActiveInstrument from '../components/ActiveInstrument';
 import BuySellPanel from '../components/BuySellPanel/BuySellPanel';
-import ChartTimeScale from '../components/Chart/ChartTimeScale';
+import ChartIntervalTimeScale from '../components/Chart/ChartTimeScale';
 import ChartSettingsButtons from '../components/Chart/ChartSettingsButtons';
 import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
 import { AskBidEnum } from '../enums/AskBid';
@@ -24,20 +23,19 @@ import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
 import { Observer, observer } from 'mobx-react-lite';
 import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
+import {
+  supportedInterval,
+  supportedResolutions,
+} from '../constants/supportedTimeScales';
+import moment from 'moment';
+import { BASIC_RESOLUTION } from '../constants/defaultChartValues';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
 const Dashboard = observer(() => {
   const { mainAppStore, tradingViewStore } = useStores();
-  const [resolution, setResolution] = useState(supportedResolutions[0]);
 
   const { quotesStore, instrumentsStore } = useStores();
-
-  const setTimeScale = (resolution: string) => {
-    tradingViewStore.tradingWidget?.chart().setResolution(resolution, () => {
-      setResolution(resolution);
-    });
-  };
 
   useEffect(() => {
     mainAppStore.activeSession?.on(
@@ -139,7 +137,7 @@ const Dashboard = observer(() => {
             </Toggle>
           </FlexContainer>
         </FlexContainer>
-        <ActiveInstrumentWrapper position="relative" padding="24px 20px">
+        <FlexContainer position="relative" padding="24px 20px">
           <Observer>
             {() => (
               <>
@@ -151,7 +149,7 @@ const Dashboard = observer(() => {
               </>
             )}
           </Observer>
-        </ActiveInstrumentWrapper>
+        </FlexContainer>
       </FlexContainer>
       <GridWrapper>
         <Observer>
@@ -176,10 +174,7 @@ const Dashboard = observer(() => {
               </BuySellPanelWrapper>
               <ChartInstruments justifyContent="space-between">
                 <ChartSettingsButtons></ChartSettingsButtons>
-                <ChartTimeScale
-                  activeResolution={resolution}
-                  setTimeScale={setTimeScale}
-                ></ChartTimeScale>
+                <ChartIntervalTimeScale></ChartIntervalTimeScale>
                 {tradingViewStore.tradingWidget && (
                   <ChartTimeFomat
                     tvWidget={tradingViewStore.tradingWidget}
@@ -197,23 +192,6 @@ const Dashboard = observer(() => {
 export default Dashboard;
 
 const DashboardWrapper = styled(FlexContainer)``;
-
-const ActiveInstrumentWrapper = styled(FlexContainer)`
-  /* &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.17) 0%,
-      rgba(0, 0, 0, 0) 100%
-    );
-    opacity: 0.3;
-  } */
-`;
 
 const AddIntrumentButton = styled(ButtonWithoutStyles)`
   width: 24px;

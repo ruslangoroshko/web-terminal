@@ -6,6 +6,7 @@ import API from '../helpers/API';
 import { CandleTypeEnum } from '../enums/CandleType';
 import { HistoryCandlesType } from '../types/HistoryTypes';
 import { AskBidEnum } from '../enums/AskBid';
+import { supportedResolutions } from '../constants/supportedTimeScales';
 
 interface HistoryObj {
   [key: string]: any;
@@ -22,22 +23,22 @@ export default {
     instrumentId: string
   ): Promise<Bar[]> {
     let resolutionEnum = CandleTypeEnum.Min;
-
+    // https://monfex.atlassian.net/wiki/spaces/PROD/pages/163938392/Settings
     switch (resolution) {
-      case '1':
+      case supportedResolutions['1 minute']:
         resolutionEnum = CandleTypeEnum.Min;
         break;
 
-      case '60':
+      case supportedResolutions['1 hour']:
         resolutionEnum = CandleTypeEnum.Hour;
         break;
 
-      case '1D':
+      case supportedResolutions['1 day']:
         resolutionEnum = CandleTypeEnum.Day;
         break;
 
-      case '1M':
-        resolutionEnum = CandleTypeEnum.Month;
+      case supportedResolutions['1 month']:
+        resolutionEnum = CandleTypeEnum.Day;
         break;
 
       default:

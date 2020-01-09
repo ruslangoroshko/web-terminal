@@ -74,8 +74,8 @@ class StreamingService {
       symbolInfo,
       resolution,
       onTick,
-      lastBar: historyProvider.history[symbolInfo.name]
-        ? historyProvider.history[symbolInfo.name].lastBar
+      lastBar: historyProvider.history[`${symbolInfo.name}${resolution}`]
+        ? historyProvider.history[`${symbolInfo.name}${resolution}`].lastBar
         : { time: 0 },
       listenerGuid,
     };
@@ -85,10 +85,12 @@ class StreamingService {
 
   unsubscribeBars = (uid: string) => {
     const subIndex = this.subscriptions.findIndex(e => e.listenerGuid === uid);
+    console.log('unsubscribed');
     if (subIndex === -1) {
       //console.log("No subscription found for ",uid)
       return;
     }
+
     this.subscriptions.splice(subIndex, 1);
   };
 }

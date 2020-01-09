@@ -7,11 +7,12 @@ import {
 } from '../vendor/charting_library/charting_library.min';
 import { FlexContainer } from '../styles/FlexContainer';
 import DataFeedService from '../services/dataFeedService';
-import { supportedResolutions } from '../constants/supportedResolutionsTimeScale';
 import { LineStyles } from '../enums/TradingViewStyles';
 import ColorsPallete from '../styles/colorPallete';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { useStores } from '../hooks/useStores';
+import { supportedResolutions } from '../constants/supportedTimeScales';
+import { BASIC_RESOLUTION } from '../constants/defaultChartValues';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -32,20 +33,19 @@ const ChartContainer: FC<IProps> = ({ intrument }) => {
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: intrument.id,
-      // BEWARE: no trailing slash is expected in feed URL
       datafeed: new DataFeedService(mainAppStore.activeSession!, intrument),
-      interval: supportedResolutions[0],
+      interval: BASIC_RESOLUTION,
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
       locale: getLanguageFromURL() || 'en',
       custom_css_url: 'custom_trading_view_styles.css',
-      time_frames: [
-        { text: '10y', resolution: '6M', description: '10 Years' },
-        { text: '1y', resolution: 'W', description: '1 Years', title: '1yr' },
-        { text: '1m', resolution: 'D', description: '1 Month' },
-        { text: '1d', resolution: '1', description: '1 Days' },
-      ],
-      // debug: true,
+      // https://monfex.atlassian.net/wiki/spaces/PROD/pages/163938392/Settings
+      // time_frames: [
+      //   { text: '10y', resolution: '6M', description: '10 Years' },
+      //   { text: '1y', resolution: '1W', description: '1 Years', title: '1yr' },
+      //   { text: '1m', resolution: '1D', description: '1 Month' },
+      //   { text: '1d', resolution: '1', description: '1 Days' },
+      // ],
       disabled_features: [
         'header_widget',
         'legend_widget',
