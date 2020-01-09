@@ -35,6 +35,7 @@ const TooltipWrapper = styled(FlexContainer)`
   opacity: 1;
   box-shadow: 0px 12px 24px ${props => props.backgroundColor}40,
     0px 6px 12px ${props => props.backgroundColor}40;
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-radius: 2px 0 2px 2px;
 

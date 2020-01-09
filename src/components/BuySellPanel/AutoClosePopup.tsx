@@ -169,19 +169,10 @@ export default AutoClosePopup;
 const Wrapper = styled(FlexContainer)`
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.25),
     0px 6px 12px rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-radius: 4px;
   background-color: rgba(0, 0, 0, 0.4);
-
-  /* &:before {
-    content: '';
-    z-index: -1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-  } */
 `;
 
 const InfoIcon = styled(FlexContainer)`

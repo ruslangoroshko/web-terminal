@@ -37,6 +37,7 @@ const ChartResolutionsDropdownWrapper = styled(FlexContainer)`
   position: relative;
   box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.09),
     0px 8px 16px rgba(37, 38, 54, 0.24);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(40px);
   background-color: rgba(0, 0, 0, 0.34);
 `;
