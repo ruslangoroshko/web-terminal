@@ -12,7 +12,7 @@ import ColorsPallete from '../styles/colorPallete';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { useStores } from '../hooks/useStores';
 import { supportedResolutions } from '../constants/supportedTimeScales';
-import { BASIC_RESOLUTION } from '../constants/defaultChartValues';
+import { BASIC_RESOLUTION_KEY } from '../constants/defaultChartValues';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -34,18 +34,11 @@ const ChartContainer: FC<IProps> = ({ intrument }) => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: intrument.id,
       datafeed: new DataFeedService(mainAppStore.activeSession!, intrument),
-      interval: BASIC_RESOLUTION,
+      interval: supportedResolutions[BASIC_RESOLUTION_KEY],
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
       locale: getLanguageFromURL() || 'en',
       custom_css_url: 'custom_trading_view_styles.css',
-      // https://monfex.atlassian.net/wiki/spaces/PROD/pages/163938392/Settings
-      // time_frames: [
-      //   { text: '10y', resolution: '6M', description: '10 Years' },
-      //   { text: '1y', resolution: '1W', description: '1 Years', title: '1yr' },
-      //   { text: '1m', resolution: '1D', description: '1 Month' },
-      //   { text: '1d', resolution: '1', description: '1 Days' },
-      // ],
       disabled_features: [
         'header_widget',
         'legend_widget',

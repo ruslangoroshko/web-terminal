@@ -1,4 +1,3 @@
-import { ResolutionString } from '../vendor/charting_library/charting_library.min';
 // Time interval (x axis ticks)
 export const supportedResolutions = {
   //: ResolutionString[] = ['1', '60', '1D', '1M'];
@@ -6,9 +5,14 @@ export const supportedResolutions = {
   '5 minutes': '5',
   '30 minutes': '30',
   '1 hour': '60',
+  '4 hours': '240',
   '1 day': '1D',
+  '1 week': '1W',
   '1 month': '1M',
 };
+
+export type SupportedResolutionsType = keyof typeof supportedResolutions;
+
 // From date to date
 export const supportedInterval = {
   '1D': '1D',

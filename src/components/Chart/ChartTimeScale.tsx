@@ -1,76 +1,74 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import {
   supportedInterval,
   supportedResolutions,
+  SupportedResolutionsType,
 } from '../../constants/supportedTimeScales';
-import { BASIC_RESOLUTION } from '../../constants/defaultChartValues';
 import moment from 'moment';
 import { useStores } from '../../hooks/useStores';
+import { observer } from 'mobx-react-lite';
 
 interface Props {}
 
-const ChartIntervalTimeScale: FC<Props> = props => {
-  const [resolution, setResolution] = useState(BASIC_RESOLUTION);
-  const [interval, setInterval] = useState(supportedInterval['1D']);
+const ChartIntervalTimeScale: FC<Props> = observer(() => {
   const { tradingViewStore } = useStores();
 
   const handleChangeResolution = (newInterval: string) => () => {
     let from = moment();
-    let newResolution = supportedResolutions['1 minute'];
-    debugger;
+    let newResolutionKey: SupportedResolutionsType = '1 minute';
     switch (newInterval) {
       case supportedInterval['1D']:
         from = moment().subtract(1, 'd');
-        newResolution = supportedResolutions['1 minute'];
+        newResolutionKey = '1 minute';
         break;
 
       case supportedInterval['5D']:
         from = moment().subtract(5, 'd');
-        newResolution = supportedResolutions['5 minutes'];
+        newResolutionKey = '30 minutes';
         break;
 
       case supportedInterval['1M']:
         from = moment().subtract(1, 'M');
-        newResolution = supportedResolutions['1 hour'];
+        newResolutionKey = '1 hour';
         break;
 
       case supportedInterval['YTD']:
         from = moment().subtract(new Date().getUTCMonth(), 'M');
-        newResolution = supportedResolutions['1 day'];
+        newResolutionKey = '1 day';
         break;
 
       case supportedInterval['1Y']:
         from = moment().subtract(1, 'year');
-        newResolution = supportedResolutions['1 day'];
+        newResolutionKey = '1 day';
         break;
 
       case supportedInterval['3Y']:
         from = moment().subtract(1, 'y');
-        newResolution = supportedResolutions['1 day'];
+        newResolutionKey = '1 day';
         break;
 
       case supportedInterval['All']:
         from = moment().subtract(1, 'y');
-        newResolution = supportedResolutions['1 day'];
+        newResolutionKey = '1 day';
         break;
 
       default:
         break;
     }
-    setInterval(newInterval);
 
-    if (newResolution === resolution) {
+    tradingViewStore.interval = newInterval;
+    if (newResolutionKey === tradingViewStore.resolutionKey) {
       tradingViewStore.tradingWidget?.chart().setVisibleRange({
         from: from.valueOf() / 1000,
         to: moment().valueOf() / 1000,
       });
     } else {
-      setResolution(newResolution);
+      tradingViewStore.resolutionKey = newResolutionKey;
       tradingViewStore.tradingWidget
         ?.chart()
-        .setResolution(newResolution, () => {
+        .setResolution(supportedResolutions[newResolutionKey], () => {
           tradingViewStore.tradingWidget?.chart().setVisibleRange({
             from: from.valueOf() / 1000,
             to: moment().valueOf() / 1000,
@@ -85,7 +83,7 @@ const ChartIntervalTimeScale: FC<Props> = props => {
         keyof typeof supportedInterval
       >).map(key => (
         <TimeScaleItem
-          isActive={supportedInterval[key] === interval}
+          isActive={supportedInterval[key] === tradingViewStore.interval}
           key={key}
           onClick={handleChangeResolution(supportedInterval[key])}
         >
@@ -94,7 +92,7 @@ const ChartIntervalTimeScale: FC<Props> = props => {
       ))}
     </ChartTimeScaleWrapper>
   );
-};
+});
 
 export default ChartIntervalTimeScale;
 
@@ -114,7 +112,7 @@ export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
   border: ${props => (props.isActive ? '1px solid #21B3A4' : 'none')};
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
-  
+
   background-color: ${props => props.isActive && 'rgba(33, 179, 164, 0.04);'};
 
   &:hover {

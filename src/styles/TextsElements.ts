@@ -11,6 +11,7 @@ interface PrimaryTextType {
   marginBottom?: string;
   textDecoration?: 'underline';
   textTransform?: 'capitalize' | 'lowercase' | 'uppercase';
+  whiteSpace?: 'nowrap' | 'pre' | 'normal';
 }
 
 export const PrimaryTextSpan = styled.span<PrimaryTextType>`
@@ -39,6 +40,7 @@ export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
   margin-bottom: ${props => props.marginBottom};
   text-decoration: ${props => props.textDecoration};
   text-transform: ${props => props.textTransform};
+  white-space: ${props => props.whiteSpace};
 `;
 
 export const QuoteText = styled(PrimaryTextSpan)<
