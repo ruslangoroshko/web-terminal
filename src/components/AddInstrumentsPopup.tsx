@@ -121,17 +121,7 @@ const AddInstrumentsPopupWrapper = styled(FlexContainer)`
     0px 8px 16px rgba(37, 38, 54, 0.24);
   backdrop-filter: blur(12px);
   border-radius: 2px;
-
-  &:before {
-    content: '';
-    z-index: -1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.34);
-  }
+  background-color: rgba(0, 0, 0, 0.34);
 `;
 
 const InstrumentsWrapper = styled(FlexContainer)`

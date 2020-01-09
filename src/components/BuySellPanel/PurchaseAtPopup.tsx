@@ -132,17 +132,7 @@ const Wrapper = styled(FlexContainer)`
     0px 6px 12px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(12px);
   border-radius: 4px;
-
-  &:before {
-    content: '';
-    z-index: -1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-  }
+  background-color: rgba(0, 0, 0, 0.4);
 `;
 
 const InfoIcon = styled(FlexContainer)`
@@ -197,17 +187,8 @@ const InputWrapper = styled(FlexContainer)`
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
+  background-color: rgba(255, 255, 255, 0.06);
 
-  &:before {
-    content: '';
-    z-index: -1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.06);
-  }
 `;
 
 const ButtonIncreaseDecreasePrice = styled(ButtonWithoutStyles)`
