@@ -67,6 +67,7 @@ const ChartResolutionsDropdown: FC<Props> = props => {
           <SettingsButton onClick={handleToggle}>
             <PrimaryTextSpan
               color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
+              fontSize="12px"
             >
               {getShortName(tradingViewStore.resolutionKey)}
             </PrimaryTextSpan>
