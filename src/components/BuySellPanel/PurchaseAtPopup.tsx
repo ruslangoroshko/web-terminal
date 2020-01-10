@@ -1,10 +1,15 @@
-import React, { ChangeEvent, useContext } from 'react';
+import React, {
+  ChangeEvent,
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
-import PnLTypeDropdown from './PnLTypeDropdown';
 import {
   PrimaryTextParagraph,
   PrimaryTextSpan,
@@ -15,113 +20,148 @@ import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 
 interface Props {
-  toggle: () => void;
   setFieldValue: (field: any, value: any) => void;
   purchaseAtValue?: number;
   instrumentId: string;
 }
 
 function PurchaseAtPopup(props: Props) {
-  const { toggle, setFieldValue, purchaseAtValue, instrumentId } = props;
+  const { setFieldValue, purchaseAtValue, instrumentId } = props;
 
   const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
     setFieldValue(Fields.PURCHASE_AT, e.target.value);
   };
+  const [on, toggle] = useState(false);
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const { quotesStore } = useStores();
 
+  const handleToggle = () => {
+    toggle(!on);
+  };
+
+  const handleClickOutside = (e: any) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      toggle(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  });
+
   return (
-    <Wrapper
-      position="relative"
-      padding="16px"
-      flexDirection="column"
-      width="200px"
-    >
-      <ButtonClose onClick={toggle}>
-        <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
-      </ButtonClose>
-      <PrimaryTextParagraph marginBottom="16px">
-        Purchase At
-      </PrimaryTextParagraph>
-      <FlexContainer
-        margin="0 0 6px 0"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <PrimaryTextSpan
-          fontSize="11px"
-          lineHeight="12px"
-          color="rgba(255, 255, 255, 0.3)"
-          textTransform="uppercase"
-        >
-          When Price is
-        </PrimaryTextSpan>
-        <InfoIcon width="14px" justifyContent="center" alignItems="center">
-          i
-        </InfoIcon>
-      </FlexContainer>
-      <InputWrapper
-        margin="0 0 16px 0"
-        height="32px"
-        width="100%"
-        position="relative"
-        justifyContent="space-between"
-      >
-        <MaskedInput
-          mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-          showMask={false}
-          onChange={handleChangePurchaseAt}
-          value={purchaseAtValue}
-          guide={false}
-          placeholder="Non Set"
-          render={(ref, props) => <InputPnL ref={ref} {...props}></InputPnL>}
-        ></MaskedInput>
-        <FlexContainer>
-          <ButtonIncreaseDecreasePrice>
-            <PrimaryTextSpan
-              fontSize="16px"
-              fontWeight="bold"
-              color="rgba(255, 255, 255, 0.5)"
+    <FlexContainer position="relative" ref={wrapperRef}>
+      <ButtonAutoClosePurchase onClick={handleToggle} type="button">
+        <PrimaryTextSpan color="#fffccc">Purchase at</PrimaryTextSpan>
+      </ButtonAutoClosePurchase>
+      {on && (
+        <FlexContainer position="absolute" top="20px" right="100%">
+          <Wrapper
+            position="relative"
+            padding="16px"
+            flexDirection="column"
+            width="200px"
+          >
+            <ButtonClose onClick={handleToggle}>
+              <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
+            </ButtonClose>
+            <PrimaryTextParagraph marginBottom="16px">
+              Purchase At
+            </PrimaryTextParagraph>
+            <FlexContainer
+              margin="0 0 6px 0"
+              alignItems="center"
+              justifyContent="space-between"
             >
-              -
-            </PrimaryTextSpan>
-          </ButtonIncreaseDecreasePrice>
-          <ButtonIncreaseDecreasePrice>
-            <PrimaryTextSpan
-              fontSize="16px"
-              fontWeight="bold"
-              color="rgba(255, 255, 255, 0.5)"
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                color="rgba(255, 255, 255, 0.3)"
+                textTransform="uppercase"
+              >
+                When Price is
+              </PrimaryTextSpan>
+              <InfoIcon
+                width="14px"
+                justifyContent="center"
+                alignItems="center"
+              >
+                i
+              </InfoIcon>
+            </FlexContainer>
+            <InputWrapper
+              margin="0 0 16px 0"
+              height="32px"
+              width="100%"
+              position="relative"
+              justifyContent="space-between"
             >
-              +
-            </PrimaryTextSpan>
-          </ButtonIncreaseDecreasePrice>
+              <MaskedInput
+                mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+                showMask={false}
+                onChange={handleChangePurchaseAt}
+                value={purchaseAtValue}
+                guide={false}
+                placeholder="Non Set"
+                render={(ref, props) => (
+                  <InputPnL ref={ref} {...props}></InputPnL>
+                )}
+              ></MaskedInput>
+              <FlexContainer>
+                <ButtonIncreaseDecreasePrice>
+                  <PrimaryTextSpan
+                    fontSize="16px"
+                    fontWeight="bold"
+                    color="rgba(255, 255, 255, 0.5)"
+                  >
+                    -
+                  </PrimaryTextSpan>
+                </ButtonIncreaseDecreasePrice>
+                <ButtonIncreaseDecreasePrice>
+                  <PrimaryTextSpan
+                    fontSize="16px"
+                    fontWeight="bold"
+                    color="rgba(255, 255, 255, 0.5)"
+                  >
+                    +
+                  </PrimaryTextSpan>
+                </ButtonIncreaseDecreasePrice>
+              </FlexContainer>
+            </InputWrapper>
+            <FlexContainer
+              justifyContent="space-between"
+              alignItems="center"
+              margin="0 0 16px 0"
+            >
+              <PrimaryTextSpan
+                color="rgba(255, 255, 255, 0.3)"
+                fontSize="11px"
+                lineHeight="12px"
+              >
+                Current price
+              </PrimaryTextSpan>
+              <PrimaryTextSpan
+                textDecoration="underline"
+                color="rgba(255, 255, 255, 0.8)"
+                fontSize="11px"
+                lineHeight="12px"
+              >
+                <Observer>
+                  {() => <>{quotesStore.quotes[instrumentId].bid.c}</>}
+                </Observer>
+              </PrimaryTextSpan>
+            </FlexContainer>
+            <ButtonApply>Apply</ButtonApply>
+          </Wrapper>
         </FlexContainer>
-      </InputWrapper>
-      <FlexContainer
-        justifyContent="space-between"
-        alignItems="center"
-        margin="0 0 16px 0"
-      >
-        <PrimaryTextSpan
-          color="rgba(255, 255, 255, 0.3)"
-          fontSize="11px"
-          lineHeight="12px"
-        >
-          Current price
-        </PrimaryTextSpan>
-        <PrimaryTextSpan
-          textDecoration="underline"
-          color="rgba(255, 255, 255, 0.8)"
-          fontSize="11px"
-          lineHeight="12px"
-        >
-          <Observer>
-            {() => <>{quotesStore.quotes[instrumentId].bid.c}</>}
-          </Observer>
-        </PrimaryTextSpan>
-      </FlexContainer>
-      <ButtonApply>Apply</ButtonApply>
-    </Wrapper>
+      )}
+    </FlexContainer>
   );
 }
 
@@ -206,4 +246,11 @@ const ButtonApply = styled(ButtonWithoutStyles)`
   line-height: 16px;
   color: #003a38;
   height: 32px;
+`;
+const ButtonAutoClosePurchase = styled(ButtonWithoutStyles)`
+  height: 40px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 14px;
 `;

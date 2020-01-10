@@ -28,6 +28,7 @@ import ErropPopup from '../ErropPopup';
 import MultiplierDropdown from './MultiplierDropdown';
 import InvestAmountDropdown from './InvestAmountDropdown';
 import { Observer } from 'mobx-react-lite';
+import { darken, lighten } from 'polished';
 
 interface Props {
   currencySymbol: string;
@@ -116,302 +117,252 @@ function BuySellPanel(props: Props) {
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
         enableReinitialize
+        validateOnChange={false}
+        validateOnBlur={false}
       >
-        {({ isSubmitting, isValid, setFieldValue, values, submitForm }) => (
-          <CustomForm autoComplete="off">
-            <FlexContainer
-              justifyContent="space-between"
-              flexWrap="wrap"
-              margin="0 0 4px 0"
-            >
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                textTransform="uppercase"
-                opacity="0.3"
+        {({
+          isSubmitting,
+          isValid,
+          setFieldValue,
+          values,
+          submitForm,
+          isValidating,
+        }) => {
+          console.log('TCL: BuySellPanel -> isValidating', isValidating);
+          return (
+            <CustomForm autoComplete="off">
+              <FlexContainer
+                justifyContent="space-between"
+                flexWrap="wrap"
+                margin="0 0 4px 0"
               >
-                Invest
-              </PrimaryTextSpan>
-              <InfoIcon
-                justifyContent="center"
-                alignItems="center"
-                width="14px"
-                height="14px"
-              >
-                i
-              </InfoIcon>
-            </FlexContainer>
-            <Field type="text" name={Fields.AMOUNT}>
-              {({ field, meta }: FieldProps) => (
-                <InvestedAmoutInputWrapper
-                  padding="0 0 0 4px"
-                  margin="0 0 14px 0"
-                  position="relative"
-                  alignItems="center"
-                  zIndex="100"
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  textTransform="uppercase"
+                  opacity="0.3"
                 >
-                  {meta.touched && meta.error && (
-                    <ErropPopup
-                      textColor="#fffccc"
-                      bgColor={ColorsPallete.RAZZMATAZZ}
-                      classNameTooltip={Fields.AMOUNT}
-                    >
-                      This value is higher or lower than the one currently
-                      allowed
-                    </ErropPopup>
+                  Invest
+                </PrimaryTextSpan>
+                <InfoIcon
+                  justifyContent="center"
+                  alignItems="center"
+                  width="14px"
+                  height="14px"
+                >
+                  i
+                </InfoIcon>
+              </FlexContainer>
+              <Field type="text" name={Fields.AMOUNT}>
+                {({ field, meta }: FieldProps) => (
+                  <InvestedAmoutInputWrapper
+                    padding="0 0 0 4px"
+                    margin="0 0 14px 0"
+                    position="relative"
+                    alignItems="center"
+                    zIndex="100"
+                  >
+                    {meta.touched && meta.error && (
+                      <ErropPopup
+                        textColor="#fffccc"
+                        bgColor={ColorsPallete.RAZZMATAZZ}
+                        classNameTooltip={Fields.AMOUNT}
+                      >
+                        This value is higher or lower than the one currently
+                        allowed
+                      </ErropPopup>
+                    )}
+                    <PrimaryTextSpan fontWeight="bold" marginRight="2px">
+                      {currencySymbol}
+                    </PrimaryTextSpan>
+
+                    <FlexContainer alignItems="center">
+                      <MaskedInput
+                        {...field}
+                        mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+                        showMask={true}
+                        guide={false}
+                        render={(ref, props) => (
+                          <>
+                            <InvestInput ref={ref} {...props} />
+                            <InvestAmountDropdown
+                              setFieldValue={setFieldValue}
+                              symbol={currencySymbol}
+                            />
+                          </>
+                        )}
+                      ></MaskedInput>
+                      <PlusMinusButtonWrapper flexDirection="column">
+                        <PlusButton
+                          type="button"
+                          onClick={handleChangeInputAmount(
+                            setFieldValue,
+                            values.investmentAmount,
+                            true
+                          )}
+                        >
+                          <PrimaryTextSpan fontWeight="bold">+</PrimaryTextSpan>
+                        </PlusButton>
+                        <MinusButton
+                          type="button"
+                          onClick={handleChangeInputAmount(
+                            setFieldValue,
+                            values.investmentAmount
+                          )}
+                        >
+                          <PrimaryTextSpan fontWeight="bold">-</PrimaryTextSpan>
+                        </MinusButton>
+                      </PlusMinusButtonWrapper>
+                    </FlexContainer>
+                  </InvestedAmoutInputWrapper>
+                )}
+              </Field>
+
+              <FlexContainer
+                justifyContent="space-between"
+                flexWrap="wrap"
+                margin="0 0 4px 0"
+              >
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  textTransform="uppercase"
+                  opacity="0.3"
+                >
+                  Leverage
+                </PrimaryTextSpan>
+                <NotificationTooltip
+                  bgColor="#000000"
+                  textColor="#fff"
+                  classNameTooltip="leverage"
+                >
+                  The amount you’d like to invest
+                </NotificationTooltip>
+              </FlexContainer>
+              <MultiplierDropdown
+                multipliers={instrument.multiplier}
+                selectedMultiplier={values.multiplier}
+                setFieldValue={setFieldValue}
+              ></MultiplierDropdown>
+              <FlexContainer
+                justifyContent="space-between"
+                flexWrap="wrap"
+                margin="0 0 4px 0"
+              >
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  textTransform="uppercase"
+                  opacity="0.3"
+                >
+                  Autoclose
+                </PrimaryTextSpan>
+                <InfoIcon
+                  justifyContent="center"
+                  alignItems="center"
+                  width="14px"
+                  height="14px"
+                >
+                  i
+                </InfoIcon>
+              </FlexContainer>
+              <AutoClosePopup
+                setFieldValue={setFieldValue}
+                values={values}
+                currencySymbol={currencySymbol}
+              ></AutoClosePopup>
+              <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  textTransform="uppercase"
+                  opacity="0.3"
+                >
+                  VOLUME
+                </PrimaryTextSpan>
+                <ValueText>
+                  {currencySymbol}
+                  {calculateVolume(values)}
+                </ValueText>
+              </FlexContainer>
+              <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  textTransform="uppercase"
+                  opacity="0.3"
+                >
+                  Spread
+                </PrimaryTextSpan>
+                <Observer>
+                  {() => (
+                    <ValueText>
+                      {currencySymbol}
+                      {Math.abs(
+                        quotesStore.quotes[instrument.id].bid.c -
+                          quotesStore.quotes[instrument.id].ask.c
+                      ).toFixed(digits)}
+                    </ValueText>
                   )}
-                  <PrimaryTextSpan fontWeight="bold" marginRight="2px">
-                    {currencySymbol}
-                  </PrimaryTextSpan>
-
-                  <FlexContainer alignItems="center">
-                    <MaskedInput
-                      {...field}
-                      mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-                      showMask={true}
-                      guide={false}
-                      render={(ref, props) => (
-                        <>
-                          <InvestInput ref={ref} {...props} />
-                          <InvestAmountDropdown
-                            setFieldValue={setFieldValue}
-                            symbol={currencySymbol}
-                          />
-                        </>
-                      )}
-                    ></MaskedInput>
-                    <PlusMinusButtonWrapper flexDirection="column">
-                      <PlusButton
-                        type="button"
-                        onClick={handleChangeInputAmount(
-                          setFieldValue,
-                          values.investmentAmount,
-                          true
-                        )}
-                      >
-                        <PrimaryTextSpan fontWeight="bold">+</PrimaryTextSpan>
-                      </PlusButton>
-                      <MinusButton
-                        type="button"
-                        onClick={handleChangeInputAmount(
-                          setFieldValue,
-                          values.investmentAmount
-                        )}
-                      >
-                        <PrimaryTextSpan fontWeight="bold">-</PrimaryTextSpan>
-                      </MinusButton>
-                    </PlusMinusButtonWrapper>
+                </Observer>
+              </FlexContainer>
+              <FlexContainer flexDirection="column">
+                <ButtonBuy
+                  type="button"
+                  onClick={handleOpenPosition(
+                    submitForm,
+                    AskBidEnum.Buy,
+                    setFieldValue
+                  )}
+                >
+                  <FlexContainer margin="0 8px 0 0">
+                    <SvgIcon {...IconShevronBuy} fill="#003A38"></SvgIcon>
                   </FlexContainer>
-                </InvestedAmoutInputWrapper>
-              )}
-            </Field>
-
-            <FlexContainer
-              justifyContent="space-between"
-              flexWrap="wrap"
-              margin="0 0 4px 0"
-            >
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                textTransform="uppercase"
-                opacity="0.3"
+                  Buy
+                </ButtonBuy>
+                <ButtonSell type="button" disabled={!isValid || isSubmitting}>
+                  <FlexContainer margin="0 8px 0 0">
+                    <SvgIcon {...IconShevronSell} fill="#fff"></SvgIcon>
+                  </FlexContainer>
+                  Sell
+                </ButtonSell>
+              </FlexContainer>
+              <FlexContainer
+                justifyContent="space-between"
+                flexWrap="wrap"
+                margin="0 0 4px 0"
               >
-                Leverage
-              </PrimaryTextSpan>
-              <NotificationTooltip
-                bgColor="#000000"
-                textColor="#fff"
-                classNameTooltip="leverage"
-              >
-                The amount you’d like to invest
-              </NotificationTooltip>
-            </FlexContainer>
-            <MultiplierDropdown
-              multipliers={instrument.multiplier}
-              selectedMultiplier={values.multiplier}
-              setFieldValue={setFieldValue}
-            ></MultiplierDropdown>
-            <FlexContainer
-              justifyContent="space-between"
-              flexWrap="wrap"
-              margin="0 0 4px 0"
-            >
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                textTransform="uppercase"
-                opacity="0.3"
-              >
-                Autoclose
-              </PrimaryTextSpan>
-              <InfoIcon
-                justifyContent="center"
-                alignItems="center"
-                width="14px"
-                height="14px"
-              >
-                i
-              </InfoIcon>
-            </FlexContainer>
-            <FlexContainer position="relative">
-              <Toggle>
-                {({ on, toggle }) => (
-                  <>
-                    <ButtonAutoClosePurchase onClick={toggle} type="button">
-                      <PrimaryTextSpan color="#fffccc">
-                        {values.sl ||
-                        values.slRate ||
-                        values.tp ||
-                        values.tpRate
-                          ? `+${currencySymbol}${values.tp ||
-                              values.tpRate ||
-                              'Non Set'} -${currencySymbol}${values.sl ||
-                              values.slRate ||
-                              'Non Set'}`
-                          : 'Set'}
-                      </PrimaryTextSpan>
-                    </ButtonAutoClosePurchase>
-                    {on && (
-                      <FlexContainer
-                        position="absolute"
-                        top="20px"
-                        right="100%"
-                      >
-                        <AutoClosePopup
-                          toggle={toggle}
-                          setFieldValue={setFieldValue}
-                          values={values}
-                        ></AutoClosePopup>
-                      </FlexContainer>
-                    )}
-                  </>
-                )}
-              </Toggle>
-            </FlexContainer>
-
-            <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                textTransform="uppercase"
-                opacity="0.3"
-              >
-                VOLUME
-              </PrimaryTextSpan>
-              <ValueText>
-                {currencySymbol}
-                {calculateVolume(values)}
-              </ValueText>
-            </FlexContainer>
-            <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                textTransform="uppercase"
-                opacity="0.3"
-              >
-                Spread
-              </PrimaryTextSpan>
-              <Observer>
-                {() => (
-                  <ValueText>
-                    {currencySymbol}
-                    {Math.abs(
-                      quotesStore.quotes[instrument.id].bid.c -
-                        quotesStore.quotes[instrument.id].ask.c
-                    ).toFixed(digits)}
-                  </ValueText>
-                )}
-              </Observer>
-            </FlexContainer>
-            <FlexContainer flexDirection="column">
-              <ButtonBuy
-                type="button"
-                disabled={!isValid || isSubmitting}
-                onClick={handleOpenPosition(
-                  submitForm,
-                  AskBidEnum.Buy,
-                  setFieldValue
-                )}
-              >
-                <FlexContainer margin="0 8px 0 0">
-                  <SvgIcon {...IconShevronBuy} fill="#003A38"></SvgIcon>
-                </FlexContainer>
-                Buy
-              </ButtonBuy>
-              <ButtonSell type="button" disabled={!isValid || isSubmitting}>
-                <FlexContainer margin="0 8px 0 0">
-                  <SvgIcon {...IconShevronSell} fill="#fff"></SvgIcon>
-                </FlexContainer>
-                Sell
-              </ButtonSell>
-            </FlexContainer>
-            <FlexContainer
-              justifyContent="space-between"
-              flexWrap="wrap"
-              margin="0 0 4px 0"
-            >
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                textTransform="uppercase"
-                opacity="0.3"
-              >
-                Purchase at
-              </PrimaryTextSpan>
-              <InfoIcon
-                justifyContent="center"
-                alignItems="center"
-                width="14px"
-                height="14px"
-              >
-                i
-              </InfoIcon>
-            </FlexContainer>
-            <FlexContainer position="relative">
-              <Toggle>
-                {({ on, toggle }) => (
-                  <>
-                    <ButtonAutoClosePurchase onClick={toggle} type="button">
-                      <PrimaryTextSpan color="#fffccc">
-                        Purchase at
-                      </PrimaryTextSpan>
-                    </ButtonAutoClosePurchase>
-                    {on && (
-                      <FlexContainer
-                        position="absolute"
-                        top="20px"
-                        right="100%"
-                      >
-                        <PurchaseAtPopup
-                          toggle={toggle}
-                          setFieldValue={setFieldValue}
-                          purchaseAtValue={values.purchaseAt}
-                          instrumentId={instrument.id}
-                        ></PurchaseAtPopup>
-                      </FlexContainer>
-                    )}
-                  </>
-                )}
-              </Toggle>
-            </FlexContainer>
-          </CustomForm>
-        )}
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  textTransform="uppercase"
+                  opacity="0.3"
+                >
+                  Purchase at
+                </PrimaryTextSpan>
+                <InfoIcon
+                  justifyContent="center"
+                  alignItems="center"
+                  width="14px"
+                  height="14px"
+                >
+                  i
+                </InfoIcon>
+              </FlexContainer>
+              <PurchaseAtPopup
+                setFieldValue={setFieldValue}
+                purchaseAtValue={values.purchaseAt}
+                instrumentId={instrument.id}
+              ></PurchaseAtPopup>
+            </CustomForm>
+          );
+        }}
       </Formik>
     </FlexContainer>
   );
 }
 
 export default BuySellPanel;
-
-const ButtonAutoClosePurchase = styled(ButtonWithoutStyles)`
-  height: 40px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
-  width: 100%;
-  margin-bottom: 14px;
-`;
 
 const InvestInput = styled.input`
   height: 100%;
@@ -446,7 +397,7 @@ const ValueText = styled.span`
 `;
 
 const ButtonSell = styled(ButtonWithoutStyles)`
-  background: linear-gradient(0deg, #ed145b, #ed145b);
+  background-color: #ed145b;
   border-radius: 4px;
   height: 56px;
   color: #fff;
@@ -457,14 +408,23 @@ const ButtonSell = styled(ButtonWithoutStyles)`
   justify-content: center;
   align-items: center;
   margin-bottom: 18px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: ${darken(0.1, '#ed145b')};
+  }
 `;
 
 const ButtonBuy = styled(ButtonSell)`
-  background: linear-gradient(0deg, #00fff2, #00fff2);
+  background-color: #00fff2;
   box-shadow: 0px 4px 8px rgba(0, 255, 242, 0.17),
     inset 0px -3px 6px rgba(0, 255, 242, 0.26);
   color: #003a38;
   margin-bottom: 8px;
+
+  &:hover {
+    background-color: ${darken(0.1, '#00fff2')};
+  }
 `;
 
 const CustomForm = styled(Form)`

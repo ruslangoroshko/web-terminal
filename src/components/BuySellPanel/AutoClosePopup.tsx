@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useContext } from 'react';
+import React, { useState, ChangeEvent, useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
@@ -16,15 +16,18 @@ import MaskedInput from 'react-text-mask';
 import { useStores } from '../../hooks/useStores';
 
 interface Props {
-  toggle: () => void;
   setFieldValue: (field: any, value: any) => void;
   values: OpenPositionModelFormik;
+  currencySymbol: string;
 }
 
 function AutoClosePopup(props: Props) {
-  const { toggle, setFieldValue } = props;
+  const { setFieldValue, values, currencySymbol } = props;
 
   const { buySellStore } = useStores();
+  const [on, toggle] = useState(false);
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
     buySellStore.takeProfitValue = e.target.value;
@@ -67,100 +70,147 @@ function AutoClosePopup(props: Props) {
     }
     setFieldValue(fieldProfit, buySellStore.takeProfitValue);
     setFieldValue(fieldLoss, buySellStore.stopLossValue);
-    toggle();
+    toggle(false);
   };
 
+  const handleToggle = () => {
+    toggle(!on);
+  };
+
+  const handleClickOutside = (e: any) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      toggle(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  });
+
   return (
-    <Wrapper
-      position="relative"
-      padding="16px"
-      flexDirection="column"
-      width="200px"
-    >
-      <ButtonClose onClick={toggle}>
-        <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
-      </ButtonClose>
-      <PrimaryTextParagraph marginBottom="16px">
-        Set Autoclose
-      </PrimaryTextParagraph>
-      <FlexContainer
-        margin="0 0 6px 0"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <PrimaryTextSpan
-          fontSize="11px"
-          lineHeight="12px"
-          color="rgba(255, 255, 255, 0.3)"
-          textTransform="uppercase"
-        >
-          When Profit is
+    <FlexContainer position="relative" ref={wrapperRef}>
+      <ButtonAutoClosePurchase onClick={handleToggle} type="button">
+        <PrimaryTextSpan color="#fffccc">
+          {values.sl || values.slRate || values.tp || values.tpRate
+            ? `+${currencySymbol}${values.tp ||
+                values.tpRate ||
+                'Non Set'} -${currencySymbol}${values.sl ||
+                values.slRate ||
+                'Non Set'}`
+            : 'Set'}
         </PrimaryTextSpan>
-        <InfoIcon width="14px" justifyContent="center" alignItems="center">
-          i
-        </InfoIcon>
-      </FlexContainer>
-      <InputWrapper
-        padding="8px 32px 8px 22px"
-        margin="0 0 16px 0"
-        height="32px"
-        width="100%"
-        position="relative"
-      >
-        <PlusSign>+</PlusSign>
-        <MaskedInput
-          mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-          showMask={false}
-          onChange={handleChangeProfit}
-          value={buySellStore.takeProfitValue}
-          guide={false}
-          placeholder="Non Set"
-          render={(ref, props) => <InputPnL ref={ref} {...props}></InputPnL>}
-        ></MaskedInput>
-        <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown pnlType="profit"></PnLTypeDropdown>
+      </ButtonAutoClosePurchase>
+      {on && (
+        <FlexContainer position="absolute" top="20px" right="100%">
+          <Wrapper
+            position="relative"
+            padding="16px"
+            flexDirection="column"
+            width="200px"
+          >
+            <ButtonClose onClick={handleToggle}>
+              <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
+            </ButtonClose>
+            <PrimaryTextParagraph marginBottom="16px">
+              Set Autoclose
+            </PrimaryTextParagraph>
+            <FlexContainer
+              margin="0 0 6px 0"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                color="rgba(255, 255, 255, 0.3)"
+                textTransform="uppercase"
+              >
+                When Profit is
+              </PrimaryTextSpan>
+              <InfoIcon
+                width="14px"
+                justifyContent="center"
+                alignItems="center"
+              >
+                i
+              </InfoIcon>
+            </FlexContainer>
+            <InputWrapper
+              padding="8px 32px 8px 22px"
+              margin="0 0 16px 0"
+              height="32px"
+              width="100%"
+              position="relative"
+            >
+              <PlusSign>+</PlusSign>
+              <MaskedInput
+                mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+                showMask={false}
+                onChange={handleChangeProfit}
+                value={buySellStore.takeProfitValue}
+                guide={false}
+                placeholder="Non Set"
+                render={(ref, props) => (
+                  <InputPnL ref={ref} {...props}></InputPnL>
+                )}
+              ></MaskedInput>
+              <FlexContainer position="absolute" right="2px" top="2px">
+                <PnLTypeDropdown pnlType="profit"></PnLTypeDropdown>
+              </FlexContainer>
+            </InputWrapper>
+            <FlexContainer
+              margin="0 0 6px 0"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                color="rgba(255, 255, 255, 0.3)"
+                textTransform="uppercase"
+              >
+                When Loss is
+              </PrimaryTextSpan>
+              <InfoIcon
+                width="14px"
+                justifyContent="center"
+                alignItems="center"
+              >
+                i
+              </InfoIcon>
+            </FlexContainer>
+            <InputWrapper
+              padding="8px 32px 8px 22px"
+              margin="0 0 16px 0"
+              height="32px"
+              width="100%"
+              position="relative"
+            >
+              <PlusSign>-</PlusSign>
+              <MaskedInput
+                mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
+                showMask={false}
+                placeholder="Non Set"
+                onChange={handleChangeLoss}
+                value={buySellStore.stopLossValue}
+                guide={false}
+                render={(ref, props) => (
+                  <InputPnL ref={ref} {...props}></InputPnL>
+                )}
+              ></MaskedInput>
+              <FlexContainer position="absolute" right="2px" top="2px">
+                <PnLTypeDropdown pnlType="loss"></PnLTypeDropdown>
+              </FlexContainer>
+            </InputWrapper>
+            <ButtonApply onClick={handleApply}>Apply</ButtonApply>
+          </Wrapper>
         </FlexContainer>
-      </InputWrapper>
-      <FlexContainer
-        margin="0 0 6px 0"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <PrimaryTextSpan
-          fontSize="11px"
-          lineHeight="12px"
-          color="rgba(255, 255, 255, 0.3)"
-          textTransform="uppercase"
-        >
-          When Loss is
-        </PrimaryTextSpan>
-        <InfoIcon width="14px" justifyContent="center" alignItems="center">
-          i
-        </InfoIcon>
-      </FlexContainer>
-      <InputWrapper
-        padding="8px 32px 8px 22px"
-        margin="0 0 16px 0"
-        height="32px"
-        width="100%"
-        position="relative"
-      >
-        <PlusSign>-</PlusSign>
-        <MaskedInput
-          mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-          showMask={false}
-          placeholder="Non Set"
-          onChange={handleChangeLoss}
-          value={buySellStore.stopLossValue}
-          guide={false}
-          render={(ref, props) => <InputPnL ref={ref} {...props}></InputPnL>}
-        ></MaskedInput>
-        <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown pnlType="loss"></PnLTypeDropdown>
-        </FlexContainer>
-      </InputWrapper>
-      <ButtonApply onClick={handleApply}>Apply</ButtonApply>
-    </Wrapper>
+      )}
+    </FlexContainer>
   );
 }
 
@@ -252,4 +302,12 @@ const ButtonApply = styled(ButtonWithoutStyles)`
   line-height: 16px;
   color: #003a38;
   height: 32px;
+`;
+
+const ButtonAutoClosePurchase = styled(ButtonWithoutStyles)`
+  height: 40px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 14px;
 `;
