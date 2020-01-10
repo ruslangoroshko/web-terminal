@@ -28,7 +28,7 @@ import {
   supportedResolutions,
 } from '../constants/supportedTimeScales';
 import moment from 'moment';
-import { BASIC_RESOLUTION_KEY } from '../constants/defaultChartValues';
+import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 

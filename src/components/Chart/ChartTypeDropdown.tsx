@@ -1,37 +1,31 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
-import {
-  PrimaryTextParagraph,
-  PrimaryTextSpan,
-} from '../../styles/TextsElements';
-import {
-  supportedResolutions,
-  SupportedResolutionsType,
-} from '../../constants/supportedTimeScales';
+import { PrimaryTextParagraph } from '../../styles/TextsElements';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
+import SvgIcon from '../SvgIcon';
+import { SeriesStyle } from '../../vendor/charting_library/charting_library.min';
+import {
+  getChartLabelByType,
+  getChartIconByType,
+  availableChartTypes,
+} from '../../constants/chartValues';
 
 interface Props {}
 
-const ChartResolutionsDropdown: FC<Props> = props => {
+const ChartTypeDropdown: FC<Props> = props => {
   const { tradingViewStore } = useStores();
 
   const [on, toggle] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const handleChangeResolution = (
-    resolutionKey: SupportedResolutionsType
-  ) => () => {
-    tradingViewStore.tradingWidget
-      ?.chart()
-      .setResolution(supportedResolutions[resolutionKey], () => {
-        tradingViewStore.resolutionKey = resolutionKey;
-        tradingViewStore.interval = null;
-        toggle(false);
-      });
+  const handleChangeChart = (chartType: SeriesStyle) => () => {
+    tradingViewStore.tradingWidget?.chart().setChartType(chartType);
+    tradingViewStore.chartType = chartType;
+    toggle(false);
   };
 
   const handleToggle = () => {
@@ -42,14 +36,6 @@ const ChartResolutionsDropdown: FC<Props> = props => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
       toggle(false);
     }
-  };
-
-  const getShortName = (resolutionKey: SupportedResolutionsType | null) => {
-    if (!resolutionKey) {
-      return '';
-    }
-    const splittedBySpace = resolutionKey.split(' ');
-    return `${splittedBySpace[0]}${splittedBySpace[1][0]}`;
   };
 
   useEffect(() => {
@@ -65,11 +51,10 @@ const ChartResolutionsDropdown: FC<Props> = props => {
       <Observer>
         {() => (
           <SettingsButton onClick={handleToggle}>
-            <PrimaryTextSpan
-              color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
-            >
-              {getShortName(tradingViewStore.resolutionKey)}
-            </PrimaryTextSpan>
+            <SvgIcon
+              fill={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
+              {...getChartIconByType(tradingViewStore.chartType)}
+            ></SvgIcon>
           </SettingsButton>
         )}
       </Observer>
@@ -81,12 +66,10 @@ const ChartResolutionsDropdown: FC<Props> = props => {
           <Observer>
             {() => (
               <>
-                {(Object.keys(supportedResolutions) as Array<
-                  keyof typeof supportedResolutions
-                >).map(key => (
+                {availableChartTypes.map(chartType => (
                   <ButtonWithoutStyles
-                    key={key}
-                    onClick={handleChangeResolution(key)}
+                    key={chartType}
+                    onClick={handleChangeChart(chartType)}
                   >
                     <PrimaryTextParagraph
                       fontSize="12px"
@@ -94,7 +77,7 @@ const ChartResolutionsDropdown: FC<Props> = props => {
                       marginBottom="12px"
                       whiteSpace="nowrap"
                     >
-                      {key}
+                      {getChartLabelByType(chartType)}
                     </PrimaryTextParagraph>
                   </ButtonWithoutStyles>
                 ))}
@@ -108,7 +91,7 @@ const ChartResolutionsDropdown: FC<Props> = props => {
   );
 };
 
-export default ChartResolutionsDropdown;
+export default ChartTypeDropdown;
 
 const ChartResolutionsDropdownWrapper = styled(FlexContainer)`
   position: absolute;

@@ -12,7 +12,7 @@ import ColorsPallete from '../styles/colorPallete';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { useStores } from '../hooks/useStores';
 import { supportedResolutions } from '../constants/supportedTimeScales';
-import { BASIC_RESOLUTION_KEY } from '../constants/defaultChartValues';
+import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');

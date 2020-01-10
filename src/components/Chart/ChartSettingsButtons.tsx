@@ -7,6 +7,7 @@ import IconSettings from '../../assets/svg/icon-chart-settings.svg';
 import IconLineStyle from '../../assets/svg/icon-chart-line-style.svg';
 import Toggle from '../Toggle';
 import ChartResolutionsDropdown from './ChartResolutionsDropdown';
+import ChartTypeDropdown from './ChartTypeDropdown';
 
 interface Props {}
 
@@ -18,9 +19,7 @@ function ChartSettingsButtons(props: Props) {
       <SettingsButton>
         <SvgIcon {...IconSettings} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
       </SettingsButton>
-      <SettingsButton>
-        <SvgIcon {...IconLineStyle} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
-      </SettingsButton>
+      <ChartTypeDropdown />
       <ChartResolutionsDropdown />
     </FlexContainer>
   );
