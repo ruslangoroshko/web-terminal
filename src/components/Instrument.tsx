@@ -9,7 +9,7 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
 import styled from '@emotion/styled';
 import { useStores } from '../hooks/useStores';
-import { observer, Observer } from 'mobx-react-lite';
+import { Observer } from 'mobx-react-lite';
 import { PrimaryTextSpan, QuoteText } from '../styles/TextsElements';
 import calculateGrowth from '../helpers/calculateGrowth';
 import { AskBidEnum } from '../enums/AskBid';
@@ -44,62 +44,65 @@ const Instrument: FC<Props> = ({
   }, [instrument]);
 
   return (
-    <QuotesFeedWrapper
-      isActive={isActive}
-      padding="6px 0 6px 8px"
-      onClick={switchInstrument}
-      width="128px"
-      height="40px"
-      alignItems="center"
-      justifyContent="space-between"
-    >
-      <FlexContainer
-        height="24px"
-        width="24px"
-        position="relative"
-        margin="0 6px 0 0"
-      ></FlexContainer>
-      {quotesStore.quotes[instrument.id] && (
-        <Observer>
-          {() => (
-            <FlexContainer margin="0 8px 0 0" flexDirection="column">
-              <PrimaryTextSpan fontSize="12px">
-                {instrument.name}
-              </PrimaryTextSpan>
-              <QuoteText
-                fontSize="11px"
-                lineHeight="14px"
-                isGrowth={
-                  quotesStore.quotes[instrument.id].dir === AskBidEnum.Buy
-                }
-              >
-                {calculateGrowth(
-                  quotesStore.quotes[instrument.id].bid.c,
-                  quotesStore.quotes[instrument.id].ask.c,
-                  mainAppStore.account?.digits
-                )}
-              </QuoteText>
-            </FlexContainer>
+    <MagicWrapperBorders isActive={isActive}>
+      <QuotesFeedWrapper
+        isActive={isActive}
+        padding="6px 0 6px 8px"
+        onClick={switchInstrument}
+        width="128px"
+        height="40px"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <FlexContainer>
+          {quotesStore.quotes[instrument.id] && (
+            <Observer>
+              {() => (
+                <FlexContainer margin="0 8px 0 0" flexDirection="column">
+                  <PrimaryTextSpan fontSize="12px">
+                    {instrument.name}
+                  </PrimaryTextSpan>
+                  <QuoteText
+                    fontSize="11px"
+                    lineHeight="14px"
+                    isGrowth={
+                      quotesStore.quotes[instrument.id].dir === AskBidEnum.Buy
+                    }
+                  >
+                    {calculateGrowth(
+                      quotesStore.quotes[instrument.id].bid.c,
+                      quotesStore.quotes[instrument.id].ask.c,
+                      mainAppStore.account?.digits
+                    )}
+                  </QuoteText>
+                </FlexContainer>
+              )}
+            </Observer>
           )}
-        </Observer>
-      )}
-      <SmallBorderToCloseIcon padding="0 8px 0 0" isActive={isActive}>
-        <ButtonWithoutStyles onClick={handleClose}>
-          <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
-        </ButtonWithoutStyles>
-      </SmallBorderToCloseIcon>
-    </QuotesFeedWrapper>
+          <FlexContainer padding="0 8px 0 0">
+            <ButtonWithoutStyles onClick={handleClose}>
+              <SvgIcon {...IconClose} fill="rgba(0, 0, 0, 0.6)"></SvgIcon>
+            </ButtonWithoutStyles>
+          </FlexContainer>
+        </FlexContainer>
+      </QuotesFeedWrapper>
+    </MagicWrapperBorders>
   );
 };
 
 export default Instrument;
 
 const QuotesFeedWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 128px;
+  height: 40px;
   align-items: center;
   box-shadow: ${props =>
     props.isActive ? 'inset 0px 1px 0px #00ffdd' : 'none'};
-  border-radius: 0px 0px 3px 3px;
+  border-radius: 0px 0px 4px 4px;
   overflow: hidden;
   transition: box-shadow 0.2s ease, background-color 0.2s ease;
   background: ${props =>
@@ -113,9 +116,25 @@ const QuotesFeedWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
     background-color: ${props =>
       !props.isActive && 'rgba(255, 255, 255, 0.08)'};
   }
+  &:hover {
+    cursor: pointer;
+
+    background-color: ${props =>
+      !props.isActive && 'rgba(255, 255, 255, 0.08)'};
+  }
 `;
 
-const SmallBorderToCloseIcon = styled(FlexContainer)<{ isActive?: boolean }>`
-  /* border-right: ${props =>
-    props.isActive ? 'none' : '1px solid rgba(0, 0, 0, 0.2)'}; */
+const MagicWrapperBorders = styled.div<{ isActive?: boolean }>`
+  position: relative;
+  display: table-cell;
+  width: 128px;
+  height: 20px;
+  border-right: ${props =>
+    props.isActive
+      ? '1px double rgba(0, 0, 0, 0)'
+      : '1px solid rgba(0, 0, 0, 0.6)'};
+  border-left: ${props =>
+    props.isActive
+      ? '1px double rgba(0, 0, 0, 0)'
+      : '1px solid rgba(0, 0, 0, 0.6)'};
 `;
