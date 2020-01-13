@@ -46,15 +46,15 @@ const Instrument: FC<Props> = ({
   return (
     <MagicWrapperBorders isActive={isActive}>
       <QuotesFeedWrapper
-        isActive={isActive}
         padding="6px 0 6px 8px"
+        isActive={isActive}
         onClick={switchInstrument}
-        width="128px"
-        height="40px"
-        alignItems="center"
-        justifyContent="space-between"
       >
-        <FlexContainer>
+        <FlexContainer
+          alignItems="center"
+          justifyContent="space-between"
+          width="100%"
+        >
           {quotesStore.quotes[instrument.id] && (
             <Observer>
               {() => (
@@ -80,9 +80,9 @@ const Instrument: FC<Props> = ({
             </Observer>
           )}
           <FlexContainer padding="0 8px 0 0">
-            <ButtonWithoutStyles onClick={handleClose}>
+            <CloseButton onClick={handleClose}>
               <SvgIcon {...IconClose} fill="rgba(0, 0, 0, 0.6)"></SvgIcon>
-            </ButtonWithoutStyles>
+            </CloseButton>
           </FlexContainer>
         </FlexContainer>
       </QuotesFeedWrapper>
@@ -137,4 +137,19 @@ const MagicWrapperBorders = styled.div<{ isActive?: boolean }>`
     props.isActive
       ? '1px double rgba(0, 0, 0, 0)'
       : '1px solid rgba(0, 0, 0, 0.6)'};
+
+  &:hover {
+    border-right: 1px double rgba(0, 0, 0, 0);
+    border-left: 1px double rgba(0, 0, 0, 0);
+  }
+`;
+
+const CloseButton = styled(ButtonWithoutStyles)`
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+
+    & > svg {
+      fill: white;
+    }
+  }
 `;
