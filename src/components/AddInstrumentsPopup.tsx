@@ -28,6 +28,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
       item => !searchValue || item.id.toLowerCase().includes(searchValue)
     );
   };
+  
   useEffect(() => {
     instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments;
   }, []);

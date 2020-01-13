@@ -2,8 +2,6 @@ import React, { FC } from 'react';
 import Instrument from './Instrument';
 import { useStores } from '../hooks/useStores';
 import { InstrumentModelWSDTO } from '../types/Instruments';
-import { FlexContainer } from '../styles/FlexContainer';
-import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
 import { observer } from 'mobx-react-lite';
 
@@ -42,5 +40,5 @@ const InstrumentsWrapper = styled.div`
   display: table;
   border-collapse: collapse;
   padding: 0 8px;
-  margin: 10px 4px;
+  margin: 10px 8px;
 `;

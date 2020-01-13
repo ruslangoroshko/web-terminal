@@ -2,7 +2,7 @@ import React from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import MarketsIcon from '../../assets/svg/icon-bottom-bar-markets.svg';
 import PortfolioIcon from '../../assets/svg/icon-bottom-bar-portfolio.svg';
-import NewsIcon from '../../assets/svg/icon-bottom-bar-news.svg';
+import IconHistory from '../../assets/svg/icon-sidebar-history.svg';
 
 import SideBarButton from './SideBarButton';
 import styled from '@emotion/styled';
@@ -40,8 +40,8 @@ const SideBar = observer(() => {
         setSideBarActive={setSideBarActive(SideBarTabType.Portfolio)}
       />
       <SideBarButton
-        iconProps={NewsIcon}
-        title="News"
+        iconProps={IconHistory}
+        title="History"
         isActive={tabsStore.sideBarTabType === SideBarTabType.History}
         setSideBarActive={setSideBarActive(SideBarTabType.History)}
       />

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
@@ -11,34 +11,41 @@ import { useStores } from '../../hooks/useStores';
 import InstrumentInfoPortfolioTab from './InstrumentInfo';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { Observer } from 'mobx-react-lite';
+import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 
 interface Props {}
 
 const Portfolio: FC<Props> = props => {
-  const { quotesStore, mainAppStore } = useStores();
+  const { quotesStore, mainAppStore, tabsStore } = useStores();
+
+  const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    tabsStore.portfolioTab = portfolioTab;
+  };
+
   return (
     <PortfolioWrapper padding="12px 16px" flexDirection="column">
       <FlexContainer flexDirection="column">
         <FlexContainer margin="0 0 28px">
-          <TabPortfolitButton>
-            <PrimaryTextSpan
-              fontSize="12px"
-              lineHeight="16px"
-              textTransform="uppercase"
-              color="#fff"
-            >
-              Portfolio
-            </PrimaryTextSpan>
-          </TabPortfolitButton>
-          <TabPortfolitButton>
-            <PrimaryTextSpan
-              fontSize="12px"
-              lineHeight="16px"
-              textTransform="uppercase"
-            >
-              Orders
-            </PrimaryTextSpan>
-          </TabPortfolitButton>
+          <Observer>
+            {() => (
+              <>
+                <TabPortfolitButton
+                  isActive={
+                    tabsStore.portfolioTab === PortfolioTabEnum.Portfolio
+                  }
+                  onClick={handleChangePortfolioTab(PortfolioTabEnum.Portfolio)}
+                >
+                  Portfolio
+                </TabPortfolitButton>
+                <TabPortfolitButton
+                  isActive={tabsStore.portfolioTab === PortfolioTabEnum.Orders}
+                  onClick={handleChangePortfolioTab(PortfolioTabEnum.Orders)}
+                >
+                  Orders
+                </TabPortfolitButton>
+              </>
+            )}
+          </Observer>
         </FlexContainer>
         <FlexContainer flexDirection="column">
           <PrimaryTextParagraph
@@ -128,11 +135,35 @@ const Portfolio: FC<Props> = props => {
 export default Portfolio;
 
 const TabPortfolitButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
-  border-bottom: ${props => (props.isActive ? '1px solid #eeff00' : 'none')};
-  margin-right: 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 8px;
+  font-size: 12px;
+  color: ${props => (props.isActive ? '#fffcbd' : 'rgba(255,255,255,0.4)')};
+  text-transform: uppercase;
+  background: ${props =>
+    props.isActive
+      ? `radial-gradient(
+      50.41% 50% at 50% 0%,
+      rgba(0, 255, 221, 0.08) 0%,
+      rgba(0, 255, 221, 0) 100%
+    ),
+    rgba(255, 255, 255, 0.08)`
+      : 'none'};
+  box-shadow: ${props =>
+    props.isActive ? 'inset 0px 1px 0px #00ffdd' : 'none'};
+  border-radius: 0px 0px 4px 4px;
+  transition: all 0.2s ease;
 
-  &:last-of-type {
-    margin-right: 0;
+  &:hover {
+    color: #fffcbd;
+    background: radial-gradient(
+        50.41% 50% at 50% 0%,
+        rgba(0, 255, 221, 0.08) 0%,
+        rgba(0, 255, 221, 0) 100%
+      ),
+      rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0px 1px 0px #00ffdd;
   }
 `;
 

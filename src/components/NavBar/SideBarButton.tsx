@@ -22,10 +22,13 @@ function SideBarButton(props: Props) {
         alignItems="center"
         padding="12px 0 8px"
       >
-        <FlexContainer margin="0 0 4px 0">
+        <FlexContainer margin="0 0 8px 0">
           <SvgIcon
             {...iconProps}
-            fill={isActive ? ColorsPallete.EASTERN_BLUE : '#C4C4C4'}
+            // fill={
+            //   isActive ? ColorsPallete.EASTERN_BLUE : 'rgba(255, 255, 255, 0.5)'
+            // }
+            fill="rgba(255, 255, 255, 0.5)"
           ></SvgIcon>
         </FlexContainer>
         <Title isActive={isActive}>{title}</Title>
@@ -40,5 +43,6 @@ const Title = styled.span<{ isActive?: boolean }>`
   font-size: 11px;
   line-height: 12px;
   text-align: center;
-  color: ${props => (props.isActive ? ColorsPallete.EASTERN_BLUE : '#fff')};
+  /* color: ${props => (props.isActive ? ColorsPallete.EASTERN_BLUE : '#fff')}; */
+  color: #fff;
 `;

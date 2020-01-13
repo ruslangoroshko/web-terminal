@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
-import MonfexLogo from '../../assets/svg/logo-monfex.svg';
+import MonfexLogo from '../../assets/svg/icon-logo.svg';
+import MonfexLogoText from '../../assets/svg/icon-logo-text.svg';
 import styled from '@emotion/styled';
 import SwitchThemeButton from './SwitchThemeButton';
 import NotificationsButton from './NotificationsButton';
@@ -30,7 +31,10 @@ const NavBar: FC<Props> = observer(props => {
       zIndex="105"
     >
       <FlexContainer alignItems="center">
-        <SvgIcon {...MonfexLogo} fill="#21B3A4" />
+        <FlexContainer margin="0 6px 0 0">
+          <SvgIcon {...MonfexLogo} fill="#00FFDD" />
+        </FlexContainer>
+        <SvgIcon {...MonfexLogoText} fill="#21B3A4" />
       </FlexContainer>
       <FlexContainer>
         <FlexContainer alignItems="center" margin="0 20px 0 0">
