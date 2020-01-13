@@ -29,6 +29,7 @@ import MultiplierDropdown from './MultiplierDropdown';
 import InvestAmountDropdown from './InvestAmountDropdown';
 import { Observer } from 'mobx-react-lite';
 import { darken, lighten } from 'polished';
+import { getProcessId } from '../../helpers/getProcessId';
 
 interface Props {
   currencySymbol: string;
@@ -50,7 +51,7 @@ function BuySellPanel(props: Props) {
   const { currencySymbol, accountId, instrument, digits } = props;
 
   const initialValues: OpenPositionModelFormik = {
-    processId: v4(),
+    processId: getProcessId(),
     accountId,
     instrumentId: instrument.id,
     operation: AskBidEnum.Buy,
@@ -76,7 +77,6 @@ function BuySellPanel(props: Props) {
     sl: yup.number(),
     slRate: yup.number(),
   });
-
 
   const handleOpenPosition = (
     submitForm: () => Promise<void>,

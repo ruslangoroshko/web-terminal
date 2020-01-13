@@ -10,6 +10,7 @@ import Fields from '../constants/fields';
 import { AskBidEnum } from '../enums/AskBid';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import { v4 } from 'uuid';
+import { getProcessId } from '../helpers/getProcessId';
 
 interface Props {
   quoteName: string;
@@ -37,7 +38,7 @@ function OpenPosition(props: Props) {
   const [isRate, setRate] = useState(false);
 
   const initialValues: OpenPositionModel = {
-    processId: v4(),
+    processId: getProcessId(),
     accountId,
     instrumentId: instrument.id,
     operation: AskBidEnum.Buy,

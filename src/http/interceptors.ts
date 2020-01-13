@@ -9,6 +9,7 @@ const injectInerceptors = () => {
     },
     function(error: AxiosError) {
       if (error.response?.status === 401) {
+        debugger;
         appHistory.push(Page.SIGN_IN);
       }
       return Promise.reject(error);
