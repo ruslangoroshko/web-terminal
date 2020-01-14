@@ -28,7 +28,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
       item => !searchValue || item.id.toLowerCase().includes(searchValue)
     );
   };
-  
+
   useEffect(() => {
     instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments;
   }, []);
@@ -45,51 +45,17 @@ const AddInstrumentsPopup: FC<Props> = props => {
     >
       <FlexContainer
         padding="12px 12px 0 20px"
-        margin="0 0 20px 0"
+        margin="0 0 12px 0"
         width="100%"
       >
         <FlexContainer margin="0 6px 0 0">
           <SvgIcon {...IconSearch} fill="rgba(255, 255, 255, 0.5)"></SvgIcon>
         </FlexContainer>
-        <SearchInput onChange={handleChangeSearch} />
+        <SearchInput onChange={handleChangeSearch} placeholder="Search" />
         <FlexContainer>
           <ButtonWithoutStyles onClick={toggle}>
-            <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.5)"></SvgIcon>
+            <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.8)"></SvgIcon>
           </ButtonWithoutStyles>
-        </FlexContainer>
-      </FlexContainer>
-      <FlexContainer margin="0 0 8px 0">
-        <FlexContainer margin="0 20px 0 0">
-          <FlexContainer margin="0 4px 0 0">
-            <SvgIcon {...IconMarketsTop} fill="#fff" />
-          </FlexContainer>
-          <PrimaryTextSpan fontSize="12px" lineHeight="14px" color="#fff">
-            Top
-          </PrimaryTextSpan>
-        </FlexContainer>
-        <FlexContainer margin="0 20px 0 0">
-          <FlexContainer margin="0 4px 0 0">
-            <SvgIcon {...IconMarketsStocks} fill="#fff" />
-          </FlexContainer>
-          <PrimaryTextSpan fontSize="12px" lineHeight="14px" color="#fff">
-            Stocks
-          </PrimaryTextSpan>
-        </FlexContainer>
-        <FlexContainer margin="0 20px 0 0">
-          <FlexContainer margin="0 4px 0 0">
-            <SvgIcon {...IconMarketsFiat} fill="#fff" />
-          </FlexContainer>
-          <PrimaryTextSpan fontSize="12px" lineHeight="14px" color="#fff">
-            Fiat
-          </PrimaryTextSpan>
-        </FlexContainer>
-        <FlexContainer>
-          <FlexContainer margin="0 4px 0 0">
-            <SvgIcon {...IconMarketsCrypto} fill="#fff" />
-          </FlexContainer>
-          <PrimaryTextSpan fontSize="12px" lineHeight="14px" color="#fff">
-            Crypto
-          </PrimaryTextSpan>
         </FlexContainer>
       </FlexContainer>
       <InstrumentsWrapper
@@ -139,15 +105,21 @@ const SearchInput = styled.input`
   border: none;
   height: 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  margin-right: 2px;
+  margin-right: 4px;
   width: 100%;
   color: #fffccc;
   font-size: 12px;
   line-height: 14px;
+  padding-bottom: 4px;
   transition: border-bottom 0.2s ease;
 
   &:focus {
     content: '';
     border-bottom: 1px solid #21b3a4;
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: normal;
   }
 `;

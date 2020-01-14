@@ -257,18 +257,6 @@ const InputPnL = styled.input`
   color: #ffffff;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 
-  &:-webkit-input-placeholder {
-    color: #fff;
-    opacity: 0.3;
-    font-weight: normal;
-  }
-
-  &:-ms-input-placeholder {
-    color: #fff;
-    opacity: 0.3;
-    font-weight: normal;
-  }
-
   &::placeholder {
     color: #fff;
     opacity: 0.3;

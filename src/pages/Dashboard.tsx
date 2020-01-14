@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
@@ -23,12 +23,6 @@ import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
 import { Observer, observer } from 'mobx-react-lite';
 import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
-import {
-  supportedInterval,
-  supportedResolutions,
-} from '../constants/supportedTimeScales';
-import moment from 'moment';
-import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -128,7 +122,7 @@ const Dashboard = observer(() => {
                   <AddIntrumentButton onClick={toggle}>
                     <SvgIcon
                       {...IconAddInstrument}
-                      fill="rgba(255, 255, 255, 0.6)"
+                      fill="#FFFCCC"
                     />
                   </AddIntrumentButton>
                   {on && <AddInstrumentsPopup toggle={toggle} />}

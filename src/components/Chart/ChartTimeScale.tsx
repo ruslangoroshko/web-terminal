@@ -99,24 +99,34 @@ export default ChartIntervalTimeScale;
 const ChartTimeScaleWrapper = styled(FlexContainer)``;
 
 export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
-  padding: 4px 12px;
-  height: 28px;
-  border-radius: 2px;
+  padding: 6px 8px;
+  background: ${props =>
+    props.isActive &&
+    `radial-gradient(
+      50.44% 50% at 50.67% 100%,
+      rgba(0, 255, 221, 0.08) 0%,
+      rgba(0, 255, 221, 0) 100%
+    ),
+    rgba(255, 255, 255, 0.1)`};
+  box-shadow: ${props => props.isActive && 'inset 0px -1px 0px #00ffdd'};
+  border-radius: 2px 2px 0px 0px;
+  text-transform: uppercase;
+  color: ${props => (props.isActive ? '#fffccc' : 'rgba(255, 255, 255, 0.6)')};
   justify-content: center;
   align-items: center;
   font-family: 'Roboto', sans-serif;
   font-size: 12px;
   line-height: 16px;
-  text-transform: uppercase;
-  color: ${props => (props.isActive ? '#21B3A4' : 'rgba(255, 255, 255, 0.6)')};
-  border: ${props => (props.isActive ? '1px solid #21B3A4' : 'none')};
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-
-  background-color: ${props => props.isActive && 'rgba(33, 179, 164, 0.04);'};
+  transition: all 0.2s ease;
 
   &:hover {
-    background-color: rgba(33, 179, 164, 0.04);
+    background: radial-gradient(
+        50.44% 50% at 50.67% 100%,
+        rgba(0, 255, 221, 0.08) 0%,
+        rgba(0, 255, 221, 0) 100%
+      ),
+      rgba(255, 255, 255, 0.1);
     cursor: pointer;
+    box-shadow: inset 0px -1px 0px #00ffdd;
   }
 `;
