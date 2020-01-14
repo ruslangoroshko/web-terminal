@@ -14,6 +14,7 @@ const Topics = {
   UNAUTHORIZED: 'unauthorized',
   UPDATE_ACTIVE_POSITION: 'updateactiveposition',
   PRICE_CHANGE: 'pricechange',
+  PENDING_ORDERS: 'pendingorders',
 };
 
 Object.freeze(Topics);

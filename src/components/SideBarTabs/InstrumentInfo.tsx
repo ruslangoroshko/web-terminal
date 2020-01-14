@@ -12,10 +12,10 @@ import test from '../../assets/images/test2.png';
 import { useStores } from '../../hooks/useStores';
 import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import { portfolioDateString } from '../../helpers/portfolioDateString';
 import API from '../../helpers/API';
 import { PositionModelWSDTO } from '../../types/Positions';
 import { getProcessId } from '../../helpers/getProcessId';
+import moment from 'moment';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -90,7 +90,7 @@ const InstrumentInfoPortfolioTab: FC<Props> = observer(props => {
           fontSize="10px"
           lineHeight="12px"
         >
-          {portfolioDateString(openDate)}
+          {moment(openDate).format('DD MMM, HH:mm')}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column" alignItems="flex-end">

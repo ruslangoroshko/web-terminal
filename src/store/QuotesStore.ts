@@ -3,6 +3,7 @@ import { BidAskKeyValueList, BidAskModelWSDTO } from '../types/BidAsk';
 import { PositionModelWSDTO } from '../types/Positions';
 import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
 import { AskBidEnum } from '../enums/AskBid';
+import { PendingOrdersWSDTO } from '../types/PendingOrders';
 
 interface IQuotesStore {
   quotes: BidAskKeyValueList;
@@ -13,6 +14,7 @@ interface IQuotesStore {
   total: number;
   totalEquity: number;
   profit: number;
+  pendingOrders: PendingOrdersWSDTO[];
 }
 
 export class QuotesStore implements IQuotesStore {
@@ -20,7 +22,8 @@ export class QuotesStore implements IQuotesStore {
   @observable activePositions: PositionModelWSDTO[] = [];
   @observable totalProfit = 0;
   @observable available = 0;
-  
+  @observable pendingOrders: PendingOrdersWSDTO[] = [];
+
   @action
   setQuote = (quote: BidAskModelWSDTO) => {
     this.quotes[quote.id] = quote;

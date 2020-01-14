@@ -57,6 +57,7 @@ function BuySellPanel(props: Props) {
     operation: AskBidEnum.Buy,
     multiplier: instrument.multiplier[0],
     investmentAmount: '',
+    purchaseAt: null,
   };
 
   const validationSchema = yup.object().shape<OpenModel>({
@@ -89,11 +90,15 @@ function BuySellPanel(props: Props) {
 
   const handleSubmit = (values: OpenPositionModelFormik, actions: any) => {
     actions.setSubmitting(false);
-
-    API.openPosition({
+    const modelToSubmit = {
       ...values,
       investmentAmount: +values.investmentAmount,
-    });
+    };
+    if (values.purchaseAt) {
+      API.openPendingOrder(modelToSubmit);
+    } else {
+      API.openPosition(modelToSubmit);
+    }
   };
 
   const { quotesStore } = useStores();
@@ -351,6 +356,7 @@ function BuySellPanel(props: Props) {
               setFieldValue={setFieldValue}
               purchaseAtValue={values.purchaseAt}
               instrumentId={instrument.id}
+              currencySymbol={currencySymbol}
             ></PurchaseAtPopup>
           </CustomForm>
         )}

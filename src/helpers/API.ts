@@ -3,6 +3,7 @@ import {
   OpenPositionModel,
   OpenPositionResponseDTO,
   ClosePositionModel,
+  RemovePendingOrders,
 } from '../types/Positions';
 import API_LIST from './apiList';
 import { AccountModelDTO } from '../types/Accounts';
@@ -116,6 +117,24 @@ class API {
     const formData = this.convertParamsToFormData(params);
     const response = await axios.post<void>(
       `${API_STRING}${API_LIST.KEY_VALUE.POST}`,
+      formData
+    );
+    return response.data;
+  };
+
+  openPendingOrder = async (position: OpenPositionModel) => {
+    const formData = this.convertParamsToFormData(position);
+    const response = await axios.post<OpenPositionResponseDTO>(
+      `${API_STRING}${API_LIST.PENDING_ORDERS.ADD}`,
+      formData
+    );
+    return response.data;
+  };
+
+  removePendingOrder = async (position: RemovePendingOrders) => {
+    const formData = this.convertParamsToFormData(position);
+    const response = await axios.post<OpenPositionResponseDTO>(
+      `${API_STRING}${API_LIST.PENDING_ORDERS.REMOVE}`,
       formData
     );
     return response.data;

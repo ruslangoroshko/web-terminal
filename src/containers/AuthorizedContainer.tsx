@@ -9,6 +9,8 @@ import { SideBarTabType } from '../enums/SideBarTabType';
 import Portfolio from '../components/SideBarTabs/Portfolio';
 import styled from '@emotion/styled';
 import PortfolioExpanded from '../components/SideBarTabs/PortfolioExpanded';
+import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
+import Orders from '../components/SideBarTabs/Orders';
 
 interface Props {}
 
@@ -21,7 +23,11 @@ const RenderTabByType = observer(() => {
   // Careful, typings !11!!!1
   switch (tabsStore.sideBarTabType!) {
     case SideBarTabType.Portfolio:
-      return <Portfolio></Portfolio>;
+      return tabsStore.portfolioTab === PortfolioTabEnum.Portfolio ? (
+        <Portfolio></Portfolio>
+      ) : (
+        <Orders></Orders>
+      );
 
     case SideBarTabType.Markets:
       return <Portfolio></Portfolio>;
@@ -76,7 +82,7 @@ const AuthorizedContainer: FC<Props> = props => {
               <>
                 <TabsLayoutWrapper
                   position="absolute"
-                  top="0"
+                  top="46px"
                   right="calc(100% - 60px)"
                   bottom="0"
                   width="calc(100vw - 60px)"

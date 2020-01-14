@@ -2,7 +2,7 @@ import React, { FC, ChangeEvent, useState, useEffect } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import IconSearch from '../assets/svg/icon-instrument-search.svg';
-import IconClose from '../assets/svg/icon-instrument-close.svg';
+import IconClose from '../assets/svg/icon-close.svg';
 import IconMarketsTop from '../assets/svg/icon-instrument-markets-top.svg';
 import IconMarketsFiat from '../assets/svg/icon-instrument-markets-fiat.svg';
 import IconMarketsStocks from '../assets/svg/icon-instrument-markets-stocks.svg';

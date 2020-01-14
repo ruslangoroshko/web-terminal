@@ -4,7 +4,7 @@ import { InstrumentModelWSDTO } from '../types/Instruments';
 import Topics from '../constants/websocketTopics';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { BidAskModelWSDTO } from '../types/BidAsk';
-import IconClose from '../assets/svg/icon-instrument-close.svg';
+import IconClose from '../assets/svg/icon-close.svg';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
 import styled from '@emotion/styled';

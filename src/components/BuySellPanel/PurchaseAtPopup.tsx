@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-} from 'react';
+import React, { ChangeEvent, useState, useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
@@ -15,27 +9,34 @@ import {
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
 import MaskedInput from 'react-text-mask';
-import Fields from '../../constants/fields';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
+import Fields from '../../constants/fields';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
-  purchaseAtValue?: number;
+  purchaseAtValue: number | null;
   instrumentId: string;
+  currencySymbol: string;
 }
 
 function PurchaseAtPopup(props: Props) {
-  const { setFieldValue, purchaseAtValue, instrumentId } = props;
+  const {
+    setFieldValue,
+    purchaseAtValue,
+    instrumentId,
+    currencySymbol,
+  } = props;
 
   const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
-    setFieldValue(Fields.PURCHASE_AT, e.target.value);
+    buySellStore.purchaseAtValue = +e.target.value;
   };
+
   const [on, toggle] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const { quotesStore } = useStores();
+  const { quotesStore, buySellStore } = useStores();
 
   const handleToggle = () => {
     toggle(!on);
@@ -47,9 +48,14 @@ function PurchaseAtPopup(props: Props) {
     }
   };
 
+  const applyPurchaseAt = () => {
+    setFieldValue(Fields.PURCHASE_AT, buySellStore.purchaseAtValue);
+    toggle(false);
+  };
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-
+    buySellStore.purchaseAtValue = purchaseAtValue;
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -58,7 +64,11 @@ function PurchaseAtPopup(props: Props) {
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
       <ButtonAutoClosePurchase onClick={handleToggle} type="button">
-        <PrimaryTextSpan color="#fffccc">Purchase at</PrimaryTextSpan>
+        <PrimaryTextSpan color="#fffccc">
+          {purchaseAtValue
+            ? `${currencySymbol}${purchaseAtValue}`
+            : 'Purchase at'}
+        </PrimaryTextSpan>
       </ButtonAutoClosePurchase>
       {on && (
         <FlexContainer position="absolute" top="20px" right="100%">
@@ -106,7 +116,7 @@ function PurchaseAtPopup(props: Props) {
                 mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
                 showMask={false}
                 onChange={handleChangePurchaseAt}
-                value={purchaseAtValue}
+                value={purchaseAtValue ? purchaseAtValue.toString() : ''}
                 guide={false}
                 placeholder="Non Set"
                 render={(ref, props) => (
@@ -157,7 +167,9 @@ function PurchaseAtPopup(props: Props) {
                 </Observer>
               </PrimaryTextSpan>
             </FlexContainer>
-            <ButtonApply>Apply</ButtonApply>
+            <ButtonApply type="button" onClick={applyPurchaseAt}>
+              Apply
+            </ButtonApply>
           </Wrapper>
         </FlexContainer>
       )}

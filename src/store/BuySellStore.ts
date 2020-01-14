@@ -8,6 +8,7 @@ interface ContextProps {
   autoCloseLoss: AutoCloseTypesEnum;
   takeProfitValue: string;
   stopLossValue: string;
+  purchaseAtValue: number | null;
 }
 
 export class BuySellStore implements ContextProps {
@@ -15,4 +16,5 @@ export class BuySellStore implements ContextProps {
   @observable autoCloseLoss = AutoCloseTypesEnum.Profit;
   @observable takeProfitValue = '';
   @observable stopLossValue = '';
+  @observable purchaseAtValue: number | null = null;
 }

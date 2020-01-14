@@ -44,6 +44,7 @@ function OpenPosition(props: Props) {
     operation: AskBidEnum.Buy,
     multiplier,
     investmentAmount: 0,
+    purchaseAt: null,
   };
 
   const validationSchema = yup.object().shape<OpenModel | OpenModelRate>({

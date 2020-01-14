@@ -134,7 +134,7 @@ const Portfolio: FC<Props> = props => {
 
 export default Portfolio;
 
-const TabPortfolitButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
+export const TabPortfolitButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
   display: flex;
   flex-direction: column;
   padding: 12px 8px;

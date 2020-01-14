@@ -10,7 +10,7 @@ interface OpenPositionModelInit {
   sl?: number;
   tpRate?: number;
   slRate?: number;
-  purchaseAt?: number;
+  purchaseAt: number | null;
 }
 export interface OpenPositionModel extends OpenPositionModelInit {
   investmentAmount: number;
@@ -46,4 +46,10 @@ export interface ClosePositionModel {
   accountId: string;
   positionId: number;
   processId: string;
+}
+
+export interface RemovePendingOrders {
+  processId: string;
+  accountId: string;
+  orderId: number;
 }

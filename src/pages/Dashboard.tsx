@@ -23,6 +23,7 @@ import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
 import { Observer, observer } from 'mobx-react-lite';
 import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
+import { PendingOrdersWSDTO } from '../types/PendingOrders';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -83,6 +84,7 @@ const Dashboard = observer(() => {
           }
         }
       );
+
       mainAppStore.activeSession?.on(
         Topics.ACTIVE_POSITIONS,
         (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
@@ -91,6 +93,7 @@ const Dashboard = observer(() => {
           }
         }
       );
+
       mainAppStore.activeSession?.on(
         Topics.UPDATE_ACCOUNT,
         (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
@@ -102,6 +105,15 @@ const Dashboard = observer(() => {
               return item;
             });
             quotesStore.activePositions = newActivePositions;
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.PENDING_ORDERS,
+        (response: ResponseFromWebsocket<PendingOrdersWSDTO[]>) => {
+          if (mainAppStore.account?.id === response.accountId) {
+            quotesStore.pendingOrders = response.data;
           }
         }
       );
@@ -120,10 +132,7 @@ const Dashboard = observer(() => {
               {({ on, toggle }) => (
                 <>
                   <AddIntrumentButton onClick={toggle}>
-                    <SvgIcon
-                      {...IconAddInstrument}
-                      fill="#FFFCCC"
-                    />
+                    <SvgIcon {...IconAddInstrument} fill="#FFFCCC" />
                   </AddIntrumentButton>
                   {on && <AddInstrumentsPopup toggle={toggle} />}
                 </>

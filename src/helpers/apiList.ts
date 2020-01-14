@@ -20,6 +20,10 @@ const API_LIST = {
     GET: '/api/v1/KeyValue',
     POST: '/api/v1/KeyValue',
   },
+  PENDING_ORDERS: {
+    ADD: '/api/v1/PendingOrders/Add',
+    REMOVE: '/api/v1/PendingOrders/Remove',
+  },
 };
 
 Object.freeze(API_LIST);
