@@ -17,7 +17,7 @@ function UserProfileButton(props: Props) {
       width="24px"
     >
       <ButtonWithoutStyles>
-        <SvgIcon {...IconUser} width={12} height={14} fill="#FFFFFF" />
+        <SvgIcon {...IconUser} width={12} height={14} fillColor="#FFFFFF" />
       </ButtonWithoutStyles>
     </UserProfileWrapper>
   );

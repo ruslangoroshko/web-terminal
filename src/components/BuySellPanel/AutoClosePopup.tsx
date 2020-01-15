@@ -113,7 +113,7 @@ function AutoClosePopup(props: Props) {
             width="200px"
           >
             <ButtonClose onClick={handleToggle}>
-              <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
+              <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)"></SvgIcon>
             </ButtonClose>
             <PrimaryTextParagraph marginBottom="16px">
               Set Autoclose

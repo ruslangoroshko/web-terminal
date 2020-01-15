@@ -81,7 +81,7 @@ const Instrument: FC<Props> = ({
           )}
           <FlexContainer padding="0 8px 0 0">
             <CloseButton onClick={handleClose}>
-              <SvgIcon {...IconClose} fill="rgba(0, 0, 0, 0.6)"></SvgIcon>
+              <SvgIcon {...IconClose} fillColor="rgba(0, 0, 0, 0.6)"></SvgIcon>
             </CloseButton>
           </FlexContainer>
         </FlexContainer>

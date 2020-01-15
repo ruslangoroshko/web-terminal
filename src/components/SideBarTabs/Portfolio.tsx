@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
@@ -8,19 +8,38 @@ import {
 } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
-import InstrumentInfoPortfolioTab from './InstrumentInfo';
+import ActivePositionsPortfolioTab from './ActivePositions';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { Observer } from 'mobx-react-lite';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
+import Scrollbar from 'react-scrollbars-custom';
 
 interface Props {}
 
 const Portfolio: FC<Props> = props => {
   const { quotesStore, mainAppStore, tabsStore } = useStores();
 
+  const positionsWrapperRef = useRef<HTMLDivElement>(null);
+
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     tabsStore.portfolioTab = portfolioTab;
   };
+
+  // let scrollbar = null;
+
+  // useEffect(() => {
+  //   if (positionsWrapperRef.current) {
+  //     scrollbar = new PerfectScrollbar(positionsWrapperRef.current);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   if (scrollbar) {
+  //     scrollbar.update();
+  //   } else {
+  //     scrollbar = new PerfectScrollbar(positionsWrapperRef.current!);
+  //   }
+  // }, [quotesStore.activePositions]);
 
   return (
     <PortfolioWrapper padding="12px 16px" flexDirection="column">
@@ -119,22 +138,26 @@ const Portfolio: FC<Props> = props => {
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
-      <Observer>
-        {() => (
-          <ActivePositionsWrapper flexDirection="column">
-            {quotesStore.activePositions.map(item => (
-              <InstrumentInfoPortfolioTab key={item.id} position={item} />
-            ))}
-          </ActivePositionsWrapper>
-        )}
-      </Observer>
+      <Scrollbar noScrollX>
+        <Observer>
+          {() => (
+            <ActivePositionsWrapper flexDirection="column">
+              {quotesStore.activePositions.map(item => (
+                <ActivePositionsPortfolioTab key={item.id} position={item} />
+              ))}
+            </ActivePositionsWrapper>
+          )}
+        </Observer>
+      </Scrollbar>
     </PortfolioWrapper>
   );
 };
 
 export default Portfolio;
 
-export const TabPortfolitButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
+export const TabPortfolitButton = styled(ButtonWithoutStyles)<{
+  isActive?: boolean;
+}>`
   display: flex;
   flex-direction: column;
   padding: 12px 8px;
@@ -172,6 +195,5 @@ const PortfolioWrapper = styled(FlexContainer)`
 `;
 
 const ActivePositionsWrapper = styled(FlexContainer)`
-  overflow: auto;
-  max-height: calc(100vh - 236px);
+  position: relative;
 `;

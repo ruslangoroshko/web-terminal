@@ -7,7 +7,6 @@ import { AskBidEnum } from '../../enums/AskBid';
 import SvgIcon from '../SvgIcon';
 import IconShevronDown from '../../assets/svg/icon-shevron-logo-down.svg';
 import IconShevronUp from '../../assets/svg/icon-shevron-logo-up.svg';
-import IconSettings from '../../assets/svg/icon-settings.svg';
 import test from '../../assets/images/test2.png';
 import { useStores } from '../../hooks/useStores';
 import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
@@ -16,12 +15,13 @@ import API from '../../helpers/API';
 import { PositionModelWSDTO } from '../../types/Positions';
 import { getProcessId } from '../../helpers/getProcessId';
 import moment from 'moment';
+import NotificationTooltip from '../NotificationTooltip';
 
 interface Props {
   position: PositionModelWSDTO;
 }
 
-const InstrumentInfoPortfolioTab: FC<Props> = observer(props => {
+const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
   const {
     position: {
       instrument,
@@ -76,11 +76,13 @@ const InstrumentInfoPortfolioTab: FC<Props> = observer(props => {
         </PrimaryTextSpan>
         <FlexContainer margin="0 0 12px 0" alignItems="center">
           <FlexContainer margin="0 4px 0 0">
-            <SvgIcon {...Icon} fill={isBuy ? '#00FFDD' : '#ED145B'} />
+            <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
           </FlexContainer>
           <PrimaryTextSpan
             fontSize="10px"
             color={isBuy ? '#00FFDD' : '#ED145B'}
+            textTransform="uppercase"
+            fontWeight="bold"
           >
             {isBuy ? 'Buy' : 'Sell'}
           </PrimaryTextSpan>
@@ -102,9 +104,61 @@ const InstrumentInfoPortfolioTab: FC<Props> = observer(props => {
           color="rgba(255, 255, 255, 0.5)"
           fontSize="10px"
           lineHeight="12px"
+          marginBottom="12px"
         >
           &times;{multiplier}
         </PrimaryTextSpan>
+
+        <NotificationTooltip
+          classNameTooltip={`position_${id}`}
+          bgColor="#000"
+          width="200px"
+          isRightDirection
+        >
+          <FlexContainer flexDirection="column" width="100%">
+            <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
+              <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
+                Price opened
+              </PrimaryTextSpan>
+              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                at {openPrice}
+              </PrimaryTextSpan>
+            </FlexContainer>
+            <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
+              <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
+                Opened
+              </PrimaryTextSpan>
+              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                {moment(openDate).format('DD MMM, HH:mm')}
+              </PrimaryTextSpan>
+            </FlexContainer>
+            <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
+              <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
+                Equity
+              </PrimaryTextSpan>
+              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                {mainAppStore.account?.symbol}
+                {PnL + investmentAmount}
+              </PrimaryTextSpan>
+            </FlexContainer>
+            {/* <FlexContainer justifyContent="space-between" margin="0 8px 0 0">
+              <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
+               Overnight fee
+              </PrimaryTextSpan>
+              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                at {openPrice}
+              </PrimaryTextSpan>
+            </FlexContainer> */}
+            <FlexContainer justifyContent="space-between">
+              <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
+                Position ID
+              </PrimaryTextSpan>
+              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                {id}
+              </PrimaryTextSpan>
+            </FlexContainer>
+          </FlexContainer>
+        </NotificationTooltip>
       </FlexContainer>
       <FlexContainer flexDirection="column">
         <FlexContainer justifyContent="flex-end" margin="0 0 8px 0">
@@ -124,48 +178,41 @@ const InstrumentInfoPortfolioTab: FC<Props> = observer(props => {
               {Math.abs(PnL)}
             </QuoteText>
             <PrimaryTextSpan
-              marginBottom="6px"
               fontSize="10px"
               lineHeight="12px"
               color="rgba(255, 255, 255, 0.5)"
             >
-              {calculateInPercent(investmentAmount, PnL)}
+              {PnL >= 0 ? '+' : ''}
+              {calculateInPercent(investmentAmount, PnL)}%
             </PrimaryTextSpan>
-          </FlexContainer>
-          <FlexContainer alignItems="flex-start">
-            <ButtonWithoutStyles>
-              <InfoIcon
-                width="14px"
-                justifyContent="center"
-                alignItems="center"
-              >
-                i
-              </InfoIcon>
-            </ButtonWithoutStyles>
           </FlexContainer>
         </FlexContainer>
         <FlexContainer>
-          <FlexContainer margin="0 8px 0 0">
-            <ButtonWithoutStyles>
-              <SvgIcon {...IconSettings} fill="rgba(255, 255, 255, 0.6)" />
-            </ButtonWithoutStyles>
-          </FlexContainer>
-          <SetSLTPButton onClick={closePosition}>
+          <SetSLTPButton>
+            <PrimaryTextSpan
+              fontSize="12px"
+              lineHeight="14px"
+              color="rgba(255, 255, 255, 0.6)"
+            >
+              TP SL
+            </PrimaryTextSpan>
+          </SetSLTPButton>
+          <CloseButton onClick={closePosition}>
             <PrimaryTextSpan fontSize="12px" lineHeight="14px">
               Close
             </PrimaryTextSpan>
-          </SetSLTPButton>
+          </CloseButton>
         </FlexContainer>
       </FlexContainer>
     </InstrumentInfoWrapper>
   );
 });
 
-export default InstrumentInfoPortfolioTab;
+export default ActivePositionsPortfolioTab;
 
 const InstrumentInfoWrapper = styled(FlexContainer)``;
 
-const SetSLTPButton = styled(ButtonWithoutStyles)`
+const CloseButton = styled(ButtonWithoutStyles)`
   border-radius: 3px;
   padding: 4px 8px;
   position: relative;
@@ -178,10 +225,14 @@ const SetSLTPButton = styled(ButtonWithoutStyles)`
   }
 `;
 
-const InfoIcon = styled(FlexContainer)`
-  font-size: 11px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #fffccc;
-  font-style: italic;
+const SetSLTPButton = styled(ButtonWithoutStyles)`
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+  margin-right: 8px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
 `;

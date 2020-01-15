@@ -36,6 +36,10 @@ const MainApp = () => {
           body {
             background-color: #1c2026;
           }
+          .thumb-horizontal,
+          .track-horizontal {
+            display: none;
+          }
         `}
       />
     </>

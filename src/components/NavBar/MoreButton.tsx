@@ -10,7 +10,7 @@ function MoreButton(props: Props) {
 
   return (
     <ButtonWithoutStyles>
-      <SvgIcon {...IconMore} fill="#C4C4C4"></SvgIcon>
+      <SvgIcon {...IconMore} fillColor="#C4C4C4"></SvgIcon>
     </ButtonWithoutStyles>
   );
 }

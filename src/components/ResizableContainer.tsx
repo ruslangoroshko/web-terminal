@@ -25,10 +25,10 @@ const ResizableContainer: FC = observer(props => {
     >
       <FlexContainer position="absolute" top="12px" right="12px">
         <IconButton onClick={toggleExpandtab}>
-          <SvgIcon {...IconExpand} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
+          <SvgIcon {...IconExpand} fillColor="rgba(255, 255, 255, 0.6)"></SvgIcon>
         </IconButton>
         <IconButton onClick={tabsStore.closeAnyTab}>
-          <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
+          <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)"></SvgIcon>
         </IconButton>
       </FlexContainer>
       {children}

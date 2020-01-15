@@ -3,37 +3,45 @@ import { FlexContainer, FlexContainerProps } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import ColorsPallete from '../styles/colorPallete';
 import { PrimaryTextSpan } from '../styles/TextsElements';
+import SvgIcon from './SvgIcon';
+import IconInfo from '../assets/svg/icon-info.svg';
 
 interface Props {
   bgColor: string;
-  textColor: string;
   classNameTooltip: string;
+  isRightDirection?: boolean;
+  width: string;
 }
 
 const NotificationTooltip: FC<Props> = props => {
-  const { bgColor, textColor, children, classNameTooltip } = props;
+  const {
+    bgColor,
+    children,
+    classNameTooltip,
+    isRightDirection,
+    width,
+  } = props;
   return (
     <FlexContainer position="relative">
-      <InfoIcon
-        justifyContent="center"
-        alignItems="center"
-        width="14px"
-        height="14px"
-        classNameTooltip={classNameTooltip}
-      >
-        i
+      <InfoIcon classNameTooltip={classNameTooltip}>
+        <SvgIcon
+          {...IconInfo}
+          fillColor="rgba(255, 255, 255, 0.6)"
+          hoverFillColor="#00FFF2"
+        />
       </InfoIcon>
       <TooltipWrapper
-        width="212px"
+        width={width}
         padding="12px"
         position="absolute"
         top="0"
-        right="22px"
+        right={isRightDirection ? 'auto' : '22px'}
+        left={isRightDirection ? '22px' : 'auto'}
         backgroundColor={bgColor}
-        textColor={textColor}
         className={classNameTooltip}
+        zIndex="101"
       >
-        <PrimaryTextSpan>{children}</PrimaryTextSpan>
+        {children}
       </TooltipWrapper>
     </FlexContainer>
   );
@@ -41,7 +49,9 @@ const NotificationTooltip: FC<Props> = props => {
 
 export default NotificationTooltip;
 
-const TooltipWrapper = styled(FlexContainer)`
+const TooltipWrapper = styled(FlexContainer)<
+  FlexContainerProps & { isRightDirection?: boolean }
+>`
   visibility: hidden;
   opacity: 0;
   box-shadow: 0px 12px 24px ${props => props.backgroundColor}40,
@@ -65,13 +75,15 @@ const TooltipWrapper = styled(FlexContainer)`
     content: '';
     position: absolute;
     top: 0;
-    right: -7px;
+    left: ${props => (props.isRightDirection ? 'auto' : '-7px')};
+    right: ${props => (props.isRightDirection ? '-7px' : 'auto')};
     width: 0;
     height: 0;
     border-style: solid;
     border-width: 7px 0 7px 8px;
     border-color: transparent transparent transparent
       ${props => props.backgroundColor};
+    transform: ${props => !props.isRightDirection && 'rotate(180deg)'};
   }
 
   &:hover {
@@ -83,14 +95,9 @@ const TooltipWrapper = styled(FlexContainer)`
 const InfoIcon = styled(FlexContainer)<
   FlexContainerProps & { classNameTooltip: string }
 >`
-  font-size: 11px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #fffccc;
-  font-style: italic;
-  &:hover {
-    background-color: ${ColorsPallete.MINT};
-    color: #333333;
+  &:hover > svg {
+    fill: ${ColorsPallete.MINT};
   }
   &:hover + .${props => props.classNameTooltip} {
     visibility: visible;

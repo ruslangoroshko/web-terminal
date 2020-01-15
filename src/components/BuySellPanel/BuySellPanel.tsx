@@ -132,23 +132,26 @@ function BuySellPanel(props: Props) {
               justifyContent="space-between"
               flexWrap="wrap"
               margin="0 0 4px 0"
+              alignItems="center"
             >
               <PrimaryTextSpan
                 fontSize="11px"
                 lineHeight="12px"
                 textTransform="uppercase"
                 opacity="0.3"
+                color="#fff"
               >
                 Invest
               </PrimaryTextSpan>
-              <InfoIcon
-                justifyContent="center"
-                alignItems="center"
-                width="14px"
-                height="14px"
+              <NotificationTooltip
+                bgColor="#000000"
+                classNameTooltip="invest"
+                width="212px"
               >
-                i
-              </InfoIcon>
+                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  The amount you’d like to invest
+                </PrimaryTextSpan>
+              </NotificationTooltip>
             </FlexContainer>
             <Field type="text" name={Fields.AMOUNT}>
               {({ field, meta }: FieldProps) => (
@@ -197,7 +200,9 @@ function BuySellPanel(props: Props) {
                           true
                         )}
                       >
-                        <PrimaryTextSpan fontWeight="bold">+</PrimaryTextSpan>
+                        <PrimaryTextSpan fontWeight="bold">
+                          &#43;
+                        </PrimaryTextSpan>
                       </PlusButton>
                       <MinusButton
                         type="button"
@@ -205,34 +210,40 @@ function BuySellPanel(props: Props) {
                           setFieldValue,
                           values.investmentAmount
                         )}
+                        disabled={+values.investmentAmount === 0}
                       >
-                        <PrimaryTextSpan fontWeight="bold">-</PrimaryTextSpan>
+                        <PrimaryTextSpan fontWeight="bold">
+                          &minus;
+                        </PrimaryTextSpan>
                       </MinusButton>
                     </PlusMinusButtonWrapper>
                   </FlexContainer>
                 </InvestedAmoutInputWrapper>
               )}
             </Field>
-
             <FlexContainer
               justifyContent="space-between"
               flexWrap="wrap"
               margin="0 0 4px 0"
+              alignItems="center"
             >
               <PrimaryTextSpan
                 fontSize="11px"
                 lineHeight="12px"
                 textTransform="uppercase"
                 opacity="0.3"
+                color="#fff"
               >
                 Leverage
               </PrimaryTextSpan>
               <NotificationTooltip
                 bgColor="#000000"
-                textColor="#fff"
                 classNameTooltip="leverage"
+                width="212px"
               >
-                The amount you’d like to invest
+                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  The amount you’d like to invest
+                </PrimaryTextSpan>
               </NotificationTooltip>
             </FlexContainer>
             <MultiplierDropdown
@@ -244,23 +255,26 @@ function BuySellPanel(props: Props) {
               justifyContent="space-between"
               flexWrap="wrap"
               margin="0 0 4px 0"
+              alignItems="center"
             >
               <PrimaryTextSpan
                 fontSize="11px"
                 lineHeight="12px"
                 textTransform="uppercase"
                 opacity="0.3"
+                color="#fff"
               >
                 Autoclose
               </PrimaryTextSpan>
-              <InfoIcon
-                justifyContent="center"
-                alignItems="center"
-                width="14px"
-                height="14px"
+              <NotificationTooltip
+                bgColor="#000000"
+                classNameTooltip="autoclose"
+                width="212px"
               >
-                i
-              </InfoIcon>
+                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  The amount you’d like to invest
+                </PrimaryTextSpan>
+              </NotificationTooltip>
             </FlexContainer>
             <AutoClosePopup
               setFieldValue={setFieldValue}
@@ -272,33 +286,35 @@ function BuySellPanel(props: Props) {
                 fontSize="11px"
                 lineHeight="12px"
                 textTransform="uppercase"
+                color="#fff"
                 opacity="0.3"
               >
                 VOLUME
               </PrimaryTextSpan>
-              <ValueText>
+              <PrimaryTextSpan fontSize="12px" color="#fffccc">
                 {currencySymbol}
                 {calculateVolume(values)}
-              </ValueText>
+              </PrimaryTextSpan>
             </FlexContainer>
-            <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
+            <FlexContainer justifyContent="space-between" margin="0 0 12px 0">
               <PrimaryTextSpan
                 fontSize="11px"
                 lineHeight="12px"
                 textTransform="uppercase"
+                color="#fff"
                 opacity="0.3"
               >
                 Spread
               </PrimaryTextSpan>
               <Observer>
                 {() => (
-                  <ValueText>
+                  <PrimaryTextSpan fontSize="12px" color="#fffccc">
                     {currencySymbol}
                     {Math.abs(
                       quotesStore.quotes[instrument.id].bid.c -
                         quotesStore.quotes[instrument.id].ask.c
                     ).toFixed(digits)}
-                  </ValueText>
+                  </PrimaryTextSpan>
                 )}
               </Observer>
             </FlexContainer>
@@ -312,7 +328,7 @@ function BuySellPanel(props: Props) {
                 )}
               >
                 <FlexContainer margin="0 8px 0 0">
-                  <SvgIcon {...IconShevronBuy} fill="#003A38"></SvgIcon>
+                  <SvgIcon {...IconShevronBuy} fillColor="#003A38"></SvgIcon>
                 </FlexContainer>
                 Buy
               </ButtonBuy>
@@ -325,7 +341,7 @@ function BuySellPanel(props: Props) {
                 )}
               >
                 <FlexContainer margin="0 8px 0 0">
-                  <SvgIcon {...IconShevronSell} fill="#fff"></SvgIcon>
+                  <SvgIcon {...IconShevronSell} fillColor="#fff"></SvgIcon>
                 </FlexContainer>
                 Sell
               </ButtonSell>
@@ -340,17 +356,19 @@ function BuySellPanel(props: Props) {
                 lineHeight="12px"
                 textTransform="uppercase"
                 opacity="0.3"
+                color="#fff"
               >
                 Purchase at
               </PrimaryTextSpan>
-              <InfoIcon
-                justifyContent="center"
-                alignItems="center"
-                width="14px"
-                height="14px"
+              <NotificationTooltip
+                bgColor="#000000"
+                classNameTooltip="purchase-at"
+                width="212px"
               >
-                i
-              </InfoIcon>
+                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  The amount you’d like to invest
+                </PrimaryTextSpan>
+              </NotificationTooltip>
             </FlexContainer>
             <PurchaseAtPopup
               setFieldValue={setFieldValue}
@@ -376,27 +394,12 @@ const InvestInput = styled.input`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #ffffff;
+  color: #fffccc;
 
   &:focus + .investAmountDropdown {
     opacity: 1;
     visibility: visible;
   }
-`;
-
-const InfoIcon = styled(FlexContainer)`
-  font-size: 11px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #fffccc;
-  font-style: italic;
-`;
-
-const ValueText = styled.span`
-  font-family: Roboto;
-  font-size: 12px;
-  line-height: 14px;
-  color: #ffffff;
 `;
 
 const ButtonSell = styled(ButtonWithoutStyles)`
@@ -419,14 +422,14 @@ const ButtonSell = styled(ButtonWithoutStyles)`
 `;
 
 const ButtonBuy = styled(ButtonSell)`
-  background-color: #00fff2;
+  background-color: #00ffdd;
   box-shadow: 0px 4px 8px rgba(0, 255, 242, 0.17),
     inset 0px -3px 6px rgba(0, 255, 242, 0.26);
   color: #003a38;
   margin-bottom: 8px;
 
   &:hover {
-    background-color: ${darken(0.1, '#00fff2')};
+    background-color: ${darken(0.1, '#00FFDD')};
   }
 `;
 
@@ -446,7 +449,9 @@ const InvestedAmoutInputWrapper = styled(FlexContainer)`
 
 const MinusButton = styled(ButtonWithoutStyles)`
   display: flex;
-  padding: 2px 4px;
+  width: 26px;
+  height: 19px;
+  padding: 2px 8px;
   justify-content: center;
   align-items: center;
 `;

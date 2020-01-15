@@ -63,11 +63,15 @@ function PurchaseAtPopup(props: Props) {
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
-      <ButtonAutoClosePurchase onClick={handleToggle} type="button">
+      <ButtonAutoClosePurchase
+        onClick={handleToggle}
+        type="button"
+        hasPrice={!!purchaseAtValue}
+      >
         <PrimaryTextSpan color="#fffccc">
           {purchaseAtValue
             ? `${currencySymbol}${purchaseAtValue}`
-            : 'Purchase at'}
+            : 'Set Price'}
         </PrimaryTextSpan>
       </ButtonAutoClosePurchase>
       {on && (
@@ -79,7 +83,7 @@ function PurchaseAtPopup(props: Props) {
             width="200px"
           >
             <ButtonClose onClick={handleToggle}>
-              <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.6)"></SvgIcon>
+              <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)"></SvgIcon>
             </ButtonClose>
             <PrimaryTextParagraph marginBottom="16px">
               Purchase At
@@ -259,10 +263,16 @@ const ButtonApply = styled(ButtonWithoutStyles)`
   color: #003a38;
   height: 32px;
 `;
-const ButtonAutoClosePurchase = styled(ButtonWithoutStyles)`
+const ButtonAutoClosePurchase = styled(ButtonWithoutStyles)<{
+  hasPrice?: boolean;
+}>`
   height: 40px;
-  background: rgba(255, 255, 255, 0.12);
+  background: ${props =>
+    props.hasPrice ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.12)'};
   border-radius: 4px;
   width: 100%;
   margin-bottom: 14px;
+  border: 1px solid
+    ${props =>
+      props.hasPrice ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0)'};
 `;

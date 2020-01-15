@@ -132,7 +132,7 @@ const Dashboard = observer(() => {
               {({ on, toggle }) => (
                 <>
                   <AddIntrumentButton onClick={toggle}>
-                    <SvgIcon {...IconAddInstrument} fill="#FFFCCC" />
+                    <SvgIcon {...IconAddInstrument} fillColor="#FFFCCC" />
                   </AddIntrumentButton>
                   {on && <AddInstrumentsPopup toggle={toggle} />}
                 </>

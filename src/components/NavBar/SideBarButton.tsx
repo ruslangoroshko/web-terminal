@@ -28,7 +28,7 @@ function SideBarButton(props: Props) {
             // fill={
             //   isActive ? ColorsPallete.EASTERN_BLUE : 'rgba(255, 255, 255, 0.5)'
             // }
-            fill="rgba(255, 255, 255, 0.5)"
+            fillColor="rgba(255, 255, 255, 0.5)"
           ></SvgIcon>
         </FlexContainer>
         <Title isActive={isActive}>{title}</Title>

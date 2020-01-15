@@ -32,9 +32,9 @@ const NavBar: FC<Props> = observer(props => {
     >
       <FlexContainer alignItems="center">
         <FlexContainer margin="0 6px 0 0">
-          <SvgIcon {...MonfexLogo} fill="#00FFDD" />
+          <SvgIcon {...MonfexLogo} fillColor="#00FFDD" />
         </FlexContainer>
-        <SvgIcon {...MonfexLogoText} fill="#21B3A4" />
+        <SvgIcon {...MonfexLogoText} fillColor="#21B3A4" />
       </FlexContainer>
       <FlexContainer>
         <FlexContainer alignItems="center" margin="0 20px 0 0">

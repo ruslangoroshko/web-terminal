@@ -55,7 +55,7 @@ function PendingOrder(props: Props) {
       <FlexContainer flexDirection="column" margin="0 24px 0 0">
         <FlexContainer margin="0 4px 0 0">
           <FlexContainer margin="0 4px 0 0">
-            <SvgIcon {...Icon} fill={isBuy ? '#00FFDD' : '#ED145B'} />
+            <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
           </FlexContainer>
           <PrimaryTextSpan
             fontSize="12px"
@@ -69,7 +69,11 @@ function PendingOrder(props: Props) {
           {pendingOrder.openPrice}
         </PrimaryTextSpan>
       </FlexContainer>
-      <FlexContainer flexDirection="column" margin="0 8px 0 0">
+      <FlexContainer
+        flexDirection="column"
+        margin="0 8px 0 0"
+        alignItems="flex-end"
+      >
         <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
           {currencySymbol}
           {pendingOrder.investmentAmount}
@@ -81,11 +85,11 @@ function PendingOrder(props: Props) {
       <FlexContainer alignItems="center">
         <FlexContainer margin="0 4px 0 0">
           <ButtonWithoutStyles onClick={handleEditSlTp}>
-            <SvgIcon {...IconSettings} fill="rgba(255, 255, 255, 0.6)" />
+            <SvgIcon {...IconSettings} fillColor="rgba(255, 255, 255, 0.6)" />
           </ButtonWithoutStyles>
         </FlexContainer>
         <ButtonWithoutStyles onClick={handleCloseOrder}>
-          <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.8)" />
+          <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.8)" />
         </ButtonWithoutStyles>
       </FlexContainer>
     </OrderWrapper>

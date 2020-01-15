@@ -47,7 +47,7 @@ function PnLTypeDropdown(props: Props) {
             </PrimaryTextSpan>
             <SvgIcon
               {...IconShevronDown}
-              fill="rgba(255, 255, 255, 0.5)"
+              fillColor="rgba(255, 255, 255, 0.5)"
             ></SvgIcon>
           </DropdownButton>
           {on && (

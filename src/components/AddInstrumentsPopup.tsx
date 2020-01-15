@@ -49,12 +49,12 @@ const AddInstrumentsPopup: FC<Props> = props => {
         width="100%"
       >
         <FlexContainer margin="0 6px 0 0">
-          <SvgIcon {...IconSearch} fill="rgba(255, 255, 255, 0.5)"></SvgIcon>
+          <SvgIcon {...IconSearch} fillColor="rgba(255, 255, 255, 0.5)"></SvgIcon>
         </FlexContainer>
         <SearchInput onChange={handleChangeSearch} placeholder="Search" />
         <FlexContainer>
           <ButtonWithoutStyles onClick={toggle}>
-            <SvgIcon {...IconClose} fill="rgba(255, 255, 255, 0.8)"></SvgIcon>
+            <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.8)"></SvgIcon>
           </ButtonWithoutStyles>
         </FlexContainer>
       </FlexContainer>

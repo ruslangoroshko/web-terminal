@@ -52,7 +52,7 @@ const ChartTypeDropdown: FC<Props> = props => {
         {() => (
           <SettingsButton onClick={handleToggle}>
             <SvgIcon
-              fill={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
+              fillColor={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
               {...getChartIconByType(tradingViewStore.chartType)}
             ></SvgIcon>
           </SettingsButton>

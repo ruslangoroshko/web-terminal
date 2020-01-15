@@ -94,7 +94,7 @@ const InstrumentRow: FC<Props> = props => {
           {() => (
             <SvgIcon
               {...IconMarketsFavourites}
-              fill={
+              fillColor={
                 instrumentsStore.activeInstrumentsIds.includes(instrument.id)
                   ? '#FFFCCC'
                   : 'rgba(255, 255, 255, 0.5)'
