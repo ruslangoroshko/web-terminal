@@ -12,6 +12,7 @@ import { Observer } from 'mobx-react-lite';
 import { TabPortfolitButton } from './Portfolio';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import { getNumberSign } from '../../helpers/getNumberSign';
+import ActivePositionExpanded from './ActivePositionExpanded';
 
 interface Props {}
 
@@ -145,6 +146,19 @@ const PortfolioExpanded: FC<Props> = props => {
           </ButtonCloseAll>
         </FlexContainer>
       </FlexContainer>
+      <FlexContainer padding="0 100px" alignItems="center">
+        <Table>
+          <tbody>
+            {quotesStore.activePositions.map(item => (
+              <ActivePositionExpanded
+                key={item.id}
+                currencySymbol={mainAppStore.account?.symbol || ''}
+                position={item}
+              />
+            ))}
+          </tbody>
+        </Table>
+      </FlexContainer>
     </PortfolioWrapper>
   );
 };
@@ -167,4 +181,9 @@ const ButtonCloseAll = styled(ButtonWithoutStyles)`
   width: 80px;
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 3px;
+`;
+
+const Table = styled.table`
+  table-layout: fixed;
+  width: 100%;
 `;
