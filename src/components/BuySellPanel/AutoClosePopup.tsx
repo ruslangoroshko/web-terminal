@@ -14,6 +14,8 @@ import Fields from '../../constants/fields';
 import { OpenPositionModelFormik } from '../../types/Positions';
 import MaskedInput from 'react-text-mask';
 import { useStores } from '../../hooks/useStores';
+import InformationPopup from '../InformationPopup';
+import SetAutoclose from './SetAutoclose';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
@@ -23,58 +25,17 @@ interface Props {
 
 function AutoClosePopup(props: Props) {
   const { setFieldValue, values, currencySymbol } = props;
-
-  const { buySellStore } = useStores();
+  const { SLTPStore } = useStores();
   const [on, toggle] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
-
-  const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
-    buySellStore.takeProfitValue = e.target.value;
-  };
-
-  const handleChangeLoss = (e: ChangeEvent<HTMLInputElement>) => {
-    buySellStore.stopLossValue = e.target.value;
+  const handleToggle = () => {
+    toggle(!on);
   };
 
   const handleApply = () => {
-    let fieldProfit = Fields.TAKE_PROFIT;
-    let fieldLoss = Fields.STOP_LOSS;
-
-    switch (buySellStore.takeProfitValue) {
-      case AutoCloseTypesEnum.Profit:
-        fieldProfit = Fields.TAKE_PROFIT;
-        break;
-      case AutoCloseTypesEnum.Percent:
-        fieldProfit = Fields.TAKE_PROFIT_RATE;
-        break;
-      case AutoCloseTypesEnum.Price:
-        fieldProfit = Fields.TAKE_PROFIT_PRICE;
-        break;
-      default:
-        break;
-    }
-
-    switch (buySellStore.stopLossValue) {
-      case AutoCloseTypesEnum.Profit:
-        fieldLoss = Fields.STOP_LOSS;
-        break;
-      case AutoCloseTypesEnum.Percent:
-        fieldLoss = Fields.STOP_LOSS_RATE;
-        break;
-      case AutoCloseTypesEnum.Price:
-        fieldLoss = Fields.STOP_LOSS_PRICE;
-        break;
-      default:
-        break;
-    }
-    setFieldValue(fieldProfit, buySellStore.takeProfitValue);
-    setFieldValue(fieldLoss, buySellStore.stopLossValue);
-    toggle(false);
-  };
-
-  const handleToggle = () => {
-    toggle(!on);
+    setFieldValue(Fields.TAKE_PROFIT, SLTPStore.takeProfitValue);
+    setFieldValue(Fields.STOP_LOSS, SLTPStore.stopLossValue);
   };
 
   const handleClickOutside = (e: any) => {
@@ -95,119 +56,20 @@ function AutoClosePopup(props: Props) {
     <FlexContainer position="relative" ref={wrapperRef}>
       <ButtonAutoClosePurchase onClick={handleToggle} type="button">
         <PrimaryTextSpan color="#fffccc">
-          {values.sl || values.slRate || values.tp || values.tpRate
+          {values.sl || values.tp
             ? `+${currencySymbol}${values.tp ||
-                values.tpRate ||
-                'Non Set'} -${currencySymbol}${values.sl ||
-                values.slRate ||
-                'Non Set'}`
+                'Non Set'} -${currencySymbol}${values.sl || 'Non Set'}`
             : 'Set'}
         </PrimaryTextSpan>
       </ButtonAutoClosePurchase>
       {on && (
         <FlexContainer position="absolute" top="20px" right="100%">
-          <Wrapper
-            position="relative"
-            padding="16px"
-            flexDirection="column"
-            width="200px"
-          >
-            <ButtonClose onClick={handleToggle}>
-              <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)"></SvgIcon>
-            </ButtonClose>
-            <PrimaryTextParagraph marginBottom="16px">
-              Set Autoclose
-            </PrimaryTextParagraph>
-            <FlexContainer
-              margin="0 0 6px 0"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                color="rgba(255, 255, 255, 0.3)"
-                textTransform="uppercase"
-              >
-                When Profit is
-              </PrimaryTextSpan>
-              <InfoIcon
-                width="14px"
-                justifyContent="center"
-                alignItems="center"
-              >
-                i
-              </InfoIcon>
-            </FlexContainer>
-            <InputWrapper
-              padding="8px 32px 8px 22px"
-              margin="0 0 16px 0"
-              height="32px"
-              width="100%"
-              position="relative"
-            >
-              <PlusSign>+</PlusSign>
-              <MaskedInput
-                mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-                showMask={false}
-                onChange={handleChangeProfit}
-                value={buySellStore.takeProfitValue}
-                guide={false}
-                placeholder="Non Set"
-                render={(ref, props) => (
-                  <InputPnL ref={ref} {...props}></InputPnL>
-                )}
-              ></MaskedInput>
-              <FlexContainer position="absolute" right="2px" top="2px">
-                <PnLTypeDropdown pnlType="profit"></PnLTypeDropdown>
-              </FlexContainer>
-            </InputWrapper>
-            <FlexContainer
-              margin="0 0 6px 0"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                color="rgba(255, 255, 255, 0.3)"
-                textTransform="uppercase"
-              >
-                When Loss is
-              </PrimaryTextSpan>
-              <InfoIcon
-                width="14px"
-                justifyContent="center"
-                alignItems="center"
-              >
-                i
-              </InfoIcon>
-            </FlexContainer>
-            <InputWrapper
-              padding="8px 32px 8px 22px"
-              margin="0 0 16px 0"
-              height="32px"
-              width="100%"
-              position="relative"
-            >
-              <PlusSign>-</PlusSign>
-              <MaskedInput
-                mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-                showMask={false}
-                placeholder="Non Set"
-                onChange={handleChangeLoss}
-                value={buySellStore.stopLossValue}
-                guide={false}
-                render={(ref, props) => (
-                  <InputPnL ref={ref} {...props}></InputPnL>
-                )}
-              ></MaskedInput>
-              <FlexContainer position="absolute" right="2px" top="2px">
-                <PnLTypeDropdown pnlType="loss"></PnLTypeDropdown>
-              </FlexContainer>
-            </InputWrapper>
-            <ButtonApply onClick={handleApply}>Apply</ButtonApply>
-          </Wrapper>
+          <SetAutoclose
+            handleApply={handleApply}
+            stopLossValue={values.sl}
+            takeProfitValue={values.tp}
+            toggle={toggle}
+          />
         </FlexContainer>
       )}
     </FlexContainer>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import MaskedInput from 'react-text-mask';
@@ -6,11 +6,9 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
 import IconShevronBuy from '../../assets/svg/icon-buy-sell-shevron-buy.svg';
 import IconShevronSell from '../../assets/svg/icon-buy-sell-shevron-sell.svg';
-import Toggle from '../Toggle';
 import AutoClosePopup from './AutoClosePopup';
 import PurchaseAtPopup from './PurchaseAtPopup';
 import * as yup from 'yup';
-import { v4 } from 'uuid';
 import {
   OpenPositionModel,
   OpenPositionModelFormik,
@@ -20,7 +18,7 @@ import { AskBidEnum } from '../../enums/AskBid';
 import API from '../../helpers/API';
 import InformationPopup from '../InformationPopup';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
-import { Formik, Field, FieldProps, ErrorMessage, Form } from 'formik';
+import { Formik, Field, FieldProps, Form } from 'formik';
 import Fields from '../../constants/fields';
 import { useStores } from '../../hooks/useStores';
 import ColorsPallete from '../../styles/colorPallete';
@@ -28,8 +26,9 @@ import ErropPopup from '../ErropPopup';
 import MultiplierDropdown from './MultiplierDropdown';
 import InvestAmountDropdown from './InvestAmountDropdown';
 import { Observer } from 'mobx-react-lite';
-import { darken, lighten } from 'polished';
+import { darken } from 'polished';
 import { getProcessId } from '../../helpers/getProcessId';
+import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 
 interface Props {
   currencySymbol: string;
@@ -57,6 +56,9 @@ function BuySellPanel(props: Props) {
     operation: AskBidEnum.Buy,
     multiplier: instrument.multiplier[0],
     investmentAmount: '',
+    SLTPType: AutoCloseTypesEnum.Profit,
+    sl: null,
+    tp: null,
     purchaseAt: null,
   };
 
@@ -90,10 +92,38 @@ function BuySellPanel(props: Props) {
 
   const handleSubmit = (values: OpenPositionModelFormik, actions: any) => {
     actions.setSubmitting(false);
+
+    const { SLTPType, sl, tp, ...otherValues } = values;
+
+    let fieldForTakeProfit = Fields.TAKE_PROFIT;
+    let fieldForStopLoss = Fields.STOP_LOSS;
+
+    switch (SLTPType) {
+      case AutoCloseTypesEnum.Profit:
+        fieldForTakeProfit = Fields.TAKE_PROFIT;
+        fieldForStopLoss = Fields.STOP_LOSS;
+
+        break;
+      case AutoCloseTypesEnum.Percent:
+        fieldForTakeProfit = Fields.TAKE_PROFIT_RATE;
+        fieldForStopLoss = Fields.STOP_LOSS_RATE;
+
+        break;
+      case AutoCloseTypesEnum.Price:
+        fieldForTakeProfit = Fields.TAKE_PROFIT_PRICE;
+        fieldForStopLoss = Fields.STOP_LOSS_PRICE;
+
+        break;
+      default:
+        break;
+    }
+
     const modelToSubmit = {
       ...values,
-      investmentAmount: +values.investmentAmount,
+      [fieldForTakeProfit]: tp,
+      [fieldForStopLoss]: sl,
     };
+
     if (values.purchaseAt) {
       API.openPendingOrder(modelToSubmit);
     } else {
@@ -138,8 +168,7 @@ function BuySellPanel(props: Props) {
                 fontSize="11px"
                 lineHeight="12px"
                 textTransform="uppercase"
-                opacity="0.3"
-                color="#fff"
+                color="rgba(255, 255, 255, 0.3)"
               >
                 Invest
               </PrimaryTextSpan>
@@ -232,8 +261,7 @@ function BuySellPanel(props: Props) {
                 fontSize="11px"
                 lineHeight="12px"
                 textTransform="uppercase"
-                opacity="0.3"
-                color="#fff"
+                color="rgba(255, 255, 255, 0.3)"
               >
                 Leverage
               </PrimaryTextSpan>
@@ -263,8 +291,7 @@ function BuySellPanel(props: Props) {
                 fontSize="11px"
                 lineHeight="12px"
                 textTransform="uppercase"
-                opacity="0.3"
-                color="#fff"
+                color="rgba(255, 255, 255, 0.3)"
               >
                 Autoclose
               </PrimaryTextSpan>
@@ -289,8 +316,7 @@ function BuySellPanel(props: Props) {
                 fontSize="11px"
                 lineHeight="12px"
                 textTransform="uppercase"
-                color="#fff"
-                opacity="0.3"
+                color="rgba(255, 255, 255, 0.3)"
               >
                 VOLUME
               </PrimaryTextSpan>
@@ -304,8 +330,7 @@ function BuySellPanel(props: Props) {
                 fontSize="11px"
                 lineHeight="12px"
                 textTransform="uppercase"
-                color="#fff"
-                opacity="0.3"
+                color="rgba(255, 255, 255, 0.3)"
               >
                 Spread
               </PrimaryTextSpan>
@@ -358,8 +383,7 @@ function BuySellPanel(props: Props) {
                 fontSize="11px"
                 lineHeight="12px"
                 textTransform="uppercase"
-                opacity="0.3"
-                color="#fff"
+                color="rgba(255, 255, 255, 0.3)"
               >
                 Purchase at
               </PrimaryTextSpan>

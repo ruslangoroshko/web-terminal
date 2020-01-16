@@ -36,7 +36,7 @@ function PurchaseAtPopup(props: Props) {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const { quotesStore, buySellStore } = useStores();
+  const { quotesStore, SLTPStore: buySellStore } = useStores();
 
   const handleToggle = () => {
     toggle(!on);
@@ -83,7 +83,10 @@ function PurchaseAtPopup(props: Props) {
             width="200px"
           >
             <ButtonClose onClick={handleToggle}>
-              <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)"></SvgIcon>
+              <SvgIcon
+                {...IconClose}
+                fillColor="rgba(255, 255, 255, 0.6)"
+              ></SvgIcon>
             </ButtonClose>
             <PrimaryTextParagraph marginBottom="16px">
               Purchase At

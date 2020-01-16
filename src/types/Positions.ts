@@ -1,8 +1,10 @@
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import { AutoCloseTypesEnum } from '../enums/AutoCloseTypesEnum';
 
-interface OpenPositionModelInit {
+export interface OpenPositionModel {
   processId: string;
   accountId: string;
+  investmentAmount: number;
   instrumentId: string;
   operation: number;
   multiplier: number;
@@ -10,14 +12,20 @@ interface OpenPositionModelInit {
   sl?: number;
   tpRate?: number;
   slRate?: number;
-  purchaseAt: number | null;
-}
-export interface OpenPositionModel extends OpenPositionModelInit {
-  investmentAmount: number;
+  purchaseAt?: number;
 }
 
-export interface OpenPositionModelFormik extends OpenPositionModelInit {
+export interface OpenPositionModelFormik {
+  processId: string;
+  accountId: string;
   investmentAmount: string;
+  instrumentId: string;
+  operation: number;
+  multiplier: number;
+  tp: number | null;
+  sl: number | null;
+  SLTPType: AutoCloseTypesEnum;
+  purchaseAt: number | null;
 }
 
 export interface OpenPositionResponseDTO {

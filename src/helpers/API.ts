@@ -4,6 +4,7 @@ import {
   OpenPositionResponseDTO,
   ClosePositionModel,
   RemovePendingOrders,
+  OpenPositionModelFormik,
 } from '../types/Positions';
 import API_LIST from './apiList';
 import { AccountModelDTO } from '../types/Accounts';
@@ -18,12 +19,14 @@ class API {
   convertParamsToFormData = (params: any) => {
     const formData = new FormData();
     Object.keys(params).forEach(key => {
-      formData.append(key, params[key]);
+      if (params[key] !== undefined) {
+        formData.append(key, params[key]);
+      }
     });
     return formData;
   };
 
-  openPosition = async (position: OpenPositionModel) => {
+  openPosition = async (position: OpenPositionModelFormik) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.POSITIONS.OPEN}`,
@@ -122,7 +125,7 @@ class API {
     return response.data;
   };
 
-  openPendingOrder = async (position: OpenPositionModel) => {
+  openPendingOrder = async (position: OpenPositionModelFormik) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.PENDING_ORDERS.ADD}`,

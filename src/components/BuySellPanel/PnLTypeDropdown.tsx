@@ -11,29 +11,17 @@ import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
 import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import { useStores } from '../../hooks/useStores';
 
-interface Props {
-  pnlType: 'profit' | 'loss';
-}
+interface Props {}
 
 function PnLTypeDropdown(props: Props) {
-  const { pnlType } = props;
-
-  const { buySellStore } = useStores();
-
-  const autoClose =
-    pnlType === 'profit'
-      ? buySellStore.autoCloseProfit
-      : buySellStore.autoCloseLoss;
+  const { SLTPStore: buySellStore } = useStores();
 
   const handleAutoClose = (
     autoClose: AutoCloseTypesEnum,
     toggle: () => void
   ) => () => {
-    if (pnlType === 'profit') {
-      buySellStore.autoCloseProfit = autoClose;
-    } else {
-      buySellStore.autoCloseLoss = autoClose;
-    }
+    buySellStore.autoCloseType = autoClose;
+
     toggle();
   };
 
@@ -43,7 +31,7 @@ function PnLTypeDropdown(props: Props) {
         <FlexContainer position="relative">
           <DropdownButton isActive={on} onClick={toggle}>
             <PrimaryTextSpan marginRight="4px" color="rgba(255, 255, 255, 0.5)">
-              {autoClose}
+              {buySellStore.autoCloseType}
             </PrimaryTextSpan>
             <SvgIcon
               {...IconShevronDown}
@@ -73,7 +61,7 @@ function PnLTypeDropdown(props: Props) {
                   <PrimaryTextSpan
                     fontSize="12px"
                     lineHeight="14px"
-                    opacity="0.5"
+                    color="rgba(255, 255, 255, 0.5)"
                   >
                     {key}
                   </PrimaryTextSpan>

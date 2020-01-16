@@ -6,7 +6,6 @@ interface PrimaryTextType {
   fontStyle?: 'italic' | 'normal';
   fontSize?: '12px' | '11px' | '14px' | '16px' | '10px' | '24px';
   lineHeight?: string;
-  opacity?: string;
   marginRight?: string;
   marginBottom?: string;
   textDecoration?: 'underline';
@@ -21,7 +20,6 @@ export const PrimaryTextSpan = styled.span<PrimaryTextType>`
   font-size: ${props => props.fontSize || '14px'};
   line-height: ${props => props.lineHeight || '120%'};
   color: ${props => props.color || '#FFFCCC'};
-  opacity: ${props => props.opacity};
   margin-right: ${props => props.marginRight};
   margin-bottom: ${props => props.marginBottom};
   text-decoration: ${props => props.textDecoration};
@@ -35,7 +33,6 @@ export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
   font-size: ${props => props.fontSize || '16px'};
   line-height: ${props => props.lineHeight || '120%'};
   color: ${props => props.color || '#FFFCCC'};
-  opacity: ${props => props.opacity};
   margin-right: ${props => props.marginRight};
   margin-bottom: ${props => props.marginBottom};
   text-decoration: ${props => props.textDecoration};
@@ -52,7 +49,6 @@ export const QuoteText = styled(PrimaryTextSpan)<
   font-size: ${props => props.fontSize || '16px'};
   line-height: ${props => props.lineHeight || '120%'};
   color: ${props => (props.isGrowth ? '#3BFF8A' : '#FF557E')};
-  opacity: ${props => props.opacity};
   margin-right: ${props => props.marginRight};
   margin-bottom: ${props => props.marginBottom};
   text-decoration: ${props => props.textDecoration};
