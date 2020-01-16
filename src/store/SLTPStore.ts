@@ -21,5 +21,6 @@ export class SLTPStore implements ContextProps {
     this.purchaseAtValue = null;
     this.stopLossValue = null;
     this.takeProfitValue = null;
+    this.autoCloseType = AutoCloseTypesEnum.Profit;
   };
 }

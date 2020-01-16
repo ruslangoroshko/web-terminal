@@ -61,3 +61,13 @@ export interface RemovePendingOrders {
   accountId: string;
   orderId: number;
 }
+
+export interface UpdateSLTP {
+  processId: string;
+  accountId: string;
+  positionId: number;
+  tp?: number;
+  sl?: number;
+  tpRate?: number;
+  slRate?: number;
+}

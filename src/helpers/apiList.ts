@@ -2,6 +2,7 @@ const API_LIST = {
   POSITIONS: {
     OPEN: '/api/v1/Positions/Open',
     CLOSE: '/api/v1/Positions/Close',
+    UPDATE_SL_TP: '/api/v1/Positions/UpdateTpSl',
   },
   ACCOUNTS: {
     GET_ACCOUNTS: '/api/v1/Accounts',

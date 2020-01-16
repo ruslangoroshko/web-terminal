@@ -12,10 +12,16 @@ import { useStores } from '../../hooks/useStores';
 import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import API from '../../helpers/API';
-import { PositionModelWSDTO } from '../../types/Positions';
+import { PositionModelWSDTO, UpdateSLTP } from '../../types/Positions';
 import { getProcessId } from '../../helpers/getProcessId';
 import moment from 'moment';
 import InformationPopup from '../InformationPopup';
+import Toggle from '../Toggle';
+import SetAutoclose from '../BuySellPanel/SetAutoclose';
+import { values } from 'mobx';
+import Fields from '../../constants/fields';
+import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
+import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -33,6 +39,10 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
       commission,
       swap,
       id,
+      stopLossInCurrency,
+      stopLossRate,
+      takeProfitInCurrency,
+      takeProfitRate,
     },
   } = props;
 
@@ -44,7 +54,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
     return ((part / total) * 100).toFixed(2);
   };
 
-  const { quotesStore, mainAppStore } = useStores();
+  const { quotesStore, mainAppStore, SLTPStore } = useStores();
 
   const PnL = calculateFloatingProfitAndLoss({
     investment: investmentAmount,
@@ -63,6 +73,40 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
       positionId: id,
       processId: getProcessId(),
     });
+  };
+
+  const updateSLTP = () => {
+    let fieldForTakeProfit = Fields.TAKE_PROFIT;
+    let fieldForStopLoss = Fields.STOP_LOSS;
+
+    switch (SLTPStore.autoCloseType) {
+      case AutoCloseTypesEnum.Profit:
+        fieldForTakeProfit = Fields.TAKE_PROFIT;
+        fieldForStopLoss = Fields.STOP_LOSS;
+
+        break;
+      case AutoCloseTypesEnum.Percent:
+        fieldForTakeProfit = Fields.TAKE_PROFIT_RATE;
+        fieldForStopLoss = Fields.STOP_LOSS_RATE;
+
+        break;
+      case AutoCloseTypesEnum.Price:
+        fieldForTakeProfit = Fields.TAKE_PROFIT_PRICE;
+        fieldForStopLoss = Fields.STOP_LOSS_PRICE;
+
+        break;
+      default:
+        break;
+    }
+    const values: UpdateSLTP = {
+      accountId: mainAppStore.account!.id,
+      positionId: id,
+      processId: getProcessId(),
+      [fieldForTakeProfit]: SLTPStore.takeProfitValue,
+      [fieldForStopLoss]: SLTPStore.stopLossValue,
+    };
+
+    API.updateSLTP(values);
   };
 
   return (
@@ -192,15 +236,11 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
           </FlexContainer>
         </FlexContainer>
         <FlexContainer>
-          <SetSLTPButton>
-            <PrimaryTextSpan
-              fontSize="12px"
-              lineHeight="14px"
-              color="rgba(255, 255, 255, 0.6)"
-            >
-              TP SL
-            </PrimaryTextSpan>
-          </SetSLTPButton>
+          <AutoClosePopupSideBar
+            stopLossValue={stopLossInCurrency || stopLossRate || null}
+            takeProfitValue={takeProfitInCurrency || takeProfitRate || null}
+            updateSLTP={updateSLTP}
+          ></AutoClosePopupSideBar>
           <CloseButton onClick={closePosition}>
             <PrimaryTextSpan fontSize="12px" lineHeight="14px">
               Close

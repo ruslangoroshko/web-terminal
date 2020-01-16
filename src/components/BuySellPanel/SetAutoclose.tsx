@@ -44,11 +44,8 @@ function SetAutoclose(props: Props) {
   };
 
   useEffect(() => {
-    console.log('mounted');
     SLTPStore.takeProfitValue = takeProfitValue;
-    console.log('TCL: SetAutoclose -> takeProfitValue', takeProfitValue);
     SLTPStore.stopLossValue = stopLossValue;
-    console.log('TCL: SetAutoclose -> stopLossValue', stopLossValue);
 
     return () => {
       return SLTPStore.clearStore();
