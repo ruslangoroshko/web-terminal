@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
@@ -16,34 +16,16 @@ import Scrollbar from 'react-scrollbars-custom';
 
 interface Props {}
 
-const Portfolio: FC<Props> = props => {
+const Portfolio: FC<Props> = () => {
   const { quotesStore, mainAppStore, tabsStore } = useStores();
-
-  const positionsWrapperRef = useRef<HTMLDivElement>(null);
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     tabsStore.portfolioTab = portfolioTab;
   };
 
-  // let scrollbar = null;
-
-  // useEffect(() => {
-  //   if (positionsWrapperRef.current) {
-  //     scrollbar = new PerfectScrollbar(positionsWrapperRef.current);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (scrollbar) {
-  //     scrollbar.update();
-  //   } else {
-  //     scrollbar = new PerfectScrollbar(positionsWrapperRef.current!);
-  //   }
-  // }, [quotesStore.activePositions]);
-
   return (
-    <PortfolioWrapper padding="12px 16px" flexDirection="column">
-      <FlexContainer flexDirection="column">
+    <PortfolioWrapper padding="12px 4px" flexDirection="column">
+      <FlexContainer flexDirection="column" padding="0 12px">
         <FlexContainer margin="0 0 28px">
           <Observer>
             {() => (
@@ -138,10 +120,13 @@ const Portfolio: FC<Props> = props => {
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
-      <Scrollbar noScrollX>
+      <Scrollbar noScrollX fallbackScrollbarWidth={4}>
         <Observer>
           {() => (
-            <ActivePositionsWrapper flexDirection="column">
+            <ActivePositionsWrapper
+              flexDirection="column"
+              padding="0 8px 0 12px"
+            >
               {quotesStore.activePositions.map(item => (
                 <ActivePositionsPortfolioTab key={item.id} position={item} />
               ))}

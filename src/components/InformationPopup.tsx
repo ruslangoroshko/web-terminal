@@ -2,25 +2,19 @@ import React, { FC } from 'react';
 import { FlexContainer, FlexContainerProps } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import ColorsPallete from '../styles/colorPallete';
-import { PrimaryTextSpan } from '../styles/TextsElements';
 import SvgIcon from './SvgIcon';
 import IconInfo from '../assets/svg/icon-info.svg';
+import { css } from '@emotion/core';
 
 interface Props {
   bgColor: string;
   classNameTooltip: string;
-  isRightDirection?: boolean;
+  direction: 'top' | 'right' | 'left' | 'bottom';
   width: string;
 }
 
-const NotificationTooltip: FC<Props> = props => {
-  const {
-    bgColor,
-    children,
-    classNameTooltip,
-    isRightDirection,
-    width,
-  } = props;
+const InformationPopup: FC<Props> = props => {
+  const { bgColor, children, classNameTooltip, direction, width } = props;
   return (
     <FlexContainer position="relative">
       <InfoIcon classNameTooltip={classNameTooltip}>
@@ -32,11 +26,9 @@ const NotificationTooltip: FC<Props> = props => {
       </InfoIcon>
       <TooltipWrapper
         width={width}
+        direction={direction}
         padding="12px"
         position="absolute"
-        top="0"
-        right={isRightDirection ? 'auto' : '22px'}
-        left={isRightDirection ? '22px' : 'auto'}
         backgroundColor={bgColor}
         className={classNameTooltip}
         zIndex="101"
@@ -47,10 +39,55 @@ const NotificationTooltip: FC<Props> = props => {
   );
 };
 
-export default NotificationTooltip;
+export default InformationPopup;
+
+const rightDirection = css`
+  top: 0;
+  left: 22px;
+
+  &:after {
+    top: 0;
+    left: -7px;
+    transform: rotate(180deg);
+  }
+`;
+
+const leftDirection = css`
+  top: 0;
+  right: 22px;
+
+  &:after {
+    top: 0;
+    right: -7px;
+  }
+`;
+
+const bottomDirection = css`
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  &:after {
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-90deg);
+  }
+`;
+
+const topDirection = css`
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  &:after {
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-90deg);
+  }
+`;
 
 const TooltipWrapper = styled(FlexContainer)<
-  FlexContainerProps & { isRightDirection?: boolean }
+  FlexContainerProps & { direction: Props['direction'] }
 >`
   visibility: hidden;
   opacity: 0;
@@ -74,17 +111,26 @@ const TooltipWrapper = styled(FlexContainer)<
   &:after {
     content: '';
     position: absolute;
-    top: 0;
-    left: ${props => (props.isRightDirection ? 'auto' : '-7px')};
-    right: ${props => (props.isRightDirection ? '-7px' : 'auto')};
     width: 0;
     height: 0;
     border-style: solid;
     border-width: 7px 0 7px 8px;
     border-color: transparent transparent transparent
       ${props => props.backgroundColor};
-    transform: ${props => !props.isRightDirection && 'rotate(180deg)'};
   }
+
+  ${props => {
+    switch (props.direction) {
+      case 'top':
+        return topDirection;
+      case 'bottom':
+        return bottomDirection;
+      case 'left':
+        return leftDirection;
+      case 'right':
+        return rightDirection;
+    }
+  }}
 
   &:hover {
     visibility: visible;

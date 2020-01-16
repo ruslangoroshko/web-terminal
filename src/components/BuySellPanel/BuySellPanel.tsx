@@ -18,7 +18,7 @@ import {
 import { InstrumentModelWSDTO } from '../../types/Instruments';
 import { AskBidEnum } from '../../enums/AskBid';
 import API from '../../helpers/API';
-import NotificationTooltip from '../NotificationTooltip';
+import InformationPopup from '../InformationPopup';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { Formik, Field, FieldProps, ErrorMessage, Form } from 'formik';
 import Fields from '../../constants/fields';
@@ -143,15 +143,16 @@ function BuySellPanel(props: Props) {
               >
                 Invest
               </PrimaryTextSpan>
-              <NotificationTooltip
+              <InformationPopup
                 bgColor="#000000"
                 classNameTooltip="invest"
                 width="212px"
+                direction="left"
               >
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   The amount you’d like to invest
                 </PrimaryTextSpan>
-              </NotificationTooltip>
+              </InformationPopup>
             </FlexContainer>
             <Field type="text" name={Fields.AMOUNT}>
               {({ field, meta }: FieldProps) => (
@@ -236,15 +237,16 @@ function BuySellPanel(props: Props) {
               >
                 Leverage
               </PrimaryTextSpan>
-              <NotificationTooltip
+              <InformationPopup
                 bgColor="#000000"
                 classNameTooltip="leverage"
                 width="212px"
+                direction="left"
               >
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   The amount you’d like to invest
                 </PrimaryTextSpan>
-              </NotificationTooltip>
+              </InformationPopup>
             </FlexContainer>
             <MultiplierDropdown
               multipliers={instrument.multiplier}
@@ -266,15 +268,16 @@ function BuySellPanel(props: Props) {
               >
                 Autoclose
               </PrimaryTextSpan>
-              <NotificationTooltip
+              <InformationPopup
                 bgColor="#000000"
                 classNameTooltip="autoclose"
                 width="212px"
+                direction="left"
               >
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   The amount you’d like to invest
                 </PrimaryTextSpan>
-              </NotificationTooltip>
+              </InformationPopup>
             </FlexContainer>
             <AutoClosePopup
               setFieldValue={setFieldValue}
@@ -360,15 +363,16 @@ function BuySellPanel(props: Props) {
               >
                 Purchase at
               </PrimaryTextSpan>
-              <NotificationTooltip
+              <InformationPopup
                 bgColor="#000000"
                 classNameTooltip="purchase-at"
                 width="212px"
+                direction="left"
               >
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   The amount you’d like to invest
                 </PrimaryTextSpan>
-              </NotificationTooltip>
+              </InformationPopup>
             </FlexContainer>
             <PurchaseAtPopup
               setFieldValue={setFieldValue}

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
@@ -15,7 +15,7 @@ import API from '../../helpers/API';
 import { PositionModelWSDTO } from '../../types/Positions';
 import { getProcessId } from '../../helpers/getProcessId';
 import moment from 'moment';
-import NotificationTooltip from '../NotificationTooltip';
+import InformationPopup from '../InformationPopup';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -109,11 +109,11 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
           &times;{multiplier}
         </PrimaryTextSpan>
 
-        <NotificationTooltip
+        <InformationPopup
           classNameTooltip={`position_${id}`}
           bgColor="#000"
           width="200px"
-          isRightDirection
+          direction="bottom"
         >
           <FlexContainer flexDirection="column" width="100%">
             <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
@@ -136,10 +136,14 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
               <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
                 Equity
               </PrimaryTextSpan>
-              <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                {mainAppStore.account?.symbol}
-                {PnL + investmentAmount}
-              </PrimaryTextSpan>
+              <Observer>
+                {() => (
+                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    {mainAppStore.account?.symbol}
+                    {PnL + investmentAmount}
+                  </PrimaryTextSpan>
+                )}
+              </Observer>
             </FlexContainer>
             {/* <FlexContainer justifyContent="space-between" margin="0 8px 0 0">
               <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
@@ -158,7 +162,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
               </PrimaryTextSpan>
             </FlexContainer>
           </FlexContainer>
-        </NotificationTooltip>
+        </InformationPopup>
       </FlexContainer>
       <FlexContainer flexDirection="column">
         <FlexContainer justifyContent="flex-end" margin="0 0 8px 0">

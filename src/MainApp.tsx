@@ -36,9 +36,8 @@ const MainApp = () => {
           body {
             background-color: #1c2026;
           }
-          .thumb-horizontal,
-          .track-horizontal {
-            display: none;
+          .ScrollbarsCustom-Track.ScrollbarsCustom-TrackY {
+            width: 4px !important;
           }
         `}
       />
