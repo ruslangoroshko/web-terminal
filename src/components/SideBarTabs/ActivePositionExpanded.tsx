@@ -70,12 +70,10 @@ function ActivePositionExpanded(props: Props) {
     });
   };
   return (
-    <Tr>
-      <td>
+    <DisplayContents>
+      <Td>
         <FlexContainer width="32px" height="32px"></FlexContainer>
-      </td>
-      <td>
-        <FlexContainer flexDirection="column">
+        <FlexContainer flexDirection="column" margin="0 8px 0 0" width="170px">
           <PrimaryTextSpan fontSize="14px" color="#fffccc" marginBottom="4px">
             {instrument}
           </PrimaryTextSpan>
@@ -83,10 +81,8 @@ function ActivePositionExpanded(props: Props) {
             {instrument}
           </PrimaryTextSpan>
         </FlexContainer>
-      </td>
-      <td>
         <FlexContainer>
-          <FlexContainer margin="0 8px 0 0">
+          <FlexContainer margin="0 6px 0 0">
             <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
           </FlexContainer>
           <FlexContainer flexDirection="column">
@@ -99,13 +95,18 @@ function ActivePositionExpanded(props: Props) {
             >
               {isBuy ? 'Buy' : 'Sell'}
             </PrimaryTextSpan>
-            <PrimaryTextSpan fontSize="11px" color="rgba(255, 255, 255, 0.4)">
+            <PrimaryTextSpan
+              fontSize="11px"
+              color="rgba(255, 255, 255, 0.4)"
+              whiteSpace="nowrap"
+            >
               at {openPrice}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
-      </td>
-      <td>
+      </Td>
+
+      <Td>
         <FlexContainer flexDirection="column">
           <PrimaryTextSpan
             color="#fffccc"
@@ -119,8 +120,8 @@ function ActivePositionExpanded(props: Props) {
             {moment(openDate).format('HH:mm:ss')}
           </PrimaryTextSpan>
         </FlexContainer>
-      </td>
-      <td>
+      </Td>
+      <Td justifyContent="flex-end">
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <PrimaryTextSpan
             color="#fffccc"
@@ -135,31 +136,36 @@ function ActivePositionExpanded(props: Props) {
             &times;{multiplier}
           </PrimaryTextSpan>
         </FlexContainer>
-      </td>
-      <td>
+      </Td>
+      <Td justifyContent="flex-end">
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <Observer>
             {() => (
-              <QuoteText
-                color="#fffccc"
-                fontSize="14px"
-                lineHeight="20px"
-                marginBottom="2px"
-                isGrowth={PnL >= 0}
-              >
-                {PnL >= 0 ? '+' : '-'}
-                {currencySymbol}
-                {Math.abs(PnL)}
-              </QuoteText>
+              <>
+                <QuoteText
+                  color="#fffccc"
+                  fontSize="14px"
+                  lineHeight="20px"
+                  marginBottom="2px"
+                  isGrowth={PnL >= 0}
+                >
+                  {PnL >= 0 ? '+' : '-'}
+                  {currencySymbol}
+                  {Math.abs(PnL)}
+                </QuoteText>
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  color="rgba(255, 255, 255, 0.4)"
+                >
+                  {PnL >= 0 ? '+' : ''}
+                  {calculateInPercent(investmentAmount, PnL)}%
+                </PrimaryTextSpan>
+              </>
             )}
           </Observer>
-          <PrimaryTextSpan fontSize="11px" color="rgba(255, 255, 255, 0.4)">
-            {PnL >= 0 ? '+' : ''}
-            {calculateInPercent(investmentAmount, PnL)}%
-          </PrimaryTextSpan>
         </FlexContainer>
-      </td>
-      <td>
+      </Td>
+      <Td justifyContent="flex-end" alignItems="center">
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <Observer>
             {() => (
@@ -170,37 +176,39 @@ function ActivePositionExpanded(props: Props) {
             )}
           </Observer>
         </FlexContainer>
-      </td>
-      <td>
+      </Td>
+      <Td justifyContent="center" alignItems="center">
         <FlexContainer flexDirection="column" alignItems="center">
           <PrimaryTextSpan fontSize="12px" color="#fff">
             Set
           </PrimaryTextSpan>
         </FlexContainer>
-      </td>
-      <td>
+      </Td>
+      <Td justifyContent="center" alignItems="center">
         <FlexContainer flexDirection="column" alignItems="center">
           <PrimaryTextSpan fontSize="12px" color="#fff">
             Set
           </PrimaryTextSpan>
         </FlexContainer>
-      </td>
-      <td>
-        <FlexContainer flexDirection="column" alignItems="center">
+      </Td>
+      <Td alignItems="center">
+        <FlexContainer
+          flexDirection="column"
+          alignItems="center"
+          margin="0 16px 0 0"
+        >
           <ButtonClose onClick={closePosition}>
             <PrimaryTextSpan fontSize="12px" color="#fff">
               Close
             </PrimaryTextSpan>
           </ButtonClose>
         </FlexContainer>
-      </td>
-      <td>
         <FlexContainer flexDirection="column" alignItems="center">
           <InformationPopup
             classNameTooltip={`position_expaned_${id}`}
             bgColor="#000"
             width="200px"
-            direction="bottom"
+            direction="left"
           >
             <FlexContainer flexDirection="column" width="100%">
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
@@ -263,8 +271,8 @@ function ActivePositionExpanded(props: Props) {
             </FlexContainer>
           </InformationPopup>
         </FlexContainer>
-      </td>
-    </Tr>
+      </Td>
+    </DisplayContents>
   );
 }
 
@@ -281,6 +289,17 @@ const ButtonClose = styled(ButtonWithoutStyles)`
   }
 `;
 
-const Tr = styled.tr`
-  padding: 12px;
+const Td = styled(FlexContainer)`
+  transition: background-color 0.2s ease;
+  padding: 12px 0;
+  height: 60px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+`;
+
+const DisplayContents = styled.div`
+  display: contents;
+
+  &:hover > div {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
 `;

@@ -74,7 +74,6 @@ export class MainAppStore implements MainAppStoreProps {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
-      console.log('TCL: MainAppStore -> this.isAuthorized', this.isAuthorized);
     }
   };
 

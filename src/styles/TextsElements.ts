@@ -24,6 +24,7 @@ export const PrimaryTextSpan = styled.span<PrimaryTextType>`
   margin-bottom: ${props => props.marginBottom};
   text-decoration: ${props => props.textDecoration};
   text-transform: ${props => props.textTransform};
+  white-space: ${props => props.whiteSpace};
 `;
 
 export const PrimaryTextParagraph = styled.p<PrimaryTextType>`

@@ -13,6 +13,8 @@ import { TabPortfolitButton } from './Portfolio';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import ActivePositionExpanded from './ActivePositionExpanded';
+import SvgIcon from '../SvgIcon';
+import IconClose from '../../assets/svg/icon-close.svg';
 
 interface Props {}
 
@@ -28,7 +30,10 @@ const PortfolioExpanded: FC<Props> = props => {
   };
 
   return (
-    <PortfolioWrapper flexDirection="column" width="100%">
+    <PortfolioWrapper flexDirection="column" width="100%" position="relative">
+      <ButtonClose onClick={closeExpanded}>
+        <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)" />
+      </ButtonClose>
       <FlexContainer margin="0 0 40px 0" padding="0 0 0 8px">
         <Observer>
           {() => (
@@ -49,115 +54,180 @@ const PortfolioExpanded: FC<Props> = props => {
           )}
         </Observer>
       </FlexContainer>
-      <FlexContainer padding="0 100px" flexDirection="column">
-        <FlexContainer
-          justifyContent="space-between"
-          alignItems="flex-end"
-          padding="0 32px 0 12px"
-        >
-          <FlexContainer>
-            <FlexContainer
-              flexDirection="column"
-              width="140px"
-              margin="0 60px 0 0"
-            >
-              <PrimaryTextParagraph
-                color="rgba(255, 255, 255, 0.4)"
-                fontSize="10px"
-                marginBottom="8px"
-                textTransform="uppercase"
+      <FlexContainer width="100%" justifyContent="center">
+        <FlexContainer flexDirection="column" width="1020px">
+          <FlexContainer
+            justifyContent="space-between"
+            alignItems="flex-end"
+            padding="0 32px 0 12px"
+            margin="0 0 32px 0"
+          >
+            <FlexContainer>
+              <FlexContainer
+                flexDirection="column"
+                width="140px"
+                margin="0 60px 0 0"
               >
-                Total Profit
-              </PrimaryTextParagraph>
-              <Observer>
-                {() => (
-                  <QuoteText
-                    isGrowth={quotesStore.profit >= 0}
-                    fontSize="24px"
-                    lineHeight="28px"
-                    fontWeight="bold"
-                  >
-                    {getNumberSign(quotesStore.profit)}
-                    {mainAppStore.account?.symbol}
-                    {Math.abs(quotesStore.profit).toFixed(2)}
-                  </QuoteText>
-                )}
-              </Observer>
-            </FlexContainer>
-            <FlexContainer
-              flexDirection="column"
-              width="140px"
-              margin="0 60px 0 0"
-            >
-              <PrimaryTextParagraph
-                color="rgba(255, 255, 255, 0.4)"
-                fontSize="10px"
-                marginBottom="14px"
-                textTransform="uppercase"
+                <PrimaryTextParagraph
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="10px"
+                  marginBottom="8px"
+                  textTransform="uppercase"
+                >
+                  Total Profit
+                </PrimaryTextParagraph>
+                <Observer>
+                  {() => (
+                    <QuoteText
+                      isGrowth={quotesStore.profit >= 0}
+                      fontSize="24px"
+                      lineHeight="28px"
+                      fontWeight="bold"
+                    >
+                      {getNumberSign(quotesStore.profit)}
+                      {mainAppStore.account?.symbol}
+                      {Math.abs(quotesStore.profit).toFixed(2)}
+                    </QuoteText>
+                  )}
+                </Observer>
+              </FlexContainer>
+              <FlexContainer
+                flexDirection="column"
+                width="140px"
+                margin="0 60px 0 0"
               >
-                Total Investments
-              </PrimaryTextParagraph>
-              <Observer>
-                {() => (
-                  <PrimaryTextSpan
-                    fontSize="14px"
-                    lineHeight="16px"
-                    fontWeight="bold"
-                    color="#fffccc"
-                  >
-                    {mainAppStore.account?.symbol}
-                    {quotesStore.invest}
-                  </PrimaryTextSpan>
-                )}
-              </Observer>
-            </FlexContainer>
-            <FlexContainer
-              flexDirection="column"
-              width="140px"
-              margin="0 60px 0 0"
-            >
-              <PrimaryTextParagraph
-                color="rgba(255, 255, 255, 0.4)"
-                fontSize="10px"
-                marginBottom="14px"
-                textTransform="uppercase"
+                <PrimaryTextParagraph
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="10px"
+                  marginBottom="14px"
+                  textTransform="uppercase"
+                >
+                  Total Investments
+                </PrimaryTextParagraph>
+                <Observer>
+                  {() => (
+                    <PrimaryTextSpan
+                      fontSize="14px"
+                      lineHeight="16px"
+                      fontWeight="bold"
+                      color="#fffccc"
+                    >
+                      {mainAppStore.account?.symbol}
+                      {quotesStore.invest}
+                    </PrimaryTextSpan>
+                  )}
+                </Observer>
+              </FlexContainer>
+              <FlexContainer
+                flexDirection="column"
+                width="140px"
+                margin="0 60px 0 0"
               >
-                Total Equity
-              </PrimaryTextParagraph>
-              <Observer>
-                {() => (
-                  <PrimaryTextSpan
-                    fontSize="14px"
-                    lineHeight="16px"
-                    fontWeight="bold"
-                    color="#fffccc"
-                  >
-                    {mainAppStore.account?.symbol}
-                    {quotesStore.totalEquity.toFixed(2)}
-                  </PrimaryTextSpan>
-                )}
-              </Observer>
+                <PrimaryTextParagraph
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="10px"
+                  marginBottom="14px"
+                  textTransform="uppercase"
+                >
+                  Total Equity
+                </PrimaryTextParagraph>
+                <Observer>
+                  {() => (
+                    <PrimaryTextSpan
+                      fontSize="14px"
+                      lineHeight="16px"
+                      fontWeight="bold"
+                      color="#fffccc"
+                    >
+                      {mainAppStore.account?.symbol}
+                      {quotesStore.totalEquity.toFixed(2)}
+                    </PrimaryTextSpan>
+                  )}
+                </Observer>
+              </FlexContainer>
             </FlexContainer>
+            <ButtonCloseAll>
+              <PrimaryTextSpan color="#fff" fontSize="12px">
+                Close All
+              </PrimaryTextSpan>
+            </ButtonCloseAll>
           </FlexContainer>
-          <ButtonCloseAll>
-            <PrimaryTextSpan color="#fff" fontSize="12px">
-              Close All
-            </PrimaryTextSpan>
-          </ButtonCloseAll>
+          <FlexContainer flexDirection="column">
+            <TableGrid>
+              <Td>
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
+                  Asset Name
+                </PrimaryTextSpan>
+              </Td>
+              <Td>
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
+                  Time Opened
+                </PrimaryTextSpan>
+              </Td>
+              <Td justifyContent="flex-end">
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
+                  Investment
+                </PrimaryTextSpan>
+              </Td>
+              <Td justifyContent="flex-end">
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
+                  Profit/loss
+                </PrimaryTextSpan>
+              </Td>
+              <Td justifyContent="flex-end">
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
+                  Equity
+                </PrimaryTextSpan>
+              </Td>
+              <Td justifyContent="center">
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
+                  Take Profit
+                </PrimaryTextSpan>
+              </Td>
+              <Td justifyContent="center">
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
+                  Stop Loss
+                </PrimaryTextSpan>
+              </Td>
+              <Td></Td>
+              {quotesStore.activePositions.map(item => (
+                <ActivePositionExpanded
+                  key={item.id}
+                  currencySymbol={mainAppStore.account?.symbol || ''}
+                  position={item}
+                />
+              ))}
+            </TableGrid>
+          </FlexContainer>
         </FlexContainer>
-      </FlexContainer>
-      <FlexContainer padding="0 100px" alignItems="center">
-        <Table>
-          <tbody>
-            {quotesStore.activePositions.map(item => (
-              <ActivePositionExpanded
-                key={item.id}
-                currencySymbol={mainAppStore.account?.symbol || ''}
-                position={item}
-              />
-            ))}
-          </tbody>
-        </Table>
       </FlexContainer>
     </PortfolioWrapper>
   );
@@ -183,7 +253,17 @@ const ButtonCloseAll = styled(ButtonWithoutStyles)`
   border-radius: 3px;
 `;
 
-const Table = styled.table`
-  table-layout: fixed;
-  width: 100%;
+const ButtonClose = styled(ButtonWithoutStyles)`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+`;
+
+const Td = styled(FlexContainer)`
+  margin-bottom: 4px;
+`;
+
+const TableGrid = styled.div`
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) repeat(7, minmax(100px, 1fr));
 `;
