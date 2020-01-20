@@ -14,11 +14,24 @@ function DepositButton(props: Props) {
 export default DepositButton;
 
 const ButtonWrapper = styled(ButtonWithoutStyles)`
-  background: linear-gradient(0deg, #00FFF2, #00FFF2);
+  background-color: #00fff2;
   padding: 4px 16px;
   border-radius: 4px;
   font-weight: bold;
   font-size: 12px;
   line-height: 14px;
   color: ${ColorsPallete.DEEP_TEAL};
+
+  &:hover {
+    background-color: #9ffff2;
+  }
+
+  &:focus {
+    background-color: #21b3a4;
+  }
+
+  &:disabled {
+    background-color: rgba(255, 255, 255, 0.04);
+    color: white;
+  }
 `;

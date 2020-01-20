@@ -3,7 +3,7 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import styled from '@emotion/styled';
-import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import { SecondaryButton } from '../../styles/Buttons';
 
 interface Props {
   updateSLTP: () => void;
@@ -63,14 +63,8 @@ function AutoClosePopupSideBar(props: Props) {
 
 export default AutoClosePopupSideBar;
 
-const SetSLTPButton = styled(ButtonWithoutStyles)`
-  padding: 4px 8px;
+const SetSLTPButton = styled(SecondaryButton)`
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 3px;
-  transition: background-color 0.2s ease;
   margin-right: 8px;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.12);
-  }
+  background-color: transparent;
 `;

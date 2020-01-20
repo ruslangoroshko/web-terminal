@@ -16,6 +16,7 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import InformationPopup from '../InformationPopup';
 import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
+import { SecondaryButton } from '../../styles/Buttons';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -278,15 +279,8 @@ function ActivePositionExpanded(props: Props) {
 
 export default ActivePositionExpanded;
 
-const ButtonClose = styled(ButtonWithoutStyles)`
-  padding: 4px 8px;
+const ButtonClose = styled(SecondaryButton)`
   width: 48px;
-  background-color: rgba(255, 255, 255, 0.12);
-  border-radius: 3px;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
 `;
 
 const Td = styled(FlexContainer)`

@@ -25,6 +25,8 @@ export const PrimaryTextSpan = styled.span<PrimaryTextType>`
   text-decoration: ${props => props.textDecoration};
   text-transform: ${props => props.textTransform};
   white-space: ${props => props.whiteSpace};
+  transition: color 0.2s ease;
+  will-change: color;
 `;
 
 export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
@@ -39,6 +41,8 @@ export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
   text-decoration: ${props => props.textDecoration};
   text-transform: ${props => props.textTransform};
   white-space: ${props => props.whiteSpace};
+  transition: color 0.2s ease;
+  will-change: color;
 `;
 
 export const QuoteText = styled(PrimaryTextSpan)<
@@ -54,4 +58,6 @@ export const QuoteText = styled(PrimaryTextSpan)<
   margin-bottom: ${props => props.marginBottom};
   text-decoration: ${props => props.textDecoration};
   text-transform: ${props => props.textTransform};
+  transition: color 0.2s ease;
+  will-change: color;
 `;

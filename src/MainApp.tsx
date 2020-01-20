@@ -8,6 +8,7 @@ import RoutingLayout from './routing/RoutingLayout';
 import { Router, Switch } from 'react-router-dom';
 import { appHistory } from './routing/history';
 import { slickSliderStyles } from './styles/slickSlider';
+import reactDatePickerOverrides from './styles/react-date-picker-overrides';
 
 const MainApp = () => {
   injectInerceptors();
@@ -36,9 +37,11 @@ const MainApp = () => {
           body {
             background-color: #1c2026;
           }
+
           .ScrollbarsCustom-Track.ScrollbarsCustom-TrackY {
             width: 4px !important;
           }
+          ${reactDatePickerOverrides}
         `}
       />
     </>

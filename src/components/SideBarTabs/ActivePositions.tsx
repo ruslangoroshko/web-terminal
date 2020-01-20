@@ -19,6 +19,7 @@ import InformationPopup from '../InformationPopup';
 import Fields from '../../constants/fields';
 import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import AutoClosePopupSideBar from './AutoClosePopupSideBar';
+import { SecondaryButton } from '../../styles/Buttons';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -253,27 +254,8 @@ export default ActivePositionsPortfolioTab;
 
 const InstrumentInfoWrapper = styled(FlexContainer)``;
 
-const CloseButton = styled(ButtonWithoutStyles)`
+const CloseButton = styled(SecondaryButton)`
   border-radius: 3px;
-  padding: 4px 8px;
   position: relative;
   overflow: hidden;
-  transition: background-color 0.2s ease;
-  background-color: rgba(255, 255, 255, 0.12);
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.12);
-  }
-`;
-
-const SetSLTPButton = styled(ButtonWithoutStyles)`
-  padding: 4px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 3px;
-  transition: background-color 0.2s ease;
-  margin-right: 8px;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.12);
-  }
 `;

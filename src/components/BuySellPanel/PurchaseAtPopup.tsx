@@ -12,6 +12,7 @@ import MaskedInput from 'react-text-mask';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import Fields from '../../constants/fields';
+import { SecondaryButton } from '../../styles/Buttons';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
@@ -258,21 +259,34 @@ const ButtonIncreaseDecreasePrice = styled(ButtonWithoutStyles)`
 `;
 
 const ButtonApply = styled(ButtonWithoutStyles)`
-  background: linear-gradient(0deg, #00fff2, #00fff2);
+  background-color: #00fff2;
   border-radius: 4px;
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
   color: #003a38;
   height: 32px;
+
+  &:hover {
+    background-color: #9ffff2;
+  }
+
+  &:focus {
+    background-color: #21b3a4;
+  }
+
+  &:disabled {
+    background-color: rgba(255, 255, 255, 0.04);
+    color: white;
+  }
 `;
-const ButtonAutoClosePurchase = styled(ButtonWithoutStyles)<{
+
+const ButtonAutoClosePurchase = styled(SecondaryButton)<{
   hasPrice?: boolean;
 }>`
   height: 40px;
-  background: ${props =>
+  background-color: ${props =>
     props.hasPrice ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.12)'};
-  border-radius: 4px;
   width: 100%;
   margin-bottom: 14px;
   border: 1px solid

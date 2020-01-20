@@ -1,5 +1,4 @@
 import React from 'react';
-import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
 interface Props {
@@ -43,6 +42,8 @@ const SvgIconElement = styled.svg<{
   hoverFillColor?: string;
 }>`
   fill: ${props => props.fillColor};
+  transition: fill 0.2s ease;
+  will-change: fill;
 
   &:hover {
     fill: ${props => props.hoverFillColor};

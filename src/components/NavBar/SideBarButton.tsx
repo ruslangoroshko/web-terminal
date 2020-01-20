@@ -3,7 +3,7 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
-import ColorsPallete from '../../styles/colorPallete';
+import { PrimaryTextParagraph } from '../../styles/TextsElements';
 
 interface Props {
   iconProps: any;
@@ -16,33 +16,35 @@ function SideBarButton(props: Props) {
   const { iconProps, title, isActive, setSideBarActive } = props;
 
   return (
-    <ButtonWithoutStyles onClick={setSideBarActive}>
-      <FlexContainer
-        flexDirection="column"
-        alignItems="center"
-        padding="12px 0 8px"
-      >
-        <FlexContainer margin="0 0 8px 0">
-          <SvgIcon
-            {...iconProps}
-            // fill={
-            //   isActive ? ColorsPallete.EASTERN_BLUE : 'rgba(255, 255, 255, 0.5)'
-            // }
-            fillColor="rgba(255, 255, 255, 0.5)"
-          ></SvgIcon>
-        </FlexContainer>
-        <Title isActive={isActive}>{title}</Title>
+    <ButtonWrapper onClick={setSideBarActive}>
+      <FlexContainer margin="0 0 8px 0" justifyContent="center">
+        <SvgIcon
+          {...iconProps}
+          fillColor={isActive ? '#FFFCCC' : 'rgba(255, 255, 255, 0.5)'}
+        ></SvgIcon>
       </FlexContainer>
-    </ButtonWithoutStyles>
+      <PrimaryTextParagraph
+        color={isActive ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
+        fontSize="11px"
+      >
+        {title}
+      </PrimaryTextParagraph>
+    </ButtonWrapper>
   );
 }
 
 export default SideBarButton;
 
-const Title = styled.span<{ isActive?: boolean }>`
-  font-size: 11px;
-  line-height: 12px;
-  text-align: center;
-  /* color: ${props => (props.isActive ? ColorsPallete.EASTERN_BLUE : '#fff')}; */
-  color: #fff;
+const ButtonWrapper = styled(ButtonWithoutStyles)`
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  &:hover {
+    & svg > * {
+      fill: #fffccc;
+    }
+    & p {
+      color: #fffccc;
+    }
+  }
 `;

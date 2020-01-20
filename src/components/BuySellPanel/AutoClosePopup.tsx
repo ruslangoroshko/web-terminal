@@ -7,6 +7,7 @@ import Fields from '../../constants/fields';
 import { OpenPositionModelFormik } from '../../types/Positions';
 import { useStores } from '../../hooks/useStores';
 import SetAutoclose from './SetAutoclose';
+import { SecondaryButton } from '../../styles/Buttons';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
@@ -69,10 +70,8 @@ function AutoClosePopup(props: Props) {
 
 export default AutoClosePopup;
 
-const ButtonAutoClosePurchase = styled(ButtonWithoutStyles)`
+const ButtonAutoClosePurchase = styled(SecondaryButton)`
   height: 40px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
   width: 100%;
   margin-bottom: 14px;
 `;

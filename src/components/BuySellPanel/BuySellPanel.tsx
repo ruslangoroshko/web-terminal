@@ -445,7 +445,15 @@ const ButtonSell = styled(ButtonWithoutStyles)`
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: ${darken(0.1, '#ed145b')};
+    background-color: #ff557e;
+  }
+
+  &:focus {
+    background-color: #bd1d51;
+  }
+
+  &:disabled {
+    background-color: rgba(255, 255, 255, 0.04);
   }
 `;
 
@@ -457,7 +465,15 @@ const ButtonBuy = styled(ButtonSell)`
   margin-bottom: 8px;
 
   &:hover {
-    background-color: ${darken(0.1, '#00FFDD')};
+    background-color: #9ffff2;
+  }
+
+  &:focus {
+    background-color: #21b3a4;
+  }
+
+  &:disabled {
+    background-color: rgba(255, 255, 255, 0.04);
   }
 `;
 

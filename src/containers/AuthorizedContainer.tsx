@@ -101,7 +101,7 @@ const AuthorizedContainer: FC<Props> = props => {
             position="relative"
             height="100%"
             width="100%"
-            zIndex="102"
+            zIndex="101"
           >
             {children}
           </FlexContainer>
