@@ -8,6 +8,7 @@ import RoutingLayout from './routing/RoutingLayout';
 import { Router, Switch } from 'react-router-dom';
 import { appHistory } from './routing/history';
 import { slickSliderStyles } from './styles/slickSlider';
+import 'react-dates/lib/css/_datepicker.css';
 import reactDatePickerOverrides from './styles/react-date-picker-overrides';
 
 const MainApp = () => {

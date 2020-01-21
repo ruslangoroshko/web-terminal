@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
@@ -6,27 +6,11 @@ import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import PendingOrder from './PendingOrder';
-import {
-  PrimaryTextSpan,
-  PrimaryTextParagraph,
-} from '../../styles/TextsElements';
-import Toggle from '../Toggle';
-import moment, { Moment } from 'moment';
-import { DateRangePicker } from 'react-dates';
-import 'react-dates/initialize';
-import 'react-dates/lib/css/_datepicker.css';
-import SvgIcon from '../SvgIcon';
-import IconRightArrow from '../../assets/svg/icon-arrow-to-right.svg';
-import IconLeftArrow from '../../assets/svg/icon-arrow-to-left.svg';
+import { PrimaryTextSpan } from '../../styles/TextsElements';
+import DatePickerDropdown from '../DatePickerDropdown';
 
 const Orders: FC = () => {
   const { quotesStore, tabsStore, mainAppStore } = useStores();
-
-  const [startDate, setStartDate] = useState<moment.Moment | null>(moment());
-  const [endDate, setEndDate] = useState<moment.Moment | null>(moment());
-  const [focusedInput, setFocusedInput] = useState<
-    'startDate' | 'endDate' | null
-  >(null);
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     tabsStore.portfolioTab = portfolioTab;
@@ -62,60 +46,10 @@ const Orders: FC = () => {
         backgroundColor="rgba(65, 66, 83, 0.5)"
         padding="10px 16px"
       >
-        <Toggle>
-          {({ on, toggle }) => (
-            <>
-              <ButtonWithoutStyles onClick={toggle}>
-                <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)">
-                  Sort by:
-                </PrimaryTextSpan>
-              </ButtonWithoutStyles>
-              {on && (
-                <DateRangePicker
-                  startDate={startDate}
-                  startDateId="your_unique_start_date_id"
-                  endDate={endDate}
-                  small
-                  endDateId="your_unique_end_date_id"
-                  onDatesChange={({ startDate, endDate }) => {
-                    setStartDate(startDate);
-                    setEndDate(endDate);
-                  }}
-                  focusedInput={focusedInput}
-                  onFocusChange={focusedInput => {
-                    setFocusedInput(focusedInput);
-                  }}
-                  navNext={
-                    <ButtonRightArrow>
-                      <SvgIcon
-                        {...IconRightArrow}
-                        fillColor="rgba(255, 255, 255, 0.6)"
-                      ></SvgIcon>
-                    </ButtonRightArrow>
-                  }
-                  navPrev={
-                    <ButtonLeftArrow>
-                      <SvgIcon
-                        {...IconLeftArrow}
-                        fillColor="rgba(255, 255, 255, 0.6)"
-                      ></SvgIcon>
-                    </ButtonLeftArrow>
-                  }
-                  renderMonthElement={({
-                    month,
-                    onMonthSelect,
-                    onYearSelect,
-                    isVisible,
-                  }) => (
-                    <PrimaryTextParagraph>
-                      {month.format()}
-                    </PrimaryTextParagraph>
-                  )}
-                />
-              )}
-            </>
-          )}
-        </Toggle>
+        <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)">
+          Sort by:
+        </PrimaryTextSpan>
+        <DatePickerDropdown />
       </SortByWrapper>
       <Observer>
         {() => (
@@ -180,20 +114,4 @@ const ActivePositionsWrapper = styled(FlexContainer)`
 
 const SortByWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-`;
-
-const ButtonRightArrow = styled(ButtonWithoutStyles)`
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
-`;
-
-const ButtonLeftArrow = styled(ButtonRightArrow)`
-  right: auto;
-  left: 16px;
 `;
