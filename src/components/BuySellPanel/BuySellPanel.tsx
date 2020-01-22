@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import MaskedInput from 'react-text-mask';
@@ -40,8 +40,6 @@ interface Props {
 interface OpenModel {
   sl: OpenPositionModel['sl'];
   tp: OpenPositionModel['tp'];
-  slRate: OpenPositionModel['slRate'];
-  tpRate: OpenPositionModel['tpRate'];
   investmentAmount: OpenPositionModel['investmentAmount'];
   multiplier: OpenPositionModel['multiplier'];
 }
@@ -76,9 +74,7 @@ function BuySellPanel(props: Props) {
       .required('Required amount'),
     multiplier: yup.number().required('Required amount'),
     tp: yup.number(),
-    tpRate: yup.number(),
     sl: yup.number(),
-    slRate: yup.number(),
   });
 
   const handleOpenPosition = (
@@ -88,6 +84,26 @@ function BuySellPanel(props: Props) {
   ) => () => {
     setFieldValue(Fields.OPERATION, operation);
     submitForm();
+  };
+
+  const investOnBeforeInputHandler = (prevValue: string) => (e: any) => {
+    if (prevValue && [',', '.'].includes(e.data)) {
+      if (prevValue.includes('.')) {
+        e.preventDefault();
+        return;
+      }
+    }
+    if (!e.data.match(/^\d|\.|\,/)) {
+      e.preventDefault();
+      return;
+    }
+  };
+
+  const investOnChangeHandler = (setFieldValue: any) => (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    let filteredValue = e.target.value.replace(',', '.');
+    setFieldValue(Fields.AMOUNT, filteredValue);
   };
 
   const handleSubmit = (values: OpenPositionModelFormik, actions: any) => {
@@ -206,21 +222,17 @@ function BuySellPanel(props: Props) {
                   </PrimaryTextSpan>
 
                   <FlexContainer alignItems="center">
-                    <MaskedInput
+                    <InvestInput
                       {...field}
-                      mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-                      showMask={true}
-                      guide={false}
-                      render={(ref, props) => (
-                        <>
-                          <InvestInput ref={ref} {...props} />
-                          <InvestAmountDropdown
-                            setFieldValue={setFieldValue}
-                            symbol={currencySymbol}
-                          />
-                        </>
+                      onBeforeInput={investOnBeforeInputHandler(
+                        values.investmentAmount
                       )}
-                    ></MaskedInput>
+                      onChange={investOnChangeHandler(setFieldValue)}
+                    />
+                    <InvestAmountDropdown
+                      setFieldValue={setFieldValue}
+                      symbol={currencySymbol}
+                    />
                     <PlusMinusButtonWrapper flexDirection="column">
                       <PlusButton
                         type="button"
