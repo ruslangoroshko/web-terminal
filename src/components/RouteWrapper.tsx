@@ -15,15 +15,17 @@ type Props = IProps;
 const RouteWrapper: FC<Props> = observer(props => {
   const { component: Component, layoutType, ...otherProps } = props;
   const { mainAppStore } = useStores();
-  // if (mainAppStore.isAuthorized && layoutType === RouteLayoutType.SignFlow) {
-  //   return <Redirect to={Page.DASHBOARD} />;
-  //  }
-   // else if (
-  //   !mainAppStore.isAuthorized &&
-  //   layoutType === RouteLayoutType.Authorized
-  // ) {
-  //   return <Redirect to={Page.SIGN_IN} />;
-  // }
+
+  if (layoutType !== RouteLayoutType.Public) {
+    if (mainAppStore.isAuthorized && layoutType === RouteLayoutType.SignFlow) {
+      return <Redirect to={Page.DASHBOARD} />;
+    } else if (
+      !mainAppStore.isAuthorized &&
+      layoutType === RouteLayoutType.Authorized
+    ) {
+      return <Redirect to={Page.SIGN_IN} />;
+    }
+  }
 
   return (
     <Route

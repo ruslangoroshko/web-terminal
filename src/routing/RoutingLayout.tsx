@@ -1,7 +1,7 @@
 import React from 'react';
 import routesList, { RouteLayoutType } from '../constants/routesList';
 import RouteWrapper from '../components/RouteWrapper';
-import { useLocation } from 'react-router-dom';
+import { useLocation, matchPath, Switch } from 'react-router-dom';
 import AuthorizedContainer from '../containers/AuthorizedContainer';
 import { FlexContainer } from '../styles/FlexContainer';
 
@@ -11,10 +11,14 @@ const RoutingLayout = () => {
   const allRoutes = routesList.map(route => (
     <RouteWrapper key={route.path} {...route} />
   ));
+  const currentRoute = routesList.find(item => {
+    const match = matchPath(location.pathname, item.path);
+    return match && match.isExact;
+  });
+  console.log('TCL: RoutingLayout -> location.pathname', location.pathname);
+  console.log('TCL: RoutingLayout -> currentRoute', currentRoute);
 
-  const currentRoute = routesList.find(item => location.pathname === item.path);
-
-  let layoutType = RouteLayoutType.SignFlow;
+  let layoutType = RouteLayoutType.Page404;
 
   if (currentRoute) {
     layoutType = currentRoute.layoutType;
@@ -22,19 +26,23 @@ const RoutingLayout = () => {
 
   switch (layoutType) {
     case RouteLayoutType.Authorized:
-      return <AuthorizedContainer>{allRoutes}</AuthorizedContainer>;
+      return (
+        <AuthorizedContainer>
+          <Switch>{allRoutes}</Switch>
+        </AuthorizedContainer>
+      );
 
     case RouteLayoutType.SignFlow:
       return (
         <FlexContainer height="100vh" width="100%">
-          {allRoutes}
+          <Switch>{allRoutes}</Switch>
         </FlexContainer>
       );
 
     default:
       return (
         <FlexContainer height="100vh" width="100%">
-          {allRoutes}
+          <Switch>{allRoutes}</Switch>
         </FlexContainer>
       );
   }

@@ -7,16 +7,11 @@ import EmailConfirmation from '../pages/EmailConfirmation';
 export enum RouteLayoutType {
   Authorized,
   SignFlow,
+  Public,
   Page404,
 }
 
 const routesList = [
-  {
-    component: Dashboard,
-    path: Page.DASHBOARD,
-    exact: true,
-    layoutType: RouteLayoutType.Authorized,
-  },
   {
     component: SingIn,
     path: Page.SIGN_IN,
@@ -33,7 +28,13 @@ const routesList = [
     component: EmailConfirmation,
     path: Page.EMAIL_CONFIRMATION,
     exact: false,
-    layoutType: RouteLayoutType.SignFlow,
+    layoutType: RouteLayoutType.Public,
+  },
+  {
+    component: Dashboard,
+    path: Page.DASHBOARD,
+    exact: true,
+    layoutType: RouteLayoutType.Authorized,
   },
 ];
 

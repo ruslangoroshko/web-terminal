@@ -25,6 +25,9 @@ const API_LIST = {
     ADD: '/api/v1/PendingOrders/Add',
     REMOVE: '/api/v1/PendingOrders/Remove',
   },
+  PERSONAL_DATA: {
+    CONFIRM: '/api/v1/PersonalData/Confirm',
+  },
 };
 
 Object.freeze(API_LIST);

@@ -152,6 +152,16 @@ class API {
     );
     return response.data;
   };
+
+  confirmEmail = async (link: string) => {
+    const response = await axios.post<void>(
+      `${API_STRING}${API_LIST.PERSONAL_DATA.CONFIRM}`,
+      {
+        link,
+      }
+    );
+    return response.data;
+  };
 }
 
 export default new API();

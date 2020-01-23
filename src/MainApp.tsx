@@ -5,7 +5,7 @@ import injectInerceptors from './http/interceptors';
 import Helmet from 'react-helmet';
 import favicon from './assets/images/favicon.ico';
 import RoutingLayout from './routing/RoutingLayout';
-import { Router, Switch } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import { appHistory } from './routing/history';
 import { slickSliderStyles } from './styles/slickSlider';
 import 'react-dates/lib/css/_datepicker.css';
@@ -20,9 +20,7 @@ const MainApp = () => {
         <link rel="shortcut icon" href={favicon} />
       </Helmet>
       <Router history={appHistory}>
-        <Switch>
-          <RoutingLayout></RoutingLayout>
-        </Switch>
+        <RoutingLayout></RoutingLayout>
       </Router>
       <Global
         styles={css`

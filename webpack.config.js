@@ -12,6 +12,7 @@ module.exports = (env, argv) => {
     output: {
       path: path.resolve(__dirname, './wwwroot'),
       filename: '[name].js?[hash]',
+      publicPath: '/',
     },
     module: {
       rules: [
