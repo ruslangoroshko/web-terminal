@@ -13,15 +13,16 @@ interface Props {
 function SvgIcon(props: Props) {
   const {
     id: iconId,
-    height = 16,
-    width = 16,
+    height,
+    width,
     viewBox,
     fillColor,
     hoverFillColor,
   } = props;
   const viewBoxValues = viewBox.split(' ');
-  const viewBoxWidth = viewBoxValues[2] ? +viewBoxValues[2] : width;
-  const viewBoxHeight = viewBoxValues[3] ? +viewBoxValues[3] : height;
+  const viewBoxWidth = width || +viewBoxValues[2];
+  const viewBoxHeight = height || +viewBoxValues[3];
+
   return (
     <SvgIconElement
       viewBox={viewBox}

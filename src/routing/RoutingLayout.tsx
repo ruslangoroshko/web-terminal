@@ -14,7 +14,7 @@ const RoutingLayout = () => {
 
   const currentRoute = routesList.find(item => location.pathname === item.path);
 
-  let layoutType = RouteLayoutType.SignUp;
+  let layoutType = RouteLayoutType.SignFlow;
 
   if (currentRoute) {
     layoutType = currentRoute.layoutType;
@@ -24,7 +24,7 @@ const RoutingLayout = () => {
     case RouteLayoutType.Authorized:
       return <AuthorizedContainer>{allRoutes}</AuthorizedContainer>;
 
-    case RouteLayoutType.SignUp:
+    case RouteLayoutType.SignFlow:
       return (
         <FlexContainer height="100vh" width="100%">
           {allRoutes}
