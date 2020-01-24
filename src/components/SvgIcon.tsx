@@ -48,7 +48,7 @@ const SvgIconElement = styled.svg<{
   fill: ${props => props.fillColor};
   transition: fill 0.2s ease;
   will-change: fill;
-  transform: ${props => props.transformProp}
+  transform: ${props => props.transformProp};
 
   &:hover {
     fill: ${props => props.hoverFillColor};

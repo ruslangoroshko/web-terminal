@@ -10,10 +10,7 @@ import { Observer } from 'mobx-react-lite';
 import SvgIcon from './SvgIcon';
 import IconShevronDown from '../assets/svg/icon-shevron-down-sort-by.svg';
 
-interface Props {}
-
-function SortByDropdown(props: Props) {
-  const {} = props;
+function SortByDropdown() {
   const { quotesStore } = useStores();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [on, toggle] = useState(false);
@@ -81,7 +78,6 @@ function SortByDropdown(props: Props) {
               fontSize="12px"
               key={key}
               onClick={handleChangeSorting(+key)}
-              marginBottom="16px"
               whiteSpace="nowrap"
             >
               {sortByDropdownValues[key]}
@@ -104,9 +100,15 @@ const DropdownWrapper = styled(FlexContainer)`
 
 const DropdownItemText = styled(PrimaryTextSpan)`
   transition: color 0.2s ease;
+  margin-bottom: 16px;
+
   &:hover {
     cursor: pointer;
     color: #00ffdd;
+  }
+
+  &:last-of-type {
+    margin-bottom: 0;
   }
 `;
 

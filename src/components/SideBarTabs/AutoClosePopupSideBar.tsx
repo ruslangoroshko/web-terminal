@@ -68,8 +68,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         {on && (
           <FlexContainer
             position="absolute"
-            top={`${popupPosition.top + 20}px`}
-            left={`${popupPosition.width * 0.75}px`}
+            top={`${Math.round(popupPosition.top + 26)}px`}
+            left={`${Math.round(popupPosition.width * 0.75)}px`}
             zIndex="101"
           >
             <SetAutoclose
