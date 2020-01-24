@@ -126,7 +126,12 @@ const Portfolio: FC<Props> = () => {
         backgroundColor="rgba(65, 66, 83, 0.5)"
         padding="10px 16px"
       >
-        <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" marginRight="4px">
+        <PrimaryTextSpan
+          color="rgba(255, 255, 255, 0.4)"
+          marginRight="4px"
+          fontSize="10px"
+          textTransform="uppercase"
+        >
           Sort by:
         </PrimaryTextSpan>
         <SortByDropdown />

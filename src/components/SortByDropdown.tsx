@@ -42,7 +42,7 @@ function SortByDropdown(props: Props) {
   });
 
   return (
-    <FlexContainer position="relative">
+    <FlexContainer position="relative" ref={wrapperRef}>
       <Observer>
         {() => (
           <ButtonDropdown onClick={handleToggle}>
@@ -64,14 +64,14 @@ function SortByDropdown(props: Props) {
       </Observer>
       {on && (
         <DropdownWrapper
-          ref={wrapperRef}
           flexDirection="column"
           alignItems="flex-start"
           padding="16px"
           position="absolute"
-          top="100%"
+          top="calc(100% + 6px)"
           left="-14px"
           width="172px"
+          zIndex="201"
         >
           {((Object.keys(sortByDropdownValues) as unknown) as Array<
             keyof typeof sortByDropdownValues
@@ -80,7 +80,7 @@ function SortByDropdown(props: Props) {
               color="#fffccc"
               fontSize="12px"
               key={key}
-              onClick={handleChangeSorting(key)}
+              onClick={handleChangeSorting(+key)}
               marginBottom="16px"
               whiteSpace="nowrap"
             >

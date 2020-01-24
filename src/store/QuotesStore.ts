@@ -73,7 +73,7 @@ export class QuotesStore implements IQuotesStore {
   @computed
   get sortedActivePositions() {
     let filterByFunc;
-
+    
     switch (this.sortBy) {
       case SortByDropdownEnum.DateOpened:
         filterByFunc = this.sortByDateOpened;
