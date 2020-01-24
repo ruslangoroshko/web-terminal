@@ -140,7 +140,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
           fontSize="10px"
           lineHeight="12px"
         >
-          {moment(openDate).format('DD MMM, HH:mm')}
+          {moment(openDate * 1000).format('DD MMM, HH:mm')}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column" alignItems="flex-end">
@@ -177,7 +177,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                 Opened
               </PrimaryTextSpan>
               <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                {moment(openDate).format('DD MMM, HH:mm')}
+                {moment(openDate * 1000).format('DD MMM, HH:mm')}
               </PrimaryTextSpan>
             </FlexContainer>
             <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
@@ -259,7 +259,9 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
 
 export default ActivePositionsPortfolioTab;
 
-const InstrumentInfoWrapper = styled(FlexContainer)``;
+const InstrumentInfoWrapper = styled(FlexContainer)`
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+`;
 
 const CloseButton = styled(SecondaryButton)`
   border-radius: 3px;

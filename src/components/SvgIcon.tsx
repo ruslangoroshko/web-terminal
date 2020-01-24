@@ -8,6 +8,7 @@ interface Props {
   viewBox: string;
   fillColor?: string;
   hoverFillColor?: string;
+  transformProp?: string;
 }
 
 function SvgIcon(props: Props) {
@@ -18,11 +19,11 @@ function SvgIcon(props: Props) {
     viewBox,
     fillColor,
     hoverFillColor,
+    transformProp,
   } = props;
   const viewBoxValues = viewBox.split(' ');
   const viewBoxWidth = width || +viewBoxValues[2];
   const viewBoxHeight = height || +viewBoxValues[3];
-
   return (
     <SvgIconElement
       viewBox={viewBox}
@@ -30,6 +31,7 @@ function SvgIcon(props: Props) {
       height={viewBoxHeight}
       fillColor={fillColor}
       hoverFillColor={hoverFillColor}
+      transformProp={transformProp}
     >
       <use xlinkHref={`#${iconId}`}></use>
     </SvgIconElement>
@@ -41,10 +43,12 @@ export default SvgIcon;
 const SvgIconElement = styled.svg<{
   fillColor?: string;
   hoverFillColor?: string;
+  transformProp?: string;
 }>`
   fill: ${props => props.fillColor};
   transition: fill 0.2s ease;
   will-change: fill;
+  transform: ${props => props.transformProp}
 
   &:hover {
     fill: ${props => props.hoverFillColor};

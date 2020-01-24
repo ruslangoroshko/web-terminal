@@ -115,10 +115,10 @@ function ActivePositionExpanded(props: Props) {
             lineHeight="20px"
             marginBottom="2px"
           >
-            {moment(openDate).format('DD MMM')}
+            {moment(openDate * 1000).format('DD MMM')}
           </PrimaryTextSpan>
           <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="11px">
-            {moment(openDate).format('HH:mm:ss')}
+            {moment(openDate * 1000).format('HH:mm:ss')}
           </PrimaryTextSpan>
         </FlexContainer>
       </Td>
@@ -231,7 +231,7 @@ function ActivePositionExpanded(props: Props) {
                   Opened
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {moment(openDate).format('DD MMM, HH:mm')}
+                  {moment(openDate * 1000).format('DD MMM, HH:mm')}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

@@ -14,6 +14,7 @@ import { Observer } from 'mobx-react-lite';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import Scrollbar from 'react-scrollbars-custom';
 import { keyframes } from '@emotion/core';
+import SortByDropdown from '../SortByDropdown';
 
 interface Props {}
 
@@ -121,10 +122,19 @@ const Portfolio: FC<Props> = () => {
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
+      <SortByWrapper
+        backgroundColor="rgba(65, 66, 83, 0.5)"
+        padding="10px 16px"
+      >
+        <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" marginRight="4px">
+          Sort by:
+        </PrimaryTextSpan>
+        <SortByDropdown />
+      </SortByWrapper>
       <Observer>
         {() => (
           <ActivePositionsWrapper flexDirection="column" padding="0 8px 0 12px">
-            {quotesStore.activePositions.map(item => (
+            {quotesStore.sortedActivePositions.map(item => (
               <ActivePositionsPortfolioTab key={item.id} position={item} />
             ))}
           </ActivePositionsWrapper>
@@ -203,4 +213,8 @@ const ActivePositionsWrapper = styled(FlexContainer)`
   ::-webkit-scrollbar-thumb:vertical {
     background-color: rgba(0, 0, 0, 0.6);
   }
+`;
+
+const SortByWrapper = styled(FlexContainer)`
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;
