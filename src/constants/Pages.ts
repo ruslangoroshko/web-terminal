@@ -1,5 +1,5 @@
 const Page = {
-  DASHBOARD: '/dashboard',
+  DASHBOARD: '/',
   SIGN_IN: '/sign-in',
   SIGN_UP: '/sign-up',
   EMAIL_CONFIRMATION: '/confirm/:id',

@@ -165,7 +165,7 @@ const ErrorMessage = styled.span`
 const Input = styled.input`
   border: 1px solid #353c4d;
   width: 100%;
-  background-color: transparent;
+  background-color: #fff;
   padding: 4px 10px;
   color: #000;
 `;
@@ -173,6 +173,6 @@ const Input = styled.input`
 const InputLabel = styled.p`
   font-size: 14px;
   margin-bottom: 4px;
-  color: #000;
+  color: #fffccc;
   font-weight: bold;
 `;

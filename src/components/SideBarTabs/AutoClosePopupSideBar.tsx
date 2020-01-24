@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
@@ -11,55 +11,79 @@ interface Props {
   takeProfitValue: number | null;
 }
 
-function AutoClosePopupSideBar(props: Props) {
-  const { updateSLTP, stopLossValue, takeProfitValue } = props;
+const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
+  (props, ref) => {
+    const { updateSLTP, stopLossValue, takeProfitValue } = props;
 
-  const [on, toggle] = useState(false);
+    const [on, toggle] = useState(false);
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
+    const [popupPosition, setPopupPosition] = useState({
+      top: 0,
+      left: 0,
+      width: 0,
+    });
 
-  const handleToggle = () => {
-    toggle(!on);
-  };
+    const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const handleClickOutside = (e: any) => {
-    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-      toggle(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+    const handleToggle = () => {
+      toggle(!on);
+      // @ts-ignore
+      const { top, left, width } = ref.current.getBoundingClientRect();
+      setPopupPosition({ top, left, width });
     };
-  });
 
-  return (
-    <FlexContainer position="relative" ref={wrapperRef}>
-      <SetSLTPButton onClick={handleToggle}>
-        <PrimaryTextSpan
-          fontSize="12px"
-          lineHeight="14px"
-          color="rgba(255, 255, 255, 0.6)"
-        >
-          TP SL
-        </PrimaryTextSpan>
-      </SetSLTPButton>
-      {on && (
-        <FlexContainer position="absolute" top="24px" right="8px" zIndex="101">
-          <SetAutoclose
-            handleApply={updateSLTP}
-            stopLossValue={stopLossValue}
-            takeProfitValue={takeProfitValue}
-            toggle={toggle}
-          />
-        </FlexContainer>
-      )}
-    </FlexContainer>
-  );
-}
+    const handleClickOutside = (e: any) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        toggle(false);
+      }
+    };
+
+    useEffect(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    });
+
+    return (
+      <FlexContainer ref={wrapperRef}>
+        <SetSLTPButton onClick={handleToggle}>
+          <PrimaryTextSpan
+            fontSize="12px"
+            lineHeight="14px"
+            color={takeProfitValue ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
+          >
+            TP
+          </PrimaryTextSpan>
+          &nbsp;
+          <PrimaryTextSpan
+            fontSize="12px"
+            lineHeight="14px"
+            color={stopLossValue ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
+          >
+            SL
+          </PrimaryTextSpan>
+        </SetSLTPButton>
+        {on && (
+          <FlexContainer
+            position="absolute"
+            top={`${popupPosition.top + 20}px`}
+            left={`${popupPosition.width * 0.75}px`}
+            zIndex="101"
+          >
+            <SetAutoclose
+              handleApply={updateSLTP}
+              stopLossValue={stopLossValue}
+              takeProfitValue={takeProfitValue}
+              toggle={toggle}
+            />
+          </FlexContainer>
+        )}
+      </FlexContainer>
+    );
+  }
+);
 
 export default AutoClosePopupSideBar;
 

@@ -30,7 +30,7 @@ function PurchaseAtPopup(props: Props) {
   } = props;
 
   const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
-    buySellStore.purchaseAtValue = +e.target.value;
+    buySellStore.purchaseAtValue = e.target.value;
   };
 
   const [on, toggle] = useState(false);
@@ -56,7 +56,7 @@ function PurchaseAtPopup(props: Props) {
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-    buySellStore.purchaseAtValue = purchaseAtValue;
+    buySellStore.purchaseAtValue = purchaseAtValue ? `purchaseAtValue` : '';
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };

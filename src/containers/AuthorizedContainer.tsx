@@ -116,7 +116,7 @@ const TabsLayoutWrapper = styled(FlexContainer)<
   FlexContainerProps & { isExpanded: boolean }
 >`
   transform: ${props =>
-    props.isExpanded ? 'translateX(100%)' : 'translateX(0)'};
+    props.isExpanded ? 'translateX(100%)' : 'translateX(-60px)'};
   backface-visibility: hidden;
   will-change: transform;
   transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);

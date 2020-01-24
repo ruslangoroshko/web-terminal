@@ -5,6 +5,7 @@ export const ButtonWithoutStyles = styled.button`
   outline: none;
   background-color: transparent;
   padding: 0;
+  line-height: 100%;
 
   &:hover,
   &:focus {

@@ -46,6 +46,7 @@ interface OpenModel {
 
 function BuySellPanel(props: Props) {
   const { currencySymbol, accountId, instrument, digits } = props;
+  const { quotesStore } = useStores();
 
   const initialValues: OpenPositionModelFormik = {
     processId: getProcessId(),
@@ -65,18 +66,26 @@ function BuySellPanel(props: Props) {
       .number()
       .min(
         instrument.minOperationVolume / initialValues.multiplier,
-        'minOperationVolume'
+        'Minimum trade volume [$1]. Please increase your trade amount or multiplier.'
+      )
+      .lessThan(
+        quotesStore.available,
+        `Insufficient funds to open a position. You have only [${quotesStore.available}]`
       )
       .max(
         instrument.maxOperationVolume / initialValues.multiplier,
-        'maxOperationVolume'
+        'Maximum trade volume [$10000]. Please decrease your trade amount or multiplier.'
       )
-      .required('Required amount'),
+      .required('Please fill Invest amount'),
     multiplier: yup.number().required('Required amount'),
     tp: yup.number(),
     sl: yup.number(),
   });
 
+  console.log(
+    'TCL: BuySellPanel -> instrument.maxOperationVolume / initialValues.multiplier',
+    instrument.maxOperationVolume / initialValues.multiplier
+  );
   const handleOpenPosition = (
     submitForm: () => Promise<void>,
     operation: AskBidEnum,
@@ -86,9 +95,9 @@ function BuySellPanel(props: Props) {
     submitForm();
   };
 
-  const investOnBeforeInputHandler = (prevValue: string) => (e: any) => {
-    if (prevValue && [',', '.'].includes(e.data)) {
-      if (prevValue.includes('.')) {
+  const investOnBeforeInputHandler = (e: any) => {
+    if (e.currentTarget.value && [',', '.'].includes(e.data)) {
+      if (e.currentTarget.value.includes('.')) {
         e.preventDefault();
         return;
       }
@@ -97,6 +106,7 @@ function BuySellPanel(props: Props) {
       e.preventDefault();
       return;
     }
+
   };
 
   const investOnChangeHandler = (setFieldValue: any) => (
@@ -104,6 +114,10 @@ function BuySellPanel(props: Props) {
   ) => {
     let filteredValue = e.target.value.replace(',', '.');
     setFieldValue(Fields.AMOUNT, filteredValue);
+  };
+
+  const invsetOnBlurHanlder = (setFieldValue: any, value: string) => () => {
+    setFieldValue(Fields.AMOUNT, +value);
   };
 
   const handleSubmit = (values: OpenPositionModelFormik, actions: any) => {
@@ -146,8 +160,6 @@ function BuySellPanel(props: Props) {
       API.openPosition(modelToSubmit);
     }
   };
-
-  const { quotesStore } = useStores();
 
   const calculateVolume = (values: OpenPositionModelFormik) => {
     return +values.investmentAmount;
@@ -214,7 +226,7 @@ function BuySellPanel(props: Props) {
                       bgColor={ColorsPallete.RAZZMATAZZ}
                       classNameTooltip={Fields.AMOUNT}
                     >
-                      ue is higher or lower than the one currently allowed
+                      {meta.error}
                     </ErropPopup>
                   )}
                   <PrimaryTextSpan fontWeight="bold" marginRight="2px">
@@ -224,10 +236,12 @@ function BuySellPanel(props: Props) {
                   <FlexContainer alignItems="center">
                     <InvestInput
                       {...field}
-                      onBeforeInput={investOnBeforeInputHandler(
+                      onBeforeInput={investOnBeforeInputHandler}
+                      onChange={investOnChangeHandler(setFieldValue)}
+                      onBlur={invsetOnBlurHanlder(
+                        setFieldValue,
                         values.investmentAmount
                       )}
-                      onChange={investOnChangeHandler(setFieldValue)}
                     />
                     <InvestAmountDropdown
                       setFieldValue={setFieldValue}

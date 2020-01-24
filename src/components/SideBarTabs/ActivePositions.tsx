@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useRef } from 'react';
 import { observer, Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
@@ -45,6 +45,8 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
   } = props;
 
   const isBuy = operation === AskBidEnum.Buy;
+
+  const instrumentRef = useRef<HTMLDivElement>(null);
 
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 
@@ -108,7 +110,11 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
   };
 
   return (
-    <InstrumentInfoWrapper padding="8px 0" justifyContent="space-between">
+    <InstrumentInfoWrapper
+      padding="8px 0"
+      justifyContent="space-between"
+      ref={instrumentRef}
+    >
       <FlexContainer width="32px" alignItems="flex-start">
         <img src={test} style={{ display: 'block', objectFit: 'contain' }} />
       </FlexContainer>
@@ -235,6 +241,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
         </FlexContainer>
         <FlexContainer>
           <AutoClosePopupSideBar
+            ref={instrumentRef}
             stopLossValue={stopLossInCurrency || stopLossRate || null}
             takeProfitValue={takeProfitInCurrency || takeProfitRate || null}
             updateSLTP={updateSLTP}

@@ -24,14 +24,38 @@ interface Props {
 function SetAutoclose(props: Props) {
   const { takeProfitValue, stopLossValue, toggle, handleApply } = props;
 
-  const { SLTPStore } = useStores();
+  const { SLTPStore, instrumentsStore } = useStores();
 
   const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
-    SLTPStore.takeProfitValue = +e.target.value;
+    SLTPStore.takeProfitValue = e.target.value;
+  };
+
+  const handleBeforeInput = (e: any) => {
+    if (e.currentTarget.value && [',', '.'].includes(e.data)) {
+      if (e.currentTarget.value.includes('.')) {
+        e.preventDefault();
+        return;
+      }
+    }
+    if (!e.data.match(/^\d|\.|\,/)) {
+      e.preventDefault();
+      return;
+    }
+    const regex = `^[0-9]+(\.[0-9]{1,${instrumentsStore.activeInstrument!
+      .digits - 1}})?$`;
+
+    if (
+      e.currentTarget.value &&
+      e.currentTarget.value[e.currentTarget.value.length - 1] !== '.' &&
+      !e.currentTarget.value.match(regex)
+    ) {
+      e.preventDefault();
+      return;
+    }
   };
 
   const handleChangeLoss = (e: ChangeEvent<HTMLInputElement>) => {
-    SLTPStore.stopLossValue = +e.target.value;
+    SLTPStore.stopLossValue = e.target.value;
   };
 
   const handleApplyValues = () => {
@@ -44,8 +68,8 @@ function SetAutoclose(props: Props) {
   };
 
   useEffect(() => {
-    SLTPStore.takeProfitValue = takeProfitValue;
-    SLTPStore.stopLossValue = stopLossValue;
+    SLTPStore.takeProfitValue = takeProfitValue ? `${takeProfitValue}` : '';
+    SLTPStore.stopLossValue = stopLossValue ? `${stopLossValue}` : '';
 
     return () => {
       return SLTPStore.clearStore();
@@ -97,17 +121,12 @@ function SetAutoclose(props: Props) {
         <PlusSign>+</PlusSign>
         <Observer>
           {() => (
-            <MaskedInput
-              mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-              showMask={false}
+            <InputPnL
+              onBeforeInput={handleBeforeInput}
+              placeholder="Non Set"
               onChange={handleChangeProfit}
               value={SLTPStore.takeProfitValue || ''}
-              guide={false}
-              placeholder="Non Set"
-              render={(ref, props) => (
-                <InputPnL ref={ref} {...props}></InputPnL>
-              )}
-            ></MaskedInput>
+            ></InputPnL>
           )}
         </Observer>
         <FlexContainer position="absolute" right="2px" top="2px">
@@ -146,17 +165,12 @@ function SetAutoclose(props: Props) {
         <PlusSign>-</PlusSign>
         <Observer>
           {() => (
-            <MaskedInput
-              mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-              showMask={false}
+            <InputPnL
+              onBeforeInput={handleBeforeInput}
               placeholder="Non Set"
               onChange={handleChangeLoss}
               value={SLTPStore.stopLossValue || ''}
-              guide={false}
-              render={(ref, props) => (
-                <InputPnL ref={ref} {...props}></InputPnL>
-              )}
-            ></MaskedInput>
+            ></InputPnL>
           )}
         </Observer>
         <FlexContainer position="absolute" right="2px" top="2px">

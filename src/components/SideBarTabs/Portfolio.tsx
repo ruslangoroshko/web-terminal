@@ -13,6 +13,7 @@ import { getNumberSign } from '../../helpers/getNumberSign';
 import { Observer } from 'mobx-react-lite';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import Scrollbar from 'react-scrollbars-custom';
+import { keyframes } from '@emotion/core';
 
 interface Props {}
 
@@ -120,20 +121,15 @@ const Portfolio: FC<Props> = () => {
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
-      <Scrollbar noScrollX fallbackScrollbarWidth={4}>
-        <Observer>
-          {() => (
-            <ActivePositionsWrapper
-              flexDirection="column"
-              padding="0 8px 0 12px"
-            >
-              {quotesStore.activePositions.map(item => (
-                <ActivePositionsPortfolioTab key={item.id} position={item} />
-              ))}
-            </ActivePositionsWrapper>
-          )}
-        </Observer>
-      </Scrollbar>
+      <Observer>
+        {() => (
+          <ActivePositionsWrapper flexDirection="column" padding="0 8px 0 12px">
+            {quotesStore.activePositions.map(item => (
+              <ActivePositionsPortfolioTab key={item.id} position={item} />
+            ))}
+          </ActivePositionsWrapper>
+        )}
+      </Observer>
     </PortfolioWrapper>
   );
 };
@@ -174,11 +170,37 @@ export const TabPortfolitButton = styled(ButtonWithoutStyles)<{
     box-shadow: inset 0px 1px 0px #00ffdd;
   }
 `;
+const fadein = keyframes`
+    from { 
+      opacity: 0;
+      visibility: visible;
+     }
+    to { 
+      opacity: 1;
+      visibility: visible;
+    }
+`;
 
 const PortfolioWrapper = styled(FlexContainer)`
+  visibility: hidden;
   min-width: 320px;
+  opacity: 0;
+  animation: ${fadein} 0.2s forwards 0.3s;
 `;
 
 const ActivePositionsWrapper = styled(FlexContainer)`
-  position: relative;
+  overflow-y: auto;
+  height: 100%;
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+  }
+  ::-webkit-scrollbar-thumb:vertical {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
 `;

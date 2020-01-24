@@ -15,8 +15,6 @@ const RoutingLayout = () => {
     const match = matchPath(location.pathname, item.path);
     return match && match.isExact;
   });
-  console.log('TCL: RoutingLayout -> location.pathname', location.pathname);
-  console.log('TCL: RoutingLayout -> currentRoute', currentRoute);
 
   let layoutType = RouteLayoutType.Page404;
 

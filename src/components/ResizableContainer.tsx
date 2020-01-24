@@ -23,12 +23,18 @@ const ResizableContainer: FC = observer(props => {
       zIndex="102"
       isActive={tabsStore.sideBarTabType !== null}
     >
-      <FlexContainer position="absolute" top="12px" right="12px">
+      <FlexContainer position="absolute" top="12px" right="12px" zIndex="200">
         <IconButton onClick={toggleExpandtab}>
-          <SvgIcon {...IconExpand} fillColor="rgba(255, 255, 255, 0.6)"></SvgIcon>
+          <SvgIcon
+            {...IconExpand}
+            fillColor="rgba(255, 255, 255, 0.6)"
+          ></SvgIcon>
         </IconButton>
         <IconButton onClick={tabsStore.closeAnyTab}>
-          <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)"></SvgIcon>
+          <SvgIcon
+            {...IconClose}
+            fillColor="rgba(255, 255, 255, 0.6)"
+          ></SvgIcon>
         </IconButton>
       </FlexContainer>
       {children}
@@ -50,6 +56,10 @@ const RelativeWrapper = styled(FlexContainer)<
     rgba(0, 0, 0, 0.16) 0%,
     rgba(0, 0, 0, 0) 100%
   );
+
+  & * {
+    transition: ${props => !props.isActive && 'none !important'};
+  }
 `;
 
 const IconButton = styled(ButtonWithoutStyles)`

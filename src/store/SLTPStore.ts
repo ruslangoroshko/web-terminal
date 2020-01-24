@@ -5,22 +5,22 @@ import { observable, action } from 'mobx';
 interface ContextProps {
   initialValues?: OpenPositionModelFormik;
   autoCloseType: AutoCloseTypesEnum;
-  takeProfitValue: number | null;
-  stopLossValue: number | null;
-  purchaseAtValue: number | null;
+  takeProfitValue: string;
+  stopLossValue: string;
+  purchaseAtValue: string;
 }
 
 export class SLTPStore implements ContextProps {
   @observable autoCloseType = AutoCloseTypesEnum.Profit;
-  @observable takeProfitValue: number | null = null;
-  @observable stopLossValue: number | null = null;
-  @observable purchaseAtValue: number | null = null;
+  @observable takeProfitValue: string = '';
+  @observable stopLossValue: string = '';
+  @observable purchaseAtValue: string = '';
 
   @action
   clearStore = () => {
-    this.purchaseAtValue = null;
-    this.stopLossValue = null;
-    this.takeProfitValue = null;
+    this.purchaseAtValue = '';
+    this.stopLossValue = '';
+    this.takeProfitValue = '';
     this.autoCloseType = AutoCloseTypesEnum.Profit;
   };
 }
