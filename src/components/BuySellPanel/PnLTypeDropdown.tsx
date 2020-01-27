@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import Toggle from '../Toggle';
@@ -11,16 +11,26 @@ import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
 import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import { useStores } from '../../hooks/useStores';
 
-interface Props {}
+interface Props {
+  dropdownType: 'sl' | 'tp';
+}
 
-function PnLTypeDropdown(props: Props) {
-  const { SLTPStore: buySellStore } = useStores();
+const PnLTypeDropdown: FC<Props> = ({ dropdownType }) => {
+  const { SLTPStore } = useStores();
 
   const handleAutoClose = (
     autoClose: AutoCloseTypesEnum,
     toggle: () => void
   ) => () => {
-    buySellStore.autoCloseType = autoClose;
+    switch (dropdownType) {
+      case 'sl':
+        SLTPStore.autoCloseSLType = autoClose;
+        break;
+
+      case 'tp':
+        SLTPStore.autoCloseTPType = autoClose;
+        break;
+    }
 
     toggle();
   };
@@ -30,8 +40,13 @@ function PnLTypeDropdown(props: Props) {
       {({ on, toggle }) => (
         <FlexContainer position="relative">
           <DropdownButton isActive={on} onClick={toggle}>
-            <PrimaryTextSpan marginRight="4px" color="rgba(255, 255, 255, 0.5)">
-              {buySellStore.autoCloseType}
+            <PrimaryTextSpan
+              marginRight="4px"
+              color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
+            >
+              {dropdownType === 'sl'
+                ? SLTPStore.autoCloseSLType
+                : SLTPStore.autoCloseTPType}
             </PrimaryTextSpan>
             <SvgIcon
               {...IconShevronDown}
@@ -76,7 +91,7 @@ function PnLTypeDropdown(props: Props) {
       )}
     </Toggle>
   );
-}
+};
 
 export default PnLTypeDropdown;
 

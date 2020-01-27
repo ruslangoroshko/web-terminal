@@ -160,7 +160,7 @@ function SetAutoclose(props: Props) {
           )}
         </Observer>
         <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown></PnLTypeDropdown>
+          <PnLTypeDropdown dropdownType="tp"></PnLTypeDropdown>
         </FlexContainer>
       </InputWrapper>
       <FlexContainer
@@ -214,7 +214,7 @@ function SetAutoclose(props: Props) {
           )}
         </Observer>
         <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown></PnLTypeDropdown>
+          <PnLTypeDropdown dropdownType="sl"></PnLTypeDropdown>
         </FlexContainer>
       </InputWrapper>
       <ButtonApply
