@@ -85,7 +85,7 @@ const PortfolioExpanded: FC<Props> = props => {
                       fontWeight="bold"
                     >
                       {getNumberSign(quotesStore.profit)}
-                      {mainAppStore.account?.symbol}
+                      {mainAppStore.activeAccount?.symbol}
                       {Math.abs(quotesStore.profit).toFixed(2)}
                     </QuoteText>
                   )}
@@ -112,7 +112,7 @@ const PortfolioExpanded: FC<Props> = props => {
                       fontWeight="bold"
                       color="#fffccc"
                     >
-                      {mainAppStore.account?.symbol}
+                      {mainAppStore.activeAccount?.symbol}
                       {quotesStore.invest}
                     </PrimaryTextSpan>
                   )}
@@ -140,7 +140,7 @@ const PortfolioExpanded: FC<Props> = props => {
                       color="#fffccc"
                     >
                       {getNumberSign(quotesStore.totalEquity)}
-                      {mainAppStore.account?.symbol}
+                      {mainAppStore.activeAccount?.symbol}
                       {Math.abs(quotesStore.totalEquity).toFixed(2)}
                     </PrimaryTextSpan>
                   )}
@@ -222,7 +222,7 @@ const PortfolioExpanded: FC<Props> = props => {
               {quotesStore.activePositions.map(item => (
                 <ActivePositionExpanded
                   key={item.id}
-                  currencySymbol={mainAppStore.account?.symbol || ''}
+                  currencySymbol={mainAppStore.activeAccount?.symbol || ''}
                   position={item}
                 />
               ))}

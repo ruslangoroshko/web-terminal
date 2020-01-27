@@ -13,6 +13,7 @@ import AccountBalances from './AccountBalances';
 import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import SvgIcon from '../SvgIcon';
+import AccountSwitcherDropdown from './AccountSwitcherDropdown';
 
 interface Props {}
 
@@ -38,15 +39,7 @@ const NavBar: FC<Props> = observer(props => {
       </FlexContainer>
       <FlexContainer>
         <FlexContainer alignItems="center" margin="0 20px 0 0">
-          {mainAppStore.account && (
-            <AccountBalances
-              available={quotesStore.available}
-              symbol={mainAppStore.account.symbol}
-              invest={quotesStore.invest}
-              profit={quotesStore.profit}
-              total={quotesStore.total}
-            />
-          )}
+          <AccountSwitcherDropdown></AccountSwitcherDropdown>
         </FlexContainer>
         <FlexContainer margin="0 20px 0 0">
           <MoreButton></MoreButton>

@@ -72,7 +72,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
 
   const closePosition = () => {
     API.closePosition({
-      accountId: mainAppStore.account!.id,
+      accountId: mainAppStore.activeAccount!.id,
       positionId: id,
       processId: getProcessId(),
     });
@@ -116,7 +116,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
         break;
     }
     const values: UpdateSLTP = {
-      accountId: mainAppStore.account!.id,
+      accountId: mainAppStore.activeAccount!.id,
       positionId: id,
       processId: getProcessId(),
       [fieldForTakeProfit]: SLTPStore.takeProfitValue,
@@ -162,7 +162,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
       </FlexContainer>
       <FlexContainer flexDirection="column" alignItems="flex-end">
         <PrimaryTextSpan marginBottom="4px" fontSize="12px" lineHeight="14px">
-          {mainAppStore.account?.symbol}
+          {mainAppStore.activeAccount?.symbol}
           {investmentAmount}
         </PrimaryTextSpan>
         <PrimaryTextSpan
@@ -205,7 +205,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                 {() => (
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {getNumberSign(PnL + investmentAmount)}
-                    {mainAppStore.account?.symbol}
+                    {mainAppStore.activeAccount?.symbol}
                     {Math.abs(PnL + investmentAmount).toFixed(2)}
                   </PrimaryTextSpan>
                 )}
@@ -244,7 +244,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
               lineHeight="14px"
             >
               {PnL >= 0 ? '+' : '-'}
-              {mainAppStore.account?.symbol}
+              {mainAppStore.activeAccount?.symbol}
               {Math.abs(PnL)}
             </QuoteText>
             <PrimaryTextSpan

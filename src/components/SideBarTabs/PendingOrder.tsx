@@ -31,7 +31,7 @@ function PendingOrder(props: Props) {
 
   const handleCloseOrder = () => {
     API.removePendingOrder({
-      accountId: mainAppStore.account!.id,
+      accountId: mainAppStore.activeAccount!.id,
       orderId: pendingOrder.id,
       processId: getProcessId(),
     });

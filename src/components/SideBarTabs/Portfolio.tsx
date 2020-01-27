@@ -67,7 +67,7 @@ const Portfolio: FC<Props> = () => {
                 marginBottom="20px"
               >
                 {getNumberSign(quotesStore.profit)}
-                {mainAppStore.account?.symbol}
+                {mainAppStore.activeAccount?.symbol}
                 {Math.abs(quotesStore.profit).toFixed(2)}
               </QuoteText>
             )}
@@ -89,7 +89,7 @@ const Portfolio: FC<Props> = () => {
                     lineHeight="16px"
                     fontWeight="bold"
                   >
-                    {mainAppStore.account?.symbol}
+                    {mainAppStore.activeAccount?.symbol}
                     {quotesStore.invest}
                   </PrimaryTextSpan>
                 )}
@@ -112,7 +112,7 @@ const Portfolio: FC<Props> = () => {
                     fontWeight="bold"
                   >
                     {getNumberSign(quotesStore.totalEquity)}
-                    {mainAppStore.account?.symbol}
+                    {mainAppStore.activeAccount?.symbol}
                     {Math.abs(quotesStore.totalEquity).toFixed(2)}
                   </PrimaryTextSpan>
                 )}

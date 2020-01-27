@@ -65,7 +65,7 @@ function ActivePositionExpanded(props: Props) {
 
   const closePosition = () => {
     API.closePosition({
-      accountId: mainAppStore.account!.id,
+      accountId: mainAppStore.activeAccount!.id,
       positionId: id,
       processId: getProcessId(),
     });
@@ -171,7 +171,7 @@ function ActivePositionExpanded(props: Props) {
           <Observer>
             {() => (
               <QuoteText isGrowth={PnL + investmentAmount > 0} fontSize="14px">
-                {mainAppStore.account?.symbol}
+                {mainAppStore.activeAccount?.symbol}
                 {(PnL + investmentAmount).toFixed(2)}
               </QuoteText>
             )}
@@ -245,7 +245,7 @@ function ActivePositionExpanded(props: Props) {
                   {() => (
                     <PrimaryTextSpan color="#fffccc" fontSize="12px">
                       {getNumberSign(PnL + investmentAmount)}
-                      {mainAppStore.account?.symbol}
+                      {mainAppStore.activeAccount?.symbol}
                       {Math.abs(PnL + investmentAmount).toFixed(2)}
                     </PrimaryTextSpan>
                   )}

@@ -72,7 +72,7 @@ const Instrument: FC<Props> = ({
                     {calculateGrowth(
                       quotesStore.quotes[instrument.id].bid.c,
                       quotesStore.quotes[instrument.id].ask.c,
-                      mainAppStore.account?.digits
+                      mainAppStore.activeAccount?.digits
                     )}
                   </QuoteText>
                 </FlexContainer>

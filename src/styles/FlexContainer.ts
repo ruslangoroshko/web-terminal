@@ -22,6 +22,7 @@ export interface FlexContainerProps {
   zIndex?: string;
   overflow?: 'hidden' | 'visible' | 'auto';
   borderRadius?: string;
+  border?: string;
 }
 
 export const FlexContainer = styled.div<FlexContainerProps>`
@@ -47,4 +48,5 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   z-index: ${props => props.zIndex};
   overflow: ${props => props.overflow};
   border-radius: ${props => props.borderRadius};
+  border: ${props => props.border};
 `;

@@ -36,7 +36,8 @@ const Dashboard = observer(() => {
     mainAppStore.activeSession?.on(
       Topics.ACCOUNTS,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
-        mainAppStore.setAccount(response.data[0]);
+        mainAppStore.accounts = response.data;
+        mainAppStore.setActiveAccount(response.data[0]);
         quotesStore.available = response.data[0].balance;
 
         mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
@@ -49,17 +50,17 @@ const Dashboard = observer(() => {
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
         quotesStore.available = response.data.balance;
-        mainAppStore.setAccount(response.data);
+        mainAppStore.setActiveAccount(response.data);
       }
     );
   }, [mainAppStore.activeSession]);
 
   useEffect(() => {
-    if (mainAppStore.account) {
+    if (mainAppStore.activeAccount) {
       mainAppStore.activeSession?.on(
         Topics.INSTRUMENTS,
         (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-          if (response.accountId === mainAppStore.account?.id) {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
             response.data.forEach(item => {
               quotesStore.setQuote({
                 ask: {
@@ -88,7 +89,7 @@ const Dashboard = observer(() => {
       mainAppStore.activeSession?.on(
         Topics.ACTIVE_POSITIONS,
         (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
-          if (response.accountId === mainAppStore.account?.id) {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
             quotesStore.activePositions = response.data;
           }
         }
@@ -97,7 +98,7 @@ const Dashboard = observer(() => {
       mainAppStore.activeSession?.on(
         Topics.UPDATE_ACCOUNT,
         (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
-          if (response.accountId === mainAppStore.account?.id) {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
             const newActivePositions = quotesStore.activePositions.map(item => {
               if (item.id === response.data.id) {
                 return response.data;
@@ -112,16 +113,16 @@ const Dashboard = observer(() => {
       mainAppStore.activeSession?.on(
         Topics.PENDING_ORDERS,
         (response: ResponseFromWebsocket<PendingOrdersWSDTO[]>) => {
-          if (mainAppStore.account?.id === response.accountId) {
+          if (mainAppStore.activeAccount?.id === response.accountId) {
             quotesStore.pendingOrders = response.data;
           }
         }
       );
     }
-  }, [mainAppStore.account]);
+  }, [mainAppStore.activeAccount]);
 
   return !mainAppStore.isLoading &&
-    mainAppStore.account &&
+    mainAppStore.activeAccount &&
     mainAppStore.activeSession ? (
     <DashboardWrapper height="100%" width="100%" flexDirection="column">
       <FlexContainer flexDirection="column" margin="0 0 20px 0">
@@ -168,10 +169,10 @@ const Dashboard = observer(() => {
               <BuySellPanelWrapper>
                 {instrumentsStore.activeInstrument && (
                   <BuySellPanel
-                    currencySymbol={mainAppStore.account!.symbol}
+                    currencySymbol={mainAppStore.activeAccount!.symbol}
                     instrument={instrumentsStore.activeInstrument}
-                    accountId={mainAppStore.account!.id}
-                    digits={mainAppStore.account!.digits}
+                    accountId={mainAppStore.activeAccount!.id}
+                    digits={mainAppStore.activeAccount!.digits}
                   ></BuySellPanel>
                 )}
               </BuySellPanelWrapper>

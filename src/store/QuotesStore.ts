@@ -11,7 +11,6 @@ interface IQuotesStore {
   activePositions: PositionModelWSDTO[];
   activePositionsSortBy: SortByDropdownEnum;
   pendingOrdersSortBy: SortByDropdownEnum;
-  totalProfit: number;
   available: number;
   invest: number;
   total: number;
@@ -25,7 +24,6 @@ export class QuotesStore implements IQuotesStore {
   @observable activePositions: PositionModelWSDTO[] = [];
   @observable activePositionsSortBy: SortByDropdownEnum =
     SortByDropdownEnum.DateOpened;
-  @observable totalProfit = 0;
   @observable available = 0;
   @observable pendingOrders: PendingOrdersWSDTO[] = [];
   @observable pendingOrdersSortBy: SortByDropdownEnum =

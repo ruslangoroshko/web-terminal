@@ -58,7 +58,7 @@ const TradingHistory: FC = () => {
               <PendingOrder
                 key={item.id}
                 pendingOrder={item}
-                currencySymbol={mainAppStore.account?.symbol || ''}
+                currencySymbol={mainAppStore.activeAccount?.symbol || ''}
               />
             ))}
           </ActivePositionsWrapper>

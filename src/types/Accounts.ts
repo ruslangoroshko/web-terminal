@@ -14,4 +14,11 @@ export interface AccountModelWebSocketDTO {
   currency: string;
   digits: number;
   symbol: string;
+  isLive: boolean;
+  timestamp: number;
+  investAmount: [
+    {
+      amount: number;
+    }
+  ];
 }

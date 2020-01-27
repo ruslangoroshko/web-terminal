@@ -17,16 +17,17 @@ interface MainAppStoreProps {
   signUp: (credentials: UserRegistration) => Promise<unknown>;
   activeSession?: HubConnection;
   isLoading: boolean;
-  account?: AccountModelWebSocketDTO;
-  setAccount: (acc: AccountModelWebSocketDTO) => void;
+  activeAccount?: AccountModelWebSocketDTO;
+  accounts: AccountModelWebSocketDTO[];
+  setActiveAccount: (acc: AccountModelWebSocketDTO) => void;
 }
 
 export class MainAppStore implements MainAppStoreProps {
   @observable isLoading = false;
   @observable isAuthorized = false;
   @observable activeSession?: HubConnection;
-  @observable account?: AccountModelWebSocketDTO;
-
+  @observable activeAccount?: AccountModelWebSocketDTO;
+  @observable accounts: AccountModelWebSocketDTO[] = [];
   token = '';
 
   constructor() {
@@ -59,8 +60,8 @@ export class MainAppStore implements MainAppStoreProps {
   };
 
   @action
-  setAccount(account: AccountModelWebSocketDTO) {
-    this.account = account;
+  setActiveAccount(account: AccountModelWebSocketDTO) {
+    this.activeAccount = account;
   }
 
   @action
