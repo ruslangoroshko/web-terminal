@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -12,22 +12,35 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
+import ErropPopup from '../ErropPopup';
+import ColorsPallete from '../../styles/colorPallete';
+import { getProcessId } from '../../helpers/getProcessId';
 
 interface Props {
   takeProfitValue: number | null;
   stopLossValue: number | null;
   toggle: (arg0: boolean) => void;
   handleApply: () => void;
+  investedAmount: number;
 }
 
 function SetAutoclose(props: Props) {
-  const { takeProfitValue, stopLossValue, toggle, handleApply } = props;
+  const {
+    takeProfitValue,
+    stopLossValue,
+    toggle,
+    handleApply,
+    investedAmount,
+  } = props;
 
   const { SLTPStore, instrumentsStore } = useStores();
 
   const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
     SLTPStore.takeProfitValue = e.target.value;
   };
+
+  const [tpError, setTpError] = useState('');
+  const [slError, setSlError] = useState('');
 
   const handleBeforeInput = (e: any) => {
     if (e.currentTarget.value && [',', '.'].includes(e.data)) {
@@ -50,6 +63,23 @@ function SetAutoclose(props: Props) {
     ) {
       e.preventDefault();
       return;
+    }
+  };
+
+  const handleTakeProfitBlur = () => {
+    if (SLTPStore.takeProfitValue) {
+      SLTPStore.takeProfitValue = `${+SLTPStore.takeProfitValue}`;
+    }
+  };
+
+  const handleStopLossBlur = () => {
+    if (+SLTPStore.stopLossValue > investedAmount) {
+      setSlError('Stop loss level can not be higher than the Invest amount');
+    }
+    setSlError('');
+
+    if (SLTPStore.stopLossValue) {
+      SLTPStore.stopLossValue = `${+SLTPStore.stopLossValue}`;
     }
   };
 
@@ -124,6 +154,7 @@ function SetAutoclose(props: Props) {
               onBeforeInput={handleBeforeInput}
               placeholder="Non Set"
               onChange={handleChangeProfit}
+              onBlur={handleTakeProfitBlur}
               value={SLTPStore.takeProfitValue || ''}
             ></InputPnL>
           )}
@@ -161,6 +192,15 @@ function SetAutoclose(props: Props) {
         width="100%"
         position="relative"
       >
+        {slError && (
+          <ErropPopup
+            textColor="#fffccc"
+            bgColor={ColorsPallete.RAZZMATAZZ}
+            classNameTooltip={getProcessId()}
+          >
+            {slError}
+          </ErropPopup>
+        )}
         <PlusSign>-</PlusSign>
         <Observer>
           {() => (
@@ -168,6 +208,7 @@ function SetAutoclose(props: Props) {
               onBeforeInput={handleBeforeInput}
               placeholder="Non Set"
               onChange={handleChangeLoss}
+              onBlur={handleStopLossBlur}
               value={SLTPStore.stopLossValue || ''}
             ></InputPnL>
           )}
@@ -176,7 +217,12 @@ function SetAutoclose(props: Props) {
           <PnLTypeDropdown></PnLTypeDropdown>
         </FlexContainer>
       </InputWrapper>
-      <ButtonApply onClick={handleApplyValues}>Apply</ButtonApply>
+      <ButtonApply
+        onClick={handleApplyValues}
+        disabled={!!(tpError || slError)}
+      >
+        Apply
+      </ButtonApply>
     </Wrapper>
   );
 }

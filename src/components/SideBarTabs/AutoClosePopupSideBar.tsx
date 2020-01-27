@@ -9,11 +9,17 @@ interface Props {
   updateSLTP: () => void;
   stopLossValue: number | null;
   takeProfitValue: number | null;
+  investedAmount: number;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
   (props, ref) => {
-    const { updateSLTP, stopLossValue, takeProfitValue } = props;
+    const {
+      updateSLTP,
+      stopLossValue,
+      takeProfitValue,
+      investedAmount,
+    } = props;
 
     const [on, toggle] = useState(false);
 
@@ -77,6 +83,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               stopLossValue={stopLossValue}
               takeProfitValue={takeProfitValue}
               toggle={toggle}
+              investedAmount={investedAmount}
             />
           </FlexContainer>
         )}

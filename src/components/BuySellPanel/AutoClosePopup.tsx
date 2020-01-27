@@ -61,6 +61,7 @@ function AutoClosePopup(props: Props) {
             stopLossValue={values.sl}
             takeProfitValue={values.tp}
             toggle={toggle}
+            investedAmount={+values.investmentAmount}
           />
         </FlexContainer>
       )}

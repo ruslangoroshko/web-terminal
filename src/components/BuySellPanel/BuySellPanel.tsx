@@ -1,7 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
-import MaskedInput from 'react-text-mask';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
 import IconShevronBuy from '../../assets/svg/icon-buy-sell-shevron-buy.svg';
@@ -26,7 +25,6 @@ import ErropPopup from '../ErropPopup';
 import MultiplierDropdown from './MultiplierDropdown';
 import InvestAmountDropdown from './InvestAmountDropdown';
 import { Observer } from 'mobx-react-lite';
-import { darken } from 'polished';
 import { getProcessId } from '../../helpers/getProcessId';
 import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 
@@ -106,7 +104,6 @@ function BuySellPanel(props: Props) {
       e.preventDefault();
       return;
     }
-
   };
 
   const investOnChangeHandler = (setFieldValue: any) => (

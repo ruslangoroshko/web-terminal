@@ -8,7 +8,6 @@ import {
   PrimaryTextParagraph,
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
-import MaskedInput from 'react-text-mask';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import Fields from '../../constants/fields';
@@ -30,14 +29,14 @@ function PurchaseAtPopup(props: Props) {
   } = props;
 
   const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
-    buySellStore.purchaseAtValue = e.target.value;
+    SLTPStore.purchaseAtValue = e.target.value;
   };
 
   const [on, toggle] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const { quotesStore, SLTPStore: buySellStore } = useStores();
+  const { quotesStore, SLTPStore, instrumentsStore } = useStores();
 
   const handleToggle = () => {
     toggle(!on);
@@ -50,13 +49,37 @@ function PurchaseAtPopup(props: Props) {
   };
 
   const applyPurchaseAt = () => {
-    setFieldValue(Fields.PURCHASE_AT, buySellStore.purchaseAtValue);
+    setFieldValue(Fields.PURCHASE_AT, SLTPStore.purchaseAtValue);
     toggle(false);
+  };
+
+  const handleBeforeInput = (e: any) => {
+    if (e.currentTarget.value && [',', '.'].includes(e.data)) {
+      if (e.currentTarget.value.includes('.')) {
+        e.preventDefault();
+        return;
+      }
+    }
+    if (!e.data.match(/^\d|\.|\,/)) {
+      e.preventDefault();
+      return;
+    }
+    const regex = `^[0-9]+(\.[0-9]{1,${instrumentsStore.activeInstrument!
+      .digits - 1}})?$`;
+
+    if (
+      e.currentTarget.value &&
+      e.currentTarget.value[e.currentTarget.value.length - 1] !== '.' &&
+      !e.currentTarget.value.match(regex)
+    ) {
+      e.preventDefault();
+      return;
+    }
   };
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-    buySellStore.purchaseAtValue = purchaseAtValue ? `purchaseAtValue` : '';
+    SLTPStore.purchaseAtValue = purchaseAtValue ? `purchaseAtValue` : '';
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -120,17 +143,12 @@ function PurchaseAtPopup(props: Props) {
               position="relative"
               justifyContent="space-between"
             >
-              <MaskedInput
-                mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
-                showMask={false}
+              <InputPnL
+                onBeforeInput={handleBeforeInput}
                 onChange={handleChangePurchaseAt}
                 value={purchaseAtValue ? purchaseAtValue.toString() : ''}
-                guide={false}
                 placeholder="Non Set"
-                render={(ref, props) => (
-                  <InputPnL ref={ref} {...props}></InputPnL>
-                )}
-              ></MaskedInput>
+              ></InputPnL>
               <FlexContainer>
                 <ButtonIncreaseDecreasePrice>
                   <PrimaryTextSpan

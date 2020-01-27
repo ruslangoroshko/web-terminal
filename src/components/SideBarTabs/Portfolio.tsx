@@ -12,7 +12,6 @@ import ActivePositionsPortfolioTab from './ActivePositions';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { Observer } from 'mobx-react-lite';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
-import Scrollbar from 'react-scrollbars-custom';
 import { keyframes } from '@emotion/core';
 import SortByDropdown from '../SortByDropdown';
 

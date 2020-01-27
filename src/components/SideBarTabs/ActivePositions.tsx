@@ -244,6 +244,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
             ref={instrumentRef}
             stopLossValue={stopLossInCurrency || stopLossRate || null}
             takeProfitValue={takeProfitInCurrency || takeProfitRate || null}
+            investedAmount={investmentAmount}
             updateSLTP={updateSLTP}
           ></AutoClosePopupSideBar>
           <CloseButton onClick={closePosition}>
