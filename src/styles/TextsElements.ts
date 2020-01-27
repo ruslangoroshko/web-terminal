@@ -11,6 +11,7 @@ interface PrimaryTextType {
   textDecoration?: 'underline';
   textTransform?: 'capitalize' | 'lowercase' | 'uppercase';
   whiteSpace?: 'nowrap' | 'pre' | 'normal';
+  textAlign?: 'left' | 'center' | 'right';
 }
 
 export const PrimaryTextSpan = styled.span<PrimaryTextType>`
@@ -25,6 +26,7 @@ export const PrimaryTextSpan = styled.span<PrimaryTextType>`
   text-decoration: ${props => props.textDecoration};
   text-transform: ${props => props.textTransform};
   white-space: ${props => props.whiteSpace};
+  text-align: ${props => props.textAlign};
 `;
 
 export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
@@ -39,6 +41,7 @@ export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
   text-decoration: ${props => props.textDecoration};
   text-transform: ${props => props.textTransform};
   white-space: ${props => props.whiteSpace};
+  text-align: ${props => props.textAlign};
 `;
 
 export const QuoteText = styled(PrimaryTextSpan)<
@@ -54,4 +57,5 @@ export const QuoteText = styled(PrimaryTextSpan)<
   margin-bottom: ${props => props.marginBottom};
   text-decoration: ${props => props.textDecoration};
   text-transform: ${props => props.textTransform};
+  text-align: ${props => props.textAlign};
 `;

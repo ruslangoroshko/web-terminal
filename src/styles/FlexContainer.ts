@@ -14,13 +14,14 @@ export interface FlexContainerProps {
   margin?: string;
   backgroundColor?: string;
   textColor?: string;
-  position?: 'relative' | 'absolute' | 'sticky' | 'static';
+  position?: 'relative' | 'absolute' | 'fixed' | 'sticky' | 'static';
   top?: string;
   bottom?: string;
   right?: string;
   left?: string;
   zIndex?: string;
   overflow?: 'hidden' | 'visible' | 'auto';
+  borderRadius?: string;
 }
 
 export const FlexContainer = styled.div<FlexContainerProps>`
@@ -45,4 +46,5 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   left: ${props => props.left};
   z-index: ${props => props.zIndex};
   overflow: ${props => props.overflow};
+  border-radius: ${props => props.borderRadius};
 `;

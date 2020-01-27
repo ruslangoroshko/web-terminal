@@ -9,7 +9,8 @@ import { SortByDropdownEnum } from '../enums/SortByDropdown';
 interface IQuotesStore {
   quotes: BidAskKeyValueList;
   activePositions: PositionModelWSDTO[];
-  sortBy: SortByDropdownEnum;
+  activePositionsSortBy: SortByDropdownEnum;
+  pendingOrdersSortBy: SortByDropdownEnum;
   totalProfit: number;
   available: number;
   invest: number;
@@ -22,10 +23,13 @@ interface IQuotesStore {
 export class QuotesStore implements IQuotesStore {
   @observable quotes: BidAskKeyValueList = {};
   @observable activePositions: PositionModelWSDTO[] = [];
-  @observable sortBy: SortByDropdownEnum = SortByDropdownEnum.DateOpened;
+  @observable activePositionsSortBy: SortByDropdownEnum =
+    SortByDropdownEnum.DateOpened;
   @observable totalProfit = 0;
   @observable available = 0;
   @observable pendingOrders: PendingOrdersWSDTO[] = [];
+  @observable pendingOrdersSortBy: SortByDropdownEnum =
+    SortByDropdownEnum.DateOpened;
 
   @action
   setQuote = (quote: BidAskModelWSDTO) => {
@@ -73,8 +77,8 @@ export class QuotesStore implements IQuotesStore {
   @computed
   get sortedActivePositions() {
     let filterByFunc;
-    
-    switch (this.sortBy) {
+
+    switch (this.activePositionsSortBy) {
       case SortByDropdownEnum.DateOpened:
         filterByFunc = this.sortByDateOpened;
         break;
@@ -84,7 +88,7 @@ export class QuotesStore implements IQuotesStore {
         break;
 
       case SortByDropdownEnum.DayChange:
-        filterByFunc = this.sortByDayChange;
+        filterByFunc = this.sortByDateOpened;
         break;
 
       case SortByDropdownEnum.Investment:
@@ -101,11 +105,52 @@ export class QuotesStore implements IQuotesStore {
     return this.activePositions.slice().sort(filterByFunc);
   }
 
+  @computed
+  get sortedPendingOrders() {
+    let filterByFunc;
+
+    switch (this.pendingOrdersSortBy) {
+      case SortByDropdownEnum.DateOpened:
+        filterByFunc = this.sortByDateOpenedPendingOrders;
+        break;
+
+      case SortByDropdownEnum.AssetName:
+        filterByFunc = this.sortByAssetName;
+        break;
+
+      case SortByDropdownEnum.DayChange:
+        filterByFunc = this.sortByDateOpenedPendingOrders;
+        break;
+
+      case SortByDropdownEnum.Investment:
+        filterByFunc = this.sortByInvestment;
+        break;
+
+      case SortByDropdownEnum.Price:
+        filterByFunc = this.sortByPrice;
+        break;
+
+      default:
+        break;
+    }
+    return this.pendingOrders.slice().sort(filterByFunc);
+  }
+
   sortByDateOpened = (a: PositionModelWSDTO, b: PositionModelWSDTO) => {
     return a.openDate - b.openDate;
   };
 
-  sortByAssetName = (a: PositionModelWSDTO, b: PositionModelWSDTO) => {
+  sortByDateOpenedPendingOrders = (
+    a: PendingOrdersWSDTO,
+    b: PendingOrdersWSDTO
+  ) => {
+    return a.created - b.created;
+  };
+
+  sortByAssetName = (
+    a: PositionModelWSDTO | PendingOrdersWSDTO,
+    b: PositionModelWSDTO | PendingOrdersWSDTO
+  ) => {
     if (a.instrument < b.instrument) {
       return -1;
     }
@@ -115,15 +160,17 @@ export class QuotesStore implements IQuotesStore {
     return 0;
   };
 
-  sortByDayChange = (a: PositionModelWSDTO, b: PositionModelWSDTO) => {
-    return a.openDate - b.openDate;
-  };
-
-  sortByInvestment = (a: PositionModelWSDTO, b: PositionModelWSDTO) => {
+  sortByInvestment = (
+    a: PositionModelWSDTO | PendingOrdersWSDTO,
+    b: PositionModelWSDTO | PendingOrdersWSDTO
+  ) => {
     return a.investmentAmount - b.investmentAmount;
   };
 
-  sortByPrice = (a: PositionModelWSDTO, b: PositionModelWSDTO) => {
+  sortByPrice = (
+    a: PositionModelWSDTO | PendingOrdersWSDTO,
+    b: PositionModelWSDTO | PendingOrdersWSDTO
+  ) => {
     return a.openPrice - b.openPrice;
   };
 }

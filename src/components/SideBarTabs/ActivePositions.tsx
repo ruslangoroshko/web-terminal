@@ -20,6 +20,9 @@ import Fields from '../../constants/fields';
 import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import { SecondaryButton } from '../../styles/Buttons';
+import Toggle from '../Toggle';
+import ConfirmPopup from '../ConfirmPopup';
+import { getNumberSign } from '../../helpers/getNumberSign';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -201,8 +204,9 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
               <Observer>
                 {() => (
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    {getNumberSign(PnL + investmentAmount)}
                     {mainAppStore.account?.symbol}
-                    {PnL + investmentAmount}
+                    {Math.abs(PnL + investmentAmount).toFixed(2)}
                   </PrimaryTextSpan>
                 )}
               </Observer>
@@ -261,11 +265,23 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
             investedAmount={investmentAmount}
             updateSLTP={updateSLTP}
           ></AutoClosePopupSideBar>
-          <CloseButton onClick={closePosition}>
-            <PrimaryTextSpan fontSize="12px" lineHeight="14px">
-              Close
-            </PrimaryTextSpan>
-          </CloseButton>
+          <Toggle>
+            {({ on, toggle }) => (
+              <>
+                <CloseButton onClick={toggle}>
+                  <PrimaryTextSpan fontSize="12px" lineHeight="14px">
+                    Close
+                  </PrimaryTextSpan>
+                </CloseButton>
+                {on && (
+                  <ConfirmPopup
+                    toggle={toggle}
+                    applyHandler={closePosition}
+                  ></ConfirmPopup>
+                )}
+              </>
+            )}
+          </Toggle>
         </FlexContainer>
       </FlexContainer>
     </InstrumentInfoWrapper>

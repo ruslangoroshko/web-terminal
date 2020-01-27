@@ -11,6 +11,7 @@ import styled from '@emotion/styled';
 import PortfolioExpanded from '../components/SideBarTabs/PortfolioExpanded';
 import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
 import Orders from '../components/SideBarTabs/Orders';
+import { keyframes } from '@emotion/core';
 
 interface Props {}
 
@@ -24,9 +25,13 @@ const RenderTabByType = observer(() => {
   switch (tabsStore.sideBarTabType!) {
     case SideBarTabType.Portfolio:
       return tabsStore.portfolioTab === PortfolioTabEnum.Portfolio ? (
-        <Portfolio></Portfolio>
+        <ResizableContentAnimationWrapper>
+          <Portfolio></Portfolio>
+        </ResizableContentAnimationWrapper>
       ) : (
-        <Orders></Orders>
+        <ResizableContentAnimationWrapper>
+          <Orders></Orders>
+        </ResizableContentAnimationWrapper>
       );
 
     case SideBarTabType.Markets:
@@ -132,4 +137,21 @@ const SideBarAndPageContentWrapper = styled(FlexContainer)`
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.08);
   overflow: hidden;
   border-top-left-radius: 8px;
+`;
+
+const fadein = keyframes`
+    from { 
+      opacity: 0;
+      visibility: visible;
+     }
+    to { 
+      opacity: 1;
+      visibility: visible;
+    }
+`;
+
+const ResizableContentAnimationWrapper = styled(FlexContainer)`
+  visibility: hidden;
+  opacity: 0;
+  animation: ${fadein} 0.2s forwards 0.3s;
 `;

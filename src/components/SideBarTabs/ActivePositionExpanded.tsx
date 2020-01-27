@@ -244,8 +244,9 @@ function ActivePositionExpanded(props: Props) {
                 <Observer>
                   {() => (
                     <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      {getNumberSign(PnL + investmentAmount)}
                       {mainAppStore.account?.symbol}
-                      {PnL + investmentAmount}
+                      {Math.abs(PnL + investmentAmount).toFixed(2)}
                     </PrimaryTextSpan>
                   )}
                 </Observer>

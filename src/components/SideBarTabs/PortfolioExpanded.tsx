@@ -139,8 +139,9 @@ const PortfolioExpanded: FC<Props> = props => {
                       fontWeight="bold"
                       color="#fffccc"
                     >
+                      {getNumberSign(quotesStore.totalEquity)}
                       {mainAppStore.account?.symbol}
-                      {quotesStore.totalEquity.toFixed(2)}
+                      {Math.abs(quotesStore.totalEquity).toFixed(2)}
                     </PrimaryTextSpan>
                   )}
                 </Observer>

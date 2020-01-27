@@ -54,7 +54,7 @@ const TradingHistory: FC = () => {
       <Observer>
         {() => (
           <ActivePositionsWrapper flexDirection="column">
-            {quotesStore.pendingOrders.map(item => (
+            {quotesStore.sortedPendingOrders.map(item => (
               <PendingOrder
                 key={item.id}
                 pendingOrder={item}

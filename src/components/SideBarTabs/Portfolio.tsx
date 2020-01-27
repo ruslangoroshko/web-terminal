@@ -12,7 +12,6 @@ import ActivePositionsPortfolioTab from './ActivePositions';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { Observer } from 'mobx-react-lite';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
-import { keyframes } from '@emotion/core';
 import SortByDropdown from '../SortByDropdown';
 
 interface Props {}
@@ -25,9 +24,9 @@ const Portfolio: FC<Props> = () => {
   };
 
   return (
-    <PortfolioWrapper padding="12px 4px" flexDirection="column">
-      <FlexContainer flexDirection="column" padding="0 12px">
-        <FlexContainer margin="0 0 28px">
+    <PortfolioWrapper flexDirection="column">
+      <FlexContainer flexDirection="column" padding="0 8px">
+        <FlexContainer margin="0 0 16px">
           <Observer>
             {() => (
               <>
@@ -49,7 +48,7 @@ const Portfolio: FC<Props> = () => {
             )}
           </Observer>
         </FlexContainer>
-        <FlexContainer flexDirection="column">
+        <FlexContainer flexDirection="column" padding="0 8px">
           <PrimaryTextParagraph
             color="rgba(255, 255, 255, 0.4)"
             textTransform="uppercase"
@@ -112,8 +111,9 @@ const Portfolio: FC<Props> = () => {
                     lineHeight="16px"
                     fontWeight="bold"
                   >
+                    {getNumberSign(quotesStore.totalEquity)}
                     {mainAppStore.account?.symbol}
-                    {quotesStore.totalEquity.toFixed(2)}
+                    {Math.abs(quotesStore.totalEquity).toFixed(2)}
                   </PrimaryTextSpan>
                 )}
               </Observer>
@@ -133,7 +133,7 @@ const Portfolio: FC<Props> = () => {
         >
           Sort by:
         </PrimaryTextSpan>
-        <SortByDropdown />
+        <SortByDropdown sortTypeDropdown="activePositions" />
       </SortByWrapper>
       <Observer>
         {() => (
@@ -184,22 +184,9 @@ export const TabPortfolitButton = styled(ButtonWithoutStyles)<{
     box-shadow: inset 0px 1px 0px #00ffdd;
   }
 `;
-const fadein = keyframes`
-    from { 
-      opacity: 0;
-      visibility: visible;
-     }
-    to { 
-      opacity: 1;
-      visibility: visible;
-    }
-`;
 
 const PortfolioWrapper = styled(FlexContainer)`
-  visibility: hidden;
   min-width: 320px;
-  opacity: 0;
-  animation: ${fadein} 0.2s forwards 0.3s;
 `;
 
 const ActivePositionsWrapper = styled(FlexContainer)`

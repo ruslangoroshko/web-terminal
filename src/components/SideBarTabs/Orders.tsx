@@ -7,7 +7,7 @@ import { Observer } from 'mobx-react-lite';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import PendingOrder from './PendingOrder';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
-import DatePickerDropdown from '../DatePickerDropdown';
+import SortByDropdown from '../SortByDropdown';
 
 const Orders: FC = () => {
   const { quotesStore, tabsStore, mainAppStore } = useStores();
@@ -17,9 +17,9 @@ const Orders: FC = () => {
   };
 
   return (
-    <PortfolioWrapper padding="12px 16px" flexDirection="column">
-      <FlexContainer flexDirection="column">
-        <FlexContainer margin="0 0 28px">
+    <PortfolioWrapper flexDirection="column">
+      <FlexContainer flexDirection="column" padding="0 8px">
+        <FlexContainer margin="0 0 8px">
           <Observer>
             {() => (
               <>
@@ -46,21 +46,36 @@ const Orders: FC = () => {
         backgroundColor="rgba(65, 66, 83, 0.5)"
         padding="10px 16px"
       >
-        <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)">
+        <PrimaryTextSpan
+          color="rgba(255, 255, 255, 0.4)"
+          marginRight="4px"
+          fontSize="10px"
+          textTransform="uppercase"
+        >
           Sort by:
         </PrimaryTextSpan>
-        <DatePickerDropdown />
+        <SortByDropdown sortTypeDropdown="pendingOrders" />
       </SortByWrapper>
       <Observer>
         {() => (
           <ActivePositionsWrapper flexDirection="column">
-            {quotesStore.pendingOrders.map(item => (
+            {quotesStore.sortedPendingOrders.map(item => (
               <PendingOrder
                 key={item.id}
                 pendingOrder={item}
                 currencySymbol={mainAppStore.account?.symbol || ''}
               />
             ))}
+            {!quotesStore.sortedPendingOrders.length && (
+              <FlexContainer padding="16px">
+                <PrimaryTextSpan
+                  color="rgba(255,255,255,0.17)"
+                  fontWeight="bold"
+                >
+                  No orders yet...
+                </PrimaryTextSpan>
+              </FlexContainer>
+            )}
           </ActivePositionsWrapper>
         )}
       </Observer>

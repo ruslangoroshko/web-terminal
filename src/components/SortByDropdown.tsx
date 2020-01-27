@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
@@ -10,13 +10,28 @@ import { Observer } from 'mobx-react-lite';
 import SvgIcon from './SvgIcon';
 import IconShevronDown from '../assets/svg/icon-shevron-down-sort-by.svg';
 
-function SortByDropdown() {
+interface Props {
+  sortTypeDropdown: 'activePositions' | 'pendingOrders';
+}
+
+const SortByDropdown: FC<Props> = ({ sortTypeDropdown }) => {
   const { quotesStore } = useStores();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [on, toggle] = useState(false);
 
   const handleChangeSorting = (sortType: SortByDropdownEnum) => () => {
-    quotesStore.sortBy = sortType;
+    switch (sortTypeDropdown) {
+      case 'activePositions':
+        quotesStore.activePositionsSortBy = sortType;
+        break;
+
+      case 'pendingOrders':
+        quotesStore.pendingOrdersSortBy = sortType;
+        break;
+
+      default:
+        break;
+    }
     toggle(false);
   };
 
@@ -49,7 +64,13 @@ function SortByDropdown() {
               textTransform="uppercase"
               marginRight="4px"
             >
-              {sortByDropdownValues[quotesStore.sortBy]}
+              {
+                sortByDropdownValues[
+                  sortTypeDropdown === 'activePositions'
+                    ? quotesStore.activePositionsSortBy
+                    : quotesStore.pendingOrdersSortBy
+                ]
+              }
             </PrimaryTextSpan>
             <SvgIcon
               {...IconShevronDown}
@@ -87,7 +108,7 @@ function SortByDropdown() {
       )}
     </FlexContainer>
   );
-}
+};
 
 export default SortByDropdown;
 
