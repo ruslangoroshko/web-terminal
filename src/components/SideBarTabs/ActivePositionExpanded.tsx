@@ -17,6 +17,7 @@ import InformationPopup from '../InformationPopup';
 import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
 import { SecondaryButton } from '../../styles/Buttons';
+import { calculateInPercent } from '../../helpers/calculateInPercent';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -58,10 +59,6 @@ function ActivePositionExpanded(props: Props) {
       : quotesStore.quotes[instrument].ask.c,
     openPrice: openPrice,
   });
-
-  const calculateInPercent = (total: number, part: number) => {
-    return ((part / total) * 100).toFixed(2);
-  };
 
   const closePosition = () => {
     API.closePosition({

@@ -15,6 +15,7 @@ function UserProfileButton(props: Props) {
       justifyContent="center"
       alignItems="center"
       width="24px"
+      height="24px"
     >
       <ButtonWithoutStyles>
         <SvgIcon {...IconUser} width={12} height={14} fillColor="#FFFFFF" />

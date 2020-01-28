@@ -6,6 +6,7 @@ import { TabsStore } from './TabsStore';
 import { TradingViewStore } from './TradingViewStore';
 import { InstrumentsStore } from './InstrumentsStore';
 import { DateRangeStore } from './DateRangeStore';
+import { HistoryStore } from './HistoryStore';
 
 export const StoresContext = createContext({
   quotesStore: new QuotesStore(),
@@ -15,6 +16,7 @@ export const StoresContext = createContext({
   tradingViewStore: new TradingViewStore(),
   instrumentsStore: new InstrumentsStore(),
   dateRangeStore: new DateRangeStore(),
+  historyStore: new HistoryStore(),
 });
 
 export type StoresContextType = typeof StoresContext;

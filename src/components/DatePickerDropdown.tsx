@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
@@ -12,13 +12,51 @@ import 'react-dates/initialize';
 import IconRightArrow from '../assets/svg/icon-arrow-to-right.svg';
 import IconLeftArrow from '../assets/svg/icon-arrow-to-left.svg';
 import { observer } from 'mobx-react-lite';
+import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 import moment from 'moment';
 
-const DatePickerDropdown = observer(() => {
+interface Props {
+  datesChangeCallback: () => void;
+}
+
+const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
   const { dateRangeStore } = useStores();
 
   const toggle = (flag: boolean) => () => {
     dateRangeStore.openedDropdown = flag;
+  };
+
+  const handleSelectRange = (dateRange: ShowDatesDropdownEnum) => () => {
+    switch (dateRange) {
+      case ShowDatesDropdownEnum.Today:
+        dateRangeStore.startDate = moment().startOf('d');
+        dateRangeStore.endDate = moment();
+
+        break;
+
+      case ShowDatesDropdownEnum.Week:
+        dateRangeStore.startDate = moment().subtract(1, 'w');
+        dateRangeStore.endDate = moment();
+
+        break;
+
+      case ShowDatesDropdownEnum.Month:
+        dateRangeStore.startDate = moment().subtract(1, 'm');
+        dateRangeStore.endDate = moment();
+
+        break;
+
+      case ShowDatesDropdownEnum.Year:
+        dateRangeStore.startDate = moment().subtract(1, 'y');
+        dateRangeStore.endDate = moment();
+
+        break;
+
+      default:
+        break;
+    }
+    dateRangeStore.openedDropdown = false;
+    datesChangeCallback();
   };
 
   useEffect(() => {
@@ -34,12 +72,14 @@ const DatePickerDropdown = observer(() => {
         alignItems="center"
         justifyContent="space-between"
         onClick={toggle(!dateRangeStore.openedDropdown)}
+        isActive={dateRangeStore.openedDropdown}
+        tabIndex={-1}
       >
-        <FlexContainer>
+        <FlexContainer alignItems="center">
           <FlexContainer margin="0 8px 0 0">
             <SvgIcon {...IconCalendar} fillColor="rgba(255, 255, 255, 0.6)" />
           </FlexContainer>
-          <PrimaryTextSpan>
+          <PrimaryTextSpan fontSize="12px" whiteSpace="nowrap">
             {dateRangeStore.startDate || dateRangeStore.endDate
               ? `${
                   dateRangeStore.startDate
@@ -66,22 +106,30 @@ const DatePickerDropdown = observer(() => {
             flexDirection="column"
             alignItems="flex-start"
           >
-            <DateRangeItemButton>
+            <DateRangeItemButton
+              onClick={handleSelectRange(ShowDatesDropdownEnum.Today)}
+            >
               <PrimaryTextSpan fontSize="14px" color="#fffccc">
                 Today
               </PrimaryTextSpan>
             </DateRangeItemButton>
-            <DateRangeItemButton>
+            <DateRangeItemButton
+              onClick={handleSelectRange(ShowDatesDropdownEnum.Week)}
+            >
               <PrimaryTextSpan fontSize="14px" color="#fffccc">
                 Week
               </PrimaryTextSpan>
             </DateRangeItemButton>
-            <DateRangeItemButton>
+            <DateRangeItemButton
+              onClick={handleSelectRange(ShowDatesDropdownEnum.Month)}
+            >
               <PrimaryTextSpan fontSize="14px" color="#fffccc">
                 Month
               </PrimaryTextSpan>
             </DateRangeItemButton>
-            <DateRangeItemButton>
+            <DateRangeItemButton
+              onClick={handleSelectRange(ShowDatesDropdownEnum.Year)}
+            >
               <PrimaryTextSpan fontSize="14px" color="#fffccc">
                 Year
               </PrimaryTextSpan>
@@ -102,6 +150,7 @@ const DatePickerDropdown = observer(() => {
                   onDatesChange={({ startDate, endDate }) => {
                     dateRangeStore.startDate = startDate;
                     dateRangeStore.endDate = endDate;
+                    datesChangeCallback();
                   }}
                   focusedInput={dateRangeStore.focusedInput}
                   onFocusChange={focusedInput => {
@@ -162,24 +211,37 @@ const DefinedDaterangeWrapper = styled(FlexContainer)`
 `;
 
 const DateRangeItemButton = styled(ButtonWithoutStyles)`
-  transition: background-color 0.2s ease;
+  transition: color 0.2s ease;
   margin-bottom: 16px;
 
   &:last-of-type {
     margin-bottom: 0;
   }
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+  &:hover > span {
+    color: #00fff2;
   }
 `;
 
-const InputLabelWrapper = styled(FlexContainer)`
+const InputLabelWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
   background-color: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.19);
+  border: ${props =>
+    props.isActive
+      ? '1px solid #00FFDD'
+      : '1px solid rgba(255, 255, 255, 0.19)'};
   box-sizing: border-box;
   border-radius: 4px;
   padding: 8px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+  }
+
+  &:focus {
+    border-color: #00ffdd;
+  }
 `;
 
 const ButtonRightArrow = styled(ButtonWithoutStyles)`
@@ -202,4 +264,9 @@ const SelectDateButton = styled(ButtonWithoutStyles)`
   display: flex;
   width: 100%;
   justify-content: space-between;
+  transition: color 0.2s ease;
+
+  &:hover > span {
+    color: #00fff2;
+  }
 `;

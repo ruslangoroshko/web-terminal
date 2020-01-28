@@ -28,6 +28,10 @@ const API_LIST = {
   PERSONAL_DATA: {
     CONFIRM: '/api/v1/PersonalData/Confirm',
   },
+  REPORTS: {
+    POSITIONS_HISTORY: '/api/v1/Reports/PositionsHistory',
+    BALANCE_HISTORY: '/api/v1/Reports/BalanceHistory',
+  },
 };
 
 Object.freeze(API_LIST);

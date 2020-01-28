@@ -35,10 +35,7 @@ const MainApp = () => {
           body {
             background-color: #1c2026;
           }
-
-          .ScrollbarsCustom-Track.ScrollbarsCustom-TrackY {
-            width: 4px !important;
-          }
+         
           ${reactDatePickerOverrides}
         `}
       />

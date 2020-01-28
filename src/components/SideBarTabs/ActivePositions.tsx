@@ -23,6 +23,7 @@ import { SecondaryButton } from '../../styles/Buttons';
 import Toggle from '../Toggle';
 import ConfirmPopup from '../ConfirmPopup';
 import { getNumberSign } from '../../helpers/getNumberSign';
+import { calculateInPercent } from '../../helpers/calculateInPercent';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -52,10 +53,6 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
   const instrumentRef = useRef<HTMLDivElement>(null);
 
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
-
-  const calculateInPercent = (total: number, part: number) => {
-    return ((part / total) * 100).toFixed(2);
-  };
 
   const { quotesStore, mainAppStore, SLTPStore } = useStores();
 

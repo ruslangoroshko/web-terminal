@@ -23,20 +23,18 @@ interface Props {
 }
 
 const AccountInfo: FC<Props> = observer(props => {
-  const {
-    account,
-    toggle,
-  } = props;
+  const { account, toggle } = props;
 
-  const { quotesStore, mainAppStore } = useStores();
+  const { quotesStore, mainAppStore, tabsStore } = useStores();
 
   const isActiveAccount = mainAppStore.activeAccount?.id === account.id;
 
-  const handleSwitch =  () => {
+  const handleSwitch = () => {
     mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
       [Fields.ACCOUNT_ID]: account.id,
     });
-    mainAppStore.setActiveAccount(account)
+    mainAppStore.setActiveAccount(account);
+    tabsStore.sideBarTabType = null;
     toggle();
   };
 
@@ -80,7 +78,9 @@ const AccountInfo: FC<Props> = observer(props => {
               >
                 <PrimaryTextSpan
                   fontSize="12px"
-                  color={account.isLive ? 'rgba(255, 255, 255, 0.4)' : '#EEFF00'}
+                  color={
+                    account.isLive ? 'rgba(255, 255, 255, 0.4)' : '#EEFF00'
+                  }
                 >
                   {account.isLive ? 'Real' : 'Demo'}
                 </PrimaryTextSpan>

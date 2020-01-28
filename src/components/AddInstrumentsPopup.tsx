@@ -49,12 +49,18 @@ const AddInstrumentsPopup: FC<Props> = props => {
         width="100%"
       >
         <FlexContainer margin="0 6px 0 0">
-          <SvgIcon {...IconSearch} fillColor="rgba(255, 255, 255, 0.5)"></SvgIcon>
+          <SvgIcon
+            {...IconSearch}
+            fillColor="rgba(255, 255, 255, 0.5)"
+          ></SvgIcon>
         </FlexContainer>
         <SearchInput onChange={handleChangeSearch} placeholder="Search" />
         <FlexContainer>
           <ButtonWithoutStyles onClick={toggle}>
-            <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.8)"></SvgIcon>
+            <SvgIcon
+              {...IconClose}
+              fillColor="rgba(255, 255, 255, 0.8)"
+            ></SvgIcon>
           </ButtonWithoutStyles>
         </FlexContainer>
       </FlexContainer>
@@ -97,6 +103,17 @@ const AddInstrumentsPopupWrapper = styled(FlexContainer)`
 
 const InstrumentsWrapper = styled(FlexContainer)`
   overflow-y: auto;
+  ::-webkit-scrollbar {
+    width: 4px;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+  }
+  ::-webkit-scrollbar-thumb:vertical {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
 `;
 
 const SearchInput = styled.input`

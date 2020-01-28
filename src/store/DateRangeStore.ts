@@ -3,7 +3,6 @@ import moment from 'moment';
 import { FocusedInputShape } from 'react-dates';
 
 interface ContextProps {
-  selectedRange: string;
   openedDropdown: boolean;
   startDate: moment.Moment | null;
   endDate: moment.Moment | null;
@@ -11,10 +10,9 @@ interface ContextProps {
 }
 
 export class DateRangeStore implements ContextProps {
-  @observable selectedRange = 'Select dates';
   @observable openedDropdown = false;
-  @observable startDate: moment.Moment | null = null;
-  @observable endDate: moment.Moment | null = null;
+  @observable startDate: moment.Moment | null = moment().subtract(1, 'w');
+  @observable endDate: moment.Moment | null = moment();
   @observable focusedInput: FocusedInputShape | null = null;
 
   @action

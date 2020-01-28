@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  OpenPositionModel,
   OpenPositionResponseDTO,
   ClosePositionModel,
   RemovePendingOrders,
@@ -15,6 +14,11 @@ import {
   UserRegistration,
 } from '../types/UserInfo';
 import { HistoryCandlesType, CandleDTO } from '../types/HistoryTypes';
+import {
+  PositionsHistoryReportDTO,
+  BalanceHistoryDTO,
+  GetHistoryParams,
+} from '../types/HistoryReportTypes';
 
 class API {
   convertParamsToFormData = (params: any) => {
@@ -158,6 +162,26 @@ class API {
       `${API_STRING}${API_LIST.PERSONAL_DATA.CONFIRM}`,
       {
         link,
+      }
+    );
+    return response.data;
+  };
+
+  getPositionsHistory = async (params: GetHistoryParams) => {
+    const response = await axios.get<PositionsHistoryReportDTO>(
+      `${API_STRING}${API_LIST.REPORTS.POSITIONS_HISTORY}`,
+      {
+        params,
+      }
+    );
+    return response.data;
+  };
+
+  getBalanceHistory = async (params: GetHistoryParams) => {
+    const response = await axios.get<BalanceHistoryDTO[]>(
+      `${API_STRING}${API_LIST.REPORTS.POSITIONS_HISTORY}`,
+      {
+        params,
       }
     );
     return response.data;

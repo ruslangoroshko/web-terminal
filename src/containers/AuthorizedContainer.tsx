@@ -12,6 +12,8 @@ import PortfolioExpanded from '../components/SideBarTabs/PortfolioExpanded';
 import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
 import Orders from '../components/SideBarTabs/Orders';
 import { keyframes } from '@emotion/core';
+import TradingHistory from '../components/SideBarTabs/TradingHistory';
+import { HistoryTabEnum } from '../enums/HistoryTabEnum';
 
 interface Props {}
 
@@ -38,7 +40,15 @@ const RenderTabByType = observer(() => {
       return <Portfolio></Portfolio>;
 
     case SideBarTabType.History:
-      return <Portfolio></Portfolio>;
+      return tabsStore.historyTab === HistoryTabEnum.TradingHistory ? (
+        <ResizableContentAnimationWrapper>
+          <TradingHistory></TradingHistory>
+        </ResizableContentAnimationWrapper>
+      ) : (
+        <ResizableContentAnimationWrapper>
+          <TradingHistory></TradingHistory>
+        </ResizableContentAnimationWrapper>
+      );
 
     default:
       return null;
@@ -79,7 +89,7 @@ const AuthorizedContainer: FC<Props> = props => {
       flexDirection="column"
     >
       <NavBar></NavBar>
-      <FlexContainer height="100%">
+      <FlexContainer height="calc(100vh - 48px)">
         <SideBar></SideBar>
         <SideBarAndPageContentWrapper width="100%">
           <Observer>
