@@ -20,7 +20,7 @@ class API {
   convertParamsToFormData = (params: any) => {
     const formData = new FormData();
     Object.keys(params).forEach(key => {
-      if (params[key] !== undefined) {
+      if (params[key] !== undefined && params[key] !== null) {
         formData.append(key, params[key]);
       }
     });
