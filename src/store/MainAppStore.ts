@@ -2,7 +2,7 @@ import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
 import { AccountModelWebSocketDTO } from '../types/Accounts';
 import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
-import { action, observable } from 'mobx';
+import { action, observable, computed } from 'mobx';
 import API from '../helpers/API';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import initConnection from '../services/websocketService';
@@ -99,4 +99,13 @@ export class MainAppStore implements MainAppStoreProps {
         resolve();
       }
     });
+
+  @computed
+  get sortedAccounts() {
+    return this.accounts.reduce(
+      (acc, prev) =>
+        prev.id === this.activeAccount?.id ? [prev, ...acc] : [...acc, prev],
+      [] as AccountModelWebSocketDTO[]
+    );
+  }
 }

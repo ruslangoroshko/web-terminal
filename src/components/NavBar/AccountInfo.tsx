@@ -24,18 +24,19 @@ interface Props {
 
 const AccountInfo: FC<Props> = observer(props => {
   const {
-    account: { balance, currency, digits, id, investAmount, isLive, symbol },
+    account,
     toggle,
   } = props;
 
   const { quotesStore, mainAppStore } = useStores();
 
-  const isActiveAccount = mainAppStore.activeAccount?.id === id;
+  const isActiveAccount = mainAppStore.activeAccount?.id === account.id;
 
-  const handleSwitch = (accountId: string) => () => {
+  const handleSwitch =  () => {
     mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-      [Fields.ACCOUNT_ID]: accountId,
+      [Fields.ACCOUNT_ID]: account.id,
     });
+    mainAppStore.setActiveAccount(account)
     toggle();
   };
 
@@ -66,12 +67,12 @@ const AccountInfo: FC<Props> = observer(props => {
                 fontSize="12px"
                 fontWeight="bold"
               >
-                {id}, {currency}
+                {account.id}, {account.currency}
               </PrimaryTextSpan>
               <FlexContainer
                 borderRadius="3px"
                 border={
-                  isLive
+                  account.isLive
                     ? '1px solid rgba(255, 255, 255, 0.4)'
                     : '1px solid #EEFF00'
                 }
@@ -79,14 +80,14 @@ const AccountInfo: FC<Props> = observer(props => {
               >
                 <PrimaryTextSpan
                   fontSize="12px"
-                  color={isLive ? 'rgba(255, 255, 255, 0.4)' : '#EEFF00'}
+                  color={account.isLive ? 'rgba(255, 255, 255, 0.4)' : '#EEFF00'}
                 >
-                  {isLive ? 'Real' : 'Demo'}
+                  {account.isLive ? 'Real' : 'Demo'}
                 </PrimaryTextSpan>
               </FlexContainer>
             </FlexContainer>
             <PrimaryTextSpan>
-              {symbol}
+              {account.symbol}
               {quotesStore.available.toFixed(2)}
             </PrimaryTextSpan>
           </FlexContainer>
@@ -98,7 +99,7 @@ const AccountInfo: FC<Props> = observer(props => {
             </PrimaryTextSpan>
           </DepositButton>
         ) : (
-          <SwitchButton onClick={handleSwitch(id)}>
+          <SwitchButton onClick={handleSwitch}>
             <PrimaryTextSpan color="#fffccc" fontSize="14px">
               Switch
             </PrimaryTextSpan>
@@ -120,7 +121,7 @@ const AccountInfo: FC<Props> = observer(props => {
               Invest:
             </PrimaryTextParagraph>
             <PrimaryTextSpan fontSize="12px" color="#fffccc">
-              {symbol}
+              {account.symbol}
               {quotesStore.invest.toFixed(2)}
             </PrimaryTextSpan>
           </FlexContainer>
@@ -139,7 +140,7 @@ const AccountInfo: FC<Props> = observer(props => {
 
             <QuoteText fontSize="12px" isGrowth={quotesStore.profit >= 0}>
               {getNumberSign(quotesStore.profit)}
-              {symbol}
+              {account.symbol}
               {Math.abs(quotesStore.profit).toFixed(2)}
             </QuoteText>
           </FlexContainer>
@@ -152,7 +153,7 @@ const AccountInfo: FC<Props> = observer(props => {
               Total:
             </PrimaryTextParagraph>
             <PrimaryTextSpan fontSize="12px" color="#fffccc">
-              {symbol}
+              {account.symbol}
               {quotesStore.total.toFixed(2)}
             </PrimaryTextSpan>
           </FlexContainer>

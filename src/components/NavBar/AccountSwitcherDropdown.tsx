@@ -8,9 +8,11 @@ import { useStores } from '../../hooks/useStores';
 import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import AccountInfo from './AccountInfo';
 import { Observer } from 'mobx-react-lite';
+import { AccountModelWebSocketDTO } from '../../types/Accounts';
 
 function AccountSwitcherDropdown() {
   const { quotesStore, mainAppStore } = useStores();
+  console.log(mainAppStore.sortedAccounts);
   return (
     <Toggle>
       {({ on, toggle }) => (
@@ -101,7 +103,7 @@ function AccountSwitcherDropdown() {
               borderRadius="0 0 8px 8px"
               overflow="hidden"
             >
-              {mainAppStore.accounts.map(acc => (
+              {mainAppStore.sortedAccounts.map(acc => (
                 <AccountInfo
                   key={acc.id}
                   account={acc}
