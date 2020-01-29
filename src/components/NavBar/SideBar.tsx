@@ -12,6 +12,8 @@ import { observer } from 'mobx-react-lite';
 const SideBar = observer(() => {
   const { tabsStore, dateRangeStore } = useStores();
   const setSideBarActive = (tabType: SideBarTabType) => () => {
+    tabsStore.isTabExpanded = false;
+    
     if (tabsStore.sideBarTabType === tabType) {
       tabsStore.sideBarTabType = null;
       dateRangeStore.resetDatepicker();

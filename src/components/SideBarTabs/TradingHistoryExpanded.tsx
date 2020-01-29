@@ -9,7 +9,7 @@ import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import { TabPortfolitButton } from './Portfolio';
-import ActivePositionExpanded from './ActivePositionExpanded';
+import IconNoTradingHistory from '../../assets/svg/icon-no-trading-history.svg';
 import SvgIcon from '../SvgIcon';
 import IconClose from '../../assets/svg/icon-close.svg';
 import { HistoryTabEnum } from '../../enums/HistoryTabEnum';
@@ -29,7 +29,7 @@ const TradingHistoryExpanded: FC<Props> = props => {
   const fetchPositionsHistory = async () => {
     const response = await API.getPositionsHistory({
       accountId: mainAppStore.activeAccount!.id,
-      startDate: (historyStore.positionsStartDate.valueOf()).toString(),
+      startDate: historyStore.positionsStartDate.valueOf().toString(),
       endDate: historyStore.positionsEndDate.valueOf().toString(),
     });
     historyStore.positionsHistory = response.positionsHistory;
@@ -105,13 +105,15 @@ const TradingHistoryExpanded: FC<Props> = props => {
           <FlexContainer flexDirection="column">
             <TableGrid>
               <Td>
-                <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
-                  fontSize="11px"
-                  textTransform="uppercase"
-                >
-                  Asset Name
-                </PrimaryTextSpan>
+                <FlexContainer padding="0 0 0 12px">
+                  <PrimaryTextSpan
+                    color="rgba(255, 255, 255, 0.4)"
+                    fontSize="11px"
+                    textTransform="uppercase"
+                  >
+                    Asset Name
+                  </PrimaryTextSpan>
+                </FlexContainer>
               </Td>
               <Td>
                 <PrimaryTextSpan
@@ -167,6 +169,28 @@ const TradingHistoryExpanded: FC<Props> = props => {
                 />
               ))}
             </TableGrid>
+            {!historyStore.positionsHistory.length && (
+              <FlexContainer
+                padding="16px"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                margin="100px 0 0 0"
+              >
+                <FlexContainer margin="0 0 20px">
+                  <SvgIcon
+                    {...IconNoTradingHistory}
+                    fillColor="rgba(255, 255, 255, 0.5)"
+                  />
+                </FlexContainer>
+                <PrimaryTextSpan
+                  color="rgba(255,255,255,0.17)"
+                  fontWeight="bold"
+                >
+                  There is no trading history
+                </PrimaryTextSpan>
+              </FlexContainer>
+            )}
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
@@ -187,13 +211,6 @@ const TradingHistoryExpandedWrapper = styled(FlexContainer)`
   border-radius: 8px 0px 0px 0px;
 `;
 
-const ButtonCloseAll = styled(ButtonWithoutStyles)`
-  padding: 8px 16px;
-  width: 80px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
-`;
-
 const ButtonClose = styled(ButtonWithoutStyles)`
   position: absolute;
   top: 12px;
@@ -202,9 +219,11 @@ const ButtonClose = styled(ButtonWithoutStyles)`
 
 const Td = styled(FlexContainer)`
   margin-bottom: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;
 
 const TableGrid = styled.div`
   display: grid;
-  grid-template-columns: minmax(300px, 1fr) repeat(7, minmax(100px, 1fr));
+  grid-template-columns: minmax(300px, 1fr) repeat(6, minmax(100px, 1fr));
 `;
