@@ -77,9 +77,17 @@ const TradingHistory: FC = () => {
         >
           Show:
         </PrimaryTextSpan>
-        <DatePickerDropdownNoCustomDates
-          datesChangeCallback={fetchPositionsHistory}
-        />
+        <Observer>
+          {() => (
+            <FlexContainer height="16px">
+              {!tabsStore.isTabExpanded && (
+                <DatePickerDropdownNoCustomDates
+                  datesChangeCallback={fetchPositionsHistory}
+                />
+              )}
+            </FlexContainer>
+          )}
+        </Observer>
       </SortByWrapper>
       <Observer>
         {() => (

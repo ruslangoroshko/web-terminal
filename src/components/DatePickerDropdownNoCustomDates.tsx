@@ -70,7 +70,6 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
 
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
-        dateRangeStore.resetDatepicker();
       };
     }, []);
 

@@ -3,7 +3,6 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import MarketsIcon from '../../assets/svg/icon-bottom-bar-markets.svg';
 import PortfolioIcon from '../../assets/svg/icon-bottom-bar-portfolio.svg';
 import IconHistory from '../../assets/svg/icon-sidebar-history.svg';
-
 import SideBarButton from './SideBarButton';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
@@ -11,12 +10,17 @@ import { SideBarTabType } from '../../enums/SideBarTabType';
 import { observer } from 'mobx-react-lite';
 
 const SideBar = observer(() => {
-  const { tabsStore } = useStores();
+  const { tabsStore, dateRangeStore } = useStores();
   const setSideBarActive = (tabType: SideBarTabType) => () => {
     if (tabsStore.sideBarTabType === tabType) {
       tabsStore.sideBarTabType = null;
+      dateRangeStore.resetDatepicker();
     } else {
       tabsStore.sideBarTabType = tabType;
+    }
+
+    if (tabsStore.sideBarTabType !== SideBarTabType.History) {
+      dateRangeStore.resetDatepicker();
     }
   };
   return (

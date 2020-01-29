@@ -1,4 +1,4 @@
-import React, { useEffect, FC } from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
@@ -27,6 +27,8 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
   };
 
   const handleSelectRange = (dateRange: ShowDatesDropdownEnum) => () => {
+    dateRangeStore.dropdownValueType = dateRange;
+
     switch (dateRange) {
       case ShowDatesDropdownEnum.Today:
         dateRangeStore.startDate = moment().startOf('d');
@@ -58,12 +60,6 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
     dateRangeStore.openedDropdown = false;
     datesChangeCallback();
   };
-
-  useEffect(() => {
-    return () => {
-      dateRangeStore.resetDatepicker();
-    };
-  }, []);
 
   return (
     <FlexContainer position="relative" width="190px">

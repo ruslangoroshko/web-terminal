@@ -14,6 +14,7 @@ import Orders from '../components/SideBarTabs/Orders';
 import { keyframes } from '@emotion/core';
 import TradingHistory from '../components/SideBarTabs/TradingHistory';
 import { HistoryTabEnum } from '../enums/HistoryTabEnum';
+import TradingHistoryExpanded from '../components/SideBarTabs/TradingHistoryExpanded';
 
 interface Props {}
 
@@ -70,7 +71,7 @@ const RenderExpandedTabByType = () => {
       return <PortfolioExpanded></PortfolioExpanded>;
 
     case SideBarTabType.History:
-      return <PortfolioExpanded></PortfolioExpanded>;
+      return <TradingHistoryExpanded></TradingHistoryExpanded>;
 
     default:
       return null;

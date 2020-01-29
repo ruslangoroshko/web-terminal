@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC } from 'react';
 import { FlexContainer, FlexContainerProps } from '../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
@@ -10,9 +10,12 @@ import { useStores } from '../hooks/useStores';
 
 const ResizableContainer: FC = observer(props => {
   const { children } = props;
-  const { tabsStore } = useStores();
+  const { tabsStore, dateRangeStore } = useStores();
   const toggleExpandtab = () => {
     tabsStore.isTabExpanded = !tabsStore.isTabExpanded;
+    if (!tabsStore.isTabExpanded) {
+      dateRangeStore.resetDatepicker();
+    }
   };
 
   return (
