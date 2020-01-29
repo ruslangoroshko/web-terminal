@@ -4,17 +4,16 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
-import PendingOrder from './PendingOrder';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import API from '../../helpers/API';
 import { HistoryTabEnum } from '../../enums/HistoryTabEnum';
-import DatePickerDropdown from '../DatePickerDropdown';
 import IconNoTradingHistory from '../../assets/svg/icon-no-trading-history.svg';
 import SvgIcon from '../SvgIcon';
 import TradingHistoryItem from './TradingHistoryItem';
+import DatePickerDropdownNoCustomDates from '../DatePickerDropdownNoCustomDates';
 
 const TradingHistory: FC = () => {
-  const { quotesStore, tabsStore, mainAppStore, historyStore } = useStores();
+  const { tabsStore, mainAppStore, historyStore } = useStores();
 
   const handleChangeHistoryTab = (historyTab: HistoryTabEnum) => () => {
     tabsStore.historyTab = historyTab;
@@ -23,8 +22,8 @@ const TradingHistory: FC = () => {
   const fetchPositionsHistory = async () => {
     const response = await API.getPositionsHistory({
       accountId: mainAppStore.activeAccount!.id,
-      startDate: historyStore.positionsStartDate.format(),
-      endDate: historyStore.positionsEndDate.format(),
+      startDate: historyStore.positionsStartDate.valueOf().toString(),
+      endDate: historyStore.positionsEndDate.valueOf().toString(),
     });
     historyStore.positionsHistory = response.positionsHistory;
   };
@@ -78,7 +77,9 @@ const TradingHistory: FC = () => {
         >
           Show:
         </PrimaryTextSpan>
-        <DatePickerDropdown datesChangeCallback={fetchPositionsHistory} />
+        <DatePickerDropdownNoCustomDates
+          datesChangeCallback={fetchPositionsHistory}
+        />
       </SortByWrapper>
       <Observer>
         {() => (
@@ -91,7 +92,11 @@ const TradingHistory: FC = () => {
               />
             ))}
             {!historyStore.positionsHistory.length && (
-              <FlexContainer padding="16px" flexDirection="column" alignItems="center">
+              <FlexContainer
+                padding="16px"
+                flexDirection="column"
+                alignItems="center"
+              >
                 <FlexContainer margin="0 0 20px">
                   <SvgIcon
                     {...IconNoTradingHistory}

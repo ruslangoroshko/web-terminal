@@ -1,9 +1,11 @@
 import { observable, action } from 'mobx';
 import moment from 'moment';
 import { FocusedInputShape } from 'react-dates';
+import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 
 interface ContextProps {
   openedDropdown: boolean;
+  dropdownValueType: ShowDatesDropdownEnum;
   startDate: moment.Moment | null;
   endDate: moment.Moment | null;
   focusedInput: FocusedInputShape | null;
@@ -11,6 +13,8 @@ interface ContextProps {
 
 export class DateRangeStore implements ContextProps {
   @observable openedDropdown = false;
+  @observable dropdownValueType: ShowDatesDropdownEnum =
+    ShowDatesDropdownEnum.Week;
   @observable startDate: moment.Moment | null = moment().subtract(1, 'w');
   @observable endDate: moment.Moment | null = moment();
   @observable focusedInput: FocusedInputShape | null = null;
@@ -46,5 +50,6 @@ export class DateRangeStore implements ContextProps {
     this.startDate = null;
     this.endDate = null;
     this.focusedInput = null;
+    this.dropdownValueType = ShowDatesDropdownEnum.Week;
   };
 }

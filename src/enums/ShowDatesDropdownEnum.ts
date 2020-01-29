@@ -3,4 +3,5 @@ export enum ShowDatesDropdownEnum {
   Week,
   Month,
   Year,
+  Custom,
 }
