@@ -15,12 +15,13 @@ import IconClose from '../../assets/svg/icon-close.svg';
 import { HistoryTabEnum } from '../../enums/HistoryTabEnum';
 import DatePickerDropdown from '../DatePickerDropdown';
 import API from '../../helpers/API';
+import TradingHistoryExpandedItem from './TradingHistoryExpandedItem';
 
 interface Props {}
 
 const TradingHistoryExpanded: FC<Props> = props => {
   const {} = props;
-  const { tabsStore, mainAppStore, quotesStore, historyStore } = useStores();
+  const { tabsStore, mainAppStore, historyStore } = useStores();
   const closeExpanded = () => {
     tabsStore.isTabExpanded = false;
   };
@@ -28,7 +29,7 @@ const TradingHistoryExpanded: FC<Props> = props => {
   const fetchPositionsHistory = async () => {
     const response = await API.getPositionsHistory({
       accountId: mainAppStore.activeAccount!.id,
-      startDate: historyStore.positionsStartDate.valueOf().toString(),
+      startDate: (historyStore.positionsStartDate.valueOf()).toString(),
       endDate: historyStore.positionsEndDate.valueOf().toString(),
     });
     historyStore.positionsHistory = response.positionsHistory;
@@ -118,7 +119,16 @@ const TradingHistoryExpanded: FC<Props> = props => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Time Opened
+                  Price open &mdash; close
+                </PrimaryTextSpan>
+              </Td>
+              <Td justifyContent="flex-end">
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
+                  open &mdash; close
                 </PrimaryTextSpan>
               </Td>
               <Td justifyContent="flex-end">
@@ -139,7 +149,7 @@ const TradingHistoryExpanded: FC<Props> = props => {
                   Profit/loss
                 </PrimaryTextSpan>
               </Td>
-              <Td justifyContent="flex-end">
+              <Td justifyContent="center">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -148,30 +158,12 @@ const TradingHistoryExpanded: FC<Props> = props => {
                   Equity
                 </PrimaryTextSpan>
               </Td>
-              <Td justifyContent="center">
-                <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
-                  fontSize="11px"
-                  textTransform="uppercase"
-                >
-                  Take Profit
-                </PrimaryTextSpan>
-              </Td>
-              <Td justifyContent="center">
-                <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
-                  fontSize="11px"
-                  textTransform="uppercase"
-                >
-                  Stop Loss
-                </PrimaryTextSpan>
-              </Td>
               <Td></Td>
-              {quotesStore.activePositions.map(item => (
-                <ActivePositionExpanded
+              {historyStore.positionsHistory.map(item => (
+                <TradingHistoryExpandedItem
                   key={item.id}
                   currencySymbol={mainAppStore.activeAccount?.symbol || ''}
-                  position={item}
+                  tradingHistoryItem={item}
                 />
               ))}
             </TableGrid>

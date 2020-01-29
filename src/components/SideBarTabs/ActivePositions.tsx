@@ -24,6 +24,7 @@ import Toggle from '../Toggle';
 import ConfirmPopup from '../ConfirmPopup';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
+import ClosePositionPopup from './ClosePositionPopup';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -262,23 +263,10 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
             investedAmount={investmentAmount}
             updateSLTP={updateSLTP}
           ></AutoClosePopupSideBar>
-          <Toggle>
-            {({ on, toggle }) => (
-              <>
-                <CloseButton onClick={toggle}>
-                  <PrimaryTextSpan fontSize="12px" lineHeight="14px">
-                    Close
-                  </PrimaryTextSpan>
-                </CloseButton>
-                {on && (
-                  <ConfirmPopup
-                    toggle={toggle}
-                    applyHandler={closePosition}
-                  ></ConfirmPopup>
-                )}
-              </>
-            )}
-          </Toggle>
+          <ClosePositionPopup
+            applyHandler={closePosition}
+            ref={instrumentRef}
+          ></ClosePositionPopup>
         </FlexContainer>
       </FlexContainer>
     </InstrumentInfoWrapper>
@@ -289,10 +277,4 @@ export default ActivePositionsPortfolioTab;
 
 const InstrumentInfoWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-`;
-
-const CloseButton = styled(SecondaryButton)`
-  border-radius: 3px;
-  position: relative;
-  overflow: hidden;
 `;

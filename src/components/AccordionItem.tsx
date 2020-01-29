@@ -12,7 +12,6 @@ const AccordionItem: FC<Props> = props => {
   const { title, children, isActiveInit } = props;
   const [isActive, setActiveState] = useState(!!isActiveInit);
   const [maxHeight, setHeightState] = useState('0px');
-  //   const [setRotate, setRotateState] = useState('accordion__icon');
 
   const content = useRef<HTMLDivElement>(null);
   function toggleAccordion() {
@@ -20,7 +19,6 @@ const AccordionItem: FC<Props> = props => {
     if (content.current) {
       setHeightState(isActive ? '0px' : `${content.current.scrollHeight}px`);
     }
-    // setRotateState(isActive ? 'accordion__icon' : 'accordion__icon rotate');
   }
 
   useEffect(() => {
@@ -32,7 +30,6 @@ const AccordionItem: FC<Props> = props => {
     <FlexContainer flexDirection="column" width="100%">
       <AccordionButton isActive={isActive} onClick={toggleAccordion}>
         <Title>{title}</Title>
-        {/* <Chevron className={`${setRotate}`} width={10} fill={'#777'} /> */}
       </AccordionButton>
       <Content ref={content} maxHeight={maxHeight}>
         {children}
