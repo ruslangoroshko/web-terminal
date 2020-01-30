@@ -1,9 +1,14 @@
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from './ButtonWithoutStyles';
 
-export const PrimaryButton = styled(ButtonWithoutStyles)`
-  padding: 4px 8px;
-  background-color: #00ffdd;
+interface PrimaryButtonProps {
+  padding?: string;
+  backgroundColor?: string;
+}
+
+export const PrimaryButton = styled(ButtonWithoutStyles)<PrimaryButtonProps>`
+  padding: ${props => props.padding || '4px 8px'};
+  background-color: ${props => props.backgroundColor || '#00ffdd'};
   border-radius: 4px;
   transition: background-color 0.2s ease;
 

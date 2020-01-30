@@ -106,7 +106,7 @@ function PurchaseAtPopup(props: Props) {
             flexDirection="column"
             width="200px"
           >
-            <ButtonClose onClick={handleToggle}>
+            <ButtonClose type="button" onClick={handleToggle}>
               <SvgIcon
                 {...IconClose}
                 fillColor="rgba(255, 255, 255, 0.6)"
@@ -143,14 +143,18 @@ function PurchaseAtPopup(props: Props) {
               position="relative"
               justifyContent="space-between"
             >
-              <InputPnL
-                onBeforeInput={handleBeforeInput}
-                onChange={handleChangePurchaseAt}
-                value={purchaseAtValue ? purchaseAtValue.toString() : ''}
-                placeholder="Non Set"
-              ></InputPnL>
+              <Observer>
+                {() => (
+                  <InputPnL
+                    onBeforeInput={handleBeforeInput}
+                    onChange={handleChangePurchaseAt}
+                    value={purchaseAtValue ? purchaseAtValue.toString() : ''}
+                    placeholder="Non Set"
+                  ></InputPnL>
+                )}
+              </Observer>
               <FlexContainer>
-                <ButtonIncreaseDecreasePrice>
+                <ButtonIncreaseDecreasePrice type="button">
                   <PrimaryTextSpan
                     fontSize="16px"
                     fontWeight="bold"
@@ -159,7 +163,7 @@ function PurchaseAtPopup(props: Props) {
                     -
                   </PrimaryTextSpan>
                 </ButtonIncreaseDecreasePrice>
-                <ButtonIncreaseDecreasePrice>
+                <ButtonIncreaseDecreasePrice type="button">
                   <PrimaryTextSpan
                     fontSize="16px"
                     fontWeight="bold"

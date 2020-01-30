@@ -41,14 +41,14 @@ class StreamingService {
           high: tick.bid.h,
           low: tick.bid.l,
           open: tick.bid.o,
-          time: tick.dt * 1000,
+          time: tick.dt,
         };
         const sub = this.subscriptions.find(
           e => e.listenerGuid === this.currentBarGuid
         );
         if (sub) {
           // disregard the initial catchup snapshot of trades for already closed candles
-          if (bar.time < sub.lastBar.time / 1000) {
+          if (bar.time < sub.lastBar.time) {
             return;
           }
 

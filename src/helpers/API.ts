@@ -19,6 +19,8 @@ import {
   BalanceHistoryDTO,
   GetHistoryParams,
 } from '../types/HistoryReportTypes';
+import AUTH_API_LIST from './apiListAuth';
+import { ChangePasswordParams } from '../types/TraderTypes';
 
 class API {
   convertParamsToFormData = (params: any) => {
@@ -78,7 +80,7 @@ class API {
 
   authenticate = async (credentials: UserAuthenticate) => {
     const response = await axios.post<UserAuthenticateResponse>(
-      `${API_STRING}${API_LIST.TRADER.AUTHENTICATE}`,
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.AUTHENTICATE}`,
       credentials
     );
     return response.data;
@@ -86,7 +88,7 @@ class API {
 
   signUpNewTrader = async (credentials: UserRegistration) => {
     const response = await axios.post<UserAuthenticateResponse>(
-      `${API_STRING}${API_LIST.TRADER.REGISTER}`,
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.REGISTER}`,
       credentials
     );
     return response.data;
@@ -100,7 +102,7 @@ class API {
       }
     );
     const bars = response.data.map(item => ({
-      time: item.d * 1000,
+      time: item.d,
       low: item.l,
       high: item.h,
       open: item.o,
@@ -183,6 +185,14 @@ class API {
       {
         params,
       }
+    );
+    return response.data;
+  };
+
+  changePassword = async (params: ChangePasswordParams) => {
+    const response = await axios.post<BalanceHistoryDTO[]>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.CHANGE_PASSWORD}`,
+      params
     );
     return response.data;
   };

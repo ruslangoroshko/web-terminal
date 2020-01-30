@@ -60,15 +60,6 @@ module.exports = (env, argv) => {
     target: 'web',
     stats: 'errors-only',
     devServer: {
-      proxy: {
-        '/api': {
-          target: 'https://simpletrading-api-dev-b.monfex.biz',
-          pathRewrite: {
-            '^/api': '',
-          },
-          changeOrigin: true,
-        },
-      },
       compress: true,
       historyApiFallback: true,
       https: false,
@@ -91,7 +82,11 @@ module.exports = (env, argv) => {
         API_STRING:
           argv.mode === 'production'
             ? JSON.stringify(argv.apistring)
-            : JSON.stringify('/api'),
+            : JSON.stringify('http://localhost:5678'),
+        API_AUTH_STRING:
+          argv.mode === 'production'
+            ? JSON.stringify(argv.authapistring)
+            : JSON.stringify('http://localhost:5679'),
         AUTH_TOKEN: JSON.stringify('TraderID'),
         CHARTING_LIBRARY_PATH:
           argv.mode === 'production'

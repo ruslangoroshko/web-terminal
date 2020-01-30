@@ -11,12 +11,12 @@ import { observer } from 'mobx-react-lite';
 
 const SingIn = observer(() => {
   const validationSchema = yup.object().shape<UserAuthenticate>({
-    userName: yup.string().required('Required any value'),
+    email: yup.string().required('Required any value'),
     password: yup.string().required('Required any value'),
   });
 
   const initialValues: UserAuthenticate = {
-    userName: '',
+    email: '',
     password: '',
   };
 
@@ -41,7 +41,7 @@ const SingIn = observer(() => {
         {formikBag => (
           <CustomForm>
             <FlexContainer flexDirection="column">
-              <Field type="text" name={Fields.USERNAME}>
+              <Field type="text" name={Fields.EMAIL}>
                 {({ field, meta }: FieldProps) => (
                   <FlexContainer
                     position="relative"

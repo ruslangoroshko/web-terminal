@@ -61,8 +61,8 @@ const ChartIntervalTimeScale: FC<Props> = observer(() => {
     tradingViewStore.interval = newInterval;
     if (newResolutionKey === tradingViewStore.resolutionKey) {
       tradingViewStore.tradingWidget?.chart().setVisibleRange({
-        from: from.valueOf() / 1000,
-        to: moment().valueOf() / 1000,
+        from: from.valueOf(),
+        to: moment().valueOf(),
       });
     } else {
       tradingViewStore.resolutionKey = newResolutionKey;
@@ -70,8 +70,8 @@ const ChartIntervalTimeScale: FC<Props> = observer(() => {
         ?.chart()
         .setResolution(supportedResolutions[newResolutionKey], () => {
           tradingViewStore.tradingWidget?.chart().setVisibleRange({
-            from: from.valueOf() / 1000,
-            to: moment().valueOf() / 1000,
+            from: from.valueOf(),
+            to: moment().valueOf(),
           });
         });
     }

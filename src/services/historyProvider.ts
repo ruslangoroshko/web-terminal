@@ -53,7 +53,8 @@ export default {
       toDate: rangeEndDate,
       instrumentId,
     };
-
+    debugger
+    console.log(new Date(rangeStartDate));
     return API.getPriceHistory(params);
   },
 };

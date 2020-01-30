@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState, useRef, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -27,19 +27,15 @@ import InvestAmountDropdown from './InvestAmountDropdown';
 import { Observer } from 'mobx-react-lite';
 import { getProcessId } from '../../helpers/getProcessId';
 import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
+import ConfirmationPopup from './ConfirmationPopup';
+import { keyframes } from '@emotion/core';
 
+// TODO: too much code, refactor
 interface Props {
   currencySymbol: string;
   accountId: OpenPositionModel['accountId'];
   instrument: InstrumentModelWSDTO;
   digits: number;
-}
-
-interface OpenModel {
-  sl: OpenPositionModel['sl'];
-  tp: OpenPositionModel['tp'];
-  investmentAmount: OpenPositionModel['investmentAmount'];
-  multiplier: OpenPositionModel['multiplier'];
 }
 
 function BuySellPanel(props: Props) {
@@ -50,7 +46,7 @@ function BuySellPanel(props: Props) {
     processId: getProcessId(),
     accountId,
     instrumentId: instrument.id,
-    operation: AskBidEnum.Buy,
+    operation: null,
     multiplier: instrument.multiplier[0],
     investmentAmount: '',
     SLTPType: AutoCloseTypesEnum.Profit,
@@ -78,16 +74,8 @@ function BuySellPanel(props: Props) {
     multiplier: yup.number().required('Required amount'),
     tp: yup.number().nullable(),
     sl: yup.number().nullable(),
+    purchaseAt: yup.number().nullable(),
   });
-
-  const handleOpenPosition = (
-    submitForm: () => Promise<void>,
-    operation: AskBidEnum,
-    setFieldValue: any
-  ) => () => {
-    setFieldValue(Fields.OPERATION, operation);
-    submitForm();
-  };
 
   const investOnBeforeInputHandler = (e: any) => {
     if (e.currentTarget.value && [',', '.'].includes(e.data)) {
@@ -115,7 +103,6 @@ function BuySellPanel(props: Props) {
 
   const handleSubmit = (values: OpenPositionModelFormik, actions: any) => {
     actions.setSubmitting(false);
-
     const { SLTPType, sl, tp, ...otherValues } = values;
 
     let fieldForTakeProfit = Fields.TAKE_PROFIT;
@@ -167,6 +154,17 @@ function BuySellPanel(props: Props) {
     setFieldValue(Fields.AMOUNT, newValue);
   };
 
+  const closePopup = (setFieldValue: any) => () => {
+    setFieldValue(Fields.OPERATION, null);
+  };
+
+  const openConfirmBuyingPopup = (
+    setFieldValue: any,
+    operationType: AskBidEnum
+  ) => () => {
+    setFieldValue(Fields.OPERATION, operationType);
+  };
+
   return (
     <FlexContainer padding="16px" flexDirection="column">
       <Formik
@@ -177,7 +175,7 @@ function BuySellPanel(props: Props) {
         validateOnChange={false}
         validateOnBlur={false}
       >
-        {({ setFieldValue, values, submitForm, errors }) => (
+        {({ setFieldValue, values }) => (
           <CustomForm autoComplete="off">
             <FlexContainer
               justifyContent="space-between"
@@ -365,14 +363,22 @@ function BuySellPanel(props: Props) {
                 )}
               </Observer>
             </FlexContainer>
-            <FlexContainer flexDirection="column">
+            <FlexContainer flexDirection="column" position="relative">
+              {values.operation !== null && (
+                <ConfirmPopupWrapper
+                  position="absolute"
+                  right="100%"
+                  top="20px"
+                >
+                  <ConfirmationPopup
+                    closePopup={closePopup(setFieldValue)}
+                  ></ConfirmationPopup>
+                </ConfirmPopupWrapper>
+              )}
+
               <ButtonBuy
                 type="button"
-                onClick={handleOpenPosition(
-                  submitForm,
-                  AskBidEnum.Buy,
-                  setFieldValue
-                )}
+                onClick={openConfirmBuyingPopup(setFieldValue, AskBidEnum.Buy)}
               >
                 <FlexContainer margin="0 8px 0 0">
                   <SvgIcon {...IconShevronBuy} fillColor="#003A38"></SvgIcon>
@@ -381,11 +387,7 @@ function BuySellPanel(props: Props) {
               </ButtonBuy>
               <ButtonSell
                 type="button"
-                onClick={handleOpenPosition(
-                  submitForm,
-                  AskBidEnum.Sell,
-                  setFieldValue
-                )}
+                onClick={openConfirmBuyingPopup(setFieldValue, AskBidEnum.Buy)}
               >
                 <FlexContainer margin="0 8px 0 0">
                   <SvgIcon {...IconShevronSell} fillColor="#fff"></SvgIcon>
@@ -525,4 +527,18 @@ const PlusButton = styled(MinusButton)`
 
 const PlusMinusButtonWrapper = styled(FlexContainer)`
   border-left: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const fadein = keyframes`
+  from {
+    opacity: 0;
+    visibility: visible;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+`;
+const ConfirmPopupWrapper = styled(FlexContainer)`
+  animation: ${fadein} 0.2s ease forwards;
 `;

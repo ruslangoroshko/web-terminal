@@ -1,12 +1,13 @@
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import { AutoCloseTypesEnum } from '../enums/AutoCloseTypesEnum';
+import { AskBidEnum } from '../enums/AskBid';
 
 export interface OpenPositionModel {
   processId: string;
   accountId: string;
   investmentAmount: number;
   instrumentId: string;
-  operation: number;
+  operation: AskBidEnum;
   multiplier: number;
   tp?: number;
   sl?: number;
@@ -20,7 +21,7 @@ export interface OpenPositionModelFormik {
   accountId: string;
   investmentAmount: string;
   instrumentId: string;
-  operation: number;
+  operation: AskBidEnum | null;
   multiplier: number;
   tp: number | null;
   sl: number | null;

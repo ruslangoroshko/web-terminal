@@ -13,7 +13,7 @@ export const portfolioDateString = (date: number) => {
     'November',
     'December',
   ];
-  const newDate = new Date(date * 1000);
+  const newDate = new Date(date);
   return `${newDate.getUTCDate()} ${monthNames[newDate.getUTCMonth()].slice(
     0,
     3

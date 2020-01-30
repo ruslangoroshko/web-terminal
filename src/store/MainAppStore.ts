@@ -78,6 +78,11 @@ export class MainAppStore implements MainAppStoreProps {
     }
   };
 
+  @action
+  signOut = () => {
+    localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+  };
+
   setTokenHandler = (token: string) => {
     localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, token);
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = token;

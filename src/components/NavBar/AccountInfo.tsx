@@ -93,11 +93,11 @@ const AccountInfo: FC<Props> = observer(props => {
           </FlexContainer>
         </FlexContainer>
         {isActiveAccount ? (
-          <DepositButton>
+          <PrimaryButton padding="8px 16px">
             <PrimaryTextSpan fontSize="12px" color="#003A38" fontWeight="bold">
               Deposit
             </PrimaryTextSpan>
-          </DepositButton>
+          </PrimaryButton>
         ) : (
           <SwitchButton onClick={handleSwitch}>
             <PrimaryTextSpan color="#fffccc" fontSize="14px">

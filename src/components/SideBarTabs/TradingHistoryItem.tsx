@@ -135,7 +135,7 @@ function TradingHistoryItem(props: Props) {
                   Opened
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {moment(openDate * 1000).format('DD MMM, HH:mm')}
+                  {moment(openDate).format('DD MMM, HH:mm')}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

@@ -1,5 +1,5 @@
 variables:
-  DOCKER_IMAGE_TAG: monfex/simple-trading-web-terminal:1  
+  DOCKER_IMAGE_TAG: monfex/simple-trading-web-terminal:1
   BUILD_FOLDER: wwwroot
 
 stages:
@@ -9,11 +9,11 @@ stages:
 
 build:
   tags: [monfex]
-  stage: build  
+  stage: build
   image: node:latest
   script:
     - npm i
-    - npm run build -- --wshost=$WEB_SOCKET_CONNECTION_STRING --apistring=$API_CONNECTION_STRING
+    - npm run build -- --wshost=$WEB_SOCKET_CONNECTION_STRING --apistring=$API_CONNECTION_STRING --authapistring=$AUTH_API_CONNECTION_STRING
   artifacts:
     paths:
       - ${BUILD_FOLDER}
@@ -24,15 +24,14 @@ publish:
   tags: [monfex]
   stage: publish
   services:
-    - docker:dind    
-  script:      
-      - ls ${BUILD_FOLDER}
-      - ls
-      - echo "$DOCKER_LOGIN"
-      - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_LOGIN --password-stdin
-      - docker build -t ${DOCKER_IMAGE_TAG} .
-      - docker push ${DOCKER_IMAGE_TAG}
+    - docker:dind
+  script:
+    - ls ${BUILD_FOLDER}
+    - ls
+    - echo "$DOCKER_LOGIN"
+    - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_LOGIN --password-stdin
+    - docker build -t ${DOCKER_IMAGE_TAG} .
+    - docker push ${DOCKER_IMAGE_TAG}
   image: docker:latest
   only:
     - master
-
