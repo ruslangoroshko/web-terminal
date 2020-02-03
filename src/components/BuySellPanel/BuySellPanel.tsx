@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useRef, useEffect } from 'react';
+import React, { ChangeEvent } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -165,6 +165,15 @@ function BuySellPanel(props: Props) {
     setFieldValue(Fields.OPERATION, operationType);
   };
 
+  const confirmBuying = (
+    submitForm: () => Promise<void>,
+    resetForm: () => void
+  ) => () => {
+    submitForm().then(() => {
+      resetForm();
+    });
+  };
+
   return (
     <FlexContainer padding="16px" flexDirection="column">
       <Formik
@@ -175,7 +184,7 @@ function BuySellPanel(props: Props) {
         validateOnChange={false}
         validateOnBlur={false}
       >
-        {({ setFieldValue, values }) => (
+        {({ setFieldValue, values, errors, submitForm, resetForm }) => (
           <CustomForm autoComplete="off">
             <FlexContainer
               justifyContent="space-between"
@@ -372,6 +381,7 @@ function BuySellPanel(props: Props) {
                 >
                   <ConfirmationPopup
                     closePopup={closePopup(setFieldValue)}
+                    applyHandler={confirmBuying(submitForm, resetForm)}
                   ></ConfirmationPopup>
                 </ConfirmPopupWrapper>
               )}

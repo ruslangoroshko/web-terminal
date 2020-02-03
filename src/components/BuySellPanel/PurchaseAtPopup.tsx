@@ -49,7 +49,7 @@ function PurchaseAtPopup(props: Props) {
   };
 
   const applyPurchaseAt = () => {
-    setFieldValue(Fields.PURCHASE_AT, SLTPStore.purchaseAtValue);
+    setFieldValue(Fields.PURCHASE_AT, +SLTPStore.purchaseAtValue);
     toggle(false);
   };
 
@@ -91,26 +91,33 @@ function PurchaseAtPopup(props: Props) {
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
-      <ButtonAutoClosePurchase
-        onClick={handleToggle}
-        type="button"
-        hasPrice={!!purchaseAtValue}
-      >
-        {purchaseAtValue ? (
-          <>
+      {purchaseAtValue ? (
+        <FlexContainer position="relative" width="100%">
+          <ButtonAutoClosePurchase
+            onClick={handleToggle}
+            type="button"
+            hasPrice={!!purchaseAtValue}
+          >
             <PrimaryTextSpan color="#fffccc" fontSize="14px">
-              {currencySymbol}{purchaseAtValue}
+              {currencySymbol}
+              {purchaseAtValue}
             </PrimaryTextSpan>
-            <ButtonWithoutStyles onClick={clearPurchaseAt}>
-              <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)" />
-            </ButtonWithoutStyles>
-          </>
-        ) : (
+          </ButtonAutoClosePurchase>
+          <ClearPurchaseAtButton type="button" onClick={clearPurchaseAt}>
+            <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)" />
+          </ClearPurchaseAtButton>
+        </FlexContainer>
+      ) : (
+        <ButtonAutoClosePurchase
+          onClick={handleToggle}
+          type="button"
+          hasPrice={!!purchaseAtValue}
+        >
           <PrimaryTextSpan color="#fffccc" fontSize="14px">
             Set Price
           </PrimaryTextSpan>
-        )}
-      </ButtonAutoClosePurchase>
+        </ButtonAutoClosePurchase>
+      )}
       {on && (
         <FlexContainer position="absolute" top="20px" right="100%">
           <Wrapper
@@ -323,11 +330,21 @@ const ButtonAutoClosePurchase = styled(SecondaryButton)<{
   background-color: ${props =>
     props.hasPrice ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.12)'};
   width: 100%;
-  margin-bottom: 14px;
   border: 1px solid
     ${props =>
       props.hasPrice ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0)'};
 
   display: flex;
   justify-content: ${props => (props.hasPrice ? 'space-between' : 'center')};
+`;
+
+const ClearPurchaseAtButton = styled(ButtonWithoutStyles)`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 12px;
+  transition: background-color 0.2s ease;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
 `;

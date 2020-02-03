@@ -12,11 +12,13 @@ import { PrimaryButton } from '../../styles/Buttons';
 
 interface Props {
   closePopup: () => void;
+  applyHandler: () => void;
 }
 
 function ConfirmationPopup(props: Props) {
-  const { closePopup } = props;
+  const { closePopup, applyHandler } = props;
   const apply = () => {
+    applyHandler();
     closePopup();
   };
   return (
@@ -74,7 +76,7 @@ function ConfirmationPopup(props: Props) {
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column" margin="0 0 16px 0">
-        <PrimaryButton type="submit" onClick={apply} padding="8px 16px">
+        <PrimaryButton type="button" onClick={apply} padding="8px 16px">
           <PrimaryTextSpan fontSize="14px" color="#1c2026" fontWeight="bold">
             Confirm Buying
           </PrimaryTextSpan>
