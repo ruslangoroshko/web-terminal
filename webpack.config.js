@@ -40,7 +40,7 @@ module.exports = (env, argv) => {
               options: {
                 plugins: [
                   {
-                    removeAttrs: { attrs: '(stroke|fill)' },
+                    removeAttrs: { attrs: '(fill)' },
                   },
                 ],
               },

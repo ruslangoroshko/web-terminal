@@ -24,6 +24,8 @@ import { Observer, observer } from 'mobx-react-lite';
 import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import { PendingOrdersWSDTO } from '../types/PendingOrders';
+import Loader from '../components/Loader';
+import Modal from '../components/Modal';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 

@@ -15,6 +15,8 @@ import { keyframes } from '@emotion/core';
 import TradingHistory from '../components/SideBarTabs/TradingHistory';
 import { HistoryTabEnum } from '../enums/HistoryTabEnum';
 import TradingHistoryExpanded from '../components/SideBarTabs/TradingHistoryExpanded';
+import Modal from '../components/Modal';
+import Loader from '../components/Loader';
 
 interface Props {}
 
@@ -80,7 +82,7 @@ const RenderExpandedTabByType = () => {
 
 const AuthorizedContainer: FC<Props> = props => {
   const { children } = props;
-  const { tabsStore } = useStores();
+  const { tabsStore, mainAppStore } = useStores();
 
   return (
     <FlexContainer
@@ -89,6 +91,13 @@ const AuthorizedContainer: FC<Props> = props => {
       position="relative"
       flexDirection="column"
     >
+      <Observer>
+        {() => (
+          <Modal>
+            <Loader isLoading={mainAppStore.isLoading}></Loader>
+          </Modal>
+        )}
+      </Observer>
       <NavBar></NavBar>
       <FlexContainer height="calc(100vh - 48px)">
         <SideBar></SideBar>

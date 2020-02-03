@@ -12,12 +12,12 @@ import { useStores } from '../../hooks/useStores';
 import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
 import { Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
-import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import InformationPopup from '../InformationPopup';
 import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
 import { SecondaryButton } from '../../styles/Buttons';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
+import { DisplayContents, Td } from '../../styles/TableElements';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -36,15 +36,10 @@ function ActivePositionExpanded(props: Props) {
       openPrice,
       operation,
       swap,
-      timeStamp,
-      stopLossInCurrency,
-      stopLossRate,
-      takeProfitInCurrency,
-      takeProfitRate,
     },
     currencySymbol,
   } = props;
-  const { quotesStore, mainAppStore, SLTPStore } = useStores();
+  const { quotesStore, mainAppStore } = useStores();
 
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
@@ -279,19 +274,4 @@ export default ActivePositionExpanded;
 
 const ButtonClose = styled(SecondaryButton)`
   width: 48px;
-`;
-
-const Td = styled(FlexContainer)`
-  transition: background-color 0.2s ease;
-  padding: 12px 0;
-  height: 60px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-`;
-
-const DisplayContents = styled.div`
-  display: contents;
-
-  &:hover > div {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
 `;

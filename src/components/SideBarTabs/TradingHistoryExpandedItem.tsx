@@ -8,10 +8,10 @@ import { AskBidEnum } from '../../enums/AskBid';
 import moment from 'moment';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { Observer } from 'mobx-react-lite';
-import styled from '@emotion/styled';
 import InformationPopup from '../InformationPopup';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
 import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
+import { DisplayContents, Td } from '../../styles/TableElements';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -23,8 +23,6 @@ function TradingHistoryExpandedItem(props: Props) {
     tradingHistoryItem: {
       closeDate,
       closePrice,
-      closeReason,
-      commission,
       equity,
       id,
       instrument,
@@ -34,7 +32,6 @@ function TradingHistoryExpandedItem(props: Props) {
       openPrice,
       operation,
       profit,
-      swaps,
     },
     currencySymbol,
   } = props;
@@ -227,18 +224,3 @@ function TradingHistoryExpandedItem(props: Props) {
 }
 
 export default TradingHistoryExpandedItem;
-
-const Td = styled(FlexContainer)`
-  transition: background-color 0.2s ease;
-  padding: 12px 0;
-  height: 60px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-`;
-
-const DisplayContents = styled.div`
-  display: contents;
-
-  &:hover > div {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-`;
