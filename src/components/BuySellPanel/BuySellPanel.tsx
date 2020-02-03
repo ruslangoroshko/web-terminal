@@ -48,7 +48,7 @@ function BuySellPanel(props: Props) {
     instrumentId: instrument.id,
     operation: null,
     multiplier: instrument.multiplier[0],
-    investmentAmount: '',
+    investmentAmount: '50',
     SLTPType: AutoCloseTypesEnum.Profit,
     sl: null,
     tp: null,
