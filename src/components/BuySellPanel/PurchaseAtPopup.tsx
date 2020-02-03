@@ -77,6 +77,10 @@ function PurchaseAtPopup(props: Props) {
     }
   };
 
+  const clearPurchaseAt = () => {
+    setFieldValue(Fields.PURCHASE_AT, null);
+  };
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     SLTPStore.purchaseAtValue = purchaseAtValue ? `purchaseAtValue` : '';
@@ -92,11 +96,20 @@ function PurchaseAtPopup(props: Props) {
         type="button"
         hasPrice={!!purchaseAtValue}
       >
-        <PrimaryTextSpan color="#fffccc">
-          {purchaseAtValue
-            ? `${currencySymbol}${purchaseAtValue}`
-            : 'Set Price'}
-        </PrimaryTextSpan>
+        {purchaseAtValue ? (
+          <>
+            <PrimaryTextSpan color="#fffccc" fontSize="14px">
+              {currencySymbol}{purchaseAtValue}
+            </PrimaryTextSpan>
+            <ButtonWithoutStyles onClick={clearPurchaseAt}>
+              <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)" />
+            </ButtonWithoutStyles>
+          </>
+        ) : (
+          <PrimaryTextSpan color="#fffccc" fontSize="14px">
+            Set Price
+          </PrimaryTextSpan>
+        )}
       </ButtonAutoClosePurchase>
       {on && (
         <FlexContainer position="absolute" top="20px" right="100%">
@@ -143,12 +156,16 @@ function PurchaseAtPopup(props: Props) {
               position="relative"
               justifyContent="space-between"
             >
-              <InputPnL
-                onBeforeInput={handleBeforeInput}
-                onChange={handleChangePurchaseAt}
-                value={purchaseAtValue ? purchaseAtValue.toString() : ''}
-                placeholder="Non Set"
-              ></InputPnL>
+              <Observer>
+                {() => (
+                  <InputPnL
+                    onBeforeInput={handleBeforeInput}
+                    onChange={handleChangePurchaseAt}
+                    value={SLTPStore.purchaseAtValue}
+                    placeholder="Non Set"
+                  ></InputPnL>
+                )}
+              </Observer>
               <FlexContainer>
                 <ButtonIncreaseDecreasePrice>
                   <PrimaryTextSpan
@@ -310,4 +327,7 @@ const ButtonAutoClosePurchase = styled(SecondaryButton)<{
   border: 1px solid
     ${props =>
       props.hasPrice ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0)'};
+
+  display: flex;
+  justify-content: ${props => (props.hasPrice ? 'space-between' : 'center')};
 `;

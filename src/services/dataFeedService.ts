@@ -94,8 +94,8 @@ class DataFeedService implements IBasicDataFeed {
     try {
       const bars = await historyProvider.getBars(
         resolution,
-        rangeStartDate,
-        rangeEndDate,
+        rangeStartDate * 1000,
+        rangeEndDate * 1000,
         symbolInfo.name
       );
 
