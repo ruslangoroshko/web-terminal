@@ -7,7 +7,9 @@ import Fields from '../../constants/fields';
 import { OpenPositionModelFormik } from '../../types/Positions';
 import { useStores } from '../../hooks/useStores';
 import SetAutoclose from './SetAutoclose';
+import IconClose from '../../assets/svg/icon-close.svg';
 import { SecondaryButton } from '../../styles/Buttons';
+import SvgIcon from '../SvgIcon';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
@@ -36,6 +38,11 @@ function AutoClosePopup(props: Props) {
     }
   };
 
+  const clearSLTP = () => {
+    setFieldValue(Fields.TAKE_PROFIT, null);
+    setFieldValue(Fields.STOP_LOSS, null);
+  };
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
 
@@ -46,14 +53,25 @@ function AutoClosePopup(props: Props) {
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
-      <ButtonAutoClosePurchase onClick={handleToggle} type="button">
-        <PrimaryTextSpan color="#fffccc">
-          {values.sl || values.tp
-            ? `+${currencySymbol}${values.tp ||
-                'Non Set'} -${currencySymbol}${values.sl || 'Non Set'}`
-            : 'Set'}
-        </PrimaryTextSpan>
-      </ButtonAutoClosePurchase>
+      <FlexContainer width="100%" position="relative">
+        <ButtonAutoClosePurchase
+          onClick={handleToggle}
+          type="button"
+          hasValues={!!(values.sl || values.tp)}
+        >
+          <PrimaryTextSpan color="#fffccc">
+            {values.sl || values.tp
+              ? `${`+${currencySymbol}${values.tp}` ||
+                  'Non Set'} —${currencySymbol + values.sl || 'Non Set'}`
+              : 'Set'}
+          </PrimaryTextSpan>
+        </ButtonAutoClosePurchase>
+        {!!(values.sl || values.tp) && (
+          <ClearSLTPButton type="button" onClick={clearSLTP}>
+            <SvgIcon {...IconClose} fillColor="rgba(255,255,255,0.4)" />
+          </ClearSLTPButton>
+        )}
+      </FlexContainer>
       {on && (
         <FlexContainer position="absolute" top="20px" right="100%">
           <SetAutoclose
@@ -71,8 +89,22 @@ function AutoClosePopup(props: Props) {
 
 export default AutoClosePopup;
 
-const ButtonAutoClosePurchase = styled(SecondaryButton)`
+const ButtonAutoClosePurchase = styled(SecondaryButton)<{
+  hasValues?: boolean;
+}>`
   height: 40px;
   width: 100%;
   margin-bottom: 14px;
+  text-align: ${props => props.hasValues && 'left'};
+`;
+
+const ClearSLTPButton = styled(ButtonWithoutStyles)`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
 `;

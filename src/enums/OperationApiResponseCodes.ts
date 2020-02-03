@@ -1,4 +1,10 @@
 export enum OperationApiResponseCodes {
+  FileNotFound = -6,
+  FileWrongExtension,
+  OldPasswordNotMatch,
+  UserNotExist,
+  UserExists,
+  InvalidUserNameOrPassword,
   Ok,
   DayOff,
   MinOperationLotViolated,
@@ -6,5 +12,11 @@ export enum OperationApiResponseCodes {
   MaxPositionByInstrumentViolated,
   InsufficientMargin,
   NoLiquidity,
-  InvalidUserNameOrPassword = -1,
+  PositionNotFound,
+  TpIsTooClose,
+  SlIsTooClose,
+  PendingOrderNotFound,
+  AccountNotFound,
+  InstrumentNotFound,
+  InstrumentCanNotBeUsed,
 }

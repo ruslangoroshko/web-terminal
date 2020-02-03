@@ -103,7 +103,7 @@ function BuySellPanel(props: Props) {
 
   const handleSubmit = (values: OpenPositionModelFormik, actions: any) => {
     actions.setSubmitting(false);
-    const { SLTPType, sl, tp, ...otherValues } = values;
+    const { SLTPType, sl, tp } = values;
 
     let fieldForTakeProfit = Fields.TAKE_PROFIT;
     let fieldForStopLoss = Fields.STOP_LOSS;
@@ -112,18 +112,18 @@ function BuySellPanel(props: Props) {
       case AutoCloseTypesEnum.Profit:
         fieldForTakeProfit = Fields.TAKE_PROFIT;
         fieldForStopLoss = Fields.STOP_LOSS;
-
         break;
+
       case AutoCloseTypesEnum.Percent:
         fieldForTakeProfit = Fields.TAKE_PROFIT_RATE;
         fieldForStopLoss = Fields.STOP_LOSS_RATE;
-
         break;
+
       case AutoCloseTypesEnum.Price:
         fieldForTakeProfit = Fields.TAKE_PROFIT_PRICE;
         fieldForStopLoss = Fields.STOP_LOSS_PRICE;
-
         break;
+
       default:
         break;
     }
