@@ -4,10 +4,12 @@ import { ButtonWithoutStyles } from './ButtonWithoutStyles';
 interface PrimaryButtonProps {
   padding?: string;
   backgroundColor?: string;
+  width?: string;
 }
 
 export const PrimaryButton = styled(ButtonWithoutStyles)<PrimaryButtonProps>`
   padding: ${props => props.padding || '4px 8px'};
+  width: ${props => props.width};
   background-color: ${props => props.backgroundColor || '#00ffdd'};
   border-radius: 4px;
   transition: background-color 0.2s ease;

@@ -7,6 +7,11 @@ import * as yup from 'yup';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import Fields from '../constants/fields';
 import { useStores } from '../hooks/useStores';
+import SignFlowLayout from '../components/SignFlowLayout';
+import LabelInput from '../components/LabelInput';
+import { PrimaryButton } from '../styles/Buttons';
+import { PrimaryTextSpan } from '../styles/TextsElements';
+import SignTypeTabs from '../components/SignTypeTabs';
 
 interface Props {}
 
@@ -47,83 +52,97 @@ function SignUp(props: Props) {
   };
 
   return (
-    <FlexContainer justifyContent="center" alignItems="center" height="100vh">
-      <Formik
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-        validationSchema={validationSchema}
-      >
-        {formikBag => (
-          <CustomForm>
-            <FlexContainer flexDirection="column">
-              <Field type="text" name={Fields.EMAIL}>
-                {({ field, meta }: FieldProps) => (
-                  <FlexContainer
-                    position="relative"
-                    padding="0 0 20px 0"
-                    flexDirection="column"
-                  >
-                    <InputLabel>Email</InputLabel>
-                    <Input
-                      type="text"
-                      {...field}
-                      value={field.value || ''}
-                      placeholder="Enter value"
-                    />
-                    <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
-                  </FlexContainer>
+    <SignFlowLayout>
+      <FlexContainer width="320px" flexDirection="column">
+        <SignTypeTabs></SignTypeTabs>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={validationSchema}
+        >
+          {formikBag => (
+            <CustomForm>
+              <FlexContainer flexDirection="column">
+                <Field type="text" name={Fields.EMAIL}>
+                  {({ field, meta }: FieldProps) => (
+                    <FlexContainer
+                      position="relative"
+                      flexDirection="column"
+                      margin="0 0 16px 0"
+                    >
+                      <LabelInput
+                        {...field}
+                        labelText="Email"
+                        value={field.value || ''}
+                        id={Fields.EMAIL}
+                        hasError={!!(meta.touched && meta.error)}
+                      ></LabelInput>
+                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
+                    </FlexContainer>
+                  )}
+                </Field>
+                <Field type="text" name={Fields.PASSWORD}>
+                  {({ field, meta }: FieldProps) => (
+                    <FlexContainer
+                      position="relative"
+                      flexDirection="column"
+                      margin="0 0 16px 0"
+                    >
+                      <LabelInput
+                        {...field}
+                        labelText="Password"
+                        value={field.value || ''}
+                        id={Fields.PASSWORD}
+                        type="password"
+                        hasError={!!(meta.touched && meta.error)}
+                      ></LabelInput>
+                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
+                    </FlexContainer>
+                  )}
+                </Field>
+                <Field type="text" name={Fields.REPEAT_PASSWORD}>
+                  {({ field, meta }: FieldProps) => (
+                    <FlexContainer
+                      position="relative"
+                      flexDirection="column"
+                      margin="0 0 16px 0"
+                    >
+                      <LabelInput
+                        {...field}
+                        labelText="Password"
+                        value={field.value || ''}
+                        id={Fields.REPEAT_PASSWORD}
+                        type="password"
+                        hasError={!!(meta.touched && meta.error)}
+                      ></LabelInput>
+                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
+                    </FlexContainer>
+                  )}
+                </Field>
+                {formikBag.status && (
+                  <ErrorMessage>{formikBag.status}</ErrorMessage>
                 )}
-              </Field>
-              <Field type="text" name={Fields.PASSWORD}>
-                {({ field, meta }: FieldProps) => (
-                  <FlexContainer
-                    position="relative"
-                    padding="0 0 20px 0"
-                    flexDirection="column"
+
+                <PrimaryButton
+                  padding="12px"
+                  type="submit"
+                  disabled={!formikBag.isValid || formikBag.isSubmitting}
+                >
+                  <PrimaryTextSpan
+                    color="#1c2026"
+                    fontWeight="bold"
+                    fontSize="14px"
+                    textTransform="uppercase"
                   >
-                    <InputLabel>Password</InputLabel>
-                    <Input
-                      type="password"
-                      {...field}
-                      value={field.value || ''}
-                      placeholder="Enter password"
-                    />
-                    <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
-                  </FlexContainer>
-                )}
-              </Field>
-              <Field type="text" name={Fields.REPEAT_PASSWORD}>
-                {({ field, meta }: FieldProps) => (
-                  <FlexContainer
-                    position="relative"
-                    padding="0 0 20px 0"
-                    flexDirection="column"
-                  >
-                    <InputLabel>Repeat password</InputLabel>
-                    <Input
-                      type="password"
-                      {...field}
-                      value={field.value || ''}
-                      placeholder="Repeat password"
-                    />
-                    <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
-                  </FlexContainer>
-                )}
-              </Field>
-              {formikBag.status && (
-                <ErrorMessage>{formikBag.status}</ErrorMessage>
-              )}
-              <SubmitButton
-                type="submit"
-                disabled={!formikBag.isValid || formikBag.isSubmitting}
-              >
-                Sign up
-              </SubmitButton>
-            </FlexContainer>
-          </CustomForm>
-        )}
-      </Formik>
-    </FlexContainer>
+                    Submit
+                  </PrimaryTextSpan>
+                </PrimaryButton>
+              </FlexContainer>
+            </CustomForm>
+          )}
+        </Formik>
+      </FlexContainer>
+    </SignFlowLayout>
   );
 }
 
