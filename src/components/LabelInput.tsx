@@ -10,10 +10,20 @@ interface Props {
   id: string;
   type?: string;
   hasError?: boolean;
+  autoComplete?: string;
 }
 
 const LabelInput: FC<Props> = props => {
-  const { labelText, id, name, onChange, value, type, hasError } = props;
+  const {
+    labelText,
+    id,
+    name,
+    onChange,
+    value,
+    type,
+    hasError,
+    autoComplete,
+  } = props;
 
   return (
     <LabelWrapper htmlFor={id}>
@@ -25,6 +35,7 @@ const LabelInput: FC<Props> = props => {
         value={value}
         required
         hasError={hasError}
+        autoComplete={autoComplete}
       ></Input>
       <Label>{labelText}</Label>
     </LabelWrapper>

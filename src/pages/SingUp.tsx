@@ -93,6 +93,7 @@ function SignUp(props: Props) {
                         labelText="Password"
                         value={field.value || ''}
                         id={Fields.PASSWORD}
+                        autoComplete="new-password"
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
                       ></LabelInput>
@@ -109,9 +110,10 @@ function SignUp(props: Props) {
                     >
                       <LabelInput
                         {...field}
-                        labelText="Password"
+                        labelText="Repeat Password"
                         value={field.value || ''}
                         id={Fields.REPEAT_PASSWORD}
+                        autoComplete="new-password"
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
                       ></LabelInput>
