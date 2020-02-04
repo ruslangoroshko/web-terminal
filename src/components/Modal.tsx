@@ -6,12 +6,11 @@ const Modal: FC = ({ children }) => {
   const el = document.createElement('div');
 
   useEffect(() => {
-    console.log('TCL: Modal:FC -> modalRoot', modalRoot);
     modalRoot?.appendChild(el);
     return () => {
       modalRoot?.removeChild(el);
     };
-  }, []);
+  }, [modalRoot, el]);
 
   return ReactDOM.createPortal(children, el);
 };

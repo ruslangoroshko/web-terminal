@@ -2,8 +2,9 @@ import React from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import SvgIcon from './SvgIcon';
 import IconLoader from '../assets/svg/icon-loader-gray.svg';
-import { keyframes } from '@emotion/core';
+import { keyframes, css } from '@emotion/core';
 import styled from '@emotion/styled';
+import Modal from './Modal';
 
 interface Props {
   isLoading: boolean;
@@ -12,22 +13,25 @@ interface Props {
 function Loader(props: Props) {
   const { isLoading } = props;
   return (
-    <FixedContainerWrapper
-      position="fixed"
-      top="0"
-      left="0"
-      right="0"
-      bottom="0"
-      zIndex="1000"
-      backgroundColor="#1C2026"
-      justifyContent="center"
-      alignItems="center"
-      isLoading={isLoading}
-    >
-      <LoaderWrapper>
-        <SvgIcon {...IconLoader} fillColor="none" />
-      </LoaderWrapper>
-    </FixedContainerWrapper>
+    <Modal>
+      <FixedContainerWrapper isLoading={isLoading}>
+        <FlexContainer
+          position="fixed"
+          top="0"
+          left="0"
+          right="0"
+          bottom="0"
+          zIndex="1000"
+          backgroundColor="#1C2026"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <LoaderWrapper>
+            <SvgIcon {...IconLoader} fillColor="none" />
+          </LoaderWrapper>
+        </FlexContainer>
+      </FixedContainerWrapper>
+    </Modal>
   );
 }
 
@@ -76,7 +80,7 @@ const LoaderWrapper = styled(FlexContainer)`
   animation: ${rotateAnimation} 2s linear infinite;
 `;
 
-const FixedContainerWrapper = styled(FlexContainer)<{ isLoading: boolean }>`
-  animation: ${props => (props.isLoading ? fadeIn : fadeOut)} 1s forwards;
-  visibility: hidden;
+const FixedContainerWrapper = styled.div<{ isLoading: boolean }>`
+  animation: ${props =>
+    !props.isLoading && css`${fadeOut} 0.5s linear forwards`};
 `;

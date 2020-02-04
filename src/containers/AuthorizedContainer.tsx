@@ -15,7 +15,6 @@ import { keyframes } from '@emotion/core';
 import TradingHistory from '../components/SideBarTabs/TradingHistory';
 import { HistoryTabEnum } from '../enums/HistoryTabEnum';
 import TradingHistoryExpanded from '../components/SideBarTabs/TradingHistoryExpanded';
-import Modal from '../components/Modal';
 import Loader from '../components/Loader';
 
 interface Props {}
@@ -92,11 +91,7 @@ const AuthorizedContainer: FC<Props> = props => {
       flexDirection="column"
     >
       <Observer>
-        {() => (
-          <Modal>
-            <Loader isLoading={mainAppStore.isLoading}></Loader>
-          </Modal>
-        )}
+        {() => <Loader isLoading={mainAppStore.isLoading}></Loader>}
       </Observer>
       <NavBar></NavBar>
       <FlexContainer height="calc(100vh - 48px)">

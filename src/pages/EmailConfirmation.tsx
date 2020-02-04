@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import SignFlowLayout from '../components/SignFlowLayout';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import { FlexContainer } from '../styles/FlexContainer';
-import { useLocation, useParams, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import API from '../helpers/API';
 import styled from '@emotion/styled';
-import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import Page from '../constants/Pages';
+import Loader from '../components/Loader';
 
 interface Props {}
 
@@ -33,6 +33,7 @@ function EmailConfirmation(props: Props) {
 
   return (
     <SignFlowLayout>
+      <Loader isLoading={isLoading} />
       <FlexContainer width="100%" flexDirection="column" alignItems="center">
         {isSuccessful ? (
           <>
