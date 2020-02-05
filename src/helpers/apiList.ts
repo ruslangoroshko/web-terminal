@@ -25,9 +25,6 @@ const API_LIST = {
     ADD: '/api/v1/PendingOrders/Add',
     REMOVE: '/api/v1/PendingOrders/Remove',
   },
-  PERSONAL_DATA: {
-    CONFIRM: '/api/v1/PersonalData/Confirm',
-  },
   REPORTS: {
     POSITIONS_HISTORY: '/api/v1/Reports/PositionsHistory',
     BALANCE_HISTORY: '/api/v1/Reports/BalanceHistory',

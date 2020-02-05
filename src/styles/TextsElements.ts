@@ -4,7 +4,15 @@ interface PrimaryTextType {
   color?: string;
   fontWeight?: 'bold' | 'normal' | number;
   fontStyle?: 'italic' | 'normal';
-  fontSize?: '12px' | '11px' | '14px' | '16px' | '10px' | '20px' | '24px';
+  fontSize?:
+    | '12px'
+    | '11px'
+    | '14px'
+    | '16px'
+    | '10px'
+    | '20px'
+    | '24px'
+    | '30px';
   lineHeight?: string;
   marginRight?: string;
   marginBottom?: string;

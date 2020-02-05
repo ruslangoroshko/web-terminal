@@ -21,6 +21,11 @@ import {
 } from '../types/HistoryReportTypes';
 import AUTH_API_LIST from './apiListAuth';
 import { ChangePasswordParams } from '../types/TraderTypes';
+import {
+  PersonalDataResponse,
+  PersonalDataParams,
+  PersonalDataPostResponse,
+} from '../types/PersonalData';
 
 class API {
   convertParamsToFormData = (params: any) => {
@@ -161,7 +166,7 @@ class API {
 
   confirmEmail = async (link: string) => {
     const response = await axios.post<void>(
-      `${API_STRING}${API_LIST.PERSONAL_DATA.CONFIRM}`,
+      `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.CONFIRM}`,
       {
         link,
       }
@@ -193,6 +198,28 @@ class API {
     const response = await axios.post<BalanceHistoryDTO[]>(
       `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.CHANGE_PASSWORD}`,
       params
+    );
+    return response.data;
+  };
+
+  getPersonalData = async (processId: string) => {
+    const response = await axios.get<PersonalDataResponse>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.GET}`,
+      {
+        params: {
+          processId,
+        },
+      }
+    );
+    return response.data;
+  };
+
+  postPersonalData = async (params: PersonalDataParams) => {
+    const formData = this.convertParamsToFormData(params);
+
+    const response = await axios.post<PersonalDataPostResponse>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.POST}`,
+      formData
     );
     return response.data;
   };

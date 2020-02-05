@@ -3,11 +3,13 @@ import SingIn from '../pages/SingIn';
 import Page from './Pages';
 import SignUp from '../pages/SingUp';
 import EmailConfirmation from '../pages/EmailConfirmation';
+import PersonalData from '../pages/PersonalData';
 
 export enum RouteLayoutType {
   Authorized,
   SignFlow,
   Public,
+  KYC,
   Page404,
 }
 
@@ -39,6 +41,13 @@ const routesList = [
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.Authorized,
+  },
+  {
+    component: PersonalData,
+    path: Page.PERSONAL_DATA,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.KYC,
   },
 ];
 

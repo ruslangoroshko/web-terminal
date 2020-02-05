@@ -4,6 +4,7 @@ import RouteWrapper from '../components/RouteWrapper';
 import { useLocation, matchPath, Switch } from 'react-router-dom';
 import AuthorizedContainer from '../containers/AuthorizedContainer';
 import { FlexContainer } from '../styles/FlexContainer';
+import KYCcontainer from '../containers/KYCcontainer';
 
 const RoutingLayout = () => {
   const location = useLocation();
@@ -35,6 +36,13 @@ const RoutingLayout = () => {
         <FlexContainer height="100vh" width="100%">
           <Switch>{allRoutes}</Switch>
         </FlexContainer>
+      );
+
+    case RouteLayoutType.KYC:
+      return (
+        <KYCcontainer>
+          <Switch>{allRoutes}</Switch>
+        </KYCcontainer>
       );
 
     default:
