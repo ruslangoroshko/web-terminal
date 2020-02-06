@@ -16,6 +16,7 @@ import { HistoryTabEnum } from '../../enums/HistoryTabEnum';
 import DatePickerDropdown from '../DatePickerDropdown';
 import API from '../../helpers/API';
 import TradingHistoryExpandedItem from './TradingHistoryExpandedItem';
+import { Th, TableGrid } from '../../styles/TableElements';
 
 interface Props {}
 
@@ -103,8 +104,8 @@ const TradingHistoryExpanded: FC<Props> = props => {
             </FlexContainer>
           </FlexContainer>
           <FlexContainer flexDirection="column">
-            <TableGrid>
-              <Td>
+            <TableGrid columnsCount={7}>
+              <Th>
                 <FlexContainer padding="0 0 0 12px">
                   <PrimaryTextSpan
                     color="rgba(255, 255, 255, 0.4)"
@@ -114,8 +115,8 @@ const TradingHistoryExpanded: FC<Props> = props => {
                     Asset Name
                   </PrimaryTextSpan>
                 </FlexContainer>
-              </Td>
-              <Td>
+              </Th>
+              <Th>
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -123,8 +124,8 @@ const TradingHistoryExpanded: FC<Props> = props => {
                 >
                   Price open &mdash; close
                 </PrimaryTextSpan>
-              </Td>
-              <Td justifyContent="flex-end">
+              </Th>
+              <Th justifyContent="flex-end">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -132,8 +133,8 @@ const TradingHistoryExpanded: FC<Props> = props => {
                 >
                   open &mdash; close
                 </PrimaryTextSpan>
-              </Td>
-              <Td justifyContent="flex-end">
+              </Th>
+              <Th justifyContent="flex-end">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -141,8 +142,8 @@ const TradingHistoryExpanded: FC<Props> = props => {
                 >
                   Investment
                 </PrimaryTextSpan>
-              </Td>
-              <Td justifyContent="flex-end">
+              </Th>
+              <Th justifyContent="flex-end">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -150,8 +151,8 @@ const TradingHistoryExpanded: FC<Props> = props => {
                 >
                   Profit/loss
                 </PrimaryTextSpan>
-              </Td>
-              <Td justifyContent="center">
+              </Th>
+              <Th justifyContent="center">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -159,8 +160,8 @@ const TradingHistoryExpanded: FC<Props> = props => {
                 >
                   Equity
                 </PrimaryTextSpan>
-              </Td>
-              <Td></Td>
+              </Th>
+              <Th></Th>
               {historyStore.positionsHistory.map(item => (
                 <TradingHistoryExpandedItem
                   key={item.id}
@@ -215,15 +216,4 @@ const ButtonClose = styled(ButtonWithoutStyles)`
   position: absolute;
   top: 12px;
   right: 12px;
-`;
-
-const Td = styled(FlexContainer)`
-  margin-bottom: 4px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-`;
-
-const TableGrid = styled.div`
-  display: grid;
-  grid-template-columns: minmax(300px, 1fr) repeat(6, minmax(100px, 1fr));
 `;

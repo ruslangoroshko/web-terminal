@@ -15,6 +15,8 @@ import { getNumberSign } from '../../helpers/getNumberSign';
 import ActivePositionExpanded from './ActivePositionExpanded';
 import SvgIcon from '../SvgIcon';
 import IconClose from '../../assets/svg/icon-close.svg';
+import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
+import { Th, TableGrid } from '../../styles/TableElements';
 
 interface Props {}
 
@@ -147,15 +149,15 @@ const PortfolioExpanded: FC<Props> = props => {
                 </Observer>
               </FlexContainer>
             </FlexContainer>
-            <ButtonCloseAll>
+            {/* <ButtonCloseAll>
               <PrimaryTextSpan color="#fff" fontSize="12px">
                 Close All
               </PrimaryTextSpan>
-            </ButtonCloseAll>
+            </ButtonCloseAll> */}
           </FlexContainer>
-          <FlexContainer flexDirection="column">
-            <TableGrid>
-              <Td>
+          <FlexContainer flexDirection="column" justifyContent="center">
+            <TableGrid columnsCount={8}>
+              <Th>
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -163,8 +165,8 @@ const PortfolioExpanded: FC<Props> = props => {
                 >
                   Asset Name
                 </PrimaryTextSpan>
-              </Td>
-              <Td>
+              </Th>
+              <Th>
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -172,8 +174,8 @@ const PortfolioExpanded: FC<Props> = props => {
                 >
                   Time Opened
                 </PrimaryTextSpan>
-              </Td>
-              <Td justifyContent="flex-end">
+              </Th>
+              <Th justifyContent="flex-end">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -181,8 +183,8 @@ const PortfolioExpanded: FC<Props> = props => {
                 >
                   Investment
                 </PrimaryTextSpan>
-              </Td>
-              <Td justifyContent="flex-end">
+              </Th>
+              <Th justifyContent="flex-end">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -190,8 +192,8 @@ const PortfolioExpanded: FC<Props> = props => {
                 >
                   Profit/loss
                 </PrimaryTextSpan>
-              </Td>
-              <Td justifyContent="flex-end">
+              </Th>
+              <Th justifyContent="flex-end">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -199,8 +201,8 @@ const PortfolioExpanded: FC<Props> = props => {
                 >
                   Equity
                 </PrimaryTextSpan>
-              </Td>
-              <Td justifyContent="center">
+              </Th>
+              <Th justifyContent="center">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -208,8 +210,8 @@ const PortfolioExpanded: FC<Props> = props => {
                 >
                   Take Profit
                 </PrimaryTextSpan>
-              </Td>
-              <Td justifyContent="center">
+              </Th>
+              <Th justifyContent="center">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -217,8 +219,8 @@ const PortfolioExpanded: FC<Props> = props => {
                 >
                   Stop Loss
                 </PrimaryTextSpan>
-              </Td>
-              <Td></Td>
+              </Th>
+              <Th></Th>
               {quotesStore.activePositions.map(item => (
                 <ActivePositionExpanded
                   key={item.id}
@@ -227,6 +229,26 @@ const PortfolioExpanded: FC<Props> = props => {
                 />
               ))}
             </TableGrid>
+            {!quotesStore.activePositions.length && (
+              <FlexContainer
+                flexDirection="column"
+                alignItems="center"
+                padding="160px 0 0 0"
+              >
+                <FlexContainer margin="0 0 30px 0">
+                  <SvgIcon
+                    {...IconPortfolioNoDataExpanded}
+                    fillColor="rgba(255,255,255,0.4)"
+                  />
+                </FlexContainer>
+                <PrimaryTextParagraph
+                  fontSize="16px"
+                  color="rgba(255,255,255, 0.4)"
+                >
+                  You haven't opened any positions yet
+                </PrimaryTextParagraph>
+              </FlexContainer>
+            )}
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
@@ -258,13 +280,4 @@ const ButtonClose = styled(ButtonWithoutStyles)`
   position: absolute;
   top: 12px;
   right: 12px;
-`;
-
-const Td = styled(FlexContainer)`
-  margin-bottom: 4px;
-`;
-
-const TableGrid = styled.div`
-  display: grid;
-  grid-template-columns: minmax(300px, 1fr) repeat(7, minmax(100px, 1fr));
 `;

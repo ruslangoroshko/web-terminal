@@ -13,6 +13,8 @@ import { getNumberSign } from '../../helpers/getNumberSign';
 import { Observer } from 'mobx-react-lite';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import SortByDropdown from '../SortByDropdown';
+import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
+import SvgIcon from '../SvgIcon';
 
 interface Props {}
 
@@ -141,6 +143,28 @@ const Portfolio: FC<Props> = () => {
             {quotesStore.sortedActivePositions.map(item => (
               <ActivePositionsPortfolioTab key={item.id} position={item} />
             ))}
+            {!quotesStore.sortedActivePositions.length && (
+              <FlexContainer
+                flexDirection="column"
+                alignItems="center"
+                padding="30px 0 0 0"
+              >
+                <FlexContainer margin="0 0 18px 0">
+                  <SvgIcon
+                    {...IconPortfolioNoDataExpanded}
+                    fillColor="rgba(255,255,255,0.4)"
+                    width={40}
+                    height={32}
+                  />
+                </FlexContainer>
+                <PrimaryTextParagraph
+                  fontSize="14px"
+                  color="rgba(255,255,255, 0.4)"
+                >
+                  You haven't opened any positions yet
+                </PrimaryTextParagraph>
+              </FlexContainer>
+            )}
           </ActivePositionsWrapper>
         )}
       </Observer>

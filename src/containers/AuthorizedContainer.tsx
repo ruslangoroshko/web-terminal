@@ -16,6 +16,7 @@ import TradingHistory from '../components/SideBarTabs/TradingHistory';
 import { HistoryTabEnum } from '../enums/HistoryTabEnum';
 import TradingHistoryExpanded from '../components/SideBarTabs/TradingHistoryExpanded';
 import Loader from '../components/Loader';
+import OrdersExpanded from '../components/SideBarTabs/OrdersExpanded';
 
 interface Props {}
 
@@ -57,7 +58,7 @@ const RenderTabByType = observer(() => {
   }
 });
 
-const RenderExpandedTabByType = () => {
+const RenderExpandedTabByType = observer(() => {
   const { tabsStore } = useStores();
 
   if (tabsStore.sideBarTabType === null) {
@@ -66,7 +67,11 @@ const RenderExpandedTabByType = () => {
   // Careful, typings !11!!!1
   switch (tabsStore.sideBarTabType!) {
     case SideBarTabType.Portfolio:
-      return <PortfolioExpanded></PortfolioExpanded>;
+      return tabsStore.portfolioTab === PortfolioTabEnum.Portfolio ? (
+        <PortfolioExpanded></PortfolioExpanded>
+      ) : (
+        <OrdersExpanded></OrdersExpanded>
+      );
 
     case SideBarTabType.Markets:
       return <PortfolioExpanded></PortfolioExpanded>;
@@ -77,7 +82,7 @@ const RenderExpandedTabByType = () => {
     default:
       return null;
   }
-};
+});
 
 const AuthorizedContainer: FC<Props> = props => {
   const { children } = props;

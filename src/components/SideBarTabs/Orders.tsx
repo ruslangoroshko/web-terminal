@@ -6,8 +6,13 @@ import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import PendingOrder from './PendingOrder';
-import { PrimaryTextSpan } from '../../styles/TextsElements';
+import {
+  PrimaryTextSpan,
+  PrimaryTextParagraph,
+} from '../../styles/TextsElements';
 import SortByDropdown from '../SortByDropdown';
+import SvgIcon from '../SvgIcon';
+import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
 
 const Orders: FC = () => {
   const { quotesStore, tabsStore, mainAppStore } = useStores();
@@ -66,14 +71,27 @@ const Orders: FC = () => {
                 currencySymbol={mainAppStore.activeAccount?.symbol || ''}
               />
             ))}
-            {!quotesStore.sortedPendingOrders.length && (
-              <FlexContainer padding="16px">
-                <PrimaryTextSpan
-                  color="rgba(255,255,255,0.17)"
-                  fontWeight="bold"
+
+            {!quotesStore.sortedActivePositions.length && (
+              <FlexContainer
+                flexDirection="column"
+                alignItems="center"
+                padding="30px 0 0 0"
+              >
+                <FlexContainer margin="0 0 18px 0">
+                  <SvgIcon
+                    {...IconPortfolioNoDataExpanded}
+                    fillColor="rgba(255,255,255,0.4)"
+                    width={40}
+                    height={32}
+                  />
+                </FlexContainer>
+                <PrimaryTextParagraph
+                  fontSize="14px"
+                  color="rgba(255,255,255, 0.4)"
                 >
-                  No orders yet...
-                </PrimaryTextSpan>
+                  You haven't made any order yet
+                </PrimaryTextParagraph>
               </FlexContainer>
             )}
           </ActivePositionsWrapper>
