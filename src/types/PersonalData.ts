@@ -7,7 +7,7 @@ export interface PersonalDataParams {
   firstName: string;
   lastName: string;
   city: string;
-  dateOfBirth: string;
+  dateOfBirth: number;
   countryOfResidence: string;
   countryOfCitizenship: string;
   postalCode: string;

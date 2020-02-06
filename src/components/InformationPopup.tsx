@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { FlexContainer, FlexContainerProps } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
-import ColorsPallete from '../styles/colorPallete';
 import SvgIcon from './SvgIcon';
 import IconInfo from '../assets/svg/icon-info.svg';
 import { css } from '@emotion/core';
@@ -143,7 +142,7 @@ const InfoIcon = styled(FlexContainer)<
 >`
   border-radius: 50%;
   &:hover > svg {
-    fill: ${ColorsPallete.MINT};
+    fill: #00fff2;
   }
   &:hover + .${props => props.classNameTooltip} {
     visibility: visible;

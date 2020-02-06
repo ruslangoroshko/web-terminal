@@ -13,6 +13,15 @@ const Fields = {
   MULTIPLIER: 'multiplier',
   PURCHASE_AT: 'purchaseAt',
   OPERATION: 'operation',
+  COUNTRY_OF_CITIENZENSHIP: 'countryOfCitizenship',
+  COUNTRY_OF_RESIDENCE: 'countryOfResidence',
+  CITY: 'city',
+  DATE_OF_BIRTH: 'dateOfBirth',
+  FIRST_NAME: 'firstName',
+  LAST_NAME: 'lastName',
+  PHONE: 'phone',
+  POSTAL_CODE: 'postalCode',
+  SEX: 'sex',
 };
 
 Object.freeze(Fields);
