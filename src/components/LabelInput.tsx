@@ -1,7 +1,6 @@
-import React, { FC, ChangeEvent } from 'react';
+import React, { FC, ChangeEvent, useState } from 'react';
 import styled from '@emotion/styled';
 import { PrimaryTextSpan } from '../styles/TextsElements';
-import { FlexContainer } from '../styles/FlexContainer';
 import ErropPopup from './ErropPopup';
 
 interface Props {
@@ -12,8 +11,8 @@ interface Props {
   id: string;
   type?: string;
   hasError?: boolean;
-  errorText?: string;
   autoComplete?: string;
+  errorText?: string;
 }
 
 const LabelInput: FC<Props> = props => {
@@ -28,6 +27,15 @@ const LabelInput: FC<Props> = props => {
     autoComplete,
     errorText,
   } = props;
+  const [focused, setFocused] = useState(false);
+
+  const removeFocus = () => {
+    setFocused(false);
+  };
+
+  const toggleFocus = () => {
+    setFocused(true);
+  };
 
   return (
     <LabelWrapper htmlFor={id}>
@@ -36,13 +44,15 @@ const LabelInput: FC<Props> = props => {
         type={type || 'type'}
         name={name}
         onChange={onChange}
+        onFocus={toggleFocus}
         value={value}
         required
+        onBlur={removeFocus}
         hasError={hasError}
         autoComplete={autoComplete}
       ></Input>
       <Label>{labelText}</Label>
-      {hasError && (
+      {hasError && focused && (
         <ErropPopup
           textColor="#fffccc"
           bgColor="#ED145B"
