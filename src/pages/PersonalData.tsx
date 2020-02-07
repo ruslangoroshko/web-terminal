@@ -9,17 +9,15 @@ import { PersonalDataParams } from '../types/PersonalData';
 import moment from 'moment';
 import { getProcessId } from '../helpers/getProcessId';
 import { SexEnum } from '../enums/Sex';
-import API from '../helpers/API';
 import Fields from '../constants/fields';
-import ErropPopup from '../components/ErropPopup';
-import ColorsPallete from '../styles/colorPallete';
 import Checkbox from '../components/Checkbox';
 import InformationPopup from '../components/InformationPopup';
+import { PrimaryButton } from '../styles/Buttons';
+import GenderDropdown from '../components/KYC/GenderDropdown';
 
 interface Props {}
 
 function PersonalData(props: Props) {
-  const {} = props;
   const validationSchema = yup.object().shape<PersonalDataParams>({
     city: yup.string().required(),
     countryOfCitizenship: yup.string().required(),
@@ -46,7 +44,13 @@ function PersonalData(props: Props) {
     sex: SexEnum.Unknown,
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    debugger;
+  };
+
+  const handleChangeGender = (setFieldValue: any) => (sex: SexEnum) => {
+    setFieldValue(Fields.SEX, sex);
+  };
 
   return (
     <FlexContainer
@@ -80,7 +84,7 @@ function PersonalData(props: Props) {
             validationSchema={validationSchema}
             enableReinitialize
           >
-            {({ setFieldValue, values, errors, submitForm, resetForm }) => (
+            {({ submitForm, setFieldValue }) => (
               <CustomForm>
                 <FlexContainer width="100%" margin="0 0 28px 0">
                   <Field type="text" name={Fields.FIRST_NAME}>
@@ -90,19 +94,12 @@ function PersonalData(props: Props) {
                         flexDirection="column"
                         width="50%"
                       >
-                        {meta.touched && meta.error && (
-                          <ErropPopup
-                            textColor="#fffccc"
-                            bgColor={ColorsPallete.RAZZMATAZZ}
-                            classNameTooltip={Fields.FIRST_NAME}
-                          >
-                            {meta.error}
-                          </ErropPopup>
-                        )}
                         <LabelInput
                           labelText="First name"
                           id={Fields.FIRST_NAME}
                           {...field}
+                          hasError={!!(meta.touched && meta.error)}
+                          errorText={meta.error}
                         />
                       </FlexContainer>
                     )}
@@ -114,19 +111,12 @@ function PersonalData(props: Props) {
                   >
                     {({ field, meta }: FieldProps) => (
                       <FlexContainer width="50%" flexDirection="column">
-                        {meta.touched && meta.error && (
-                          <ErropPopup
-                            textColor="#fffccc"
-                            bgColor={ColorsPallete.RAZZMATAZZ}
-                            classNameTooltip={Fields.LAST_NAME}
-                          >
-                            {meta.error}
-                          </ErropPopup>
-                        )}
                         <LabelInput
                           labelText="Last name"
                           id={Fields.LAST_NAME}
                           {...field}
+                          hasError={!!(meta.touched && meta.error)}
+                          errorText={meta.error}
                         />
                       </FlexContainer>
                     )}
@@ -140,19 +130,12 @@ function PersonalData(props: Props) {
                         flexDirection="column"
                         width="50%"
                       >
-                        {meta.touched && meta.error && (
-                          <ErropPopup
-                            textColor="#fffccc"
-                            bgColor={ColorsPallete.RAZZMATAZZ}
-                            classNameTooltip={Fields.DATE_OF_BIRTH}
-                          >
-                            {meta.error}
-                          </ErropPopup>
-                        )}
                         <LabelInput
                           labelText="Date of birth"
                           id={Fields.DATE_OF_BIRTH}
                           {...field}
+                          hasError={!!(meta.touched && meta.error)}
+                          errorText={meta.error}
                         />
                       </FlexContainer>
                     )}
@@ -160,20 +143,10 @@ function PersonalData(props: Props) {
                   <Field type="text" name={Fields.SEX} flexDirection="column">
                     {({ field, meta }: FieldProps) => (
                       <FlexContainer width="50%" flexDirection="column">
-                        {meta.touched && meta.error && (
-                          <ErropPopup
-                            textColor="#fffccc"
-                            bgColor={ColorsPallete.RAZZMATAZZ}
-                            classNameTooltip={Fields.SEX}
-                          >
-                            {meta.error}
-                          </ErropPopup>
-                        )}
-                        <LabelInput
-                          labelText="Gender"
-                          id={Fields.SEX}
-                          {...field}
-                        />
+                        <GenderDropdown
+                          selectHandler={handleChangeGender(setFieldValue)}
+                          selected={field.value}
+                        ></GenderDropdown>
                       </FlexContainer>
                     )}
                   </Field>
@@ -186,19 +159,12 @@ function PersonalData(props: Props) {
                         flexDirection="column"
                         width="50%"
                       >
-                        {meta.touched && meta.error && (
-                          <ErropPopup
-                            textColor="#fffccc"
-                            bgColor={ColorsPallete.RAZZMATAZZ}
-                            classNameTooltip={Fields.COUNTRY_OF_RESIDENCE}
-                          >
-                            {meta.error}
-                          </ErropPopup>
-                        )}
                         <LabelInput
                           labelText="Country of residence"
                           id={Fields.COUNTRY_OF_RESIDENCE}
                           {...field}
+                          hasError={!!(meta.touched && meta.error)}
+                          errorText={meta.error}
                         />
                       </FlexContainer>
                     )}
@@ -206,19 +172,12 @@ function PersonalData(props: Props) {
                   <Field type="text" name={Fields.CITY} flexDirection="column">
                     {({ field, meta }: FieldProps) => (
                       <FlexContainer width="50%" flexDirection="column">
-                        {meta.touched && meta.error && (
-                          <ErropPopup
-                            textColor="#fffccc"
-                            bgColor={ColorsPallete.RAZZMATAZZ}
-                            classNameTooltip={Fields.CITY}
-                          >
-                            {meta.error}
-                          </ErropPopup>
-                        )}
                         <LabelInput
                           labelText="City"
                           id={Fields.CITY}
                           {...field}
+                          hasError={!!(meta.touched && meta.error)}
+                          errorText={meta.error}
                         />
                       </FlexContainer>
                     )}
@@ -232,19 +191,12 @@ function PersonalData(props: Props) {
                         flexDirection="column"
                         width="50%"
                       >
-                        {meta.touched && meta.error && (
-                          <ErropPopup
-                            textColor="#fffccc"
-                            bgColor={ColorsPallete.RAZZMATAZZ}
-                            classNameTooltip={Fields.COUNTRY_OF_CITIENZENSHIP}
-                          >
-                            {meta.error}
-                          </ErropPopup>
-                        )}
                         <LabelInput
                           labelText="Сitizenship"
                           id={Fields.COUNTRY_OF_CITIENZENSHIP}
                           {...field}
+                          hasError={!!(meta.touched && meta.error)}
+                          errorText={meta.error}
                         />
                       </FlexContainer>
                     )}
@@ -256,66 +208,76 @@ function PersonalData(props: Props) {
                   >
                     {({ field, meta }: FieldProps) => (
                       <FlexContainer width="50%" flexDirection="column">
-                        {meta.touched && meta.error && (
-                          <ErropPopup
-                            textColor="#fffccc"
-                            bgColor={ColorsPallete.RAZZMATAZZ}
-                            classNameTooltip={Fields.POSTAL_CODE}
-                          >
-                            {meta.error}
-                          </ErropPopup>
-                        )}
                         <LabelInput
                           labelText="Postal code"
                           id={Fields.POSTAL_CODE}
                           {...field}
+                          hasError={!!(meta.touched && meta.error)}
+                          errorText={meta.error}
                         />
                       </FlexContainer>
                     )}
                   </Field>
                 </FlexContainer>
                 <FlexContainer width="100%" margin="0 0 28px 0">
-                  <Field type="text" name={Fields.COUNTRY_OF_CITIENZENSHIP}>
+                  <Field type="text" name={Fields.ADDRESS}>
                     {({ field, meta }: FieldProps) => (
                       <FlexContainer flexDirection="column" width="100%">
-                        {meta.touched && meta.error && (
-                          <ErropPopup
-                            textColor="#fffccc"
-                            bgColor={ColorsPallete.RAZZMATAZZ}
-                            classNameTooltip={Fields.COUNTRY_OF_CITIENZENSHIP}
-                          >
-                            {meta.error}
-                          </ErropPopup>
-                        )}
                         <LabelInput
-                          labelText="Сitizenship"
-                          id={Fields.COUNTRY_OF_CITIENZENSHIP}
+                          labelText="Address of residence"
+                          id={Fields.ADDRESS}
                           {...field}
+                          hasError={!!(meta.touched && meta.error)}
+                          errorText={meta.error}
                         />
                       </FlexContainer>
                     )}
                   </Field>
                 </FlexContainer>
+                <FlexContainer margin="0 0 40px 0">
+                  <Field type="checkbox" name={Fields.US_CITIZEN}>
+                    {({ field, meta }: FieldProps) => (
+                      <Checkbox
+                        checkboxText="I’am a US reportable person"
+                        id="reportable"
+                        checked={field.value}
+                        onChange={field.onChange}
+                      >
+                        <FlexContainer margin="0 0 0 8px">
+                          <InformationPopup
+                            bgColor="rgba(0, 0, 0, 0.6)"
+                            classNameTooltip="reportable-tooltip"
+                            direction="right"
+                            width="334px"
+                          >
+                            <PrimaryTextSpan fontSize="12px" color="#fffccc">
+                              A US reportable person is classified as anyone who
+                              holds one of the following: US citizenship,
+                              residency, tax identification number or
+                              mailing/residential adress, telephone number, as
+                              well as anyone who has instructions to transfer
+                              funds to an account maintained in the US.
+                            </PrimaryTextSpan>
+                          </InformationPopup>
+                        </FlexContainer>
+                      </Checkbox>
+                    )}
+                  </Field>
+                </FlexContainer>
                 <FlexContainer>
-                  <Checkbox
-                    checkboxText="I’am a US reportable person"
-                    id="reportable"
+                  <PrimaryButton
+                    type="button"
+                    onClick={submitForm}
+                    padding="8px 32px"
                   >
-                    <InformationPopup
-                      bgColor="rgba(0, 0, 0, 0.6)"
-                      classNameTooltip="reportable-tooltip"
-                      direction="right"
-                      width="334px"
+                    <PrimaryTextSpan
+                      color="#003A38"
+                      fontWeight="bold"
+                      fontSize="14px"
                     >
-                      <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                        A US reportable person is classified as anyone who holds
-                        one of the following: US citizenship, residency, tax
-                        identification number or mailing/residential adress,
-                        telephone number, as well as anyone who has instructions
-                        to transfer funds to an account maintained in the US.
-                      </PrimaryTextSpan>
-                    </InformationPopup>
-                  </Checkbox>
+                      Save and continue
+                    </PrimaryTextSpan>
+                  </PrimaryButton>
                 </FlexContainer>
               </CustomForm>
             )}

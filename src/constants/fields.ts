@@ -22,6 +22,8 @@ const Fields = {
   PHONE: 'phone',
   POSTAL_CODE: 'postalCode',
   SEX: 'sex',
+  US_CITIZEN: 'uSCitizen',
+  ADDRESS: 'address',
 };
 
 Object.freeze(Fields);

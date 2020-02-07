@@ -225,6 +225,7 @@ function BuySellPanel(props: Props) {
                       textColor="#fffccc"
                       bgColor={ColorsPallete.RAZZMATAZZ}
                       classNameTooltip={Fields.AMOUNT}
+                      direction="left"
                     >
                       {meta.error}
                     </ErropPopup>

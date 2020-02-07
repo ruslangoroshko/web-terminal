@@ -1,6 +1,8 @@
 import React, { FC, ChangeEvent } from 'react';
 import styled from '@emotion/styled';
 import { PrimaryTextSpan } from '../styles/TextsElements';
+import { FlexContainer } from '../styles/FlexContainer';
+import ErropPopup from './ErropPopup';
 
 interface Props {
   labelText: string;
@@ -10,6 +12,7 @@ interface Props {
   id: string;
   type?: string;
   hasError?: boolean;
+  errorText?: string;
   autoComplete?: string;
 }
 
@@ -23,6 +26,7 @@ const LabelInput: FC<Props> = props => {
     type,
     hasError,
     autoComplete,
+    errorText,
   } = props;
 
   return (
@@ -38,6 +42,16 @@ const LabelInput: FC<Props> = props => {
         autoComplete={autoComplete}
       ></Input>
       <Label>{labelText}</Label>
+      {hasError && (
+        <ErropPopup
+          textColor="#fffccc"
+          bgColor="#ED145B"
+          classNameTooltip={id}
+          direction="right"
+        >
+          {errorText}
+        </ErropPopup>
+      )}
     </LabelWrapper>
   );
 };
@@ -55,7 +69,7 @@ const Input = styled.input<{ hasError?: boolean }>`
   border: none;
   outline: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  border-bottom: ${props => props.hasError && '1px solid #ED145B'};
+  border-bottom: ${props => props.hasError && '1px solid #ED145B !important'};
   background-color: transparent;
   width: 100%;
   caret-color: #fff;

@@ -1,4 +1,4 @@
-import React, { FC, Children } from 'react';
+import React, { FC } from 'react';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../styles/FlexContainer';
@@ -6,12 +6,27 @@ import { FlexContainer } from '../styles/FlexContainer';
 interface Props {
   checkboxText: string;
   id: string;
+  checked?: boolean;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Checkbox: FC<Props> = ({ checkboxText, id, children }) => {
+const Checkbox: FC<Props> = ({
+  checkboxText,
+  id,
+  children,
+  checked,
+  onChange,
+}) => {
+  console.log('TCL: checked', checked);
   return (
     <Label htmlFor={id}>
-      <InputCheckbox checkboxClass={id} id={id} type="checkbox" />
+      <InputCheckbox
+        checkboxClass={id}
+        id={id}
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+      />
       <CheckboxElement className={`${id}-checkbox`}></CheckboxElement>
       <PrimaryTextSpan fontSize="14px" color="#fffccc">
         {checkboxText}

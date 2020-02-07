@@ -1,16 +1,17 @@
 import React, { FC } from 'react';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import styled from '@emotion/styled';
-import { FlexContainer } from '../styles/FlexContainer';
+import { FlexContainer, FlexContainerProps } from '../styles/FlexContainer';
 
 interface Props {
   bgColor: string;
   textColor: string;
   classNameTooltip: string;
+  direction: 'right' | 'left';
 }
 
 const ErropPopup: FC<Props> = props => {
-  const { bgColor, textColor, classNameTooltip, children } = props;
+  const { bgColor, textColor, classNameTooltip, children, direction } = props;
 
   return (
     <TooltipWrapper
@@ -18,10 +19,13 @@ const ErropPopup: FC<Props> = props => {
       padding="12px"
       position="absolute"
       top="8px"
-      right="calc(100% + 20px)"
+      right={direction === 'left' ? 'calc(100% + 20px)' : 'auto'}
+      left={direction === 'left' ? 'auto' : 'calc(100% + 20px)'}
       backgroundColor={bgColor}
       textColor={textColor}
       className={classNameTooltip}
+      direction={direction}
+      zIndex="102"
     >
       <PrimaryTextSpan>{children}</PrimaryTextSpan>
     </TooltipWrapper>
@@ -30,7 +34,9 @@ const ErropPopup: FC<Props> = props => {
 
 export default ErropPopup;
 
-const TooltipWrapper = styled(FlexContainer)`
+const TooltipWrapper = styled(FlexContainer)<
+  FlexContainerProps & { direction: Props['direction'] }
+>`
   visibility: visible;
   opacity: 1;
   box-shadow: 0px 12px 24px ${props => props.backgroundColor}40,
@@ -54,9 +60,11 @@ const TooltipWrapper = styled(FlexContainer)`
     content: '';
     position: absolute;
     top: 0;
-    right: -7px;
+    right: ${props => (props.direction === 'left' ? '-7px' : 'auto')};
+    left: ${props => (props.direction === 'left' ? 'auto' : '-7px')};
     width: 0;
     height: 0;
+    transform: ${props => props.direction === 'right' && 'rotate(180deg)'};
     border-style: solid;
     border-width: 7px 0 7px 8px;
     border-color: transparent transparent transparent

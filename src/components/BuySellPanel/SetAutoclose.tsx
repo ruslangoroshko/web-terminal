@@ -197,6 +197,7 @@ function SetAutoclose(props: Props) {
             textColor="#fffccc"
             bgColor={ColorsPallete.RAZZMATAZZ}
             classNameTooltip={getProcessId()}
+            direction="left"
           >
             {slError}
           </ErropPopup>
