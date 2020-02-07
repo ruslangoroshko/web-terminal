@@ -156,7 +156,7 @@ const PortfolioExpanded: FC<Props> = props => {
             </ButtonCloseAll> */}
           </FlexContainer>
           <FlexContainer flexDirection="column" justifyContent="center">
-            <TableGrid columnsCount={8}>
+            <TableGrid columnsCount={9}>
               <Th>
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
@@ -164,6 +164,15 @@ const PortfolioExpanded: FC<Props> = props => {
                   textTransform="uppercase"
                 >
                   Asset Name
+                </PrimaryTextSpan>
+              </Th>
+              <Th>
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
+                  Open price
                 </PrimaryTextSpan>
               </Th>
               <Th>
@@ -221,13 +230,21 @@ const PortfolioExpanded: FC<Props> = props => {
                 </PrimaryTextSpan>
               </Th>
               <Th></Th>
-              {quotesStore.activePositions.map(item => (
-                <ActivePositionExpanded
-                  key={item.id}
-                  currencySymbol={mainAppStore.activeAccount?.symbol || ''}
-                  position={item}
-                />
-              ))}
+              <Observer>
+                {() => (
+                  <>
+                    {quotesStore.activePositions.map(item => (
+                      <ActivePositionExpanded
+                        key={item.id}
+                        currencySymbol={
+                          mainAppStore.activeAccount?.symbol || ''
+                        }
+                        position={item}
+                      />
+                    ))}
+                  </>
+                )}
+              </Observer>
             </TableGrid>
             {!quotesStore.activePositions.length && (
               <FlexContainer

@@ -57,6 +57,8 @@ function OrderExpandedItem(props: Props) {
             {instrument}
           </PrimaryTextSpan>
         </FlexContainer>
+      </Td>
+      <Td>
         <FlexContainer>
           <FlexContainer margin="0 6px 0 0">
             <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
@@ -81,7 +83,6 @@ function OrderExpandedItem(props: Props) {
           </FlexContainer>
         </FlexContainer>
       </Td>
-
       <Td>
         <FlexContainer flexDirection="column">
           <PrimaryTextSpan
@@ -97,21 +98,29 @@ function OrderExpandedItem(props: Props) {
           </PrimaryTextSpan>
         </FlexContainer>
       </Td>
-      <Td justifyContent="flex-end">
-        <FlexContainer flexDirection="column" alignItems="flex-end">
-          <PrimaryTextSpan
-            color="#fffccc"
-            fontSize="14px"
-            lineHeight="20px"
-            marginBottom="2px"
-          >
-            {currencySymbol}
-            {investmentAmount}
-          </PrimaryTextSpan>
-          <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="11px">
-            &times;{multiplier}
-          </PrimaryTextSpan>
-        </FlexContainer>
+      <Td alignItems="center" flexDirection="column">
+        <PrimaryTextSpan
+          color="#fffccc"
+          fontSize="14px"
+          lineHeight="20px"
+          marginBottom="2px"
+        >
+          {currencySymbol}
+          {investmentAmount}
+        </PrimaryTextSpan>
+        <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="11px">
+          &times;{multiplier}
+        </PrimaryTextSpan>
+      </Td>
+      <Td justifyContent="center" alignItems="center">
+        <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="11px">
+          &mdash;
+        </PrimaryTextSpan>
+      </Td>
+      <Td justifyContent="center" alignItems="center">
+        <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="11px">
+          &mdash;
+        </PrimaryTextSpan>
       </Td>
       <Td alignItems="center" justifyContent="center">
         <FlexContainer

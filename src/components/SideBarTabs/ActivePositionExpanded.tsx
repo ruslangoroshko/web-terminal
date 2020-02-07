@@ -74,6 +74,8 @@ function ActivePositionExpanded(props: Props) {
             {instrument}
           </PrimaryTextSpan>
         </FlexContainer>
+      </Td>
+      <Td>
         <FlexContainer>
           <FlexContainer margin="0 6px 0 0">
             <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
@@ -98,7 +100,6 @@ function ActivePositionExpanded(props: Props) {
           </FlexContainer>
         </FlexContainer>
       </Td>
-
       <Td>
         <FlexContainer flexDirection="column">
           <PrimaryTextSpan

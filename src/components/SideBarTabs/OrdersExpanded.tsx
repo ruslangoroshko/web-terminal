@@ -54,7 +54,7 @@ const OrdersExpanded: FC = () => {
       <FlexContainer width="100%" justifyContent="center">
         <FlexContainer flexDirection="column" width="1020px">
           <FlexContainer flexDirection="column" justifyContent="center">
-            <TableGrid columnsCount={4}>
+            <TableGrid columnsCount={7}>
               <Th>
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
@@ -70,16 +70,43 @@ const OrdersExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
+                  Open price
+                </PrimaryTextSpan>
+              </Th>
+              <Th>
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
                   Created
                 </PrimaryTextSpan>
               </Th>
-              <Th justifyContent="flex-end">
+              <Th justifyContent="center">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
                   textTransform="uppercase"
                 >
                   Investment
+                </PrimaryTextSpan>
+              </Th>
+              <Th justifyContent="center">
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
+                  Take Profit
+                </PrimaryTextSpan>
+              </Th>
+              <Th justifyContent="center">
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="11px"
+                  textTransform="uppercase"
+                >
+                  Stop Loss
                 </PrimaryTextSpan>
               </Th>
               <Th></Th>

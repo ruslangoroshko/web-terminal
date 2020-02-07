@@ -18,14 +18,13 @@ export const DisplayContents = styled.div`
 `;
 
 export const Th = styled(FlexContainer)`
-  margin-bottom: 4px;
   padding-bottom: 4px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;
 
 export const TableGrid = styled.div<{ columnsCount: number }>`
   display: grid;
-  grid-template-columns: minmax(300px, 1fr) repeat(
+  grid-template-columns: minmax(186px, 1fr) repeat(
       ${props => props.columnsCount - 1},
       minmax(100px, 1fr)
     );
