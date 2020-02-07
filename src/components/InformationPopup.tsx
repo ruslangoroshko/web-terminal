@@ -17,11 +17,7 @@ const InformationPopup: FC<Props> = props => {
   return (
     <FlexContainer position="relative">
       <InfoIcon classNameTooltip={classNameTooltip}>
-        <SvgIcon
-          {...IconInfo}
-          fillColor="rgba(255, 255, 255, 0.6)"
-          hoverFillColor="#00FFF2"
-        />
+        <SvgIcon {...IconInfo} fillColor="rgba(255, 255, 255, 0.6)" />
       </InfoIcon>
       <TooltipWrapper
         width={width}

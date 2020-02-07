@@ -39,9 +39,9 @@ function OrderExpandedItem(props: Props) {
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 
   const closePosition = () => {
-    API.closePosition({
+    API.removePendingOrder({
       accountId: mainAppStore.activeAccount!.id,
-      positionId: id,
+      orderId: id,
       processId: getProcessId(),
     });
   };
@@ -113,15 +113,15 @@ function OrderExpandedItem(props: Props) {
           </PrimaryTextSpan>
         </FlexContainer>
       </Td>
-      <Td alignItems="center">
+      <Td alignItems="center" justifyContent="center">
         <FlexContainer
           flexDirection="column"
           alignItems="center"
-          margin="0 16px 0 0"
+          margin="0 18px 0 0"
         >
           <ButtonClose onClick={closePosition}>
             <PrimaryTextSpan fontSize="12px" color="#fff">
-              Close
+              Cancel order
             </PrimaryTextSpan>
           </ButtonClose>
         </FlexContainer>
@@ -176,6 +176,4 @@ function OrderExpandedItem(props: Props) {
 
 export default OrderExpandedItem;
 
-const ButtonClose = styled(SecondaryButton)`
-  width: 48px;
-`;
+const ButtonClose = styled(SecondaryButton)``;

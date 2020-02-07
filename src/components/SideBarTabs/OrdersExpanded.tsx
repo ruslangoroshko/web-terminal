@@ -12,7 +12,7 @@ import { TabPortfolitButton } from './Portfolio';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import SvgIcon from '../SvgIcon';
 import IconClose from '../../assets/svg/icon-close.svg';
-import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
+import IconPortfolioNoData from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
 import { Th, TableGrid } from '../../styles/TableElements';
 import OrderExpandedItem from './OrderExpandedItem';
 
@@ -83,13 +83,21 @@ const OrdersExpanded: FC = () => {
                 </PrimaryTextSpan>
               </Th>
               <Th></Th>
-              {quotesStore.pendingOrders.map(item => (
-                <OrderExpandedItem
-                  key={item.id}
-                  currencySymbol={mainAppStore.activeAccount?.symbol || ''}
-                  position={item}
-                />
-              ))}
+              <Observer>
+                {() => (
+                  <>
+                    {quotesStore.pendingOrders.map(item => (
+                      <OrderExpandedItem
+                        key={item.id}
+                        currencySymbol={
+                          mainAppStore.activeAccount?.symbol || ''
+                        }
+                        position={item}
+                      />
+                    ))}
+                  </>
+                )}
+              </Observer>
             </TableGrid>
             {!quotesStore.pendingOrders.length && (
               <FlexContainer
@@ -99,7 +107,7 @@ const OrdersExpanded: FC = () => {
               >
                 <FlexContainer margin="0 0 30px 0">
                   <SvgIcon
-                    {...IconPortfolioNoDataExpanded}
+                    {...IconPortfolioNoData}
                     fillColor="rgba(255,255,255,0.4)"
                   />
                 </FlexContainer>
