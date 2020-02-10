@@ -29,6 +29,8 @@ function PersonalData(props: Props) {
     postalCode: yup.string().required(),
     processId: yup.string().required(),
     sex: yup.number().required(),
+    address: yup.string().required(),
+    uSCitizen: yup.boolean().required(),
   });
 
   const initialValues: PersonalDataParams = {
@@ -42,6 +44,8 @@ function PersonalData(props: Props) {
     postalCode: '',
     processId: getProcessId(),
     sex: SexEnum.Unknown,
+    address: '',
+    uSCitizen: false,
   };
 
   const handleSubmit = () => {
@@ -58,6 +62,7 @@ function PersonalData(props: Props) {
       height="100%"
       flexDirection="column"
       alignItems="center"
+      backgroundColor="#252636"
     >
       <FlexContainer width="568px" flexDirection="column" padding="20px 0 0 0">
         <PrimaryTextParagraph

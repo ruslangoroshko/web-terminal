@@ -1,4 +1,5 @@
 const KeysInApi = {
+  SELECTED_INSTRUMENTS: 'selected_instruments',
   FAVOURITE_INSTRUMENTS: 'favourite_instruments',
 };
 

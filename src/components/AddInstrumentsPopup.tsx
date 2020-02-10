@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent, useState, useEffect } from 'react';
+import React, { FC, ChangeEvent, useState, useEffect, useRef } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import IconSearch from '../assets/svg/icon-instrument-search.svg';
@@ -16,6 +16,8 @@ interface Props {
 const AddInstrumentsPopup: FC<Props> = props => {
   const { toggle } = props;
   const { instrumentsStore } = useStores();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [isLeft, setIsLeft] = useState(true);
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value.toLowerCase();
@@ -26,6 +28,12 @@ const AddInstrumentsPopup: FC<Props> = props => {
 
   useEffect(() => {
     instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments;
+
+    const rect = wrapperRef.current?.getBoundingClientRect();
+
+    if (rect && window.innerWidth - rect.right - 320 <= 0) {
+      setIsLeft(false);
+    }
   }, []);
 
   return (
@@ -35,8 +43,10 @@ const AddInstrumentsPopup: FC<Props> = props => {
       alignItems="center"
       flexDirection="column"
       top="0"
-      left="0"
+      left={isLeft ? '0' : 'auto'}
+      right={isLeft ? 'auto' : '0'}
       zIndex="105"
+      ref={wrapperRef}
     >
       <FlexContainer
         padding="12px 12px 0 20px"
@@ -59,12 +69,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
           </ButtonWithoutStyles>
         </FlexContainer>
       </FlexContainer>
-      <InstrumentsWrapper
-        padding="16px"
-        flexDirection="column"
-        width="100%"
-        height="320px"
-      >
+      <InstrumentsWrapper flexDirection="column" width="100%" height="320px">
         <Observer>
           {() => (
             <>
@@ -72,6 +77,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
                 <InstrumentRow
                   key={instrument.id}
                   instrument={instrument}
+                  toggle={toggle}
                 ></InstrumentRow>
               ))}
             </>

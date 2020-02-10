@@ -5,11 +5,16 @@ import KeysInApi from '../constants/keysInApi';
 export const activeInstrumentsInit = async (
   instrumentsStore: InstrumentsStore
 ) => {
-  let favouriteInstruments = await API.getKeyValue(
-    KeysInApi.FAVOURITE_INSTRUMENTS
+  const selectedInstruments = await API.getKeyValue(
+    KeysInApi.SELECTED_INSTRUMENTS
   );
-  if (favouriteInstruments) {
-    instrumentsStore.activeInstrumentsIds = JSON.parse(favouriteInstruments);
+
+  const parsedValue = selectedInstruments
+    ? JSON.parse(selectedInstruments)
+    : [];
+
+  if (parsedValue.length) {
+    instrumentsStore.activeInstrumentsIds = parsedValue;
   } else {
     const newFavouriteInstrumentsIds = instrumentsStore.instruments.map(
       item => item.id
@@ -20,7 +25,7 @@ export const activeInstrumentsInit = async (
       : JSON.stringify([]);
 
     await API.setKeyValue({
-      key: KeysInApi.FAVOURITE_INSTRUMENTS,
+      key: KeysInApi.SELECTED_INSTRUMENTS,
       value: newFavouriteInstruments,
     });
 
@@ -28,6 +33,14 @@ export const activeInstrumentsInit = async (
   }
 
   instrumentsStore.activeInstrument = instrumentsStore.activeInstruments[0];
+
+  const favouriteInstruments = await API.getKeyValue(
+    KeysInApi.FAVOURITE_INSTRUMENTS
+  );
+
+  instrumentsStore.favouriteInstrumentsIds = favouriteInstruments
+    ? JSON.parse(favouriteInstruments)
+    : [];
 };
 
 export const toggleFavouriteInstrument = async ({
@@ -37,13 +50,13 @@ export const toggleFavouriteInstrument = async ({
   instrumentsStore: InstrumentsStore;
   newId: string;
 }) => {
-  const newIds =
-    instrumentsStore.activeInstrumentsIds.indexOf(newId) > -1
-      ? instrumentsStore.activeInstrumentsIds.filter(item => item !== newId)
-      : [...instrumentsStore.activeInstrumentsIds, newId];
+  instrumentsStore.favouriteInstrumentsIds = instrumentsStore.favouriteInstrumentsIds.includes(
+    newId
+  )
+    ? instrumentsStore.favouriteInstrumentsIds.filter(item => item !== newId)
+    : [...instrumentsStore.favouriteInstrumentsIds, newId];
   await API.setKeyValue({
     key: KeysInApi.FAVOURITE_INSTRUMENTS,
-    value: JSON.stringify(newIds),
+    value: JSON.stringify(instrumentsStore.favouriteInstrumentsIds),
   });
-  instrumentsStore.activeInstrumentsIds = newIds;
 };

@@ -13,7 +13,8 @@ export interface InstrumentModelWSDTO {
   bid?: number;
   ask?: number;
   tickSize?: number;
-  chng?: number;
+  groupId?: string;
+  chng: number;
 }
 
 interface DayOff {
@@ -21,4 +22,9 @@ interface DayOff {
   timeFrom: string;
   dowTo: string;
   timeTo: string;
+}
+
+export interface InstrumentGroupWSDTO {
+  id: string;
+  name: string;
 }

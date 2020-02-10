@@ -13,18 +13,36 @@ import IconMarketsFavourites from '../assets/svg/icon-instrument-favourites.svg'
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
 import { toggleFavouriteInstrument } from '../helpers/activeInstrumentsHelper';
+import API from '../helpers/API';
+import KeysInApi from '../constants/keysInApi';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
+  toggle: () => void;
 }
 
 const InstrumentRow: FC<Props> = props => {
-  const { instrument } = props;
+  const { instrument, toggle } = props;
 
   const { quotesStore, instrumentsStore } = useStores();
 
   const toggleFavourite = () => {
     toggleFavouriteInstrument({ instrumentsStore, newId: instrument.id });
+  };
+
+  const addActiveInstrument = () => {
+    if (instrumentsStore.activeInstrumentsIds.includes(instrument.id)) {
+      instrumentsStore.activeInstrument = instrumentsStore.instruments.find(
+        item => item.id === instrument.id
+      );
+    } else {
+      instrumentsStore.activeInstrumentsIds.push(instrument.id);
+      API.setKeyValue({
+        key: KeysInApi.SELECTED_INSTRUMENTS,
+        value: JSON.stringify(instrumentsStore.activeInstrumentsIds),
+      });
+    }
+    toggle();
   };
 
   return (
@@ -43,14 +61,16 @@ const InstrumentRow: FC<Props> = props => {
         </QuoteImgWrapper>
       </FlexContainer>
       <FlexContainer flexDirection="column" width="110px" margin="0 4px 0 0">
-        <PrimaryTextSpan
-          color="#FFFCCC"
-          fontSize="12px"
-          lineHeight="14px"
-          marginBottom="4px"
-        >
-          {instrument.id}
-        </PrimaryTextSpan>
+        <ButtonWithoutStyles onClick={addActiveInstrument}>
+          <PrimaryTextSpan
+            color="#FFFCCC"
+            fontSize="12px"
+            lineHeight="14px"
+            marginBottom="4px"
+          >
+            {instrument.id}
+          </PrimaryTextSpan>
+        </ButtonWithoutStyles>
         <PrimaryTextSpan
           color="rgba(255, 255, 255, 0.4)"
           fontSize="10px"
@@ -95,7 +115,7 @@ const InstrumentRow: FC<Props> = props => {
             <SvgIcon
               {...IconMarketsFavourites}
               fillColor={
-                instrumentsStore.activeInstrumentsIds.includes(instrument.id)
+                instrumentsStore.favouriteInstrumentsIds.includes(instrument.id)
                   ? '#FFFCCC'
                   : 'rgba(255, 255, 255, 0.5)'
               }
@@ -138,8 +158,10 @@ const QuoteImgWrapper = styled(FlexContainer)`
 `;
 
 const InstrumentRowWrapper = styled(FlexContainer)`
-  margin-bottom: 16px;
-  &:last-of-type {
-    margin-bottom: 0;
+  transition: all 0.2s ease;
+  padding: 12px 16px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.04);
   }
 `;

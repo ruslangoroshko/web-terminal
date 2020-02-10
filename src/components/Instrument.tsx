@@ -27,7 +27,7 @@ const Instrument: FC<Props> = ({
   isActive,
   handleClose,
 }) => {
-  const { quotesStore, mainAppStore } = useStores();
+  const { quotesStore, mainAppStore, instrumentsStore } = useStores();
 
   useEffect(() => {
     mainAppStore.activeSession?.on(
@@ -80,9 +80,20 @@ const Instrument: FC<Props> = ({
             </Observer>
           )}
           <FlexContainer padding="0 8px 0 0">
-            <CloseButton onClick={handleClose}>
-              <SvgIcon {...IconClose} fillColor="rgba(0, 0, 0, 0.6)"></SvgIcon>
-            </CloseButton>
+            <Observer>
+              {() => (
+                <>
+                  {instrumentsStore.activeInstrumentsIds.length > 1 && (
+                    <CloseButton onClick={handleClose}>
+                      <SvgIcon
+                        {...IconClose}
+                        fillColor="rgba(0, 0, 0, 0.6)"
+                      ></SvgIcon>
+                    </CloseButton>
+                  )}
+                </>
+              )}
+            </Observer>
           </FlexContainer>
         </FlexContainer>
       </QuotesFeedWrapper>

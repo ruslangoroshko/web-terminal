@@ -15,6 +15,7 @@ const Topics = {
   UPDATE_ACTIVE_POSITION: 'updateactiveposition',
   PRICE_CHANGE: 'pricechange',
   PENDING_ORDERS: 'pendingorders',
+  INSTRUMENT_GROUPS: 'instrumentgroups',
 };
 
 Object.freeze(Topics);

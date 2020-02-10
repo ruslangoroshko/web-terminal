@@ -120,6 +120,15 @@ const Dashboard = observer(() => {
           }
         }
       );
+
+      mainAppStore.activeSession?.on(
+        Topics.INSTRUMENT_GROUPS,
+        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
+          if (mainAppStore.activeAccount?.id === response.accountId) {
+            instrumentsStore.instrumentGroups = response.data;
+          }
+        }
+      );
     }
   }, [mainAppStore.activeAccount]);
 

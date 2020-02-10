@@ -16,25 +16,22 @@ const Checkbox: FC<Props> = ({
   children,
   checked,
   onChange,
-}) => {
-  console.log('TCL: checked', checked);
-  return (
-    <Label htmlFor={id}>
-      <InputCheckbox
-        checkboxClass={id}
-        id={id}
-        type="checkbox"
-        checked={checked}
-        onChange={onChange}
-      />
-      <CheckboxElement className={`${id}-checkbox`}></CheckboxElement>
-      <PrimaryTextSpan fontSize="14px" color="#fffccc">
-        {checkboxText}
-      </PrimaryTextSpan>
-      {children}
-    </Label>
-  );
-};
+}) => (
+  <Label htmlFor={id}>
+    <InputCheckbox
+      checkboxClass={id}
+      id={id}
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+    />
+    <CheckboxElement className={`${id}-checkbox`}></CheckboxElement>
+    <PrimaryTextSpan fontSize="14px" color="#fffccc">
+      {checkboxText}
+    </PrimaryTextSpan>
+    {children}
+  </Label>
+);
 
 export default Checkbox;
 

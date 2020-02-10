@@ -13,6 +13,8 @@ export interface PersonalDataParams {
   postalCode: string;
   sex: SexEnum;
   phone: string;
+  address: string;
+  uSCitizen: boolean;
 }
 
 export interface PersonalDataResponse {
