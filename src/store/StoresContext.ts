@@ -8,6 +8,7 @@ import { InstrumentsStore } from './InstrumentsStore';
 import { DateRangeStore } from './DateRangeStore';
 import { HistoryStore } from './HistoryStore';
 import { KYCstore } from './KYCstore';
+import { NotificationStore } from './NotificationStore';
 
 export const StoresContext = createContext({
   quotesStore: new QuotesStore(),
@@ -19,6 +20,7 @@ export const StoresContext = createContext({
   dateRangeStore: new DateRangeStore(),
   historyStore: new HistoryStore(),
   kycStore: new KYCstore(),
+  notificationStore: new NotificationStore(),
 });
 
 export type StoresContextType = typeof StoresContext;

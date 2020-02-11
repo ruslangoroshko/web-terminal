@@ -1,6 +1,15 @@
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 
 const apiResponseCodeMessages = {
+  [OperationApiResponseCodes.FileNotFound]: 'File not found',
+  [OperationApiResponseCodes.FileWrongExtension]:
+    'Only files with the following extensions are allowed: jpg, png, pdf',
+  [OperationApiResponseCodes.OldPasswordNotMatch]: 'Old password not match.',
+  [OperationApiResponseCodes.UserNotExist]: 'User not exist.',
+  [OperationApiResponseCodes.UserExists]: 'This email is already in use.',
+  [OperationApiResponseCodes.InvalidUserNameOrPassword]:
+    'Invalid login or password',
+  [OperationApiResponseCodes.Ok]: 'The order has been opened successfully',
   [OperationApiResponseCodes.DayOff]:
     'The market is closed. Please try again when the market is open.',
   [OperationApiResponseCodes.MinOperationLotViolated]:
@@ -23,12 +32,6 @@ const apiResponseCodeMessages = {
   [OperationApiResponseCodes.InstrumentNotFound]: 'Asset is not found.',
   [OperationApiResponseCodes.InstrumentCanNotBeUsed]:
     'Asset is not available now.',
-  [OperationApiResponseCodes.UserExists]: 'This email is already in use.',
-  [OperationApiResponseCodes.InvalidUserNameOrPassword]:
-    'Invalid login or password',
-  [OperationApiResponseCodes.FileNotFound]: 'File not found',
-  [OperationApiResponseCodes.FileWrongExtension]:
-    'Only files with the following extensions are allowed: jpg, png, pdf',
 };
 
 Object.freeze(apiResponseCodeMessages);

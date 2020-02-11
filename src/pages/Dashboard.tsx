@@ -26,13 +26,18 @@ import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import { PendingOrdersWSDTO } from '../types/PendingOrders';
 import Loader from '../components/Loader';
 import Modal from '../components/Modal';
+import NotificationPopup from '../components/NotificationPopup';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
 const Dashboard = observer(() => {
-  const { mainAppStore, tradingViewStore } = useStores();
-
-  const { quotesStore, instrumentsStore } = useStores();
+  const {
+    mainAppStore,
+    tradingViewStore,
+    quotesStore,
+    instrumentsStore,
+    notificationStore,
+  } = useStores();
 
   useEffect(() => {
     mainAppStore.activeSession?.on(
@@ -135,7 +140,22 @@ const Dashboard = observer(() => {
   return !mainAppStore.isLoading &&
     mainAppStore.activeAccount &&
     mainAppStore.activeSession ? (
-    <DashboardWrapper height="100%" width="100%" flexDirection="column">
+    <DashboardWrapper
+      height="100%"
+      width="100%"
+      flexDirection="column"
+      position="relative"
+    >
+      <FlexContainer
+        position="absolute"
+        bottom="100px"
+        left="14px"
+        zIndex="100"
+      >
+        <NotificationPopup
+          show={notificationStore.isActiveNotification}
+        ></NotificationPopup>
+      </FlexContainer>
       <FlexContainer flexDirection="column" margin="0 0 20px 0">
         <FlexContainer>
           <InstrumentsScrollWrapper></InstrumentsScrollWrapper>

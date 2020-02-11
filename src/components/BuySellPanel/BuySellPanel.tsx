@@ -29,6 +29,8 @@ import { getProcessId } from '../../helpers/getProcessId';
 import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import ConfirmationPopup from './ConfirmationPopup';
 import { keyframes } from '@emotion/core';
+import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
+import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
 
 // TODO: too much code, refactor
 interface Props {
@@ -40,7 +42,7 @@ interface Props {
 
 function BuySellPanel(props: Props) {
   const { currencySymbol, accountId, instrument, digits } = props;
-  const { quotesStore } = useStores();
+  const { quotesStore, notificationStore } = useStores();
 
   const initialValues: OpenPositionModelFormik = {
     processId: getProcessId(),
@@ -101,7 +103,10 @@ function BuySellPanel(props: Props) {
     setFieldValue(Fields.AMOUNT, +value);
   };
 
-  const handleSubmit = (values: OpenPositionModelFormik, actions: any) => {
+  const handleSubmit = async (
+    values: OpenPositionModelFormik,
+    actions: any
+  ) => {
     actions.setSubmitting(false);
     const { SLTPType, sl, tp } = values;
 
@@ -135,9 +140,32 @@ function BuySellPanel(props: Props) {
     };
 
     if (values.purchaseAt) {
-      API.openPendingOrder(modelToSubmit);
+      try {
+        const response = await API.openPendingOrder(modelToSubmit);
+
+        notificationStore.notificationMessage =
+          apiResponseCodeMessages[response.result];
+        notificationStore.isSuccessfull =
+          response.result === OperationApiResponseCodes.Ok;
+        notificationStore.openNotification();
+      } catch (error) {
+        notificationStore.notificationMessage = error;
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+      }
     } else {
-      API.openPosition(modelToSubmit);
+      try {
+        const response = await API.openPosition(modelToSubmit);
+        notificationStore.notificationMessage =
+          apiResponseCodeMessages[response.result];
+        notificationStore.isSuccessfull =
+          response.result === OperationApiResponseCodes.Ok;
+        notificationStore.openNotification();
+      } catch (error) {
+        notificationStore.notificationMessage = error;
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+      }
     }
   };
 
