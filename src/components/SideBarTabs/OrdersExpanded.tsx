@@ -29,7 +29,11 @@ const OrdersExpanded: FC = () => {
   return (
     <PortfolioWrapper flexDirection="column" width="100%" position="relative">
       <ButtonClose onClick={closeExpanded}>
-        <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)" />
+        <SvgIcon
+          {...IconClose}
+          fillColor="rgba(255, 255, 255, 0.6)"
+          hoverFillColor="#00FFDD"
+        />
       </ButtonClose>
       <FlexContainer margin="0 0 40px 0" padding="0 0 0 8px">
         <Observer>

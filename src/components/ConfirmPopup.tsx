@@ -32,7 +32,11 @@ const ConfirmPopup: FC<Props> = ({ toggle, applyHandler }) => {
     >
       <FlexContainer position="absolute" right="16px" top="16px">
         <ButtonWithoutStyles onClick={handleClose}>
-          <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)" />
+          <SvgIcon
+            {...IconClose}
+            fillColor="rgba(255, 255, 255, 0.6)"
+            hoverFillColor="#00FFDD"
+          />
         </ButtonWithoutStyles>
       </FlexContainer>
       <PrimaryTextParagraph

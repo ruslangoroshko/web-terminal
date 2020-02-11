@@ -113,7 +113,11 @@ function SetAutoclose(props: Props) {
       width="200px"
     >
       <ButtonClose onClick={handleToggle}>
-        <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)"></SvgIcon>
+        <SvgIcon
+          {...IconClose}
+          fillColor="rgba(255, 255, 255, 0.6)"
+          hoverFillColor="#00FFDD"
+        ></SvgIcon>
       </ButtonClose>
       <PrimaryTextParagraph marginBottom="16px">
         Set Autoclose

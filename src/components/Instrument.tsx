@@ -84,12 +84,13 @@ const Instrument: FC<Props> = ({
               {() => (
                 <>
                   {instrumentsStore.activeInstrumentsIds.length > 1 && (
-                    <CloseButton onClick={handleClose}>
+                    <ButtonWithoutStyles onClick={handleClose}>
                       <SvgIcon
                         {...IconClose}
                         fillColor="rgba(0, 0, 0, 0.6)"
+                        hoverFillColor="#00FFDD"
                       ></SvgIcon>
-                    </CloseButton>
+                    </ButtonWithoutStyles>
                   )}
                 </>
               )}
@@ -152,15 +153,5 @@ const MagicWrapperBorders = styled.div<{ isActive?: boolean }>`
   &:hover {
     border-right: 1px double rgba(0, 0, 0, 0);
     border-left: 1px double rgba(0, 0, 0, 0);
-  }
-`;
-
-const CloseButton = styled(ButtonWithoutStyles)`
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-
-    & > svg {
-      fill: white;
-    }
   }
 `;

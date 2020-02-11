@@ -49,7 +49,11 @@ const AccountInfo: FC<Props> = observer(props => {
       {isActiveAccount && (
         <FlexContainer position="absolute" right="16px" top="16px">
           <ButtonWithoutStyles onClick={toggle}>
-            <SvgIcon {...IconClose} fillColor="rgba(255,255,255, 0.4)" />
+            <SvgIcon
+              {...IconClose}
+              fillColor="rgba(255,255,255, 0.4)"
+              hoverFillColor="#00FFDD"
+            />
           </ButtonWithoutStyles>
         </FlexContainer>
       )}

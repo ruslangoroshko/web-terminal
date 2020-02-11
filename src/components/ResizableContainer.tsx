@@ -37,6 +37,7 @@ const ResizableContainer: FC = observer(props => {
           <SvgIcon
             {...IconClose}
             fillColor="rgba(255, 255, 255, 0.6)"
+            hoverFillColor="#00FFDD"
           ></SvgIcon>
         </IconButton>
       </FlexContainer>

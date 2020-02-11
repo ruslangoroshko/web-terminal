@@ -104,7 +104,11 @@ function PurchaseAtPopup(props: Props) {
             </PrimaryTextSpan>
           </ButtonAutoClosePurchase>
           <ClearPurchaseAtButton type="button" onClick={clearPurchaseAt}>
-            <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)" />
+            <SvgIcon
+              {...IconClose}
+              fillColor="rgba(255, 255, 255, 0.6)"
+              hoverFillColor="#00FFDD"
+            />
           </ClearPurchaseAtButton>
         </FlexContainer>
       ) : (
@@ -130,6 +134,7 @@ function PurchaseAtPopup(props: Props) {
               <SvgIcon
                 {...IconClose}
                 fillColor="rgba(255, 255, 255, 0.6)"
+                hoverFillColor="#00FFDD"
               ></SvgIcon>
             </ButtonClose>
             <PrimaryTextParagraph marginBottom="16px">

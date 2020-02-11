@@ -32,7 +32,11 @@ function ConfirmationPopup(props: Props) {
     >
       <FlexContainer position="absolute" top="16px" right="16px">
         <ButtonWithoutStyles type="button" onClick={closePopup}>
-          <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)" />
+          <SvgIcon
+            {...IconClose}
+            fillColor="rgba(255, 255, 255, 0.6)"
+            hoverFillColor="#00FFDD"
+          />
         </ButtonWithoutStyles>
       </FlexContainer>
       <PrimaryTextParagraph

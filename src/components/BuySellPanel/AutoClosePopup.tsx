@@ -68,7 +68,11 @@ function AutoClosePopup(props: Props) {
         </ButtonAutoClosePurchase>
         {!!(values.sl || values.tp) && (
           <ClearSLTPButton type="button" onClick={clearSLTP}>
-            <SvgIcon {...IconClose} fillColor="rgba(255,255,255,0.4)" />
+            <SvgIcon
+              {...IconClose}
+              fillColor="rgba(255,255,255,0.4)"
+              hoverFillColor="#00FFDD"
+            />
           </ClearSLTPButton>
         )}
       </FlexContainer>

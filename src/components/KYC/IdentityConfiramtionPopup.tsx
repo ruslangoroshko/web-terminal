@@ -30,7 +30,11 @@ function IdentityConfiramtionPopup(props: Props) {
     >
       <FlexContainer position="absolute" top="12px" right="12px">
         <ButtonWithoutStyles onClick={handleClickClose}>
-          <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.6)" />
+          <SvgIcon
+            {...IconClose}
+            fillColor="rgba(255, 255, 255, 0.6)"
+            hoverFillColor="#00FFDD"
+          />
         </ButtonWithoutStyles>
       </FlexContainer>
       <FlexContainer>

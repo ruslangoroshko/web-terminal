@@ -65,6 +65,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
             <SvgIcon
               {...IconClose}
               fillColor="rgba(255, 255, 255, 0.8)"
+              hoverFillColor="#00FFDD"
             ></SvgIcon>
           </ButtonWithoutStyles>
         </FlexContainer>

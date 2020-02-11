@@ -89,7 +89,11 @@ function PendingOrder(props: Props) {
           </ButtonWithoutStyles>
         </FlexContainer>
         <ButtonWithoutStyles onClick={handleCloseOrder}>
-          <SvgIcon {...IconClose} fillColor="rgba(255, 255, 255, 0.8)" />
+          <SvgIcon
+            {...IconClose}
+            fillColor="rgba(255, 255, 255, 0.8)"
+            hoverFillColor="#00FFDD"
+          />
         </ButtonWithoutStyles>
       </FlexContainer>
     </OrderWrapper>
