@@ -18,6 +18,7 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
   const { notificationStore } = useStores();
 
   const [shouldRender, setRender] = useState(show);
+  let test: NodeJS.Timeout;
 
   useEffect(() => {
     if (show) {
@@ -31,9 +32,19 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
     }
   };
 
+  const closeNotification = () => {
+    if (notificationStore.timer) {
+      clearTimeout(notificationStore.timer);
+    }
+    notificationStore.closeNotification();
+  };
+
   useEffect(() => {
     if (notificationStore.isActiveNotification) {
-      setTimeout(() => {
+      if (notificationStore.timer) {
+        clearTimeout(notificationStore.timer);
+      }
+      notificationStore.timer = setTimeout(() => {
         notificationStore.closeNotification();
       }, 5000);
     }
@@ -60,7 +71,7 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
       >
         {notificationStore.notificationMessage}
       </PrimaryTextSpan>
-      <ButtonWithoutStyles onClick={notificationStore.closeNotification}>
+      <ButtonWithoutStyles onClick={closeNotification}>
         <SvgIcon
           {...IconClose}
           fillColor="rgba(255, 255, 255, 0.6)"
