@@ -95,5 +95,8 @@ const DropDownItem = styled(FlexContainer)`
 
   &:hover {
     cursor: pointer;
+    > span {
+      color: #00ffdd;
+    }
   }
 `;

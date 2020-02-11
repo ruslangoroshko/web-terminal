@@ -134,4 +134,11 @@ const ProfitPercentPrice = styled(FlexContainer)`
     border: none;
     margin: 0;
   }
+
+  &:hover {
+    cursor: pointer;
+    span {
+      color: #00ffdd;
+    }
+  }
 `;

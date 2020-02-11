@@ -100,6 +100,8 @@ const ButtonAutoClosePurchase = styled(SecondaryButton)<{
   width: 100%;
   margin-bottom: 14px;
   text-align: ${props => props.hasValues && 'left'};
+  border: ${props => props.hasValues && '1px solid rgba(255, 255, 255, 0.1)'};
+  background-color: ${props => props.hasValues && 'rgba(255, 255, 255, 0.06)'};
 `;
 
 const ClearSLTPButton = styled(ButtonWithoutStyles)`
