@@ -131,6 +131,9 @@ const Dashboard = observer(() => {
         (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
           if (mainAppStore.activeAccount?.id === response.accountId) {
             instrumentsStore.instrumentGroups = response.data;
+            if (response.data.length) {
+              instrumentsStore.activeInstrumentGroupId = response.data[0].id;
+            }
           }
         }
       );

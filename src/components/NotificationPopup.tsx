@@ -7,7 +7,6 @@ import SvgIcon from './SvgIcon';
 import IconClose from '../assets/svg/icon-close.svg';
 import { keyframes } from '@emotion/core';
 import { useStores } from '../hooks/useStores';
-import TransitionAnimation from './TransitionAnimation';
 import { observer } from 'mobx-react-lite';
 
 interface Props {

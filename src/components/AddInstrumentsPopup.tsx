@@ -31,6 +31,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
 
     const rect = wrapperRef.current?.getBoundingClientRect();
 
+    // detect if menu goes beneath the edge of screen
     if (rect && window.innerWidth - rect.right - 320 <= 0) {
       setIsLeft(false);
     }

@@ -10,6 +10,7 @@ interface ContextProps {
   favouriteInstrumentsIds: string[];
   activeInstrument?: InstrumentModelWSDTO;
   instrumentGroups: InstrumentGroupWSDTO[];
+  activeInstrumentGroupId?: InstrumentGroupWSDTO['id'];
 }
 
 export class InstrumentsStore implements ContextProps {
@@ -20,6 +21,7 @@ export class InstrumentsStore implements ContextProps {
   @observable activeInstrument?: InstrumentModelWSDTO;
   @observable filteredInstrumentsSearch: InstrumentModelWSDTO[] = [];
   @observable instrumentGroups: InstrumentGroupWSDTO[] = [];
+  @observable activeInstrumentGroupId?: InstrumentGroupWSDTO['id'];
 
   @computed get activeInstruments() {
     return this.instruments.filter(item =>

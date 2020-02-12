@@ -4,6 +4,9 @@ import {
 } from './supportedTimeScales';
 import { SeriesStyle } from '../vendor/charting_library/charting_library.min';
 import IconAreaChart from '../assets/svg/icon-chart-area.svg';
+import IconLineChart from '../assets/svg/icon-chart-area.svg';
+import IconCandleChart from '../assets/svg/icon-chart-candle.svg';
+import IconBarChart from '../assets/svg/icon-chart-bars.svg';
 
 export const BASIC_RESOLUTION_KEY: SupportedResolutionsType = '1 minute';
 export const BASIC_INTERVAL = supportedInterval['1D'];
@@ -14,13 +17,13 @@ export const getChartIconByType = (chartType: SeriesStyle) => {
       return IconAreaChart;
 
     case SeriesStyle.Line:
-      return IconAreaChart;
+      return IconLineChart;
 
     case SeriesStyle.Candles:
-      return IconAreaChart;
+      return IconCandleChart;
 
     case SeriesStyle.Bars:
-      return IconAreaChart;
+      return IconBarChart;
 
     default:
       return;

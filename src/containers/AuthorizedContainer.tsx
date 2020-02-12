@@ -17,6 +17,7 @@ import { HistoryTabEnum } from '../enums/HistoryTabEnum';
 import TradingHistoryExpanded from '../components/SideBarTabs/TradingHistoryExpanded';
 import Loader from '../components/Loader';
 import OrdersExpanded from '../components/SideBarTabs/OrdersExpanded';
+import Markets from '../components/SideBarTabs/Markets';
 
 interface Props {}
 
@@ -40,7 +41,11 @@ const RenderTabByType = observer(() => {
       );
 
     case SideBarTabType.Markets:
-      return <Portfolio></Portfolio>;
+      return (
+        <ResizableContentAnimationWrapper>
+          <Markets></Markets>
+        </ResizableContentAnimationWrapper>
+      );
 
     case SideBarTabType.History:
       return tabsStore.historyTab === HistoryTabEnum.TradingHistory ? (
