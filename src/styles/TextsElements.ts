@@ -20,6 +20,8 @@ interface PrimaryTextType {
   textTransform?: 'capitalize' | 'lowercase' | 'uppercase';
   whiteSpace?: 'nowrap' | 'pre' | 'normal';
   textAlign?: 'left' | 'center' | 'right';
+  textOverflow?: 'ellipsis';
+  overflow?: 'hidden';
 }
 
 export const PrimaryTextSpan = styled.span<PrimaryTextType>`
@@ -35,6 +37,8 @@ export const PrimaryTextSpan = styled.span<PrimaryTextType>`
   text-transform: ${props => props.textTransform};
   white-space: ${props => props.whiteSpace};
   text-align: ${props => props.textAlign};
+  text-overflow: ${props => props.textOverflow};
+  overflow: ${props => props.overflow};
 `;
 
 export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
@@ -50,6 +54,8 @@ export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
   text-transform: ${props => props.textTransform};
   white-space: ${props => props.whiteSpace};
   text-align: ${props => props.textAlign};
+  text-overflow: ${props => props.textOverflow};
+  overflow: ${props => props.overflow};
 `;
 
 export const QuoteText = styled(PrimaryTextSpan)<
@@ -66,4 +72,6 @@ export const QuoteText = styled(PrimaryTextSpan)<
   text-decoration: ${props => props.textDecoration};
   text-transform: ${props => props.textTransform};
   text-align: ${props => props.textAlign};
+  text-overflow: ${props => props.textOverflow};
+  overflow: ${props => props.overflow};
 `;

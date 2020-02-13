@@ -8,6 +8,7 @@ interface Props {
   viewBox: string;
   fillColor?: string;
   hoverFillColor?: string;
+  strokeColor?: string;
   transformProp?: string;
 }
 
@@ -19,6 +20,7 @@ function SvgIcon(props: Props) {
     viewBox,
     fillColor,
     hoverFillColor,
+    strokeColor,
     transformProp,
   } = props;
   const viewBoxValues = viewBox.split(' ');
@@ -30,6 +32,7 @@ function SvgIcon(props: Props) {
       width={viewBoxWidth}
       height={viewBoxHeight}
       fillColor={fillColor}
+      strokeColor={strokeColor}
       hoverFillColor={hoverFillColor}
       transformProp={transformProp}
     >
@@ -42,10 +45,12 @@ export default SvgIcon;
 
 const SvgIconElement = styled.svg<{
   fillColor?: string;
+  strokeColor?: string;
   hoverFillColor?: string;
   transformProp?: string;
 }>`
   fill: ${props => props.fillColor};
+  stroke: ${props => props.strokeColor};
   transition: fill 0.2s ease;
   will-change: fill;
   transform: ${props => props.transformProp};

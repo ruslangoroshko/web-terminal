@@ -25,6 +25,7 @@ const ResizableContainer: FC = observer(props => {
       height="100%"
       zIndex="102"
       isActive={tabsStore.sideBarTabType !== null}
+      flexDirection="column"
     >
       <FlexContainer position="absolute" top="12px" right="12px" zIndex="200">
         <IconButton onClick={toggleExpandtab}>

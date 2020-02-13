@@ -7,6 +7,8 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { Observer } from 'mobx-react-lite';
 import SvgIcon from '../SvgIcon';
 import IconStar from '../../assets/svg/icon-star.svg';
+import IconArrowSortingUp from '../../assets/svg/icon-arrow-sorting-up.svg';
+import InstrumentMarkets from './InstrumentMarkets';
 
 interface Props {}
 
@@ -62,42 +64,74 @@ function Markets(props: Props) {
         backgroundColor="rgba(65,66,83,0.5)"
         padding="8px 16px"
         alignItems="center"
+        justifyContent="space-between"
       >
-        <FlexContainer margin="0 8px 0 0">
-          <ButtonWithoutStyles>
-            <SvgIcon {...IconStar} fillColor="rgba(255, 255, 255, 0.4)" />
-          </ButtonWithoutStyles>
-        </FlexContainer>
-        <FlexContainer margin="0 95px 0 0">
-          <ButtonWithoutStyles>
-            <PrimaryTextSpan
-              fontSize="10px"
-              textTransform="uppercase"
-              color="rgba(255, 255, 255, 0.4)"
-            >
-              market name
-            </PrimaryTextSpan>
-          </ButtonWithoutStyles>
-        </FlexContainer>
-        <FlexContainer margin="0 30px 0 0">
-          <ButtonWithoutStyles>
-            <PrimaryTextSpan
-              color="rgba(255,255,255,0.4)"
-              fontSize="10px"
-              textTransform="uppercase"
-            >
-              quote
-            </PrimaryTextSpan>
-          </ButtonWithoutStyles>
+        <FlexContainer>
+          <FlexContainer margin="0 8px 0 0">
+            <ButtonWithoutStyles>
+              <SvgIcon {...IconStar} fillColor="rgba(255, 255, 255, 0.4)" />
+            </ButtonWithoutStyles>
+          </FlexContainer>
+          <FlexContainer>
+            <ButtonWithoutStyles>
+              <PrimaryTextSpan
+                fontSize="10px"
+                textTransform="uppercase"
+                color="rgba(255, 255, 255, 0.4)"
+              >
+                market name
+              </PrimaryTextSpan>
+            </ButtonWithoutStyles>
+          </FlexContainer>
         </FlexContainer>
         <FlexContainer>
-          <ButtonWithoutStyles>
-            <PrimaryTextSpan color="rgba(255,255,255, 0.4)" >
-              24H
-            </PrimaryTextSpan>
-          </ButtonWithoutStyles>
+          <FlexContainer
+            margin="0 30px 0 0"
+            width="34px"
+            flexDirection="column"
+            alignItems="flex-end"
+          >
+            <ButtonWithoutStyles>
+              <PrimaryTextSpan
+                color="rgba(255,255,255,0.4)"
+                fontSize="10px"
+                textTransform="uppercase"
+              >
+                quote
+              </PrimaryTextSpan>
+            </ButtonWithoutStyles>
+          </FlexContainer>
+          <FlexContainer flexDirection="column">
+            <ButtonWithoutStyles>
+              <PrimaryTextSpan
+                color="rgba(255,255,255,0.4)"
+                fontSize="10px"
+                textTransform="uppercase"
+              >
+                24H
+              </PrimaryTextSpan>
+              <SvgIcon
+                {...IconArrowSortingUp}
+                strokeColor="rgba(255,255,255,0.4)"
+              />
+            </ButtonWithoutStyles>
+          </FlexContainer>
         </FlexContainer>
       </SortingWrapper>
+      <FlexContainer flexDirection="column" padding="0 16px">
+        <Observer>
+          {() => (
+            <>
+              {instrumentsStore.sortedInstruments.map(item => (
+                <InstrumentMarkets
+                  instrument={item}
+                  key={item.id}
+                ></InstrumentMarkets>
+              ))}
+            </>
+          )}
+        </Observer>
+      </FlexContainer>
     </FlexContainer>
   );
 }

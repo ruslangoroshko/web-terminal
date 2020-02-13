@@ -13,7 +13,7 @@ export interface InstrumentModelWSDTO {
   bid?: number;
   ask?: number;
   tickSize?: number;
-  groupId?: string;
+  groupId: string;
   chng: number;
 }
 
