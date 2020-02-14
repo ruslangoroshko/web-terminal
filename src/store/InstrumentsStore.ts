@@ -2,16 +2,16 @@ import { observable, computed } from 'mobx';
 import {
   InstrumentModelWSDTO,
   InstrumentGroupWSDTO,
+  PriceChangeWSDTO,
 } from '../types/Instruments';
-import Fields from '../constants/fields';
 import { RootStore } from './RootStore';
-import calculateGrowth from '../helpers/calculateGrowth';
 
 interface ContextProps {
   rootStore: RootStore;
   instruments: InstrumentModelWSDTO[];
   activeInstrumentsIds: string[];
   favouriteInstrumentsIds: string[];
+  pricesChange: PriceChangeWSDTO[];
   activeInstrument?: InstrumentModelWSDTO;
   instrumentGroups: InstrumentGroupWSDTO[];
   activeInstrumentGroupId?: InstrumentGroupWSDTO['id'];
@@ -30,6 +30,8 @@ export class InstrumentsStore implements ContextProps {
   @observable activeInstrumentGroupId?: InstrumentGroupWSDTO['id'];
 
   @observable sortByField: string | null = null;
+
+  @observable pricesChange: PriceChangeWSDTO[] = [];
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;

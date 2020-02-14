@@ -9,6 +9,7 @@ import { InstrumentModelWSDTO } from '../types/Instruments';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import { PrimaryTextSpan, QuoteText } from '../styles/TextsElements';
+import { getNumberSign } from '../helpers/getNumberSign';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -17,8 +18,14 @@ interface Props {
 const ActiveInstrument: FC<Props> = props => {
   const { instrument } = props;
 
-  const { quotesStore } = useStores();
+  const { quotesStore, instrumentsStore } = useStores();
 
+  const priceChange = instrumentsStore.pricesChange.find(
+    item => item.id === instrument.id
+  ) || {
+    id: '',
+    chng: 0,
+  };
   return quotesStore.quotes[instrument.id] ? (
     <FlexContainer>
       <FlexContainer
@@ -48,7 +55,7 @@ const ActiveInstrument: FC<Props> = props => {
           color="rgba(255, 255, 255, 0.4)"
           marginBottom="8px"
         >
-          {instrument.name}
+          {instrument.base}/{instrument.quote}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column" margin="0 70px 0 0">
@@ -63,21 +70,9 @@ const ActiveInstrument: FC<Props> = props => {
                 >
                   {quotesStore.quotes[instrument.id].bid.c}
                 </PrimaryTextSpan>
-                <QuoteText
-                  fontSize="12px"
-                  isGrowth={
-                    quotesStore.quotes[instrument.id].dir === AskBidEnum.Buy
-                  }
-                >
-                  {`${
-                    quotesStore.quotes[instrument.id].dir === AskBidEnum.Buy
-                      ? '+'
-                      : '-'
-                  }${calculateGrowth(
-                    quotesStore.quotes[instrument.id].bid.c,
-                    quotesStore.quotes[instrument.id].ask.c,
-                    instrument.digits
-                  )}`}
+                <QuoteText fontSize="12px" isGrowth={priceChange.chng >= 0}>
+                  {getNumberSign(priceChange.chng)}
+                  {Math.abs(priceChange.chng)}%
                 </QuoteText>
               </>
             )}

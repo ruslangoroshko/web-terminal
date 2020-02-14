@@ -96,6 +96,7 @@ module.exports = (env, argv) => {
       }),
       new CopyPlugin([
         { from: './src/vendor/charting_library/', to: 'charting_library' },
+        { from: './src/apple-app-site-association', to: '/' },
       ]),
     ],
   };

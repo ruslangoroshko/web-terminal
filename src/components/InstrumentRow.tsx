@@ -8,20 +8,21 @@ import baseImg from '../assets/images/base.png';
 import quoteImg from '../assets/images/quote.png';
 import { AskBidEnum } from '../enums/AskBid';
 import calculateGrowth from '../helpers/calculateGrowth';
-import { Observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import IconMarketsFavourites from '../assets/svg/icon-instrument-favourites.svg';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
 import { toggleFavouriteInstrument } from '../helpers/activeInstrumentsHelper';
 import API from '../helpers/API';
 import KeysInApi from '../constants/keysInApi';
+import { getNumberSign } from '../helpers/getNumberSign';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
   toggle: () => void;
 }
 
-const InstrumentRow: FC<Props> = props => {
+const InstrumentRow: FC<Props> = observer(props => {
   const { instrument, toggle } = props;
 
   const { quotesStore, instrumentsStore } = useStores();
@@ -43,6 +44,13 @@ const InstrumentRow: FC<Props> = props => {
       });
     }
     toggle();
+  };
+
+  const priceChange = instrumentsStore.pricesChange.find(
+    item => item.id === instrument.id
+  ) || {
+    id: '',
+    chng: 0,
   };
 
   return (
@@ -85,47 +93,36 @@ const InstrumentRow: FC<Props> = props => {
         margin="0 12px 0 0"
         alignItems="flex-end"
       >
-        <Observer>
-          {() => (
-            <>
-              <PrimaryTextSpan
-                color="#FFFCCC"
-                fontSize="12px"
-                lineHeight="14px"
-                marginBottom="4px"
-              >
-                {quotesStore.quotes[instrument.id].bid.c}
-              </PrimaryTextSpan>
-              <QuoteText
-                isGrowth={
-                  quotesStore.quotes[instrument.id].dir === AskBidEnum.Buy
-                }
-                fontSize="12px"
-                lineHeight="14px"
-              >
-                {instrument.chng}
-              </QuoteText>
-            </>
-          )}
-        </Observer>
+        <PrimaryTextSpan
+          color="#FFFCCC"
+          fontSize="12px"
+          lineHeight="14px"
+          marginBottom="4px"
+        >
+          {quotesStore.quotes[instrument.id].bid.c}
+        </PrimaryTextSpan>
+        <QuoteText
+          isGrowth={priceChange.chng >= 0}
+          fontSize="12px"
+          lineHeight="14px"
+        >
+          {getNumberSign(priceChange.chng)}
+          {Math.abs(priceChange.chng)}%
+        </QuoteText>
       </FlexContainer>
       <ButtonWithoutStyles onClick={toggleFavourite}>
-        <Observer>
-          {() => (
-            <SvgIcon
-              {...IconMarketsFavourites}
-              fillColor={
-                instrumentsStore.favouriteInstrumentsIds.includes(instrument.id)
-                  ? '#FFFCCC'
-                  : 'rgba(255, 255, 255, 0.5)'
-              }
-            />
-          )}
-        </Observer>
+        <SvgIcon
+          {...IconMarketsFavourites}
+          fillColor={
+            instrumentsStore.favouriteInstrumentsIds.includes(instrument.id)
+              ? '#FFFCCC'
+              : 'rgba(255, 255, 255, 0.5)'
+          }
+        />
       </ButtonWithoutStyles>
     </InstrumentRowWrapper>
   );
-};
+});
 
 export default InstrumentRow;
 

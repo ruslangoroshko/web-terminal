@@ -10,6 +10,8 @@ import calculateGrowth from '../../helpers/calculateGrowth';
 import { useStores } from '../../hooks/useStores';
 import { AskBidEnum } from '../../enums/AskBid';
 import { observer } from 'mobx-react-lite';
+import { getNumberSign } from '../../helpers/getNumberSign';
+import { toJS } from 'mobx';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -19,7 +21,14 @@ const InstrumentMarkets: FC<Props> = observer(props => {
   const {
     instrument: { base, id, name, quote, ask, bid },
   } = props;
-  const { mainAppStore, quotesStore } = useStores();
+  const { mainAppStore, quotesStore, instrumentsStore } = useStores();
+
+  const priceChange = instrumentsStore.pricesChange.find(
+    item => item.id === id
+  ) || {
+    id: '',
+    chng: 0,
+  };
 
   return (
     <InstrumentWrapper padding="12px 0" justifyContent="space-between">
@@ -57,11 +66,9 @@ const InstrumentMarkets: FC<Props> = observer(props => {
         </FlexContainer>
       </FlexContainer>
       <FlexContainer width="40px" flexDirection="column" alignItems="flex-end">
-        <QuoteText
-          isGrowth={quotesStore.quotes[id].dir === AskBidEnum.Buy}
-          fontSize="12px"
-        >
-          {calculateGrowth(bid!, ask!, mainAppStore.activeAccount?.digits)}
+        <QuoteText isGrowth={priceChange.chng >= 0} fontSize="12px">
+          {getNumberSign(priceChange.chng)}
+          {Math.abs(priceChange.chng)}%
         </QuoteText>
       </FlexContainer>
     </InstrumentWrapper>

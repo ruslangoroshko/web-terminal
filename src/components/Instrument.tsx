@@ -10,9 +10,7 @@ import SvgIcon from './SvgIcon';
 import styled from '@emotion/styled';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
-import { PrimaryTextSpan, QuoteText } from '../styles/TextsElements';
-import calculateGrowth from '../helpers/calculateGrowth';
-import { AskBidEnum } from '../enums/AskBid';
+import { PrimaryTextSpan } from '../styles/TextsElements';
 
 interface Props {
   switchInstrument: () => void;
@@ -62,19 +60,13 @@ const Instrument: FC<Props> = ({
                   <PrimaryTextSpan fontSize="12px">
                     {instrument.name}
                   </PrimaryTextSpan>
-                  <QuoteText
+                  <PrimaryTextSpan
                     fontSize="11px"
                     lineHeight="14px"
-                    isGrowth={
-                      quotesStore.quotes[instrument.id].dir === AskBidEnum.Buy
-                    }
+                    color="rgba(255, 255, 255, 0.4)"
                   >
-                    {calculateGrowth(
-                      quotesStore.quotes[instrument.id].bid.c,
-                      quotesStore.quotes[instrument.id].ask.c,
-                      mainAppStore.activeAccount?.digits
-                    )}
-                  </QuoteText>
+                    {quotesStore.quotes[instrument.id].bid.c}
+                  </PrimaryTextSpan>
                 </FlexContainer>
               )}
             </Observer>

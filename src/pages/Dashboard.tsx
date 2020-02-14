@@ -7,7 +7,7 @@ import Topics from '../constants/websocketTopics';
 import { AccountModelWebSocketDTO } from '../types/Accounts';
 import Fields from '../constants/fields';
 import TVChartContainer from '../containers/ChartContainer';
-import { InstrumentModelWSDTO } from '../types/Instruments';
+import { InstrumentModelWSDTO, PriceChangeWSDTO } from '../types/Instruments';
 import { PositionModelWSDTO } from '../types/Positions';
 import SvgIcon from '../components/SvgIcon';
 import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';
@@ -88,6 +88,7 @@ const Dashboard = observer(() => {
               });
             });
             instrumentsStore.instruments = response.data;
+            console.log('TCL: Dashboard -> response.data', response.data);
             activeInstrumentsInit(instrumentsStore);
           }
         }
@@ -135,6 +136,13 @@ const Dashboard = observer(() => {
               instrumentsStore.activeInstrumentGroupId = response.data[0].id;
             }
           }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.PRICE_CHANGE,
+        (response: ResponseFromWebsocket<PriceChangeWSDTO[]>) => {
+          instrumentsStore.pricesChange = response.data;
         }
       );
     }
