@@ -62,7 +62,8 @@ function BuySellPanel(props: Props) {
       .number()
       .min(
         instrument.minOperationVolume / initialValues.multiplier,
-        'Minimum trade volume [$1]. Please increase your trade amount or multiplier.'
+        `Minimum trade volume [$${instrument.minOperationVolume /
+          initialValues.multiplier}]. Please increase your trade amount or multiplier.`
       )
       .lessThan(
         quotesStore.available,
@@ -70,7 +71,8 @@ function BuySellPanel(props: Props) {
       )
       .max(
         instrument.maxOperationVolume / initialValues.multiplier,
-        'Maximum trade volume [$10000]. Please decrease your trade amount or multiplier.'
+        `Maximum trade volume [$${instrument.maxOperationVolume /
+          initialValues.multiplier}]. Please decrease your trade amount or multiplier.`
       )
       .required('Please fill Invest amount'),
     multiplier: yup.number().required('Required amount'),
@@ -197,9 +199,10 @@ function BuySellPanel(props: Props) {
     submitForm: () => Promise<void>,
     resetForm: () => void
   ) => () => {
-    submitForm().then(() => {
-      resetForm();
-    });
+    submitForm();
+    // .then(() => {
+    //   resetForm();
+    // });
   };
 
   return (
