@@ -90,7 +90,7 @@ function PersonalData(props: Props) {
             enableReinitialize
           >
             {({ submitForm, setFieldValue }) => (
-              <CustomForm>
+              <CustomForm translate="en">
                 <FlexContainer width="100%" margin="0 0 28px 0">
                   <Field type="text" name={Fields.FIRST_NAME}>
                     {({ field, meta }: FieldProps) => (

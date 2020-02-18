@@ -58,7 +58,7 @@ const ChartResolutionsDropdown: FC<Props> = props => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  });
+  }, []);
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>

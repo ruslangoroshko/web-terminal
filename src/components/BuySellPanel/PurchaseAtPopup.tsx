@@ -17,16 +17,10 @@ interface Props {
   setFieldValue: (field: any, value: any) => void;
   purchaseAtValue: number | null;
   instrumentId: string;
-  currencySymbol: string;
 }
 
 function PurchaseAtPopup(props: Props) {
-  const {
-    setFieldValue,
-    purchaseAtValue,
-    instrumentId,
-    currencySymbol,
-  } = props;
+  const { setFieldValue, purchaseAtValue, instrumentId } = props;
 
   const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
     SLTPStore.purchaseAtValue = e.target.value;
@@ -36,7 +30,12 @@ function PurchaseAtPopup(props: Props) {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const { quotesStore, SLTPStore, instrumentsStore } = useStores();
+  const {
+    quotesStore,
+    SLTPStore,
+    instrumentsStore,
+    mainAppStore,
+  } = useStores();
 
   const handleToggle = () => {
     toggle(!on);
@@ -87,7 +86,7 @@ function PurchaseAtPopup(props: Props) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  });
+  }, []);
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
@@ -99,7 +98,7 @@ function PurchaseAtPopup(props: Props) {
             hasPrice={!!purchaseAtValue}
           >
             <PrimaryTextSpan color="#fffccc" fontSize="14px">
-              {currencySymbol}
+              {mainAppStore.activeAccount?.symbol}
               {purchaseAtValue}
             </PrimaryTextSpan>
           </ButtonAutoClosePurchase>

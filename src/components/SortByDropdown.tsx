@@ -51,7 +51,7 @@ const SortByDropdown: FC<Props> = ({ sortTypeDropdown }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  });
+  }, []);
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>

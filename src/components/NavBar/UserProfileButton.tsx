@@ -28,7 +28,7 @@ function UserProfileButton(props: Props) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  });
+  }, []);
 
   return (
     <UserProfileButtonWrapper ref={wrapperRef} onClick={handleToggle}>

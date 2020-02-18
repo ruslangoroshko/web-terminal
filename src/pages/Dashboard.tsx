@@ -24,13 +24,12 @@ import { Observer, observer } from 'mobx-react-lite';
 import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import { PendingOrdersWSDTO } from '../types/PendingOrders';
-import Loader from '../components/Loader';
-import Modal from '../components/Modal';
 import NotificationPopup from '../components/NotificationPopup';
+import Loader from '../components/Loader';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
-const Dashboard = observer(() => {
+const Dashboard = () => {
   const {
     mainAppStore,
     tradingViewStore,
@@ -63,109 +62,109 @@ const Dashboard = observer(() => {
   }, [mainAppStore.activeSession]);
 
   useEffect(() => {
-    if (mainAppStore.activeAccount) {
-      mainAppStore.activeSession?.on(
-        Topics.INSTRUMENTS,
-        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-          if (response.accountId === mainAppStore.activeAccount?.id) {
-            response.data.forEach(item => {
-              quotesStore.setQuote({
-                ask: {
-                  c: item.ask || 0,
-                  h: 0,
-                  l: 0,
-                  o: 0,
-                },
-                bid: {
-                  c: item.bid || 0,
-                  h: 0,
-                  l: 0,
-                  o: 0,
-                },
-                dir: AskBidEnum.Buy,
-                dt: Date.now(),
-                id: item.id,
-              });
+    mainAppStore.activeSession?.on(
+      Topics.INSTRUMENTS,
+      (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
+        if (response.accountId === mainAppStore.activeAccount?.id) {
+          response.data.forEach(item => {
+            quotesStore.setQuote({
+              ask: {
+                c: item.ask || 0,
+                h: 0,
+                l: 0,
+                o: 0,
+              },
+              bid: {
+                c: item.bid || 0,
+                h: 0,
+                l: 0,
+                o: 0,
+              },
+              dir: AskBidEnum.Buy,
+              dt: Date.now(),
+              id: item.id,
             });
-            instrumentsStore.instruments = response.data;
-            console.log('TCL: Dashboard -> response.data', response.data);
-            activeInstrumentsInit(instrumentsStore);
-          }
+          });
+          instrumentsStore.instruments = response.data;
+          activeInstrumentsInit(instrumentsStore);
         }
-      );
+      }
+    );
 
-      mainAppStore.activeSession?.on(
-        Topics.ACTIVE_POSITIONS,
-        (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
-          if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.activePositions = response.data;
-          }
+    mainAppStore.activeSession?.on(
+      Topics.ACTIVE_POSITIONS,
+      (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
+        if (response.accountId === mainAppStore.activeAccount?.id) {
+          quotesStore.activePositions = response.data;
         }
-      );
+      }
+    );
 
-      mainAppStore.activeSession?.on(
-        Topics.UPDATE_ACCOUNT,
-        (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
-          if (response.accountId === mainAppStore.activeAccount?.id) {
-            const newActivePositions = quotesStore.activePositions.map(item => {
-              if (item.id === response.data.id) {
-                return response.data;
-              }
-              return item;
-            });
-            quotesStore.activePositions = newActivePositions;
-          }
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.PENDING_ORDERS,
-        (response: ResponseFromWebsocket<PendingOrdersWSDTO[]>) => {
-          if (mainAppStore.activeAccount?.id === response.accountId) {
-            quotesStore.pendingOrders = response.data;
-          }
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.INSTRUMENT_GROUPS,
-        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-          if (mainAppStore.activeAccount?.id === response.accountId) {
-            instrumentsStore.instrumentGroups = response.data;
-            if (response.data.length) {
-              instrumentsStore.activeInstrumentGroupId = response.data[0].id;
+    mainAppStore.activeSession?.on(
+      Topics.UPDATE_ACCOUNT,
+      (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
+        if (response.accountId === mainAppStore.activeAccount?.id) {
+          const newActivePositions = quotesStore.activePositions.map(item => {
+            if (item.id === response.data.id) {
+              return response.data;
             }
+            return item;
+          });
+          quotesStore.activePositions = newActivePositions;
+        }
+      }
+    );
+
+    mainAppStore.activeSession?.on(
+      Topics.PENDING_ORDERS,
+      (response: ResponseFromWebsocket<PendingOrdersWSDTO[]>) => {
+        if (mainAppStore.activeAccount?.id === response.accountId) {
+          quotesStore.pendingOrders = response.data;
+        }
+      }
+    );
+
+    mainAppStore.activeSession?.on(
+      Topics.INSTRUMENT_GROUPS,
+      (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
+        if (mainAppStore.activeAccount?.id === response.accountId) {
+          instrumentsStore.instrumentGroups = response.data;
+          if (response.data.length) {
+            instrumentsStore.activeInstrumentGroupId = response.data[0].id;
           }
         }
-      );
+      }
+    );
 
-      mainAppStore.activeSession?.on(
-        Topics.PRICE_CHANGE,
-        (response: ResponseFromWebsocket<PriceChangeWSDTO[]>) => {
-          instrumentsStore.pricesChange = response.data;
-        }
-      );
-    }
+    mainAppStore.activeSession?.on(
+      Topics.PRICE_CHANGE,
+      (response: ResponseFromWebsocket<PriceChangeWSDTO[]>) => {
+        instrumentsStore.pricesChange = response.data;
+      }
+    );
   }, [mainAppStore.activeAccount]);
 
-  return !mainAppStore.isLoading &&
-    mainAppStore.activeAccount &&
-    mainAppStore.activeSession ? (
+  return (
     <DashboardWrapper
       height="100%"
       width="100%"
       flexDirection="column"
       position="relative"
     >
+      <Loader isLoading={mainAppStore.isLoading}></Loader>
       <FlexContainer
         position="absolute"
         bottom="100px"
         left="14px"
         zIndex="100"
       >
-        <NotificationPopup
-          show={notificationStore.isActiveNotification}
-        ></NotificationPopup>
+        <Observer>
+          {() => (
+            <NotificationPopup
+              show={notificationStore.isActiveNotification}
+            ></NotificationPopup>
+          )}
+        </Observer>
       </FlexContainer>
       <FlexContainer flexDirection="column" margin="0 0 20px 0">
         <FlexContainer>
@@ -183,19 +182,17 @@ const Dashboard = observer(() => {
             </Toggle>
           </FlexContainer>
         </FlexContainer>
-        <FlexContainer position="relative" padding="24px 20px">
-          <Observer>
-            {() => (
-              <>
-                {instrumentsStore.activeInstrument && (
-                  <ActiveInstrument
-                    instrument={instrumentsStore.activeInstrument}
-                  />
-                )}
-              </>
-            )}
-          </Observer>
-        </FlexContainer>
+        <Observer>
+          {() => (
+            <FlexContainer position="relative" padding="24px 20px">
+              {instrumentsStore.activeInstrument && (
+                <ActiveInstrument
+                  instrument={instrumentsStore.activeInstrument}
+                />
+              )}
+            </FlexContainer>
+          )}
+        </Observer>
       </FlexContainer>
       <GridWrapper>
         <Observer>
@@ -208,16 +205,23 @@ const Dashboard = observer(() => {
                   />
                 )}
               </ChartWrapper>
-              <BuySellPanelWrapper>
-                {instrumentsStore.activeInstrument && (
-                  <BuySellPanel
-                    currencySymbol={mainAppStore.activeAccount!.symbol}
-                    instrument={instrumentsStore.activeInstrument}
-                    accountId={mainAppStore.activeAccount!.id}
-                    digits={mainAppStore.activeAccount!.digits}
-                  ></BuySellPanel>
-                )}
-              </BuySellPanelWrapper>
+            </>
+          )}
+        </Observer>
+        <Observer>
+          {() => (
+            <>
+              {instrumentsStore.activeInstrument && (
+                <BuySellPanel
+                  instrument={instrumentsStore.activeInstrument}
+                ></BuySellPanel>
+              )}
+            </>
+          )}
+        </Observer>
+        <Observer>
+          {() => (
+            <>
               <ChartInstruments justifyContent="space-between">
                 <ChartSettingsButtons></ChartSettingsButtons>
                 <ChartIntervalTimeScale></ChartIntervalTimeScale>
@@ -232,8 +236,8 @@ const Dashboard = observer(() => {
         </Observer>
       </GridWrapper>
     </DashboardWrapper>
-  ) : null;
-});
+  );
+};
 
 export default Dashboard;
 

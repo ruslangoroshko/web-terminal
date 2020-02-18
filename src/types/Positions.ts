@@ -13,13 +13,21 @@ export interface OpenPositionModel {
   sl?: number;
   tpRate?: number;
   slRate?: number;
-  purchaseAt?: number;
+}
+
+export interface OpenPendingOrder {
+  processId: string;
+  accountId: string;
+  investmentAmount: number;
+  instrumentId: string;
+  operation: AskBidEnum;
+  multiplier: number;
 }
 
 export interface OpenPositionModelFormik {
   processId: string;
   accountId: string;
-  investmentAmount: string;
+  investmentAmount: number;
   instrumentId: string;
   operation: AskBidEnum | null;
   multiplier: number;

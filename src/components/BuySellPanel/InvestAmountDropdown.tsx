@@ -10,20 +10,21 @@ import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 
 interface Props {
-  symbol: string;
   setFieldValue: any;
+  toggle: () => void;
 }
 
 const currencies = [2000, 1000, 500, 250, 100];
 
 const InvestAmountDropdown: FC<Props> = observer(props => {
-  const { symbol, setFieldValue } = props;
+  const { setFieldValue, toggle } = props;
 
   const handleChangeAmount = (value: number) => () => {
     setFieldValue(Fields.AMOUNT, value);
+    toggle();
   };
 
-  const { quotesStore } = useStores();
+  const { quotesStore, mainAppStore } = useStores();
 
   return (
     <MultiplierDropdownWrapper
@@ -33,7 +34,6 @@ const InvestAmountDropdown: FC<Props> = observer(props => {
       top="0"
       right="calc(100% + 8px)"
       width="140px"
-      className="investAmountDropdown"
     >
       {currencies.map(item => (
         <DropDownItem
@@ -42,7 +42,7 @@ const InvestAmountDropdown: FC<Props> = observer(props => {
           onClick={handleChangeAmount(item)}
         >
           <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="#fffccc">
-            {symbol}
+            {mainAppStore.activeAccount?.symbol}
             {item}
           </PrimaryTextSpan>
         </DropDownItem>
@@ -60,7 +60,7 @@ const InvestAmountDropdown: FC<Props> = observer(props => {
           Available Balance
         </PrimaryTextParagraph>
         <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="#fffccc">
-          {symbol}
+          {mainAppStore.activeAccount?.symbol}
           {quotesStore.available}
         </PrimaryTextSpan>
       </DropDownItem>
@@ -78,15 +78,7 @@ const MultiplierDropdownWrapper = styled(FlexContainer)`
     background-color: rgba(0, 0, 0, 0.34);
     backdrop-filter: blur(12px);
   }
-
   border-radius: 4px;
-  opacity: 0;
-  visibility: hidden;
-
-  &:hover {
-    opacity: 1;
-    visibility: visible;
-  }
 `;
 
 const DropDownItem = styled(FlexContainer)`

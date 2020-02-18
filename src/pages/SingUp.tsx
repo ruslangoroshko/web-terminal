@@ -61,7 +61,7 @@ function SignUp(props: Props) {
           validationSchema={validationSchema}
         >
           {formikBag => (
-            <CustomForm>
+            <CustomForm translate="en">
               <FlexContainer flexDirection="column">
                 <Field type="text" name={Fields.EMAIL}>
                   {({ field, meta }: FieldProps) => (
@@ -154,46 +154,9 @@ const CustomForm = styled(Form)`
   margin: 0;
 `;
 
-const SubmitButton = styled(ButtonWithoutStyles)`
-  padding: 10px;
-  color: #fff;
-  transition: background-color 0.2s ease;
-  width: 100%;
-  border-radius: 4px;
-  border: 2px solid #2c7be5;
-  background-color: #2057a0;
-
-  &:hover {
-    cursor: pointer;
-    background-color: #2c7be5;
-  }
-
-  &:disabled {
-    pointer-events: none;
-    &:hover {
-      background-color: transparent;
-    }
-  }
-`;
-
 const ErrorMessage = styled.span`
   color: red;
   position: absolute;
   bottom: 0;
   font-size: 10px;
-`;
-
-const Input = styled.input`
-  border: 1px solid #353c4d;
-  width: 100%;
-  background-color: #fff;
-  padding: 4px 10px;
-  color: #000;
-`;
-
-const InputLabel = styled.p`
-  font-size: 14px;
-  margin-bottom: 4px;
-  color: #fffccc;
-  font-weight: bold;
 `;

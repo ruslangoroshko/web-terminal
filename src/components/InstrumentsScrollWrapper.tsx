@@ -13,7 +13,6 @@ const InstrumentsScrollWrapper: FC<Props> = observer(props => {
   const { instrumentsStore, tradingViewStore } = useStores();
 
   const handleRemoveInstrument = (itemId: string) => async () => {
-    
     // TODO: create action method for setting new activeInstrumentsIds in the store
     instrumentsStore.activeInstrumentsIds = instrumentsStore.activeInstrumentsIds.filter(
       id => id !== itemId
@@ -26,6 +25,10 @@ const InstrumentsScrollWrapper: FC<Props> = observer(props => {
 
   const switchInstrument = (instrument: InstrumentModelWSDTO) => () => {
     instrumentsStore.activeInstrument = instrument;
+    console.log(
+      'TCL: switchInstrument -> instrumentsStore.activeInstrument',
+      instrumentsStore.activeInstrument
+    );
     tradingViewStore.tradingWidget?.chart().setSymbol(instrument.id, () => {});
   };
 

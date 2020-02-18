@@ -23,7 +23,7 @@ interface MainAppStoreProps {
 }
 
 export class MainAppStore implements MainAppStoreProps {
-  @observable isLoading = false;
+  @observable isLoading = true;
   @observable isAuthorized = false;
   @observable activeSession?: HubConnection;
   @observable activeAccount?: AccountModelWebSocketDTO;
@@ -61,6 +61,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   setActiveAccount(account: AccountModelWebSocketDTO) {
+    // console.log('TCL: MainAppStore -> setActiveAccount -> account', account);
     this.activeAccount = account;
   }
 

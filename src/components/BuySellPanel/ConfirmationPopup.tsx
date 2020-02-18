@@ -9,14 +9,20 @@ import {
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
 import { PrimaryButton } from '../../styles/Buttons';
+import { OpenPositionModelFormik } from '../../types/Positions';
+import { AskBidEnum } from '../../enums/AskBid';
+import { useStores } from '../../hooks/useStores';
 
 interface Props {
   closePopup: () => void;
   applyHandler: () => void;
+  values: OpenPositionModelFormik;
+  instrumentId: string;
 }
 
 function ConfirmationPopup(props: Props) {
-  const { closePopup, applyHandler } = props;
+  const { closePopup, applyHandler, values, instrumentId } = props;
+  const { quotesStore, mainAppStore } = useStores();
   const apply = () => {
     applyHandler();
     closePopup();
@@ -47,36 +53,53 @@ function ConfirmationPopup(props: Props) {
       >
         Confirmation
       </PrimaryTextParagraph>
-      <FlexContainer justifyContent="space-between">
+      <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
           Price opened
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
-          Price opened
+          {mainAppStore.activeAccount?.symbol}
+          {quotesStore.quotes[instrumentId].bid.c}
         </PrimaryTextSpan>
       </FlexContainer>
-      <FlexContainer justifyContent="space-between">
+      <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
-          Price opened
+          Type
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
-          Price opened
+          {values.operation !== null ? AskBidEnum[values.operation] : ''}
         </PrimaryTextSpan>
       </FlexContainer>
-      <FlexContainer justifyContent="space-between">
+      <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
-          Price opened
+          Investment
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
-          Price opened
+          {values.investmentAmount}
         </PrimaryTextSpan>
       </FlexContainer>
-      <FlexContainer justifyContent="space-between" margin="0 0 16px">
+      <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
-          Price opened
+          Multiplier
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
-          Price opened
+          &times;{values.multiplier}
+        </PrimaryTextSpan>
+      </FlexContainer>
+      <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
+        <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
+          Volume
+        </PrimaryTextSpan>
+        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+          {values.investmentAmount * values.multiplier}
+        </PrimaryTextSpan>
+      </FlexContainer>
+      <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
+        <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
+          Overnight fee
+        </PrimaryTextSpan>
+        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+          {values.investmentAmount * values.multiplier}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column" margin="0 0 16px 0">

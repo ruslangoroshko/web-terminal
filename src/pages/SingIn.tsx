@@ -41,7 +41,7 @@ const SingIn = observer(() => {
           validationSchema={validationSchema}
         >
           {formikBag => (
-            <CustomForm>
+            <CustomForm translate="en">
               <FlexContainer flexDirection="column">
                 <Field type="text" name={Fields.EMAIL}>
                   {({ field, meta }: FieldProps) => (

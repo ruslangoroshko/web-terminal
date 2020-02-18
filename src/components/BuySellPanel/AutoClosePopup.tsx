@@ -14,12 +14,11 @@ import SvgIcon from '../SvgIcon';
 interface Props {
   setFieldValue: (field: any, value: any) => void;
   values: OpenPositionModelFormik;
-  currencySymbol: string;
 }
 
 function AutoClosePopup(props: Props) {
-  const { setFieldValue, values, currencySymbol } = props;
-  const { SLTPStore } = useStores();
+  const { setFieldValue, values } = props;
+  const { SLTPStore, mainAppStore } = useStores();
   const [on, toggle] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -49,7 +48,7 @@ function AutoClosePopup(props: Props) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  });
+  }, []);
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
@@ -61,8 +60,10 @@ function AutoClosePopup(props: Props) {
         >
           <PrimaryTextSpan color="#fffccc">
             {values.sl || values.tp
-              ? `${`+${currencySymbol}${values.tp}` ||
-                  'Non Set'} —${currencySymbol + values.sl || 'Non Set'}`
+              ? `${`+${mainAppStore.activeAccount?.symbol}${values.tp}` ||
+                  'Non Set'} —${mainAppStore.activeAccount?.symbol ||
+                  '' + values.sl ||
+                  'Non Set'}`
               : 'Set'}
           </PrimaryTextSpan>
         </ButtonAutoClosePurchase>

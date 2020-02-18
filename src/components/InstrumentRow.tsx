@@ -35,7 +35,7 @@ const InstrumentRow: FC<Props> = observer(props => {
     if (instrumentsStore.activeInstrumentsIds.includes(instrument.id)) {
       instrumentsStore.activeInstrument = instrumentsStore.instruments.find(
         item => item.id === instrument.id
-      );
+      )!;
     } else {
       instrumentsStore.activeInstrumentsIds.push(instrument.id);
       API.setKeyValue({

@@ -32,7 +32,11 @@ export const activeInstrumentsInit = async (
     instrumentsStore.activeInstrumentsIds = newFavouriteInstrumentsIds;
   }
 
-  instrumentsStore.activeInstrument = instrumentsStore.activeInstruments[0];
+  instrumentsStore.setActiveInstrument(instrumentsStore.activeInstruments[0]);
+  console.log(
+    'TCL: instrumentsStore.activeInstrument',
+    instrumentsStore.activeInstrument
+  );
 
   const favouriteInstruments = await API.getKeyValue(
     KeysInApi.FAVOURITE_INSTRUMENTS

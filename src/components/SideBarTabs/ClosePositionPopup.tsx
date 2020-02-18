@@ -41,7 +41,7 @@ const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  });
+  }, []);
 
   return (
     <FlexContainer ref={wrapperRef}>

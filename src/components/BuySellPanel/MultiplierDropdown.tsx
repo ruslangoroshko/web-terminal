@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import Toggle from '../Toggle';
@@ -14,53 +14,65 @@ interface Props {
 
 function MultiplierDropdown(props: Props) {
   const { multipliers, selectedMultiplier, setFieldValue } = props;
-  const handleChangeMultiplier = (
-    multiplier: number,
-    toggle: () => void
-  ) => () => {
+  const [on, toggle] = useState(false);
+  const handleChangeMultiplier = (multiplier: number) => () => {
     setFieldValue(Fields.MULTIPLIER, multiplier);
-    toggle();
+    toggle(false);
   };
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleToggle = () => {
+    toggle(!on);
+  };
+  const handleClickOutside = (e: any) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      toggle(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   return (
-    <Toggle>
-      {({ on, toggle }) => (
-        <FlexContainer position="relative" margin="0 0 14px 0">
-          <MultiplierButton isActive={on} onClick={toggle} type="button">
-            <PrimaryTextSpan fontWeight="bold" color="#fffccc">
-              &times;{selectedMultiplier}
-            </PrimaryTextSpan>
-          </MultiplierButton>
-          {on && (
-            <MultiplierDropdownWrapper
-              backgroundColor="rgba(0, 0, 0, 0.4)"
-              flexDirection="column"
-              padding="12px 0"
-              position="absolute"
-              top="0"
-              right="calc(100% + 8px)"
-              width="140px"
+    <FlexContainer position="relative" margin="0 0 14px 0" ref={wrapperRef}>
+      <MultiplierButton isActive={on} onClick={handleToggle} type="button">
+        <PrimaryTextSpan fontWeight="bold" color="#fffccc">
+          &times;{selectedMultiplier}
+        </PrimaryTextSpan>
+      </MultiplierButton>
+      {on && (
+        <MultiplierDropdownWrapper
+          backgroundColor="rgba(0, 0, 0, 0.4)"
+          flexDirection="column"
+          padding="12px 0"
+          position="absolute"
+          top="0"
+          right="calc(100% + 8px)"
+          width="140px"
+        >
+          {multipliers.map(multiplier => (
+            <DropDownItem
+              key={multiplier}
+              justifyContent="center"
+              alignItems="center"
+              onClick={handleChangeMultiplier(multiplier)}
             >
-              {multipliers.map(multiplier => (
-                <DropDownItem
-                  key={multiplier}
-                  justifyContent="center"
-                  alignItems="center"
-                  onClick={handleChangeMultiplier(multiplier, toggle)}
-                >
-                  <PrimaryTextSpan
-                    fontSize="16px"
-                    fontWeight="bold"
-                    color="#fffccc"
-                  >
-                    &times;{multiplier}
-                  </PrimaryTextSpan>
-                </DropDownItem>
-              ))}
-            </MultiplierDropdownWrapper>
-          )}
-        </FlexContainer>
+              <PrimaryTextSpan
+                fontSize="16px"
+                fontWeight="bold"
+                color="#fffccc"
+              >
+                &times;{multiplier}
+              </PrimaryTextSpan>
+            </DropDownItem>
+          ))}
+        </MultiplierDropdownWrapper>
       )}
-    </Toggle>
+    </FlexContainer>
   );
 }
 

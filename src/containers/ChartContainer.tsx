@@ -13,6 +13,7 @@ import { InstrumentModelWSDTO } from '../types/Instruments';
 import { useStores } from '../hooks/useStores';
 import { supportedResolutions } from '../constants/supportedTimeScales';
 import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
+import { observer } from 'mobx-react-lite';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -28,7 +29,7 @@ interface IProps {
   intrument: InstrumentModelWSDTO;
 }
 
-const ChartContainer: FC<IProps> = ({ intrument }) => {
+const ChartContainer: FC<IProps> = observer(({ intrument }) => {
   const { mainAppStore, tradingViewStore } = useStores();
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
@@ -111,6 +112,6 @@ const ChartContainer: FC<IProps> = ({ intrument }) => {
   }, []);
 
   return <FlexContainer width="100%" height="100%" id={containerId} />;
-};
+});
 
 export default ChartContainer;

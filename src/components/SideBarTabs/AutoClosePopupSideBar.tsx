@@ -50,7 +50,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
       };
-    });
+    }, []);
 
     return (
       <FlexContainer ref={wrapperRef}>

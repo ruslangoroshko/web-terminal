@@ -1,4 +1,4 @@
-import { observable, computed } from 'mobx';
+import { observable, computed, action } from 'mobx';
 import {
   InstrumentModelWSDTO,
   InstrumentGroupWSDTO,
@@ -59,4 +59,13 @@ export class InstrumentsStore implements ContextProps {
     //   case Fields.
     // }
   }
+
+  @action
+  setActiveInstrument = (activeInstrument: InstrumentModelWSDTO) => {
+    this.activeInstrument = activeInstrument;
+    console.log(
+      'TCL: InstrumentsStore -> setActiveInstrument -> activeInstrument',
+      activeInstrument
+    );
+  };
 }

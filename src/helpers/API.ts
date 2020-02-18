@@ -3,8 +3,9 @@ import {
   OpenPositionResponseDTO,
   ClosePositionModel,
   RemovePendingOrders,
-  OpenPositionModelFormik,
   UpdateSLTP,
+  OpenPositionModel,
+  OpenPendingOrder,
 } from '../types/Positions';
 import API_LIST from './apiList';
 import { AccountModelDTO } from '../types/Accounts';
@@ -38,7 +39,7 @@ class API {
     return formData;
   };
 
-  openPosition = async (position: OpenPositionModelFormik) => {
+  openPosition = async (position: OpenPositionModel) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.POSITIONS.OPEN}`,
@@ -137,7 +138,7 @@ class API {
     return response.data;
   };
 
-  openPendingOrder = async (position: OpenPositionModelFormik) => {
+  openPendingOrder = async (position: OpenPendingOrder) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.PENDING_ORDERS.ADD}`,
