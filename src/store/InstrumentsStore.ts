@@ -63,9 +63,16 @@ export class InstrumentsStore implements ContextProps {
   @action
   setActiveInstrument = (activeInstrument: InstrumentModelWSDTO) => {
     this.activeInstrument = activeInstrument;
-    console.log(
-      'TCL: InstrumentsStore -> setActiveInstrument -> activeInstrument',
-      activeInstrument
+  };
+
+  @action
+  swiitchInstrument = (instrumentId: string) => {
+    const newActiveInstrument = this.instruments.find(
+      item => item.id === instrumentId
     );
+    this.activeInstrument = newActiveInstrument;
+    this.rootStore.tradingViewStore.tradingWidget
+      ?.chart()
+      .setSymbol(instrumentId, () => {});
   };
 }

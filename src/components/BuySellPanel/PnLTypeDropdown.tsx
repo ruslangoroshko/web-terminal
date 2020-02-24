@@ -39,7 +39,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType }) => {
     <Toggle>
       {({ on, toggle }) => (
         <FlexContainer position="relative">
-          <DropdownButton isActive={on} onClick={toggle}>
+          <DropdownButton isActive={on} onClick={toggle} type="button">
             <PrimaryTextSpan
               marginRight="4px"
               color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}

@@ -167,7 +167,6 @@ const PortfolioWrapper = styled(FlexContainer)`
 
 const TradingHistoryWrapper = styled(FlexContainer)`
   overflow-y: auto;
-  padding: 0 16px;
 
   ::-webkit-scrollbar {
     width: 4px;

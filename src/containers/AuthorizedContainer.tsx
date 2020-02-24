@@ -180,4 +180,5 @@ const ResizableContentAnimationWrapper = styled(FlexContainer)`
   opacity: 0;
   animation: ${fadein} 0.2s forwards 0.3s;
   flex-direction: column;
+  height: 100%;
 `;

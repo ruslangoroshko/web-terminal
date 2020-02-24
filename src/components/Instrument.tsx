@@ -13,19 +13,17 @@ import { Observer } from 'mobx-react-lite';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 
 interface Props {
-  switchInstrument: () => void;
   instrument: InstrumentModelWSDTO;
   isActive?: boolean;
   handleClose: () => void;
 }
 
-const Instrument: FC<Props> = ({
-  instrument,
-  switchInstrument,
-  isActive,
-  handleClose,
-}) => {
+const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
   const { quotesStore, mainAppStore, instrumentsStore } = useStores();
+
+  const switchInstrument = () => {
+    instrumentsStore.swiitchInstrument(instrument.id);
+  };
 
   useEffect(() => {
     mainAppStore.activeSession?.on(

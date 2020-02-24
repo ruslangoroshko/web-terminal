@@ -26,7 +26,7 @@ const Portfolio: FC<Props> = () => {
   };
 
   return (
-    <PortfolioWrapper flexDirection="column">
+    <PortfolioWrapper flexDirection="column" height="100%">
       <FlexContainer flexDirection="column" padding="0 8px">
         <FlexContainer margin="0 0 16px">
           <Observer>
@@ -139,7 +139,7 @@ const Portfolio: FC<Props> = () => {
       </SortByWrapper>
       <Observer>
         {() => (
-          <ActivePositionsWrapper flexDirection="column" padding="0 8px 0 12px">
+          <ActivePositionsWrapper flexDirection="column">
             {quotesStore.sortedActivePositions.map(item => (
               <ActivePositionsPortfolioTab key={item.id} position={item} />
             ))}

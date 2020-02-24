@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { PendingOrdersWSDTO } from '../../types/PendingOrders';
@@ -25,7 +25,8 @@ function PendingOrder(props: Props) {
   const isBuy = pendingOrder.operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 
-  const { mainAppStore } = useStores();
+  const { mainAppStore, instrumentsStore } = useStores();
+  const clickableWrapperRef = useRef<HTMLDivElement>(null);
 
   const handleEditSlTp = () => {};
 
@@ -37,65 +38,78 @@ function PendingOrder(props: Props) {
     });
   };
 
+  const switchInstrument = (e: any) => {
+    if (
+      clickableWrapperRef.current &&
+      clickableWrapperRef.current.contains(e.target)
+    ) {
+      e.preventDefault();
+    } else {
+      instrumentsStore.swiitchInstrument(pendingOrder.instrument);
+    }
+  };
+
   return (
-    <OrderWrapper padding="12px 0" justifyContent="space-between">
-      <FlexContainer
-        width="32px"
-        height="32px"
-        margin="0 8px 0 0"
-      ></FlexContainer>
-      <FlexContainer flexDirection="column" margin="0 38px 0 0">
-        <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
-          {pendingOrder.instrument}
-        </PrimaryTextSpan>
-        <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="10px">
-          {moment(pendingOrder.created).format('DD MMM, HH:mm')}
-        </PrimaryTextSpan>
-      </FlexContainer>
-      <FlexContainer flexDirection="column" margin="0 24px 0 0">
-        <FlexContainer margin="0 4px 0 0">
-          <FlexContainer margin="0 4px 0 0">
-            <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
-          </FlexContainer>
-          <PrimaryTextSpan
-            fontSize="12px"
-            color={isBuy ? '#00FFDD' : '#ED145B'}
-          >
-            {isBuy ? 'Buy' : 'Sell'}
+    <OrderWrapper flexDirection="column" onClick={switchInstrument}>
+      <OrderWrapperWithBorder padding="12px 0" justifyContent="space-between">
+        <FlexContainer
+          width="32px"
+          height="32px"
+          margin="0 8px 0 0"
+        ></FlexContainer>
+        <FlexContainer flexDirection="column" margin="0 38px 0 0">
+          <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
+            {pendingOrder.instrument}
+          </PrimaryTextSpan>
+          <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="10px">
+            {moment(pendingOrder.created).format('DD MMM, HH:mm')}
           </PrimaryTextSpan>
         </FlexContainer>
-        <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
-          at {currencySymbol}
-          {pendingOrder.openPrice}
-        </PrimaryTextSpan>
-      </FlexContainer>
-      <FlexContainer
-        flexDirection="column"
-        margin="0 8px 0 0"
-        alignItems="flex-end"
-      >
-        <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
-          {currencySymbol}
-          {pendingOrder.investmentAmount}
-        </PrimaryTextSpan>
-        <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
-          &times;{pendingOrder.multiplier}
-        </PrimaryTextSpan>
-      </FlexContainer>
-      <FlexContainer alignItems="center">
-        <FlexContainer margin="0 4px 0 0">
-          <ButtonWithoutStyles onClick={handleEditSlTp}>
-            <SvgIcon {...IconSettings} fillColor="rgba(255, 255, 255, 0.6)" />
+        <FlexContainer flexDirection="column" margin="0 24px 0 0">
+          <FlexContainer margin="0 4px 0 0">
+            <FlexContainer margin="0 4px 0 0">
+              <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
+            </FlexContainer>
+            <PrimaryTextSpan
+              fontSize="12px"
+              color={isBuy ? '#00FFDD' : '#ED145B'}
+            >
+              {isBuy ? 'Buy' : 'Sell'}
+            </PrimaryTextSpan>
+          </FlexContainer>
+          <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
+            at {currencySymbol}
+            {pendingOrder.openPrice}
+          </PrimaryTextSpan>
+        </FlexContainer>
+        <FlexContainer
+          flexDirection="column"
+          margin="0 8px 0 0"
+          alignItems="flex-end"
+        >
+          <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
+            {currencySymbol}
+            {pendingOrder.investmentAmount}
+          </PrimaryTextSpan>
+          <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
+            &times;{pendingOrder.multiplier}
+          </PrimaryTextSpan>
+        </FlexContainer>
+        <FlexContainer alignItems="center" ref={clickableWrapperRef}>
+          <FlexContainer margin="0 4px 0 0">
+            <ButtonWithoutStyles onClick={handleEditSlTp}>
+              <SvgIcon {...IconSettings} fillColor="rgba(255, 255, 255, 0.6)" />
+            </ButtonWithoutStyles>
+          </FlexContainer>
+          <ButtonWithoutStyles onClick={handleCloseOrder}>
+            <SvgIcon
+              {...IconClose}
+              fillColor="rgba(255, 255, 255, 0.8)"
+              hoverFillColor="#00FFDD"
+            />
           </ButtonWithoutStyles>
         </FlexContainer>
-        <ButtonWithoutStyles onClick={handleCloseOrder}>
-          <SvgIcon
-            {...IconClose}
-            fillColor="rgba(255, 255, 255, 0.8)"
-            hoverFillColor="#00FFDD"
-          />
-        </ButtonWithoutStyles>
-      </FlexContainer>
+      </OrderWrapperWithBorder>
     </OrderWrapper>
   );
 }
@@ -103,5 +117,14 @@ function PendingOrder(props: Props) {
 export default PendingOrder;
 
 const OrderWrapper = styled(FlexContainer)`
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
+`;
+
+const OrderWrapperWithBorder = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;

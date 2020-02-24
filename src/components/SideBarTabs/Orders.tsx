@@ -63,7 +63,7 @@ const Orders: FC = () => {
       </SortByWrapper>
       <Observer>
         {() => (
-          <ActivePositionsWrapper flexDirection="column" padding="0 12px">
+          <ActivePositionsWrapper flexDirection="column">
             {quotesStore.sortedPendingOrders.map(item => (
               <PendingOrder
                 key={item.id}

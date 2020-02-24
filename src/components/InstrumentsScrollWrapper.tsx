@@ -23,15 +23,6 @@ const InstrumentsScrollWrapper: FC<Props> = observer(props => {
     });
   };
 
-  const switchInstrument = (instrument: InstrumentModelWSDTO) => () => {
-    instrumentsStore.activeInstrument = instrument;
-    console.log(
-      'TCL: switchInstrument -> instrumentsStore.activeInstrument',
-      instrumentsStore.activeInstrument
-    );
-    tradingViewStore.tradingWidget?.chart().setSymbol(instrument.id, () => {});
-  };
-
   return (
     <InstrumentsWrapper>
       {instrumentsStore.activeInstruments.map(item => (
@@ -40,7 +31,6 @@ const InstrumentsScrollWrapper: FC<Props> = observer(props => {
           key={item.id}
           isActive={item.id === instrumentsStore.activeInstrument?.id}
           handleClose={handleRemoveInstrument(item.id)}
-          switchInstrument={switchInstrument(item)}
         />
       ))}
     </InstrumentsWrapper>

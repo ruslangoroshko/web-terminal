@@ -48,10 +48,17 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
   const isBuy = operation === AskBidEnum.Buy;
 
   const instrumentRef = useRef<HTMLDivElement>(null);
+  const clickableWrapper = useRef<HTMLDivElement>(null);
+  const tooltipWrapperRef = useRef<HTMLDivElement>(null);
 
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 
-  const { quotesStore, mainAppStore, SLTPStore } = useStores();
+  const {
+    quotesStore,
+    mainAppStore,
+    SLTPStore,
+    instrumentsStore,
+  } = useStores();
 
   const PnL = calculateFloatingProfitAndLoss({
     investment: investmentAmount,
@@ -120,92 +127,129 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
     API.updateSLTP(values);
   };
 
+  const setInstrumentActive = (e: any) => {
+    if (
+      (clickableWrapper.current &&
+        clickableWrapper.current.contains(e.target)) ||
+      (tooltipWrapperRef.current &&
+        tooltipWrapperRef.current.contains(e.target))
+    ) {
+      e.preventDefault();
+    } else {
+      instrumentsStore.swiitchInstrument(instrument);
+    }
+  };
+
   return (
     <InstrumentInfoWrapper
-      padding="8px 0"
-      justifyContent="space-between"
+      padding="8px 8px 0 12px"
       ref={instrumentRef}
+      flexDirection="column"
+      onClick={setInstrumentActive}
     >
-      <FlexContainer width="32px" alignItems="flex-start">
-        <img src={test} style={{ display: 'block', objectFit: 'contain' }} />
-      </FlexContainer>
-      <FlexContainer flexDirection="column" margin="0 6px 0 0">
-        <PrimaryTextSpan fontSize="12px" lineHeight="14px" marginBottom="2px">
-          {instrument}
-        </PrimaryTextSpan>
-        <FlexContainer margin="0 0 12px 0" alignItems="center">
-          <FlexContainer margin="0 4px 0 0">
-            <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
+      <InstrumentInfoWrapperForBorder
+        justifyContent="space-between"
+        padding="0 0 8px 0"
+      >
+        <FlexContainer width="32px" alignItems="flex-start">
+          <img src={test} style={{ display: 'block', objectFit: 'contain' }} />
+        </FlexContainer>
+        <FlexContainer flexDirection="column" margin="0 6px 0 0">
+          <PrimaryTextSpan fontSize="12px" lineHeight="14px" marginBottom="2px">
+            {instrument}
+          </PrimaryTextSpan>
+          <FlexContainer margin="0 0 12px 0" alignItems="center">
+            <FlexContainer margin="0 4px 0 0">
+              <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
+            </FlexContainer>
+            <PrimaryTextSpan
+              fontSize="10px"
+              color={isBuy ? '#00FFDD' : '#ED145B'}
+              textTransform="uppercase"
+              fontWeight="bold"
+            >
+              {isBuy ? 'Buy' : 'Sell'}
+            </PrimaryTextSpan>
           </FlexContainer>
           <PrimaryTextSpan
+            color="rgba(255, 255, 255, 0.5)"
             fontSize="10px"
-            color={isBuy ? '#00FFDD' : '#ED145B'}
-            textTransform="uppercase"
-            fontWeight="bold"
+            lineHeight="12px"
           >
-            {isBuy ? 'Buy' : 'Sell'}
+            {moment(openDate).format('DD MMM, HH:mm')}
           </PrimaryTextSpan>
         </FlexContainer>
-        <PrimaryTextSpan
-          color="rgba(255, 255, 255, 0.5)"
-          fontSize="10px"
-          lineHeight="12px"
-        >
-          {moment(openDate).format('DD MMM, HH:mm')}
-        </PrimaryTextSpan>
-      </FlexContainer>
-      <FlexContainer flexDirection="column" alignItems="flex-end">
-        <PrimaryTextSpan marginBottom="4px" fontSize="12px" lineHeight="14px">
-          {mainAppStore.activeAccount?.symbol}
-          {investmentAmount}
-        </PrimaryTextSpan>
-        <PrimaryTextSpan
-          color="rgba(255, 255, 255, 0.5)"
-          fontSize="10px"
-          lineHeight="12px"
-          marginBottom="12px"
-        >
-          &times;{multiplier}
-        </PrimaryTextSpan>
+        <FlexContainer flexDirection="column" alignItems="flex-end">
+          <PrimaryTextSpan marginBottom="4px" fontSize="12px" lineHeight="14px">
+            {mainAppStore.activeAccount?.symbol}
+            {investmentAmount}
+          </PrimaryTextSpan>
+          <PrimaryTextSpan
+            color="rgba(255, 255, 255, 0.5)"
+            fontSize="10px"
+            lineHeight="12px"
+            marginBottom="12px"
+          >
+            &times;{multiplier}
+          </PrimaryTextSpan>
 
-        <InformationPopup
-          classNameTooltip={`position_${id}`}
-          bgColor="#000"
-          width="200px"
-          direction="bottom"
-        >
-          <FlexContainer flexDirection="column" width="100%">
-            <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
-              <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
-                Price opened
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                at {openPrice}
-              </PrimaryTextSpan>
-            </FlexContainer>
-            <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
-              <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
-                Opened
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                {moment(openDate).format('DD MMM, HH:mm')}
-              </PrimaryTextSpan>
-            </FlexContainer>
-            <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
-              <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
-                Equity
-              </PrimaryTextSpan>
-              <Observer>
-                {() => (
-                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {getNumberSign(PnL + investmentAmount)}
-                    {mainAppStore.activeAccount?.symbol}
-                    {Math.abs(PnL + investmentAmount).toFixed(2)}
+          <FlexContainer ref={tooltipWrapperRef}>
+            <InformationPopup
+              classNameTooltip={`position_${id}`}
+              bgColor="#000"
+              width="200px"
+              direction="bottom"
+            >
+              <FlexContainer flexDirection="column" width="100%">
+                <FlexContainer
+                  justifyContent="space-between"
+                  margin="0 0 8px 0"
+                >
+                  <PrimaryTextSpan
+                    color="rgba(255, 255, 255, 0.4)"
+                    fontSize="12px"
+                  >
+                    Price opened
                   </PrimaryTextSpan>
-                )}
-              </Observer>
-            </FlexContainer>
-            {/* <FlexContainer justifyContent="space-between" margin="0 8px 0 0">
+                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    at {openPrice}
+                  </PrimaryTextSpan>
+                </FlexContainer>
+                <FlexContainer
+                  justifyContent="space-between"
+                  margin="0 0 8px 0"
+                >
+                  <PrimaryTextSpan
+                    color="rgba(255, 255, 255, 0.4)"
+                    fontSize="12px"
+                  >
+                    Opened
+                  </PrimaryTextSpan>
+                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    {moment(openDate).format('DD MMM, HH:mm')}
+                  </PrimaryTextSpan>
+                </FlexContainer>
+                <FlexContainer
+                  justifyContent="space-between"
+                  margin="0 0 8px 0"
+                >
+                  <PrimaryTextSpan
+                    color="rgba(255, 255, 255, 0.4)"
+                    fontSize="12px"
+                  >
+                    Equity
+                  </PrimaryTextSpan>
+                  <Observer>
+                    {() => (
+                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        {getNumberSign(PnL + investmentAmount)}
+                        {mainAppStore.activeAccount?.symbol}
+                        {Math.abs(PnL + investmentAmount).toFixed(2)}
+                      </PrimaryTextSpan>
+                    )}
+                  </Observer>
+                </FlexContainer>
+                {/* <FlexContainer justifyContent="space-between" margin="0 8px 0 0">
               <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
                Overnight fee
               </PrimaryTextSpan>
@@ -213,58 +257,63 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                 at {openPrice}
               </PrimaryTextSpan>
             </FlexContainer> */}
-            <FlexContainer justifyContent="space-between">
-              <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
-                Position ID
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                {id}
+                <FlexContainer justifyContent="space-between">
+                  <PrimaryTextSpan
+                    color="rgba(255, 255, 255, 0.4)"
+                    fontSize="12px"
+                  >
+                    Position ID
+                  </PrimaryTextSpan>
+                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    {id}
+                  </PrimaryTextSpan>
+                </FlexContainer>
+              </FlexContainer>
+            </InformationPopup>
+          </FlexContainer>
+        </FlexContainer>
+        <FlexContainer flexDirection="column">
+          <FlexContainer justifyContent="flex-end" margin="0 0 8px 0">
+            <FlexContainer
+              flexDirection="column"
+              alignItems="flex-end"
+              margin="0 8px 0 0"
+            >
+              <QuoteText
+                isGrowth={PnL >= 0}
+                marginBottom="4px"
+                fontSize="12px"
+                lineHeight="14px"
+              >
+                {PnL >= 0 ? '+' : '-'}
+                {mainAppStore.activeAccount?.symbol}
+                {Math.abs(PnL)}
+              </QuoteText>
+              <PrimaryTextSpan
+                fontSize="10px"
+                lineHeight="12px"
+                color="rgba(255, 255, 255, 0.5)"
+              >
+                {PnL >= 0 ? '+' : ''}
+                {calculateInPercent(investmentAmount, PnL)}%
               </PrimaryTextSpan>
             </FlexContainer>
           </FlexContainer>
-        </InformationPopup>
-      </FlexContainer>
-      <FlexContainer flexDirection="column">
-        <FlexContainer justifyContent="flex-end" margin="0 0 8px 0">
-          <FlexContainer
-            flexDirection="column"
-            alignItems="flex-end"
-            margin="0 8px 0 0"
-          >
-            <QuoteText
-              isGrowth={PnL >= 0}
-              marginBottom="4px"
-              fontSize="12px"
-              lineHeight="14px"
-            >
-              {PnL >= 0 ? '+' : '-'}
-              {mainAppStore.activeAccount?.symbol}
-              {Math.abs(PnL)}
-            </QuoteText>
-            <PrimaryTextSpan
-              fontSize="10px"
-              lineHeight="12px"
-              color="rgba(255, 255, 255, 0.5)"
-            >
-              {PnL >= 0 ? '+' : ''}
-              {calculateInPercent(investmentAmount, PnL)}%
-            </PrimaryTextSpan>
+          <FlexContainer ref={clickableWrapper}>
+            <AutoClosePopupSideBar
+              ref={instrumentRef}
+              stopLossValue={stopLossInCurrency || stopLossRate || null}
+              takeProfitValue={takeProfitInCurrency || takeProfitRate || null}
+              investedAmount={investmentAmount}
+              updateSLTP={updateSLTP}
+            ></AutoClosePopupSideBar>
+            <ClosePositionPopup
+              applyHandler={closePosition}
+              ref={instrumentRef}
+            ></ClosePositionPopup>
           </FlexContainer>
         </FlexContainer>
-        <FlexContainer>
-          <AutoClosePopupSideBar
-            ref={instrumentRef}
-            stopLossValue={stopLossInCurrency || stopLossRate || null}
-            takeProfitValue={takeProfitInCurrency || takeProfitRate || null}
-            investedAmount={investmentAmount}
-            updateSLTP={updateSLTP}
-          ></AutoClosePopupSideBar>
-          <ClosePositionPopup
-            applyHandler={closePosition}
-            ref={instrumentRef}
-          ></ClosePositionPopup>
-        </FlexContainer>
-      </FlexContainer>
+      </InstrumentInfoWrapperForBorder>
     </InstrumentInfoWrapper>
   );
 });
@@ -272,5 +321,14 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
 export default ActivePositionsPortfolioTab;
 
 const InstrumentInfoWrapper = styled(FlexContainer)`
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
+`;
+
+const InstrumentInfoWrapperForBorder = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;
