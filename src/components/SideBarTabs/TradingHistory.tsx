@@ -33,7 +33,7 @@ const TradingHistory: FC = () => {
   }, []);
 
   return (
-    <PortfolioWrapper flexDirection="column">
+    <PortfolioWrapper flexDirection="column" height="100%">
       <FlexContainer flexDirection="column" padding="0 8px">
         <FlexContainer margin="0 0 8px">
           <Observer>
@@ -167,6 +167,7 @@ const PortfolioWrapper = styled(FlexContainer)`
 
 const TradingHistoryWrapper = styled(FlexContainer)`
   overflow-y: auto;
+  height: 100%;
 
   ::-webkit-scrollbar {
     width: 4px;

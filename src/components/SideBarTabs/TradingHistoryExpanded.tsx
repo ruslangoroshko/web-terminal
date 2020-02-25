@@ -129,7 +129,7 @@ const TradingHistoryExpanded: FC<Props> = props => {
                   Price open &mdash; close
                 </PrimaryTextSpan>
               </Th>
-              <Th justifyContent="flex-end">
+              <Th>
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -156,7 +156,7 @@ const TradingHistoryExpanded: FC<Props> = props => {
                   Profit/loss
                 </PrimaryTextSpan>
               </Th>
-              <Th justifyContent="center">
+              <Th justifyContent="flex-end">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
@@ -166,36 +166,50 @@ const TradingHistoryExpanded: FC<Props> = props => {
                 </PrimaryTextSpan>
               </Th>
               <Th></Th>
-              {historyStore.positionsHistory.map(item => (
-                <TradingHistoryExpandedItem
-                  key={item.id}
-                  currencySymbol={mainAppStore.activeAccount?.symbol || ''}
-                  tradingHistoryItem={item}
-                />
-              ))}
+              <Observer>
+                {() => (
+                  <>
+                    {historyStore.positionsHistory.map(item => (
+                      <TradingHistoryExpandedItem
+                        key={item.id}
+                        currencySymbol={
+                          mainAppStore.activeAccount?.symbol || ''
+                        }
+                        tradingHistoryItem={item}
+                      />
+                    ))}
+                  </>
+                )}
+              </Observer>
             </TableGrid>
-            {!historyStore.positionsHistory.length && (
-              <FlexContainer
-                padding="16px"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                margin="100px 0 0 0"
-              >
-                <FlexContainer margin="0 0 20px">
-                  <SvgIcon
-                    {...IconNoTradingHistory}
-                    fillColor="rgba(255, 255, 255, 0.5)"
-                  />
-                </FlexContainer>
-                <PrimaryTextSpan
-                  color="rgba(255,255,255,0.17)"
-                  fontWeight="bold"
-                >
-                  There is no trading history
-                </PrimaryTextSpan>
-              </FlexContainer>
-            )}
+            <Observer>
+              {() => (
+                <>
+                  {!historyStore.positionsHistory.length && (
+                    <FlexContainer
+                      padding="16px"
+                      flexDirection="column"
+                      alignItems="center"
+                      justifyContent="center"
+                      margin="100px 0 0 0"
+                    >
+                      <FlexContainer margin="0 0 20px">
+                        <SvgIcon
+                          {...IconNoTradingHistory}
+                          fillColor="rgba(255, 255, 255, 0.5)"
+                        />
+                      </FlexContainer>
+                      <PrimaryTextSpan
+                        color="rgba(255,255,255,0.17)"
+                        fontWeight="bold"
+                      >
+                        There is no trading history
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+                  )}
+                </>
+              )}
+            </Observer>
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>

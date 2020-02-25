@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
 import SvgIcon from '../SvgIcon';
@@ -7,7 +7,7 @@ import IconShevronUp from '../../assets/svg/icon-shevron-logo-up.svg';
 import { AskBidEnum } from '../../enums/AskBid';
 import moment from 'moment';
 import { getNumberSign } from '../../helpers/getNumberSign';
-import { Observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import InformationPopup from '../InformationPopup';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
 import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
@@ -18,7 +18,7 @@ interface Props {
   currencySymbol: string;
 }
 
-function TradingHistoryExpandedItem(props: Props) {
+const TradingHistoryExpandedItem: FC<Props> = props => {
   const {
     tradingHistoryItem: {
       closeDate,
@@ -42,7 +42,7 @@ function TradingHistoryExpandedItem(props: Props) {
     <DisplayContents>
       <Td>
         <FlexContainer width="32px" height="32px"></FlexContainer>
-        <FlexContainer flexDirection="column" margin="0 8px 0 0" width="170px">
+        <FlexContainer flexDirection="column" width="170px">
           <PrimaryTextSpan fontSize="14px" color="#fffccc" marginBottom="4px">
             {instrument}
           </PrimaryTextSpan>
@@ -50,6 +50,8 @@ function TradingHistoryExpandedItem(props: Props) {
             {instrument}
           </PrimaryTextSpan>
         </FlexContainer>
+      </Td>
+      <Td>
         <FlexContainer>
           <FlexContainer margin="0 6px 0 0">
             <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
@@ -74,7 +76,6 @@ function TradingHistoryExpandedItem(props: Props) {
           </FlexContainer>
         </FlexContainer>
       </Td>
-
       <Td>
         <FlexContainer>
           <FlexContainer flexDirection="column">
@@ -160,7 +161,7 @@ function TradingHistoryExpandedItem(props: Props) {
           </QuoteText>
         </FlexContainer>
       </Td>
-      <Td alignItems="center">
+      <Td justifyContent="center" alignItems="center">
         <FlexContainer flexDirection="column" alignItems="center">
           <InformationPopup
             classNameTooltip={`position_expaned_${id}`}
@@ -221,6 +222,6 @@ function TradingHistoryExpandedItem(props: Props) {
       </Td>
     </DisplayContents>
   );
-}
+};
 
 export default TradingHistoryExpandedItem;
