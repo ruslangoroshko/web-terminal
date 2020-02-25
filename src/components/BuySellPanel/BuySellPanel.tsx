@@ -360,10 +360,25 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
-        <AutoClosePopup
-          setFieldValue={setFieldValue}
-          values={values}
-        ></AutoClosePopup>
+        <FlexContainer position="relative" flexDirection="column">
+          {(touched.sl && errors.sl) ||
+            (touched.tp && errors.tp && (
+              <ErropPopup
+                textColor="#fffccc"
+                bgColor={ColorsPallete.RAZZMATAZZ}
+                classNameTooltip={Fields.AMOUNT}
+                direction="left"
+              >
+                {errors.sl || errors.tp}
+              </ErropPopup>
+            ))}
+          <AutoClosePopup
+            setFieldValue={setFieldValue}
+            setFieldError={setFieldError}
+            values={values}
+          ></AutoClosePopup>
+        </FlexContainer>
+
         <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
           <PrimaryTextSpan
             fontSize="11px"

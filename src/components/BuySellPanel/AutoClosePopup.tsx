@@ -13,16 +13,19 @@ import SvgIcon from '../SvgIcon';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
+  setFieldError: (field: any, value: any) => void;
   values: OpenPositionModelFormik;
 }
 
 function AutoClosePopup(props: Props) {
-  const { setFieldValue, values } = props;
+  const { setFieldValue, values, setFieldError } = props;
   const { SLTPStore, mainAppStore } = useStores();
   const [on, toggle] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const handleToggle = () => {
+    setFieldError(Fields.STOP_LOSS, '');
+    setFieldError(Fields.TAKE_PROFIT, '');
     toggle(!on);
   };
 
@@ -109,9 +112,4 @@ const ClearSLTPButton = styled(ButtonWithoutStyles)`
   position: absolute;
   top: 12px;
   right: 12px;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
 `;

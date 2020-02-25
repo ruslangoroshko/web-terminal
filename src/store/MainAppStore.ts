@@ -68,14 +68,17 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   signIn = async (credentials: UserAuthenticate) => {
     const response = await API.authenticate(credentials);
+
+    if (response.result === OperationApiResponseCodes.Ok) {
+      this.isAuthorized = true;
+      this.setTokenHandler(response.data.token);
+      this.handleInitConnection(response.data.token);
+    }
+
     if (
       response.result === OperationApiResponseCodes.InvalidUserNameOrPassword
     ) {
       this.isAuthorized = false;
-    } else {
-      this.isAuthorized = true;
-      this.setTokenHandler(response.data.token);
-      this.handleInitConnection(response.data.token);
     }
   };
 
