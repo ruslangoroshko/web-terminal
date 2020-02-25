@@ -1,7 +1,8 @@
 export enum SortByDropdownEnum {
-  DateOpened,
-  Price,
-  AssetName,
-  Investment,
-  DayChange,
+  NewFirstAsc,
+  NewFirstDesc,
+  InvestmentAsc,
+  InvestmentDesc,
+  ProfitAsc,
+  ProfitDesc,
 }

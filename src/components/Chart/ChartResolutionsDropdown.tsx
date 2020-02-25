@@ -12,6 +12,7 @@ import {
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
+import { ObjectKeys } from '../../helpers/objectKeys';
 
 interface Props {}
 
@@ -82,9 +83,7 @@ const ChartResolutionsDropdown: FC<Props> = props => {
           <Observer>
             {() => (
               <>
-                {(Object.keys(supportedResolutions) as Array<
-                  keyof typeof supportedResolutions
-                >).map(key => (
+                {ObjectKeys(supportedResolutions).map(key => (
                   <ButtonWithoutStyles
                     key={key}
                     onClick={handleChangeResolution(key)}

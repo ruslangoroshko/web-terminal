@@ -29,11 +29,11 @@ import {
 } from '../types/PersonalData';
 
 class API {
-  convertParamsToFormData = (params: any) => {
+  convertParamsToFormData = (params: { [key: string]: any }) => {
     const formData = new FormData();
-    Object.keys(params).forEach(key => {
-      if (params[key] !== undefined && params[key] !== null) {
-        formData.append(key, params[key]);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value);
       }
     });
     return formData;

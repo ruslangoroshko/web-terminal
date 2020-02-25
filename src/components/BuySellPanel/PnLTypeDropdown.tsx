@@ -10,6 +10,7 @@ import SvgIcon from '../SvgIcon';
 import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
 import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import { useStores } from '../../hooks/useStores';
+import { ObjectKeys } from '../../helpers/objectKeys';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
@@ -63,9 +64,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType }) => {
               right="0"
               flexDirection="column"
             >
-              {(Object.keys(AutoCloseTypesEnum) as Array<
-                keyof typeof AutoCloseTypesEnum
-              >).map(key => (
+              {ObjectKeys(AutoCloseTypesEnum).map(key => (
                 <ProfitPercentPrice
                   key={key}
                   justifyContent="space-between"

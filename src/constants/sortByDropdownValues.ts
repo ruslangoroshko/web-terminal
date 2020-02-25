@@ -1,9 +1,10 @@
 import { SortByDropdownEnum } from '../enums/SortByDropdown';
 
-export const sortByDropdownValues = {
-  [SortByDropdownEnum.DateOpened]: 'Date opened',
-  [SortByDropdownEnum.AssetName]: 'Asset Name',
-  [SortByDropdownEnum.DayChange]: '24h change',
-  [SortByDropdownEnum.Investment]: 'Investment',
-  [SortByDropdownEnum.Price]: 'Price',
+export const sortByDropdownValuesProfit = {
+  [SortByDropdownEnum.NewFirstAsc]: 'New first',
+  [SortByDropdownEnum.NewFirstDesc]: 'Old first',
+  [SortByDropdownEnum.InvestmentAsc]: 'Investment: Large to Small',
+  [SortByDropdownEnum.InvestmentDesc]: 'Investment: Small to Large',
+  [SortByDropdownEnum.ProfitAsc]: 'Profit: Small to Large',
+  [SortByDropdownEnum.ProfitDesc]: 'Profit: Large to Small',
 };

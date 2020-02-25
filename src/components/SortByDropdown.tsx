@@ -3,7 +3,7 @@ import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { PrimaryTextSpan } from '../styles/TextsElements';
-import { sortByDropdownValues } from '../constants/sortByDropdownValues';
+import { sortByDropdownValuesProfit } from '../constants/sortByDropdownValues';
 import { SortByDropdownEnum } from '../enums/SortByDropdown';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
@@ -65,7 +65,7 @@ const SortByDropdown: FC<Props> = ({ sortTypeDropdown }) => {
               marginRight="4px"
             >
               {
-                sortByDropdownValues[
+                sortByDropdownValuesProfit[
                   sortTypeDropdown === 'activePositions'
                     ? quotesStore.activePositionsSortBy
                     : quotesStore.pendingOrdersSortBy
@@ -91,9 +91,7 @@ const SortByDropdown: FC<Props> = ({ sortTypeDropdown }) => {
           width="172px"
           zIndex="201"
         >
-          {((Object.keys(sortByDropdownValues) as unknown) as Array<
-            keyof typeof sortByDropdownValues
-          >).map(key => (
+          {Object.entries(sortByDropdownValuesProfit).map(([key, value]) => (
             <DropdownItemText
               color="#fffccc"
               fontSize="12px"
@@ -101,7 +99,7 @@ const SortByDropdown: FC<Props> = ({ sortTypeDropdown }) => {
               onClick={handleChangeSorting(+key)}
               whiteSpace="nowrap"
             >
-              {sortByDropdownValues[key]}
+              {value}
             </DropdownItemText>
           ))}
         </DropdownWrapper>

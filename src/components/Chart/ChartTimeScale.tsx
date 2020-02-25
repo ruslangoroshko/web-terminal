@@ -79,13 +79,11 @@ const ChartIntervalTimeScale: FC<Props> = observer(() => {
 
   return (
     <ChartTimeScaleWrapper padding="2px" alignItems="center">
-      {(Object.keys(supportedInterval) as Array<
-        keyof typeof supportedInterval
-      >).map(key => (
+      {Object.entries(supportedInterval).map(([key, value]) => (
         <TimeScaleItem
-          isActive={supportedInterval[key] === tradingViewStore.interval}
+          isActive={value === tradingViewStore.interval}
           key={key}
-          onClick={handleChangeResolution(supportedInterval[key])}
+          onClick={handleChangeResolution(value)}
         >
           {key}
         </TimeScaleItem>

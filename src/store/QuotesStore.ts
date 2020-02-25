@@ -23,11 +23,11 @@ export class QuotesStore implements IQuotesStore {
   @observable quotes: BidAskKeyValueList = {};
   @observable activePositions: PositionModelWSDTO[] = [];
   @observable activePositionsSortBy: SortByDropdownEnum =
-    SortByDropdownEnum.DateOpened;
+    SortByDropdownEnum.NewFirstAsc;
   @observable available = 0;
   @observable pendingOrders: PendingOrdersWSDTO[] = [];
   @observable pendingOrdersSortBy: SortByDropdownEnum =
-    SortByDropdownEnum.DateOpened;
+    SortByDropdownEnum.NewFirstAsc;
 
   @action
   setQuote = (quote: BidAskModelWSDTO) => {
@@ -77,24 +77,28 @@ export class QuotesStore implements IQuotesStore {
     let filterByFunc;
 
     switch (this.activePositionsSortBy) {
-      case SortByDropdownEnum.DateOpened:
-        filterByFunc = this.sortByDateOpened;
+      case SortByDropdownEnum.NewFirstAsc:
+        filterByFunc = this.sortByDateOpened(true);
         break;
 
-      case SortByDropdownEnum.AssetName:
-        filterByFunc = this.sortByAssetName;
+      case SortByDropdownEnum.NewFirstDesc:
+        filterByFunc = this.sortByDateOpened(false);
         break;
 
-      case SortByDropdownEnum.DayChange:
-        filterByFunc = this.sortByDateOpened;
+      case SortByDropdownEnum.ProfitAsc:
+        filterByFunc = this.sortByPnLPositions(true);
         break;
 
-      case SortByDropdownEnum.Investment:
-        filterByFunc = this.sortByInvestment;
+      case SortByDropdownEnum.ProfitDesc:
+        filterByFunc = this.sortByPnLPositions(false);
         break;
 
-      case SortByDropdownEnum.Price:
-        filterByFunc = this.sortByPrice;
+      case SortByDropdownEnum.InvestmentAsc:
+        filterByFunc = this.sortByInvestment(true);
+        break;
+
+      case SortByDropdownEnum.InvestmentDesc:
+        filterByFunc = this.sortByInvestment(false);
         break;
 
       default:
@@ -108,24 +112,20 @@ export class QuotesStore implements IQuotesStore {
     let filterByFunc;
 
     switch (this.pendingOrdersSortBy) {
-      case SortByDropdownEnum.DateOpened:
-        filterByFunc = this.sortByDateOpenedPendingOrders;
+      case SortByDropdownEnum.NewFirstAsc:
+        filterByFunc = this.sortByDateOpenedPendingOrders(true);
         break;
 
-      case SortByDropdownEnum.AssetName:
-        filterByFunc = this.sortByAssetName;
+      case SortByDropdownEnum.NewFirstDesc:
+        filterByFunc = this.sortByDateOpenedPendingOrders(false);
         break;
 
-      case SortByDropdownEnum.DayChange:
-        filterByFunc = this.sortByDateOpenedPendingOrders;
+      case SortByDropdownEnum.InvestmentAsc:
+        filterByFunc = this.sortByInvestment(true);
         break;
 
-      case SortByDropdownEnum.Investment:
-        filterByFunc = this.sortByInvestment;
-        break;
-
-      case SortByDropdownEnum.Price:
-        filterByFunc = this.sortByPrice;
+      case SortByDropdownEnum.InvestmentDesc:
+        filterByFunc = this.sortByInvestment(false);
         break;
 
       default:
@@ -134,41 +134,54 @@ export class QuotesStore implements IQuotesStore {
     return this.pendingOrders.slice().sort(filterByFunc);
   }
 
-  sortByDateOpened = (a: PositionModelWSDTO, b: PositionModelWSDTO) => {
-    return a.openDate - b.openDate;
-  };
+  sortByDateOpened = (ascending: boolean) => (
+    a: PositionModelWSDTO,
+    b: PositionModelWSDTO
+  ) => (ascending ? b.openDate - a.openDate : a.openDate - b.openDate);
 
-  sortByDateOpenedPendingOrders = (
+  sortByDateOpenedPendingOrders = (ascending: boolean) => (
     a: PendingOrdersWSDTO,
     b: PendingOrdersWSDTO
-  ) => {
-    return a.created - b.created;
-  };
+  ) => (ascending ? b.created - a.created : a.created - b.created);
 
-  sortByAssetName = (
+  sortByInvestment = (ascending: boolean) => (
     a: PositionModelWSDTO | PendingOrdersWSDTO,
     b: PositionModelWSDTO | PendingOrdersWSDTO
-  ) => {
-    if (a.instrument < b.instrument) {
-      return -1;
-    }
-    if (a.instrument > b.instrument) {
-      return 1;
-    }
-    return 0;
-  };
+  ) =>
+    ascending
+      ? b.investmentAmount - a.investmentAmount
+      : a.investmentAmount - b.investmentAmount;
 
-  sortByInvestment = (
-    a: PositionModelWSDTO | PendingOrdersWSDTO,
-    b: PositionModelWSDTO | PendingOrdersWSDTO
+  // TODO: think how to reduce calculations
+  sortByPnLPositions = (ascending: boolean) => (
+    a: PositionModelWSDTO,
+    b: PositionModelWSDTO
   ) => {
-    return a.investmentAmount - b.investmentAmount;
-  };
+    const aProfitNLoss = calculateFloatingProfitAndLoss({
+      investment: b.investmentAmount,
+      leverage: b.multiplier,
+      costs: b.swap + b.commission,
+      side: b.operation === AskBidEnum.Buy ? 1 : -1,
+      currentPrice:
+        b.operation === AskBidEnum.Buy
+          ? this.quotes[b.instrument].bid.c
+          : this.quotes[b.instrument].ask.c,
+      openPrice: b.openPrice,
+    });
 
-  sortByPrice = (
-    a: PositionModelWSDTO | PendingOrdersWSDTO,
-    b: PositionModelWSDTO | PendingOrdersWSDTO
-  ) => {
-    return a.openPrice - b.openPrice;
+    const bProfitNLoss = calculateFloatingProfitAndLoss({
+      investment: a.investmentAmount,
+      leverage: a.multiplier,
+      costs: a.swap + a.commission,
+      side: a.operation === AskBidEnum.Buy ? 1 : -1,
+      currentPrice:
+        a.operation === AskBidEnum.Buy
+          ? this.quotes[a.instrument].bid.c
+          : this.quotes[a.instrument].ask.c,
+      openPrice: a.openPrice,
+    });
+    return ascending
+      ? bProfitNLoss - aProfitNLoss
+      : aProfitNLoss - bProfitNLoss;
   };
 }
