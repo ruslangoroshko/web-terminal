@@ -23,6 +23,7 @@ const SignFlowLayout: FC<Props> = props => {
       justifyContent="space-between"
       width="100vw"
       height="100vh"
+      position="relative"
     >
       <FlexContainer>
         <FlexContainer alignItems="center">

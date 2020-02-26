@@ -94,14 +94,15 @@ function ConfirmationPopup(props: Props) {
           {values.investmentAmount * values.multiplier}
         </PrimaryTextSpan>
       </FlexContainer>
-      <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
+      {/* <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
           Overnight fee
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
-          {values.investmentAmount * values.multiplier}
+        {mainAppStore.activeAccount?.symbol}
+                    {swaps.reduce((acc, prev) => acc + prev.amount, 0)}
         </PrimaryTextSpan>
-      </FlexContainer>
+      </FlexContainer> */}
       <FlexContainer flexDirection="column" margin="0 0 16px 0">
         <PrimaryButton type="button" onClick={apply} padding="8px 16px">
           <PrimaryTextSpan fontSize="14px" color="#1c2026" fontWeight="bold">

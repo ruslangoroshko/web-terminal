@@ -1,8 +1,9 @@
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+
 export interface UserAuthenticate {
   email: string;
   password: string;
 }
-
 
 export interface UserRegistration {
   email: string;
@@ -11,7 +12,7 @@ export interface UserRegistration {
 }
 
 export interface UserAuthenticateResponse {
-  result: number;
+  result: OperationApiResponseCodes;
   data: {
     token: string;
   };

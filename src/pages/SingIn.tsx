@@ -7,12 +7,16 @@ import * as yup from 'yup';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import Fields from '../constants/fields';
 import { useStores } from '../hooks/useStores';
-import { observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import SignFlowLayout from '../components/SignFlowLayout';
 import LabelInput from '../components/LabelInput';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import { PrimaryButton } from '../styles/Buttons';
 import SignTypeTabs from '../components/SignTypeTabs';
+import Loader from '../components/Loader';
+import NotificationPopup from '../components/NotificationPopup';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 
 const SingIn = observer(() => {
   const validationSchema = yup.object().shape<UserAuthenticate>({
@@ -25,14 +29,34 @@ const SingIn = observer(() => {
     password: '',
   };
 
-  const { mainAppStore } = useStores();
+  const { mainAppStore, notificationStore } = useStores();
 
   const handleSubmit = async (credentials: UserAuthenticate) => {
-    mainAppStore.signIn(credentials);
+    const result = await mainAppStore.signIn(credentials);
+    if (result !== OperationApiResponseCodes.Ok) {
+      notificationStore.notificationMessage = apiResponseCodeMessages[result];
+      notificationStore.isSuccessfull = false;
+      notificationStore.openNotification();
+    }
   };
 
   return (
     <SignFlowLayout>
+      <FlexContainer
+        position="absolute"
+        bottom="100px"
+        left="100px"
+        zIndex="100"
+      >
+        <Observer>
+          {() => (
+            <NotificationPopup
+              show={notificationStore.isActiveNotification}
+            ></NotificationPopup>
+          )}
+        </Observer>
+      </FlexContainer>
+      <Loader isLoading={mainAppStore.isLoading}></Loader>
       <FlexContainer width="320px" flexDirection="column">
         <SignTypeTabs></SignTypeTabs>
         <Formik

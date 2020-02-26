@@ -20,7 +20,7 @@ import { AskBidEnum } from '../enums/AskBid';
 import { useStores } from '../hooks/useStores';
 import Toggle from '../components/Toggle';
 import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
-import { Observer, observer } from 'mobx-react-lite';
+import { Observer } from 'mobx-react-lite';
 import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import { PendingOrdersWSDTO } from '../types/PendingOrders';

@@ -80,6 +80,8 @@ export class MainAppStore implements MainAppStoreProps {
     ) {
       this.isAuthorized = false;
     }
+
+    return response.result;
   };
 
   @action

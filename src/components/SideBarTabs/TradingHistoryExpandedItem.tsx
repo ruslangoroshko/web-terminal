@@ -32,6 +32,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
       openPrice,
       operation,
       profit,
+      swaps,
     },
     currencySymbol,
   } = props;
@@ -186,10 +187,22 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
+                  Price closed
+                </PrimaryTextSpan>
+                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  {closePrice}
+                </PrimaryTextSpan>
+              </FlexContainer>
+              <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="12px"
+                >
                   Opened
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {moment(openDate).format('DD MMM, HH:mm')}
+                  {moment(openPrice).format('DD MMM, HH:mm')}
+                  at {openPrice}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
@@ -203,6 +216,18 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   {getNumberSign(equity)}
                   {currencySymbol}
                   {Math.abs(equity).toFixed(2)}
+                </PrimaryTextSpan>
+              </FlexContainer>
+              <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="12px"
+                >
+                  Equity
+                </PrimaryTextSpan>
+                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  {currencySymbol}
+                  {swaps.reduce((acc, prev) => acc + prev.amount, 0)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between">
