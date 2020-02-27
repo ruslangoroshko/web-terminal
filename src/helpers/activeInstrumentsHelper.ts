@@ -13,6 +13,7 @@ export const activeInstrumentsInit = async (
     ? JSON.parse(selectedInstruments)
     : [];
 
+  // TODO: проверить айдишки в наличии инструментов
   if (parsedValue.length) {
     instrumentsStore.activeInstrumentsIds = parsedValue;
   } else {

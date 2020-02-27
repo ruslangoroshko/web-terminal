@@ -249,14 +249,22 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                     )}
                   </Observer>
                 </FlexContainer>
-                {/* <FlexContainer justifyContent="space-between" margin="0 8px 0 0">
-              <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="12px">
-               Overnight fee
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                at {openPrice}
-              </PrimaryTextSpan>
-            </FlexContainer> */}
+                <FlexContainer
+                  justifyContent="space-between"
+                  margin="0 8px 0 0"
+                >
+                  <PrimaryTextSpan
+                    color="rgba(255, 255, 255, 0.4)"
+                    fontSize="12px"
+                  >
+                    Overnight fee
+                  </PrimaryTextSpan>
+                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    {getNumberSign(swap)}
+                    {mainAppStore.activeAccount?.symbol}
+                    {Math.abs(swap).toFixed(2)}
+                  </PrimaryTextSpan>
+                </FlexContainer>
                 <FlexContainer justifyContent="space-between">
                   <PrimaryTextSpan
                     color="rgba(255, 255, 255, 0.4)"
