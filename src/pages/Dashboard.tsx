@@ -201,7 +201,7 @@ const Dashboard = () => {
               <ChartWrapper>
                 {instrumentsStore.activeInstrument && (
                   <TVChartContainer
-                    intrument={instrumentsStore.activeInstrument}
+                    instrument={instrumentsStore.activeInstrument}
                   />
                 )}
               </ChartWrapper>

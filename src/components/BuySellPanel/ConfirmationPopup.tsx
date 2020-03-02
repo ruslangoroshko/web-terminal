@@ -75,6 +75,7 @@ function ConfirmationPopup(props: Props) {
           Investment
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
+          {mainAppStore.activeAccount?.symbol}
           {values.investmentAmount}
         </PrimaryTextSpan>
       </FlexContainer>
@@ -86,31 +87,23 @@ function ConfirmationPopup(props: Props) {
           &times;{values.multiplier}
         </PrimaryTextSpan>
       </FlexContainer>
-      <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
+      <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
           Volume
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
+          {mainAppStore.activeAccount?.symbol}
           {values.investmentAmount * values.multiplier}
         </PrimaryTextSpan>
       </FlexContainer>
-      {/* <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
-        <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
-          Overnight fee
-        </PrimaryTextSpan>
-        <PrimaryTextSpan color="#fffccc" fontSize="12px">
-        {mainAppStore.activeAccount?.symbol}
-                    {swaps.reduce((acc, prev) => acc + prev.amount, 0)}
-        </PrimaryTextSpan>
-      </FlexContainer> */}
-      <FlexContainer flexDirection="column" margin="0 0 16px 0">
+      <FlexContainer flexDirection="column">
         <PrimaryButton type="button" onClick={apply} padding="8px 16px">
           <PrimaryTextSpan fontSize="14px" color="#1c2026" fontWeight="bold">
             Confirm Buying
           </PrimaryTextSpan>
         </PrimaryButton>
       </FlexContainer>
-      <FlexContainer>
+      {/* <FlexContainer>
         <Label>
           <InputCheckbox type="checkbox" />
           <Checkbox
@@ -125,7 +118,7 @@ function ConfirmationPopup(props: Props) {
             Always purchase in one click
           </PrimaryTextSpan>
         </Label>
-      </FlexContainer>
+      </FlexContainer> */}
     </FlexContainer>
   );
 }

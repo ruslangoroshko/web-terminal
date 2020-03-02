@@ -13,9 +13,10 @@ export const activeInstrumentsInit = async (
     ? JSON.parse(selectedInstruments)
     : [];
 
-  // TODO: проверить айдишки в наличии инструментов
   if (parsedValue.length) {
-    instrumentsStore.activeInstrumentsIds = parsedValue;
+    instrumentsStore.activeInstrumentsIds = instrumentsStore.instruments
+      .filter(item => parsedValue.includes(item.id))
+      .map(item => item.id);
   } else {
     const newFavouriteInstrumentsIds = instrumentsStore.instruments.map(
       item => item.id
@@ -34,10 +35,6 @@ export const activeInstrumentsInit = async (
   }
 
   instrumentsStore.setActiveInstrument(instrumentsStore.activeInstruments[0]);
-  console.log(
-    'TCL: instrumentsStore.activeInstrument',
-    instrumentsStore.activeInstrument
-  );
 
   const favouriteInstruments = await API.getKeyValue(
     KeysInApi.FAVOURITE_INSTRUMENTS

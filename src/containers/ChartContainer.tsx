@@ -26,15 +26,15 @@ function getLanguageFromURL(): LanguageCode | null {
 const containerId = 'tv_chart_container';
 
 interface IProps {
-  intrument: InstrumentModelWSDTO;
+  instrument: InstrumentModelWSDTO;
 }
 
-const ChartContainer: FC<IProps> = observer(({ intrument }) => {
+const ChartContainer: FC<IProps> = observer(({ instrument }) => {
   const { mainAppStore, tradingViewStore } = useStores();
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
-      symbol: intrument.id,
-      datafeed: new DataFeedService(mainAppStore.activeSession!, intrument),
+      symbol: instrument.id,
+      datafeed: new DataFeedService(mainAppStore.activeSession!, instrument),
       interval: supportedResolutions[BASIC_RESOLUTION_KEY],
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
