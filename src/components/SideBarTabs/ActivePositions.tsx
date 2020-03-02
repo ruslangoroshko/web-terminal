@@ -251,7 +251,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                 </FlexContainer>
                 <FlexContainer
                   justifyContent="space-between"
-                  margin="0 8px 0 0"
+                  margin="0 0 8px 0"
                 >
                   <PrimaryTextSpan
                     color="rgba(255, 255, 255, 0.4)"

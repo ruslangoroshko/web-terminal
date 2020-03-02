@@ -182,6 +182,20 @@ function TradingHistoryItem(props: Props) {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
+                    Closed
+                  </PrimaryTextSpan>
+                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    {moment(closeDate).format('DD MMM, HH:mm')}
+                  </PrimaryTextSpan>
+                </FlexContainer>
+                <FlexContainer
+                  justifyContent="space-between"
+                  margin="0 0 8px 0"
+                >
+                  <PrimaryTextSpan
+                    color="rgba(255, 255, 255, 0.4)"
+                    fontSize="12px"
+                  >
                     Equity
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
