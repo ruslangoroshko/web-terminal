@@ -200,8 +200,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const investOnBeforeInputHandler = (e: any) => {
-    if (e.currentTarget.value && [',', '.'].includes(e.data)) {
-      if (e.currentTarget.value.includes('.')) {
+    if ([',', '.'].includes(e.data)) {
+      if (
+        !e.currentTarget.value ||
+        (e.currentTarget.value && e.currentTarget.value.includes('.'))
+      ) {
         e.preventDefault();
         return;
       }

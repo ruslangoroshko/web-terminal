@@ -43,8 +43,11 @@ function SetAutoclose(props: Props) {
   const [slError, setSlError] = useState('');
 
   const handleBeforeInput = (e: any) => {
-    if (e.currentTarget.value && [',', '.'].includes(e.data)) {
-      if (e.currentTarget.value.includes('.')) {
+    if ([',', '.'].includes(e.data)) {
+      if (
+        !e.currentTarget.value ||
+        (e.currentTarget.value && e.currentTarget.value.includes('.'))
+      ) {
         e.preventDefault();
         return;
       }
