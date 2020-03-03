@@ -44,20 +44,9 @@ export class InstrumentsStore implements ContextProps {
   }
 
   @computed get sortedInstruments() {
-    // if (this.sortByField === null) {
-    return this.instruments
-      .filter(item => item.groupId === this.activeInstrumentGroupId)
-      .map(item => ({
-        ...item,
-        bid: this.rootStore.quotesStore.quotes[item.id].bid.c,
-        ask: this.rootStore.quotesStore.quotes[item.id].ask.c,
-      }));
-    // }
-
-    // switch (this.sortByField) {
-
-    //   case Fields.
-    // }
+    return this.instruments.filter(
+      item => item.groupId === this.activeInstrumentGroupId
+    );
   }
 
   @action
@@ -74,5 +63,10 @@ export class InstrumentsStore implements ContextProps {
     this.rootStore.tradingViewStore.tradingWidget
       ?.chart()
       .setSymbol(instrumentId, () => {});
+  };
+  
+  @action
+  setPricesChanges = (prices: PriceChangeWSDTO[]) => {
+    this.pricesChange = prices;
   };
 }

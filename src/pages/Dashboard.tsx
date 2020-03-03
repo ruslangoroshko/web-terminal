@@ -139,7 +139,7 @@ const Dashboard = () => {
     mainAppStore.activeSession?.on(
       Topics.PRICE_CHANGE,
       (response: ResponseFromWebsocket<PriceChangeWSDTO[]>) => {
-        instrumentsStore.pricesChange = response.data;
+        instrumentsStore.setPricesChanges(response.data);
       }
     );
   }, [mainAppStore.activeAccount]);
@@ -201,7 +201,7 @@ const Dashboard = () => {
               <ChartWrapper>
                 {instrumentsStore.activeInstrument && (
                   <TVChartContainer
-                    instrument={instrumentsStore.activeInstrument}
+                    instrumentId={instrumentsStore.activeInstrument.id}
                   />
                 )}
               </ChartWrapper>

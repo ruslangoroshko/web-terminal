@@ -8,11 +8,9 @@ import {
 import { FlexContainer } from '../styles/FlexContainer';
 import DataFeedService from '../services/dataFeedService';
 import { LineStyles } from '../enums/TradingViewStyles';
-import ColorsPallete from '../styles/colorPallete';
-import { useStores } from '../hooks/useStores';
 import { supportedResolutions } from '../constants/supportedTimeScales';
 import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
-import { observer } from 'mobx-react-lite';
+import { HubConnection } from '@aspnet/signalr';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -25,15 +23,15 @@ function getLanguageFromURL(): LanguageCode | null {
 const containerId = 'tv_chart_container';
 
 interface IProps {
+  activeSession: HubConnection;
   instrumentId: string;
 }
 
-const ChartContainer: FC<IProps> = observer(({ instrumentId }) => {
-  const { mainAppStore, tradingViewStore } = useStores();
+const MobileChartContainer: FC<IProps> = ({ instrumentId, activeSession }) => {
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: instrumentId,
-      datafeed: new DataFeedService(mainAppStore.activeSession!, instrumentId),
+      datafeed: new DataFeedService(activeSession, instrumentId),
       interval: supportedResolutions[BASIC_RESOLUTION_KEY],
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
@@ -41,7 +39,6 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId }) => {
       custom_css_url: 'custom_trading_view_styles.css',
       disabled_features: [
         'header_widget',
-        // 'legend_widget',
         'timeframes_toolbar',
         'use_localstorage_for_settings',
         'border_around_the_chart',
@@ -56,17 +53,17 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId }) => {
       overrides: {
         'symbolWatermarkProperties.transparency': 90,
         'mainSeriesProperties.style': SeriesStyle.Area,
-        'mainSeriesProperties.lineStyle.color': ColorsPallete.MINT,
+        'mainSeriesProperties.lineStyle.color': '#21B3A4',
         'mainSeriesProperties.lineStyle.linestyle': LineStyles.LINESTYLE_SOLID,
         'mainSeriesProperties.lineStyle.linewidth': 3,
         'mainSeriesProperties.lineStyle.priceSource': 'close',
         'mainSeriesProperties.areaStyle.color1': 'rgba(0, 255, 221, 0.08)',
         'mainSeriesProperties.areaStyle.color2': 'rgba(0, 255, 221, 0.08)',
-        'mainSeriesProperties.areaStyle.linecolor': ColorsPallete.MINT,
+        'mainSeriesProperties.areaStyle.linecolor': '#21B3A4',
         'mainSeriesProperties.areaStyle.linestyle': LineStyles.LINESTYLE_SOLID,
         'mainSeriesProperties.areaStyle.linewidth': 3,
         'mainSeriesProperties.candleStyle.upColor': '#21B3A4',
-        'mainSeriesProperties.candleStyle.downColor': '#ed145b',
+        'mainSeriesProperties.candleStyle.downColor': '#21B3A4',
         'mainSeriesProperties.candleStyle.drawWick': true,
         'mainSeriesProperties.candleStyle.drawBorder': false,
         'mainSeriesProperties.candleStyle.borderColor': '#28555a',
@@ -89,7 +86,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId }) => {
         'paneProperties.legendProperties.showLegend': false,
         'paneProperties.legendProperties.showBarChange': false,
         'paneProperties.legendProperties.showOnlyPriceSource': false,
-        'linetoolnote.backgroundColor': ColorsPallete.RAZZMATAZZ,
+        'linetoolnote.backgroundColor': '#ed145b',
         'scalesProperties.lineColor': 'transparent',
         'scalesProperties.textColor': 'rgba(255, 255, 255, 0.2)',
         'scalesProperties.backgroundColor': 'transparent',
@@ -103,7 +100,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId }) => {
     const tvWidget = new widget(widgetOptions);
 
     tvWidget.onChartReady(async () => {
-      tradingViewStore.tradingWidget = tvWidget;
+      //   tradingViewStore.tradingWidget = tvWidget;
     });
     return () => {
       tvWidget.remove();
@@ -111,6 +108,6 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId }) => {
   }, []);
 
   return <FlexContainer width="100%" height="100%" id={containerId} />;
-});
+};
 
-export default ChartContainer;
+export default MobileChartContainer;

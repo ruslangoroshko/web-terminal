@@ -19,7 +19,6 @@ import historyProvider from './historyProvider';
 
 import StreamingService from './streamingService';
 import { HubConnection } from '@aspnet/signalr';
-import { InstrumentModelWSDTO } from '../types/Instruments';
 import { supportedResolutions } from '../constants/supportedTimeScales';
 
 class DataFeedService implements IBasicDataFeed {
@@ -34,9 +33,9 @@ class DataFeedService implements IBasicDataFeed {
   activeSession: HubConnection;
   stream: StreamingService;
 
-  constructor(activeSession: HubConnection, instrument: InstrumentModelWSDTO) {
+  constructor(activeSession: HubConnection, instrumentId: string) {
     this.activeSession = activeSession;
-    this.stream = new StreamingService(this.activeSession, instrument.id);
+    this.stream = new StreamingService(this.activeSession, instrumentId);
   }
 
   onReady = (callback: OnReadyCallback) => {

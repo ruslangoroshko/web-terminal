@@ -6,12 +6,9 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
 import IconStar from '../../assets/svg/icon-star.svg';
 import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
-import calculateGrowth from '../../helpers/calculateGrowth';
 import { useStores } from '../../hooks/useStores';
-import { AskBidEnum } from '../../enums/AskBid';
-import { observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import { getNumberSign } from '../../helpers/getNumberSign';
-import { toJS } from 'mobx';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -19,9 +16,9 @@ interface Props {
 
 const InstrumentMarkets: FC<Props> = observer(props => {
   const {
-    instrument: { base, id, name, quote, ask, bid },
+    instrument: { base, id, name, quote },
   } = props;
-  const { mainAppStore, quotesStore, instrumentsStore } = useStores();
+  const { instrumentsStore, quotesStore } = useStores();
 
   const priceChange = instrumentsStore.pricesChange.find(
     item => item.id === id
@@ -61,7 +58,7 @@ const InstrumentMarkets: FC<Props> = observer(props => {
         </FlexContainer>
         <FlexContainer width="40px" justifyContent="flex-end">
           <PrimaryTextSpan fontSize="12px" color="#fffccc">
-            {bid}
+            <Observer>{() => <>{quotesStore.quotes[id].bid.c}</>}</Observer>
           </PrimaryTextSpan>
         </FlexContainer>
       </FlexContainer>

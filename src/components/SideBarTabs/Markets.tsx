@@ -121,14 +121,14 @@ function Markets(props: Props) {
       <FlexContainer flexDirection="column" padding="0 16px">
         <Observer>
           {() => (
-            <>
+            <MarketsWrapper flexDirection="column">
               {instrumentsStore.sortedInstruments.map(item => (
                 <InstrumentMarkets
                   instrument={item}
                   key={item.id}
                 ></InstrumentMarkets>
               ))}
-            </>
+            </MarketsWrapper>
           )}
         </Observer>
       </FlexContainer>
@@ -168,4 +168,22 @@ const MarketButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
 
 const SortingWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+`;
+
+
+const MarketsWrapper = styled(FlexContainer)`
+  overflow-y: auto;
+  height: 100%;
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+  }
+  ::-webkit-scrollbar-thumb:vertical {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
 `;
