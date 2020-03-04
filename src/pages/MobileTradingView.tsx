@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { HubConnection } from '@aspnet/signalr';
 import Axios from 'axios';
 import initConnection from '../services/websocketService';
@@ -6,7 +6,7 @@ import Topics from '../constants/websocketTopics';
 import { FlexContainer } from '../styles/FlexContainer';
 import MobileChartContainer from '../containers/MobileChartContainer';
 
-function MobileTradingView() {
+const MobileTradingView: FC = () => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
 
   const authenticate = async () => {
@@ -48,6 +48,6 @@ function MobileTradingView() {
       </FlexContainer>
     </FlexContainer>
   );
-}
+};
 
 export default MobileTradingView;

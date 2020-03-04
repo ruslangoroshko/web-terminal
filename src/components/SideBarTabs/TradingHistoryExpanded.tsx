@@ -18,10 +18,7 @@ import API from '../../helpers/API';
 import TradingHistoryExpandedItem from './TradingHistoryExpandedItem';
 import { Th, TableGrid } from '../../styles/TableElements';
 
-interface Props {}
-
-const TradingHistoryExpanded: FC<Props> = props => {
-  const {} = props;
+const TradingHistoryExpanded: FC = () => {
   const { tabsStore, mainAppStore, historyStore } = useStores();
   const closeExpanded = () => {
     tabsStore.isTabExpanded = false;
@@ -54,28 +51,7 @@ const TradingHistoryExpanded: FC<Props> = props => {
         />
       </ButtonClose>
       <FlexContainer margin="0 0 40px 0" padding="0 0 0 8px">
-        <Observer>
-          {() => (
-            <>
-              <TabPortfolitButton
-                isActive={
-                  tabsStore.historyTab === HistoryTabEnum.TradingHistory
-                }
-                onClick={handleChangeHistoryTab(HistoryTabEnum.TradingHistory)}
-              >
-                Trading History
-              </TabPortfolitButton>
-              <TabPortfolitButton
-                isActive={
-                  tabsStore.historyTab === HistoryTabEnum.BalanceHistory
-                }
-                onClick={handleChangeHistoryTab(HistoryTabEnum.BalanceHistory)}
-              >
-                Balance History
-              </TabPortfolitButton>
-            </>
-          )}
-        </Observer>
+        <TabPortfolitButton isActive>Trading History</TabPortfolitButton>
       </FlexContainer>
       <FlexContainer width="100%" justifyContent="center">
         <FlexContainer flexDirection="column" width="1020px">

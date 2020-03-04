@@ -15,10 +15,6 @@ import DatePickerDropdownNoCustomDates from '../DatePickerDropdownNoCustomDates'
 const TradingHistory: FC = () => {
   const { tabsStore, mainAppStore, historyStore } = useStores();
 
-  const handleChangeHistoryTab = (historyTab: HistoryTabEnum) => () => {
-    tabsStore.historyTab = historyTab;
-  };
-
   const fetchPositionsHistory = async () => {
     const response = await API.getPositionsHistory({
       accountId: mainAppStore.activeAccount!.id,
@@ -29,39 +25,17 @@ const TradingHistory: FC = () => {
   };
 
   useEffect(() => {
-    fetchPositionsHistory();
+    mainAppStore.isLoading = true;
+    fetchPositionsHistory().finally(() => {
+      mainAppStore.isLoading = false;
+    });
   }, []);
 
   return (
     <PortfolioWrapper flexDirection="column" height="100%">
       <FlexContainer flexDirection="column" padding="0 8px">
         <FlexContainer margin="0 0 8px">
-          <Observer>
-            {() => (
-              <>
-                <TabPortfolitButton
-                  isActive={
-                    tabsStore.historyTab === HistoryTabEnum.TradingHistory
-                  }
-                  onClick={handleChangeHistoryTab(
-                    HistoryTabEnum.TradingHistory
-                  )}
-                >
-                  Trading History
-                </TabPortfolitButton>
-                <TabPortfolitButton
-                  isActive={
-                    tabsStore.historyTab === HistoryTabEnum.BalanceHistory
-                  }
-                  onClick={handleChangeHistoryTab(
-                    HistoryTabEnum.BalanceHistory
-                  )}
-                >
-                  Balance History
-                </TabPortfolitButton>
-              </>
-            )}
-          </Observer>
+          <TabPortfolitButton isActive>Trading History</TabPortfolitButton>
         </FlexContainer>
       </FlexContainer>
       <SortByWrapper

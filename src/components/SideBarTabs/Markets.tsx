@@ -22,7 +22,7 @@ function Markets(props: Props) {
   };
 
   return (
-    <FlexContainer flexDirection="column">
+    <FlexContainer flexDirection="column" height="100%">
       <FlexContainer padding="12px 16px" margin="0 0 8px 0">
         <PrimaryTextSpan
           fontSize="12px"
@@ -118,10 +118,10 @@ function Markets(props: Props) {
           </FlexContainer>
         </FlexContainer>
       </SortingWrapper>
-      <FlexContainer flexDirection="column" padding="0 16px">
+      <FlexContainer flexDirection="column" height="100%">
         <Observer>
           {() => (
-            <MarketsWrapper flexDirection="column">
+            <MarketsWrapper flexDirection="column" padding="0 16px">
               {instrumentsStore.sortedInstruments.map(item => (
                 <InstrumentMarkets
                   instrument={item}
@@ -169,7 +169,6 @@ const MarketButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
 const SortingWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;
-
 
 const MarketsWrapper = styled(FlexContainer)`
   overflow-y: auto;

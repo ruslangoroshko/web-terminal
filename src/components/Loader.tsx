@@ -26,9 +26,7 @@ function Loader(props: Props) {
           justifyContent="center"
           alignItems="center"
         >
-          <LoaderWrapper>
-            <SvgIcon {...IconLoader} fillColor="none" />
-          </LoaderWrapper>
+          <SpinnerWrapper></SpinnerWrapper>
         </FlexContainer>
       </FixedContainerWrapper>
     </Modal>
@@ -82,5 +80,69 @@ const LoaderWrapper = styled(FlexContainer)`
 
 const FixedContainerWrapper = styled.div<{ isLoading: boolean }>`
   animation: ${props =>
-    !props.isLoading && css`${fadeOut} 0.5s linear forwards`};
+    !props.isLoading &&
+    css`
+      ${fadeOut} 0.5s linear forwards
+    `};
+`;
+
+const SpinnerWrapper = styled.div`
+  display: flex;
+  position: relative;
+
+  background: white;
+  border-radius: 50%;
+  height: 200px;
+  width: 200px;
+  position: relative;
+
+  animation: ${rotateAnimation} 2s linear infinite;
+  &:before,
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+  }
+
+  &:before {
+    border-radius: 50%;
+    background: linear-gradient(
+          0deg,
+          hsla(0, 0%, 100%, 1) 50%,
+          hsla(0, 0%, 100%, 0.9) 100%
+        )
+        0% 0%,
+      linear-gradient(
+          90deg,
+          hsla(0, 0%, 100%, 0.9) 0%,
+          hsla(0, 0%, 100%, 0.6) 100%
+        )
+        100% 0%,
+      linear-gradient(
+          180deg,
+          hsla(0, 0%, 100%, 0.6) 0%,
+          hsla(0, 0%, 100%, 0.3) 100%
+        )
+        100% 100%,
+      linear-gradient(
+          360deg,
+          hsla(0, 0%, 100%, 0.3) 0%,
+          hsla(0, 0%, 100%, 0) 100%
+        )
+        0% 100%;
+    background-repeat: no-repeat;
+    background-size: 50% 50%;
+    top: -1px;
+    bottom: -1px;
+    left: -1px;
+    right: -1px;
+  }
+  &:after {
+    background: #1c2026;
+    border-radius: 50%;
+    top: 3%;
+    bottom: 3%;
+    left: 3%;
+    right: 3%;
+  }
 `;
