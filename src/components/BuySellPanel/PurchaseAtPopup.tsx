@@ -17,10 +17,11 @@ interface Props {
   setFieldValue: (field: any, value: any) => void;
   purchaseAtValue: number | null;
   instrumentId: string;
+  digits: number;
 }
 
 function PurchaseAtPopup(props: Props) {
-  const { setFieldValue, purchaseAtValue, instrumentId } = props;
+  const { setFieldValue, purchaseAtValue, instrumentId, digits } = props;
 
   const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
     SLTPStore.purchaseAtValue = e.target.value;
@@ -217,7 +218,11 @@ function PurchaseAtPopup(props: Props) {
                 lineHeight="12px"
               >
                 <Observer>
-                  {() => <>{quotesStore.quotes[instrumentId].bid.c}</>}
+                  {() => (
+                    <>
+                      {quotesStore.quotes[instrumentId].bid.c.toFixed(digits)}
+                    </>
+                  )}
                 </Observer>
               </PrimaryTextSpan>
             </FlexContainer>

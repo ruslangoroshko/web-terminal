@@ -99,7 +99,7 @@ const InstrumentRow: FC<Props> = observer(props => {
           lineHeight="14px"
           marginBottom="4px"
         >
-          {quotesStore.quotes[instrument.id].bid.c}
+          {quotesStore.quotes[instrument.id].bid.c.toFixed(instrument.digits)}
         </PrimaryTextSpan>
         <QuoteText
           isGrowth={priceChange.chng >= 0}

@@ -159,7 +159,7 @@ function Markets(props: Props) {
       </SortingWrapper>
       <Observer>
         {() => (
-          <MarketsWrapper flexDirection="column" padding="0 16px">
+          <MarketsWrapper flexDirection="column" >
             {instrumentsStore.sortedInstruments.map(item => (
               <InstrumentMarkets
                 instrument={item}

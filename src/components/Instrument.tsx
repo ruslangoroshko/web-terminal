@@ -63,7 +63,9 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
                     lineHeight="14px"
                     color="rgba(255, 255, 255, 0.4)"
                   >
-                    {quotesStore.quotes[instrument.id].bid.c}
+                    {quotesStore.quotes[instrument.id].bid.c.toFixed(
+                      instrument.digits
+                    )}
                   </PrimaryTextSpan>
                 </FlexContainer>
               )}
