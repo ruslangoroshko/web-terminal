@@ -17,8 +17,6 @@ build:
   artifacts:
     paths:
       - ${BUILD_FOLDER}
-  only:
-    - master
 
 publish:
   stage: publish
