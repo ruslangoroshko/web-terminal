@@ -5,12 +5,11 @@ import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAn
 import { AskBidEnum } from '../enums/AskBid';
 import { PendingOrdersWSDTO } from '../types/PendingOrders';
 import { SortByDropdownEnum } from '../enums/SortByDropdown';
+import { RootStore } from './RootStore';
 
 interface IQuotesStore {
   quotes: BidAskKeyValueList;
   activePositions: PositionModelWSDTO[];
-  activePositionsSortBy: SortByDropdownEnum;
-  pendingOrdersSortBy: SortByDropdownEnum;
   available: number;
   invest: number;
   total: number;
@@ -22,12 +21,13 @@ interface IQuotesStore {
 export class QuotesStore implements IQuotesStore {
   @observable quotes: BidAskKeyValueList = {};
   @observable activePositions: PositionModelWSDTO[] = [];
-  @observable activePositionsSortBy: SortByDropdownEnum =
-    SortByDropdownEnum.NewFirstAsc;
-  @observable available = 0;
   @observable pendingOrders: PendingOrdersWSDTO[] = [];
-  @observable pendingOrdersSortBy: SortByDropdownEnum =
-    SortByDropdownEnum.NewFirstAsc;
+  @observable available = 0;
+  rootStore: RootStore;
+
+  constructor(rootStore: RootStore) {
+    this.rootStore = rootStore;
+  }
 
   @action
   setQuote = (quote: BidAskModelWSDTO) => {
@@ -72,11 +72,12 @@ export class QuotesStore implements IQuotesStore {
     return +this.profit + this.invest;
   }
 
+  // TODO: move to sorting store?
   @computed
   get sortedActivePositions() {
     let filterByFunc;
 
-    switch (this.activePositionsSortBy) {
+    switch (this.rootStore.sortingStore.activePositionsSortBy) {
       case SortByDropdownEnum.NewFirstAsc:
         filterByFunc = this.sortByDateOpened(true);
         break;
@@ -111,7 +112,7 @@ export class QuotesStore implements IQuotesStore {
   get sortedPendingOrders() {
     let filterByFunc;
 
-    switch (this.pendingOrdersSortBy) {
+    switch (this.rootStore.sortingStore.pendingOrdersSortBy) {
       case SortByDropdownEnum.NewFirstAsc:
         filterByFunc = this.sortByDateOpenedPendingOrders(true);
         break;

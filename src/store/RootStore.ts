@@ -8,6 +8,7 @@ import { DateRangeStore } from './DateRangeStore';
 import { HistoryStore } from './HistoryStore';
 import { KYCstore } from './KYCstore';
 import { NotificationStore } from './NotificationStore';
+import { SortingStore } from './SortingStore';
 
 export class RootStore {
   quotesStore: QuotesStore;
@@ -20,9 +21,10 @@ export class RootStore {
   historyStore: HistoryStore;
   kycStore: KYCstore;
   notificationStore: NotificationStore;
+  sortingStore: SortingStore;
 
   constructor() {
-    this.quotesStore = new QuotesStore();
+    this.quotesStore = new QuotesStore(this);
     this.mainAppStore = new MainAppStore();
     this.SLTPStore = new SLTPStore();
     this.tabsStore = new TabsStore();
@@ -32,5 +34,6 @@ export class RootStore {
     this.historyStore = new HistoryStore();
     this.kycStore = new KYCstore();
     this.notificationStore = new NotificationStore();
+    this.sortingStore = new SortingStore(this);
   }
 }

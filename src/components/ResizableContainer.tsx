@@ -7,6 +7,7 @@ import IconExpand from '../assets/svg/icon-tabs-fullscreen.svg';
 import IconClose from '../assets/svg/icon-popup-close.svg';
 import { observer } from 'mobx-react-lite';
 import { useStores } from '../hooks/useStores';
+import { SideBarTabType } from '../enums/SideBarTabType';
 
 const ResizableContainer: FC = observer(props => {
   const { children } = props;
@@ -28,12 +29,14 @@ const ResizableContainer: FC = observer(props => {
       flexDirection="column"
     >
       <FlexContainer position="absolute" top="12px" right="12px" zIndex="200">
-        <IconButton onClick={toggleExpandtab}>
-          <SvgIcon
-            {...IconExpand}
-            fillColor="rgba(255, 255, 255, 0.6)"
-          ></SvgIcon>
-        </IconButton>
+        {tabsStore.sideBarTabType !== SideBarTabType.Markets && (
+          <IconButton onClick={toggleExpandtab}>
+            <SvgIcon
+              {...IconExpand}
+              fillColor="rgba(255, 255, 255, 0.6)"
+            ></SvgIcon>
+          </IconButton>
+        )}
         <IconButton onClick={tabsStore.closeAnyTab}>
           <SvgIcon
             {...IconClose}
