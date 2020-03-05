@@ -4,7 +4,10 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
-import { PrimaryTextSpan } from '../../styles/TextsElements';
+import {
+  PrimaryTextSpan,
+  PrimaryTextParagraph,
+} from '../../styles/TextsElements';
 import API from '../../helpers/API';
 import { HistoryTabEnum } from '../../enums/HistoryTabEnum';
 import IconNoTradingHistory from '../../assets/svg/icon-no-trading-history.svg';
@@ -33,10 +36,14 @@ const TradingHistory: FC = () => {
 
   return (
     <PortfolioWrapper flexDirection="column" height="100%">
-      <FlexContainer flexDirection="column" padding="0 8px">
-        <FlexContainer margin="0 0 8px">
-          <TabPortfolitButton isActive>Trading History</TabPortfolitButton>
-        </FlexContainer>
+      <FlexContainer padding="12px 16px" margin="0 0 8px 0">
+        <PrimaryTextSpan
+          fontSize="12px"
+          color="#fffccc"
+          textTransform="uppercase"
+        >
+          Trading History
+        </PrimaryTextSpan>
       </FlexContainer>
       <SortByWrapper
         backgroundColor="rgba(65, 66, 83, 0.5)"

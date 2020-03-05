@@ -5,6 +5,7 @@ import {
   PriceChangeWSDTO,
 } from '../types/Instruments';
 import { RootStore } from './RootStore';
+import { SortByMarketsEnum } from '../enums/SortByMarketsEnum';
 
 interface ContextProps {
   rootStore: RootStore;
@@ -43,10 +44,37 @@ export class InstrumentsStore implements ContextProps {
     );
   }
 
-  @computed get sortedInstruments() {
-    return this.instruments.filter(
-      item => item.groupId === this.activeInstrumentGroupId
-    );
+  @computed
+  get sortedInstruments() {
+    let filterByFunc;
+
+    switch (this.rootStore.sortingStore.marketsSortBy) {
+      case SortByMarketsEnum.NameAsc:
+        filterByFunc = this.sortByName(true);
+        break;
+
+      case SortByMarketsEnum.NameDesc:
+        filterByFunc = this.sortByName(false);
+        break;
+
+      case SortByMarketsEnum.Popularity:
+        filterByFunc = this.sortByPopularity;
+        break;
+
+      case SortByMarketsEnum.PriceChangeAsc:
+        filterByFunc = this.sortByPriceChange(true);
+        break;
+
+      case SortByMarketsEnum.PriceChangeDesc:
+        filterByFunc = this.sortByPriceChange(false);
+        break;
+
+      default:
+        return this.instruments;
+    }
+    return this.instruments
+      .filter(item => item.groupId === this.activeInstrumentGroupId)
+      .sort(filterByFunc);
   }
 
   @action
@@ -64,9 +92,48 @@ export class InstrumentsStore implements ContextProps {
       ?.chart()
       .setSymbol(instrumentId, () => {});
   };
-  
+
   @action
   setPricesChanges = (prices: PriceChangeWSDTO[]) => {
     this.pricesChange = prices;
+  };
+
+  sortByName = (ascending: boolean) => (
+    a: InstrumentModelWSDTO,
+    b: InstrumentModelWSDTO
+  ) => {
+    if (a.name < b.name) {
+      return ascending ? -1 : 1;
+    }
+    if (a.name > b.name) {
+      return ascending ? 1 : -1;
+    }
+    return 0;
+  };
+
+  sortByPopularity = (a: InstrumentModelWSDTO, b: InstrumentModelWSDTO) =>
+    a.weight - b.weight;
+
+  sortByPriceChange = (ascending: boolean) => (
+    a: InstrumentModelWSDTO,
+    b: InstrumentModelWSDTO
+  ) => {
+    const aPriceChange = this.pricesChange.find(item => item.id === a.id);
+    const bPriceChange = this.pricesChange.find(item => item.id === b.id);
+
+    if (!aPriceChange || !bPriceChange) {
+      console.log('InstrumentsStore -> aPriceChange', aPriceChange);
+      console.log('InstrumentsStore -> bPriceChange', bPriceChange);
+
+      return 0;
+    }
+
+    if (aPriceChange.chng < bPriceChange.chng) {
+      return ascending ? 1 : -1;
+    }
+    if (aPriceChange.chng > bPriceChange.chng) {
+      return ascending ? -1 : 1;
+    }
+    return 0;
   };
 }

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
@@ -13,12 +13,25 @@ import {
 import SortByDropdown from '../SortByDropdown';
 import SvgIcon from '../SvgIcon';
 import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
+import { SortByDropdownEnum } from '../../enums/SortByDropdown';
+import { sortByDropdownProfitLabels } from '../../constants/sortByDropdownValues';
 
 const Orders: FC = () => {
-  const { quotesStore, tabsStore, mainAppStore } = useStores();
+  const { sortingStore, tabsStore, mainAppStore, quotesStore } = useStores();
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     tabsStore.portfolioTab = portfolioTab;
+  };
+
+  const [on, toggle] = useState(false);
+
+  const handleToggle = (flag: boolean) => {
+    toggle(flag);
+  };
+
+  const handleChangeSorting = (sortType: SortByDropdownEnum) => () => {
+    sortingStore.pendingOrdersSortBy = sortType;
+    toggle(false);
   };
 
   return (
@@ -59,7 +72,25 @@ const Orders: FC = () => {
         >
           Sort by:
         </PrimaryTextSpan>
-        <SortByDropdown sortTypeDropdown="pendingOrders" />
+        <SortByDropdown
+          opened={on}
+          selectedLabel={
+            sortByDropdownProfitLabels[sortingStore.pendingOrdersSortBy]
+          }
+          toggle={handleToggle}
+        >
+          {Object.entries(sortByDropdownProfitLabels).map(([key, value]) => (
+            <DropdownItemText
+              color="#fffccc"
+              fontSize="12px"
+              key={key}
+              onClick={handleChangeSorting(+key)}
+              whiteSpace="nowrap"
+            >
+              {value}
+            </DropdownItemText>
+          ))}
+        </SortByDropdown>
       </SortByWrapper>
       <Observer>
         {() => (
@@ -147,4 +178,18 @@ const ActivePositionsWrapper = styled(FlexContainer)`
 
 const SortByWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+`;
+
+const DropdownItemText = styled(PrimaryTextSpan)`
+  transition: color 0.2s ease;
+  margin-bottom: 16px;
+
+  &:hover {
+    cursor: pointer;
+    color: #00ffdd;
+  }
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 `;

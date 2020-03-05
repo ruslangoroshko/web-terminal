@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -9,16 +9,29 @@ import SvgIcon from '../SvgIcon';
 import IconStar from '../../assets/svg/icon-star.svg';
 import IconArrowSortingUp from '../../assets/svg/icon-arrow-sorting-up.svg';
 import InstrumentMarkets from './InstrumentMarkets';
+import { SortByMarketsEnum } from '../../enums/SortByMarketsEnum';
+import { sortByMarketsLabels } from '../../constants/sortByDropdownValues';
+import SortByDropdown from '../SortByDropdown';
 
 interface Props {}
 
 function Markets(props: Props) {
   const {} = props;
 
-  const { instrumentsStore } = useStores();
+  const { instrumentsStore, sortingStore } = useStores();
 
   const setActiveInstrumentGroup = (groupId: string) => () => {
     instrumentsStore.activeInstrumentGroupId = groupId;
+  };
+  const [on, toggle] = useState(false);
+
+  const handleToggle = (flag: boolean) => {
+    toggle(flag);
+  };
+
+  const handleChangeSorting = (sortType: SortByMarketsEnum) => () => {
+    sortingStore.marketsSortBy = sortType;
+    toggle(false);
   };
 
   return (
@@ -60,6 +73,36 @@ function Markets(props: Props) {
           )}
         </Observer>
       </MarketButtonsWrapper>
+      <SortByWrapper
+        backgroundColor="rgba(65, 66, 83, 0.5)"
+        padding="10px 16px"
+      >
+        <PrimaryTextSpan
+          color="rgba(255, 255, 255, 0.4)"
+          marginRight="4px"
+          fontSize="10px"
+          textTransform="uppercase"
+        >
+          Sort by:
+        </PrimaryTextSpan>
+        <SortByDropdown
+          selectedLabel={sortByMarketsLabels[sortingStore.marketsSortBy]}
+          opened={on}
+          toggle={handleToggle}
+        >
+          {Object.entries(sortByMarketsLabels).map(([key, value]) => (
+            <DropdownItemText
+              color="#fffccc"
+              fontSize="12px"
+              key={key}
+              onClick={handleChangeSorting(+key)}
+              whiteSpace="nowrap"
+            >
+              {value}
+            </DropdownItemText>
+          ))}
+        </SortByDropdown>
+      </SortByWrapper>
       <SortingWrapper
         backgroundColor="rgba(65,66,83,0.5)"
         padding="8px 16px"
@@ -86,7 +129,7 @@ function Markets(props: Props) {
         </FlexContainer>
         <FlexContainer>
           <FlexContainer
-            margin="0 30px 0 0"
+            margin="0 44px 0 0"
             width="34px"
             flexDirection="column"
             alignItems="flex-end"
@@ -110,28 +153,22 @@ function Markets(props: Props) {
               >
                 24H
               </PrimaryTextSpan>
-              <SvgIcon
-                {...IconArrowSortingUp}
-                strokeColor="rgba(255,255,255,0.4)"
-              />
             </ButtonWithoutStyles>
           </FlexContainer>
         </FlexContainer>
       </SortingWrapper>
-      <FlexContainer flexDirection="column" height="100%">
-        <Observer>
-          {() => (
-            <MarketsWrapper flexDirection="column" padding="0 16px">
-              {instrumentsStore.sortedInstruments.map(item => (
-                <InstrumentMarkets
-                  instrument={item}
-                  key={item.id}
-                ></InstrumentMarkets>
-              ))}
-            </MarketsWrapper>
-          )}
-        </Observer>
-      </FlexContainer>
+      <Observer>
+        {() => (
+          <MarketsWrapper flexDirection="column" >
+            {instrumentsStore.sortedInstruments.map(item => (
+              <InstrumentMarkets
+                instrument={item}
+                key={item.id}
+              ></InstrumentMarkets>
+            ))}
+          </MarketsWrapper>
+        )}
+      </Observer>
     </FlexContainer>
   );
 }
@@ -172,7 +209,6 @@ const SortingWrapper = styled(FlexContainer)`
 
 const MarketsWrapper = styled(FlexContainer)`
   overflow-y: auto;
-  height: 100%;
 
   ::-webkit-scrollbar {
     width: 4px;
@@ -184,5 +220,23 @@ const MarketsWrapper = styled(FlexContainer)`
   }
   ::-webkit-scrollbar-thumb:vertical {
     background-color: rgba(0, 0, 0, 0.6);
+  }
+`;
+
+const SortByWrapper = styled(FlexContainer)`
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+`;
+
+const DropdownItemText = styled(PrimaryTextSpan)`
+  transition: color 0.2s ease;
+  margin-bottom: 16px;
+  cursor: pointer;
+
+  &:hover {
+    color: #00ffdd;
+  }
+
+  &:last-of-type {
+    margin-bottom: 0;
   }
 `;

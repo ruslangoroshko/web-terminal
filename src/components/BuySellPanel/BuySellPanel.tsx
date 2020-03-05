@@ -428,6 +428,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 closePopup={closePopup}
                 applyHandler={confirmBuying}
                 values={values}
+                digits={instrument.digits}
                 instrumentId={instrument.id}
               ></ConfirmationPopup>
             </ConfirmPopupWrapper>
@@ -479,6 +480,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           setFieldValue={setFieldValue}
           purchaseAtValue={values.purchaseAt}
           instrumentId={instrument.id}
+          digits={instrument.digits}
         ></PurchaseAtPopup>
       </CustomForm>
     </FlexContainer>

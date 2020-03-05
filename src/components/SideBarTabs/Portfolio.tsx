@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
@@ -15,14 +15,27 @@ import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import SortByDropdown from '../SortByDropdown';
 import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
 import SvgIcon from '../SvgIcon';
+import { sortByDropdownProfitLabels } from '../../constants/sortByDropdownValues';
+import { SortByDropdownEnum } from '../../enums/SortByDropdown';
 
 interface Props {}
 
 const Portfolio: FC<Props> = () => {
-  const { quotesStore, mainAppStore, tabsStore } = useStores();
+  const { sortingStore, mainAppStore, tabsStore, quotesStore } = useStores();
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     tabsStore.portfolioTab = portfolioTab;
+  };
+
+  const [on, toggle] = useState(false);
+
+  const handleToggle = (flag: boolean) => {
+    toggle(flag);
+  };
+
+  const handleChangeSorting = (sortType: SortByDropdownEnum) => () => {
+    sortingStore.activePositionsSortBy = sortType;
+    toggle(false);
   };
 
   return (
@@ -135,7 +148,25 @@ const Portfolio: FC<Props> = () => {
         >
           Sort by:
         </PrimaryTextSpan>
-        <SortByDropdown sortTypeDropdown="activePositions" />
+        <SortByDropdown
+          selectedLabel={
+            sortByDropdownProfitLabels[sortingStore.activePositionsSortBy]
+          }
+          opened={on}
+          toggle={handleToggle}
+        >
+          {Object.entries(sortByDropdownProfitLabels).map(([key, value]) => (
+            <DropdownItemText
+              color="#fffccc"
+              fontSize="12px"
+              key={key}
+              onClick={handleChangeSorting(+key)}
+              whiteSpace="nowrap"
+            >
+              {value}
+            </DropdownItemText>
+          ))}
+        </SortByDropdown>
       </SortByWrapper>
       <Observer>
         {() => (
@@ -232,4 +263,18 @@ const ActivePositionsWrapper = styled(FlexContainer)`
 
 const SortByWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+`;
+
+const DropdownItemText = styled(PrimaryTextSpan)`
+  transition: color 0.2s ease;
+  margin-bottom: 16px;
+
+  &:hover {
+    cursor: pointer;
+    color: #00ffdd;
+  }
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 `;

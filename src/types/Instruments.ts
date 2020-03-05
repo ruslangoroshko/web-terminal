@@ -14,6 +14,7 @@ export interface InstrumentModelWSDTO {
   ask?: number;
   tickSize?: number;
   groupId: string;
+  weight: number;
 }
 
 interface DayOff {

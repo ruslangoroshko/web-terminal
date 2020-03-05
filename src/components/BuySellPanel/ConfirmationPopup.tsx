@@ -18,10 +18,11 @@ interface Props {
   applyHandler: () => void;
   values: OpenPositionModelFormik;
   instrumentId: string;
+  digits: number;
 }
 
 function ConfirmationPopup(props: Props) {
-  const { closePopup, applyHandler, values, instrumentId } = props;
+  const { closePopup, applyHandler, values, instrumentId, digits } = props;
   const { quotesStore, mainAppStore } = useStores();
   const apply = () => {
     applyHandler();
@@ -59,7 +60,7 @@ function ConfirmationPopup(props: Props) {
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
           {mainAppStore.activeAccount?.symbol}
-          {quotesStore.quotes[instrumentId].bid.c}
+          {quotesStore.quotes[instrumentId].bid.c.toFixed(digits)}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

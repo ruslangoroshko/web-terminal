@@ -26,7 +26,9 @@ function Loader(props: Props) {
           justifyContent="center"
           alignItems="center"
         >
-          <SpinnerWrapper></SpinnerWrapper>
+          <LoaderWrapper>
+            <SvgIcon {...IconLoader} />
+          </LoaderWrapper>
         </FlexContainer>
       </FixedContainerWrapper>
     </Modal>

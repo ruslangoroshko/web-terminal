@@ -26,6 +26,7 @@ const ActiveInstrument: FC<Props> = props => {
     id: '',
     chng: 0,
   };
+
   return quotesStore.quotes[instrument.id] ? (
     <FlexContainer>
       <FlexContainer
@@ -68,7 +69,9 @@ const ActiveInstrument: FC<Props> = props => {
                   fontSize="16px"
                   marginRight="10px"
                 >
-                  {quotesStore.quotes[instrument.id].bid.c}
+                  {quotesStore.quotes[instrument.id].bid.c.toFixed(
+                    instrument.digits
+                  )}
                 </PrimaryTextSpan>
                 <QuoteText fontSize="12px" isGrowth={priceChange.chng >= 0}>
                   {getNumberSign(priceChange.chng)}
@@ -88,7 +91,13 @@ const ActiveInstrument: FC<Props> = props => {
             <LabelWrapper>
               <PrimaryTextSpan fontSize="12px">
                 <Observer>
-                  {() => <>{quotesStore.quotes[instrument.id].bid.c}</>}
+                  {() => (
+                    <>
+                      {quotesStore.quotes[instrument.id].bid.c.toFixed(
+                        instrument.digits
+                      )}
+                    </>
+                  )}
                 </Observer>
               </PrimaryTextSpan>
             </LabelWrapper>
@@ -102,7 +111,13 @@ const ActiveInstrument: FC<Props> = props => {
             <LabelWrapper>
               <PrimaryTextSpan fontSize="12px">
                 <Observer>
-                  {() => <>{quotesStore.quotes[instrument.id].ask.c}</>}
+                  {() => (
+                    <>
+                      {quotesStore.quotes[instrument.id].ask.c.toFixed(
+                        instrument.digits
+                      )}
+                    </>
+                  )}
                 </Observer>
               </PrimaryTextSpan>
             </LabelWrapper>
