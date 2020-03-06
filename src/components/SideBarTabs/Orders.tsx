@@ -13,8 +13,8 @@ import {
 import SortByDropdown from '../SortByDropdown';
 import SvgIcon from '../SvgIcon';
 import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
-import { SortByDropdownEnum } from '../../enums/SortByDropdown';
-import { sortByDropdownProfitLabels } from '../../constants/sortByDropdownValues';
+import { sortByPendingOrdersLabels } from '../../constants/sortByDropdownValues';
+import { SortByPendingOrdersEnum } from '../../enums/SortByPendingOrdersEnum';
 
 const Orders: FC = () => {
   const { sortingStore, tabsStore, mainAppStore, quotesStore } = useStores();
@@ -29,7 +29,7 @@ const Orders: FC = () => {
     toggle(flag);
   };
 
-  const handleChangeSorting = (sortType: SortByDropdownEnum) => () => {
+  const handleChangeSorting = (sortType: SortByPendingOrdersEnum) => () => {
     sortingStore.pendingOrdersSortBy = sortType;
     toggle(false);
   };
@@ -75,11 +75,11 @@ const Orders: FC = () => {
         <SortByDropdown
           opened={on}
           selectedLabel={
-            sortByDropdownProfitLabels[sortingStore.pendingOrdersSortBy]
+            sortByPendingOrdersLabels[sortingStore.pendingOrdersSortBy]
           }
           toggle={handleToggle}
         >
-          {Object.entries(sortByDropdownProfitLabels).map(([key, value]) => (
+          {Object.entries(sortByPendingOrdersLabels).map(([key, value]) => (
             <DropdownItemText
               color="#fffccc"
               fontSize="12px"

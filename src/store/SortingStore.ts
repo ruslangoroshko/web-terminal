@@ -1,20 +1,21 @@
 import { RootStore } from './RootStore';
-import { SortByDropdownEnum } from '../enums/SortByDropdown';
+import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { observable } from 'mobx';
 import { SortByMarketsEnum } from '../enums/SortByMarketsEnum';
+import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
 
 interface ISortingStore {
-  activePositionsSortBy: SortByDropdownEnum;
-  pendingOrdersSortBy: SortByDropdownEnum;
+  activePositionsSortBy: SortByProfitEnum;
+  pendingOrdersSortBy: SortByPendingOrdersEnum;
   marketsSortBy: SortByMarketsEnum;
 }
 
 export class SortingStore implements ISortingStore {
   rootStore: RootStore;
-  @observable activePositionsSortBy: SortByDropdownEnum =
-    SortByDropdownEnum.NewFirstAsc;
-  @observable pendingOrdersSortBy: SortByDropdownEnum =
-    SortByDropdownEnum.NewFirstAsc;
+  @observable activePositionsSortBy: SortByProfitEnum =
+    SortByProfitEnum.NewFirstAsc;
+  @observable pendingOrdersSortBy: SortByPendingOrdersEnum =
+    SortByPendingOrdersEnum.NewFirstAsc;
 
   @observable marketsSortBy: SortByMarketsEnum = SortByMarketsEnum.Popularity;
 

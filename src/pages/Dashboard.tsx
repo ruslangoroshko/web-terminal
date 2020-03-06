@@ -20,7 +20,7 @@ import { AskBidEnum } from '../enums/AskBid';
 import { useStores } from '../hooks/useStores';
 import Toggle from '../components/Toggle';
 import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
-import { Observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import { PendingOrdersWSDTO } from '../types/PendingOrders';
@@ -29,7 +29,7 @@ import Loader from '../components/Loader';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
-const Dashboard = () => {
+const Dashboard = observer(() => {
   const {
     mainAppStore,
     tradingViewStore,
@@ -62,86 +62,88 @@ const Dashboard = () => {
   }, [mainAppStore.activeSession]);
 
   useEffect(() => {
-    mainAppStore.activeSession?.on(
-      Topics.INSTRUMENTS,
-      (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-        if (response.accountId === mainAppStore.activeAccount?.id) {
-          response.data.forEach(item => {
-            quotesStore.setQuote({
-              ask: {
-                c: item.ask || 0,
-                h: 0,
-                l: 0,
-                o: 0,
-              },
-              bid: {
-                c: item.bid || 0,
-                h: 0,
-                l: 0,
-                o: 0,
-              },
-              dir: AskBidEnum.Buy,
-              dt: Date.now(),
-              id: item.id,
+    if (mainAppStore.activeAccount) {
+      mainAppStore.activeSession?.on(
+        Topics.INSTRUMENTS,
+        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            response.data.forEach(item => {
+              quotesStore.setQuote({
+                ask: {
+                  c: item.ask || 0,
+                  h: 0,
+                  l: 0,
+                  o: 0,
+                },
+                bid: {
+                  c: item.bid || 0,
+                  h: 0,
+                  l: 0,
+                  o: 0,
+                },
+                dir: AskBidEnum.Buy,
+                dt: Date.now(),
+                id: item.id,
+              });
             });
-          });
-          instrumentsStore.instruments = response.data;
-          activeInstrumentsInit(instrumentsStore);
-        }
-      }
-    );
-
-    mainAppStore.activeSession?.on(
-      Topics.ACTIVE_POSITIONS,
-      (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
-        if (response.accountId === mainAppStore.activeAccount?.id) {
-          quotesStore.activePositions = response.data;
-        }
-      }
-    );
-
-    mainAppStore.activeSession?.on(
-      Topics.UPDATE_ACCOUNT,
-      (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
-        if (response.accountId === mainAppStore.activeAccount?.id) {
-          const newActivePositions = quotesStore.activePositions.map(item => {
-            if (item.id === response.data.id) {
-              return response.data;
-            }
-            return item;
-          });
-          quotesStore.activePositions = newActivePositions;
-        }
-      }
-    );
-
-    mainAppStore.activeSession?.on(
-      Topics.PENDING_ORDERS,
-      (response: ResponseFromWebsocket<PendingOrdersWSDTO[]>) => {
-        if (mainAppStore.activeAccount?.id === response.accountId) {
-          quotesStore.pendingOrders = response.data;
-        }
-      }
-    );
-
-    mainAppStore.activeSession?.on(
-      Topics.INSTRUMENT_GROUPS,
-      (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-        if (mainAppStore.activeAccount?.id === response.accountId) {
-          instrumentsStore.instrumentGroups = response.data;
-          if (response.data.length) {
-            instrumentsStore.activeInstrumentGroupId = response.data[0].id;
+            instrumentsStore.instruments = response.data;
+            activeInstrumentsInit(instrumentsStore);
           }
         }
-      }
-    );
+      );
 
-    mainAppStore.activeSession?.on(
-      Topics.PRICE_CHANGE,
-      (response: ResponseFromWebsocket<PriceChangeWSDTO[]>) => {
-        instrumentsStore.setPricesChanges(response.data);
-      }
-    );
+      mainAppStore.activeSession?.on(
+        Topics.ACTIVE_POSITIONS,
+        (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            quotesStore.activePositions = response.data;
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.UPDATE_ACCOUNT,
+        (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            const newActivePositions = quotesStore.activePositions.map(item => {
+              if (item.id === response.data.id) {
+                return response.data;
+              }
+              return item;
+            });
+            quotesStore.activePositions = newActivePositions;
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.PENDING_ORDERS,
+        (response: ResponseFromWebsocket<PendingOrdersWSDTO[]>) => {
+          if (mainAppStore.activeAccount?.id === response.accountId) {
+            quotesStore.pendingOrders = response.data;
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.INSTRUMENT_GROUPS,
+        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
+          if (mainAppStore.activeAccount?.id === response.accountId) {
+            instrumentsStore.instrumentGroups = response.data;
+            if (response.data.length) {
+              instrumentsStore.activeInstrumentGroupId = response.data[0].id;
+            }
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.PRICE_CHANGE,
+        (response: ResponseFromWebsocket<PriceChangeWSDTO[]>) => {
+          instrumentsStore.setPricesChanges(response.data);
+        }
+      );
+    }
   }, [mainAppStore.activeAccount]);
 
   return (
@@ -237,7 +239,7 @@ const Dashboard = () => {
       </GridWrapper>
     </DashboardWrapper>
   );
-};
+});
 
 export default Dashboard;
 

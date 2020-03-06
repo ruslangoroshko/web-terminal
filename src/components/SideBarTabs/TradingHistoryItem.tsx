@@ -215,7 +215,9 @@ function TradingHistoryItem(props: Props) {
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {currencySymbol}
-                    {swaps.reduce((acc, prev) => acc + prev.amount, 0)}
+                    {swaps
+                      .reduce((acc, prev) => acc + prev.amount, 0)
+                      .toFixed(2)}
                   </PrimaryTextSpan>
                 </FlexContainer>
                 <FlexContainer justifyContent="space-between">

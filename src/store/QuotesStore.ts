@@ -4,8 +4,9 @@ import { PositionModelWSDTO } from '../types/Positions';
 import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
 import { AskBidEnum } from '../enums/AskBid';
 import { PendingOrdersWSDTO } from '../types/PendingOrders';
-import { SortByDropdownEnum } from '../enums/SortByDropdown';
+import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { RootStore } from './RootStore';
+import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
 
 interface IQuotesStore {
   quotes: BidAskKeyValueList;
@@ -78,27 +79,27 @@ export class QuotesStore implements IQuotesStore {
     let filterByFunc;
 
     switch (this.rootStore.sortingStore.activePositionsSortBy) {
-      case SortByDropdownEnum.NewFirstAsc:
+      case SortByProfitEnum.NewFirstAsc:
         filterByFunc = this.sortByDateOpened(true);
         break;
 
-      case SortByDropdownEnum.NewFirstDesc:
+      case SortByProfitEnum.NewFirstDesc:
         filterByFunc = this.sortByDateOpened(false);
         break;
 
-      case SortByDropdownEnum.ProfitAsc:
+      case SortByProfitEnum.ProfitAsc:
         filterByFunc = this.sortByPnLPositions(true);
         break;
 
-      case SortByDropdownEnum.ProfitDesc:
+      case SortByProfitEnum.ProfitDesc:
         filterByFunc = this.sortByPnLPositions(false);
         break;
 
-      case SortByDropdownEnum.InvestmentAsc:
+      case SortByProfitEnum.InvestmentAsc:
         filterByFunc = this.sortByInvestment(true);
         break;
 
-      case SortByDropdownEnum.InvestmentDesc:
+      case SortByProfitEnum.InvestmentDesc:
         filterByFunc = this.sortByInvestment(false);
         break;
 
@@ -113,19 +114,19 @@ export class QuotesStore implements IQuotesStore {
     let filterByFunc;
 
     switch (this.rootStore.sortingStore.pendingOrdersSortBy) {
-      case SortByDropdownEnum.NewFirstAsc:
+      case SortByPendingOrdersEnum.NewFirstAsc:
         filterByFunc = this.sortByDateOpenedPendingOrders(true);
         break;
 
-      case SortByDropdownEnum.NewFirstDesc:
+      case SortByPendingOrdersEnum.NewFirstDesc:
         filterByFunc = this.sortByDateOpenedPendingOrders(false);
         break;
 
-      case SortByDropdownEnum.InvestmentAsc:
+      case SortByPendingOrdersEnum.InvestmentAsc:
         filterByFunc = this.sortByInvestment(true);
         break;
 
-      case SortByDropdownEnum.InvestmentDesc:
+      case SortByPendingOrdersEnum.InvestmentDesc:
         filterByFunc = this.sortByInvestment(false);
         break;
 

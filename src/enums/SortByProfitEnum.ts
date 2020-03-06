@@ -1,4 +1,4 @@
-export enum SortByDropdownEnum {
+export enum SortByProfitEnum {
   NewFirstAsc,
   NewFirstDesc,
   InvestmentAsc,

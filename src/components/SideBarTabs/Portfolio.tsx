@@ -16,7 +16,7 @@ import SortByDropdown from '../SortByDropdown';
 import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
 import SvgIcon from '../SvgIcon';
 import { sortByDropdownProfitLabels } from '../../constants/sortByDropdownValues';
-import { SortByDropdownEnum } from '../../enums/SortByDropdown';
+import { SortByProfitEnum } from '../../enums/SortByProfitEnum';
 
 interface Props {}
 
@@ -33,7 +33,7 @@ const Portfolio: FC<Props> = () => {
     toggle(flag);
   };
 
-  const handleChangeSorting = (sortType: SortByDropdownEnum) => () => {
+  const handleChangeSorting = (sortType: SortByProfitEnum) => () => {
     sortingStore.activePositionsSortBy = sortType;
     toggle(false);
   };

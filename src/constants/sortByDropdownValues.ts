@@ -1,13 +1,21 @@
-import { SortByDropdownEnum } from '../enums/SortByDropdown';
+import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { SortByMarketsEnum } from '../enums/SortByMarketsEnum';
+import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
 
 export const sortByDropdownProfitLabels = {
-  [SortByDropdownEnum.NewFirstAsc]: 'New first',
-  [SortByDropdownEnum.NewFirstDesc]: 'Old first',
-  [SortByDropdownEnum.InvestmentAsc]: 'Investment: Large to Small',
-  [SortByDropdownEnum.InvestmentDesc]: 'Investment: Small to Large',
-  [SortByDropdownEnum.ProfitAsc]: 'Profit: Small to Large',
-  [SortByDropdownEnum.ProfitDesc]: 'Profit: Large to Small',
+  [SortByProfitEnum.NewFirstAsc]: 'New first',
+  [SortByProfitEnum.NewFirstDesc]: 'Old first',
+  [SortByProfitEnum.InvestmentAsc]: 'Investment: Large to Small',
+  [SortByProfitEnum.InvestmentDesc]: 'Investment: Small to Large',
+  [SortByProfitEnum.ProfitAsc]: 'Profit: Small to Large',
+  [SortByProfitEnum.ProfitDesc]: 'Profit: Large to Small',
+};
+
+export const sortByPendingOrdersLabels = {
+  [SortByPendingOrdersEnum.NewFirstAsc]: 'New first',
+  [SortByPendingOrdersEnum.NewFirstDesc]: 'Old first',
+  [SortByPendingOrdersEnum.InvestmentAsc]: 'Investment: Large to Small',
+  [SortByPendingOrdersEnum.InvestmentDesc]: 'Investment: Small to Large',
 };
 
 export const sortByMarketsLabels = {
