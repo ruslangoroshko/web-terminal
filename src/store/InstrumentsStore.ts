@@ -44,6 +44,23 @@ export class InstrumentsStore implements ContextProps {
     );
   }
 
+  @action
+  setActiveInstrumentsIds = (activeInstrumentsIds: string[]) => {
+    this.activeInstrumentsIds = activeInstrumentsIds.slice(0, 6);
+  };
+
+  @action
+  addActiveInstrumentId = (activeInstrumentId: string) => {
+    if (this.activeInstrumentsIds.length === 7) {
+      this.activeInstrumentsIds = [
+        ...this.activeInstrumentsIds.slice(0, 5),
+        activeInstrumentId,
+      ];
+    } else {
+      this.activeInstrumentsIds.push(activeInstrumentId);
+    }
+  };
+
   @computed
   get sortedInstruments() {
     let filterByFunc;

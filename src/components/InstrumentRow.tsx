@@ -37,7 +37,7 @@ const InstrumentRow: FC<Props> = observer(props => {
         item => item.id === instrument.id
       )!;
     } else {
-      instrumentsStore.activeInstrumentsIds.push(instrument.id);
+      instrumentsStore.addActiveInstrumentId(instrument.id);
       API.setKeyValue({
         key: KeysInApi.SELECTED_INSTRUMENTS,
         value: JSON.stringify(instrumentsStore.activeInstrumentsIds),

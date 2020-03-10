@@ -14,8 +14,8 @@ const InstrumentsScrollWrapper: FC<Props> = observer(props => {
 
   const handleRemoveInstrument = (itemId: string) => async () => {
     // TODO: create action method for setting new activeInstrumentsIds in the store
-    instrumentsStore.activeInstrumentsIds = instrumentsStore.activeInstrumentsIds.filter(
-      id => id !== itemId
+    instrumentsStore.setActiveInstrumentsIds(
+      instrumentsStore.activeInstrumentsIds.filter(id => id !== itemId)
     );
     await API.setKeyValue({
       key: KeysInApi.SELECTED_INSTRUMENTS,

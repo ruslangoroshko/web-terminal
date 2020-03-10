@@ -14,9 +14,11 @@ export const activeInstrumentsInit = async (
     : [];
 
   if (parsedValue.length) {
-    instrumentsStore.activeInstrumentsIds = instrumentsStore.instruments
-      .filter(item => parsedValue.includes(item.id))
-      .map(item => item.id);
+    instrumentsStore.setActiveInstrumentsIds(
+      instrumentsStore.instruments
+        .filter(item => parsedValue.includes(item.id))
+        .map(item => item.id)
+    );
   } else {
     const newFavouriteInstrumentsIds = instrumentsStore.instruments.map(
       item => item.id
@@ -31,7 +33,7 @@ export const activeInstrumentsInit = async (
       value: newFavouriteInstruments,
     });
 
-    instrumentsStore.activeInstrumentsIds = newFavouriteInstrumentsIds;
+    instrumentsStore.setActiveInstrumentsIds(newFavouriteInstrumentsIds);
   }
 
   instrumentsStore.setActiveInstrument(instrumentsStore.activeInstruments[0]);
