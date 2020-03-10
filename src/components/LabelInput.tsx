@@ -120,7 +120,7 @@ const Input = styled.input<{ hasError?: boolean }>`
   &:-webkit-autofill:focus,
   &:-webkit-autofill:valid,
   &:-webkit-autofill:active {
-    transition: border 0.2s ease, background-color 5000s ease-in-out 0s;
+    transition: border 0.2s ease, background-color 50000s ease-in-out 0s;
     font-size: 14px;
     -webkit-text-fill-color: #fffccc !important;
 

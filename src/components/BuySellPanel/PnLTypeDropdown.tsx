@@ -14,9 +14,10 @@ import { ObjectKeys } from '../../helpers/objectKeys';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
+  isDisabled?: boolean;
 }
 
-const PnLTypeDropdown: FC<Props> = ({ dropdownType }) => {
+const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
   const { SLTPStore } = useStores();
 
   const handleAutoClose = (
@@ -39,10 +40,14 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType }) => {
   return (
     <Toggle>
       {({ on, toggle }) => (
-        <FlexContainer position="relative">
-          <DropdownButton isActive={on} onClick={toggle} type="button">
+        <FlexContainer position="relative" alignItems="center">
+          <DropdownButton
+            isActive={on}
+            onClick={toggle}
+            type="button"
+            disabled={isDisabled}
+          >
             <PrimaryTextSpan
-              marginRight="4px"
               color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
             >
               {dropdownType === 'sl'
@@ -98,9 +103,10 @@ const DropdownButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 28px;
-  width: 28px;
+  justify-content: flex-start;
+  padding-left: 8px;
+  height: 100%;
+  width: 38px;
   background-color: ${props => (props.isActive ? '#000000' : 'transparent')};
   border-radius: 2px 2px 2px 0;
 
@@ -109,6 +115,10 @@ const DropdownButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
     position: absolute;
     background-color: transparent;
     ${props => props.isActive && OuterBorderRadius}
+  }
+
+  &:disabled:hover {
+    cursor: default;
   }
 `;
 

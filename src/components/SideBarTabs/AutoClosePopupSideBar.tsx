@@ -1,9 +1,6 @@
 import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
-import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
-import styled from '@emotion/styled';
-import { SecondaryButton } from '../../styles/Buttons';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 
 interface Props {
@@ -32,15 +29,25 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       top: 0,
       left: 0,
       width: 0,
+      bottom: 0,
+      height: 0,
     });
 
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     const handleToggle = () => {
       toggle(!on);
-      // @ts-ignore
-      const { top, left, width } = ref.current.getBoundingClientRect();
-      setPopupPosition({ top, left, width });
+      const {
+        top,
+        left,
+        width,
+        bottom,
+        height,
+
+        // @ts-ignore
+      } = ref.current.getBoundingClientRect();
+      console.log(bottom);
+      setPopupPosition({ top, left, width, bottom, height });
     };
 
     const handleClickOutside = (e: any) => {
@@ -65,13 +72,15 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         {on && (
           <FlexContainer
             position="absolute"
-            top={`${Math.round(popupPosition.top + 26)}px`}
+            // FIXME: think about this stupid sheet
+            top={`${popupPosition.top +
+              Math.round(popupPosition.height / 5)}px`}
             left={`${Math.round(popupPosition.width * 0.75)}px`}
             zIndex="101"
           >
             <SetAutoclose
               handleApply={updateSLTP}
-              stopLossValue={stopLossValue}
+              stopLossValue={Math.abs(stopLossValue || 0)}
               takeProfitValue={takeProfitValue}
               toggle={toggle}
               investedAmount={investedAmount}

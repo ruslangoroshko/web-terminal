@@ -110,6 +110,14 @@ function SetAutoclose(props: Props) {
     };
   }, []);
 
+  const removeSL = () => {
+    SLTPStore.stopLossValue = '';
+  };
+
+  const removeTP = () => {
+    SLTPStore.takeProfitValue = '';
+  };
+
   return (
     <Wrapper
       position="relative"
@@ -150,7 +158,7 @@ function SetAutoclose(props: Props) {
         </InformationPopup>
       </FlexContainer>
       <InputWrapper
-        padding="8px 32px 8px 22px"
+        padding="0 0 0 22px"
         margin="0 0 16px 0"
         height="32px"
         width="100%"
@@ -159,19 +167,36 @@ function SetAutoclose(props: Props) {
         <PlusSign>+</PlusSign>
         <Observer>
           {() => (
-            <InputPnL
-              onBeforeInput={handleBeforeInput}
-              placeholder="Non Set"
-              onChange={handleChangeProfit}
-              onBlur={handleTakeProfitBlur}
-              value={SLTPStore.takeProfitValue || ''}
-              disabled={isDisabled}
-            ></InputPnL>
+            <>
+              <InputPnL
+                onBeforeInput={handleBeforeInput}
+                placeholder="Non Set"
+                onChange={handleChangeProfit}
+                onBlur={handleTakeProfitBlur}
+                value={SLTPStore.takeProfitValue || ''}
+                disabled={isDisabled}
+              ></InputPnL>
+              {!!SLTPStore.takeProfitValue && (
+                <CloseValueButtonWrapper
+                  position="absolute"
+                  top="50%"
+                  right="42px"
+                >
+                  <ButtonWithoutStyles type="button" onClick={removeTP}>
+                    <SvgIcon
+                      {...IconClose}
+                      fillColor="rgba(255, 255, 255, 0.6)"
+                    ></SvgIcon>
+                  </ButtonWithoutStyles>
+                </CloseValueButtonWrapper>
+              )}
+            </>
           )}
         </Observer>
-        <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown dropdownType="tp"></PnLTypeDropdown>
-        </FlexContainer>
+        <PnLTypeDropdown
+          dropdownType="tp"
+          isDisabled={isDisabled}
+        ></PnLTypeDropdown>
       </InputWrapper>
       <FlexContainer
         margin="0 0 6px 0"
@@ -196,8 +221,8 @@ function SetAutoclose(props: Props) {
         </InformationPopup>
       </FlexContainer>
       <InputWrapper
-        padding="8px 32px 8px 22px"
-        margin="0 0 16px 0"
+        padding="0 0 0 22px"
+        margin={isDisabled ? '0' : '0 0 16px 0'}
         height="32px"
         width="100%"
         position="relative"
@@ -215,19 +240,36 @@ function SetAutoclose(props: Props) {
         <PlusSign>-</PlusSign>
         <Observer>
           {() => (
-            <InputPnL
-              onBeforeInput={handleBeforeInput}
-              placeholder="Non Set"
-              onChange={handleChangeLoss}
-              onBlur={handleStopLossBlur}
-              value={SLTPStore.stopLossValue || ''}
-              disabled={isDisabled}
-            ></InputPnL>
+            <>
+              <InputPnL
+                onBeforeInput={handleBeforeInput}
+                placeholder="Non Set"
+                onChange={handleChangeLoss}
+                onBlur={handleStopLossBlur}
+                value={SLTPStore.stopLossValue || ''}
+                disabled={isDisabled}
+              ></InputPnL>
+              {!!SLTPStore.stopLossValue && (
+                <CloseValueButtonWrapper
+                  position="absolute"
+                  top="50%"
+                  right="42px"
+                >
+                  <ButtonWithoutStyles type="button" onClick={removeSL}>
+                    <SvgIcon
+                      {...IconClose}
+                      fillColor="rgba(255, 255, 255, 0.6)"
+                    ></SvgIcon>
+                  </ButtonWithoutStyles>
+                </CloseValueButtonWrapper>
+              )}
+            </>
           )}
         </Observer>
-        <FlexContainer position="absolute" right="2px" top="2px">
-          <PnLTypeDropdown dropdownType="sl"></PnLTypeDropdown>
-        </FlexContainer>
+        <PnLTypeDropdown
+          dropdownType="sl"
+          isDisabled={isDisabled}
+        ></PnLTypeDropdown>
       </InputWrapper>
       {!isDisabled && (
         <ButtonApply
@@ -253,6 +295,10 @@ const Wrapper = styled(FlexContainer)`
     background-color: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(12px);
   } */
+
+  &:hover {
+    cursor: default;
+  }
 `;
 
 const ButtonClose = styled(ButtonWithoutStyles)`
@@ -273,12 +319,11 @@ const InputPnL = styled.input`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #ffffff;
+  color: #fffccc;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 
   &::placeholder {
-    color: #fff;
-    opacity: 0.3;
+    color: rgba(255, 255, 255, 0.3);
     font-weight: normal;
   }
 `;
@@ -294,7 +339,7 @@ const PlusSign = styled.span`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #ffffff;
+  color: #fffccc;
   position: absolute;
   top: 50%;
   left: 8px;
@@ -309,4 +354,8 @@ const ButtonApply = styled(ButtonWithoutStyles)`
   line-height: 16px;
   color: #003a38;
   height: 32px;
+`;
+
+const CloseValueButtonWrapper = styled(FlexContainer)`
+  transform: translateY(-50%);
 `;

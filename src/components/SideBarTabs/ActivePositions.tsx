@@ -86,16 +86,16 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
     switch (SLTPStore.autoCloseTPType) {
       case AutoCloseTypesEnum.Profit:
         fieldForTakeProfit = Fields.TAKE_PROFIT;
-
         break;
+
       case AutoCloseTypesEnum.Percent:
         fieldForTakeProfit = Fields.TAKE_PROFIT_RATE;
-
         break;
+
       case AutoCloseTypesEnum.Price:
         fieldForTakeProfit = Fields.TAKE_PROFIT_PRICE;
-
         break;
+
       default:
         break;
     }
@@ -103,19 +103,20 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
     switch (SLTPStore.autoCloseSLType) {
       case AutoCloseTypesEnum.Profit:
         fieldForStopLoss = Fields.STOP_LOSS;
-
         break;
+
       case AutoCloseTypesEnum.Percent:
         fieldForStopLoss = Fields.STOP_LOSS_RATE;
-
         break;
+
       case AutoCloseTypesEnum.Price:
         fieldForStopLoss = Fields.STOP_LOSS_PRICE;
-
         break;
+
       default:
         break;
     }
+    
     const values: UpdateSLTP = {
       accountId: mainAppStore.activeAccount!.id,
       positionId: id,

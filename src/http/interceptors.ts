@@ -1,10 +1,10 @@
-import axios, { AxiosRequestConfig, AxiosError } from 'axios';
+import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
 
 const injectInerceptors = () => {
-  axios.interceptors.request.use(
-    function(config: AxiosRequestConfig) {
+  axios.interceptors.response.use(
+    function(config: AxiosResponse) {
       return config;
     },
     function(error: AxiosError) {
