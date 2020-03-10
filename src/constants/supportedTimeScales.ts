@@ -26,3 +26,4 @@ export const supportedInterval = {
   '3Y': '36M',
   All: '100M',
 };
+export type SupportedIntervalsType = keyof typeof supportedInterval;

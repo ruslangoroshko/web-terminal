@@ -34,7 +34,7 @@ const InstrumentRow: FC<Props> = observer(props => {
   const addActiveInstrument = () => {
     if (instrumentsStore.activeInstrumentsIds.includes(instrument.id)) {
       instrumentsStore.activeInstrument = instrumentsStore.instruments.find(
-        item => item.id === instrument.id
+        item => item.instrumentItem.id === instrument.id
       )!;
     } else {
       instrumentsStore.addActiveInstrumentId(instrument.id);

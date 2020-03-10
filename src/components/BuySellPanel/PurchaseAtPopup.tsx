@@ -65,7 +65,7 @@ function PurchaseAtPopup(props: Props) {
       return;
     }
     const regex = `^[0-9]+(\.[0-9]{1,${instrumentsStore.activeInstrument!
-      .digits - 1}})?$`;
+      .instrumentItem.digits - 1}})?$`;
 
     if (
       e.currentTarget.value &&

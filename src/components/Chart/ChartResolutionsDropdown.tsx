@@ -17,7 +17,7 @@ import { ObjectKeys } from '../../helpers/objectKeys';
 interface Props {}
 
 const ChartResolutionsDropdown: FC<Props> = props => {
-  const { tradingViewStore } = useStores();
+  const { tradingViewStore, instrumentsStore } = useStores();
 
   const [on, toggle] = useState(false);
 
@@ -29,8 +29,13 @@ const ChartResolutionsDropdown: FC<Props> = props => {
     tradingViewStore.tradingWidget
       ?.chart()
       .setResolution(supportedResolutions[resolutionKey], () => {
-        tradingViewStore.resolutionKey = resolutionKey;
-        tradingViewStore.interval = null;
+        if (instrumentsStore.activeInstrument) {
+          instrumentsStore.editActiveInstrument({
+            ...instrumentsStore.activeInstrument,
+            resolution: resolutionKey,
+            interval: null,
+          });
+        }
         toggle(false);
       });
   };
@@ -65,14 +70,18 @@ const ChartResolutionsDropdown: FC<Props> = props => {
     <FlexContainer position="relative" ref={wrapperRef}>
       <Observer>
         {() => (
-          <SettingsButton onClick={handleToggle}>
-            <PrimaryTextSpan
-              color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
-              fontSize="12px"
-            >
-              {getShortName(tradingViewStore.resolutionKey)}
-            </PrimaryTextSpan>
-          </SettingsButton>
+          <>
+            {instrumentsStore.activeInstrument && (
+              <SettingsButton onClick={handleToggle}>
+                <PrimaryTextSpan
+                  color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
+                  fontSize="12px"
+                >
+                  {getShortName(instrumentsStore.activeInstrument.resolution)}
+                </PrimaryTextSpan>
+              </SettingsButton>
+            )}
+          </>
         )}
       </Observer>
       {on && (

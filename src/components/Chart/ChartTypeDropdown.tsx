@@ -16,7 +16,7 @@ import {
 interface Props {}
 
 const ChartTypeDropdown: FC<Props> = props => {
-  const { tradingViewStore } = useStores();
+  const { tradingViewStore, instrumentsStore } = useStores();
 
   const [on, toggle] = useState(false);
 
@@ -24,7 +24,13 @@ const ChartTypeDropdown: FC<Props> = props => {
 
   const handleChangeChart = (chartType: SeriesStyle) => () => {
     tradingViewStore.tradingWidget?.chart().setChartType(chartType);
-    tradingViewStore.chartType = chartType;
+
+    if (instrumentsStore.activeInstrument) {
+      instrumentsStore.editActiveInstrument({
+        ...instrumentsStore.activeInstrument,
+        chartType,
+      });
+    }
     toggle(false);
   };
 
@@ -50,12 +56,18 @@ const ChartTypeDropdown: FC<Props> = props => {
     <FlexContainer position="relative" ref={wrapperRef}>
       <Observer>
         {() => (
-          <SettingsButton onClick={handleToggle}>
-            <SvgIcon
-              fillColor={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
-              {...getChartIconByType(tradingViewStore.chartType)}
-            ></SvgIcon>
-          </SettingsButton>
+          <>
+            {instrumentsStore.activeInstrument && (
+              <SettingsButton onClick={handleToggle}>
+                <SvgIcon
+                  fillColor={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
+                  {...getChartIconByType(
+                    instrumentsStore.activeInstrument.chartType
+                  )}
+                ></SvgIcon>
+              </SettingsButton>
+            )}
+          </>
         )}
       </Observer>
       {on && (

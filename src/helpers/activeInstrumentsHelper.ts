@@ -16,12 +16,12 @@ export const activeInstrumentsInit = async (
   if (parsedValue.length) {
     instrumentsStore.setActiveInstrumentsIds(
       instrumentsStore.instruments
-        .filter(item => parsedValue.includes(item.id))
-        .map(item => item.id)
+        .filter(item => parsedValue.includes(item.instrumentItem.id))
+        .map(item => item.instrumentItem.id)
     );
   } else {
     const newFavouriteInstrumentsIds = instrumentsStore.instruments.map(
-      item => item.id
+      item => item.instrumentItem.id
     );
 
     const newFavouriteInstruments = newFavouriteInstrumentsIds.length
@@ -36,7 +36,9 @@ export const activeInstrumentsInit = async (
     instrumentsStore.setActiveInstrumentsIds(newFavouriteInstrumentsIds);
   }
 
-  instrumentsStore.setActiveInstrument(instrumentsStore.activeInstruments[0]);
+  instrumentsStore.setActiveInstrument(
+    instrumentsStore.instruments[0].instrumentItem.id
+  );
 
   const favouriteInstruments = await API.getKeyValue(
     KeysInApi.FAVOURITE_INSTRUMENTS

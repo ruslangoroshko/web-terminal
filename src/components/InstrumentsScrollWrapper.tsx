@@ -27,10 +27,13 @@ const InstrumentsScrollWrapper: FC<Props> = observer(props => {
     <InstrumentsWrapper>
       {instrumentsStore.activeInstruments.map(item => (
         <Instrument
-          instrument={item}
-          key={item.id}
-          isActive={item.id === instrumentsStore.activeInstrument?.id}
-          handleClose={handleRemoveInstrument(item.id)}
+          instrument={item.instrumentItem}
+          key={item.instrumentItem.id}
+          isActive={
+            item.instrumentItem.id ===
+            instrumentsStore.activeInstrument?.instrumentItem.id
+          }
+          handleClose={handleRemoveInstrument(item.instrumentItem.id)}
         />
       ))}
     </InstrumentsWrapper>

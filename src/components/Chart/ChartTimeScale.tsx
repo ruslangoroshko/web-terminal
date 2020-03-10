@@ -5,17 +5,21 @@ import {
   supportedInterval,
   supportedResolutions,
   SupportedResolutionsType,
+  SupportedIntervalsType,
 } from '../../constants/supportedTimeScales';
 import moment from 'moment';
 import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
+import { IActiveInstrument } from '../../types/Instruments';
 
 interface Props {}
 
 const ChartIntervalTimeScale: FC<Props> = observer(() => {
-  const { tradingViewStore } = useStores();
+  const { instrumentsStore, tradingViewStore } = useStores();
 
-  const handleChangeResolution = (newInterval: string) => () => {
+  const handleChangeResolution = (
+    newInterval: SupportedIntervalsType
+  ) => () => {
     let from = moment();
     let newResolutionKey: SupportedResolutionsType = '1 minute';
     switch (newInterval) {
@@ -57,15 +61,21 @@ const ChartIntervalTimeScale: FC<Props> = observer(() => {
       default:
         break;
     }
+    if (!instrumentsStore.activeInstrument) {
+      return;
+    }
 
-    tradingViewStore.interval = newInterval;
-    if (newResolutionKey === tradingViewStore.resolutionKey) {
+    const newActiveInstrument: IActiveInstrument = {
+      ...instrumentsStore.activeInstrument,
+      interval: newInterval,
+    };
+    if (newResolutionKey === instrumentsStore.activeInstrument!.resolution) {
       tradingViewStore.tradingWidget?.chart().setVisibleRange({
         from: from.valueOf(),
         to: moment().valueOf(),
       });
     } else {
-      tradingViewStore.resolutionKey = newResolutionKey;
+      newActiveInstrument.resolution = newResolutionKey;
       tradingViewStore.tradingWidget
         ?.chart()
         .setResolution(supportedResolutions[newResolutionKey], () => {
@@ -75,13 +85,14 @@ const ChartIntervalTimeScale: FC<Props> = observer(() => {
           });
         });
     }
+    instrumentsStore.editActiveInstrument(newActiveInstrument);
   };
 
   return (
     <ChartTimeScaleWrapper padding="2px" alignItems="center">
-      {Object.entries(supportedInterval).map(([key, value]) => (
+      {Object.entries(supportedInterval).map(([key, value]: any) => (
         <TimeScaleItem
-          isActive={value === tradingViewStore.interval}
+          isActive={value === instrumentsStore.activeInstrument?.interval}
           key={key}
           onClick={handleChangeResolution(value)}
         >

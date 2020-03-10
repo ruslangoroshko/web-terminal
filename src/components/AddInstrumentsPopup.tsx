@@ -21,13 +21,19 @@ const AddInstrumentsPopup: FC<Props> = props => {
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value.toLowerCase();
-    instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments.filter(
-      item => !searchValue || item.id.toLowerCase().includes(searchValue)
-    );
+    instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments
+      .filter(
+        item =>
+          !searchValue ||
+          item.instrumentItem.id.toLowerCase().includes(searchValue)
+      )
+      .map(item => item.instrumentItem);
   };
 
   useEffect(() => {
-    instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments;
+    instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments.map(
+      item => item.instrumentItem
+    );
 
     const rect = wrapperRef.current?.getBoundingClientRect();
 

@@ -1,3 +1,9 @@
+import { SeriesStyle } from '../vendor/charting_library/charting_library.min';
+import {
+  SupportedResolutionsType,
+  SupportedIntervalsType,
+} from '../constants/supportedTimeScales';
+
 export interface InstrumentModelWSDTO {
   id: string;
   name: string;
@@ -32,4 +38,11 @@ export interface InstrumentGroupWSDTO {
 export interface PriceChangeWSDTO {
   id: string;
   chng: number;
+}
+
+export interface IActiveInstrument {
+  instrumentItem: InstrumentModelWSDTO;
+  chartType: SeriesStyle;
+  interval: SupportedIntervalsType | null;
+  resolution: SupportedResolutionsType;
 }

@@ -86,7 +86,7 @@ const Dashboard = observer(() => {
                 id: item.id,
               });
             });
-            instrumentsStore.instruments = response.data;
+            instrumentsStore.setInstruments(response.data);
             activeInstrumentsInit(instrumentsStore);
           }
         }
@@ -189,7 +189,7 @@ const Dashboard = observer(() => {
             <FlexContainer position="relative" padding="24px 20px">
               {instrumentsStore.activeInstrument && (
                 <ActiveInstrument
-                  instrument={instrumentsStore.activeInstrument}
+                  instrument={instrumentsStore.activeInstrument.instrumentItem}
                 />
               )}
             </FlexContainer>
@@ -203,7 +203,9 @@ const Dashboard = observer(() => {
               <ChartWrapper>
                 {instrumentsStore.activeInstrument && (
                   <TVChartContainer
-                    instrumentId={instrumentsStore.activeInstrument.id}
+                    instrumentId={
+                      instrumentsStore.activeInstrument.instrumentItem.id
+                    }
                   />
                 )}
               </ChartWrapper>
@@ -215,7 +217,7 @@ const Dashboard = observer(() => {
             <>
               {instrumentsStore.activeInstrument && (
                 <BuySellPanel
-                  instrument={instrumentsStore.activeInstrument}
+                  instrument={instrumentsStore.activeInstrument.instrumentItem}
                 ></BuySellPanel>
               )}
             </>
