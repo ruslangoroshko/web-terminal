@@ -14,6 +14,7 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import API from '../../helpers/API';
 import { useStores } from '../../hooks/useStores';
 import { getProcessId } from '../../helpers/getProcessId';
+import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 
 interface Props {
   pendingOrder: PendingOrdersWSDTO;
@@ -28,7 +29,7 @@ function PendingOrder(props: Props) {
   const { mainAppStore, instrumentsStore } = useStores();
   const clickableWrapperRef = useRef<HTMLDivElement>(null);
 
-  const handleEditSlTp = () => {};
+  const instrumentRef = useRef<HTMLDivElement>(null);
 
   const handleCloseOrder = () => {
     API.removePendingOrder({
@@ -50,7 +51,12 @@ function PendingOrder(props: Props) {
   };
 
   return (
-    <OrderWrapper flexDirection="column" onClick={switchInstrument}>
+    <OrderWrapper
+      flexDirection="column"
+      onClick={switchInstrument}
+      ref={instrumentRef}
+      padding="0 16px"
+    >
       <OrderWrapperWithBorder padding="12px 0" justifyContent="space-between">
         <FlexContainer
           width="32px"
@@ -97,9 +103,28 @@ function PendingOrder(props: Props) {
         </FlexContainer>
         <FlexContainer alignItems="center" ref={clickableWrapperRef}>
           <FlexContainer margin="0 4px 0 0">
-            <ButtonWithoutStyles onClick={handleEditSlTp}>
-              <SvgIcon {...IconSettings} fillColor="rgba(255, 255, 255, 0.6)" />
-            </ButtonWithoutStyles>
+            <AutoClosePopupSideBar
+              ref={instrumentRef}
+              stopLossValue={
+                pendingOrder.stopLossInCurrency ||
+                pendingOrder.stopLossRate ||
+                null
+              }
+              takeProfitValue={
+                pendingOrder.takeProfitInCurrency ||
+                pendingOrder.takeProfitRate ||
+                null
+              }
+              investedAmount={pendingOrder.investmentAmount}
+              updateSLTP={() => {}}
+              isDisabled
+            >
+              <SvgIcon
+                {...IconSettings}
+                fillColor="rgba(255, 255, 255, 0.6)"
+                hoverFillColor="#00FFDD"
+              />
+            </AutoClosePopupSideBar>
           </FlexContainer>
           <ButtonWithoutStyles onClick={handleCloseOrder}>
             <SvgIcon

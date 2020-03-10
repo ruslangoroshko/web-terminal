@@ -314,7 +314,33 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
               takeProfitValue={takeProfitInCurrency || takeProfitRate || null}
               investedAmount={investmentAmount}
               updateSLTP={updateSLTP}
-            ></AutoClosePopupSideBar>
+            >
+              <SetSLTPButton>
+                <PrimaryTextSpan
+                  fontSize="12px"
+                  lineHeight="14px"
+                  color={
+                    takeProfitInCurrency || takeProfitRate
+                      ? '#fffccc'
+                      : 'rgba(255, 255, 255, 0.6)'
+                  }
+                >
+                  TP
+                </PrimaryTextSpan>
+                &nbsp;
+                <PrimaryTextSpan
+                  fontSize="12px"
+                  lineHeight="14px"
+                  color={
+                    stopLossInCurrency || stopLossRate
+                      ? '#fffccc'
+                      : 'rgba(255, 255, 255, 0.6)'
+                  }
+                >
+                  SL
+                </PrimaryTextSpan>
+              </SetSLTPButton>
+            </AutoClosePopupSideBar>
             <ClosePositionPopup
               applyHandler={closePosition}
               ref={instrumentRef}
@@ -339,4 +365,28 @@ const InstrumentInfoWrapper = styled(FlexContainer)`
 
 const InstrumentInfoWrapperForBorder = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+`;
+
+const SetSLTPButton = styled(FlexContainer)`
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin-right: 8px;
+  background-color: transparent;
+  padding: 4px 8px;
+  transition: background-color 0.2s ease;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.24);
+  }
+
+  &:focus {
+    background-color: rgba(0, 0, 0, 0.24);
+  }
+
+  &:disabled {
+    background-color: rgba(255, 255, 255, 0.04);
+    & span {
+      color: rgba(255, 255, 255, 0.4);
+    }
+  }
 `;

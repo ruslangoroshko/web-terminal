@@ -22,6 +22,7 @@ interface Props {
   toggle: (arg0: boolean) => void;
   handleApply: () => void;
   investedAmount: number;
+  isDisabled?: boolean;
 }
 
 function SetAutoclose(props: Props) {
@@ -31,6 +32,7 @@ function SetAutoclose(props: Props) {
     toggle,
     handleApply,
     investedAmount,
+    isDisabled,
   } = props;
 
   const { SLTPStore, instrumentsStore } = useStores();
@@ -123,7 +125,7 @@ function SetAutoclose(props: Props) {
         ></SvgIcon>
       </ButtonClose>
       <PrimaryTextParagraph marginBottom="16px">
-        Set Autoclose
+        {isDisabled ? 'Autoclose' : 'Set Autoclose'}
       </PrimaryTextParagraph>
       <FlexContainer
         margin="0 0 6px 0"
@@ -163,6 +165,7 @@ function SetAutoclose(props: Props) {
               onChange={handleChangeProfit}
               onBlur={handleTakeProfitBlur}
               value={SLTPStore.takeProfitValue || ''}
+              disabled={isDisabled}
             ></InputPnL>
           )}
         </Observer>
@@ -218,6 +221,7 @@ function SetAutoclose(props: Props) {
               onChange={handleChangeLoss}
               onBlur={handleStopLossBlur}
               value={SLTPStore.stopLossValue || ''}
+              disabled={isDisabled}
             ></InputPnL>
           )}
         </Observer>
@@ -225,12 +229,14 @@ function SetAutoclose(props: Props) {
           <PnLTypeDropdown dropdownType="sl"></PnLTypeDropdown>
         </FlexContainer>
       </InputWrapper>
-      <ButtonApply
-        onClick={handleApplyValues}
-        disabled={!!(tpError || slError)}
-      >
-        Apply
-      </ButtonApply>
+      {!isDisabled && (
+        <ButtonApply
+          onClick={handleApplyValues}
+          disabled={!!(tpError || slError)}
+        >
+          Apply
+        </ButtonApply>
+      )}
     </Wrapper>
   );
 }

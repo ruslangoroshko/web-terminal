@@ -4,12 +4,15 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import styled from '@emotion/styled';
 import { SecondaryButton } from '../../styles/Buttons';
+import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 
 interface Props {
   updateSLTP: () => void;
   stopLossValue: number | null;
   takeProfitValue: number | null;
   investedAmount: number;
+  isDisabled?: boolean;
+  children: React.ReactNode;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -19,6 +22,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       stopLossValue,
       takeProfitValue,
       investedAmount,
+      isDisabled,
+      children,
     } = props;
 
     const [on, toggle] = useState(false);
@@ -54,23 +59,9 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     return (
       <FlexContainer ref={wrapperRef}>
-        <SetSLTPButton onClick={handleToggle}>
-          <PrimaryTextSpan
-            fontSize="12px"
-            lineHeight="14px"
-            color={takeProfitValue ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
-          >
-            TP
-          </PrimaryTextSpan>
-          &nbsp;
-          <PrimaryTextSpan
-            fontSize="12px"
-            lineHeight="14px"
-            color={stopLossValue ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
-          >
-            SL
-          </PrimaryTextSpan>
-        </SetSLTPButton>
+        <ButtonWithoutStyles onClick={handleToggle}>
+          {children}
+        </ButtonWithoutStyles>
         {on && (
           <FlexContainer
             position="absolute"
@@ -84,6 +75,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               takeProfitValue={takeProfitValue}
               toggle={toggle}
               investedAmount={investedAmount}
+              isDisabled={isDisabled}
             />
           </FlexContainer>
         )}
@@ -93,9 +85,3 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 );
 
 export default AutoClosePopupSideBar;
-
-const SetSLTPButton = styled(SecondaryButton)`
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  margin-right: 8px;
-  background-color: transparent;
-`;
