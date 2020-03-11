@@ -36,9 +36,6 @@ const NavBar = observer(() => (
       </FlexContainer>
       <UserProfileButton></UserProfileButton>
       <NavBarButtonsWrapper>
-        <NotificationsButton></NotificationsButton>
-      </NavBarButtonsWrapper>
-      <NavBarButtonsWrapper>
         <SwitchThemeButton></SwitchThemeButton>
       </NavBarButtonsWrapper>
       <NavBarButtonsWrapper>
