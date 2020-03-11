@@ -7,7 +7,6 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { Observer } from 'mobx-react-lite';
 import SvgIcon from '../SvgIcon';
 import IconStar from '../../assets/svg/icon-star.svg';
-import IconArrowSortingUp from '../../assets/svg/icon-arrow-sorting-up.svg';
 import InstrumentMarkets from './InstrumentMarkets';
 import { SortByMarketsEnum } from '../../enums/SortByMarketsEnum';
 import { sortByMarketsLabels } from '../../constants/sortByDropdownValues';
@@ -45,7 +44,7 @@ function Markets(props: Props) {
           Markets
         </PrimaryTextSpan>
       </FlexContainer>
-      <MarketButtonsWrapper padding="0 16px" justifyContent="space-between">
+      <MarketButtonsWrapper padding="0 16px">
         <Observer>
           {() => (
             <>
