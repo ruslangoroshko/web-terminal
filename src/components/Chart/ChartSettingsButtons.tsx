@@ -16,9 +16,9 @@ function ChartSettingsButtons(props: Props) {
 
   return (
     <FlexContainer alignItems="center">
-      <SettingsButton>
+      {/* <SettingsButton>
         <SvgIcon {...IconSettings} fillColor="rgba(255, 255, 255, 0.6)"></SvgIcon>
-      </SettingsButton>
+      </SettingsButton> */}
       <ChartTypeDropdown />
       <ChartResolutionsDropdown />
     </FlexContainer>
