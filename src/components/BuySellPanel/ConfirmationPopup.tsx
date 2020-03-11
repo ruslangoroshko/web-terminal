@@ -12,6 +12,7 @@ import { PrimaryButton } from '../../styles/Buttons';
 import { OpenPositionModelFormik } from '../../types/Positions';
 import { AskBidEnum } from '../../enums/AskBid';
 import { useStores } from '../../hooks/useStores';
+import { Observer } from 'mobx-react-lite';
 
 interface Props {
   closePopup: () => void;
@@ -58,10 +59,13 @@ function ConfirmationPopup(props: Props) {
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
           Price opened
         </PrimaryTextSpan>
-        <PrimaryTextSpan color="#fffccc" fontSize="12px">
-          {mainAppStore.activeAccount?.symbol}
-          {quotesStore.quotes[instrumentId].bid.c.toFixed(digits)}
-        </PrimaryTextSpan>
+        <Observer>
+          {() => (
+            <PrimaryTextSpan color="#fffccc" fontSize="12px">
+              {quotesStore.quotes[instrumentId].bid.c.toFixed(digits)}
+            </PrimaryTextSpan>
+          )}
+        </Observer>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
