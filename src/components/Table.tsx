@@ -20,9 +20,8 @@ const Table: FC<Props> = ({
   data,
   closePosition,
   instrumentId,
-  multiplier: leverage,
+  multiplier,
 }) => {
-  console.log('TCL: data', data);
 
   const { quotesStore } = useStores();
 
@@ -49,7 +48,7 @@ const Table: FC<Props> = ({
             <TdDiv key={row.id}>
               {calcPnL({
                 investment: row.investmentAmount,
-                leverage,
+                multiplier,
                 costs: row.swap + row.commission,
                 side: row.operation === AskBidEnum.Buy ? 1 : -1,
                 currentPrice:

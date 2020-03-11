@@ -46,7 +46,7 @@ function ActivePositionExpanded(props: Props) {
 
   const PnL = calculateFloatingProfitAndLoss({
     investment: investmentAmount,
-    leverage: multiplier,
+    multiplier: multiplier,
     costs: swap + commission,
     side: isBuy ? 1 : -1,
     currentPrice: isBuy

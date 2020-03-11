@@ -42,7 +42,7 @@ export class QuotesStore implements IQuotesStore {
         acc +
         calculateFloatingProfitAndLoss({
           investment: prev.investmentAmount,
-          leverage: prev.multiplier,
+          multiplier: prev.multiplier,
           costs: prev.swap + prev.commission,
           side: prev.operation === AskBidEnum.Buy ? 1 : -1,
           currentPrice:
@@ -161,7 +161,7 @@ export class QuotesStore implements IQuotesStore {
   ) => {
     const aProfitNLoss = calculateFloatingProfitAndLoss({
       investment: b.investmentAmount,
-      leverage: b.multiplier,
+      multiplier: b.multiplier,
       costs: b.swap + b.commission,
       side: b.operation === AskBidEnum.Buy ? 1 : -1,
       currentPrice:
@@ -173,7 +173,7 @@ export class QuotesStore implements IQuotesStore {
 
     const bProfitNLoss = calculateFloatingProfitAndLoss({
       investment: a.investmentAmount,
-      leverage: a.multiplier,
+      multiplier: a.multiplier,
       costs: a.swap + a.commission,
       side: a.operation === AskBidEnum.Buy ? 1 : -1,
       currentPrice:

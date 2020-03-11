@@ -320,7 +320,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             textTransform="uppercase"
             color="rgba(255, 255, 255, 0.3)"
           >
-            Leverage
+            Multiplier
           </PrimaryTextSpan>
           <InformationPopup
             bgColor="#000000"
@@ -391,10 +391,14 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           >
             VOLUME
           </PrimaryTextSpan>
-          <PrimaryTextSpan fontSize="12px" color="#fffccc">
-            {mainAppStore.activeAccount?.symbol}
-            {values.investmentAmount}
-          </PrimaryTextSpan>
+          <Observer>
+            {() => (
+              <PrimaryTextSpan fontSize="12px" color="#fffccc">
+                {mainAppStore.activeAccount?.symbol}
+                {values.investmentAmount * values.multiplier}
+              </PrimaryTextSpan>
+            )}
+          </Observer>
         </FlexContainer>
         <FlexContainer justifyContent="space-between" margin="0 0 12px 0">
           <PrimaryTextSpan

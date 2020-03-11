@@ -48,28 +48,30 @@ function MultiplierDropdown(props: Props) {
         <MultiplierDropdownWrapper
           backgroundColor="rgba(0, 0, 0, 0.4)"
           flexDirection="column"
-          padding="12px 0"
           position="absolute"
           top="0"
           right="calc(100% + 8px)"
           width="140px"
         >
-          {multipliers.map(multiplier => (
-            <DropDownItem
-              key={multiplier}
-              justifyContent="center"
-              alignItems="center"
-              onClick={handleChangeMultiplier(multiplier)}
-            >
-              <PrimaryTextSpan
-                fontSize="16px"
-                fontWeight="bold"
-                color="#fffccc"
+          {multipliers
+            .sort((a, b) => b - a)
+            .map(multiplier => (
+              <DropDownItem
+                key={multiplier}
+                alignItems="center"
+                flexDirection="column"
+                onClick={handleChangeMultiplier(multiplier)}
+                padding="12px 16px"
               >
-                &times;{multiplier}
-              </PrimaryTextSpan>
-            </DropDownItem>
-          ))}
+                <PrimaryTextSpan
+                  fontSize="16px"
+                  fontWeight="bold"
+                  color="#fffccc"
+                >
+                  &times;{multiplier}
+                </PrimaryTextSpan>
+              </DropDownItem>
+            ))}
         </MultiplierDropdownWrapper>
       )}
     </FlexContainer>
@@ -92,6 +94,7 @@ const MultiplierDropdownWrapper = styled(FlexContainer)`
 
 const DropDownItem = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
   &:last-of-type {
     border-bottom: none;
   }
