@@ -176,7 +176,7 @@ function SetAutoclose(props: Props) {
                 value={SLTPStore.takeProfitValue || ''}
                 disabled={isDisabled}
               ></InputPnL>
-              {!!SLTPStore.takeProfitValue && (
+              {!!SLTPStore.takeProfitValue && !isDisabled && (
                 <CloseValueButtonWrapper
                   position="absolute"
                   top="50%"
@@ -249,7 +249,7 @@ function SetAutoclose(props: Props) {
                 value={SLTPStore.stopLossValue || ''}
                 disabled={isDisabled}
               ></InputPnL>
-              {!!SLTPStore.stopLossValue && (
+              {!!SLTPStore.stopLossValue && !isDisabled && (
                 <CloseValueButtonWrapper
                   position="absolute"
                   top="50%"
