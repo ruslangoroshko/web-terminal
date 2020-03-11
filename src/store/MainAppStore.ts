@@ -11,6 +11,7 @@ import Axios from 'axios';
 import RequestHeaders from '../constants/headers';
 import KeysInApi from '../constants/keysInApi';
 import { FirstLoginEnum } from '../enums/FirstLogin';
+import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 
 interface MainAppStoreProps {
   token: string;
@@ -116,11 +117,7 @@ export class MainAppStore implements MainAppStoreProps {
   signUp = (credentials: UserRegistration) =>
     new Promise(async (resolve, reject) => {
       const response = await API.signUpNewTrader(credentials);
-      if (
-        response.result === OperationApiResponseCodes.InvalidUserNameOrPassword
-      ) {
-        reject('Invalid username or password');
-      } else {
+      if (response.result === OperationApiResponseCodes.Ok) {
         this.isAuthorized = true;
         this.setTokenHandler(response.data.token);
         this.handleInitConnection(response.data.token);
@@ -129,6 +126,8 @@ export class MainAppStore implements MainAppStoreProps {
           value: JSON.stringify(FirstLoginEnum.FirstLogin),
         });
         resolve();
+      } else {
+        reject(apiResponseCodeMessages[response.result]);
       }
     });
 

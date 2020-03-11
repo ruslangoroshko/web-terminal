@@ -12,6 +12,8 @@ import LabelInput from '../components/LabelInput';
 import { PrimaryButton } from '../styles/Buttons';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import SignTypeTabs from '../components/SignTypeTabs';
+import { appHistory } from '../routing/history';
+import Page from '../constants/Pages';
 
 interface Props {}
 
@@ -45,6 +47,7 @@ function SignUp(props: Props) {
     setSubmitting(true);
     try {
       await mainAppStore.signUp({ email, password });
+      appHistory.push(Page.DASHBOARD);
     } catch (error) {
       setStatus(error);
       setSubmitting(false);
@@ -128,7 +131,7 @@ function SignUp(props: Props) {
                 <PrimaryButton
                   padding="12px"
                   type="submit"
-                  disabled={!formikBag.isValid || formikBag.isSubmitting}
+                  disabled={formikBag.isSubmitting}
                 >
                   <PrimaryTextSpan
                     color="#1c2026"
@@ -157,6 +160,6 @@ const CustomForm = styled(Form)`
 const ErrorMessage = styled.span`
   color: red;
   position: absolute;
-  bottom: 0;
+  bottom: -14px;
   font-size: 10px;
 `;
