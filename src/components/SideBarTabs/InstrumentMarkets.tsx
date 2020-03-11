@@ -12,20 +12,15 @@ import { getNumberSign } from '../../helpers/getNumberSign';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
+  toggle?: () => void;
 }
 
 const InstrumentMarkets: FC<Props> = observer(props => {
   const {
     instrument: { base, id, name, quote, digits },
+    toggle,
   } = props;
   const { instrumentsStore, quotesStore } = useStores();
-
-  const priceChange = instrumentsStore.pricesChange.find(
-    item => item.id === id
-  ) || {
-    id: '',
-    chng: 0,
-  };
 
   const favouritesButtonRef = useRef<HTMLButtonElement>(null);
   const setInstrumentActive = (e: any) => {
@@ -35,7 +30,10 @@ const InstrumentMarkets: FC<Props> = observer(props => {
     ) {
       e.preventDefault();
     } else {
-      instrumentsStore.swiitchInstrument(id);
+      instrumentsStore.switchInstrument(id);
+      if (toggle) {
+        toggle();
+      }
     }
   };
   return (
@@ -85,10 +83,15 @@ const InstrumentMarkets: FC<Props> = observer(props => {
           flexDirection="column"
           alignItems="flex-end"
         >
-          <QuoteText isGrowth={priceChange.chng >= 0} fontSize="12px">
-            {getNumberSign(priceChange.chng)}
-            {Math.abs(priceChange.chng)}%
-          </QuoteText>
+          {!!instrumentsStore.pricesChange[id] && (
+            <QuoteText
+              isGrowth={instrumentsStore.pricesChange[id] >= 0}
+              fontSize="12px"
+            >
+              {getNumberSign(instrumentsStore.pricesChange[id])}
+              {Math.abs(instrumentsStore.pricesChange[id])}%
+            </QuoteText>
+          )}
         </FlexContainer>
       </InstrumentWrapper>
     </InstrumentHoverWrapper>

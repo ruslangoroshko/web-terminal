@@ -8,6 +8,7 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import InstrumentRow from './InstrumentRow';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
+import InstrumentMarkets from './SideBarTabs/InstrumentMarkets';
 
 interface Props {
   toggle: () => void;
@@ -82,11 +83,11 @@ const AddInstrumentsPopup: FC<Props> = props => {
           {() => (
             <>
               {instrumentsStore.filteredInstrumentsSearch.map(instrument => (
-                <InstrumentRow
-                  key={instrument.id}
+                <InstrumentMarkets
                   instrument={instrument}
+                  key={instrument.id}
                   toggle={toggle}
-                ></InstrumentRow>
+                ></InstrumentMarkets>
               ))}
             </>
           )}
@@ -102,12 +103,7 @@ const AddInstrumentsPopupWrapper = styled(FlexContainer)`
   box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.09),
     0px 8px 16px rgba(37, 38, 54, 0.24);
   border-radius: 2px;
-  background-color: rgba(0, 0, 0, 0.8);
-
-  @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-    background-color: rgba(0, 0, 0, 0.34);
-    backdrop-filter: blur(12px);
-  }
+  background-color: rgba(0, 0, 0, 0.34);
 `;
 
 const InstrumentsWrapper = styled(FlexContainer)`

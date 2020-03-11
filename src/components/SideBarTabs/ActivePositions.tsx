@@ -137,7 +137,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
     ) {
       e.preventDefault();
     } else {
-      instrumentsStore.swiitchInstrument(instrument);
+      instrumentsStore.switchInstrument(instrument);
     }
   };
 

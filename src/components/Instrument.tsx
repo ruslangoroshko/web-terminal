@@ -22,7 +22,7 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
   const { quotesStore, mainAppStore, instrumentsStore } = useStores();
 
   const switchInstrument = () => {
-    instrumentsStore.swiitchInstrument(instrument.id);
+    instrumentsStore.switchInstrument(instrument.id);
   };
 
   useEffect(() => {

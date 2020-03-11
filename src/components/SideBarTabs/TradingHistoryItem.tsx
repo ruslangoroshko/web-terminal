@@ -51,7 +51,7 @@ function TradingHistoryItem(props: Props) {
     if (popupWrapperRef.current && popupWrapperRef.current.contains(e.target)) {
       e.preventDefault();
     } else {
-      instrumentsStore.swiitchInstrument(instrument);
+      instrumentsStore.switchInstrument(instrument);
     }
   };
 

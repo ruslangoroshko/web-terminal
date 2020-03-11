@@ -8,19 +8,19 @@ import {
 import { RootStore } from './RootStore';
 import { SortByMarketsEnum } from '../enums/SortByMarketsEnum';
 import { SeriesStyle } from '../vendor/charting_library/charting_library.min';
-import {
-  SupportedResolutionsType,
-  supportedResolutions,
-} from '../constants/supportedTimeScales';
+import { supportedResolutions } from '../constants/supportedTimeScales';
 import { getIntervalByKey } from '../helpers/getIntervalByKey';
 import moment from 'moment';
+interface IPriceChange {
+  [key: string]: number;
+}
 
 interface ContextProps {
   rootStore: RootStore;
   instruments: IActiveInstrument[];
   activeInstrumentsIds: string[];
   favouriteInstrumentsIds: string[];
-  pricesChange: PriceChangeWSDTO[];
+  pricesChange: IPriceChange;
   activeInstrument?: IActiveInstrument;
   instrumentGroups: InstrumentGroupWSDTO[];
   activeInstrumentGroupId?: InstrumentGroupWSDTO['id'];
@@ -40,7 +40,7 @@ export class InstrumentsStore implements ContextProps {
 
   @observable sortByField: string | null = null;
 
-  @observable pricesChange: PriceChangeWSDTO[] = [];
+  @observable pricesChange: IPriceChange = {};
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -83,14 +83,18 @@ export class InstrumentsStore implements ContextProps {
 
   @action
   setActiveInstrumentsIds = (activeInstrumentsIds: string[]) => {
-    this.activeInstrumentsIds = activeInstrumentsIds.slice(0, 6);
+    this.activeInstrumentsIds = activeInstrumentsIds.slice(0, 7);
   };
 
   @action
   addActiveInstrumentId = (activeInstrumentId: string) => {
+    if (this.activeInstrumentsIds.includes(activeInstrumentId)) {
+      return;
+    }
+
     if (this.activeInstrumentsIds.length === 7) {
       this.activeInstrumentsIds = [
-        ...this.activeInstrumentsIds.slice(0, 5),
+        ...this.activeInstrumentsIds.slice(0, 6),
         activeInstrumentId,
       ];
     } else {
@@ -134,15 +138,15 @@ export class InstrumentsStore implements ContextProps {
       .map(item => item.instrumentItem);
   }
 
-
   // TODO: refactor, too heavy
   @action
-  swiitchInstrument = (instrumentId: string) => {
+  switchInstrument = (instrumentId: string) => {
     const newActiveInstrument = this.instruments.find(
       item => item.instrumentItem.id === instrumentId
     );
     this.activeInstrument = newActiveInstrument;
     if (newActiveInstrument) {
+      this.addActiveInstrumentId(instrumentId);
       const tvWidget = this.rootStore.tradingViewStore.tradingWidget?.chart();
       if (tvWidget) {
         tvWidget.setSymbol(instrumentId, () => {
@@ -166,7 +170,10 @@ export class InstrumentsStore implements ContextProps {
 
   @action
   setPricesChanges = (prices: PriceChangeWSDTO[]) => {
-    this.pricesChange = prices;
+    this.pricesChange = prices.reduce(
+      (acc, prev) => ({ ...acc, [prev.id]: prev.chng }),
+      <IPriceChange>{}
+    );
   };
 
   sortByName = (ascending: boolean) => (
@@ -189,12 +196,8 @@ export class InstrumentsStore implements ContextProps {
     a: IActiveInstrument,
     b: IActiveInstrument
   ) => {
-    const aPriceChange = this.pricesChange.find(
-      item => item.id === a.instrumentItem.id
-    );
-    const bPriceChange = this.pricesChange.find(
-      item => item.id === b.instrumentItem.id
-    );
+    const aPriceChange = this.pricesChange[a.instrumentItem.id];
+    const bPriceChange = this.pricesChange[b.instrumentItem.id];
 
     if (!aPriceChange || !bPriceChange) {
       console.log('InstrumentsStore -> aPriceChange', aPriceChange);
@@ -203,10 +206,10 @@ export class InstrumentsStore implements ContextProps {
       return 0;
     }
 
-    if (aPriceChange.chng < bPriceChange.chng) {
+    if (aPriceChange < bPriceChange) {
       return ascending ? 1 : -1;
     }
-    if (aPriceChange.chng > bPriceChange.chng) {
+    if (aPriceChange > bPriceChange) {
       return ascending ? -1 : 1;
     }
     return 0;

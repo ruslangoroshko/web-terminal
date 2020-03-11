@@ -46,7 +46,7 @@ function PendingOrder(props: Props) {
     ) {
       e.preventDefault();
     } else {
-      instrumentsStore.swiitchInstrument(pendingOrder.instrument);
+      instrumentsStore.switchInstrument(pendingOrder.instrument);
     }
   };
 

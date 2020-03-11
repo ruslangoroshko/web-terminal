@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useRef } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextSpan, QuoteText } from '../styles/TextsElements';
 import styled from '@emotion/styled';
@@ -6,9 +6,7 @@ import { InstrumentModelWSDTO } from '../types/Instruments';
 import { useStores } from '../hooks/useStores';
 import baseImg from '../assets/images/base.png';
 import quoteImg from '../assets/images/quote.png';
-import { AskBidEnum } from '../enums/AskBid';
-import calculateGrowth from '../helpers/calculateGrowth';
-import { Observer, observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite';
 import IconMarketsFavourites from '../assets/svg/icon-instrument-favourites.svg';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
@@ -30,31 +28,31 @@ const InstrumentRow: FC<Props> = observer(props => {
   const toggleFavourite = () => {
     toggleFavouriteInstrument({ instrumentsStore, newId: instrument.id });
   };
+  const clickableRef = useRef<HTMLButtonElement>(null);
 
-  const addActiveInstrument = () => {
-    if (instrumentsStore.activeInstrumentsIds.includes(instrument.id)) {
-      instrumentsStore.activeInstrument = instrumentsStore.instruments.find(
-        item => item.instrumentItem.id === instrument.id
-      )!;
+  const addActiveInstrument = (e: any) => {
+    if (clickableRef.current && clickableRef.current.contains(e.target)) {
+      e.preventDefault();
     } else {
-      instrumentsStore.addActiveInstrumentId(instrument.id);
-      API.setKeyValue({
-        key: KeysInApi.SELECTED_INSTRUMENTS,
-        value: JSON.stringify(instrumentsStore.activeInstrumentsIds),
-      });
+      if (instrumentsStore.activeInstrumentsIds.includes(instrument.id)) {
+        instrumentsStore.switchInstrument(instrument.id);
+      } else {
+        instrumentsStore.addActiveInstrumentId(instrument.id);
+        API.setKeyValue({
+          key: KeysInApi.SELECTED_INSTRUMENTS,
+          value: JSON.stringify(instrumentsStore.activeInstrumentsIds),
+        });
+      }
+      toggle();
     }
-    toggle();
-  };
-
-  const priceChange = instrumentsStore.pricesChange.find(
-    item => item.id === instrument.id
-  ) || {
-    id: '',
-    chng: 0,
   };
 
   return (
-    <InstrumentRowWrapper key={instrument.id} alignItems="center">
+    <InstrumentRowWrapper
+      key={instrument.id}
+      alignItems="center"
+      onClick={addActiveInstrument}
+    >
       <FlexContainer
         margin="0 8px 0 0"
         position="relative"
@@ -69,22 +67,20 @@ const InstrumentRow: FC<Props> = observer(props => {
         </QuoteImgWrapper>
       </FlexContainer>
       <FlexContainer flexDirection="column" width="110px" margin="0 4px 0 0">
-        <ButtonWithoutStyles onClick={addActiveInstrument}>
-          <PrimaryTextSpan
-            color="#FFFCCC"
-            fontSize="12px"
-            lineHeight="14px"
-            marginBottom="4px"
-          >
-            {instrument.id}
-          </PrimaryTextSpan>
-        </ButtonWithoutStyles>
+        <PrimaryTextSpan
+          color="#FFFCCC"
+          fontSize="12px"
+          lineHeight="14px"
+          marginBottom="4px"
+        >
+          {instrument.name}
+        </PrimaryTextSpan>
         <PrimaryTextSpan
           color="rgba(255, 255, 255, 0.4)"
           fontSize="10px"
           lineHeight="12px"
         >
-          {instrument.base}/{instrument.quote}
+          {instrument.name}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer
@@ -101,16 +97,18 @@ const InstrumentRow: FC<Props> = observer(props => {
         >
           {quotesStore.quotes[instrument.id].bid.c.toFixed(instrument.digits)}
         </PrimaryTextSpan>
-        <QuoteText
-          isGrowth={priceChange.chng >= 0}
-          fontSize="12px"
-          lineHeight="14px"
-        >
-          {getNumberSign(priceChange.chng)}
-          {Math.abs(priceChange.chng)}%
-        </QuoteText>
+        {!!instrumentsStore.pricesChange[instrument.id] && (
+          <QuoteText
+            isGrowth={instrumentsStore.pricesChange[instrument.id] >= 0}
+            fontSize="12px"
+            lineHeight="14px"
+          >
+            {getNumberSign(instrumentsStore.pricesChange[instrument.id])}
+            {Math.abs(instrumentsStore.pricesChange[instrument.id])}%
+          </QuoteText>
+        )}
       </FlexContainer>
-      <ButtonWithoutStyles onClick={toggleFavourite}>
+      <ButtonWithoutStyles onClick={toggleFavourite} ref={clickableRef}>
         <SvgIcon
           {...IconMarketsFavourites}
           fillColor={

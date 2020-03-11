@@ -20,13 +20,6 @@ const ActiveInstrument: FC<Props> = props => {
 
   const { quotesStore, instrumentsStore } = useStores();
 
-  const priceChange = instrumentsStore.pricesChange.find(
-    item => item.id === instrument.id
-  ) || {
-    id: '',
-    chng: 0,
-  };
-
   return quotesStore.quotes[instrument.id] ? (
     <FlexContainer>
       <FlexContainer
@@ -73,10 +66,17 @@ const ActiveInstrument: FC<Props> = props => {
                     instrument.digits
                   )}
                 </PrimaryTextSpan>
-                <QuoteText fontSize="12px" isGrowth={priceChange.chng >= 0}>
-                  {getNumberSign(priceChange.chng)}
-                  {Math.abs(priceChange.chng)}%
-                </QuoteText>
+                {!!instrumentsStore.pricesChange[instrument.id] && (
+                  <QuoteText
+                    fontSize="12px"
+                    isGrowth={instrumentsStore.pricesChange[instrument.id] >= 0}
+                  >
+                    {getNumberSign(
+                      instrumentsStore.pricesChange[instrument.id]
+                    )}
+                    {Math.abs(instrumentsStore.pricesChange[instrument.id])}%
+                  </QuoteText>
+                )}
               </>
             )}
           </Observer>
