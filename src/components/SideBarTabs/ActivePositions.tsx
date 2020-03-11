@@ -116,7 +116,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
       default:
         break;
     }
-    
+
     const values: UpdateSLTP = {
       accountId: mainAppStore.activeAccount!.id,
       positionId: id,
@@ -261,8 +261,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                     Overnight fee
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {getNumberSign(swap)}
-                    {mainAppStore.activeAccount?.symbol}
+                    -{mainAppStore.activeAccount?.symbol}
                     {Math.abs(swap).toFixed(2)}
                   </PrimaryTextSpan>
                 </FlexContainer>
