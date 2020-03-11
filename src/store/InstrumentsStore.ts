@@ -79,6 +79,7 @@ export class InstrumentsStore implements ContextProps {
         ? activeInstrument
         : item
     );
+    this.activeInstrument = activeInstrument;
   };
 
   @action
