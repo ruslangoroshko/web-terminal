@@ -78,8 +78,8 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
         </FlexContainer>
       </Td>
       <Td>
-        <FlexContainer>
-          <FlexContainer flexDirection="column">
+        <FlexContainer alignItems="center">
+          <FlexContainer flexDirection="column" margin="0 10px 0 0">
             <PrimaryTextSpan
               color="#fffccc"
               fontSize="14px"
@@ -92,8 +92,12 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
               {moment(openDate).format('HH:mm:ss')}
             </PrimaryTextSpan>
           </FlexContainer>
-          <PrimaryTextSpan fontSize="12px" color="rgba(255, 255, 255, 0.5)">
-            &nbsp;&mdash;&nbsp;
+          <PrimaryTextSpan
+            fontSize="12px"
+            color="rgba(255, 255, 255, 0.5)"
+            marginRight="10px"
+          >
+            &mdash;
           </PrimaryTextSpan>
           <FlexContainer flexDirection="column">
             <PrimaryTextSpan
