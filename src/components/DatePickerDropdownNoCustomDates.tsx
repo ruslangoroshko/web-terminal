@@ -228,6 +228,8 @@ const DefinedDaterangeWrapper = styled(FlexContainer)`
 const DateRangeItemButton = styled(ButtonWithoutStyles)`
   transition: color 0.2s ease;
   margin-bottom: 16px;
+  width: 100%;
+  text-align: left;
 
   &:last-of-type {
     margin-bottom: 0;
