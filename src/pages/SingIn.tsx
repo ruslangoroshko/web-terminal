@@ -13,7 +13,7 @@ import LabelInput from '../components/LabelInput';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import { PrimaryButton } from '../styles/Buttons';
 import SignTypeTabs from '../components/SignTypeTabs';
-import Loader from '../components/Loader';
+import LoaderFullscreen from '../components/LoaderFullscreen';
 import NotificationPopup from '../components/NotificationPopup';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
@@ -56,7 +56,7 @@ const SingIn = observer(() => {
           )}
         </Observer>
       </FlexContainer>
-      <Loader isLoading={mainAppStore.isLoading}></Loader>
+      <LoaderFullscreen isLoading={mainAppStore.isLoading}></LoaderFullscreen>
       <FlexContainer width="320px" flexDirection="column">
         <SignTypeTabs></SignTypeTabs>
         <Formik

@@ -3,7 +3,7 @@ import { FlexContainer } from '../styles/FlexContainer';
 import NavBar from '../components/NavBar/NavBar';
 import { Observer } from 'mobx-react-lite';
 import { useStores } from '../hooks/useStores';
-import Loader from '../components/Loader';
+import LoaderFullscreen from '../components/LoaderFullscreen';
 import StepsContainter from '../components/KYC/StepsContainter';
 
 const KYCcontainer: FC = props => {
@@ -18,7 +18,7 @@ const KYCcontainer: FC = props => {
       flexDirection="column"
     >
       <Observer>
-        {() => <Loader isLoading={mainAppStore.isLoading}></Loader>}
+        {() => <LoaderFullscreen isLoading={mainAppStore.isLoading}></LoaderFullscreen>}
       </Observer>
       <NavBar></NavBar>
       <FlexContainer height="calc(100vh - 48px)" flexDirection="column">

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { TimeScaleItem } from './ChartTimeScale';
 import { IChartingLibraryWidget } from '../../vendor/charting_library/charting_library.min';
@@ -59,7 +58,7 @@ function ChartTimeFomat(props: Props) {
     tvWidget.applyOverrides(axisProps);
   }, []);
   return (
-    <ChartTimeScaleWrapper padding="2px" alignItems="center">
+    <FlexContainer padding="2px" alignItems="center">
       <TimeScaleItem
         onClick={setAxisScale(PERCENTAGE)}
         isActive={axisProps[PERCENTAGE]}
@@ -75,15 +74,8 @@ function ChartTimeFomat(props: Props) {
       >
         Auto
       </TimeScaleItem>
-    </ChartTimeScaleWrapper>
+    </FlexContainer>
   );
 }
 
 export default ChartTimeFomat;
-
-const ChartTimeScaleWrapper = styled(FlexContainer)`
-`;
-
-// paneProperties.axisProperties.autoScale: true
-// paneProperties.axisProperties.percentage: false
-// paneProperties.axisProperties.log: false

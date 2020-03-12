@@ -1,22 +1,22 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
-import {
-  PrimaryTextSpan,
-  PrimaryTextParagraph,
-} from '../../styles/TextsElements';
+import { PrimaryTextSpan } from '../../styles/TextsElements';
 import API from '../../helpers/API';
-import { HistoryTabEnum } from '../../enums/HistoryTabEnum';
 import IconNoTradingHistory from '../../assets/svg/icon-no-trading-history.svg';
 import SvgIcon from '../SvgIcon';
 import TradingHistoryItem from './TradingHistoryItem';
 import DatePickerDropdownNoCustomDates from '../DatePickerDropdownNoCustomDates';
+import LoaderComponent from '../LoaderComponent';
+import LoaderForComponents from '../LoaderForComponents';
 
 const TradingHistory: FC = () => {
   const { tabsStore, mainAppStore, historyStore } = useStores();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchPositionsHistory = async () => {
     const response = await API.getPositionsHistory({
@@ -28,9 +28,9 @@ const TradingHistory: FC = () => {
   };
 
   useEffect(() => {
-    mainAppStore.isLoading = true;
+    setIsLoading(true);
     fetchPositionsHistory().finally(() => {
-      mainAppStore.isLoading = false;
+      setIsLoading(false);
     });
   }, []);
 
@@ -72,7 +72,8 @@ const TradingHistory: FC = () => {
       </SortByWrapper>
       <Observer>
         {() => (
-          <TradingHistoryWrapper flexDirection="column">
+          <TradingHistoryWrapper flexDirection="column" position="relative">
+            <LoaderForComponents isLoading={isLoading} />
             {historyStore.positionsHistory.map(item => (
               <TradingHistoryItem
                 key={item.id}

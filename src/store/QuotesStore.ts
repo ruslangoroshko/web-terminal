@@ -45,10 +45,11 @@ export class QuotesStore implements IQuotesStore {
           multiplier: prev.multiplier,
           costs: prev.swap + prev.commission,
           side: prev.operation === AskBidEnum.Buy ? 1 : -1,
-          currentPrice:
-            prev.operation === AskBidEnum.Buy
-              ? this.quotes[prev.instrument].bid.c
-              : this.quotes[prev.instrument].ask.c,
+          currentPrice: this.quotes[prev.instrument]
+            ? this.quotes[prev.instrument][
+                prev.operation === AskBidEnum.Buy ? 'bid' : 'ask'
+              ].c
+            : 0,
           openPrice: prev.openPrice,
         }),
       0

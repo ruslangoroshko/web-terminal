@@ -25,7 +25,7 @@ import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import { PendingOrdersWSDTO } from '../types/PendingOrders';
 import NotificationPopup from '../components/NotificationPopup';
-import Loader from '../components/Loader';
+import LoaderFullscreen from '../components/LoaderFullscreen';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -153,7 +153,7 @@ const Dashboard = observer(() => {
       flexDirection="column"
       position="relative"
     >
-      <Loader isLoading={mainAppStore.isLoading}></Loader>
+      <LoaderFullscreen isLoading={mainAppStore.isLoading}></LoaderFullscreen>
       <FlexContainer
         position="absolute"
         bottom="100px"
@@ -223,21 +223,15 @@ const Dashboard = observer(() => {
             </>
           )}
         </Observer>
-        <Observer>
-          {() => (
-            <>
-              <ChartInstruments justifyContent="space-between">
-                <ChartSettingsButtons></ChartSettingsButtons>
-                <ChartIntervalTimeScale></ChartIntervalTimeScale>
-                {tradingViewStore.tradingWidget && (
-                  <ChartTimeFomat
-                    tvWidget={tradingViewStore.tradingWidget}
-                  ></ChartTimeFomat>
-                )}
-              </ChartInstruments>
-            </>
+        <ChartInstruments justifyContent="space-between">
+          <ChartSettingsButtons></ChartSettingsButtons>
+          <ChartIntervalTimeScale></ChartIntervalTimeScale>
+          {tradingViewStore.tradingWidget && (
+            <ChartTimeFomat
+              tvWidget={tradingViewStore.tradingWidget}
+            ></ChartTimeFomat>
           )}
-        </Observer>
+        </ChartInstruments>
       </GridWrapper>
     </DashboardWrapper>
   );

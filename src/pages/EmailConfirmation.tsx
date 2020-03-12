@@ -6,7 +6,7 @@ import { useParams, Link } from 'react-router-dom';
 import API from '../helpers/API';
 import styled from '@emotion/styled';
 import Page from '../constants/Pages';
-import Loader from '../components/Loader';
+import LoaderFullscreen from '../components/LoaderFullscreen';
 
 interface Props {}
 
@@ -33,7 +33,7 @@ function EmailConfirmation(props: Props) {
 
   return (
     <SignFlowLayout>
-      <Loader isLoading={isLoading} />
+      <LoaderFullscreen isLoading={isLoading} />
       <FlexContainer width="100%" flexDirection="column" alignItems="center">
         {isSuccessful ? (
           <>
