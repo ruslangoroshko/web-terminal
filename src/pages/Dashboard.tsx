@@ -26,6 +26,7 @@ import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import { PendingOrdersWSDTO } from '../types/PendingOrders';
 import NotificationPopup from '../components/NotificationPopup';
 import LoaderFullscreen from '../components/LoaderFullscreen';
+import DemoRealPopup from '../components/DemoRealPopup';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -43,12 +44,6 @@ const Dashboard = observer(() => {
       Topics.ACCOUNTS,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
         mainAppStore.accounts = response.data;
-        mainAppStore.setActiveAccount(response.data[0]);
-        quotesStore.available = response.data[0].balance;
-
-        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: response.data[0].id,
-        });
       }
     );
 
@@ -153,6 +148,11 @@ const Dashboard = observer(() => {
       flexDirection="column"
       position="relative"
     >
+      <Observer>
+        {() => (
+          <>{!mainAppStore.activeAccount && <DemoRealPopup></DemoRealPopup>}</>
+        )}
+      </Observer>
       <LoaderFullscreen isLoading={mainAppStore.isLoading}></LoaderFullscreen>
       <FlexContainer
         position="absolute"
@@ -200,38 +200,30 @@ const Dashboard = observer(() => {
         <Observer>
           {() => (
             <>
-              <ChartWrapper>
-                {instrumentsStore.activeInstrument && (
-                  <TVChartContainer
-                    instrumentId={
-                      instrumentsStore.activeInstrument.instrumentItem.id
-                    }
-                  />
-                )}
-              </ChartWrapper>
-            </>
-          )}
-        </Observer>
-        <Observer>
-          {() => (
-            <>
               {instrumentsStore.activeInstrument && (
-                <BuySellPanel
-                  instrument={instrumentsStore.activeInstrument.instrumentItem}
-                ></BuySellPanel>
+                <>
+                  <ChartWrapper>
+                    <TVChartContainer
+                      instrumentId={
+                        instrumentsStore.activeInstrument.instrumentItem.id
+                      }
+                    />
+                  </ChartWrapper>
+                  <BuySellPanel
+                    instrument={
+                      instrumentsStore.activeInstrument.instrumentItem
+                    }
+                  ></BuySellPanel>
+                  <ChartInstruments justifyContent="space-between">
+                    <ChartSettingsButtons></ChartSettingsButtons>
+                    <ChartIntervalTimeScale></ChartIntervalTimeScale>
+                    <ChartTimeFomat></ChartTimeFomat>
+                  </ChartInstruments>
+                </>
               )}
             </>
           )}
         </Observer>
-        <ChartInstruments justifyContent="space-between">
-          <ChartSettingsButtons></ChartSettingsButtons>
-          <ChartIntervalTimeScale></ChartIntervalTimeScale>
-          {tradingViewStore.tradingWidget && (
-            <ChartTimeFomat
-              tvWidget={tradingViewStore.tradingWidget}
-            ></ChartTimeFomat>
-          )}
-        </ChartInstruments>
       </GridWrapper>
     </DashboardWrapper>
   );

@@ -10,13 +10,15 @@ import Topics from '../constants/websocketTopics';
 import Axios from 'axios';
 import RequestHeaders from '../constants/headers';
 import KeysInApi from '../constants/keysInApi';
-import { FirstLoginEnum } from '../enums/FirstLogin';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
+import { RootStore } from './RootStore';
+import Fields from '../constants/fields';
+import { appHistory } from '../routing/history';
+import Page from '../constants/Pages';
 
 interface MainAppStoreProps {
   token: string;
   isAuthorized: boolean;
-  firstLogin: boolean;
   signIn: (credentials: UserAuthenticate) => void;
   signUp: (credentials: UserRegistration) => Promise<unknown>;
   activeSession?: HubConnection;
@@ -29,13 +31,14 @@ interface MainAppStoreProps {
 export class MainAppStore implements MainAppStoreProps {
   @observable isLoading = true;
   @observable isAuthorized = false;
-  @observable firstLogin = false;
   @observable activeSession?: HubConnection;
   @observable activeAccount?: AccountModelWebSocketDTO;
   @observable accounts: AccountModelWebSocketDTO[] = [];
   token = '';
+  rootStore: RootStore;
 
-  constructor() {
+  constructor(rootStore: RootStore) {
+    this.rootStore = rootStore;
     this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
     if (this.token) {
@@ -54,14 +57,15 @@ export class MainAppStore implements MainAppStoreProps {
         await connection.send(Topics.INIT, token);
         this.activeSession = connection;
         this.isAuthorized = true;
+        this.getActiveAccount();
       } catch (error) {
         this.isAuthorized = false;
+        this.isLoading = false;
       }
     } catch (error) {
+      this.isLoading = false;
       this.isAuthorized = false;
     }
-
-    this.isLoading = false;
 
     connection.on(Topics.UNAUTHORIZED, () => {
       localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
@@ -73,10 +77,39 @@ export class MainAppStore implements MainAppStoreProps {
     });
   };
 
+  getActiveAccount = async () => {
+    try {
+      const activeAccountId = await API.getKeyValue(
+        KeysInApi.ACTIVE_ACCOUNT_ID
+      );
+      if (activeAccountId) {
+        const activeAccount = this.accounts.find(
+          item => item.id === activeAccountId
+        );
+
+        if (activeAccount) {
+          this.setActiveAccount(activeAccount);
+        }
+      }
+      this.isLoading = false;
+    } catch (error) {
+      this.isLoading = false;
+    }
+  };
+
   @action
   setActiveAccount(account: AccountModelWebSocketDTO) {
-    // console.log('TCL: MainAppStore -> setActiveAccount -> account', account);
     this.activeAccount = account;
+    this.rootStore.quotesStore.available = account.balance;
+
+    this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+      [Fields.ACCOUNT_ID]: account.id,
+    });
+
+    API.setKeyValue({
+      key: KeysInApi.ACTIVE_ACCOUNT_ID,
+      value: account.id,
+    });
   }
 
   @action
@@ -87,10 +120,6 @@ export class MainAppStore implements MainAppStoreProps {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
-      try {
-        const response = await API.getKeyValue(KeysInApi.FIRST_LOGIN);
-        this.firstLogin = !!JSON.parse(response);
-      } catch (error) {}
     }
 
     if (
@@ -105,6 +134,8 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   signOut = () => {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+    this.token = '';
+    this.isAuthorized = false;
   };
 
   setTokenHandler = (token: string) => {
@@ -121,10 +152,6 @@ export class MainAppStore implements MainAppStoreProps {
         this.isAuthorized = true;
         this.setTokenHandler(response.data.token);
         this.handleInitConnection(response.data.token);
-        await API.setKeyValue({
-          key: KeysInApi.FIRST_LOGIN,
-          value: JSON.stringify(FirstLoginEnum.FirstLogin),
-        });
         resolve();
       } else {
         reject(apiResponseCodeMessages[response.result]);

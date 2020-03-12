@@ -4,7 +4,6 @@ import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { UserAuthenticate } from '../types/UserInfo';
 import * as yup from 'yup';
-import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import Fields from '../constants/fields';
 import { useStores } from '../hooks/useStores';
 import { observer, Observer } from 'mobx-react-lite';

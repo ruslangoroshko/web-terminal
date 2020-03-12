@@ -1,17 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
-import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
 import IconUser from '../../assets/svg/icon-navbar-user.svg';
 import ProfileDropdown from '../ProfileDropdown';
 
-interface Props {}
-
-function UserProfileButton(props: Props) {
-  const {} = props;
+function UserProfileButton() {
   const [on, toggle] = useState(false);
-  const wrapperRef = useRef<HTMLButtonElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const handleToggle = () => {
     toggle(!on);
   };
@@ -31,7 +27,18 @@ function UserProfileButton(props: Props) {
   }, []);
 
   return (
-    <UserProfileButtonWrapper ref={wrapperRef} onClick={handleToggle}>
+    <UserProfileButtonWrapper
+      ref={wrapperRef}
+      onClick={handleToggle}
+      width="24px"
+      height="24px"
+      alignItems="center"
+      justifyContent="center"
+      borderRadius="50%"
+      margin="0 16px 0 0"
+      position="relative"
+      backgroundColor="rgba(255, 255, 255, 0.2)"
+    >
       <SvgIcon {...IconUser} width={12} height={14} fillColor="#FFFFFF" />
       {on && (
         <FlexContainer position="absolute" top="100%" right="100%" zIndex="201">
@@ -44,22 +51,8 @@ function UserProfileButton(props: Props) {
 
 export default UserProfileButton;
 
-const UserProfileWrapper = styled(FlexContainer)`
-  position: relative;
-  margin-right: 16px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-
+const UserProfileButtonWrapper = styled(FlexContainer)`
   &:hover {
     cursor: pointer;
   }
-`;
-
-const UserProfileButtonWrapper = styled(ButtonWithoutStyles)`
-  width: 24px;
-  height: 24px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  margin-right: 16px;
-  position: relative;
 `;

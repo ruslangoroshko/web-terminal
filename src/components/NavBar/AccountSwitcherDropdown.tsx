@@ -12,7 +12,6 @@ import { AccountModelWebSocketDTO } from '../../types/Accounts';
 
 function AccountSwitcherDropdown() {
   const { quotesStore, mainAppStore } = useStores();
-  console.log(mainAppStore.sortedAccounts);
   return (
     <Toggle>
       {({ on, toggle }) => (
@@ -96,7 +95,7 @@ function AccountSwitcherDropdown() {
             <FlexContainer
               position="absolute"
               top="-8px"
-              left="-50%"
+              left="-100%"
               flexDirection="column"
               zIndex="200"
               backgroundColor="#1C2026"

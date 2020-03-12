@@ -2,17 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { TimeScaleItem } from './ChartTimeScale';
 import { IChartingLibraryWidget } from '../../vendor/charting_library/charting_library.min';
-
-interface Props {
-  tvWidget: IChartingLibraryWidget;
-}
+import { useStores } from '../../hooks/useStores';
 
 const AUTO_SCALE = 'mainSeriesProperties.priceAxisProperties.autoScale';
 const LOG = 'mainSeriesProperties.priceAxisProperties.log';
 const PERCENTAGE = 'mainSeriesProperties.priceAxisProperties.percentage';
 
-function ChartTimeFomat(props: Props) {
-  const { tvWidget } = props;
+function ChartTimeFomat() {
+  const { tradingViewStore } = useStores();
   const [axisProps, setAxisProps] = useState({
     [AUTO_SCALE]: true,
     [LOG]: false,
@@ -50,12 +47,16 @@ function ChartTimeFomat(props: Props) {
       default:
         break;
     }
-    setAxisProps(newProps);
-    tvWidget.applyOverrides(newProps);
+    tradingViewStore.tradingWidget?.onChartReady(async () => {
+      tradingViewStore.tradingWidget?.applyOverrides(newProps);
+      setAxisProps(newProps);
+    });
   };
 
   useEffect(() => {
-    tvWidget.applyOverrides(axisProps);
+    tradingViewStore.tradingWidget?.onChartReady(async () => {
+      tradingViewStore.tradingWidget?.applyOverrides(axisProps);
+    });
   }, []);
   return (
     <FlexContainer padding="2px" alignItems="center">

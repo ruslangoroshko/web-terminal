@@ -25,7 +25,7 @@ export class RootStore {
 
   constructor() {
     this.quotesStore = new QuotesStore(this);
-    this.mainAppStore = new MainAppStore();
+    this.mainAppStore = new MainAppStore(this);
     this.SLTPStore = new SLTPStore();
     this.tabsStore = new TabsStore();
     this.tradingViewStore = new TradingViewStore();

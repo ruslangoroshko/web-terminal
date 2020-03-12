@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Formik, Field, Form, FieldProps, FormikHelpers } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { UserRegistration } from '../types/UserInfo';
 import * as yup from 'yup';
-import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import Fields from '../constants/fields';
 import { useStores } from '../hooks/useStores';
 import SignFlowLayout from '../components/SignFlowLayout';
@@ -15,11 +14,8 @@ import SignTypeTabs from '../components/SignTypeTabs';
 import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
 
-interface Props {}
 
-function SignUp(props: Props) {
-  const {} = props;
-
+function SignUp() {
   const validationSchema = yup.object().shape<UserRegistration>({
     email: yup.string().required('Required any value'),
     password: yup
