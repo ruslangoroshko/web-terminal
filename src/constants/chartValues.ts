@@ -4,7 +4,7 @@ import {
 } from './supportedTimeScales';
 import { SeriesStyle } from '../vendor/charting_library/charting_library.min';
 import IconAreaChart from '../assets/svg/icon-chart-area.svg';
-import IconLineChart from '../assets/svg/icon-chart-area.svg';
+import IconLineChart from '../assets/svg/icon-chart-line-style.svg';
 import IconCandleChart from '../assets/svg/icon-chart-candle.svg';
 import IconBarChart from '../assets/svg/icon-chart-bars.svg';
 

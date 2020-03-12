@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
-import { PrimaryTextParagraph } from '../../styles/TextsElements';
+import { PrimaryTextParagraph, PrimaryTextSpan } from '../../styles/TextsElements';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
@@ -79,19 +79,24 @@ const ChartTypeDropdown: FC<Props> = props => {
             {() => (
               <>
                 {availableChartTypes.map(chartType => (
-                  <ButtonWithoutStyles
+                  <ButtonSelectType
                     key={chartType}
                     onClick={handleChangeChart(chartType)}
                   >
-                    <PrimaryTextParagraph
+                    <FlexContainer margin="0 4px 0 0">
+                      <SvgIcon
+                        fillColor="#fffccc"
+                        {...getChartIconByType(chartType)}
+                      ></SvgIcon>
+                    </FlexContainer>
+                    <PrimaryTextSpan
                       fontSize="12px"
                       color="#fffccc"
-                      marginBottom="12px"
                       whiteSpace="nowrap"
                     >
                       {getChartLabelByType(chartType)}
-                    </PrimaryTextParagraph>
-                  </ButtonWithoutStyles>
+                    </PrimaryTextSpan>
+                  </ButtonSelectType>
                 ))}
               </>
             )}
@@ -108,8 +113,8 @@ export default ChartTypeDropdown;
 const ChartResolutionsDropdownWrapper = styled(FlexContainer)`
   position: absolute;
   bottom: calc(100% + 8px);
-  border-radius: 4px;
-  left: 50%;
+  border-radius: 4px 4px 4px 0;
+  left: 56px;
   transform: translateX(-50%);
   flex-direction: column;
   padding: 12px 12px 0 12px;
@@ -126,7 +131,7 @@ const ChartResolutionsDropdownWrapper = styled(FlexContainer)`
 const Triangle = styled.div`
   position: absolute;
   top: 100%;
-  left: 50%;
+  left: 8px;
   transform: translateX(-50%);
   width: 0;
   height: 0;
@@ -140,4 +145,21 @@ const SettingsButton = styled(ButtonWithoutStyles)`
   color: rgba(255, 255, 255, 0.6);
   font-size: 12px;
   line-height: 16px;
+`;
+
+const ButtonSelectType = styled(ButtonWithoutStyles)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  &:hover {
+    span {
+      color: #00ffdd;
+    }
+
+    svg {
+      fill: #00ffdd;
+    }
+  }
 `;
