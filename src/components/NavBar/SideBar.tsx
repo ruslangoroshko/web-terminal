@@ -13,7 +13,7 @@ const SideBar = observer(() => {
   const { tabsStore, dateRangeStore } = useStores();
   const setSideBarActive = (tabType: SideBarTabType) => () => {
     tabsStore.isTabExpanded = false;
-    
+
     if (tabsStore.sideBarTabType === tabType) {
       tabsStore.sideBarTabType = null;
       dateRangeStore.resetDatepicker();
@@ -32,6 +32,7 @@ const SideBar = observer(() => {
       width="60px"
       zIndex="104"
       position="relative"
+      backgroundColor="#1c2026"
     >
       <SideBarButton
         iconProps={MarketsIcon}

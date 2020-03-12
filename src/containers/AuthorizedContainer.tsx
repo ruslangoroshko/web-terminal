@@ -112,7 +112,7 @@ const AuthorizedContainer: FC<Props> = props => {
               <>
                 <TabsLayoutWrapper
                   position="absolute"
-                  top="46px"
+                  top="48px"
                   right="calc(100% - 60px)"
                   bottom="0"
                   width="calc(100vw - 60px)"
