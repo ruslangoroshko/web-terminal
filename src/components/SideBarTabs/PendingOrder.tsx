@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
-import { PendingOrdersWSDTO } from '../../types/PendingOrders';
 import moment from 'moment';
 import styled from '@emotion/styled';
 import SvgIcon from '../SvgIcon';
@@ -9,13 +8,12 @@ import { AskBidEnum } from '../../enums/AskBid';
 import IconShevronDown from '../../assets/svg/icon-shevron-logo-down.svg';
 import IconShevronUp from '../../assets/svg/icon-shevron-logo-up.svg';
 import IconSettings from '../../assets/svg/icon-chart-settings.svg';
-import IconClose from '../../assets/svg/icon-close.svg';
-import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import API from '../../helpers/API';
 import { useStores } from '../../hooks/useStores';
 import { getProcessId } from '../../helpers/getProcessId';
 import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import ClosePositionPopup from './ClosePositionPopup';
+import { PendingOrdersWSDTO } from '../../types/PendingOrdersTypes';
 
 interface Props {
   pendingOrder: PendingOrdersWSDTO;

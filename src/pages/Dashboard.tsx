@@ -23,10 +23,10 @@ import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
 import { Observer, observer } from 'mobx-react-lite';
 import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
-import { PendingOrdersWSDTO } from '../types/PendingOrders';
 import NotificationPopup from '../components/NotificationPopup';
 import LoaderFullscreen from '../components/LoaderFullscreen';
 import DemoRealPopup from '../components/DemoRealPopup';
+import { PendingOrdersWSDTO } from '../types/PendingOrdersTypes';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
