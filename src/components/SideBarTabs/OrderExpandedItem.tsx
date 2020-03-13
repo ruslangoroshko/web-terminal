@@ -13,7 +13,7 @@ import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
 import { SecondaryButton } from '../../styles/Buttons';
 import { DisplayContents, Td } from '../../styles/TableElements';
-import { PendingOrdersWSDTO } from '../../types/PendingOrders';
+import { PendingOrdersWSDTO } from '../../types/PendingOrdersTypes';
 
 interface Props {
   position: PendingOrdersWSDTO;

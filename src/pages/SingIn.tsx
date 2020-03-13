@@ -31,9 +31,16 @@ const SingIn = observer(() => {
   const { mainAppStore, notificationStore } = useStores();
 
   const handleSubmit = async (credentials: UserAuthenticate) => {
-    const result = await mainAppStore.signIn(credentials);
-    if (result !== OperationApiResponseCodes.Ok) {
-      notificationStore.notificationMessage = apiResponseCodeMessages[result];
+    try {
+      const result = await mainAppStore.signIn(credentials);
+
+      if (result !== OperationApiResponseCodes.Ok) {
+        notificationStore.notificationMessage = apiResponseCodeMessages[result];
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+      }
+    } catch (error) {
+      notificationStore.notificationMessage = error;
       notificationStore.isSuccessfull = false;
       notificationStore.openNotification();
     }

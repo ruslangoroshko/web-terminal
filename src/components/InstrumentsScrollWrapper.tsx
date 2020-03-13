@@ -13,7 +13,6 @@ const InstrumentsScrollWrapper: FC<Props> = observer(props => {
   const { instrumentsStore, tradingViewStore } = useStores();
 
   const handleRemoveInstrument = (itemId: string) => async () => {
-    // TODO: create action method for setting new activeInstrumentsIds in the store
     instrumentsStore.setActiveInstrumentsIds(
       instrumentsStore.activeInstrumentsIds.filter(id => id !== itemId)
     );

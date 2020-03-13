@@ -93,11 +93,8 @@ export class InstrumentsStore implements ContextProps {
       return;
     }
 
-    if (this.activeInstrumentsIds.length === 7) {
-      this.activeInstrumentsIds = [
-        ...this.activeInstrumentsIds.slice(0, 6),
-        activeInstrumentId,
-      ];
+    if (this.activeInstrumentsIds.length > 6) {
+      this.activeInstrumentsIds[6] = activeInstrumentId;
     } else {
       this.activeInstrumentsIds.push(activeInstrumentId);
     }
@@ -146,6 +143,7 @@ export class InstrumentsStore implements ContextProps {
       item => item.instrumentItem.id === instrumentId
     );
     this.activeInstrument = newActiveInstrument;
+    console.log(this.rootStore.mainAppStore.isLoading);
     if (newActiveInstrument) {
       this.addActiveInstrumentId(instrumentId);
       const tvWidget = this.rootStore.tradingViewStore.tradingWidget?.chart();

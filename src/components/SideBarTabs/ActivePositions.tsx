@@ -344,6 +344,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
             <ClosePositionPopup
               applyHandler={closePosition}
               ref={instrumentRef}
+              isButton
             ></ClosePositionPopup>
           </FlexContainer>
         </FlexContainer>

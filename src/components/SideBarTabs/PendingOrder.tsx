@@ -15,6 +15,7 @@ import API from '../../helpers/API';
 import { useStores } from '../../hooks/useStores';
 import { getProcessId } from '../../helpers/getProcessId';
 import AutoClosePopupSideBar from './AutoClosePopupSideBar';
+import ClosePositionPopup from './ClosePositionPopup';
 
 interface Props {
   pendingOrder: PendingOrdersWSDTO;
@@ -126,13 +127,10 @@ function PendingOrder(props: Props) {
               />
             </AutoClosePopupSideBar>
           </FlexContainer>
-          <ButtonWithoutStyles onClick={handleCloseOrder}>
-            <SvgIcon
-              {...IconClose}
-              fillColor="rgba(255, 255, 255, 0.8)"
-              hoverFillColor="#00FFDD"
-            />
-          </ButtonWithoutStyles>
+          <ClosePositionPopup
+            applyHandler={handleCloseOrder}
+            ref={instrumentRef}
+          ></ClosePositionPopup>
         </FlexContainer>
       </OrderWrapperWithBorder>
     </OrderWrapper>

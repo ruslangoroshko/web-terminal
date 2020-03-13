@@ -130,8 +130,6 @@ const ActiveInstrument: FC<Props> = props => {
 
 export default ActiveInstrument;
 
-// TODO: find out base / quote places
-
 const BaseImgWrapper = styled(FlexContainer)`
   position: absolute;
   top: 0;

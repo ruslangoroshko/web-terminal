@@ -103,7 +103,7 @@ const Orders: FC = () => {
               />
             ))}
 
-            {!quotesStore.sortedActivePositions.length && (
+            {!quotesStore.sortedPendingOrders.length && (
               <FlexContainer
                 flexDirection="column"
                 alignItems="center"

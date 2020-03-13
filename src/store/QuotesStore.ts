@@ -3,7 +3,7 @@ import { BidAskKeyValueList, BidAskModelWSDTO } from '../types/BidAsk';
 import { PositionModelWSDTO } from '../types/Positions';
 import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
 import { AskBidEnum } from '../enums/AskBid';
-import { PendingOrdersWSDTO } from '../types/PendingOrders';
+import { PendingOrdersWSDTO } from '../types/PendingOrdersTypes';
 import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { RootStore } from './RootStore';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';

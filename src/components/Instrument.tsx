@@ -1,4 +1,4 @@
-import React, { useEffect, FC } from 'react';
+import React, { useEffect, FC, useRef } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { InstrumentModelWSDTO } from '../types/Instruments';
 import Topics from '../constants/websocketTopics';
@@ -20,9 +20,14 @@ interface Props {
 
 const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
   const { quotesStore, mainAppStore, instrumentsStore } = useStores();
+  const buttonCloseRef = useRef<HTMLButtonElement>(null);
 
-  const switchInstrument = () => {
-    instrumentsStore.switchInstrument(instrument.id);
+  const switchInstrument = (e: any) => {
+    if (buttonCloseRef.current && buttonCloseRef.current.contains(e.target)) {
+      e.preventDefault();
+    } else {
+      instrumentsStore.switchInstrument(instrument.id);
+    }
   };
 
   useEffect(() => {
@@ -76,7 +81,10 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
               {() => (
                 <>
                   {instrumentsStore.activeInstrumentsIds.length > 1 && (
-                    <ButtonWithoutStyles onClick={handleClose}>
+                    <ButtonWithoutStyles
+                      onClick={handleClose}
+                      ref={buttonCloseRef}
+                    >
                       <SvgIcon
                         {...IconClose}
                         fillColor="rgba(0, 0, 0, 0.6)"

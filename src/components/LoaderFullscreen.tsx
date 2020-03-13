@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { keyframes, css } from '@emotion/core';
 import styled from '@emotion/styled';
@@ -9,28 +9,25 @@ interface Props {
   isLoading: boolean;
 }
 
-function LoaderFullscreen(props: Props) {
-  const { isLoading } = props;
-  return (
-    <Modal>
-      <FixedContainerWrapper isLoading={isLoading}>
-        <FlexContainer
-          position="fixed"
-          top="0"
-          left="0"
-          right="0"
-          bottom="0"
-          zIndex="1000"
-          backgroundColor="#1C2026"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <LoaderComponent />
-        </FlexContainer>
-      </FixedContainerWrapper>
-    </Modal>
-  );
-}
+const LoaderFullscreen: FC<Props> = ({ isLoading }) => (
+  <Modal>
+    <FixedContainerWrapper isLoading={isLoading}>
+      <FlexContainer
+        position="fixed"
+        top="0"
+        left="0"
+        right="0"
+        bottom="0"
+        zIndex="1000"
+        backgroundColor="#1C2026"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <LoaderComponent />
+      </FlexContainer>
+    </FixedContainerWrapper>
+  </Modal>
+);
 
 export default LoaderFullscreen;
 

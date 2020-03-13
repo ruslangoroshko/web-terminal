@@ -4,13 +4,18 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
 import { SecondaryButton } from '../../styles/Buttons';
 import ConfirmPopup from '../ConfirmPopup';
+import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import SvgIcon from '../SvgIcon';
+import IconClose from '../../assets/svg/icon-close.svg';
 
 interface Props {
   applyHandler: () => void;
+  // TODO: refactor crutch
+  isButton?: boolean;
 }
 
 const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { applyHandler } = props;
+  const { applyHandler, isButton } = props;
 
   const [on, toggle] = useState(false);
 
@@ -45,11 +50,22 @@ const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
 
   return (
     <FlexContainer ref={wrapperRef}>
-      <CloseButton onClick={handleToggle}>
-        <PrimaryTextSpan fontSize="12px" lineHeight="14px">
-          Close
-        </PrimaryTextSpan>
-      </CloseButton>
+      {isButton ? (
+        <CloseButton onClick={handleToggle}>
+          <PrimaryTextSpan fontSize="12px" lineHeight="14px">
+            Close
+          </PrimaryTextSpan>
+        </CloseButton>
+      ) : (
+        <ButtonWithoutStyles onClick={handleToggle}>
+          <SvgIcon
+            {...IconClose}
+            fillColor="rgba(255, 255, 255, 0.8)"
+            hoverFillColor="#00FFDD"
+          />
+        </ButtonWithoutStyles>
+      )}
+
       {on && (
         <FlexContainer
           position="absolute"

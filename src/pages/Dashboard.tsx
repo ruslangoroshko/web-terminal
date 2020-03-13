@@ -81,6 +81,10 @@ const Dashboard = observer(() => {
                 id: item.id,
               });
             });
+            console.log(
+              `****************************** INSTRUMENTS --------->`,
+              response.data
+            );
             instrumentsStore.setInstruments(response.data);
             activeInstrumentsInit(instrumentsStore);
           }
