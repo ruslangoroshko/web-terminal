@@ -143,7 +143,6 @@ export class InstrumentsStore implements ContextProps {
       item => item.instrumentItem.id === instrumentId
     );
     this.activeInstrument = newActiveInstrument;
-    console.log(this.rootStore.mainAppStore.isLoading);
     if (newActiveInstrument) {
       this.addActiveInstrumentId(instrumentId);
       const tvWidget = this.rootStore.tradingViewStore.tradingWidget?.chart();
@@ -199,9 +198,6 @@ export class InstrumentsStore implements ContextProps {
     const bPriceChange = this.pricesChange[b.instrumentItem.id];
 
     if (!aPriceChange || !bPriceChange) {
-      console.log('InstrumentsStore -> aPriceChange', aPriceChange);
-      console.log('InstrumentsStore -> bPriceChange', bPriceChange);
-
       return 0;
     }
 

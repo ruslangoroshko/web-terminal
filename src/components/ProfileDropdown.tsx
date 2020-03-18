@@ -8,6 +8,8 @@ import SvgIcon from './SvgIcon';
 import IconDeposit from '../assets/svg/icon-deposit.svg';
 import IconWithdraw from '../assets/svg/icon-withdraw.svg';
 import IconLogout from '../assets/svg/icon-logout.svg';
+import { NavLink } from 'react-router-dom';
+import Page from '../constants/Pages';
 
 interface Props {}
 
@@ -18,7 +20,7 @@ function ProfileDropdown(props: Props) {
   const logOut = () => {
     mainAppStore.signOut();
   };
-  
+
   return (
     <FlexContainer
       backgroundColor="#1c2026"
@@ -61,9 +63,11 @@ function ProfileDropdown(props: Props) {
         flexDirection="column"
       >
         <FlexContainer margin="0 0 16px">
-          <PrimaryTextSpan fontSize="12px" color="#fffccc">
-            Balance history
-          </PrimaryTextSpan>
+          <NavLink to={Page.ACCOUNT_BALANCE_HISTORY}>
+            <PrimaryTextSpan fontSize="12px" color="#fffccc">
+              Balance history
+            </PrimaryTextSpan>
+          </NavLink>
         </FlexContainer>
         <FlexContainer margin="0 0 16px">
           <PrimaryTextSpan fontSize="12px" color="#fffccc">

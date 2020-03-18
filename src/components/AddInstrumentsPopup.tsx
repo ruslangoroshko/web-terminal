@@ -5,7 +5,6 @@ import IconSearch from '../assets/svg/icon-instrument-search.svg';
 import IconClose from '../assets/svg/icon-close.svg';
 import SvgIcon from './SvgIcon';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
-import InstrumentRow from './InstrumentRow';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import InstrumentMarkets from './SideBarTabs/InstrumentMarkets';
@@ -37,7 +36,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
     );
 
     const rect = wrapperRef.current?.getBoundingClientRect();
-
+    // TODO: improve calclulation logic, make more universal method
     // detect if menu goes beneath the edge of screen
     if (rect && window.innerWidth - rect.right - 320 <= 0) {
       setIsLeft(false);

@@ -85,7 +85,6 @@ const ChartIntervalTimeScale: FC<Props> = observer(() => {
           });
         });
     }
-    console.log('newActiveInstrument', newActiveInstrument);
     instrumentsStore.editActiveInstrument(newActiveInstrument);
   };
 

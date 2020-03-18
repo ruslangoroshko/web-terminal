@@ -62,7 +62,6 @@ const SingIn = observer(() => {
           )}
         </Observer>
       </FlexContainer>
-      <LoaderFullscreen isLoading={mainAppStore.isLoading}></LoaderFullscreen>
       <FlexContainer width="320px" flexDirection="column">
         <SignTypeTabs></SignTypeTabs>
         <Formik

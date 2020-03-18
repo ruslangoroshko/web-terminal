@@ -7,11 +7,10 @@ const AccountSettingsContainer: FC = ({ children }) => (
     height="100%"
     width="100%"
     position="relative"
-    flexDirection="column"
-    justifyContent="space-between"
+    padding="30px 20px"
   >
     <AccountNavPanel></AccountNavPanel>
-    <FlexContainer>{children}</FlexContainer>
+    {children}
   </FlexContainer>
 );
 

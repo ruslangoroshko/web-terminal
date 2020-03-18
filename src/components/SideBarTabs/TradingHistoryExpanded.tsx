@@ -27,14 +27,10 @@ const TradingHistoryExpanded: FC = () => {
   const fetchPositionsHistory = async () => {
     const response = await API.getPositionsHistory({
       accountId: mainAppStore.activeAccount!.id,
-      startDate: historyStore.positionsStartDate.valueOf().toString(),
-      endDate: historyStore.positionsEndDate.valueOf().toString(),
+      startDate: historyStore.positionsStartDate.valueOf(),
+      endDate: historyStore.positionsEndDate.valueOf(),
     });
     historyStore.positionsHistory = response.positionsHistory;
-  };
-
-  const handleChangeHistoryTab = (historyTab: HistoryTabEnum) => () => {
-    tabsStore.historyTab = historyTab;
   };
 
   return (

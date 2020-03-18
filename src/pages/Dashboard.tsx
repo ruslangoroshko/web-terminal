@@ -24,37 +24,19 @@ import { Observer, observer } from 'mobx-react-lite';
 import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import NotificationPopup from '../components/NotificationPopup';
-import LoaderFullscreen from '../components/LoaderFullscreen';
 import DemoRealPopup from '../components/DemoRealPopup';
 import { PendingOrdersWSDTO } from '../types/PendingOrdersTypes';
+import LoaderFullscreen from '../components/LoaderFullscreen';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
 const Dashboard = observer(() => {
   const {
     mainAppStore,
-    tradingViewStore,
     quotesStore,
     instrumentsStore,
     notificationStore,
   } = useStores();
-
-  useEffect(() => {
-    mainAppStore.activeSession?.on(
-      Topics.ACCOUNTS,
-      (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
-        mainAppStore.accounts = response.data;
-      }
-    );
-
-    mainAppStore.activeSession?.on(
-      Topics.UPDATE_ACCOUNT,
-      (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
-        quotesStore.available = response.data.balance;
-        mainAppStore.setActiveAccount(response.data);
-      }
-    );
-  }, [mainAppStore.activeSession]);
 
   useEffect(() => {
     if (mainAppStore.activeAccount) {
@@ -157,7 +139,9 @@ const Dashboard = observer(() => {
           <>{!mainAppStore.activeAccount && <DemoRealPopup></DemoRealPopup>}</>
         )}
       </Observer>
-      <LoaderFullscreen isLoading={mainAppStore.isLoading}></LoaderFullscreen>
+      <Observer>
+        {() => <LoaderFullscreen isLoading={!mainAppStore.activeAccount} />}
+      </Observer>
       <FlexContainer
         position="absolute"
         bottom="100px"

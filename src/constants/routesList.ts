@@ -45,6 +45,13 @@ const routesList = [
     layoutType: RouteLayoutType.Authorized,
   },
   {
+    component: AccountBalance,
+    path: Page.ACCOUNT_BALANCE_HISTORY,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.Authorized,
+  },
+  {
     component: PersonalData,
     path: Page.PERSONAL_DATA,
     exact: true,
@@ -54,13 +61,6 @@ const routesList = [
   {
     component: MobileTradingView,
     path: Page.MOBILE_TRADING_VIEW,
-    exact: true,
-    strict: true,
-    layoutType: RouteLayoutType.Public,
-  },
-  {
-    component: AccountBalance,
-    path: Page.ACCOUNT_BALANCE_HISTORY,
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.Public,

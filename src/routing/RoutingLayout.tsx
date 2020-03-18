@@ -5,9 +5,13 @@ import { useLocation, matchPath, Switch } from 'react-router-dom';
 import AuthorizedContainer from '../containers/AuthorizedContainer';
 import { FlexContainer } from '../styles/FlexContainer';
 import KYCcontainer from '../containers/KYCcontainer';
+import { useStores } from '../hooks/useStores';
+import LoaderFullscreen from '../components/LoaderFullscreen';
+import { Observer } from 'mobx-react-lite';
 
 const RoutingLayout = () => {
   const location = useLocation();
+  const { mainAppStore } = useStores();
 
   const allRoutes = routesList.map(route => (
     <RouteWrapper key={route.path} {...route} />
@@ -27,28 +31,64 @@ const RoutingLayout = () => {
     case RouteLayoutType.Authorized:
       return (
         <AuthorizedContainer>
-          <Switch>{allRoutes}</Switch>
+          <Observer>
+            {() => (
+              <>
+                {!mainAppStore.isInitLoading && <Switch>{allRoutes}</Switch>}
+                <LoaderFullscreen
+                  isLoading={mainAppStore.isInitLoading}
+                ></LoaderFullscreen>
+              </>
+            )}
+          </Observer>
         </AuthorizedContainer>
       );
 
     case RouteLayoutType.SignFlow:
       return (
         <FlexContainer height="100vh" width="100%">
-          <Switch>{allRoutes}</Switch>
+          <Observer>
+            {() => (
+              <>
+                {!mainAppStore.isInitLoading && <Switch>{allRoutes}</Switch>}
+                <LoaderFullscreen
+                  isLoading={mainAppStore.isInitLoading}
+                ></LoaderFullscreen>
+              </>
+            )}
+          </Observer>
         </FlexContainer>
       );
 
     case RouteLayoutType.KYC:
       return (
         <KYCcontainer>
-          <Switch>{allRoutes}</Switch>
+          <Observer>
+            {() => (
+              <>
+                {!mainAppStore.isInitLoading && <Switch>{allRoutes}</Switch>}
+                <LoaderFullscreen
+                  isLoading={mainAppStore.isInitLoading}
+                ></LoaderFullscreen>
+              </>
+            )}
+          </Observer>
         </KYCcontainer>
       );
 
     default:
       return (
         <FlexContainer height="100vh" width="100%">
-          <Switch>{allRoutes}</Switch>
+          <Observer>
+            {() => (
+              <>
+                {!mainAppStore.isInitLoading && <Switch>{allRoutes}</Switch>}
+                <LoaderFullscreen
+                  isLoading={mainAppStore.isInitLoading}
+                ></LoaderFullscreen>
+              </>
+            )}
+          </Observer>
         </FlexContainer>
       );
   }

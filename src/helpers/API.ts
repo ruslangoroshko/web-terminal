@@ -19,6 +19,7 @@ import {
   PositionsHistoryReportDTO,
   BalanceHistoryDTO,
   GetHistoryParams,
+  BalanceHistoryReport,
 } from '../types/HistoryReportTypes';
 import AUTH_API_LIST from './apiListAuth';
 import { ChangePasswordParams } from '../types/TraderTypes';
@@ -186,8 +187,8 @@ class API {
   };
 
   getBalanceHistory = async (params: GetHistoryParams) => {
-    const response = await axios.get<BalanceHistoryDTO[]>(
-      `${API_STRING}${API_LIST.REPORTS.POSITIONS_HISTORY}`,
+    const response = await axios.get<BalanceHistoryReport>(
+      `${API_STRING}${API_LIST.REPORTS.BALANCE_HISTORY}`,
       {
         params,
       }

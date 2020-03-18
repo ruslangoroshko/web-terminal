@@ -46,7 +46,6 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
         // @ts-ignore
       } = ref.current.getBoundingClientRect();
-      console.log(bottom);
       setPopupPosition({ top, left, width, bottom, height });
     };
 

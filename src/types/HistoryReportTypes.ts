@@ -6,6 +6,9 @@ export interface PositionsHistoryReportDTO {
   totalEquity: number;
   totalProfit: number;
   totalProfitPercent: number;
+  page: number;
+  pageSize: number;
+  totalItems: number;
 }
 
 export interface PositionHistoryDTO {
@@ -39,8 +42,15 @@ export interface BalanceHistoryDTO {
   balance: number;
 }
 
+export interface BalanceHistoryReport {
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  balanceHistory: BalanceHistoryDTO[];
+}
+
 export interface GetHistoryParams {
   accountId: string;
-  startDate: string;
-  endDate: string;
+  startDate: number;
+  endDate: number;
 }

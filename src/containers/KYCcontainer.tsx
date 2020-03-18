@@ -17,9 +17,6 @@ const KYCcontainer: FC = props => {
       position="relative"
       flexDirection="column"
     >
-      <Observer>
-        {() => <LoaderFullscreen isLoading={mainAppStore.isLoading}></LoaderFullscreen>}
-      </Observer>
       <NavBar></NavBar>
       <FlexContainer height="calc(100vh - 48px)" flexDirection="column">
         <StepsContainter></StepsContainter>

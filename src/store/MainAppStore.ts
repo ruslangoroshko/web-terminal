@@ -15,6 +15,7 @@ import { RootStore } from './RootStore';
 import Fields from '../constants/fields';
 import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
+import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 
 interface MainAppStoreProps {
   token: string;
@@ -23,17 +24,25 @@ interface MainAppStoreProps {
   signUp: (credentials: UserRegistration) => Promise<unknown>;
   activeSession?: HubConnection;
   isLoading: boolean;
+  isInitLoading: boolean;
   activeAccount?: AccountModelWebSocketDTO;
   accounts: AccountModelWebSocketDTO[];
   setActiveAccount: (acc: AccountModelWebSocketDTO) => void;
+  activeAccountId: string;
 }
+
+// TODO: think about right application initialization
+// describe step by step init, loaders, async behaviour in app
+// think about loader flags - global, local
 
 export class MainAppStore implements MainAppStoreProps {
   @observable isLoading = true;
+  @observable isInitLoading = true;
   @observable isAuthorized = false;
   @observable activeSession?: HubConnection;
   @observable activeAccount?: AccountModelWebSocketDTO;
   @observable accounts: AccountModelWebSocketDTO[] = [];
+  @observable activeAccountId: string = '';
   token = '';
   rootStore: RootStore;
 
@@ -44,7 +53,7 @@ export class MainAppStore implements MainAppStoreProps {
     if (this.token) {
       this.handleInitConnection(this.token);
     } else {
-      this.isLoading = false;
+      this.isInitLoading = false;
     }
   }
 
@@ -57,13 +66,12 @@ export class MainAppStore implements MainAppStoreProps {
         await connection.send(Topics.INIT, token);
         this.activeSession = connection;
         this.isAuthorized = true;
-        this.getActiveAccount();
       } catch (error) {
         this.isAuthorized = false;
-        this.isLoading = false;
+        this.isInitLoading = false;
       }
     } catch (error) {
-      this.isLoading = false;
+      this.isInitLoading = false;
       this.isAuthorized = false;
     }
 
@@ -71,6 +79,22 @@ export class MainAppStore implements MainAppStoreProps {
       localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
       this.isAuthorized = false;
     });
+
+    connection.on(
+      Topics.ACCOUNTS,
+      (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
+        this.accounts = response.data;
+        this.getActiveAccount();
+      }
+    );
+
+    connection.on(
+      Topics.UPDATE_ACCOUNT,
+      (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
+        this.rootStore.quotesStore.available = response.data.balance;
+        this.setActiveAccount(response.data);
+      }
+    );
     connection.onclose(error => {
       console.log(error);
       this.handleInitConnection(token);
@@ -82,18 +106,13 @@ export class MainAppStore implements MainAppStoreProps {
       const activeAccountId = await API.getKeyValue(
         KeysInApi.ACTIVE_ACCOUNT_ID
       );
-      if (activeAccountId) {
-        const activeAccount = this.accounts.find(
-          item => item.id === activeAccountId
-        );
-
-        if (activeAccount) {
-          this.setActiveAccount(activeAccount);
-        }
-      }
-      this.isLoading = false;
+      const activeAccount = this.accounts.find(
+        item => item.id === activeAccountId
+      );
+      this.setActiveAccount(activeAccount || this.accounts[0]);
+      this.isInitLoading = false;
     } catch (error) {
-      this.isLoading = false;
+      this.isInitLoading = false;
     }
   };
 
