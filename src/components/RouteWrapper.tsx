@@ -26,7 +26,7 @@ const RouteWrapper: FC<Props> = observer(props => {
       return <Redirect to={Page.SIGN_IN} />;
     }
   }
-
+  console.log('current route ', props);
   return (
     <Route
       {...otherProps}

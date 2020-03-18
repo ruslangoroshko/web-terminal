@@ -33,11 +33,3 @@ export const AccountName = styled.span`
 `;
 
 export const AccountLeverage = styled(AccountName)``;
-
-export const AccountBalance = styled(AccountName)`
-  color: #ef7000;
-`;
-
-export const AccountBalanceTitle = styled(AccountBalance)`
-  font-size: 12px;
-`;

@@ -5,6 +5,7 @@ import SignUp from '../pages/SingUp';
 import EmailConfirmation from '../pages/EmailConfirmation';
 import PersonalData from '../pages/PersonalData';
 import MobileTradingView from '../pages/MobileTradingView';
+import AccountBalance from '../pages/AccountBalance';
 
 export enum RouteLayoutType {
   Authorized,
@@ -53,6 +54,13 @@ const routesList = [
   {
     component: MobileTradingView,
     path: Page.MOBILE_TRADING_VIEW,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.Public,
+  },
+  {
+    component: AccountBalance,
+    path: Page.ACCOUNT_BALANCE_HISTORY,
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.Public,

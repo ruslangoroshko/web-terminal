@@ -78,15 +78,15 @@ module.exports = (env, argv) => {
         WS_HOST:
           argv.mode === 'production'
             ? JSON.stringify(argv.wshost)
-            : JSON.stringify('http://localhost:5678/signalr'),
+            : JSON.stringify('http://localhost:5986/signalr'),
         API_STRING:
           argv.mode === 'production'
             ? JSON.stringify(argv.apistring)
-            : JSON.stringify('http://localhost:5678'),
+            : JSON.stringify('http://localhost:5986'),
         API_AUTH_STRING:
           argv.mode === 'production'
             ? JSON.stringify(argv.authapistring)
-            : JSON.stringify('http://localhost:5679'),
+            : JSON.stringify('http://localhost:5958'),
         AUTH_TOKEN: JSON.stringify('TraderID'),
         CHARTING_LIBRARY_PATH:
           argv.mode === 'production'
