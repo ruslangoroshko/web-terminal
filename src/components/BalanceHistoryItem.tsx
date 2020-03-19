@@ -6,6 +6,7 @@ import { PrimaryTextSpan, QuoteText } from '../styles/TextsElements';
 import moment from 'moment';
 import { useStores } from '../hooks/useStores';
 import { getNumberSign } from '../helpers/getNumberSign';
+import { FlexContainer } from '../styles/FlexContainer';
 
 interface Props {
   balanceHistoryItem: BalanceHistoryDTO;
@@ -19,10 +20,12 @@ const BalanceHistoryItem: FC<Props> = props => {
   const { mainAppStore } = useStores();
   return (
     <DisplayContents>
-      <Td alignItems="center" padding="0 0 0 12px">
-        <PrimaryTextSpan fontSize="12px" color="#fffccc">
-          {moment(createdAt).format('DD MMM yyyy, HH:mm:ss')}
-        </PrimaryTextSpan>
+      <Td alignItems="center">
+        <FlexContainer padding="0 0 0 12px">
+          <PrimaryTextSpan fontSize="12px" color="#fffccc">
+            {moment(createdAt).format('DD MMM YYYY, HH:mm:ss')}
+          </PrimaryTextSpan>
+        </FlexContainer>
       </Td>
       <Td alignItems="center">
         <QuoteText fontSize="12px" isGrowth={amount >= 0}>
@@ -38,9 +41,11 @@ const BalanceHistoryItem: FC<Props> = props => {
         </PrimaryTextSpan>
       </Td>
       <Td alignItems="center">
-        <PrimaryTextSpan fontSize="12px" color="rgba(255, 255, 255, 0.6)">
-          {description}
-        </PrimaryTextSpan>
+        <FlexContainer padding="0 30px 0 0">
+          <PrimaryTextSpan fontSize="12px" color="rgba(255, 255, 255, 0.6)">
+            {description}
+          </PrimaryTextSpan>
+        </FlexContainer>
       </Td>
     </DisplayContents>
   );

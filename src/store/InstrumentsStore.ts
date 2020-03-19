@@ -46,6 +46,8 @@ export class InstrumentsStore implements ContextProps {
     this.rootStore = rootStore;
   }
 
+
+  // TODO: order of newly instruments is broken
   @computed get activeInstruments() {
     return this.instruments.filter(item =>
       this.activeInstrumentsIds.includes(item.instrumentItem.id)

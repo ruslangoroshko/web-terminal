@@ -44,6 +44,14 @@ function AccountBalance() {
   return (
     <AccountSettingsContainer>
       <FlexContainer flexDirection="column">
+        {/* <PrimaryTextParagraph
+          color="#fffccc"
+          fontSize="20px"
+          fontWeight="bold"
+          marginBottom="20px"
+        >
+          Balance History
+        </PrimaryTextParagraph> */}
         <FlexContainer
           justifyContent="space-between"
           alignItems="flex-end"
@@ -104,7 +112,7 @@ function AccountBalance() {
               Operation type
             </PrimaryTextSpan>
           </Th> */}
-            <Th justifyContent="flex-end">
+            <Th>
               <PrimaryTextSpan
                 color="rgba(255, 255, 255, 0.4)"
                 fontSize="11px"

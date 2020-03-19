@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import Instrument from './Instrument';
 import { useStores } from '../hooks/useStores';
-import { InstrumentModelWSDTO } from '../types/Instruments';
 import styled from '@emotion/styled';
 import { observer } from 'mobx-react-lite';
 import API from '../helpers/API';
@@ -9,8 +8,8 @@ import KeysInApi from '../constants/keysInApi';
 
 interface Props {}
 
-const InstrumentsScrollWrapper: FC<Props> = observer(props => {
-  const { instrumentsStore, tradingViewStore } = useStores();
+const InstrumentsScrollWrapper: FC<Props> = observer(() => {
+  const { instrumentsStore } = useStores();
 
   const handleRemoveInstrument = (itemId: string) => async () => {
     instrumentsStore.setActiveInstrumentsIds(
