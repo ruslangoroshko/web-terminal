@@ -27,7 +27,7 @@ function AccountBalance() {
         accountId: mainAppStore.activeAccount!.id,
         endDate: moment().valueOf(),
         startDate: moment()
-          .subtract('w', 1)
+          .subtract(1, 'w')
           .valueOf(),
       });
       setBalanceHistory(response.balanceHistory);
