@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = (env, argv) => {
+  console.log('env: ', env);
   return {
     mode: argv.mode,
     entry: {
