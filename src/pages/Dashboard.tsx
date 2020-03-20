@@ -7,7 +7,7 @@ import Topics from '../constants/websocketTopics';
 import { AccountModelWebSocketDTO } from '../types/Accounts';
 import Fields from '../constants/fields';
 import TVChartContainer from '../containers/ChartContainer';
-import { InstrumentModelWSDTO, PriceChangeWSDTO } from '../types/Instruments';
+import { InstrumentModelWSDTO, PriceChangeWSDTO } from '../types/InstrumentsTypes';
 import { PositionModelWSDTO } from '../types/Positions';
 import SvgIcon from '../components/SvgIcon';
 import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';

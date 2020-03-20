@@ -21,6 +21,7 @@ export interface InstrumentModelWSDTO {
   tickSize?: number;
   groupId: string;
   weight: number;
+  avatar: string;
 }
 
 interface DayOff {

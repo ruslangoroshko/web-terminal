@@ -1,4 +1,4 @@
-import { InstrumentModelWSDTO } from './Instruments';
+import { InstrumentModelWSDTO } from './InstrumentsTypes';
 
 export interface AccountModelDTO {
   id: string;

@@ -1,6 +1,6 @@
 import React, { useEffect, FC, useRef } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
-import { InstrumentModelWSDTO } from '../types/Instruments';
+import { InstrumentModelWSDTO } from '../types/InstrumentsTypes';
 import Topics from '../constants/websocketTopics';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { BidAskModelWSDTO } from '../types/BidAsk';

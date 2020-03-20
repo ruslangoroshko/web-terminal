@@ -10,7 +10,7 @@ import {
 import moment from 'moment';
 import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
-import { IActiveInstrument } from '../../types/Instruments';
+import { IActiveInstrument } from '../../types/InstrumentsTypes';
 
 interface Props {}
 

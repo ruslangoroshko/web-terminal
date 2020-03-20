@@ -9,7 +9,7 @@ import AutoClosePopup from './AutoClosePopup';
 import PurchaseAtPopup from './PurchaseAtPopup';
 import * as yup from 'yup';
 import { OpenPositionModelFormik } from '../../types/Positions';
-import { InstrumentModelWSDTO } from '../../types/Instruments';
+import { InstrumentModelWSDTO } from '../../types/InstrumentsTypes';
 import { AskBidEnum } from '../../enums/AskBid';
 import API from '../../helpers/API';
 import InformationPopup from '../InformationPopup';

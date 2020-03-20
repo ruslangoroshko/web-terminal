@@ -5,11 +5,12 @@ import baseImg from '../assets/images/base.png';
 import quoteImg from '../assets/images/quote.png';
 import { AskBidEnum } from '../enums/AskBid';
 import calculateGrowth from '../helpers/calculateGrowth';
-import { InstrumentModelWSDTO } from '../types/Instruments';
+import { InstrumentModelWSDTO } from '../types/InstrumentsTypes';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import { PrimaryTextSpan, QuoteText } from '../styles/TextsElements';
 import { getNumberSign } from '../helpers/getNumberSign';
+import SvgIcon from './SvgIcon';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -22,18 +23,8 @@ const ActiveInstrument: FC<Props> = props => {
 
   return quotesStore.quotes[instrument.id] ? (
     <FlexContainer>
-      <FlexContainer
-        height="60px"
-        width="60px"
-        position="relative"
-        margin="0 12px 0 0"
-      >
-        <BaseImgWrapper>
-          <img src={baseImg}></img>
-        </BaseImgWrapper>
-        <QuoteImgWrapper>
-          <img src={quoteImg}></img>
-        </QuoteImgWrapper>
+      <FlexContainer position="relative" margin="0 12px 0 0">
+        <img src={instrument.avatar} width={60} />
       </FlexContainer>
       <FlexContainer flexDirection="column" margin="0 52px 0 0">
         <PrimaryTextSpan

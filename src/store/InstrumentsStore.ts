@@ -4,7 +4,7 @@ import {
   InstrumentGroupWSDTO,
   PriceChangeWSDTO,
   IActiveInstrument,
-} from '../types/Instruments';
+} from '../types/InstrumentsTypes';
 import { RootStore } from './RootStore';
 import { SortByMarketsEnum } from '../enums/SortByMarketsEnum';
 import { SeriesStyle } from '../vendor/charting_library/charting_library.min';

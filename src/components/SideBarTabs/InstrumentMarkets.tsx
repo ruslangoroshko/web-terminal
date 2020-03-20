@@ -1,5 +1,5 @@
 import React, { FC, useRef } from 'react';
-import { InstrumentModelWSDTO } from '../../types/Instruments';
+import { InstrumentModelWSDTO } from '../../types/InstrumentsTypes';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
