@@ -12,7 +12,6 @@ import { TabPortfolitButton } from './Portfolio';
 import IconNoTradingHistory from '../../assets/svg/icon-no-trading-history.svg';
 import SvgIcon from '../SvgIcon';
 import IconClose from '../../assets/svg/icon-close.svg';
-import { HistoryTabEnum } from '../../enums/HistoryTabEnum';
 import DatePickerDropdown from '../DatePickerDropdown';
 import API from '../../helpers/API';
 import TradingHistoryExpandedItem from './TradingHistoryExpandedItem';
@@ -29,8 +28,16 @@ const TradingHistoryExpanded: FC = () => {
       accountId: mainAppStore.activeAccount!.id,
       startDate: historyStore.positionsStartDate.valueOf(),
       endDate: historyStore.positionsEndDate.valueOf(),
+      page: 1,
+      pageSize: 20,
     });
-    historyStore.positionsHistory = response.positionsHistory;
+    historyStore.positionsHistoryReport = {
+      ...response,
+      positionsHistory: [
+        ...historyStore.positionsHistoryReport.positionsHistory,
+        ...response.positionsHistory,
+      ],
+    };
   };
 
   return (
@@ -141,15 +148,17 @@ const TradingHistoryExpanded: FC = () => {
               <Observer>
                 {() => (
                   <>
-                    {historyStore.positionsHistory.map(item => (
-                      <TradingHistoryExpandedItem
-                        key={item.id}
-                        currencySymbol={
-                          mainAppStore.activeAccount?.symbol || ''
-                        }
-                        tradingHistoryItem={item}
-                      />
-                    ))}
+                    {historyStore.positionsHistoryReport.positionsHistory.map(
+                      item => (
+                        <TradingHistoryExpandedItem
+                          key={item.id}
+                          currencySymbol={
+                            mainAppStore.activeAccount?.symbol || ''
+                          }
+                          tradingHistoryItem={item}
+                        />
+                      )
+                    )}
                   </>
                 )}
               </Observer>
@@ -157,7 +166,8 @@ const TradingHistoryExpanded: FC = () => {
             <Observer>
               {() => (
                 <>
-                  {!historyStore.positionsHistory.length && (
+                  {!historyStore.positionsHistoryReport.positionsHistory
+                    .length && (
                     <FlexContainer
                       padding="16px"
                       flexDirection="column"

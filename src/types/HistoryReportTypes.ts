@@ -53,4 +53,6 @@ export interface GetHistoryParams {
   accountId: string;
   startDate: number;
   endDate: number;
+  page: number;
+  pageSize: number;
 }

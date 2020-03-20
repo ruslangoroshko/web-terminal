@@ -1,26 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import AccountSettingsContainer from '../containers/AccountSettingsContainer';
 import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
 import API from '../helpers/API';
 import { useStores } from '../hooks/useStores';
 import moment from 'moment';
-import { BalanceHistoryDTO } from '../types/HistoryReportTypes';
+import {
+  BalanceHistoryDTO,
+  BalanceHistoryReport,
+} from '../types/HistoryReportTypes';
 import styled from '@emotion/styled';
 import SvgIcon from '../components/SvgIcon';
 import IconNoTradingHistory from '../assets/svg/icon-no-trading-history.svg';
 import DatePickerDropdown from '../components/DatePickerDropdown';
-import { TableGrid, Th } from '../styles/TableElements';
+import { TableGrid, Th, DisplayContents } from '../styles/TableElements';
 import TradingHistoryExpandedItem from '../components/SideBarTabs/TradingHistoryExpandedItem';
 import BalanceHistoryItem from '../components/BalanceHistoryItem';
+import InfinityScrollList from '../components/InfinityScrollList';
 
 function AccountBalance() {
   const { mainAppStore } = useStores();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [balanceHistory, setBalanceHistory] = useState<BalanceHistoryDTO[]>([]);
+  const [balanceHistoryReport, setBalanceHistoryReport] = useState<
+    BalanceHistoryReport
+  >({
+    balanceHistory: [],
+    page: 0,
+    pageSize: 20,
+    totalItems: 0,
+  });
 
   const fetchBalanceHistory = async () => {
+    setIsLoading(true);
+
     try {
       const response = await API.getBalanceHistory({
         // FIXME: typings
@@ -29,9 +42,22 @@ function AccountBalance() {
         startDate: moment()
           .subtract(1, 'w')
           .valueOf(),
+        page: balanceHistoryReport.page + 1,
+        pageSize: 20,
       });
-      setBalanceHistory(response.balanceHistory);
-    } catch (error) {}
+
+      const newBalanceHistory: BalanceHistoryReport = {
+        ...response,
+        balanceHistory: [
+          ...balanceHistoryReport.balanceHistory,
+          ...response.balanceHistory,
+        ],
+      };
+      setBalanceHistoryReport(newBalanceHistory);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
   useEffect(() => {
     if (mainAppStore.activeAccount) {
@@ -103,15 +129,6 @@ function AccountBalance() {
                 Balance
               </PrimaryTextSpan>
             </Th>
-            {/* <Th justifyContent="flex-end">
-            <PrimaryTextSpan
-              color="rgba(255, 255, 255, 0.4)"
-              fontSize="11px"
-              textTransform="uppercase"
-            >
-              Operation type
-            </PrimaryTextSpan>
-          </Th> */}
             <Th>
               <PrimaryTextSpan
                 color="rgba(255, 255, 255, 0.4)"
@@ -121,14 +138,25 @@ function AccountBalance() {
                 Description
               </PrimaryTextSpan>
             </Th>
-            {balanceHistory.map(item => (
-              <BalanceHistoryItem
-                key={item.createdAt}
-                balanceHistoryItem={item}
-              />
-            ))}
+            <InfinityScrollList
+              getData={fetchBalanceHistory}
+              listData={balanceHistoryReport?.balanceHistory || []}
+              isFetching={isLoading}
+              // WATCH CLOSELY
+              noMoreData={
+                balanceHistoryReport.totalItems <
+                balanceHistoryReport.page * balanceHistoryReport.pageSize
+              }
+            >
+              {balanceHistoryReport.balanceHistory.map(item => (
+                <BalanceHistoryItem
+                  key={item.createdAt}
+                  balanceHistoryItem={item}
+                />
+              ))}
+            </InfinityScrollList>
           </TableGrid>
-          {!balanceHistory.length && (
+          {!balanceHistoryReport.balanceHistory.length && (
             <FlexContainer
               padding="16px"
               flexDirection="column"

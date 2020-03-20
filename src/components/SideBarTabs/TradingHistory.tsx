@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
-import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
@@ -10,8 +9,8 @@ import IconNoTradingHistory from '../../assets/svg/icon-no-trading-history.svg';
 import SvgIcon from '../SvgIcon';
 import TradingHistoryItem from './TradingHistoryItem';
 import DatePickerDropdownNoCustomDates from '../DatePickerDropdownNoCustomDates';
-import LoaderComponent from '../LoaderComponent';
 import LoaderForComponents from '../LoaderForComponents';
+import InfinityScrollList from '../InfinityScrollList';
 
 const TradingHistory: FC = () => {
   const { tabsStore, mainAppStore, historyStore } = useStores();
@@ -23,8 +22,16 @@ const TradingHistory: FC = () => {
       accountId: mainAppStore.activeAccount!.id,
       startDate: historyStore.positionsStartDate.valueOf(),
       endDate: historyStore.positionsEndDate.valueOf(),
+      page: 1,
+      pageSize: 20,
     });
-    historyStore.positionsHistory = response.positionsHistory;
+    historyStore.positionsHistoryReport = {
+      ...response,
+      positionsHistory: [
+        ...historyStore.positionsHistoryReport.positionsHistory,
+        ...response.positionsHistory,
+      ],
+    };
   };
 
   useEffect(() => {
@@ -74,14 +81,30 @@ const TradingHistory: FC = () => {
         {() => (
           <TradingHistoryWrapper flexDirection="column" position="relative">
             <LoaderForComponents isLoading={isLoading} />
-            {historyStore.positionsHistory.map(item => (
-              <TradingHistoryItem
-                key={item.id}
-                tradingHistoryItem={item}
-                currencySymbol={mainAppStore.activeAccount?.symbol || ''}
-              />
-            ))}
-            {!historyStore.positionsHistory.length && (
+
+            <InfinityScrollList
+              getData={fetchPositionsHistory}
+              listData={historyStore.positionsHistoryReport.positionsHistory}
+              isFetching={isLoading}
+              // WATCH CLOSELY
+              noMoreData={
+                historyStore.positionsHistoryReport.totalItems <
+                historyStore.positionsHistoryReport.page *
+                  historyStore.positionsHistoryReport.pageSize
+              }
+            >
+              {historyStore.positionsHistoryReport.positionsHistory.map(
+                item => (
+                  <TradingHistoryItem
+                    key={item.id}
+                    tradingHistoryItem={item}
+                    currencySymbol={mainAppStore.activeAccount?.symbol || ''}
+                  />
+                )
+              )}
+            </InfinityScrollList>
+
+            {!historyStore.positionsHistoryReport.positionsHistory.length && (
               <FlexContainer
                 padding="16px"
                 flexDirection="column"
@@ -109,39 +132,6 @@ const TradingHistory: FC = () => {
 };
 
 export default TradingHistory;
-
-const TabPortfolitButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  padding: 12px 8px;
-  font-size: 12px;
-  color: ${props => (props.isActive ? '#fffcbd' : 'rgba(255,255,255,0.4)')};
-  text-transform: uppercase;
-  background: ${props =>
-    props.isActive
-      ? `radial-gradient(
-      50.41% 50% at 50% 0%,
-      rgba(0, 255, 221, 0.08) 0%,
-      rgba(0, 255, 221, 0) 100%
-    ),
-    rgba(255, 255, 255, 0.08)`
-      : 'none'};
-  box-shadow: ${props =>
-    props.isActive ? 'inset 0px 1px 0px #00ffdd' : 'none'};
-  border-radius: 0px 0px 4px 4px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    color: #fffcbd;
-    background: radial-gradient(
-        50.41% 50% at 50% 0%,
-        rgba(0, 255, 221, 0.08) 0%,
-        rgba(0, 255, 221, 0) 100%
-      ),
-      rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0px 1px 0px #00ffdd;
-  }
-`;
 
 const PortfolioWrapper = styled(FlexContainer)`
   min-width: 320px;

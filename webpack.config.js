@@ -77,15 +77,15 @@ module.exports = (env, argv) => {
       new webpack.DefinePlugin({
         WS_HOST:
           argv.mode === 'production'
-            ? JSON.stringify(argv.wshost)
+            ? JSON.stringify(env.WEB_SOCKET_CONNECTION_STRING)
             : JSON.stringify('http://localhost:5986/signalr'),
         API_STRING:
           argv.mode === 'production'
-            ? JSON.stringify(argv.apistring)
+            ? JSON.stringify(env.API_CONNECTION_STRING)
             : JSON.stringify('http://localhost:5986'),
         API_AUTH_STRING:
           argv.mode === 'production'
-            ? JSON.stringify(argv.authapistring)
+            ? JSON.stringify(env.AUTH_API_CONNECTION_STRING)
             : JSON.stringify('http://localhost:5958'),
         AUTH_TOKEN: JSON.stringify('TraderID'),
         CHARTING_LIBRARY_PATH:

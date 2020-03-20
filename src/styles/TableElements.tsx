@@ -22,8 +22,10 @@ export const Th = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;
 
-export const TableGrid = styled.div<{ columnsCount: number }>`
+export const TableGrid = styled.div<{ columnsCount: number; height?: string }>`
   display: grid;
+  height: ${props => props.height || '100%'};
+  overflow-y: auto;
   grid-template-columns: minmax(186px, 1fr) repeat(
       ${props => props.columnsCount - 1},
       minmax(100px, 1fr)

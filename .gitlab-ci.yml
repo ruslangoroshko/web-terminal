@@ -1,5 +1,5 @@
 variables:
-  DOCKER_IMAGE_TAG: monfex/simple-trading-web-terminal:1.0.0
+  DOCKER_IMAGE_TAG: monfex/simple-trading-web-terminal:1.0.1
   DOCKER_DEV_IMAGE_TAG: monfex/simple-trading-web-terminal:dev
   BUILD_FOLDER: wwwroot
 
@@ -14,12 +14,12 @@ build:
   image: node:latest
   script:
     - npm i
-    - npm run build -- --wshost=$WEB_SOCKET_CONNECTION_STRING --apistring=$API_CONNECTION_STRING --authapistring=$AUTH_API_CONNECTION_STRING
+    - npm run build
   artifacts:
     paths:
       - ${BUILD_FOLDER}
   only:
-    - master
+    - test
     - development
 
 publish:
@@ -38,7 +38,7 @@ publish:
     - docker push $DOCKER_REGISTRY_HOST/${DOCKER_IMAGE_TAG}
   image: docker:latest
   only:
-    - master
+    - test
 
 publish-dev:
   stage: publish-dev
