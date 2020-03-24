@@ -48,7 +48,7 @@ const StepIndicator: FC<Props> = observer(props => {
           ></FlexContainer>
         )}
         {isFilled ? (
-          <SvgIcon {...IconDone} fillColor="#ffccc" />
+          <SvgIcon {...IconDone} fillColor="none" />
         ) : (
           <PrimaryTextSpan fontSize="24px" color="#fffccc">
             {stepNumber}

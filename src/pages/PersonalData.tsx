@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import LabelInput from '../components/LabelInput';
 import styled from '@emotion/styled';
 import { Formik, Field, FieldProps, Form } from 'formik';
 import * as yup from 'yup';
-import { PersonalDataParams } from '../types/PersonalData';
+import { PersonalDataParams } from '../types/PersonalDataTypes';
 import moment from 'moment';
 import { getProcessId } from '../helpers/getProcessId';
 import { SexEnum } from '../enums/Sex';
@@ -14,6 +14,11 @@ import Checkbox from '../components/Checkbox';
 import InformationPopup from '../components/InformationPopup';
 import { PrimaryButton } from '../styles/Buttons';
 import GenderDropdown from '../components/KYC/GenderDropdown';
+import AutoCompleteDropdown from '../components/KYC/AutoCompleteDropdown';
+import API from '../helpers/API';
+import { CountriesEnum } from '../enums/CountriesEnum';
+import { Country } from '../types/CountriesTypes';
+import BirthDayPicker from '../components/KYC/BirthDayPicker';
 
 interface Props {}
 
@@ -48,6 +53,8 @@ function PersonalData(props: Props) {
     uSCitizen: false,
   };
 
+  const [countries, setCountries] = useState<Country[]>([]);
+
   const handleSubmit = () => {
     debugger;
   };
@@ -55,6 +62,17 @@ function PersonalData(props: Props) {
   const handleChangeGender = (setFieldValue: any) => (sex: SexEnum) => {
     setFieldValue(Fields.SEX, sex);
   };
+
+  useEffect(() => {
+    async function fetchCountries() {
+      try {
+        const response = await API.getCountries(CountriesEnum.EN);
+        setCountries(response);
+      } catch (error) {}
+    }
+
+    fetchCountries();
+  }, []);
 
   return (
     <FlexContainer
@@ -134,6 +152,7 @@ function PersonalData(props: Props) {
                         margin="0 32px 0 0"
                         flexDirection="column"
                         width="50%"
+                        position="relative"
                       >
                         <LabelInput
                           labelText="Date of birth"
@@ -142,6 +161,14 @@ function PersonalData(props: Props) {
                           hasError={!!(meta.touched && meta.error)}
                           errorText={meta.error}
                         />
+                        <FlexContainer
+                          position="absolute"
+                          top="100%"
+                          zIndex="101"
+                          left="100%"
+                        >
+                          <BirthDayPicker></BirthDayPicker>
+                        </FlexContainer>
                       </FlexContainer>
                     )}
                   </Field>
@@ -164,13 +191,14 @@ function PersonalData(props: Props) {
                         flexDirection="column"
                         width="50%"
                       >
-                        <LabelInput
+                        <AutoCompleteDropdown
                           labelText="Country of residence"
                           id={Fields.COUNTRY_OF_RESIDENCE}
                           {...field}
                           hasError={!!(meta.touched && meta.error)}
-                          errorText={meta.error}
-                        />
+                          dropdownItemsList={countries}
+                          setFieldValue={setFieldValue}
+                        ></AutoCompleteDropdown>
                       </FlexContainer>
                     )}
                   </Field>
@@ -196,13 +224,14 @@ function PersonalData(props: Props) {
                         flexDirection="column"
                         width="50%"
                       >
-                        <LabelInput
+                        <AutoCompleteDropdown
                           labelText="Сitizenship"
                           id={Fields.COUNTRY_OF_CITIENZENSHIP}
                           {...field}
                           hasError={!!(meta.touched && meta.error)}
-                          errorText={meta.error}
-                        />
+                          dropdownItemsList={countries}
+                          setFieldValue={setFieldValue}
+                        ></AutoCompleteDropdown>
                       </FlexContainer>
                     )}
                   </Field>

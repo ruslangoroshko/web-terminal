@@ -27,7 +27,9 @@ import {
   PersonalDataResponse,
   PersonalDataParams,
   PersonalDataPostResponse,
-} from '../types/PersonalData';
+} from '../types/PersonalDataTypes';
+import { CountriesEnum } from '../enums/CountriesEnum';
+import { Country } from '../types/CountriesTypes';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -222,6 +224,13 @@ class API {
     const response = await axios.post<PersonalDataPostResponse>(
       `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.POST}`,
       formData
+    );
+    return response.data;
+  };
+
+  getCountries = async (lang = CountriesEnum.EN) => {
+    const response = await axios.get<Country[]>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.COMMON.COUNTRIES}/${lang}`
     );
     return response.data;
   };

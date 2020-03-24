@@ -55,4 +55,8 @@ export default css`
   .DayPicker_weekHeader_li {
     color: rgba(255, 255, 255, 0.4);
   }
+
+  .DayPicker_weekHeader.DayPicker_weekHeader_1 {
+    display: none;
+  }
 `;

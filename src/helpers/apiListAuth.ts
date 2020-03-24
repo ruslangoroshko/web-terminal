@@ -12,6 +12,9 @@ const AUTH_API_LIST = {
     POST: '/api/v1/PersonalData',
     ON_VERIFICATION: '/api/v1/PersonalData/Kyc/OnVerification',
   },
+  COMMON: {
+    COUNTRIES: '/api/v1/Common/Countries',
+  },
 };
 
 Object.freeze(AUTH_API_LIST);
