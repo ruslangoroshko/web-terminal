@@ -38,11 +38,15 @@ function PersonalData(props: Props) {
     uSCitizen: yup.boolean().required(),
   });
 
+  const [birthday, setBirthday] = useState<moment.Moment>(moment());
+
+  const [focused, setFocused] = useState(false);
+
   const initialValues: PersonalDataParams = {
     city: '',
     countryOfCitizenship: '',
     countryOfResidence: '',
-    dateOfBirth: moment().valueOf(),
+    dateOfBirth: birthday.valueOf(),
     firstName: '',
     lastName: '',
     phone: '',
@@ -54,6 +58,8 @@ function PersonalData(props: Props) {
   };
 
   const [countries, setCountries] = useState<Country[]>([]);
+
+
 
   const handleSubmit = () => {
     debugger;
@@ -165,9 +171,15 @@ function PersonalData(props: Props) {
                           position="absolute"
                           top="100%"
                           zIndex="101"
-                          left="100%"
+                          left="0"
+                          right="0"
                         >
-                          <BirthDayPicker></BirthDayPicker>
+                          <BirthDayPicker
+                            birthday={birthday}
+                            focused={focused}
+                            setBirthday={setBirthday}
+                            setFocused={setFocused}
+                          ></BirthDayPicker>
                         </FlexContainer>
                       </FlexContainer>
                     )}

@@ -5,7 +5,6 @@ import { PrimaryTextParagraph } from '../../styles/TextsElements';
 import IconShevronDown from '../../assets/svg/icon-shevron-down.svg';
 import IconShevronUp from '../../assets/svg/icon-shevron-up.svg';
 import SvgIcon from '../SvgIcon';
-import moment from 'moment';
 
 interface Props {
   list: string[];
@@ -45,6 +44,7 @@ function YearMonthDropdown(props: Props) {
   const IconShevron = on ? IconShevronUp : IconShevronDown;
   const selectItem = (value: string) => () => {
     handleSelectValue(value);
+    toggle(false);
   };
   return (
     <FlexContainer
@@ -57,9 +57,15 @@ function YearMonthDropdown(props: Props) {
       width="100%"
       backgroundColor="rgba(255, 255, 255, 0.06)"
       position="relative"
+      padding="0 12px"
     >
       <FlexContainer position="absolute" right="14px" top="14px">
-        <SvgIcon {...IconShevron} fillColor="rgba(255, 255, 255, 0.6)" />
+        <SvgIcon
+          {...IconShevron}
+          fillColor="rgba(255, 255, 255, 0.6)"
+          width="6px"
+          height="4px"
+        />
       </FlexContainer>
       <PrimaryTextParagraph color="#fffccc">{selected}</PrimaryTextParagraph>
       {on && (
@@ -109,7 +115,7 @@ const DroppdownItem = styled(PrimaryTextParagraph)`
 
 const DropdownWrapper = styled(FlexContainer)`
   overflow-y: auto;
-  max-height: 300px;
+  max-height: 200px;
 
   ::-webkit-scrollbar {
     width: 4px;
