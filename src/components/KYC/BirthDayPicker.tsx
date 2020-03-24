@@ -17,9 +17,16 @@ interface Props {
   setBirthday: (value: moment.Moment) => void;
   focused: boolean;
   setFocused: (value: boolean) => void;
+  id: string;
 }
 
-function BirthDayPicker({ birthday, focused, setBirthday, setFocused }: Props) {
+function BirthDayPicker({
+  birthday,
+  focused,
+  setBirthday,
+  setFocused,
+  id,
+}: Props) {
   const listOfYears = getYearsForBday();
 
   const selectYear = (
@@ -36,19 +43,15 @@ function BirthDayPicker({ birthday, focused, setBirthday, setFocused }: Props) {
     onMonthSelect(month, newMonth);
   };
 
-  const closeDatepicker = () => {
-    setFocused(false);
-  };
-
   return (
-    <DayPickerSingleDateController
-      keepOpenOnDateSelect={false}
-      onOutsideClick={closeDatepicker}
+    <SingleDatePicker
+      id={id}
+      numberOfMonths={1}      
       date={birthday}
       onDateChange={date => {
-        console.log(date?.format('MMMM YYYY'));
         setBirthday(date || moment());
       }}
+      enableOutsideDays
       focused={focused}
       onFocusChange={({ focused }) => setFocused(!!focused)}
       navNext={<FlexContainer></FlexContainer>}
@@ -82,19 +85,3 @@ function BirthDayPicker({ birthday, focused, setBirthday, setFocused }: Props) {
 }
 
 export default BirthDayPicker;
-
-const ButtonRightArrow = styled(ButtonWithoutStyles)`
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
-`;
-
-const ButtonLeftArrow = styled(ButtonRightArrow)`
-  right: auto;
-  left: 16px;
-`;

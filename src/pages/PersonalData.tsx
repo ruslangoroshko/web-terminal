@@ -59,8 +59,6 @@ function PersonalData(props: Props) {
 
   const [countries, setCountries] = useState<Country[]>([]);
 
-
-
   const handleSubmit = () => {
     debugger;
   };
@@ -160,27 +158,21 @@ function PersonalData(props: Props) {
                         width="50%"
                         position="relative"
                       >
-                        <LabelInput
-                          labelText="Date of birth"
-                          id={Fields.DATE_OF_BIRTH}
-                          {...field}
-                          hasError={!!(meta.touched && meta.error)}
-                          errorText={meta.error}
-                        />
-                        <FlexContainer
-                          position="absolute"
-                          top="100%"
-                          zIndex="101"
-                          left="0"
-                          right="0"
+                        <PrimaryTextParagraph
+                          color="rgba(255, 255, 255, 0.4)"
+                          fontSize="11px"
+                          textTransform="uppercase"
+                          marginBottom="8px"
                         >
-                          <BirthDayPicker
-                            birthday={birthday}
-                            focused={focused}
-                            setBirthday={setBirthday}
-                            setFocused={setFocused}
-                          ></BirthDayPicker>
-                        </FlexContainer>
+                          date of birth
+                        </PrimaryTextParagraph>
+                        <BirthDayPicker
+                          id={Fields.DATE_OF_BIRTH}
+                          birthday={birthday}
+                          focused={focused}
+                          setBirthday={setBirthday}
+                          setFocused={setFocused}
+                        ></BirthDayPicker>
                       </FlexContainer>
                     )}
                   </Field>

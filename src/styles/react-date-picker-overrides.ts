@@ -59,4 +59,38 @@ export default css`
   .DayPicker_weekHeader.DayPicker_weekHeader_1 {
     display: none;
   }
+
+  .DateInput,
+  .SingleDatePickerInput {
+    background-color: transparent;
+    width: 100%;
+    border: none;
+    outline: none;
+  }
+  .DateInput_fang {
+    display: none;
+  }
+  .DateInput_input {
+    padding: 0;
+    padding-top: 4px;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: transparent;
+    width: 100%;
+    caret-color: #fff;
+    color: #fffccc;
+    font-size: 14px;
+    line-height: 16px;
+    padding-bottom: 4px;
+    transition: border 0.2s ease;
+
+    &:hover {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    &.DateInput_input__focused {
+      border-bottom: 1px solid #00ffdd;
+    }
+  }
 `;
