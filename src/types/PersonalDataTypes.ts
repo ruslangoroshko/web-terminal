@@ -53,3 +53,8 @@ export interface PersonalDataPostResponse {
     processId: string;
   };
 }
+
+export interface PhoneVerificationFormParams {
+  customCountryCode: string;
+  phone: string;
+}

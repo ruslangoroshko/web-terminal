@@ -6,6 +6,8 @@ import EmailConfirmation from '../pages/EmailConfirmation';
 import PersonalData from '../pages/PersonalData';
 import MobileTradingView from '../pages/MobileTradingView';
 import AccountBalance from '../pages/AccountBalance';
+import PhoneVerification from '../pages/PhoneVerification';
+import ProofOfIdentity from '../pages/ProofOfIdentity';
 
 export enum RouteLayoutType {
   Authorized,
@@ -54,6 +56,18 @@ const routesList = [
   {
     component: PersonalData,
     path: Page.PERSONAL_DATA,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.KYC,
+  },  {
+    component: PhoneVerification,
+    path: Page.PHONE_VERIFICATION,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.KYC,
+  },  {
+    component: ProofOfIdentity,
+    path: Page.PROOF_OF_IDENTITY,
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.KYC,

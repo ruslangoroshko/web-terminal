@@ -4,6 +4,8 @@ const Page = {
   SIGN_UP: '/sign-up',
   EMAIL_CONFIRMATION: '/confirm/:id',
   PERSONAL_DATA: '/personal-data',
+  PHONE_VERIFICATION: '/phone-verification',
+  PROOF_OF_IDENTITY: '/proof-of-identity',
   MOBILE_TRADING_VIEW: '/mobile',
   ACCOUNT_PROFILE: '/account-profile',
   ACCOUNT_DEPOSIT: '/account-deposit',

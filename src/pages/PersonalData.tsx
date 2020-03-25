@@ -123,7 +123,7 @@ function PersonalData(props: Props) {
                       >
                         <LabelInput
                           labelText="First name"
-                          id={Fields.FIRST_NAME}
+                          id={field.name}
                           {...field}
                           hasError={!!(meta.touched && meta.error)}
                           errorText={meta.error}
@@ -140,7 +140,7 @@ function PersonalData(props: Props) {
                       <FlexContainer width="50%" flexDirection="column">
                         <LabelInput
                           labelText="Last name"
-                          id={Fields.LAST_NAME}
+                          id={field.name}
                           {...field}
                           hasError={!!(meta.touched && meta.error)}
                           errorText={meta.error}
@@ -167,7 +167,7 @@ function PersonalData(props: Props) {
                           date of birth
                         </PrimaryTextParagraph>
                         <BirthDayPicker
-                          id={Fields.DATE_OF_BIRTH}
+                          id={field.name}
                           birthday={birthday}
                           focused={focused}
                           setBirthday={setBirthday}
@@ -197,7 +197,7 @@ function PersonalData(props: Props) {
                       >
                         <AutoCompleteDropdown
                           labelText="Country of residence"
-                          id={Fields.COUNTRY_OF_RESIDENCE}
+                          id={field.name}
                           {...field}
                           hasError={!!(meta.touched && meta.error)}
                           dropdownItemsList={countries}
@@ -211,7 +211,7 @@ function PersonalData(props: Props) {
                       <FlexContainer width="50%" flexDirection="column">
                         <LabelInput
                           labelText="City"
-                          id={Fields.CITY}
+                          id={field.name}
                           {...field}
                           hasError={!!(meta.touched && meta.error)}
                           errorText={meta.error}
@@ -230,7 +230,7 @@ function PersonalData(props: Props) {
                       >
                         <AutoCompleteDropdown
                           labelText="Сitizenship"
-                          id={Fields.COUNTRY_OF_CITIENZENSHIP}
+                          id={field.name}
                           {...field}
                           hasError={!!(meta.touched && meta.error)}
                           dropdownItemsList={countries}
@@ -248,7 +248,7 @@ function PersonalData(props: Props) {
                       <FlexContainer width="50%" flexDirection="column">
                         <LabelInput
                           labelText="Postal code"
-                          id={Fields.POSTAL_CODE}
+                          id={field.name}
                           {...field}
                           hasError={!!(meta.touched && meta.error)}
                           errorText={meta.error}
@@ -263,7 +263,7 @@ function PersonalData(props: Props) {
                       <FlexContainer flexDirection="column" width="100%">
                         <LabelInput
                           labelText="Address of residence"
-                          id={Fields.ADDRESS}
+                          id={field.name}
                           {...field}
                           hasError={!!(meta.touched && meta.error)}
                           errorText={meta.error}

@@ -24,6 +24,7 @@ const Fields = {
   SEX: 'sex',
   US_CITIZEN: 'uSCitizen',
   ADDRESS: 'address',
+  CUSTOM_COUNTRY: 'customCountryCode',
 };
 
 Object.freeze(Fields);

@@ -18,7 +18,7 @@ const KYCcontainer: FC = props => {
       flexDirection="column"
     >
       <NavBar></NavBar>
-      <FlexContainer height="calc(100vh - 48px)" flexDirection="column">
+      <FlexContainer min-height="calc(100vh - 48px)" flexDirection="column">
         <StepsContainter></StepsContainter>
         {children}
       </FlexContainer>
