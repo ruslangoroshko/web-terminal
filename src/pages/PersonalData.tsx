@@ -19,6 +19,7 @@ import API from '../helpers/API';
 import { CountriesEnum } from '../enums/CountriesEnum';
 import { Country } from '../types/CountriesTypes';
 import BirthDayPicker from '../components/KYC/BirthDayPicker';
+import KeysInApi from '../constants/keysInApi';
 
 interface Props {}
 
@@ -60,6 +61,7 @@ function PersonalData(props: Props) {
   const [countries, setCountries] = useState<Country[]>([]);
 
   const handleSubmit = () => {
+
     debugger;
   };
 
@@ -73,6 +75,15 @@ function PersonalData(props: Props) {
         const response = await API.getCountries(CountriesEnum.EN);
         setCountries(response);
       } catch (error) {}
+    }
+
+    async function fetchCurrentStep () {
+      try {
+        const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
+        // const currentStep
+      } catch (error) {
+       // setCountries(response);
+      }
     }
 
     fetchCountries();

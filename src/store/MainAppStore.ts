@@ -16,6 +16,7 @@ import Fields from '../constants/fields';
 import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
+import { WS_HOST } from '../constants/vars';
 
 interface MainAppStoreProps {
   token: string;
