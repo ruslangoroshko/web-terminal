@@ -21,6 +21,7 @@ import {
 import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 import { LineStyles } from '../enums/TradingViewStyles';
 import moment from 'moment';
+import { WS_HOST } from '../constants/vars';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');

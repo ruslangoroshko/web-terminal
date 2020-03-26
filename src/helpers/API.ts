@@ -45,7 +45,7 @@ class API {
   openPosition = async (position: OpenPositionModel) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
-      `${API_STRING}${API_LIST.POSITIONS.OPEN}`,
+      `${API_LIST.POSITIONS.OPEN}`,
       formData
     );
     return response.data;
@@ -55,7 +55,7 @@ class API {
     const formData = this.convertParamsToFormData(position);
 
     const response = await axios.post<OpenPositionResponseDTO>(
-      `${API_STRING}${API_LIST.POSITIONS.CLOSE}`,
+      `${API_LIST.POSITIONS.CLOSE}`,
       formData
     );
     return response.data;
@@ -63,14 +63,14 @@ class API {
 
   getAccounts = async () => {
     const response = await axios.get<AccountModelDTO[]>(
-      `${API_STRING}${API_LIST.ACCOUNTS.GET_ACCOUNTS}`
+      `${API_LIST.ACCOUNTS.GET_ACCOUNTS}`
     );
     return response.data;
   };
 
   getAccountById = async (id: number) => {
     const response = await axios.get<AccountModelDTO>(
-      `${API_STRING}${API_LIST.ACCOUNTS.GET_ACCOUNT_BY_ID}`,
+      `${API_LIST.ACCOUNTS.GET_ACCOUNT_BY_ID}`,
       {
         params: {
           id,
@@ -82,14 +82,14 @@ class API {
 
   getHeaders = async () => {
     const response = await axios.get<string[]>(
-      `${API_STRING}${API_LIST.ACCOUNTS.GET_HEADERS}`
+      `${API_LIST.ACCOUNTS.GET_HEADERS}`
     );
     return response.data;
   };
 
   authenticate = async (credentials: UserAuthenticate) => {
     const response = await axios.post<UserAuthenticateResponse>(
-      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.AUTHENTICATE}`,
+      `${AUTH_API_LIST.TRADER.AUTHENTICATE}`,
       credentials
     );
     return response.data;
@@ -97,7 +97,7 @@ class API {
 
   signUpNewTrader = async (credentials: UserRegistration) => {
     const response = await axios.post<UserAuthenticateResponse>(
-      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.REGISTER}`,
+      `${AUTH_API_LIST.TRADER.REGISTER}`,
       credentials
     );
     return response.data;
@@ -105,7 +105,7 @@ class API {
 
   getPriceHistory = async (params: HistoryCandlesType) => {
     const response = await axios.get<CandleDTO[]>(
-      `${API_STRING}${API_LIST.PRICE_HISTORY.CANDLES}`,
+      `${API_LIST.PRICE_HISTORY.CANDLES}`,
       {
         params,
       }
@@ -121,21 +121,18 @@ class API {
   };
 
   getKeyValue = async (key: string) => {
-    const response = await axios.get<string>(
-      `${API_STRING}${API_LIST.KEY_VALUE.GET}`,
-      {
-        params: {
-          key,
-        },
-      }
-    );
+    const response = await axios.get<string>(`${API_LIST.KEY_VALUE.GET}`, {
+      params: {
+        key,
+      },
+    });
     return response.data;
   };
 
   setKeyValue = async (params: { key: string; value: string }) => {
     const formData = this.convertParamsToFormData(params);
     const response = await axios.post<void>(
-      `${API_STRING}${API_LIST.KEY_VALUE.POST}`,
+      `${API_LIST.KEY_VALUE.POST}`,
       formData
     );
     return response.data;
@@ -144,7 +141,7 @@ class API {
   openPendingOrder = async (position: OpenPendingOrder) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
-      `${API_STRING}${API_LIST.PENDING_ORDERS.ADD}`,
+      `${API_LIST.PENDING_ORDERS.ADD}`,
       formData
     );
     return response.data;
@@ -153,7 +150,7 @@ class API {
   removePendingOrder = async (position: RemovePendingOrders) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
-      `${API_STRING}${API_LIST.PENDING_ORDERS.REMOVE}`,
+      `${API_LIST.PENDING_ORDERS.REMOVE}`,
       formData
     );
     return response.data;
@@ -162,7 +159,7 @@ class API {
   updateSLTP = async (position: UpdateSLTP) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
-      `${API_STRING}${API_LIST.POSITIONS.UPDATE_SL_TP}`,
+      `${API_LIST.POSITIONS.UPDATE_SL_TP}`,
       formData
     );
     return response.data;
@@ -170,7 +167,7 @@ class API {
 
   confirmEmail = async (link: string) => {
     const response = await axios.post<void>(
-      `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.CONFIRM}`,
+      `${AUTH_API_LIST.PERSONAL_DATA.CONFIRM}`,
       {
         link,
       }
@@ -180,7 +177,7 @@ class API {
 
   getPositionsHistory = async (params: GetHistoryParams) => {
     const response = await axios.get<PositionsHistoryReportDTO>(
-      `${API_STRING}${API_LIST.REPORTS.POSITIONS_HISTORY}`,
+      `${API_LIST.REPORTS.POSITIONS_HISTORY}`,
       {
         params,
       }
@@ -190,7 +187,7 @@ class API {
 
   getBalanceHistory = async (params: GetHistoryParams) => {
     const response = await axios.get<BalanceHistoryReport>(
-      `${API_STRING}${API_LIST.REPORTS.BALANCE_HISTORY}`,
+      `${API_LIST.REPORTS.BALANCE_HISTORY}`,
       {
         params,
       }
@@ -200,7 +197,7 @@ class API {
 
   changePassword = async (params: ChangePasswordParams) => {
     const response = await axios.post<BalanceHistoryDTO[]>(
-      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.CHANGE_PASSWORD}`,
+      `${AUTH_API_LIST.TRADER.CHANGE_PASSWORD}`,
       params
     );
     return response.data;
@@ -208,7 +205,7 @@ class API {
 
   getPersonalData = async (processId: string) => {
     const response = await axios.get<PersonalDataResponse>(
-      `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.GET}`,
+      `${AUTH_API_LIST.PERSONAL_DATA.GET}`,
       {
         params: {
           processId,
@@ -222,7 +219,7 @@ class API {
     const formData = this.convertParamsToFormData(params);
 
     const response = await axios.post<PersonalDataPostResponse>(
-      `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.POST}`,
+      `${AUTH_API_LIST.PERSONAL_DATA.POST}`,
       formData
     );
     return response.data;
@@ -230,7 +227,7 @@ class API {
 
   getCountries = async (lang = CountriesEnum.EN) => {
     const response = await axios.get<Country[]>(
-      `${API_AUTH_STRING}${AUTH_API_LIST.COMMON.COUNTRIES}/${lang}`
+      `${AUTH_API_LIST.COMMON.COUNTRIES}/${lang}`
     );
     return response.data;
   };
