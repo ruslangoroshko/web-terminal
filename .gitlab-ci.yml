@@ -1,5 +1,5 @@
 variables:
-  DOCKER_IMAGE_TAG: monfex/simple-trading-web-terminal:1.0.1
+  DOCKER_IMAGE_TAG: monfex/simple-trading-web-terminal:1.0.2
   DOCKER_DEV_IMAGE_TAG: monfex/simple-trading-web-terminal:dev
   BUILD_FOLDER: wwwroot
 
