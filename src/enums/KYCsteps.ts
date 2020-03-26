@@ -1,5 +1,6 @@
 export enum KYCstepsEnum {
-  PersonalData = 1,
+  NoData,
+  PersonalData,
   PhoneVerification,
   ProofOfIdentity,
 }

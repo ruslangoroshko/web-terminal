@@ -1,19 +1,19 @@
 const AUTH_API_LIST = {
   TRADER: {
-    REGISTER: '/api/v1/Trader/Register',
-    AUTHENTICATE: '/api/v1/Trader/Authenticate',
-    CHANGE_PASSWORD: '/api/v1/Trader/ChangePassword',
-    FORGOT_PASSWORD: '/api/v1/Trader/ForgotPassword',
-    PASSWORD_RECOVERY: '/api/v1/Trader/PasswordRecovery',
+    REGISTER: '/auth/v1/Trader/Register',
+    AUTHENTICATE: '/auth/v1/Trader/Authenticate',
+    CHANGE_PASSWORD: '/auth/v1/Trader/ChangePassword',
+    FORGOT_PASSWORD: '/auth/v1/Trader/ForgotPassword',
+    PASSWORD_RECOVERY: '/auth/v1/Trader/PasswordRecovery',
   },
   PERSONAL_DATA: {
-    CONFIRM: '/api/v1/PersonalData/Confirm',
-    GET: '/api/v1/PersonalData',
-    POST: '/api/v1/PersonalData',
-    ON_VERIFICATION: '/api/v1/PersonalData/Kyc/OnVerification',
+    CONFIRM: '/auth/v1/PersonalData/Confirm',
+    GET: '/auth/v1/PersonalData',
+    POST: '/auth/v1/PersonalData',
+    ON_VERIFICATION: '/auth/v1/PersonalData/Kyc/OnVerification',
   },
   COMMON: {
-    COUNTRIES: '/api/v1/Common/Countries',
+    COUNTRIES: '/auth/v1/Common/Countries',
   },
 };
 
