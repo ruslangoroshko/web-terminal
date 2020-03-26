@@ -19,19 +19,19 @@ function StepsContainter(props: Props) {
       <FlexContainer width="560px" justifyContent="space-between">
         <StepIndicator
           currentStep={kycStore.currentStep}
-          isFilled={true}
+          isFilled={kycStore.filledStep > KYCstepsEnum.PersonalData}
           stepNumber={KYCstepsEnum.PersonalData}
           stepTitle="Personal data"
         ></StepIndicator>
         <StepIndicator
           currentStep={kycStore.currentStep}
-          isFilled={false}
+          isFilled={kycStore.filledStep > KYCstepsEnum.PhoneVerification}
           stepNumber={KYCstepsEnum.PhoneVerification}
           stepTitle="Phone verification"
         ></StepIndicator>
         <StepIndicator
           currentStep={kycStore.currentStep}
-          isFilled={false}
+          isFilled={kycStore.filledStep > KYCstepsEnum.ProofOfIdentity}
           stepNumber={KYCstepsEnum.ProofOfIdentity}
           stepTitle="Proof of indentity"
         ></StepIndicator>

@@ -24,6 +24,10 @@ const ActiveInstrument: FC<Props> = props => {
   return quotesStore.quotes[instrument.id] ? (
     <FlexContainer>
       <FlexContainer position="relative" margin="0 12px 0 0">
+        {/* <svg>
+          <use xlinkHref={instrument.avatar}></use>
+        </svg> */}
+        <SvgExternalDiv external={instrument.avatar} />
         <img src={instrument.avatar} width={60} />
       </FlexContainer>
       <FlexContainer flexDirection="column" margin="0 52px 0 0">
@@ -152,4 +156,9 @@ const QuoteImgWrapper = styled(FlexContainer)`
 const LabelWrapper = styled.div`
   width: 22px;
   margin-right: 8px;
+`;
+
+
+const SvgExternalDiv = styled.div<{ external: string }>`
+  background-image: url(${props => props.external});
 `;
