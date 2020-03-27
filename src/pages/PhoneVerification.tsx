@@ -12,6 +12,9 @@ import { Country } from '../types/CountriesTypes';
 import API from '../helpers/API';
 import { CountriesEnum } from '../enums/CountriesEnum';
 import * as yup from 'yup'
+import KeysInApi from '../constants/keysInApi';
+import { useStores } from '../hooks/useStores';
+import { KYCstepsEnum } from '../enums/KYCsteps';
 
 interface Props {}
 
@@ -23,12 +26,12 @@ const PhoneVerification: FC<Props> = props => {
     customCountryCode: yup.string(),
   });
 
-  const [countries, setCountries] = useState<Country[]>([]);
+  const {kycStore} = useStores()
 
-  const initialValues: PhoneVerificationFormParams = {
-    customCountryCode: '',
-    phone: '',
-  };
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [initialValues, setInitialValuesForm] = useState<PhoneVerificationFormParams>({  customCountryCode: '',
+  phone: '',
+  });
 
   const handleSubmit = () => {
     debugger;
@@ -42,6 +45,22 @@ const PhoneVerification: FC<Props> = props => {
       } catch (error) {}
     }
 
+    async function fetchCurrentStep () 
+    {
+      try {
+        const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
+
+        if (response) {
+          const parsed = JSON.parse(response);
+          if (parsed instanceof Object) {
+            setInitialValuesForm(parsed);
+            kycStore.currentStep = KYCstepsEnum.PhoneVerification;
+            kycStore.filledStep = KYCstepsEnum.PhoneVerification;
+          }
+        }
+      } catch (error) {}
+    }
+    fetchCurrentStep();
     fetchCountries();
   }, []);
 

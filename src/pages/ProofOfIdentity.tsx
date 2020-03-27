@@ -1,14 +1,58 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FlexContainer } from '../styles/FlexContainer'
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import DragNDropArea from '../components/KYC/DragNDropArea';
 import { PrimaryButton } from '../styles/Buttons';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
+import Axios from 'axios';
+import API from '../helpers/API';
+import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
+import KeysInApi from '../constants/keysInApi';
+import { appHistory } from '../routing/history';
+import Page from '../constants/Pages';
 
 interface Props {}
 
 function ProofOfIdentity(props: Props) {
-    const {} = props
+
+  const [customPassportId, setCustomPassportId] = useState({
+    file: new Blob(),
+    fileSrc: '',
+  });
+  const [customProofOfAddress, setCustomProofOfAddress] = useState({
+    file: new Blob(),
+    fileSrc: '',
+  })
+
+const handleFileReceive = (method: (file: any) => void) => (file: any) => {
+  method({
+    file,
+    fileSrc: URL.createObjectURL(file)
+  });
+};
+
+const submitFiles = async () => {
+  try {
+  await Axios.all([
+    API.postDocument(DocumentTypeEnum.Id),
+    API.postDocument(DocumentTypeEnum.Id),
+  ]);
+   try {
+     const response = await Axios.all([API.getKeyValue(KeysInApi.PERSONAL_DATA),API.getKeyValue(KeysInApi.PHONE_VERIFICATION)]);
+let personalData:any = {};
+response.forEach(item => {
+  personalData = { ...personalData, ...JSON.parse(item) };
+})
+API.postPersonalData(personalData).finally(() => {
+  appHistory.push(Page.DASHBOARD);
+})
+   } catch (error) {
+     
+   }
+  } catch (error) {
+    
+  }
+}
 
     return (
       <FlexContainer
@@ -68,7 +112,11 @@ function ProofOfIdentity(props: Props) {
             number / Your signature
           </PrimaryTextSpan>
           <FlexContainer flexDirection="column" margin="0 0 64px 0">
-            <DragNDropArea></DragNDropArea>
+            <DragNDropArea
+              onFileReceive={handleFileReceive(setCustomPassportId)}
+              file={customPassportId.file}
+              fileUrl={customPassportId.fileSrc}
+            ></DragNDropArea>
           </FlexContainer>
           <PrimaryTextParagraph
             fontSize="20px"
@@ -95,13 +143,17 @@ function ProofOfIdentity(props: Props) {
             Street address / City / Province / State / Country
           </PrimaryTextSpan>
           <FlexContainer flexDirection="column" margin="0 0 64px 0">
-            <DragNDropArea></DragNDropArea>
+            <DragNDropArea
+              onFileReceive={handleFileReceive(setCustomProofOfAddress)}
+              file={customProofOfAddress.file}
+              fileUrl={customProofOfAddress.fileSrc}
+            ></DragNDropArea>
           </FlexContainer>
           <FlexContainer margin="0 0 32px 0">
             <PrimaryButton padding="8px 32px">Save and continue</PrimaryButton>
           </FlexContainer>
           <FlexContainer>
-            <ButtonWithoutStyles>
+            <ButtonWithoutStyles onClick={submitFiles}>
               <PrimaryTextSpan color="#07FAFF" fontSize="14px">
                 Attach documents later
               </PrimaryTextSpan>

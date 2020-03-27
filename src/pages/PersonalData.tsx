@@ -20,6 +20,10 @@ import { CountriesEnum } from '../enums/CountriesEnum';
 import { Country } from '../types/CountriesTypes';
 import BirthDayPicker from '../components/KYC/BirthDayPicker';
 import KeysInApi from '../constants/keysInApi';
+import { useStores } from '../hooks/useStores';
+import { KYCstepsEnum } from '../enums/KYCsteps';
+import { appHistory } from '../routing/history';
+import Page from '../constants/Pages';
 
 interface Props {}
 
@@ -43,7 +47,9 @@ function PersonalData(props: Props) {
 
   const [focused, setFocused] = useState(false);
 
-  const initialValues: PersonalDataParams = {
+  const [countries, setCountries] = useState<Country[]>([]);
+
+  const [initialValues, setInitialValuesForm] = useState<PersonalDataParams>({
     city: '',
     countryOfCitizenship: '',
     countryOfResidence: '',
@@ -56,13 +62,19 @@ function PersonalData(props: Props) {
     sex: SexEnum.Unknown,
     address: '',
     uSCitizen: false,
-  };
+  })
 
-  const [countries, setCountries] = useState<Country[]>([]);
+  const { kycStore} = useStores()
 
-  const handleSubmit = () => {
-
-    debugger;
+  const handleSubmit = (values: PersonalDataParams) => {
+    try {
+      API.setKeyValue({
+        key: KeysInApi.PERSONAL_DATA,
+        value: JSON.stringify(values),
+      });
+      kycStore.filledStep = KYCstepsEnum.PersonalData;
+      appHistory.push(Page.PHONE_VERIFICATION);
+    } catch (error) {}
   };
 
   const handleChangeGender = (setFieldValue: any) => (sex: SexEnum) => {
@@ -80,13 +92,22 @@ function PersonalData(props: Props) {
     async function fetchCurrentStep () {
       try {
         const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
-        // const currentStep
+        
+        if(response) {
+          const parsed = JSON.parse(response);
+          if (parsed instanceof Object) {
+                                          setInitialValuesForm(parsed);
+                                          kycStore.filledStep =
+                                            KYCstepsEnum.PersonalData;
+                                        }
+        } 
+        
       } catch (error) {
-       // setCountries(response);
-      }
+                      }
     }
 
     fetchCountries();
+    fetchCurrentStep();
   }, []);
 
   return (

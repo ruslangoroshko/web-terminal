@@ -58,3 +58,8 @@ export interface PhoneVerificationFormParams {
   customCountryCode: string;
   phone: string;
 }
+
+export interface ProofOfIdentityFormParams {
+  customPassportId: Blob;
+  customProofOfAddress: Blob;
+}
