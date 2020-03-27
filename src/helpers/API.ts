@@ -31,6 +31,7 @@ import {
 import { CountriesEnum } from '../enums/CountriesEnum';
 import { Country } from '../types/CountriesTypes';
 import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
+import { getProcessId } from './getProcessId';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -236,9 +237,14 @@ class API {
     return response.data;
   };
 
-  postDocument = async (documentType: DocumentTypeEnum) => {
+  postDocument = async (documentType: DocumentTypeEnum, file: Blob) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('processId', getProcessId());
+
     const response = await axios.post<void>(
-      `${API_AUTH_STRING}${AUTH_API_LIST.DOCUMENT.POST}/${documentType}`
+      `${API_AUTH_STRING}${AUTH_API_LIST.DOCUMENT.POST}/${documentType}`,
+      formData
     );
     return response.data;
   }
