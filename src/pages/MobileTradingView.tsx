@@ -210,12 +210,14 @@ const MobileTradingView: FC = () => {
     window.addEventListener('message', messageHandler, false);
     const channel = new MessageChannel();
     const nativeJsPortOne = channel.port1;
-    const nativeJsPortTwo = channel.port1;
+    const nativeJsPortTwo = channel.port2;
 
     nativeJsPortOne.addEventListener(
       'message',
       function(event) {
         alert(event.data);
+
+        nativeJsPortOne.postMessage('heeeeeloo from port one')
       },
       false
     );
@@ -224,6 +226,7 @@ const MobileTradingView: FC = () => {
       'message',
       function(event) {
         alert(event.data);
+        nativeJsPortTwo.postMessage('heeeeeloo from port two');
       },
       false
     );
