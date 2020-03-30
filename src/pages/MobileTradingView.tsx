@@ -21,6 +21,7 @@ import {
 import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 import { LineStyles } from '../enums/TradingViewStyles';
 import moment from 'moment';
+import { PrimaryTextParagraph } from '../styles/TextsElements';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -35,6 +36,9 @@ const containerId = 'tv_chart_container';
 const MobileTradingView: FC = () => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
+
+  const [alertMessage, setAlertMEssage] = useState();
+
 
   const initWidget = (activeSession: HubConnection, instrumentId: string) => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
@@ -171,7 +175,6 @@ const MobileTradingView: FC = () => {
   };
 
   const messageHandler = (e: MessageEvent) => {
-    alert(`Message: ${e.data.message}, type: ${e.data.type} `);
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = e.data.token;
       initWebsocketConnection(e.data.token).then(() => {
@@ -204,10 +207,30 @@ const MobileTradingView: FC = () => {
   };
 
   useEffect(() => {
-    window.addEventListener('message', messageHandler);
-    alert(`Hello world :) page loaded`);
+    window.addEventListener('message', messageHandler, false);
+    const channel = new MessageChannel();
+    const nativeJsPortOne = channel.port1;
+    const nativeJsPortTwo = channel.port1;
 
-    return window.removeEventListener('message', messageHandler);
+    nativeJsPortOne.addEventListener(
+      'message',
+      function(event) {
+        alert(event.data);
+      },
+      false
+    );
+
+    nativeJsPortTwo.addEventListener(
+      'message',
+      function(event) {
+        alert(event.data);
+      },
+      false
+    );
+    nativeJsPortOne.start();
+    nativeJsPortTwo.start();
+
+    return window.removeEventListener('message', messageHandler, false);
   }, []);
 
   useEffect(() => {
@@ -221,6 +244,18 @@ const MobileTradingView: FC = () => {
 
   return (
     <FlexContainer height="100vh" width="100vw">
+      {alertMessage && (
+        <FlexContainer
+          justifyContent="center"
+          alignItems="center"
+          backgroundColor="#000"
+          position="fixed"
+        >
+          <PrimaryTextParagraph fontSize="12px" color="#fffccc">
+            {alertMessage}
+          </PrimaryTextParagraph>
+        </FlexContainer>
+      )}
       <FlexContainer width="100%">
         {activeSession && (
           <FlexContainer width="100%" height="100%" id={containerId} />

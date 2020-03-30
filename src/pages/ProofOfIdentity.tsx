@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import DragNDropArea from '../components/KYC/DragNDropArea';
@@ -8,64 +8,85 @@ import Axios from 'axios';
 import API from '../helpers/API';
 import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
 import KeysInApi from '../constants/keysInApi';
-import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
 import LoaderFullscreen from '../components/LoaderFullscreen';
+import { useStores } from '../hooks/useStores';
+import { KYCstepsEnum } from '../enums/KYCsteps';
+import { useHistory } from 'react-router-dom';
+import { getProcessId } from '../helpers/getProcessId';
 
-interface Props {}
+function ProofOfIdentity() {
+  const { kycStore } = useStores();
 
-function ProofOfIdentity(props: Props) {
-	const [ isLoading, setIsLoading ] = useState(false);
-	const [ customPassportId, setCustomPassportId ] = useState({
-		file: new Blob(),
-		fileSrc: ''
-	});
-	const [customProofOfAddress, setCustomProofOfAddress] = useState({
+  const { push } = useHistory();
+  const [isLoading, setIsLoading] = useState(false);
+  const [customPassportId, setCustomPassportId] = useState({
+    file: new Blob(),
+    fileSrc: '',
+  });
+  const [customProofOfAddress, setCustomProofOfAddress] = useState({
     file: new Blob(),
     fileSrc: '',
   });
 
-	const handleFileReceive = (method: (file: any) => void) => (file: any) => {
-		method({
+  const handleFileReceive = (method: (file: any) => void) => (file: any) => {
+    method({
       file,
       fileSrc: URL.createObjectURL(file),
     });
-	};
+  };
 
-	const submitFiles = async () => {
-		setIsLoading(true);
-		try {
-			await Axios.all([
-				API.postDocument(DocumentTypeEnum.Id, customPassportId.file),
-				API.postDocument(DocumentTypeEnum.ProofOfAddress, customProofOfAddress.file)
-			]);
-			try {
-				const response = await Axios.all([
-					API.getKeyValue(KeysInApi.PERSONAL_DATA),
-					API.getKeyValue(KeysInApi.PHONE_VERIFICATION)
-				]);
-				let personalData: any = {};
-				response.forEach((item) => {
-					personalData = { ...personalData, ...JSON.parse(item) };
-        });
-        debugger;
-				API.postPersonalData(personalData).finally(() => {
-					appHistory.push(Page.DASHBOARD);
-				});
-				setIsLoading(false);
-			} catch (error) {
-				setIsLoading(false);
-			}
-		} catch (error) 
-		{
+  const postPersonalData = async () => {
+    try {
+      const response = await Axios.all([
+        API.getKeyValue(KeysInApi.PERSONAL_DATA),
+        API.getKeyValue(KeysInApi.PHONE_VERIFICATION),
+      ]);
+      let personalData: any = {};
+      response.forEach(item => {
+        personalData = {
+          processId: getProcessId(),
+          ...personalData,
+          ...JSON.parse(item),
+        };
+      });
+      API.postPersonalData(personalData).finally(() => {
+        push(Page.DASHBOARD);
+      });
+    } catch (error) {
+                    }
+  }
+
+  const submitFiles = async () => {
+    debugger
+    setIsLoading(true);
+    try {
+      await Axios.all([
+        API.postDocument(DocumentTypeEnum.Id, customPassportId.file),
+        API.postDocument(
+          DocumentTypeEnum.ProofOfAddress,
+          customProofOfAddress.file
+        ),
+      ]);
+      try {
+        await postPersonalData();
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+      }
+    } catch (error) {
       setIsLoading(false);
     }
-	};
+  };
 
-	return (
+  useEffect(() => {
+    kycStore.currentStep = KYCstepsEnum.ProofOfIdentity;
+    kycStore.filledStep = KYCstepsEnum.PhoneVerification;
+  }, []);
+
+  return (
     <FlexContainer
       width="100%"
-      height="100%"
       flexDirection="column"
       alignItems="center"
       backgroundColor="#252636"
@@ -155,7 +176,9 @@ function ProofOfIdentity(props: Props) {
           />
         </FlexContainer>
         <FlexContainer margin="0 0 32px 0">
-          <PrimaryButton padding="8px 32px">Save and continue</PrimaryButton>
+          <PrimaryButton onClick={submitFiles} padding="8px 32px">
+            Save and continue
+          </PrimaryButton>
         </FlexContainer>
         <FlexContainer>
           <ButtonWithoutStyles onClick={submitFiles}>

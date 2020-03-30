@@ -15,6 +15,8 @@ import * as yup from 'yup'
 import KeysInApi from '../constants/keysInApi';
 import { useStores } from '../hooks/useStores';
 import { KYCstepsEnum } from '../enums/KYCsteps';
+import Page from '../constants/Pages';
+import { useHistory } from 'react-router-dom';
 
 interface Props {}
 
@@ -25,16 +27,27 @@ const PhoneVerification: FC<Props> = props => {
     phone: yup.string().required(),
     customCountryCode: yup.string(),
   });
+  const { push } = useHistory();
 
-  const {kycStore} = useStores()
+  const { kycStore } = useStores();
 
   const [countries, setCountries] = useState<Country[]>([]);
-  const [initialValues, setInitialValuesForm] = useState<PhoneVerificationFormParams>({  customCountryCode: '',
-  phone: '',
+  const [initialValues, setInitialValuesForm] = useState<
+    PhoneVerificationFormParams
+  >({
+    customCountryCode: '',
+    phone: '',
   });
 
-  const handleSubmit = () => {
-    debugger;
+  const handleSubmit = (values: PhoneVerificationFormParams) => {
+    try {
+      API.setKeyValue({
+        key: KeysInApi.PHONE_VERIFICATION,
+        value: JSON.stringify(values),
+      });
+      kycStore.filledStep = KYCstepsEnum.PersonalData;
+      push(Page.PROOF_OF_IDENTITY);
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -45,16 +58,14 @@ const PhoneVerification: FC<Props> = props => {
       } catch (error) {}
     }
 
-    async function fetchCurrentStep () 
-    {
+    async function fetchCurrentStep() {
       try {
-        const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
+        const response = await API.getKeyValue(KeysInApi.PHONE_VERIFICATION);
 
         if (response) {
           const parsed = JSON.parse(response);
           if (parsed instanceof Object) {
             setInitialValuesForm(parsed);
-            kycStore.currentStep = KYCstepsEnum.PhoneVerification;
             kycStore.filledStep = KYCstepsEnum.PhoneVerification;
           }
         }
@@ -62,6 +73,8 @@ const PhoneVerification: FC<Props> = props => {
     }
     fetchCurrentStep();
     fetchCountries();
+    kycStore.currentStep = KYCstepsEnum.PhoneVerification;
+
   }, []);
 
   return (
@@ -71,9 +84,8 @@ const PhoneVerification: FC<Props> = props => {
       flexDirection="column"
       alignItems="center"
       backgroundColor="#252636"
-      padding="0 0 30px 0"
     >
-      <FlexContainer width="568px" flexDirection="column" padding="20px 0 0 0">
+      <FlexContainer width="568px" flexDirection="column" padding="40px 0">
         <PrimaryTextParagraph
           fontSize="30px"
           fontWeight="bold"
@@ -102,7 +114,7 @@ const PhoneVerification: FC<Props> = props => {
                 <FlexContainer width="320px" margin="0 0 28px 0">
                   <Field type="text" name={Fields.CUSTOM_COUNTRY}>
                     {({ field, meta }: FieldProps) => (
-                      <FlexContainer  flexDirection="column" width="100%">
+                      <FlexContainer flexDirection="column" width="100%">
                         <AutoCompleteDropdown
                           labelText="Country"
                           id={field.name}

@@ -22,8 +22,8 @@ import BirthDayPicker from '../components/KYC/BirthDayPicker';
 import KeysInApi from '../constants/keysInApi';
 import { useStores } from '../hooks/useStores';
 import { KYCstepsEnum } from '../enums/KYCsteps';
-import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
+import { useHistory } from 'react-router-dom';
 
 interface Props {}
 
@@ -46,6 +46,8 @@ function PersonalData(props: Props) {
 
   const [focused, setFocused] = useState(false);
 
+  const { push } = useHistory();
+
   const [countries, setCountries] = useState<Country[]>([]);
 
   const [initialValues, setInitialValuesForm] = useState<PersonalDataParams>({
@@ -64,14 +66,14 @@ function PersonalData(props: Props) {
 
   const { kycStore } = useStores();
 
-  const handleSubmit = (values: PersonalDataParams) => {
+  const handleSubmit = async (values: PersonalDataParams) => {
     try {
-      API.setKeyValue({
+      await API.setKeyValue({
         key: KeysInApi.PERSONAL_DATA,
         value: JSON.stringify(values),
       });
       kycStore.filledStep = KYCstepsEnum.PersonalData;
-      appHistory.push(Page.PHONE_VERIFICATION);
+      push(Page.PHONE_VERIFICATION);
     } catch (error) {}
   };
 
@@ -104,6 +106,7 @@ function PersonalData(props: Props) {
         }
       } catch (error) {}
     }
+    kycStore.currentStep = KYCstepsEnum.PersonalData;
 
     fetchCountries();
     fetchCurrentStep();
@@ -116,9 +119,9 @@ function PersonalData(props: Props) {
       flexDirection="column"
       alignItems="center"
       backgroundColor="#252636"
-      padding="0 0 20px 0"
+      padding="40px"
     >
-      <FlexContainer width="568px" flexDirection="column" padding="20px 0 0 0">
+      <FlexContainer width="568px" flexDirection="column">
         <PrimaryTextParagraph
           fontSize="30px"
           fontWeight="bold"

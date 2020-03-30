@@ -3,11 +3,10 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import StepIndicator from './StepIndicator';
 import { useStores } from '../../hooks/useStores';
 import { KYCstepsEnum } from '../../enums/KYCsteps';
+import { observer } from 'mobx-react-lite';
 
-interface Props {}
 
-function StepsContainter(props: Props) {
-  const {} = props;
+const StepsContainter = observer(() => {
   const { kycStore } = useStores();
 
   return (
@@ -47,6 +46,6 @@ function StepsContainter(props: Props) {
       </FlexContainer>
     </FlexContainer>
   );
-}
+});
 
 export default StepsContainter;
