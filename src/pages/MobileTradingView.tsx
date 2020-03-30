@@ -208,32 +208,28 @@ const MobileTradingView: FC = () => {
 
   useEffect(() => {
     window.addEventListener('message', messageHandler, false);
-    const channel = new MessageChannel();
-    const nativeJsPortOne = channel.port1;
-    const nativeJsPortTwo = channel.port2;
+    const { port1, port2 } = new MessageChannel();
 
-    nativeJsPortOne.addEventListener(
+    port1.addEventListener(
       'message',
       function(event) {
         alert(event.data);
 
-        nativeJsPortOne.postMessage('heeeeeloo from port one')
+        port1.postMessage('heeeeeloo from port one');
       },
       false
     );
 
-    nativeJsPortTwo.addEventListener(
+    port2.addEventListener(
       'message',
       function(event) {
         alert(event.data);
-        nativeJsPortTwo.postMessage('heeeeeloo from port two');
+        port2.postMessage('heeeeeloo from port two');
       },
       false
     );
-    nativeJsPortOne.start();
-    nativeJsPortTwo.start();
-
-    return window.removeEventListener('message', messageHandler, false);
+    port1.start();
+    port2.start();
   }, []);
 
   useEffect(() => {

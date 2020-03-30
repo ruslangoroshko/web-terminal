@@ -58,7 +58,6 @@ function ProofOfIdentity() {
   }
 
   const submitFiles = async () => {
-    debugger
     setIsLoading(true);
     try {
       await Axios.all([
