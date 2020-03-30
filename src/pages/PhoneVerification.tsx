@@ -71,6 +71,7 @@ const PhoneVerification: FC<Props> = props => {
       flexDirection="column"
       alignItems="center"
       backgroundColor="#252636"
+      padding="0 0 30px 0"
     >
       <FlexContainer width="568px" flexDirection="column" padding="20px 0 0 0">
         <PrimaryTextParagraph
@@ -101,11 +102,7 @@ const PhoneVerification: FC<Props> = props => {
                 <FlexContainer width="320px" margin="0 0 28px 0">
                   <Field type="text" name={Fields.CUSTOM_COUNTRY}>
                     {({ field, meta }: FieldProps) => (
-                      <FlexContainer
-                        margin="0 32px 0 0"
-                        flexDirection="column"
-                        width="100%"
-                      >
+                      <FlexContainer  flexDirection="column" width="100%">
                         <AutoCompleteDropdown
                           labelText="Country"
                           id={field.name}
@@ -119,15 +116,11 @@ const PhoneVerification: FC<Props> = props => {
                   </Field>
                 </FlexContainer>
                 <FlexContainer width="320px" margin="0 0 28px 0">
-                  <Field
-                    type="text"
-                    name={Fields.PHONE}
-                    flexDirection="column"
-                  >
+                  <Field type="text" name={Fields.PHONE} flexDirection="column">
                     {({ field, meta }: FieldProps) => (
                       <FlexContainer width="100%" flexDirection="column">
                         <LabelInput
-                          labelText="Last name"
+                          labelText="Phone"
                           id={field.name}
                           {...field}
                           hasError={!!(meta.touched && meta.error)}

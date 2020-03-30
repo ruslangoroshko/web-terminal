@@ -35,7 +35,6 @@ function PersonalData(props: Props) {
     dateOfBirth: yup.number().required(),
     firstName: yup.string().required(),
     lastName: yup.string().required(),
-    phone: yup.string().required(),
     postalCode: yup.string().required(),
     processId: yup.string().required(),
     sex: yup.number().required(),
@@ -56,7 +55,6 @@ function PersonalData(props: Props) {
     dateOfBirth: birthday.valueOf(),
     firstName: '',
     lastName: '',
-    phone: '',
     postalCode: '',
     processId: getProcessId(),
     sex: SexEnum.Unknown,
@@ -80,6 +78,10 @@ function PersonalData(props: Props) {
   const handleChangeGender = (setFieldValue: any) => (sex: SexEnum) => {
     setFieldValue(Fields.SEX, sex);
   };
+
+  const handleChangeUsCitizien = (setFieldValue: any) => (e:React.ChangeEvent<HTMLInputElement>) => {
+    setFieldValue(Fields.US_CITIZEN, e.target.checked);
+  }
 
   useEffect(() => {
     async function fetchCountries() {
@@ -114,6 +116,7 @@ function PersonalData(props: Props) {
       flexDirection="column"
       alignItems="center"
       backgroundColor="#252636"
+      padding="0 0 20px 0"
     >
       <FlexContainer width="568px" flexDirection="column" padding="20px 0 0 0">
         <PrimaryTextParagraph
@@ -308,7 +311,7 @@ function PersonalData(props: Props) {
                         checkboxText="I’am a US reportable person"
                         id="reportable"
                         checked={field.value}
-                        onChange={field.onChange}
+                        onChange={handleChangeUsCitizien(setFieldValue)}
                       >
                         <FlexContainer margin="0 0 0 8px">
                           <InformationPopup
@@ -318,12 +321,9 @@ function PersonalData(props: Props) {
                             width="334px"
                           >
                             <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                              A US reportable person is classified as anyone who
-                              holds one of the following: US citizenship,
-                              residency, tax identification number or
-                              mailing/residential adress, telephone number, as
-                              well as anyone who has instructions to transfer
-                              funds to an account maintained in the US.
+                              erson is classified as anyone who g: US
+                              citizenship, ber or r r, as yone who funds to an
+                              account maintained in the US.
                             </PrimaryTextSpan>
                           </InformationPopup>
                         </FlexContainer>

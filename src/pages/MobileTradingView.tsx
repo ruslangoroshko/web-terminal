@@ -205,6 +205,8 @@ const MobileTradingView: FC = () => {
 
   useEffect(() => {
     window.addEventListener('message', messageHandler);
+    alert(`Hello world :) page loaded`);
+
     return window.removeEventListener('message', messageHandler);
   }, []);
 

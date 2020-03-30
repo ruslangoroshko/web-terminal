@@ -23,6 +23,11 @@ function BirthDayPicker({
 }: Props) {
   const listOfYears = getYearsForBday();
 
+  const handleSetBirthday = (e: moment.Moment) => {
+    setBirthday(e);
+    setFocused(false);
+  };
+
   const selectYear = (
     onYearSelect: (currentYear: moment.Moment, newYearValue: any) => void,
     month: moment.Moment
@@ -43,9 +48,9 @@ function BirthDayPicker({
       numberOfMonths={1}      
       date={birthday}
       onDateChange={date => {
-        setBirthday(date || moment());
+        handleSetBirthday(date || moment());
       }}
-      enableOutsideDays
+      isOutsideRange={()=> false}
       focused={focused}
       onFocusChange={({ focused }) => setFocused(!!focused)}
       navNext={<FlexContainer></FlexContainer>}

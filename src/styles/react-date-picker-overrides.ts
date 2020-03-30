@@ -1,6 +1,10 @@
 import { css } from '@emotion/core';
 
 export default css`
+  .SingleDatePicker_picker {
+    background: #000;
+  }
+
   .DateRangePicker_picker {
     overflow: hidden;
     border-radius: 4px;
