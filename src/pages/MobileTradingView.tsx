@@ -211,16 +211,11 @@ const MobileTradingView: FC = () => {
   useEffect(() => {
     const { port1, port2 } = new MessageChannel();
 
-    // window.addEventListener('message', messageHandler, false);
+    window.addEventListener('message', function() {
+      
+    }, false);
 
-    port1.addEventListener(
-      'message',
-      function(event) {
-        alert(event.data);
-        port1.postMessage(StatusCodesMobileTW.Ok);
-      },
-      false
-    );
+    port1.addEventListener('message', messageHandler, false);
 
     port2.addEventListener(
       'message',
