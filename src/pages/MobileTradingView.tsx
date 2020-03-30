@@ -22,6 +22,7 @@ import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 import { LineStyles } from '../enums/TradingViewStyles';
 import moment from 'moment';
 import { PrimaryTextParagraph } from '../styles/TextsElements';
+import { StatusCodesMobileTW } from '../enums/StatusCodesMobileTW';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -175,6 +176,7 @@ const MobileTradingView: FC = () => {
   };
 
   const messageHandler = (e: MessageEvent) => {
+
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = e.data.token;
       initWebsocketConnection(e.data.token).then(() => {
@@ -207,36 +209,28 @@ const MobileTradingView: FC = () => {
   };
 
   useEffect(() => {
-    const channel = new MessageChannel();
-var nativeJsPortOne = channel.port1;
-var nativeJsPortTwo = channel.port2;
-window.addEventListener(
-  'message',
-  function(event) {
-    if (event.data != 'set_interval') {
-      nativeJsPortOne.postMessage(event.data);
-    } else if (event.data == 'set_instrument') {
-      /* The following three lines form Android class 'WebViewCallBackDemo' capture the port and assign it to nativeJsPortTwo
-        var destPort = arrayOf(nativeToJsPorts[1])
-        nativeToJsPorts[0].setWebMessageCallback(nativeToJs!!)
-        WebViewCompat.postWebMessage(webView, WebMessageCompat("capturePort", destPort), Uri.EMPTY) */
-      if (event.ports[0] != null) {
-        nativeJsPortTwo = event.ports[0];
-      }
-    }
-  },
-  false
-);
+    const { port1, port2 } = new MessageChannel();
 
-nativeJsPortOne.addEventListener('message', function(event) {
-    alert(event.data);
-}, false);
+    // window.addEventListener('message', messageHandler, false);
 
-nativeJsPortTwo.addEventListener('message', function(event) {
-    alert(event.data);
-}, false);
-nativeJsPortOne.start();
-nativeJsPortTwo.start();
+    port1.addEventListener(
+      'message',
+      function(event) {
+        alert(event.data);
+        port1.postMessage(StatusCodesMobileTW.Ok);
+      },
+      false
+    );
+
+    port2.addEventListener(
+      'message',
+      function(event) {
+        alert(event.data);
+      },
+      false
+    );
+    port1.start();
+    port2.start();
   }, []);
 
   useEffect(() => {
