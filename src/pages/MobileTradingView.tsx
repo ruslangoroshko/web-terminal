@@ -171,6 +171,7 @@ const MobileTradingView: FC = () => {
   };
 
   const messageHandler = (e: MessageEvent) => {
+    alert(`Message: ${e.data.message}, type: ${e.data.type} `);
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = e.data.token;
       initWebsocketConnection(e.data.token).then(() => {

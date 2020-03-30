@@ -1,11 +1,5 @@
-import React, { useState } from 'react';
-import { SingleDatePicker, DayPickerSingleDateController } from 'react-dates';
-import SvgIcon from '../SvgIcon';
-import { PrimaryTextParagraph } from '../../styles/TextsElements';
-import styled from '@emotion/styled';
-import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import IconRightArrow from '../../assets/svg/icon-arrow-to-right.svg';
-import IconLeftArrow from '../../assets/svg/icon-arrow-to-left.svg';
+import React from 'react';
+import { SingleDatePicker } from 'react-dates';
 import moment from 'moment';
 import { FlexContainer } from '../../styles/FlexContainer';
 import YearMonthDropdown from './YearMonthDropdown';

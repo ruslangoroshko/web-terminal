@@ -47,7 +47,8 @@ function ProofOfIdentity(props: Props) {
 				let personalData: any = {};
 				response.forEach((item) => {
 					personalData = { ...personalData, ...JSON.parse(item) };
-				});
+        });
+        debugger;
 				API.postPersonalData(personalData).finally(() => {
 					appHistory.push(Page.DASHBOARD);
 				});

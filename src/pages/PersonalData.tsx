@@ -64,7 +64,7 @@ function PersonalData(props: Props) {
     uSCitizen: false,
   })
 
-  const { kycStore} = useStores()
+  const { kycStore } = useStores();
 
   const handleSubmit = (values: PersonalDataParams) => {
     try {
@@ -89,21 +89,18 @@ function PersonalData(props: Props) {
       } catch (error) {}
     }
 
-    async function fetchCurrentStep () {
+    async function fetchCurrentStep() {
       try {
         const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
-        
-        if(response) {
+
+        if (response) {
           const parsed = JSON.parse(response);
           if (parsed instanceof Object) {
-                                          setInitialValuesForm(parsed);
-                                          kycStore.filledStep =
-                                            KYCstepsEnum.PersonalData;
-                                        }
-        } 
-        
-      } catch (error) {
-                      }
+            setInitialValuesForm(parsed);
+            kycStore.filledStep = KYCstepsEnum.PersonalData;
+          }
+        }
+      } catch (error) {}
     }
 
     fetchCountries();
