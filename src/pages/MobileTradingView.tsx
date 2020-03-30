@@ -207,29 +207,36 @@ const MobileTradingView: FC = () => {
   };
 
   useEffect(() => {
-    window.addEventListener('message', messageHandler, false);
-    const { port1, port2 } = new MessageChannel();
+    const channel = new MessageChannel();
+var nativeJsPortOne = channel.port1;
+var nativeJsPortTwo = channel.port2;
+window.addEventListener(
+  'message',
+  function(event) {
+    if (event.data != 'set_interval') {
+      nativeJsPortOne.postMessage(event.data);
+    } else if (event.data == 'set_instrument') {
+      /* The following three lines form Android class 'WebViewCallBackDemo' capture the port and assign it to nativeJsPortTwo
+        var destPort = arrayOf(nativeToJsPorts[1])
+        nativeToJsPorts[0].setWebMessageCallback(nativeToJs!!)
+        WebViewCompat.postWebMessage(webView, WebMessageCompat("capturePort", destPort), Uri.EMPTY) */
+      if (event.ports[0] != null) {
+        nativeJsPortTwo = event.ports[0];
+      }
+    }
+  },
+  false
+);
 
-    port1.addEventListener(
-      'message',
-      function(event) {
-        alert(event.data);
+nativeJsPortOne.addEventListener('message', function(event) {
+    alert(event.data);
+}, false);
 
-        port1.postMessage('heeeeeloo from port one');
-      },
-      false
-    );
-
-    port2.addEventListener(
-      'message',
-      function(event) {
-        alert(event.data);
-        port2.postMessage('heeeeeloo from port two');
-      },
-      false
-    );
-    port1.start();
-    port2.start();
+nativeJsPortTwo.addEventListener('message', function(event) {
+    alert(event.data);
+}, false);
+nativeJsPortOne.start();
+nativeJsPortTwo.start();
   }, []);
 
   useEffect(() => {
