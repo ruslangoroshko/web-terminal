@@ -1,67 +1,59 @@
 import React from 'react';
-import { Formik, Field, Form, FieldProps } from 'formik';
+import { Formik, Field, Form, FieldProps, FormikHelpers } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
-import { UserAuthenticate } from '../types/UserInfo';
+import { UserRegistration } from '../types/UserInfo';
 import * as yup from 'yup';
 import Fields from '../constants/fields';
 import { useStores } from '../hooks/useStores';
-import { observer, Observer } from 'mobx-react-lite';
 import SignFlowLayout from '../components/SignFlowLayout';
 import LabelInput from '../components/LabelInput';
-import { PrimaryTextSpan } from '../styles/TextsElements';
 import { PrimaryButton } from '../styles/Buttons';
+import { PrimaryTextSpan } from '../styles/TextsElements';
 import SignTypeTabs from '../components/SignTypeTabs';
-import LoaderFullscreen from '../components/LoaderFullscreen';
-import NotificationPopup from '../components/NotificationPopup';
-import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
-import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
+import Page from '../constants/Pages';
+import { useHistory } from 'react-router-dom';
 
-const SingIn = observer(() => {
-  const validationSchema = yup.object().shape<UserAuthenticate>({
+
+function SignUp() {
+  const validationSchema = yup.object().shape<UserRegistration>({
     email: yup.string().required('Required any value'),
-    password: yup.string().required('Required any value'),
+    password: yup
+      .string()
+      .required('Required any value')
+      .min(8, 'min 8 characters')
+      .matches(/^(?=.*\d)(?=.*[a-zA-Z])/, 'min one number and one symbol'),
+    repeatPassword: yup
+      .string()
+      .oneOf([yup.ref(Fields.PASSWORD), null], 'Passwords must match'),
   });
 
-  const initialValues: UserAuthenticate = {
+  const initialValues: UserRegistration = {
     email: '',
     password: '',
+    repeatPassword: '',
   };
 
-  const { mainAppStore, notificationStore } = useStores();
 
-  const handleSubmit = async (credentials: UserAuthenticate) => {
+  const {push} = useHistory();
+  const { mainAppStore } = useStores();
+
+  const handleSubmit = async (
+    { email, password }: UserRegistration,
+    { setStatus, setSubmitting }: FormikHelpers<UserRegistration>
+  ) => {
+    setSubmitting(true);
     try {
-      const result = await mainAppStore.signIn(credentials);
-
-      if (result !== OperationApiResponseCodes.Ok) {
-        notificationStore.notificationMessage = apiResponseCodeMessages[result];
-        notificationStore.isSuccessfull = false;
-        notificationStore.openNotification();
-      }
+      await mainAppStore.signUp({ email, password });
+      push(Page.DASHBOARD);
     } catch (error) {
-      notificationStore.notificationMessage = error;
-      notificationStore.isSuccessfull = false;
-      notificationStore.openNotification();
+      setStatus(error);
+      setSubmitting(false);
     }
   };
 
   return (
     <SignFlowLayout>
-      <FlexContainer
-        position="absolute"
-        bottom="100px"
-        left="100px"
-        zIndex="100"
-      >
-        <Observer>
-          {() => (
-            <NotificationPopup
-              show={notificationStore.isActiveNotification}
-            ></NotificationPopup>
-          )}
-        </Observer>
-      </FlexContainer>
       <FlexContainer width="320px" flexDirection="column">
         <SignTypeTabs></SignTypeTabs>
         <Formik
@@ -102,6 +94,7 @@ const SingIn = observer(() => {
                         labelText="Password"
                         value={field.value || ''}
                         id={Fields.PASSWORD}
+                        autoComplete="new-password"
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
                       ></LabelInput>
@@ -109,11 +102,34 @@ const SingIn = observer(() => {
                     </FlexContainer>
                   )}
                 </Field>
+                <Field type="text" name={Fields.REPEAT_PASSWORD}>
+                  {({ field, meta }: FieldProps) => (
+                    <FlexContainer
+                      position="relative"
+                      flexDirection="column"
+                      margin="0 0 16px 0"
+                    >
+                      <LabelInput
+                        {...field}
+                        labelText="Repeat Password"
+                        value={field.value || ''}
+                        id={Fields.REPEAT_PASSWORD}
+                        autoComplete="new-password"
+                        type="password"
+                        hasError={!!(meta.touched && meta.error)}
+                      ></LabelInput>
+                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
+                    </FlexContainer>
+                  )}
+                </Field>
+                {formikBag.status && (
+                  <ErrorMessage>{formikBag.status}</ErrorMessage>
+                )}
 
                 <PrimaryButton
                   padding="12px"
                   type="submit"
-                  disabled={!formikBag.isValid || formikBag.isSubmitting}
+                  disabled={formikBag.isSubmitting}
                 >
                   <PrimaryTextSpan
                     color="#1c2026"
@@ -121,7 +137,7 @@ const SingIn = observer(() => {
                     fontSize="14px"
                     textTransform="uppercase"
                   >
-                    Log in
+                    Submit
                   </PrimaryTextSpan>
                 </PrimaryButton>
               </FlexContainer>
@@ -131,9 +147,9 @@ const SingIn = observer(() => {
       </FlexContainer>
     </SignFlowLayout>
   );
-});
+}
 
-export default SingIn;
+export default SignUp;
 
 const CustomForm = styled(Form)`
   margin: 0;
@@ -142,5 +158,6 @@ const CustomForm = styled(Form)`
 const ErrorMessage = styled.span`
   color: red;
   position: absolute;
-  bottom: 0;
+  bottom: -14px;
+  font-size: 10px;
 `;

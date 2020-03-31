@@ -32,7 +32,8 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.svg$/,
-          include: path.resolve(__dirname, 'src/assets/svg/'),
+          include: [path.resolve(__dirname, './src/assets/svg/')],
+          exclude: [path.resolve(__dirname, './src/assets/svg_no_compress/')],
           use: [
             'svg-sprite-loader',
             {
@@ -44,6 +45,16 @@ module.exports = (env, argv) => {
                   },
                 ],
               },
+            },
+          ],
+        },
+        {
+          test: /\.svg$/,
+          include: [path.resolve(__dirname, './src/assets/svg_no_compress/')],
+          use: [
+            'svg-sprite-loader',
+            {
+              loader: 'svgo-loader',
             },
           ],
         },

@@ -16,7 +16,6 @@ import {
 import moment from 'moment';
 import MobileChartContainer from '../containers/MobileChartContainer';
 
-
 const MobileTradingView: FC = () => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
@@ -104,8 +103,7 @@ const MobileTradingView: FC = () => {
     alert(`message received ${JSON.stringify(e.data)}`);
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = e.data.auth;
-      initWebsocketConnection(e.data.auth, e.data.instrument).then(() => {
-      });
+      initWebsocketConnection(e.data.auth, e.data.instrument).then(() => {});
     }
 
     if (e.data.type) {
@@ -150,8 +148,6 @@ const MobileTradingView: FC = () => {
   }, []);
 
   useEffect(() => {
-
-    alert(`useeffect widget ${tvWidget}`);
     tvWidget?.onChartReady(async () => {
       //   tradingViewStore.tradingWidget = tvWidget;
     });
@@ -163,7 +159,7 @@ const MobileTradingView: FC = () => {
   return (
     <FlexContainer height="100vh" width="100vw">
       <FlexContainer width="100%">
-        {activeSession && (
+        {activeSession && instrumentId && (
           <MobileChartContainer
             activeSession={activeSession}
             instrumentId={instrumentId}

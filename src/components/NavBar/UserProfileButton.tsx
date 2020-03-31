@@ -3,11 +3,13 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import SvgIcon from '../SvgIcon';
 import IconUser from '../../assets/svg/icon-navbar-user.svg';
+import IconUserNotification from '../../assets/svg_no_compress/icon-profile-notifications.svg';
 import ProfileDropdown from '../ProfileDropdown';
 import { useStores } from '../../hooks/useStores';
-import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
+import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
+import { Observer } from 'mobx-react-lite';
 
 function UserProfileButton() {
 
@@ -17,7 +19,6 @@ function UserProfileButton() {
   const handleToggle = () => {
     toggle(!on);
   };
-
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -44,18 +45,21 @@ function UserProfileButton() {
     <UserProfileButtonWrapper
       ref={wrapperRef}
       onClick={handleToggle}
-      width="24px"
-      height="24px"
-      alignItems="center"
-      justifyContent="center"
-      borderRadius="50%"
       margin="0 16px 0 0"
       position="relative"
-      backgroundColor="rgba(255, 255, 255, 0.2)"
     >
-      <FlexContainer position="relative">
-        <SvgIcon {...IconUser} width={12} height={14} fillColor="#FFFFFF" />
-      </FlexContainer>
+      <Observer>
+        {() => (
+          <>
+            {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified ? (
+              <SvgIcon {...IconUserNotification} />
+            ) : (
+              <SvgIcon {...IconUser} fillColor="#FFFFFF" />
+            )}
+          </>
+        )}
+      </Observer>
+
       {on && (
         <FlexContainer position="absolute" top="100%" right="100%" zIndex="201">
           <ProfileDropdown></ProfileDropdown>

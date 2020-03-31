@@ -13,8 +13,6 @@ import KeysInApi from '../constants/keysInApi';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { RootStore } from './RootStore';
 import Fields from '../constants/fields';
-import { appHistory } from '../routing/history';
-import Page from '../constants/Pages';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 

@@ -36,7 +36,7 @@ const MobileChartContainer: FC<IProps> = ({
   activeSession,
   callbackWidget,
 }) => {
-  alert(`MobileChartContainer -> instrumentId: ${instrumentId}`)
+  alert(`MobileChartContainer -> instrumentId: ${instrumentId}`);
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: instrumentId,
