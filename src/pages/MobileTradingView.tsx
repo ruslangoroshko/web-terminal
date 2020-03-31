@@ -215,6 +215,7 @@ const MobileTradingView: FC = () => {
       'message',
       function(e) {
         alert(`window ${JSON.stringify(e.data)}`);
+        port1.postMessage(e);
       },
       false
     );

@@ -12,6 +12,13 @@ export default css`
       0px 8px 16px rgba(37, 38, 54, 0.24);
   }
 
+  .CalendarDay__blocked_out_of_range {
+    color: rgba(255, 255, 255, 0.09) !important;
+    &:hover {
+      background-color: transparent !important;
+    }
+  } 
+
   .DayPicker,
   .CalendarMonthGrid,
   .CalendarMonthGrid,

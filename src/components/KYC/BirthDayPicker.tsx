@@ -50,7 +50,9 @@ function BirthDayPicker({
       onDateChange={date => {
         handleSetBirthday(date || moment());
       }}
-      isOutsideRange={()=> false}
+      isOutsideRange={(date)=> {
+       return date > moment('01.01.2002');
+      }}
       focused={focused}
       onFocusChange={({ focused }) => setFocused(!!focused)}
       navNext={<FlexContainer></FlexContainer>}

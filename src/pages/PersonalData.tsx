@@ -61,7 +61,7 @@ function PersonalData(props: Props) {
     uSCitizen: yup.boolean().required(),
   });
 
-  const [birthday, setBirthday] = useState<moment.Moment>(moment());
+  const [birthday, setBirthday] = useState<moment.Moment>(moment('01.01.2001'));
 
   const [focused, setFocused] = useState(false);
 

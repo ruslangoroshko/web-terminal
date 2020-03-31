@@ -14,11 +14,20 @@ interface Props {
   fileUrl: string;
 }
 
+const FIVE_MB = 5242880;
+const allowedFileTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+
+
 function DragNDropArea(props: Props) {
     const { onFileReceive, file, fileUrl } = props;
 
     const onDrop = useCallback(acceptedFiles => {
-      onFileReceive(acceptedFiles[0]);
+      const file = acceptedFiles[0];
+      console.log(file);
+
+      if (file.size <= FIVE_MB && allowedFileTypes.includes(file.type)) {
+        onFileReceive(acceptedFiles[0]);
+      }
     }, []);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -46,11 +55,17 @@ function DragNDropArea(props: Props) {
             <FlexContainer margin="0 0 10px 0">
               <SvgIcon {...IconFileUpload} fillColor="#fffccc" />
             </FlexContainer>
-            <PrimaryTextSpan color="#777A7A" fontSize="14px">
+            <PrimaryTextSpan color="#777A7A" fontSize="14px" marginBottom="4px">
               Drop file here to upload or{' '}
               <PrimaryTextSpan color="#00FFDD" textDecoration="underline">
                 choose file
               </PrimaryTextSpan>
+            </PrimaryTextSpan>
+            <PrimaryTextSpan fontSize="10px" color="rgba(255,255,255,0.4)">
+              Maximum upload file size: 5MB
+            </PrimaryTextSpan>
+            <PrimaryTextSpan fontSize="10px" color="rgba(255,255,255,0.4)">
+              Allowed file types: png, jpg
             </PrimaryTextSpan>
           </FlexContainer>
         )}

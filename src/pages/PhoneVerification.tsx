@@ -24,7 +24,11 @@ const PhoneVerification: FC<Props> = props => {
   const {} = props;
 
   const validationSchema = yup.object().shape<PhoneVerificationFormParams>({
-    phone: yup.string().required(),
+    phone: yup
+      .string()
+      .min(11, 'min 11')
+      .max(20, 'max 20')
+      .required(),
     customCountryCode: yup.string(),
   });
   const { push } = useHistory();
@@ -32,6 +36,7 @@ const PhoneVerification: FC<Props> = props => {
   const { kycStore } = useStores();
 
   const [countries, setCountries] = useState<Country[]>([]);
+
   const [initialValues, setInitialValuesForm] = useState<
     PhoneVerificationFormParams
   >({
@@ -74,7 +79,6 @@ const PhoneVerification: FC<Props> = props => {
     fetchCurrentStep();
     fetchCountries();
     kycStore.currentStep = KYCstepsEnum.PhoneVerification;
-
   }, []);
 
   return (
