@@ -18,13 +18,14 @@ import MobileChartContainer from '../containers/MobileChartContainer';
 
 const MobileTradingView: FC = () => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
-  const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
   const [instrumentId, setInstrumentId] = useState('');
 
   const initWebsocketConnection = async (
     token: string,
     instrumentId: string
   ) => {
+    alert(`initWebsocketConnection ->token: ${token} instrumentId: ${instrumentId}`);
+
     const connection = initConnection(WS_HOST);
     try {
       await connection.start();
@@ -95,7 +96,6 @@ const MobileTradingView: FC = () => {
 
   const callbackWidget = (tvWidget: IChartingLibraryWidget) => {
     alert('callback widget');
-    setTvWidget(tvWidget);
   }
 
 
@@ -106,28 +106,28 @@ const MobileTradingView: FC = () => {
       initWebsocketConnection(e.data.auth, e.data.instrument).then(() => {});
     }
 
-    if (e.data.type) {
-      switch (e.data.type) {
-        case mobileChartMessageTypes.SET_CANDLE_TYPE:
-          tvWidget?.chart().setChartType(e.data.message);
-          break;
+    // if (e.data.type) {
+    //   switch (e.data.type) {
+    //     case mobileChartMessageTypes.SET_CANDLE_TYPE:
+    //       tvWidget?.chart().setChartType(e.data.message);
+    //       break;
 
-        case mobileChartMessageTypes.SET_INSTRUMENT:
-          tvWidget?.setSymbol(e.data.instrument, e.data.interval, () => {});
-          break;
+    //     case mobileChartMessageTypes.SET_INSTRUMENT:
+    //       tvWidget?.setSymbol(e.data.instrument, e.data.interval, () => {});
+    //       break;
 
-        case mobileChartMessageTypes.SET_INTERVAL:
-          setInterval(e.data);
-          break;
+    //     case mobileChartMessageTypes.SET_INTERVAL:
+    //       setInterval(e.data);
+    //       break;
 
-        case mobileChartMessageTypes.SET_RESOLUTION:
-          tvWidget?.chart().setResolution(e.data.resolution, () => {});
-          break;
+    //     case mobileChartMessageTypes.SET_RESOLUTION:
+    //       tvWidget?.chart().setResolution(e.data.resolution, () => {});
+    //       break;
 
-        default:
-          break;
-      }
-    }
+    //     default:
+    //       break;
+    //   }
+    // }
   };
 
   useEffect(() => {
@@ -146,15 +146,6 @@ const MobileTradingView: FC = () => {
     // port1.start();
     // port2.start();
   }, []);
-
-  useEffect(() => {
-    tvWidget?.onChartReady(async () => {
-      //   tradingViewStore.tradingWidget = tvWidget;
-    });
-    return () => {
-      tvWidget?.remove();
-    };
-  }, [tvWidget]);
 
   return (
     <FlexContainer height="100vh" width="100vw">
