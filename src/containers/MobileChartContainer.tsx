@@ -31,7 +31,12 @@ interface IProps {
   callbackWidget: (widget: IChartingLibraryWidget) => void;
 }
 
-const MobileChartContainer: FC<IProps> = observer(({ instrumentId, activeSession, callbackWidget }) => {
+const MobileChartContainer: FC<IProps> = ({
+  instrumentId,
+  activeSession,
+  callbackWidget,
+}) => {
+  alert(`MobileChartContainer -> instrumentId: ${instrumentId}`)
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: instrumentId,
@@ -39,11 +44,10 @@ const MobileChartContainer: FC<IProps> = observer(({ instrumentId, activeSession
       interval: supportedResolutions[BASIC_RESOLUTION_KEY],
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
-      locale: getLanguageFromURL() || 'en',
+      locale: 'en',
       custom_css_url: 'custom_trading_view_styles.css',
       disabled_features: [
         'header_widget',
-        // 'legend_widget',
         'timeframes_toolbar',
         'use_localstorage_for_settings',
         'border_around_the_chart',
@@ -105,6 +109,7 @@ const MobileChartContainer: FC<IProps> = observer(({ instrumentId, activeSession
     const tvWidget = new widget(widgetOptions);
 
     tvWidget.onChartReady(async () => {
+      alert('widget loaded');
       callbackWidget(tvWidget);
     });
     return () => {
@@ -113,6 +118,6 @@ const MobileChartContainer: FC<IProps> = observer(({ instrumentId, activeSession
   }, []);
 
   return <FlexContainer width="100%" height="100%" id={containerId} />;
-});
+};
 
 export default MobileChartContainer;

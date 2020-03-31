@@ -95,7 +95,8 @@ const MobileTradingView: FC = () => {
   };
 
   const callbackWidget = (tvWidget: IChartingLibraryWidget) => {
-    setTvWidget(tvWidget)
+    alert('callback widget');
+    setTvWidget(tvWidget);
   }
 
 
