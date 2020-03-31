@@ -49,13 +49,11 @@ function ProfileDropdown() {
         );
 
       case PersonalDataKYCEnum.Verified:
-        return null;
-
       case PersonalDataKYCEnum.OnVerification:
         return null;
 
       default:
-        break;
+        return null;
     }
   };
 
