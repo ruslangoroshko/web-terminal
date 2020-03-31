@@ -99,7 +99,8 @@ const MobileTradingView: FC = () => {
 
 
   const messageHandler = (e: MessageEvent) => {
-    alert(`message received ${JSON.stringify(e.data)}`);
+    alert(`message received ${JSON.stringify(e)}`);
+    alert(`message received ${e.data.auth}`);
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = e.data.auth;
       initWebsocketConnection(e.data.auth, e.data.instrument).then(() => {});
