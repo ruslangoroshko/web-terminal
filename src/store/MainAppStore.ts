@@ -16,6 +16,7 @@ import Fields from '../constants/fields';
 import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
+import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 
 interface MainAppStoreProps {
   token: string;
@@ -29,9 +30,10 @@ interface MainAppStoreProps {
   accounts: AccountModelWebSocketDTO[];
   setActiveAccount: (acc: AccountModelWebSocketDTO) => void;
   activeAccountId: string;
+  profileStatus: PersonalDataKYCEnum;
 }
 
-// TODO: think about right application initialization
+// TODO: think about application initialization
 // describe step by step init, loaders, async behaviour in app
 // think about loader flags - global, local
 
@@ -43,6 +45,7 @@ export class MainAppStore implements MainAppStoreProps {
   @observable activeAccount?: AccountModelWebSocketDTO;
   @observable accounts: AccountModelWebSocketDTO[] = [];
   @observable activeAccountId: string = '';
+  @observable profileStatus: PersonalDataKYCEnum = PersonalDataKYCEnum.NotVerified;
   token = '';
   rootStore: RootStore;
 

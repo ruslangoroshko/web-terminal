@@ -38,9 +38,8 @@ const MobileTradingView: FC = () => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
 
-  const initWidget = (activeSession: HubConnection, instrumentId: string) => {
-
-    alert('starting widget init')
+  function initWidget(activeSession: HubConnection, instrumentId: string) {
+    alert('starting widget init');
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: instrumentId,
       datafeed: new DataFeedService(activeSession, instrumentId),
@@ -111,7 +110,6 @@ const MobileTradingView: FC = () => {
 
     setTvWidget(new widget(widgetOptions));
     alert('setTvWidget');
-
   };
 
   const initWebsocketConnection = async (token: string) => {
@@ -122,7 +120,12 @@ const MobileTradingView: FC = () => {
       try {
         alert('ws connection try');
         await connection.send(Topics.INIT, token);
-      } catch (error) {}
+        alert('ws connection success');
+
+      } catch (error) {
+        alert(`ws connection error ${JSON.stringify(error)}`);
+
+      }
     } catch (error) {}
   };
 
@@ -184,7 +187,7 @@ const MobileTradingView: FC = () => {
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = e.data.auth;
       initWebsocketConnection(e.data.auth).then(() => {
-        alert('websocket init done')
+        alert('websocket init done');
         initWidget(activeSession!, e.data.instrument);
       });
     }

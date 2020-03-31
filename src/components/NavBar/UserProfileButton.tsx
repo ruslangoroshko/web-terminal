@@ -4,13 +4,20 @@ import styled from '@emotion/styled';
 import SvgIcon from '../SvgIcon';
 import IconUser from '../../assets/svg/icon-navbar-user.svg';
 import ProfileDropdown from '../ProfileDropdown';
+import { useStores } from '../../hooks/useStores';
+import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
+import API from '../../helpers/API';
+import { getProcessId } from '../../helpers/getProcessId';
 
 function UserProfileButton() {
+
+  const { mainAppStore} = useStores()
   const [on, toggle] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const handleToggle = () => {
     toggle(!on);
   };
+
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -21,6 +28,13 @@ function UserProfileButton() {
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
 
+    async function fetchPersonalData() {
+      try {
+        const response = await API.getPersonalData(getProcessId());
+        mainAppStore.profileStatus = response.data.kyc;
+      } catch (error) {}
+    }
+    fetchPersonalData();
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
