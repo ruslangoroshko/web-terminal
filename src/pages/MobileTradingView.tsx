@@ -25,11 +25,10 @@ const MobileTradingView: FC = () => {
     instrumentId: string
   ) => {
     alert(`initWebsocketConnection ->token: ${token} instrumentId: ${instrumentId}`);
-
+    setInstrumentId(instrumentId);
     const connection = initConnection(WS_HOST);
     try {
       await connection.start();
-      setInstrumentId(instrumentId);
       setActiveSession(connection);
       try {
         alert('ws connection try');
