@@ -83,14 +83,14 @@ const MobileTradingView: FC = () => {
         break;
     }
 
-    tvWidget
-      ?.chart()
-      .setResolution(supportedResolutions[newResolutionKey], () => {
-        tvWidget?.chart().setVisibleRange({
-          from: from.valueOf(),
-          to: moment().valueOf(),
-        });
-      });
+    // tvWidget
+    //   ?.chart()
+    //   .setResolution(supportedResolutions[newResolutionKey], () => {
+    //     tvWidget?.chart().setVisibleRange({
+    //       from: from.valueOf(),
+    //       to: moment().valueOf(),
+    //     });
+    //   });
   };
 
   const callbackWidget = (tvWidget: IChartingLibraryWidget) => {
