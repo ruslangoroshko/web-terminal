@@ -16,9 +16,6 @@ import IconInfo from '../assets/svg/icon-info.svg';
 
 function ProfileDropdown() {
   const { mainAppStore } = useStores();
-  const logOut = () => {
-    mainAppStore.signOut();
-  };
 
   return (
     <FlexContainer
@@ -105,7 +102,7 @@ function ProfileDropdown() {
         </FlexContainer>
       </FlexWithBottomBorder>
       <FlexContainer flexDirection="column">
-        <LogoutButton onClick={logOut}>
+        <LogoutButton onClick={mainAppStore.signOut}>
           <PrimaryTextSpan fontSize="12px" color="#fffccc">
             Logout
           </PrimaryTextSpan>

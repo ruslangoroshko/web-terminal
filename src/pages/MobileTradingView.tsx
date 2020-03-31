@@ -38,10 +38,9 @@ const MobileTradingView: FC = () => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
 
-  const [alertMessage, setAlertMEssage] = useState();
-
-
   const initWidget = (activeSession: HubConnection, instrumentId: string) => {
+
+    alert('starting widget init')
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: instrumentId,
       datafeed: new DataFeedService(activeSession, instrumentId),
@@ -111,6 +110,8 @@ const MobileTradingView: FC = () => {
     };
 
     setTvWidget(new widget(widgetOptions));
+    alert('setTvWidget');
+
   };
 
   const initWebsocketConnection = async (token: string) => {
@@ -231,6 +232,8 @@ const MobileTradingView: FC = () => {
   }, []);
 
   useEffect(() => {
+
+    alert(`useeffect widget ${tvWidget}`);
     tvWidget?.onChartReady(async () => {
       //   tradingViewStore.tradingWidget = tvWidget;
     });
@@ -241,22 +244,8 @@ const MobileTradingView: FC = () => {
 
   return (
     <FlexContainer height="100vh" width="100vw">
-      {alertMessage && (
-        <FlexContainer
-          justifyContent="center"
-          alignItems="center"
-          backgroundColor="#000"
-          position="fixed"
-        >
-          <PrimaryTextParagraph fontSize="12px" color="#fffccc">
-            {alertMessage}
-          </PrimaryTextParagraph>
-        </FlexContainer>
-      )}
       <FlexContainer width="100%">
-        {activeSession && (
-          <FlexContainer width="100%" height="100%" id={containerId} />
-        )}
+        <FlexContainer width="100%" height="100%" id={containerId} />
       </FlexContainer>
     </FlexContainer>
   );

@@ -39,7 +39,9 @@ function UserProfileButton() {
       position="relative"
       backgroundColor="rgba(255, 255, 255, 0.2)"
     >
-      <SvgIcon {...IconUser} width={12} height={14} fillColor="#FFFFFF" />
+      <FlexContainer position="relative">
+        <SvgIcon {...IconUser} width={12} height={14} fillColor="#FFFFFF" />
+      </FlexContainer>
       {on && (
         <FlexContainer position="absolute" top="100%" right="100%" zIndex="201">
           <ProfileDropdown></ProfileDropdown>
