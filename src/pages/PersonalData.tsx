@@ -29,16 +29,35 @@ interface Props {}
 
 function PersonalData(props: Props) {
   const validationSchema = yup.object().shape<PersonalDataParams>({
-    city: yup.string().required(),
+    city: yup
+      .string()
+      .min(2, 'min 2 symbols')
+      .max(20, 'max 20 symbols')
+      .required(),
     countryOfCitizenship: yup.string().required(),
     countryOfResidence: yup.string().required(),
     dateOfBirth: yup.number().required(),
-    firstName: yup.string().required(),
-    lastName: yup.string().required(),
-    postalCode: yup.string().required(),
-    processId: yup.string().required(),
+    firstName: yup
+      .string()
+      .min(2, 'min 2 symbols')
+      .max(20, 'max 20 symbols')
+      .required(),
+    lastName: yup
+      .string()
+      .min(2, 'min 2 symbols')
+      .max(20, 'max 20 symbols'),
+    postalCode: yup
+      .string()
+      .min(2, 'min 2 symbols')
+      .max(20, 'max 20 symbols')
+      .required(),
+    processId: yup.string(),
     sex: yup.number().required(),
-    address: yup.string().required(),
+    address: yup
+      .string()
+      .min(2, 'min 2 symbols')
+      .max(20, 'max 20 symbols')
+      .required(),
     uSCitizen: yup.boolean().required(),
   });
 
@@ -62,7 +81,7 @@ function PersonalData(props: Props) {
     sex: SexEnum.Unknown,
     address: '',
     uSCitizen: false,
-  })
+  });
 
   const { kycStore } = useStores();
 
@@ -81,9 +100,11 @@ function PersonalData(props: Props) {
     setFieldValue(Fields.SEX, sex);
   };
 
-  const handleChangeUsCitizien = (setFieldValue: any) => (e:React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeUsCitizien = (setFieldValue: any) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setFieldValue(Fields.US_CITIZEN, e.target.checked);
-  }
+  };
 
   useEffect(() => {
     async function fetchCountries() {

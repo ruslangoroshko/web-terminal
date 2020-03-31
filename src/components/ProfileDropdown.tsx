@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { useStores } from '../hooks/useStores';
@@ -8,14 +9,12 @@ import SvgIcon from './SvgIcon';
 import IconDeposit from '../assets/svg/icon-deposit.svg';
 import IconWithdraw from '../assets/svg/icon-withdraw.svg';
 import IconLogout from '../assets/svg/icon-logout.svg';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import Page from '../constants/Pages';
+import IconInfo from '../assets/svg/icon-info.svg';
 
-interface Props {}
 
-function ProfileDropdown(props: Props) {
-  const {} = props;
-
+function ProfileDropdown() {
   const { mainAppStore } = useStores();
   const logOut = () => {
     mainAppStore.signOut();
@@ -30,6 +29,31 @@ function ProfileDropdown(props: Props) {
       width="172px"
       boxShadow="box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.24), 0px 8px 16px rgba(37, 38, 54, 0.6)"
     >
+      <FlexContainer margin="0 0 20px 0" flexDirection="column">
+        <Link to={Page.PERSONAL_DATA}>
+          <FlexContainer
+            borderRadius="12px"
+            backgroundColor="#3B2B3D"
+            height="24px"
+            alignItems="center"
+            padding="0 4px 0 8px"
+          >
+            <FlexContainer margin="0 4px 0 0">
+              <SvgIcon {...IconInfo} fillColor="#FF2B47" />
+            </FlexContainer>
+            <FlexContainer>
+              <PrimaryTextSpan
+                color="#FF557E"
+                fontSize="12px"
+                fontWeight="bold"
+                whiteSpace="nowrap"
+              >
+                Verify your profile
+              </PrimaryTextSpan>
+            </FlexContainer>
+          </FlexContainer>
+        </Link>
+      </FlexContainer>
       <FlexWithBottomBorder
         margin="0 0 16px 0"
         padding="0 0 16px 0"
@@ -101,4 +125,21 @@ const FlexWithBottomBorder = styled(FlexContainer)`
 const LogoutButton = styled(ButtonWithoutStyles)`
   display: flex;
   justify-content: space-between;
+`;
+
+
+const ProceedOnVerificationButton = styled(Link)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 8px;
+  background-color: #00ffdd;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    text-decoration: none;
+    background-color: #21b3a4;
+    cursor: pointer;
+  }
 `;

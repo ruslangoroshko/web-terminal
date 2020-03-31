@@ -15,7 +15,7 @@ interface Props {
 }
 
 function DragNDropArea(props: Props) {
-    const {onFileReceive, file, fileUrl} = props
+    const { onFileReceive, file, fileUrl } = props;
 
     const onDrop = useCallback(acceptedFiles => {
       onFileReceive(acceptedFiles[0]);
@@ -24,7 +24,6 @@ function DragNDropArea(props: Props) {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
       onDrop,
     });
-    console.log(file);
 
     return file.size === 0 ? (
       <DnDWrapper
@@ -88,12 +87,12 @@ function DragNDropArea(props: Props) {
             >
               Front side photo of your document
             </PrimaryTextSpan>
-            <PrimaryTextSpan color="#fffccc" fontSize="14px">
+            <FileNameText color="#fffccc" fontSize="14px">
               {file.name} -{' '}
               <PrimaryTextSpan color="rgba(255,255,255,0.4)">
                 {Math.round(file.size / 1024)}kb
               </PrimaryTextSpan>
-            </PrimaryTextSpan>
+            </FileNameText>
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
@@ -110,4 +109,11 @@ const DnDWrapper = styled(FlexContainer)`
     cursor: pointer;
     border: 1px dashed #00ffdd;
   }
+`;
+
+const FileNameText = styled(PrimaryTextSpan)`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  white-space: nowrap;
 `;

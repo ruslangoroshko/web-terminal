@@ -176,7 +176,7 @@ const MobileTradingView: FC = () => {
   };
 
   const messageHandler = (e: MessageEvent) => {
-
+    alert(`message port1 ${JSON.stringify(e.data)}`);
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = e.data.token;
       initWebsocketConnection(e.data.token).then(() => {
@@ -211,16 +211,20 @@ const MobileTradingView: FC = () => {
   useEffect(() => {
     const { port1, port2 } = new MessageChannel();
 
-    window.addEventListener('message', function() {
-      
-    }, false);
+    window.addEventListener(
+      'message',
+      function(e) {
+        alert(`window ${JSON.stringify(e.data)}`);
+      },
+      false
+    );
 
     port1.addEventListener('message', messageHandler, false);
 
     port2.addEventListener(
       'message',
-      function(event) {
-        alert(event.data);
+      function(e) {
+        alert(`message port2 ${JSON.stringify(e.data)}`);
       },
       false
     );
