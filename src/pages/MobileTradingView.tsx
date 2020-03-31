@@ -115,10 +115,13 @@ const MobileTradingView: FC = () => {
 
   const initWebsocketConnection = async (token: string) => {
     const connection = initConnection(WS_HOST);
-    await connection.start();
-    setActiveSession(connection);
     try {
-      await connection.send(Topics.INIT, token);
+      await connection.start();
+      setActiveSession(connection);
+      try {
+        alert('ws connection try');
+        await connection.send(Topics.INIT, token);
+      } catch (error) {}
     } catch (error) {}
   };
 
@@ -178,8 +181,9 @@ const MobileTradingView: FC = () => {
   const messageHandler = (e: MessageEvent) => {
     alert(`message port1 ${JSON.stringify(e.data)}`);
     if (!activeSession) {
-      Axios.defaults.headers['Authorization'] = e.data.token;
-      initWebsocketConnection(e.data.token).then(() => {
+      Axios.defaults.headers['Authorization'] = e.data.auth;
+      initWebsocketConnection(e.data.auth).then(() => {
+        alert('websocket init done')
         initWidget(activeSession!, e.data.instrument);
       });
     }
@@ -211,26 +215,19 @@ const MobileTradingView: FC = () => {
   useEffect(() => {
     const { port1, port2 } = new MessageChannel();
 
-    window.addEventListener(
-      'message',
-      function(e) {
-        alert(`window ${JSON.stringify(e.data)}`);
-        port1.postMessage(e);
-      },
-      false
-    );
+    window.addEventListener('message', messageHandler, false);
 
-    port1.addEventListener('message', messageHandler, false);
+    // port1.addEventListener('message', messageHandler, false);
 
-    port2.addEventListener(
-      'message',
-      function(e) {
-        alert(`message port2 ${JSON.stringify(e.data)}`);
-      },
-      false
-    );
-    port1.start();
-    port2.start();
+    // port2.addEventListener(
+    //   'message',
+    //   function(e) {
+    //     alert(`message port2 ${JSON.stringify(e.data)}`);
+    //   },
+    //   false
+    // );
+    // port1.start();
+    // port2.start();
   }, []);
 
   useEffect(() => {
