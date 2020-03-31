@@ -40,23 +40,23 @@ function PersonalData(props: Props) {
     firstName: yup
       .string()
       .min(2, 'min 2 symbols')
-      .max(20, 'max 20 symbols')
+      .max(100, 'max 100 symbols')
       .required(),
     lastName: yup
       .string()
       .min(2, 'min 2 symbols')
-      .max(20, 'max 20 symbols'),
+      .max(100, 'max 100 symbols'),
     postalCode: yup
       .string()
       .min(2, 'min 2 symbols')
-      .max(20, 'max 20 symbols')
+      .max(15, 'max 15 symbols')
       .required(),
     processId: yup.string(),
     sex: yup.number().required(),
     address: yup
       .string()
       .min(2, 'min 2 symbols')
-      .max(20, 'max 20 symbols')
+      .max(100, 'max 100 symbols')
       .required(),
     uSCitizen: yup.boolean().required(),
   });
@@ -115,6 +115,8 @@ function PersonalData(props: Props) {
     }
 
     async function fetchCurrentStep() {
+      kycStore.filledStep = KYCstepsEnum.NoData;
+
       try {
         const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
 

@@ -18,7 +18,7 @@ const StepIndicator: FC<Props> = observer(props => {
   const isMoreThanOrCurrentStep = currentStep >= stepNumber;
 
   return (
-    <FlexContainer flexDirection="column" alignItems="center" zIndex="1">
+    <FlexContainer flexDirection="column" alignItems="center" zIndex={`${100 - stepNumber}`}>
       <FlexContainer
         borderRadius="50%"
         width="48px"
