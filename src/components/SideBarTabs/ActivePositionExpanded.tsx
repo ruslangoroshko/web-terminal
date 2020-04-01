@@ -18,6 +18,7 @@ import { getProcessId } from '../../helpers/getProcessId';
 import { SecondaryButton } from '../../styles/Buttons';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
 import { DisplayContents, Td } from '../../styles/TableElements';
+import ImageContainer from '../ImageContainer';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -65,7 +66,9 @@ function ActivePositionExpanded(props: Props) {
   return (
     <DisplayContents>
       <Td>
-        <FlexContainer width="32px" height="32px"></FlexContainer>
+        <FlexContainer width="32px" height="32px">
+          <ImageContainer instrumentId={instrument} />
+        </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 8px 0 0" width="170px">
           <PrimaryTextSpan fontSize="14px" color="#fffccc" marginBottom="4px">
             {instrument}

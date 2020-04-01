@@ -21,6 +21,7 @@ import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
 import ClosePositionPopup from './ClosePositionPopup';
+import ImageContainer from '../ImageContainer';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -153,7 +154,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
         padding="0 0 8px 0"
       >
         <FlexContainer width="32px" alignItems="flex-start">
-          <img src={test} style={{ display: 'block', objectFit: 'contain' }} />
+          <ImageContainer instrumentId={instrument} />
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 6px 0 0">
           <PrimaryTextSpan fontSize="12px" lineHeight="14px" marginBottom="2px">

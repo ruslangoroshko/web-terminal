@@ -11,6 +11,7 @@ import styled from '@emotion/styled';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import { PrimaryTextSpan } from '../styles/TextsElements';
+import ImageContainer from './ImageContainer';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -59,20 +60,25 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
           {quotesStore.quotes[instrument.id] && (
             <Observer>
               {() => (
-                <FlexContainer margin="0 8px 0 0" flexDirection="column">
-                  <PrimaryTextSpan fontSize="12px">
-                    {instrument.name}
-                  </PrimaryTextSpan>
-                  <PrimaryTextSpan
-                    fontSize="11px"
-                    lineHeight="14px"
-                    color="rgba(255, 255, 255, 0.4)"
-                  >
-                    {quotesStore.quotes[instrument.id].bid.c.toFixed(
-                      instrument.digits
-                    )}
-                  </PrimaryTextSpan>
-                </FlexContainer>
+                <>
+                  <FlexContainer margin="0 8px 0 0" width="24px">
+                    <ImageContainer instrumentId={instrument.id} />
+                  </FlexContainer>
+                  <FlexContainer margin="0 8px 0 0" flexDirection="column">
+                    <PrimaryTextSpan fontSize="12px">
+                      {instrument.name}
+                    </PrimaryTextSpan>
+                    <PrimaryTextSpan
+                      fontSize="11px"
+                      lineHeight="14px"
+                      color="rgba(255, 255, 255, 0.4)"
+                    >
+                      {quotesStore.quotes[instrument.id].bid.c.toFixed(
+                        instrument.digits
+                      )}
+                    </PrimaryTextSpan>
+                  </FlexContainer>
+                </>
               )}
             </Observer>
           )}

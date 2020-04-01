@@ -9,6 +9,7 @@ import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
 import { useStores } from '../../hooks/useStores';
 import { observer, Observer } from 'mobx-react-lite';
 import { getNumberSign } from '../../helpers/getNumberSign';
+import ImageContainer from '../ImageContainer';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -49,13 +50,9 @@ const InstrumentMarkets: FC<Props> = observer(props => {
               <SvgIcon {...IconStar} fillColor="rgba(255, 255, 255, 0.4)" />
             </ButtonWithoutStyles>
           </FlexContainer>
-          <FlexContainer
-            width="32px"
-            height="32px"
-            backgroundColor="#FFEADD"
-            borderRadius="50%"
-            margin="0 8px 0 0"
-          ></FlexContainer>
+          <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
+            <ImageContainer instrumentId={id} />
+          </FlexContainer>
           <FlexContainer flexDirection="column" width="120px">
             <PrimaryTextSpan fontSize="12px" color="#fffccc" marginBottom="4px">
               {name}

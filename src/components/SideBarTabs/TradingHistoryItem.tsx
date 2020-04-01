@@ -12,6 +12,7 @@ import { calculateInPercent } from '../../helpers/calculateInPercent';
 import InformationPopup from '../InformationPopup';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { useStores } from '../../hooks/useStores';
+import ImageContainer from '../ImageContainer';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -75,7 +76,7 @@ function TradingHistoryItem(props: Props) {
             </PrimaryTextSpan>
           </FlexContainer>
           <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
-            image
+            <ImageContainer instrumentId={instrument} />
           </FlexContainer>
           <FlexContainer flexDirection="column">
             <PrimaryTextSpan marginBottom="2px" color="#fffccc" fontSize="12px">

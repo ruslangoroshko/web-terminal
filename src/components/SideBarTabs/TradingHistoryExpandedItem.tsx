@@ -12,6 +12,7 @@ import InformationPopup from '../InformationPopup';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
 import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
 import { DisplayContents, Td } from '../../styles/TableElements';
+import ImageContainer from '../ImageContainer';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -42,7 +43,9 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
   return (
     <DisplayContents>
       <Td>
-        <FlexContainer width="32px" height="32px"></FlexContainer>
+        <FlexContainer width="32px" height="32px">
+          <ImageContainer instrumentId={instrument} />
+        </FlexContainer>
         <FlexContainer flexDirection="column" width="170px">
           <PrimaryTextSpan fontSize="14px" color="#fffccc" marginBottom="4px">
             {instrument}
