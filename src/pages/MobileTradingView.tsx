@@ -19,21 +19,19 @@ import MobileChartContainer from '../containers/MobileChartContainer';
 const MobileTradingView: FC = () => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
   const [instrumentId, setInstrumentId] = useState('');
+  const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
 
   const initWebsocketConnection = async (
     token: string,
     instrumentId: string
   ) => {
-    alert(`initWebsocketConnection ->token: ${token} instrumentId: ${instrumentId}`);
     setInstrumentId(instrumentId);
     const connection = initConnection(WS_HOST);
     try {
       await connection.start();
       setActiveSession(connection);
       try {
-        alert('ws connection try');
         await connection.send(Topics.INIT, token);
-        alert('ws connection success');
       } catch (error) {
         alert(`ws connection error ${JSON.stringify(error)}`);
       }
@@ -83,76 +81,73 @@ const MobileTradingView: FC = () => {
         break;
     }
 
-    // tvWidget
-    //   ?.chart()
-    //   .setResolution(supportedResolutions[newResolutionKey], () => {
-    //     tvWidget?.chart().setVisibleRange({
-    //       from: from.valueOf(),
-    //       to: moment().valueOf(),
-    //     });
-    //   });
+    tvWidget
+      ?.chart()
+      .setResolution(supportedResolutions[newResolutionKey], () => {
+        tvWidget?.chart().setVisibleRange({
+          from: from.valueOf(),
+          to: moment().valueOf(),
+        });
+      });
   };
 
   const callbackWidget = (tvWidget: IChartingLibraryWidget) => {
-    alert('callback widget');
+    setTvWidget(tvWidget);
   }
 
-
   const messageHandler = (e: MessageEvent) => {
-    alert(`message received  typeof ${typeof e.data}`);
-    alert(`message received ${JSON.parse(e.data)}`);
-    alert(`message received ${JSON.parse(e.data).auth}`);
+   const data = JSON.parse(e.data)
     if (!activeSession) {
-      Axios.defaults.headers['Authorization'] = e.data.auth;
-      initWebsocketConnection(e.data.auth, e.data.instrument).then(() => {});
+      Axios.defaults.headers['Authorization'] = data.auth;
+      initWebsocketConnection(data.auth, data.instrument);
     }
 
-    // if (e.data.type) {
-    //   switch (e.data.type) {
-    //     case mobileChartMessageTypes.SET_CANDLE_TYPE:
-    //       tvWidget?.chart().setChartType(e.data.message);
-    //       break;
+    if (e.data.type) {
+      switch (e.data.type) {
+        case mobileChartMessageTypes.SET_CANDLE_TYPE:
+          tvWidget?.chart().setChartType(e.data.message);
+          break;
 
-    //     case mobileChartMessageTypes.SET_INSTRUMENT:
-    //       tvWidget?.setSymbol(e.data.instrument, e.data.interval, () => {});
-    //       break;
+        case mobileChartMessageTypes.SET_INSTRUMENT:
+          tvWidget?.setSymbol(data.instrument, data.interval, () => {});
+          break;
 
-    //     case mobileChartMessageTypes.SET_INTERVAL:
-    //       setInterval(e.data);
-    //       break;
+        case mobileChartMessageTypes.SET_INTERVAL:
+          setInterval(data);
+          break;
 
-    //     case mobileChartMessageTypes.SET_RESOLUTION:
-    //       tvWidget?.chart().setResolution(e.data.resolution, () => {});
-    //       break;
+        case mobileChartMessageTypes.SET_RESOLUTION:
+          tvWidget?.chart().setResolution(data.resolution, () => {});
+          break;
 
-    //     default:
-    //       break;
-    //   }
-    // }
+        default:
+          break;
+      }
+    }
   };
 
   useEffect(() => {
 
     window.addEventListener('message', messageHandler, false);
-    const { port1, port2 } = new MessageChannel();
+    // const { port1, port2 } = new MessageChannel();
 
-    port1.addEventListener(
-      'message',
-      function(e) {
-       alert(`message from port1 ${e.data}`);
-      },
-      false
-    );
+    // port1.addEventListener(
+    //   'message',
+    //   function(e) {
+    //    alert(`message from port1 ${e.data}`);
+    //   },
+    //   false
+    // );
 
-    port2.addEventListener(
-      'message',
-      function(e) {
-        alert(`message port2 ${JSON.stringify(e.data)}`);
-      },
-      false
-    );
-    port1.start();
-    port2.start();
+    // port2.addEventListener(
+    //   'message',
+    //   function(e) {
+    //     alert(`message port2 ${JSON.stringify(e.data)}`);
+    //   },
+    //   false
+    // );
+    // port1.start();
+    // port2.start();
   }, []);
 
   return (
