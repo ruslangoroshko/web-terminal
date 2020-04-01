@@ -99,8 +99,7 @@ const MobileTradingView: FC = () => {
 
 
   const messageHandler = (e: MessageEvent) => {
-    alert(`message received ${JSON.stringify(e)}`);
-    alert(`message received ${e.data.auth}`);
+    alert(`message received  typeof ${typeof e.data}`);
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = e.data.auth;
       initWebsocketConnection(e.data.auth, e.data.instrument).then(() => {});
@@ -133,18 +132,25 @@ const MobileTradingView: FC = () => {
   useEffect(() => {
 
     window.addEventListener('message', messageHandler, false);
+    const { port1, port2 } = new MessageChannel();
 
-    // port1.addEventListener('message', messageHandler, false);
+    port1.addEventListener(
+      'message',
+      function(e) {
+       alert(`message from port1 ${e.data}`);
+      },
+      false
+    );
 
-    // port2.addEventListener(
-    //   'message',
-    //   function(e) {
-    //     alert(`message port2 ${JSON.stringify(e.data)}`);
-    //   },
-    //   false
-    // );
-    // port1.start();
-    // port2.start();
+    port2.addEventListener(
+      'message',
+      function(e) {
+        alert(`message port2 ${JSON.stringify(e.data)}`);
+      },
+      false
+    );
+    port1.start();
+    port2.start();
   }, []);
 
   return (
