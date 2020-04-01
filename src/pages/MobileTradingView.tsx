@@ -102,10 +102,10 @@ const MobileTradingView: FC = () => {
       initWebsocketConnection(data.auth, data.instrument);
     }
 
-    if (e.data.type) {
-      switch (e.data.type) {
+    if (data.type) {
+      switch (data.type) {
         case mobileChartMessageTypes.SET_CANDLE_TYPE:
-          tvWidget?.chart().setChartType(e.data.message);
+          tvWidget?.chart().setChartType(data.message);
           break;
 
         case mobileChartMessageTypes.SET_INSTRUMENT:
