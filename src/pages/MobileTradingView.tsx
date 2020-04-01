@@ -102,9 +102,7 @@ const MobileTradingView: FC = () => {
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = data.auth;
       initWebsocketConnection(data.auth, data.instrument);
-    }
-
-    if (data.type) {
+    } else if (data.type) {
       switch (data.type) {
         case mobileChartMessageTypes.SET_CANDLE_TYPE:
           tvWidget?.chart().setChartType(data.message);
@@ -163,6 +161,7 @@ const MobileTradingView: FC = () => {
         locale: 'en',
         custom_css_url: 'custom_trading_view_styles.css',
         disabled_features: [
+          'adaptive_logo',
           'header_widget',
           'timeframes_toolbar',
           'use_localstorage_for_settings',
