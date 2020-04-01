@@ -7,7 +7,7 @@ import LabelInput from '../components/LabelInput';
 import AutoCompleteDropdown from '../components/KYC/AutoCompleteDropdown';
 import { PrimaryButton } from '../styles/Buttons';
 import styled from '@emotion/styled';
-import { PhoneVerificationFormParams } from '../types/PersonalDataTypes';
+import { PhoneVerificationFormParams, PersonalDataParams } from '../types/PersonalDataTypes';
 import { Country } from '../types/CountriesTypes';
 import API from '../helpers/API';
 import { CountriesEnum } from '../enums/CountriesEnum';
@@ -17,11 +17,15 @@ import { useStores } from '../hooks/useStores';
 import { KYCstepsEnum } from '../enums/KYCsteps';
 import Page from '../constants/Pages';
 import { useHistory } from 'react-router-dom';
+import { getProcessId } from '../helpers/getProcessId';
+import { SexEnum } from '../enums/Sex';
 
 interface Props {}
 
 const PhoneVerification: FC<Props> = props => {
   const {} = props;
+  const [countries, setCountries] = useState<Country[]>([]);
+  const countriesNames = countries.map(item => item.name);
 
   const validationSchema = yup.object().shape<PhoneVerificationFormParams>({
     phone: yup
@@ -29,13 +33,12 @@ const PhoneVerification: FC<Props> = props => {
       .min(11, 'min 11')
       .max(20, 'max 20')
       .required(),
-    customCountryCode: yup.string(),
+    customCountryCode: yup.mixed().oneOf(countriesNames, 'No matches'),
   });
   const { push } = useHistory();
 
   const { kycStore } = useStores();
 
-  const [countries, setCountries] = useState<Country[]>([]);
 
   const [initialValues, setInitialValuesForm] = useState<
     PhoneVerificationFormParams
@@ -44,16 +47,32 @@ const PhoneVerification: FC<Props> = props => {
     phone: '',
   });
 
-  const handleSubmit = (values: PhoneVerificationFormParams) => {
+  const [initialValuesPeronalData, setValuesPeronalData] = useState<PersonalDataParams>({
+    city: '',
+    countryOfCitizenship: '',
+    countryOfResidence: '',
+    dateOfBirth: 0,
+    firstName: '',
+    lastName: '',
+    postalCode: '',
+    processId: getProcessId(),
+    sex: SexEnum.Unknown,
+    address: '',
+    uSCitizen: false,
+    phone: ''
+  });
+
+
+  const handleSubmit = ({ phone }: PhoneVerificationFormParams) => {
     try {
       API.setKeyValue({
-        key: KeysInApi.PHONE_VERIFICATION,
-        value: JSON.stringify(values),
+        key: KeysInApi.PERSONAL_DATA,
+        value: JSON.stringify({ ...initialValuesPeronalData, phone }),
       });
       kycStore.filledStep = KYCstepsEnum.PersonalData;
       push(Page.PROOF_OF_IDENTITY);
     } catch (error) {}
-  };
+  };;
 
   useEffect(() => {
     async function fetchCountries() {
@@ -65,12 +84,14 @@ const PhoneVerification: FC<Props> = props => {
 
     async function fetchCurrentStep() {
       try {
-        const response = await API.getKeyValue(KeysInApi.PHONE_VERIFICATION);
+        const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
 
         if (response) {
-          const parsed = JSON.parse(response);
+          const parsed : PersonalDataParams = JSON.parse(response);
           if (parsed instanceof Object) {
-            setInitialValuesForm(parsed);
+            setValuesPeronalData(parsed);
+            const { phone, countryOfCitizenship} = parsed;
+            setInitialValuesForm({phone, customCountryCode:countryOfCitizenship});
             kycStore.filledStep = KYCstepsEnum.PhoneVerification;
           }
         }

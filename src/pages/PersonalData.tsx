@@ -25,40 +25,49 @@ import { KYCstepsEnum } from '../enums/KYCsteps';
 import Page from '../constants/Pages';
 import { useHistory } from 'react-router-dom';
 
-interface Props {}
+function PersonalData() {
 
-function PersonalData(props: Props) {
+  const [countries, setCountries] = useState<Country[]>([]);
+  const countriesNames = countries.map(item => item.name);
+
   const validationSchema = yup.object().shape<PersonalDataParams>({
     city: yup
       .string()
-      .min(2, 'min 2 symbols')
-      .max(20, 'max 20 symbols')
+      .min(2, 'Min 2 symbols')
+      .max(20, 'Max 20 symbols')
+      .required('Required field'),
+    countryOfCitizenship: yup
+      .mixed()
+      .oneOf(countriesNames, 'No matches')
       .required(),
-    countryOfCitizenship: yup.string().required(),
-    countryOfResidence: yup.string().required(),
+    countryOfResidence: yup
+      .mixed()
+      .oneOf(countriesNames, 'No matches')
+      .required(),
     dateOfBirth: yup.number().required(),
     firstName: yup
       .string()
-      .min(2, 'min 2 symbols')
-      .max(100, 'max 100 symbols')
-      .required(),
+      .min(2, 'Min 2 symbols')
+      .max(100, 'Max 100 symbols')
+      .required('Required field'),
     lastName: yup
       .string()
-      .min(2, 'min 2 symbols')
-      .max(100, 'max 100 symbols'),
+      .min(2, 'Min 2 symbols')
+      .max(100, 'Max 100 symbols'),
     postalCode: yup
       .string()
-      .min(2, 'min 2 symbols')
-      .max(15, 'max 15 symbols')
-      .required(),
+      .min(2, 'Min 2 symbols')
+      .max(15, 'Max 15 symbols')
+      .required('Required field'),
     processId: yup.string(),
     sex: yup.number().required(),
     address: yup
       .string()
-      .min(2, 'min 2 symbols')
-      .max(100, 'max 100 symbols')
-      .required(),
+      .min(2, 'Min 2 symbols')
+      .max(100, 'Max 100 symbols')
+      .required('Required field'),
     uSCitizen: yup.boolean().required(),
+    phone: yup.string(),
   });
 
   const [birthday, setBirthday] = useState<moment.Moment>(moment('01.01.2001'));
@@ -66,8 +75,6 @@ function PersonalData(props: Props) {
   const [focused, setFocused] = useState(false);
 
   const { push } = useHistory();
-
-  const [countries, setCountries] = useState<Country[]>([]);
 
   const [initialValues, setInitialValuesForm] = useState<PersonalDataParams>({
     city: '',
@@ -81,6 +88,7 @@ function PersonalData(props: Props) {
     sex: SexEnum.Unknown,
     address: '',
     uSCitizen: false,
+    phone: ''
   });
 
   const { kycStore } = useStores();
@@ -347,9 +355,12 @@ function PersonalData(props: Props) {
                             width="334px"
                           >
                             <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                              erson is classified as anyone who g: US
-                              citizenship, ber or r r, as yone who funds to an
-                              account maintained in the US.
+                              A US reportable person is classified as anyone who
+                              holds one of the following: US citizenship,
+                              residency, tax identification number or
+                              mailing/residential adress, telephone number, as
+                              well as anyone who has instructions to transfer
+                              funds to an account maintained in the US.
                             </PrimaryTextSpan>
                           </InformationPopup>
                         </FlexContainer>

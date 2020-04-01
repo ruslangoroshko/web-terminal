@@ -11,6 +11,7 @@ export interface PersonalDataParams {
   countryOfResidence: string;
   countryOfCitizenship: string;
   postalCode: string;
+  phone: string;
   sex: SexEnum;
   address: string;
   uSCitizen: boolean;

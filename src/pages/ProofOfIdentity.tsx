@@ -13,7 +13,6 @@ import LoaderFullscreen from '../components/LoaderFullscreen';
 import { useStores } from '../hooks/useStores';
 import { KYCstepsEnum } from '../enums/KYCsteps';
 import { useHistory } from 'react-router-dom';
-import { getProcessId } from '../helpers/getProcessId';
 
 function ProofOfIdentity() {
   const { kycStore } = useStores();
@@ -38,23 +37,11 @@ function ProofOfIdentity() {
 
   const postPersonalData = async () => {
     try {
-      const response = await Axios.all([
-        API.getKeyValue(KeysInApi.PERSONAL_DATA),
-        API.getKeyValue(KeysInApi.PHONE_VERIFICATION),
-      ]);
-      let personalData: any = {};
-      response.forEach(item => {
-        personalData = {
-          processId: getProcessId(),
-          ...personalData,
-          ...JSON.parse(item),
-        };
-      });
-      API.postPersonalData(personalData).finally(() => {
+      const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
+      API.postPersonalData(JSON.parse(response)).finally(() => {
         push(Page.DASHBOARD);
       });
-    } catch (error) {
-                    }
+    } catch (error) {}
   }
 
   const submitFiles = async () => {
@@ -76,6 +63,10 @@ function ProofOfIdentity() {
     } catch (error) {
       setIsLoading(false);
     }
+  };
+
+  const attachLater = () => {
+    push(Page.DASHBOARD);
   };
 
   useEffect(() => {
@@ -180,7 +171,7 @@ function ProofOfIdentity() {
           </PrimaryButton>
         </FlexContainer>
         <FlexContainer>
-          <ButtonWithoutStyles onClick={submitFiles}>
+          <ButtonWithoutStyles onClick={attachLater}>
             <PrimaryTextSpan color="#07FAFF" fontSize="14px">
               Attach documents later
             </PrimaryTextSpan>

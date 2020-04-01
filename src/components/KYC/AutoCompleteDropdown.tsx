@@ -63,6 +63,24 @@ const AutoCompleteDropdown: FC<Props> = props => {
     };
   }, []);
 
+  const renderItems = () => {
+    const filteredList = dropdownItemsList.filter(
+      item => !value || item.name.toLowerCase().includes(value.toLowerCase())
+    );
+    return filteredList.length ? (
+      filteredList.map(item => (
+        <DropdownItem key={item.id} onClick={handleSetValue(item.name)}>
+          <DropdownItemText color="#fffccc" fontSize="12px">
+            {item.name}
+          </DropdownItemText>
+        </DropdownItem>
+      ))
+    ) : (
+      <PrimaryTextSpan fontSize="11px" color="rgba(255,255,255,0.4)">
+        No matches
+      </PrimaryTextSpan>
+    );
+  };
   return (
     <LabelWrapper htmlFor={id} ref={wrapperRef} onMouseDown={toggleFocus}>
       <Input
@@ -89,18 +107,7 @@ const AutoCompleteDropdown: FC<Props> = props => {
           zIndex="101"
           backgroundColor="#1C2026"
         >
-          {dropdownItemsList
-            .filter(
-              item =>
-                !value || item.name.toLowerCase().includes(value.toLowerCase())
-            )
-            .map(item => (
-              <DropdownItem key={item.id} onClick={handleSetValue(item.name)}>
-                <DropdownItemText color="#fffccc" fontSize="12px">
-                  {item.name}
-                </DropdownItemText>
-              </DropdownItem>
-            ))}
+          {renderItems()}
         </DropdownWrapper>
       )}
     </LabelWrapper>
