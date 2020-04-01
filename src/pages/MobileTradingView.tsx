@@ -103,7 +103,6 @@ const MobileTradingView: FC = () => {
       Axios.defaults.headers['Authorization'] = data.auth;
       initWebsocketConnection(data.auth, data.instrument);
     } else if (data.type) {
-      alert('switch type message');
       switch (data.type) {
         case mobileChartMessageTypes.SET_CANDLE_TYPE:
           tvWidget?.chart().setChartType(data.message);
