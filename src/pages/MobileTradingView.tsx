@@ -18,6 +18,7 @@ import DataFeedService from '../services/dataFeedService';
 import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 import ColorsPallete from '../styles/colorPallete';
 import { LineStyles } from '../enums/TradingViewStyles';
+import { MobileMessageModel } from '../types/MobileTVTypes';
 
 const containerId = 'tv_chart_container';
 
@@ -26,6 +27,8 @@ const MobileTradingView: FC = () => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
   const [instrumentId, setInstrumentId] = useState('');
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
+
+  const { port1, port2 } = new MessageChannel();
 
   const initWebsocketConnection = async (
     token: string,
@@ -98,14 +101,14 @@ const MobileTradingView: FC = () => {
   };
 
   const messageHandler = (e: MessageEvent) => {
-   const data = JSON.parse(e.data)
+   const data: MobileMessageModel = JSON.parse(e.data);
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = data.auth;
       initWebsocketConnection(data.auth, data.instrument);
     } else if (data.type) {
       switch (data.type) {
         case mobileChartMessageTypes.SET_CANDLE_TYPE:
-          tvWidget?.chart().setChartType(data.message);
+          tvWidget?.chart().setChartType(data.chart_type);
           break;
 
         case mobileChartMessageTypes.SET_INSTRUMENT:
@@ -113,7 +116,7 @@ const MobileTradingView: FC = () => {
           break;
 
         case mobileChartMessageTypes.SET_INTERVAL:
-          setInterval(data);
+          setInterval(data.interval);
           break;
 
         case mobileChartMessageTypes.SET_RESOLUTION:
@@ -129,25 +132,24 @@ const MobileTradingView: FC = () => {
   useEffect(() => {
 
     window.addEventListener('message', messageHandler, false);
-    // const { port1, port2 } = new MessageChannel();
 
-    // port1.addEventListener(
-    //   'message',
-    //   function(e) {
-    //    alert(`message from port1 ${e.data}`);
-    //   },
-    //   false
-    // );
+    port1.addEventListener(
+      'message',
+      function(e) {
+       alert(`message from port1 ${e.data}`);
+      },
+      false
+    );
 
-    // port2.addEventListener(
-    //   'message',
-    //   function(e) {
-    //     alert(`message port2 ${JSON.stringify(e.data)}`);
-    //   },
-    //   false
-    // );
-    // port1.start();
-    // port2.start();
+    port2.addEventListener(
+      'message',
+      function(e) {
+        alert(`message port2 ${JSON.stringify(e.data)}`);
+      },
+      false
+    );
+    port1.start();
+    port2.start();
   }, []);
 
   useEffect(() => {
