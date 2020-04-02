@@ -62,6 +62,9 @@ const PhoneVerification: FC<Props> = props => {
     phone: ''
   });
 
+  const handleChangeCountry = (setFieldValue: any) => (country: Country) => {
+    setFieldValue(Fields.PHONE, country.dial);
+  }
 
   const handleSubmit = ({ phone }: PhoneVerificationFormParams) => {
     try {
@@ -147,6 +150,7 @@ const PhoneVerification: FC<Props> = props => {
                           hasError={!!(meta.touched && meta.error)}
                           dropdownItemsList={countries}
                           setFieldValue={setFieldValue}
+                          handleChange={handleChangeCountry(setFieldValue)}
                         ></AutoCompleteDropdown>
                       </FlexContainer>
                     )}

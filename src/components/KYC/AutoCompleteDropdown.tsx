@@ -16,6 +16,7 @@ interface Props {
   errorText?: string;
   dropdownItemsList: Country[];
   setFieldValue: (arg0: string, arg1: string) => void;
+  handleChange?: (arg0: Country) => void;
 }
 
 const AutoCompleteDropdown: FC<Props> = props => {
@@ -31,6 +32,7 @@ const AutoCompleteDropdown: FC<Props> = props => {
     errorText,
     dropdownItemsList,
     setFieldValue,
+    handleChange
   } = props;
   const [on, toggle] = useState(false);
 
@@ -50,8 +52,12 @@ const AutoCompleteDropdown: FC<Props> = props => {
     }
   };
 
-  const handleSetValue = (value: string) => () => {
-    setFieldValue(id, value);
+  const handleSetValue = (country: Country) => () => {
+    setFieldValue(id, country.name);
+
+    if (handleChange) {
+      handleChange(country);
+    }
     toggle(false);
   };
 
@@ -69,7 +75,7 @@ const AutoCompleteDropdown: FC<Props> = props => {
     );
     return filteredList.length ? (
       filteredList.map(item => (
-        <DropdownItem key={item.id} onClick={handleSetValue(item.name)}>
+        <DropdownItem key={item.id} onClick={handleSetValue(item)}>
           <DropdownItemText color="#fffccc" fontSize="12px">
             {item.name}
           </DropdownItemText>
