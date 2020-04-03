@@ -127,6 +127,7 @@ function PendingOrder(props: Props) {
           <ClosePositionPopup
             applyHandler={handleCloseOrder}
             ref={instrumentRef}
+            confirmText="Cancel Order?"
           ></ClosePositionPopup>
         </FlexContainer>
       </OrderWrapperWithBorder>
