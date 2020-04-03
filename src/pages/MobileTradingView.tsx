@@ -28,6 +28,15 @@ const MobileTradingView: FC = () => {
   const [instrumentId, setInstrumentId] = useState('');
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
 
+const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
+  auth: '',
+  chart_type: SeriesStyle.Area,
+  instrument: 'EURUSD',
+  interval: '',
+  resolution: '',
+  type: '',
+});
+
   const { port1, port2 } = new MessageChannel();
 
   const initWebsocketConnection = async (
@@ -90,29 +99,50 @@ const MobileTradingView: FC = () => {
         break;
     }
 
-    tvWidget
-      ?.chart()
-      .setResolution(supportedResolutions[newResolutionKey], () => {
-        tvWidget?.chart().setVisibleRange({
-          from: from.valueOf(),
-          to: moment().valueOf(),
-        });
+    const resolution = supportedResolutions[newResolutionKey];
+    
+    const newSnapshot = {
+      ...statusSnapshot,
+      resolution,
+      interval: newInterval,
+    };
+
+    tvWidget?.chart().setResolution(resolution, () => {
+      tvWidget?.chart().setVisibleRange({
+        from: from.valueOf(),
+        to: moment().valueOf(),
       });
+      setStatusSnapshot(newSnapshot);
+      port1.postMessage(newSnapshot);
+    });
   };
 
   const messageHandler = (e: MessageEvent) => {
-   const data: MobileMessageModel = JSON.parse(e.data);
+    const data: MobileMessageModel = JSON.parse(e.data);
+
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = data.auth;
       initWebsocketConnection(data.auth, data.instrument);
     } else if (data.type) {
+      let newSnapshot: MobileMessageModel = {
+        ...statusSnapshot,
+      };
       switch (data.type) {
         case mobileChartMessageTypes.SET_CANDLE_TYPE:
           tvWidget?.chart().setChartType(data.chart_type);
+          newSnapshot = {
+            ...newSnapshot,
+            chart_type: data.chart_type,
+          };
           break;
 
         case mobileChartMessageTypes.SET_INSTRUMENT:
           tvWidget?.setSymbol(data.instrument, data.interval, () => {});
+          newSnapshot = {
+            ...newSnapshot,
+            instrument: data.instrument,
+          };
+
           break;
 
         case mobileChartMessageTypes.SET_INTERVAL:
@@ -121,11 +151,17 @@ const MobileTradingView: FC = () => {
 
         case mobileChartMessageTypes.SET_RESOLUTION:
           tvWidget?.chart().setResolution(data.resolution, () => {});
+          newSnapshot = {
+            ...newSnapshot,
+            resolution: data.resolution,
+          };
+
           break;
 
         default:
           break;
       }
+      setStatusSnapshot(newSnapshot);
     }
   };
 
