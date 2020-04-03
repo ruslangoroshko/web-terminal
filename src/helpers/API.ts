@@ -32,6 +32,7 @@ import { CountriesEnum } from '../enums/CountriesEnum';
 import { Country } from '../types/CountriesTypes';
 import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
 import { getProcessId } from './getProcessId';
+import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -248,6 +249,22 @@ class API {
     );
     return response.data;
   }
+
+  getFavoriteInstrumets = async (params: {type: AccountTypeEnum, accountId: string}) => {
+    const response = await axios.get<string[]>(
+      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`, {
+        params
+      }
+    );
+    return response.data;
+  };
+
+  postFavoriteInstrumets = async (params: { type: AccountTypeEnum, accountId: string, instruments: string[] }) => {
+    const response = await axios.post<string[]>(
+      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`, params
+    )
+    return response.data
+  }
 }
 
-export default new API();
+export default new API()

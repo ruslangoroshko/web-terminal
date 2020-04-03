@@ -30,7 +30,9 @@ const AccountInfo: FC<Props> = observer(props => {
   const isActiveAccount = mainAppStore.activeAccount?.id === account.id;
 
   const handleSwitch = () => {
-    mainAppStore.setActiveAccount(account);
+    mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+      [Fields.ACCOUNT_ID]: account.id,
+    });
     tabsStore.sideBarTabType = null;
     toggle();
   };

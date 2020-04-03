@@ -8,7 +8,6 @@ import { useStores } from '../../hooks/useStores';
 import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import AccountInfo from './AccountInfo';
 import { Observer } from 'mobx-react-lite';
-import { AccountModelWebSocketDTO } from '../../types/Accounts';
 
 function AccountSwitcherDropdown() {
   const { quotesStore, mainAppStore } = useStores();

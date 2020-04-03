@@ -3,7 +3,7 @@ const Topics = {
   ACCOUNTS: 'accounts',
   ACTIVE_POSITIONS: 'positionsactive',
   POSITION_CLOSED: 'positionclosed',
-  UPDATE_ACCOUNT: 'updateaccount',
+  UPDATE_ACCOUNT: 'accountupdate',
   INSTRUMENTS: 'instruments',
   PONG: 'pong',
   GROUPS: 'groups',
