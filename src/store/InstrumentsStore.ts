@@ -11,6 +11,8 @@ import { SeriesStyle } from '../vendor/charting_library/charting_library.min';
 import { supportedResolutions } from '../constants/supportedTimeScales';
 import { getIntervalByKey } from '../helpers/getIntervalByKey';
 import moment from 'moment';
+import { AccountTypeEnum } from '../enums/AccountTypeEnum';
+import API from '../helpers/API';
 interface IPriceChange {
   [key: string]: number;
 }
@@ -46,12 +48,11 @@ export class InstrumentsStore implements ContextProps {
     this.rootStore = rootStore;
   }
 
-
-  // TODO: order of newly instruments is broken
   @computed get activeInstruments() {
     const filteredActiveInstruments = this.instruments.filter(item =>
       this.activeInstrumentsIds.includes(item.instrumentItem.id)
-    )
+    ).sort((a, b) => this.activeInstrumentsIds.indexOf(a.instrumentItem.id) -
+      this.activeInstrumentsIds.indexOf(b.instrumentItem.id))
     return filteredActiveInstruments;
   }
 
@@ -100,8 +101,17 @@ export class InstrumentsStore implements ContextProps {
       this.activeInstrumentsIds[6] = activeInstrumentId;
     } else {
       this.activeInstrumentsIds.push(activeInstrumentId);
+
     }
-  };
+    API.postFavoriteInstrumets({
+      accountId: this.rootStore.mainAppStore.activeAccount!.id,
+      type: this.rootStore.mainAppStore.activeAccount!.isLive
+        ? AccountTypeEnum.Live
+        : AccountTypeEnum.Demo,
+      instruments: this.activeInstrumentsIds,
+    });
+
+  }
 
   @computed
   get sortedInstruments() {
@@ -141,13 +151,13 @@ export class InstrumentsStore implements ContextProps {
 
   // TODO: refactor, too heavy
   @action
-  switchInstrument = (instrumentId: string) => {
+  switchInstrument = async (instrumentId: string) => {
     const newActiveInstrument = this.instruments.find(
       item => item.instrumentItem.id === instrumentId
     );
-    this.activeInstrument = newActiveInstrument;
     if (newActiveInstrument) {
       this.addActiveInstrumentId(instrumentId);
+      this.activeInstrument = newActiveInstrument;
       const tvWidget = this.rootStore.tradingViewStore.tradingWidget?.chart();
       if (tvWidget) {
         tvWidget.setSymbol(instrumentId, () => {

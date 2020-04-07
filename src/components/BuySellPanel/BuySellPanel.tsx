@@ -427,7 +427,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         </FlexContainer>
         <FlexContainer flexDirection="column" position="relative">
           {values.operation !== null && (
-            <ConfirmPopupWrapper position="absolute" right="100%" top="20px">
+            <ConfirmPopupWrapper position="absolute" right="100%" top="0px">
               <ConfirmationPopup
                 closePopup={closePopup}
                 applyHandler={confirmBuying}
@@ -595,4 +595,8 @@ const fadein = keyframes`
 `;
 const ConfirmPopupWrapper = styled(FlexContainer)`
   animation: ${fadein} 0.2s ease forwards;
+
+  @media (max-height: 700px) { 
+    top: -40px;
+  }
 `;
