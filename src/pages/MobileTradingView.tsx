@@ -113,7 +113,7 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
         to: moment().valueOf(),
       });
       setStatusSnapshot(newSnapshot);
-      port1.postMessage(newSnapshot);
+      parent.postMessage(newSnapshot, '*');
     });
   };
 

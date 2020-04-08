@@ -15,7 +15,6 @@ import { RootStore } from './RootStore';
 import Fields from '../constants/fields';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
-import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 
 interface MainAppStoreProps {
   token: string;
@@ -101,7 +100,6 @@ export class MainAppStore implements MainAppStoreProps {
     );
     connection.onclose(error => {
       console.log(error);
-      this.handleInitConnection(token);
     });
   };
 
@@ -113,11 +111,14 @@ export class MainAppStore implements MainAppStoreProps {
       const activeAccount = this.accounts.find(
         item => item.id === activeAccountId
       );
-      this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-        [Fields.ACCOUNT_ID]: activeAccount?.id || this.accounts[0].id,
-      });
-      
-      this.setActiveAccount(activeAccount || this.accounts[0]);
+
+      if (activeAccount) {
+        this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+          [Fields.ACCOUNT_ID]: activeAccount.id
+        });
+        this.setActiveAccount(activeAccount);
+      }
+     
       this.isInitLoading = false;
     } catch (error) {
       this.isInitLoading = false;

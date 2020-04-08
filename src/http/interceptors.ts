@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
 

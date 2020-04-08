@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { keyframes, css } from '@emotion/core';
 import styled from '@emotion/styled';
 import LoaderComponent from './LoaderComponent';
@@ -7,14 +7,11 @@ interface Props {
   isLoading: boolean;
 }
 
-function LoaderForComponents(props: Props) {
-  const { isLoading } = props;
-  return (
-    <FixedContainerWrapper isLoading={isLoading}>
-      <LoaderComponent />
-    </FixedContainerWrapper>
-  );
-}
+const LoaderForComponents: FC<Props> = ({ isLoading }) => (
+  <FixedContainerWrapper isLoading={isLoading}>
+    <LoaderComponent />
+  </FixedContainerWrapper>
+);
 
 export default LoaderForComponents;
 

@@ -84,8 +84,8 @@ const SingIn = observer(() => {
                         value={field.value || ''}
                         id={Fields.EMAIL}
                         hasError={!!(meta.touched && meta.error)}
+                        errorText={meta.error}
                       ></LabelInput>
-                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
                     </FlexContainer>
                   )}
                 </Field>
@@ -103,8 +103,8 @@ const SingIn = observer(() => {
                         id={Fields.PASSWORD}
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
-                      ></LabelInput>
-                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
+                        errorText={meta.error}
+                        ></LabelInput>
                     </FlexContainer>
                   )}
                 </Field>

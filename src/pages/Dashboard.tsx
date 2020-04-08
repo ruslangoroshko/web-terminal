@@ -86,13 +86,6 @@ const Dashboard = observer(() => {
       );
 
       mainAppStore.activeSession?.on(
-        Topics.UPDATE_ACCOUNT,
-        (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
-          mainAppStore.setActiveAccount(response.data);
-        }
-      );
-
-      mainAppStore.activeSession?.on(
         Topics.PENDING_ORDERS,
         (response: ResponseFromWebsocket<PendingOrdersWSDTO[]>) => {
           if (mainAppStore.activeAccount?.id === response.accountId) {
@@ -133,9 +126,6 @@ const Dashboard = observer(() => {
         {() => (
           <>{!mainAppStore.activeAccount && <DemoRealPopup></DemoRealPopup>}</>
         )}
-      </Observer>
-      <Observer>
-        {() => <LoaderFullscreen isLoading={!mainAppStore.activeAccount} />}
       </Observer>
       <FlexContainer
         position="absolute"

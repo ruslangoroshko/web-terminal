@@ -7,7 +7,7 @@ import { FlexContainer } from '../styles/FlexContainer';
 import KYCcontainer from '../containers/KYCcontainer';
 import { useStores } from '../hooks/useStores';
 import LoaderFullscreen from '../components/LoaderFullscreen';
-import { Observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 
 const RoutingLayout = () => {
   const location = useLocation();
@@ -92,6 +92,6 @@ const RoutingLayout = () => {
         </FlexContainer>
       );
   }
-};
+}
 
 export default RoutingLayout;

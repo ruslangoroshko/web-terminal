@@ -77,8 +77,8 @@ function SignUp() {
                         value={field.value || ''}
                         id={Fields.EMAIL}
                         hasError={!!(meta.touched && meta.error)}
+                        errorText={meta.error}
                       ></LabelInput>
-                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
                     </FlexContainer>
                   )}
                 </Field>
@@ -97,8 +97,8 @@ function SignUp() {
                         autoComplete="new-password"
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
+                        errorText={meta.error}
                       ></LabelInput>
-                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
                     </FlexContainer>
                   )}
                 </Field>
@@ -117,15 +117,14 @@ function SignUp() {
                         autoComplete="new-password"
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
+                        errorText={meta.error}
                       ></LabelInput>
-                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
                     </FlexContainer>
                   )}
                 </Field>
                 {formikBag.status && (
                   <ErrorMessage>{formikBag.status}</ErrorMessage>
                 )}
-
                 <PrimaryButton
                   padding="12px"
                   type="submit"

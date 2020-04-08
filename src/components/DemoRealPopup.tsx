@@ -11,12 +11,9 @@ import KeysInApi from '../constants/keysInApi';
 import Topics from '../constants/websocketTopics';
 import Fields from '../constants/fields';
 
-interface Props {}
+function DemoRealPopup() {
 
-function DemoRealPopup(props: Props) {
-  const {} = props;
-
-  const { mainAppStore, quotesStore } = useStores();
+  const { mainAppStore } = useStores();
 
   const selectDemoAccount = async () => {
     const acc = mainAppStore.accounts.find(item => !item.isLive);
@@ -26,7 +23,9 @@ function DemoRealPopup(props: Props) {
           key: KeysInApi.ACTIVE_ACCOUNT_ID,
           value: acc.id,
         });
-
+        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+          [Fields.ACCOUNT_ID]: acc.id
+        });
         mainAppStore.setActiveAccount(acc);
       } catch (error) {}
     }

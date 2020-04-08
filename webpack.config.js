@@ -104,6 +104,7 @@ module.exports = (env, argv) => {
             ? JSON.stringify('./charting_library/')
             : JSON.stringify('./src/vendor/charting_library/'),
         IS_LIVE: argv.mode === 'production',
+        MIXPANEL_TOKEN: JSON.stringify('582507549d28c813188211a0d15ec940'),
       }),
       new CopyPlugin([
         { from: './src/vendor/charting_library/', to: 'charting_library' },
