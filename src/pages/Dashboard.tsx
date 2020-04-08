@@ -4,8 +4,6 @@ import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import Topics from '../constants/websocketTopics';
-import { AccountModelWebSocketDTO } from '../types/Accounts';
-import Fields from '../constants/fields';
 import TVChartContainer from '../containers/ChartContainer';
 import { InstrumentModelWSDTO, PriceChangeWSDTO } from '../types/InstrumentsTypes';
 import { PositionModelWSDTO } from '../types/Positions';

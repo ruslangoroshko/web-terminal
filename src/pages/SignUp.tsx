@@ -14,7 +14,6 @@ import SignTypeTabs from '../components/SignTypeTabs';
 import Page from '../constants/Pages';
 import { useHistory } from 'react-router-dom';
 
-
 function SignUp() {
   const validationSchema = yup.object().shape<UserRegistration>({
     email: yup.string().required('Required any value'),
@@ -75,7 +74,7 @@ function SignUp() {
                         {...field}
                         labelText="Email"
                         value={field.value || ''}
-                        id={Fields.EMAIL}
+                        id={field.name}
                         hasError={!!(meta.touched && meta.error)}
                         errorText={meta.error}
                       ></LabelInput>
@@ -93,7 +92,7 @@ function SignUp() {
                         {...field}
                         labelText="Password"
                         value={field.value || ''}
-                        id={Fields.PASSWORD}
+                        id={field.name}
                         autoComplete="new-password"
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
@@ -113,7 +112,7 @@ function SignUp() {
                         {...field}
                         labelText="Repeat Password"
                         value={field.value || ''}
-                        id={Fields.REPEAT_PASSWORD}
+                        id={field.name}
                         autoComplete="new-password"
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
