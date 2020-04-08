@@ -2,4 +2,5 @@
 /.git
 /wwwroot
 /.vs
+/dist
 .idea
