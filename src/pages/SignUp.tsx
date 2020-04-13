@@ -135,7 +135,7 @@ function SignUp() {
                     fontSize="14px"
                     textTransform="uppercase"
                   >
-                    Submit
+                    Sign up
                   </PrimaryTextSpan>
                 </PrimaryButton>
               </FlexContainer>
