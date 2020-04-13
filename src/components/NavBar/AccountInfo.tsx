@@ -6,7 +6,7 @@ import {
   PrimaryTextParagraph,
   QuoteText,
 } from '../../styles/TextsElements';
-import { AccountModelWebSocketDTO } from '../../types/Accounts';
+import { AccountModelWebSocketDTO } from '../../types/AccountsTypes';
 import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import { PrimaryButton, SecondaryButton } from '../../styles/Buttons';

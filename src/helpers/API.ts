@@ -8,7 +8,7 @@ import {
   OpenPendingOrder,
 } from '../types/Positions';
 import API_LIST from './apiList';
-import { AccountModelDTO } from '../types/Accounts';
+import { AccountModelDTO } from '../types/AccountsTypes';
 import {
   UserAuthenticate,
   UserAuthenticateResponse,

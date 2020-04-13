@@ -1,6 +1,6 @@
 import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
-import { AccountModelWebSocketDTO } from '../types/Accounts';
+import { AccountModelWebSocketDTO } from '../types/AccountsTypes';
 import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
 import { action, observable, computed } from 'mobx';
 import API from '../helpers/API';
@@ -15,6 +15,7 @@ import { RootStore } from './RootStore';
 import Fields from '../constants/fields';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
+import { init } from 'mixpanel-browser';
 
 interface MainAppStoreProps {
   token: string;
@@ -49,6 +50,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
+    init(MIXPANEL_TOKEN);
     this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
     if (this.token) {
@@ -118,12 +120,13 @@ export class MainAppStore implements MainAppStoreProps {
         });
         this.setActiveAccount(activeAccount);
       }
-     
+      this.isLoading = false;
       this.isInitLoading = false;
     } catch (error) {
       this.isInitLoading = false;
+      this.isLoading = false;
     }
-  };
+  }
 
   @action
   setActiveAccount = (account: AccountModelWebSocketDTO) => {

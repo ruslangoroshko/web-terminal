@@ -36,7 +36,9 @@ const RoutingLayout = () => {
               <>
                 {!mainAppStore.isInitLoading && <Switch>{allRoutes}</Switch>}
                 <LoaderFullscreen
-                  isLoading={mainAppStore.isInitLoading}
+                  isLoading={
+                    mainAppStore.isInitLoading || mainAppStore.isLoading
+                  }
                 ></LoaderFullscreen>
               </>
             )}
