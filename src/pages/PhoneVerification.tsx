@@ -30,8 +30,8 @@ const PhoneVerification: FC<Props> = props => {
   const validationSchema = yup.object().shape<PhoneVerificationFormParams>({
     phone: yup
       .string()
-      .min(11, 'min 11')
-      .max(20, 'max 20')
+      .min(11, 'Min 11 symbols')
+      .max(20, 'Max 20 symbols')
       .required(),
     customCountryCode: yup.mixed().oneOf(countriesNames, 'No matches'),
   });
