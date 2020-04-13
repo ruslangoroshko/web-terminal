@@ -112,7 +112,7 @@ const SingIn = observer(() => {
                 <PrimaryButton
                   padding="12px"
                   type="submit"
-                  disabled={!formikBag.isValid || formikBag.isSubmitting}
+                  //disabled={!formikBag.isValid || formikBag.isSubmitting}
                 >
                   <PrimaryTextSpan
                     color="#1c2026"
