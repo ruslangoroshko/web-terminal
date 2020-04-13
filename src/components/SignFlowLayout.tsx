@@ -1,4 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
+
+import { Link } from 'react-router-dom';
+
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import styled from '@emotion/styled';
@@ -8,6 +11,8 @@ import ButtonGoogleStoreImage from '../assets/images/button-google-store.png';
 import SvgIcon from './SvgIcon';
 import MonfexLogo from '../assets/svg/icon-logo.svg';
 import MonfexLogoText from '../assets/svg/icon-logo-text.svg';
+
+import Pages from "../constants/Pages"
 
 interface Props {}
 
@@ -67,23 +72,19 @@ const SignFlowLayout: FC<Props> = props => {
               ©2017–{new Date().getFullYear()} Monfex. All rights reserved.
             </PrimaryTextSpan>
           </FlexContainer>
+
           <FlexContainer>
-            <LinkItem>
-              <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
-                Support
-              </PrimaryTextSpan>
+            <LinkItem to={Pages.SUPPORT} target={"_blank"}>
+              Support
             </LinkItem>
-            <LinkItem>
-              <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
-                FAQ
-              </PrimaryTextSpan>
+            <LinkItem to={Pages.FAQ} target={"_blank"}>
+              FAQ
             </LinkItem>
-            <LinkItem>
-              <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
-                About Us
-              </PrimaryTextSpan>
+            <LinkItem to={Pages.ABOUT_US} target={"_blank"}>
+              About us
             </LinkItem>
           </FlexContainer>
+
         </FlexContainer>
       </FlexContainer>
     </FlexContainer>
@@ -108,9 +109,15 @@ const ButtonImage = styled.img`
   border-radius: 10px;
 `;
 
-const LinkItem = styled(ButtonWithoutStyles)`
+const LinkItem = styled(Link)`
   margin-right: 24px;
+  text-decoration: none;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
   :last-of-type {
     margin-right: 0;
+  }
+  :hover {
+    color: #00ffdd;
   }
 `;
