@@ -5,12 +5,15 @@ variables:
   K8S_DEV_NAMESPACE: simple-trading-dev
   K8S_DEV_CONTEXT: SimpleTradingDevKubernetes
   BUILD_FOLDER: wwwroot
+  KUBERNETES_APP_SELECTOR_NAME: simple-trading-web-terminal
 
 stages:
   - build
   - publish-dev
   - publish
   - publish-k8s-dev
+  - publish-kubernetes-dev
+  - publish-kubernetes-test
 
 build:
   tags: [monfex]
@@ -62,15 +65,29 @@ publish-dev:
   only:
     - development
 
-publish-k8s-dev:
-  stage: publish-k8s-dev
-  image: google/cloud-sdk
-  tags: [monfex]
+
+publish-kubernetes-dev:
+  stage: publish-kubernetes-dev
+  image: simpletrading.azurecr.io/monfex/simple-trading-kubectl:latest
   services:
     - docker:dind
   before_script:
-    - kubectl config use-context ${K8S_DEV_CONTEXT}
+    - kubectl config use-context $KUBERNETES_DEV_CONTEXT
   script:
-    - kubectl delete pods -l app=${K8S_DEV_APP_SELECTOR} --namespace=${K8S_DEV_NAMESPACE}
+    - kubectl delete pods -l app=${KUBERNETES_APP_SELECTOR_NAME} --namespace=$KUBERNETES_DEV_NAMESPACE
   only:
     - development
+
+publish-kubernetes-test:
+  stage: publish-kubernetes-test
+  image: simpletrading.azurecr.io/monfex/simple-trading-kubectl:latest
+  services:
+    - docker:dind
+  before_script:
+    - kubectl config use-context $KUBERNETES_DEV_CONTEXT
+  script:
+    - kubectl delete pods -l app=${KUBERNETES_APP_SELECTOR_NAME} --namespace=$KUBERNETES_DEV_NAMESPACE
+    - kubectl set image deployments/${KUBERNETES_APP_SELECTOR_NAME} ${KUBERNETES_APP_SELECTOR_NAME}=$DOCKER_REGISTRY_HOST/${DOCKER_DEV_IMAGE_TAG} --namespace=$KUBERNETES_DEV_NAMESPACE
+    - kubectl patch deployment ${KUBERNETES_APP_SELECTOR_NAME} -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"date\":\"`date +'%s'`\"}}}}}" --namespace=$KUBERNETES_DEV_NAMESPACE
+  only:
+    - test

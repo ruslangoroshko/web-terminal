@@ -67,7 +67,9 @@ function YearMonthDropdown(props: Props) {
           height="4px"
         />
       </FlexContainer>
-      <PrimaryTextParagraph color="#fffccc">{selected}</PrimaryTextParagraph>
+      <PrimaryTextParagraph fontSize="12px" color="#fffccc">
+        {selected}
+      </PrimaryTextParagraph>
       {on && (
         <DropdownWrapper
           ref={dropdownRef}

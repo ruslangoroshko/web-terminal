@@ -14,6 +14,7 @@ import { getProcessId } from '../../helpers/getProcessId';
 import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import ClosePositionPopup from './ClosePositionPopup';
 import { PendingOrdersWSDTO } from '../../types/PendingOrdersTypes';
+import ImageContainer from '../ImageContainer';
 
 interface Props {
   pendingOrder: PendingOrdersWSDTO;
@@ -57,11 +58,9 @@ function PendingOrder(props: Props) {
       padding="0 16px"
     >
       <OrderWrapperWithBorder padding="12px 0" justifyContent="space-between">
-        <FlexContainer
-          width="32px"
-          height="32px"
-          margin="0 8px 0 0"
-        ></FlexContainer>
+        <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
+          <ImageContainer instrumentId={pendingOrder.instrument} />
+        </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 38px 0 0">
           <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
             {pendingOrder.instrument}
@@ -128,6 +127,7 @@ function PendingOrder(props: Props) {
           <ClosePositionPopup
             applyHandler={handleCloseOrder}
             ref={instrumentRef}
+            confirmText="Cancel Order?"
           ></ClosePositionPopup>
         </FlexContainer>
       </OrderWrapperWithBorder>

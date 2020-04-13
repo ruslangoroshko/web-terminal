@@ -28,7 +28,7 @@ function SignTypeTabs() {
           fontSize="14px"
           fontWeight="bold"
         >
-          Registration
+          Sign up
         </PrimaryTextSpan>
       </CustomNavLink>
     </FlexContainer>

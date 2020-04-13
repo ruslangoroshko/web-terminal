@@ -1,6 +1,6 @@
 import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
-import { AccountModelWebSocketDTO } from '../types/Accounts';
+import { AccountModelWebSocketDTO } from '../types/AccountsTypes';
 import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
 import { action, observable, computed } from 'mobx';
 import API from '../helpers/API';
@@ -13,10 +13,9 @@ import KeysInApi from '../constants/keysInApi';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { RootStore } from './RootStore';
 import Fields from '../constants/fields';
-import { appHistory } from '../routing/history';
-import Page from '../constants/Pages';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
-import { WS_HOST } from '../constants/vars';
+import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
+import { init } from 'mixpanel-browser';
 
 interface MainAppStoreProps {
   token: string;
@@ -30,9 +29,10 @@ interface MainAppStoreProps {
   accounts: AccountModelWebSocketDTO[];
   setActiveAccount: (acc: AccountModelWebSocketDTO) => void;
   activeAccountId: string;
+  profileStatus: PersonalDataKYCEnum;
 }
 
-// TODO: think about right application initialization
+// TODO: think about application initialization
 // describe step by step init, loaders, async behaviour in app
 // think about loader flags - global, local
 
@@ -44,11 +44,13 @@ export class MainAppStore implements MainAppStoreProps {
   @observable activeAccount?: AccountModelWebSocketDTO;
   @observable accounts: AccountModelWebSocketDTO[] = [];
   @observable activeAccountId: string = '';
+  @observable profileStatus: PersonalDataKYCEnum = PersonalDataKYCEnum.NotVerified;
   token = '';
   rootStore: RootStore;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
+    init(MIXPANEL_TOKEN);
     this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
     if (this.token) {
@@ -67,6 +69,8 @@ export class MainAppStore implements MainAppStoreProps {
         await connection.send(Topics.INIT, token);
         this.activeSession = connection;
         this.isAuthorized = true;
+        this.isInitLoading = false;
+
       } catch (error) {
         this.isAuthorized = false;
         this.isInitLoading = false;
@@ -98,7 +102,6 @@ export class MainAppStore implements MainAppStoreProps {
     );
     connection.onclose(error => {
       console.log(error);
-      this.handleInitConnection(token);
     });
   };
 
@@ -110,21 +113,25 @@ export class MainAppStore implements MainAppStoreProps {
       const activeAccount = this.accounts.find(
         item => item.id === activeAccountId
       );
-      this.setActiveAccount(activeAccount || this.accounts[0]);
+
+      if (activeAccount) {
+        this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+          [Fields.ACCOUNT_ID]: activeAccount.id
+        });
+        this.setActiveAccount(activeAccount);
+      }
+      this.isLoading = false;
       this.isInitLoading = false;
     } catch (error) {
       this.isInitLoading = false;
+      this.isLoading = false;
     }
-  };
+  }
 
   @action
-  setActiveAccount(account: AccountModelWebSocketDTO) {
+  setActiveAccount = (account: AccountModelWebSocketDTO) => {
     this.activeAccount = account;
     this.rootStore.quotesStore.available = account.balance;
-
-    this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-      [Fields.ACCOUNT_ID]: account.id,
-    });
 
     API.setKeyValue({
       key: KeysInApi.ACTIVE_ACCOUNT_ID,

@@ -10,9 +10,10 @@ import IconClose from '../assets/svg/icon-close.svg';
 interface Props {
   toggle: (arg: boolean) => void;
   applyHandler: () => void;
+  confirmText: string;
 }
 
-const ConfirmPopup: FC<Props> = ({ toggle, applyHandler }) => {
+const ConfirmPopup: FC<Props> = ({ toggle, applyHandler,confirmText }) => {
   const handleApply = () => {
     applyHandler();
     toggle(false);
@@ -45,7 +46,7 @@ const ConfirmPopup: FC<Props> = ({ toggle, applyHandler }) => {
         marginBottom="16px"
         textAlign="center"
       >
-        Close Position?
+        {confirmText}
       </PrimaryTextParagraph>
       <ConfirmButton onClick={handleApply}>
         <PrimaryTextSpan fontWeight="bold" fontSize="14px" color="#003A38">

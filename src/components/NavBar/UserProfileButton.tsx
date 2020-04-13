@@ -3,9 +3,20 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import SvgIcon from '../SvgIcon';
 import IconUser from '../../assets/svg/icon-navbar-user.svg';
+import IconUserNotification from '../../assets/svg_no_compress/icon-profile-notifications.svg';
 import ProfileDropdown from '../ProfileDropdown';
+import { useStores } from '../../hooks/useStores';
+import API from '../../helpers/API';
+import { getProcessId } from '../../helpers/getProcessId';
+import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
+import { Observer } from 'mobx-react-lite';
+import { identify, people, Dict } from 'mixpanel-browser';
+import KYCStatus from '../../constants/KYCStatus';
+import mixpanelFields from '../../constants/mixpanelFields';
 
 function UserProfileButton() {
+
+  const { mainAppStore} = useStores()
   const [on, toggle] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const handleToggle = () => {
@@ -21,6 +32,23 @@ function UserProfileButton() {
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
 
+    async function fetchPersonalData() {
+      try {
+        const response = await API.getPersonalData(getProcessId());
+        identify(response.data.id);
+        people.set({
+          [mixpanelFields.FIRST_NAME]: response.data.firstName,
+          [mixpanelFields.LAST_NAME]: response.data.lastName,
+          [mixpanelFields.EMAIL]: response.data.email,
+          [mixpanelFields.AVATAR]: response.data.avatar,
+          [mixpanelFields.USER_KYC_STATUS]: KYCStatus[response.data.kyc],
+          [mixpanelFields.PHONE]: response.data.phone,
+          [mixpanelFields.LAST_LOGIN]: new Date().toISOString(),
+        });
+        mainAppStore.profileStatus = response.data.kyc;
+      } catch (error) {}
+    }
+    fetchPersonalData();
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -30,16 +58,21 @@ function UserProfileButton() {
     <UserProfileButtonWrapper
       ref={wrapperRef}
       onClick={handleToggle}
-      width="24px"
-      height="24px"
-      alignItems="center"
-      justifyContent="center"
-      borderRadius="50%"
       margin="0 16px 0 0"
       position="relative"
-      backgroundColor="rgba(255, 255, 255, 0.2)"
     >
-      <SvgIcon {...IconUser} width={12} height={14} fillColor="#FFFFFF" />
+      <Observer>
+        {() => (
+          <>
+            {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified ? (
+              <SvgIcon {...IconUserNotification} />
+            ) : (
+              <SvgIcon {...IconUser} fillColor="#FFFFFF" />
+            )}
+          </>
+        )}
+      </Observer>
+
       {on && (
         <FlexContainer position="absolute" top="100%" right="100%" zIndex="201">
           <ProfileDropdown></ProfileDropdown>

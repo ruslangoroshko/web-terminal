@@ -7,32 +7,75 @@ import LabelInput from '../components/LabelInput';
 import AutoCompleteDropdown from '../components/KYC/AutoCompleteDropdown';
 import { PrimaryButton } from '../styles/Buttons';
 import styled from '@emotion/styled';
-import { PhoneVerificationFormParams } from '../types/PersonalDataTypes';
+import { PhoneVerificationFormParams, PersonalDataParams } from '../types/PersonalDataTypes';
 import { Country } from '../types/CountriesTypes';
 import API from '../helpers/API';
 import { CountriesEnum } from '../enums/CountriesEnum';
 import * as yup from 'yup'
+import KeysInApi from '../constants/keysInApi';
+import { useStores } from '../hooks/useStores';
+import { KYCstepsEnum } from '../enums/KYCsteps';
+import Page from '../constants/Pages';
+import { useHistory } from 'react-router-dom';
+import { getProcessId } from '../helpers/getProcessId';
+import { SexEnum } from '../enums/Sex';
 
 interface Props {}
 
 const PhoneVerification: FC<Props> = props => {
   const {} = props;
+  const [countries, setCountries] = useState<Country[]>([]);
+  const countriesNames = countries.map(item => item.name);
 
   const validationSchema = yup.object().shape<PhoneVerificationFormParams>({
-    phone: yup.string().required(),
-    customCountryCode: yup.string(),
+    phone: yup
+      .string()
+      .min(11, 'Min 11 symbols')
+      .max(20, 'Max 20 symbols')
+      .required(),
+    customCountryCode: yup.mixed().oneOf(countriesNames, 'No matches'),
   });
+  const { push } = useHistory();
 
-  const [countries, setCountries] = useState<Country[]>([]);
+  const { kycStore } = useStores();
 
-  const initialValues: PhoneVerificationFormParams = {
+
+  const [initialValues, setInitialValuesForm] = useState<
+    PhoneVerificationFormParams
+  >({
     customCountryCode: '',
     phone: '',
-  };
+  });
 
-  const handleSubmit = () => {
-    debugger;
-  };
+  const [initialValuesPeronalData, setValuesPeronalData] = useState<PersonalDataParams>({
+    city: '',
+    countryOfCitizenship: '',
+    countryOfResidence: '',
+    dateOfBirth: 0,
+    firstName: '',
+    lastName: '',
+    postalCode: '',
+    processId: getProcessId(),
+    sex: SexEnum.Unknown,
+    address: '',
+    uSCitizen: false,
+    phone: ''
+  });
+
+  const handleChangeCountry = (setFieldValue: any) => (country: Country) => {
+    setFieldValue(Fields.PHONE, country.dial);
+  }
+
+  const handleSubmit = ({ phone }: PhoneVerificationFormParams) => {
+    try {
+      API.setKeyValue({
+        key: KeysInApi.PERSONAL_DATA,
+        value: JSON.stringify({ ...initialValuesPeronalData, phone }),
+      });
+      kycStore.filledStep = KYCstepsEnum.PersonalData;
+      push(Page.PROOF_OF_IDENTITY);
+    } catch (error) {}
+  };;
 
   useEffect(() => {
     async function fetchCountries() {
@@ -42,7 +85,24 @@ const PhoneVerification: FC<Props> = props => {
       } catch (error) {}
     }
 
+    async function fetchCurrentStep() {
+      try {
+        const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
+
+        if (response) {
+          const parsed : PersonalDataParams = JSON.parse(response);
+          if (parsed instanceof Object) {
+            setValuesPeronalData(parsed);
+            const { phone, countryOfCitizenship} = parsed;
+            setInitialValuesForm({phone, customCountryCode:countryOfCitizenship});
+            kycStore.filledStep = KYCstepsEnum.PhoneVerification;
+          }
+        }
+      } catch (error) {}
+    }
+    fetchCurrentStep();
     fetchCountries();
+    kycStore.currentStep = KYCstepsEnum.PhoneVerification;
   }, []);
 
   return (
@@ -53,7 +113,7 @@ const PhoneVerification: FC<Props> = props => {
       alignItems="center"
       backgroundColor="#252636"
     >
-      <FlexContainer width="568px" flexDirection="column" padding="20px 0 0 0">
+      <FlexContainer width="568px" flexDirection="column" padding="40px 0">
         <PrimaryTextParagraph
           fontSize="30px"
           fontWeight="bold"
@@ -82,11 +142,7 @@ const PhoneVerification: FC<Props> = props => {
                 <FlexContainer width="320px" margin="0 0 28px 0">
                   <Field type="text" name={Fields.CUSTOM_COUNTRY}>
                     {({ field, meta }: FieldProps) => (
-                      <FlexContainer
-                        margin="0 32px 0 0"
-                        flexDirection="column"
-                        width="100%"
-                      >
+                      <FlexContainer flexDirection="column" width="100%">
                         <AutoCompleteDropdown
                           labelText="Country"
                           id={field.name}
@@ -94,21 +150,18 @@ const PhoneVerification: FC<Props> = props => {
                           hasError={!!(meta.touched && meta.error)}
                           dropdownItemsList={countries}
                           setFieldValue={setFieldValue}
+                          handleChange={handleChangeCountry(setFieldValue)}
                         ></AutoCompleteDropdown>
                       </FlexContainer>
                     )}
                   </Field>
                 </FlexContainer>
                 <FlexContainer width="320px" margin="0 0 28px 0">
-                  <Field
-                    type="text"
-                    name={Fields.PHONE}
-                    flexDirection="column"
-                  >
+                  <Field type="text" name={Fields.PHONE} flexDirection="column">
                     {({ field, meta }: FieldProps) => (
                       <FlexContainer width="100%" flexDirection="column">
                         <LabelInput
-                          labelText="Last name"
+                          labelText="Phone"
                           id={field.name}
                           {...field}
                           hasError={!!(meta.touched && meta.error)}

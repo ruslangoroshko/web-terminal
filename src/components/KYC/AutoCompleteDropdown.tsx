@@ -16,6 +16,7 @@ interface Props {
   errorText?: string;
   dropdownItemsList: Country[];
   setFieldValue: (arg0: string, arg1: string) => void;
+  handleChange?: (arg0: Country) => void;
 }
 
 const AutoCompleteDropdown: FC<Props> = props => {
@@ -31,6 +32,7 @@ const AutoCompleteDropdown: FC<Props> = props => {
     errorText,
     dropdownItemsList,
     setFieldValue,
+    handleChange
   } = props;
   const [on, toggle] = useState(false);
 
@@ -50,8 +52,12 @@ const AutoCompleteDropdown: FC<Props> = props => {
     }
   };
 
-  const handleSetValue = (value: string) => () => {
-    setFieldValue(id, value);
+  const handleSetValue = (country: Country) => () => {
+    setFieldValue(id, country.name);
+
+    if (handleChange) {
+      handleChange(country);
+    }
     toggle(false);
   };
 
@@ -63,6 +69,24 @@ const AutoCompleteDropdown: FC<Props> = props => {
     };
   }, []);
 
+  const renderItems = () => {
+    const filteredList = dropdownItemsList.filter(
+      item => !value || item.name.toLowerCase().includes(value.toLowerCase())
+    );
+    return filteredList.length ? (
+      filteredList.map(item => (
+        <DropdownItem key={item.id} onClick={handleSetValue(item)}>
+          <DropdownItemText color="#fffccc" fontSize="12px">
+            {item.name}
+          </DropdownItemText>
+        </DropdownItem>
+      ))
+    ) : (
+      <PrimaryTextSpan fontSize="11px" color="rgba(255,255,255,0.4)">
+        No matches
+      </PrimaryTextSpan>
+    );
+  };
   return (
     <LabelWrapper htmlFor={id} ref={wrapperRef} onMouseDown={toggleFocus}>
       <Input
@@ -89,18 +113,7 @@ const AutoCompleteDropdown: FC<Props> = props => {
           zIndex="101"
           backgroundColor="#1C2026"
         >
-          {dropdownItemsList
-            .filter(
-              item =>
-                !value || item.name.toLowerCase().includes(value.toLowerCase())
-            )
-            .map(item => (
-              <DropdownItem key={item.id} onClick={handleSetValue(item.name)}>
-                <DropdownItemText color="#fffccc" fontSize="12px">
-                  {item.name}
-                </DropdownItemText>
-              </DropdownItem>
-            ))}
+          {renderItems()}
         </DropdownWrapper>
       )}
     </LabelWrapper>

@@ -97,7 +97,6 @@ class DataFeedService implements IBasicDataFeed {
         rangeEndDate * 1000,
         symbolInfo.name
       );
-
       if (bars.length) {
         historyProvider.history[`${symbolInfo.name}${resolution}`] = {
           lastBar: bars[bars.length - 1],

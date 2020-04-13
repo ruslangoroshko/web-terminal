@@ -32,7 +32,8 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.svg$/,
-          include: path.resolve(__dirname, 'src/assets/svg/'),
+          include: [path.resolve(__dirname, './src/assets/svg/')],
+          exclude: [path.resolve(__dirname, './src/assets/svg_no_compress/')],
           use: [
             'svg-sprite-loader',
             {
@@ -44,6 +45,16 @@ module.exports = (env, argv) => {
                   },
                 ],
               },
+            },
+          ],
+        },
+        {
+          test: /\.svg$/,
+          include: [path.resolve(__dirname, './src/assets/svg_no_compress/')],
+          use: [
+            'svg-sprite-loader',
+            {
+              loader: 'svgo-loader',
             },
           ],
         },
@@ -75,12 +86,25 @@ module.exports = (env, argv) => {
         title: 'Hello world - Shadi',
       }),
       new webpack.DefinePlugin({
+        WS_HOST:
+          argv.mode === 'production'
+            ? JSON.stringify('/signalr')
+            : JSON.stringify('http://localhost:5986/signalr'),
+        API_STRING:
+          argv.mode === 'production'
+            ? JSON.stringify('')
+            : JSON.stringify('http://localhost:5986'),
+        API_AUTH_STRING:
+          argv.mode === 'production'
+            ? JSON.stringify('')
+            : JSON.stringify('http://localhost:5958'),
         AUTH_TOKEN: JSON.stringify('TraderID'),
         CHARTING_LIBRARY_PATH:
           argv.mode === 'production'
             ? JSON.stringify('./charting_library/')
             : JSON.stringify('./src/vendor/charting_library/'),
         IS_LIVE: argv.mode === 'production',
+        MIXPANEL_TOKEN: JSON.stringify('582507549d28c813188211a0d15ec940'),
       }),
       new CopyPlugin([
         { from: './src/vendor/charting_library/', to: 'charting_library' },

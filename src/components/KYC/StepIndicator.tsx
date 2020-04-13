@@ -15,18 +15,19 @@ interface Props {
 
 const StepIndicator: FC<Props> = observer(props => {
   const { stepNumber, stepTitle, isFilled, currentStep } = props;
+  const isMoreThanOrCurrentStep = currentStep >= stepNumber;
 
   return (
-    <FlexContainer flexDirection="column" alignItems="center" zIndex="1">
+    <FlexContainer flexDirection="column" alignItems="center" zIndex={`${100 - stepNumber}`}>
       <FlexContainer
         borderRadius="50%"
         width="48px"
         height="48px"
         backgroundColor={
-          currentStep >= stepNumber ? '#005E5E' : 'rgba(255, 255, 255, 0.06)'
+          isMoreThanOrCurrentStep ? '#005E5E' : 'rgba(255, 255, 255, 0.06)'
         }
         border={
-          currentStep >= stepNumber
+          isMoreThanOrCurrentStep
             ? 'none'
             : '1px solid rgba(255, 255, 255, 0.1)'
         }
@@ -44,7 +45,7 @@ const StepIndicator: FC<Props> = observer(props => {
             zIndex="-1"
             top="50%"
             right="100%"
-            backgroundColor={currentStep >= stepNumber ? '#005E5E' : '#3F4343'}
+            backgroundColor={isMoreThanOrCurrentStep ? '#005E5E' : '#3F4343'}
           ></FlexContainer>
         )}
         {isFilled ? (

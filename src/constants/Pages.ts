@@ -13,6 +13,10 @@ const Page = {
   ACCOUNT_BALANCE_HISTORY: '/account-balance-history',
   ACCOUNT_SETTINGS: '/account-settings',
   ACCOUNT_HISTORY_QUOTES: '/account-history-quotes',
+
+  ABOUT_US: '//www.monfex.com/why-us',
+  FAQ: '#',
+  SUPPORT: '//www.monfex.com/contact-us'
 };
 
 Object.freeze(Page);

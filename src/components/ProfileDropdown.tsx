@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { useStores } from '../hooks/useStores';
@@ -8,17 +9,52 @@ import SvgIcon from './SvgIcon';
 import IconDeposit from '../assets/svg/icon-deposit.svg';
 import IconWithdraw from '../assets/svg/icon-withdraw.svg';
 import IconLogout from '../assets/svg/icon-logout.svg';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import Page from '../constants/Pages';
+import IconInfo from '../assets/svg/icon-info.svg';
+import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 
-interface Props {}
 
-function ProfileDropdown(props: Props) {
-  const {} = props;
-
+function ProfileDropdown() {
   const { mainAppStore } = useStores();
-  const logOut = () => {
-    mainAppStore.signOut();
+  const renderStatusLabel = () => {
+    switch (mainAppStore.profileStatus) {
+      case PersonalDataKYCEnum.NotVerified:
+        return (
+          <FlexContainer margin="0 0 20px 0" flexDirection="column">
+            <Link to={Page.PERSONAL_DATA}>
+              <FlexContainer
+                borderRadius="12px"
+                backgroundColor="#3B2B3D"
+                height="24px"
+                alignItems="center"
+                padding="0 4px 0 8px"
+              >
+                <FlexContainer margin="0 4px 0 0">
+                  <SvgIcon {...IconInfo} fillColor="#FF2B47" />
+                </FlexContainer>
+                <FlexContainer>
+                  <PrimaryTextSpan
+                    color="#FF557E"
+                    fontSize="12px"
+                    fontWeight="bold"
+                    whiteSpace="nowrap"
+                  >
+                    Verify your profile
+                  </PrimaryTextSpan>
+                </FlexContainer>
+              </FlexContainer>
+            </Link>
+          </FlexContainer>
+        );
+
+      case PersonalDataKYCEnum.Verified:
+      case PersonalDataKYCEnum.OnVerification:
+        return null;
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -30,6 +66,8 @@ function ProfileDropdown(props: Props) {
       width="172px"
       boxShadow="box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.24), 0px 8px 16px rgba(37, 38, 54, 0.6)"
     >
+      {renderStatusLabel()}
+     
       <FlexWithBottomBorder
         margin="0 0 16px 0"
         padding="0 0 16px 0"
@@ -81,7 +119,7 @@ function ProfileDropdown(props: Props) {
         </FlexContainer>
       </FlexWithBottomBorder>
       <FlexContainer flexDirection="column">
-        <LogoutButton onClick={logOut}>
+        <LogoutButton onClick={mainAppStore.signOut}>
           <PrimaryTextSpan fontSize="12px" color="#fffccc">
             Logout
           </PrimaryTextSpan>

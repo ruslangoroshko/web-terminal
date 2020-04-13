@@ -6,7 +6,7 @@ import {
   PrimaryTextParagraph,
   QuoteText,
 } from '../../styles/TextsElements';
-import { AccountModelWebSocketDTO } from '../../types/Accounts';
+import { AccountModelWebSocketDTO } from '../../types/AccountsTypes';
 import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import { PrimaryButton, SecondaryButton } from '../../styles/Buttons';
@@ -30,7 +30,9 @@ const AccountInfo: FC<Props> = observer(props => {
   const isActiveAccount = mainAppStore.activeAccount?.id === account.id;
 
   const handleSwitch = () => {
-    mainAppStore.setActiveAccount(account);
+    mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+      [Fields.ACCOUNT_ID]: account.id,
+    });
     tabsStore.sideBarTabType = null;
     toggle();
   };

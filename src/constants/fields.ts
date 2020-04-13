@@ -25,6 +25,8 @@ const Fields = {
   US_CITIZEN: 'uSCitizen',
   ADDRESS: 'address',
   CUSTOM_COUNTRY: 'customCountryCode',
+  CUSTON_PASSPORT_ID: 'customPassportId',
+  CUSTOM_PROOF_OF_ADDRESS: 'customProofOfAddress',
 };
 
 Object.freeze(Fields);

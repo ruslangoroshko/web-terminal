@@ -29,6 +29,9 @@ const API_LIST = {
     POSITIONS_HISTORY: '/api/v1/Reports/PositionsHistory',
     BALANCE_HISTORY: '/api/v1/Reports/BalanceHistory',
   },
+  INSTRUMENTS: {
+    FAVOURITES: '/api/v1/Instruments/Favorites'
+  }
 };
 
 Object.freeze(API_LIST);

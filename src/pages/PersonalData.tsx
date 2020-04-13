@@ -20,53 +20,98 @@ import { CountriesEnum } from '../enums/CountriesEnum';
 import { Country } from '../types/CountriesTypes';
 import BirthDayPicker from '../components/KYC/BirthDayPicker';
 import KeysInApi from '../constants/keysInApi';
+import { useStores } from '../hooks/useStores';
+import { KYCstepsEnum } from '../enums/KYCsteps';
+import Page from '../constants/Pages';
+import { useHistory } from 'react-router-dom';
 
-interface Props {}
+function PersonalData() {
 
-function PersonalData(props: Props) {
+  const [countries, setCountries] = useState<Country[]>([]);
+  const countriesNames = countries.map(item => item.name);
+
   const validationSchema = yup.object().shape<PersonalDataParams>({
-    city: yup.string().required(),
-    countryOfCitizenship: yup.string().required(),
-    countryOfResidence: yup.string().required(),
+    city: yup
+      .string()
+      .min(2, 'Min 2 symbols')
+      .max(20, 'Max 20 symbols')
+      .required('Required field'),
+    countryOfCitizenship: yup
+      .mixed()
+      .oneOf(countriesNames, 'No matches')
+      .required(),
+    countryOfResidence: yup
+      .mixed()
+      .oneOf(countriesNames, 'No matches')
+      .required(),
     dateOfBirth: yup.number().required(),
-    firstName: yup.string().required(),
-    lastName: yup.string().required(),
-    phone: yup.string().required(),
-    postalCode: yup.string().required(),
-    processId: yup.string().required(),
+    firstName: yup
+      .string()
+      .min(2, 'Min 2 symbols')
+      .max(100, 'Max 100 symbols')
+      .required('Required field'),
+    lastName: yup
+      .string()
+      .min(2, 'Min 2 symbols')
+      .max(100, 'Max 100 symbols'),
+    postalCode: yup
+      .string()
+      .min(2, 'Min 2 symbols')
+      .max(15, 'Max 15 symbols')
+      .required('Required field'),
+    processId: yup.string(),
     sex: yup.number().required(),
-    address: yup.string().required(),
+    address: yup
+      .string()
+      .min(2, 'Min 2 symbols')
+      .max(100, 'Max 100 symbols')
+      .required('Required field'),
     uSCitizen: yup.boolean().required(),
+    phone: yup.string(),
   });
 
-  const [birthday, setBirthday] = useState<moment.Moment>(moment());
+  const [birthday, setBirthday] = useState<moment.Moment>(moment('01.01.2001'));
 
   const [focused, setFocused] = useState(false);
 
-  const initialValues: PersonalDataParams = {
+  const { push } = useHistory();
+
+  const [initialValues, setInitialValuesForm] = useState<PersonalDataParams>({
     city: '',
     countryOfCitizenship: '',
     countryOfResidence: '',
     dateOfBirth: birthday.valueOf(),
     firstName: '',
     lastName: '',
-    phone: '',
     postalCode: '',
     processId: getProcessId(),
     sex: SexEnum.Unknown,
     address: '',
     uSCitizen: false,
-  };
+    phone: ''
+  });
 
-  const [countries, setCountries] = useState<Country[]>([]);
+  const { kycStore } = useStores();
 
-  const handleSubmit = () => {
-
-    debugger;
+  const handleSubmit = async (values: PersonalDataParams) => {
+    try {
+      await API.setKeyValue({
+        key: KeysInApi.PERSONAL_DATA,
+        value: JSON.stringify(values),
+      });
+      kycStore.filledStep = KYCstepsEnum.PersonalData;
+      push(Page.PHONE_VERIFICATION);
+    } catch (error) {}
   };
 
   const handleChangeGender = (setFieldValue: any) => (sex: SexEnum) => {
     setFieldValue(Fields.SEX, sex);
+  };
+
+  const handleChangeUsCitizien = (setFieldValue: any) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFieldValue(Fields.US_CITIZEN, e.target.checked);
   };
 
   useEffect(() => {
@@ -77,16 +122,25 @@ function PersonalData(props: Props) {
       } catch (error) {}
     }
 
-    async function fetchCurrentStep () {
+    async function fetchCurrentStep() {
+      kycStore.filledStep = KYCstepsEnum.NoData;
+
       try {
         const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
-        // const currentStep
-      } catch (error) {
-       // setCountries(response);
-      }
+
+        if (response) {
+          const parsed = JSON.parse(response);
+          if (parsed instanceof Object) {
+            setInitialValuesForm(parsed);
+            kycStore.filledStep = KYCstepsEnum.PersonalData;
+          }
+        }
+      } catch (error) {}
     }
+    kycStore.currentStep = KYCstepsEnum.PersonalData;
 
     fetchCountries();
+    fetchCurrentStep();
   }, []);
 
   return (
@@ -96,8 +150,9 @@ function PersonalData(props: Props) {
       flexDirection="column"
       alignItems="center"
       backgroundColor="#252636"
+      padding="40px"
     >
-      <FlexContainer width="568px" flexDirection="column" padding="20px 0 0 0">
+      <FlexContainer width="568px" flexDirection="column">
         <PrimaryTextParagraph
           fontSize="30px"
           fontWeight="bold"
@@ -290,7 +345,7 @@ function PersonalData(props: Props) {
                         checkboxText="I’am a US reportable person"
                         id="reportable"
                         checked={field.value}
-                        onChange={field.onChange}
+                        onChange={handleChangeUsCitizien(setFieldValue)}
                       >
                         <FlexContainer margin="0 0 0 8px">
                           <InformationPopup

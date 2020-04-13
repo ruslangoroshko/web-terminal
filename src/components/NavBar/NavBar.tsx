@@ -4,13 +4,14 @@ import MonfexLogo from '../../assets/svg/icon-logo.svg';
 import MonfexLogoText from '../../assets/svg/icon-logo-text.svg';
 import styled from '@emotion/styled';
 import SwitchThemeButton from './SwitchThemeButton';
-import NotificationsButton from './NotificationsButton';
 import LanguageButton from './LanguageButton';
 import UserProfileButton from './UserProfileButton';
 import DepositButton from './DepositButton';
 import { observer } from 'mobx-react-lite';
 import SvgIcon from '../SvgIcon';
 import AccountSwitcherDropdown from './AccountSwitcherDropdown';
+import { Link } from 'react-router-dom';
+import Page from '../../constants/Pages';
 
 const NavBar = observer(() => (
   <FlexContainer
@@ -22,10 +23,14 @@ const NavBar = observer(() => (
     zIndex="105"
   >
     <FlexContainer alignItems="center">
-      <FlexContainer margin="0 6px 0 0">
-        <SvgIcon {...MonfexLogo} fillColor="#00FFDD" />
-      </FlexContainer>
-      <SvgIcon {...MonfexLogoText} fillColor="#21B3A4" />
+      <Link to={Page.DASHBOARD}>
+        <FlexContainer alignItems="center">
+          <FlexContainer margin="0 6px 0 0">
+            <SvgIcon {...MonfexLogo} fillColor="#00FFDD" />
+          </FlexContainer>
+          <SvgIcon {...MonfexLogoText} fillColor="#21B3A4" />
+        </FlexContainer>
+      </Link>
     </FlexContainer>
     <FlexContainer alignItems="center">
       <FlexContainer alignItems="center" margin="0 20px 0 0">

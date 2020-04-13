@@ -3,6 +3,7 @@ const KeysInApi = {
   FAVOURITE_INSTRUMENTS: 'favourite_instruments',
   ACTIVE_ACCOUNT_ID: 'aaid',
   PERSONAL_DATA: 'pd',
+  PHONE_VERIFICATION: 'pv',
 };
 
 Object.freeze(KeysInApi);

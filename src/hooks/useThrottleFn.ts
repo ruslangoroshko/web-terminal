@@ -1,5 +1,5 @@
 import { useMemo, useEffect } from 'react';
-import throttle from './throttle';
+import throttle from '../helpers/throttle';
 
 export const useThrottleFn = <T extends (...args: any) => any>(
   fn: T,

@@ -4,8 +4,6 @@ import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import Topics from '../constants/websocketTopics';
-import { AccountModelWebSocketDTO } from '../types/Accounts';
-import Fields from '../constants/fields';
 import TVChartContainer from '../containers/ChartContainer';
 import { InstrumentModelWSDTO, PriceChangeWSDTO } from '../types/InstrumentsTypes';
 import { PositionModelWSDTO } from '../types/Positions';
@@ -27,6 +25,7 @@ import NotificationPopup from '../components/NotificationPopup';
 import DemoRealPopup from '../components/DemoRealPopup';
 import { PendingOrdersWSDTO } from '../types/PendingOrdersTypes';
 import LoaderFullscreen from '../components/LoaderFullscreen';
+import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -43,7 +42,7 @@ const Dashboard = observer(() => {
       mainAppStore.activeSession?.on(
         Topics.INSTRUMENTS,
         (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-          if (response.accountId === mainAppStore.activeAccount?.id) {
+          if (mainAppStore.activeAccount && response.accountId === mainAppStore.activeAccount.id) {
             response.data.forEach(item => {
               quotesStore.setQuote({
                 ask: {
@@ -63,12 +62,14 @@ const Dashboard = observer(() => {
                 id: item.id,
               });
             });
-            console.log(
-              `****************************** INSTRUMENTS --------->`,
-              response.data
-            );
             instrumentsStore.setInstruments(response.data);
-            activeInstrumentsInit(instrumentsStore);
+            activeInstrumentsInit(
+              instrumentsStore,
+              mainAppStore.activeAccount.id,
+              mainAppStore.activeAccount.isLive
+                ? AccountTypeEnum.Live
+                : AccountTypeEnum.Demo
+            );
           }
         }
       );
@@ -78,21 +79,6 @@ const Dashboard = observer(() => {
         (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
           if (response.accountId === mainAppStore.activeAccount?.id) {
             quotesStore.activePositions = response.data;
-          }
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.UPDATE_ACCOUNT,
-        (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
-          if (response.accountId === mainAppStore.activeAccount?.id) {
-            const newActivePositions = quotesStore.activePositions.map(item => {
-              if (item.id === response.data.id) {
-                return response.data;
-              }
-              return item;
-            });
-            quotesStore.activePositions = newActivePositions;
           }
         }
       );
@@ -138,9 +124,6 @@ const Dashboard = observer(() => {
         {() => (
           <>{!mainAppStore.activeAccount && <DemoRealPopup></DemoRealPopup>}</>
         )}
-      </Observer>
-      <Observer>
-        {() => <LoaderFullscreen isLoading={!mainAppStore.activeAccount} />}
       </Observer>
       <FlexContainer
         position="absolute"

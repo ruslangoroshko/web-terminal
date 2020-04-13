@@ -12,7 +12,6 @@ import LabelInput from '../components/LabelInput';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import { PrimaryButton } from '../styles/Buttons';
 import SignTypeTabs from '../components/SignTypeTabs';
-import LoaderFullscreen from '../components/LoaderFullscreen';
 import NotificationPopup from '../components/NotificationPopup';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
@@ -85,8 +84,8 @@ const SingIn = observer(() => {
                         value={field.value || ''}
                         id={Fields.EMAIL}
                         hasError={!!(meta.touched && meta.error)}
+                        errorText={meta.error}
                       ></LabelInput>
-                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
                     </FlexContainer>
                   )}
                 </Field>
@@ -104,8 +103,8 @@ const SingIn = observer(() => {
                         id={Fields.PASSWORD}
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
-                      ></LabelInput>
-                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
+                        errorText={meta.error}
+                        ></LabelInput>
                     </FlexContainer>
                   )}
                 </Field>
@@ -113,7 +112,7 @@ const SingIn = observer(() => {
                 <PrimaryButton
                   padding="12px"
                   type="submit"
-                  disabled={!formikBag.isValid || formikBag.isSubmitting}
+                  //disabled={!formikBag.isValid || formikBag.isSubmitting}
                 >
                   <PrimaryTextSpan
                     color="#1c2026"

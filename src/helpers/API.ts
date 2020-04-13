@@ -8,7 +8,7 @@ import {
   OpenPendingOrder,
 } from '../types/Positions';
 import API_LIST from './apiList';
-import { AccountModelDTO } from '../types/Accounts';
+import { AccountModelDTO } from '../types/AccountsTypes';
 import {
   UserAuthenticate,
   UserAuthenticateResponse,
@@ -30,6 +30,9 @@ import {
 } from '../types/PersonalDataTypes';
 import { CountriesEnum } from '../enums/CountriesEnum';
 import { Country } from '../types/CountriesTypes';
+import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
+import { getProcessId } from './getProcessId';
+import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -45,7 +48,7 @@ class API {
   openPosition = async (position: OpenPositionModel) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
-      `${API_LIST.POSITIONS.OPEN}`,
+      `${API_STRING}${API_LIST.POSITIONS.OPEN}`,
       formData
     );
     return response.data;
@@ -55,7 +58,7 @@ class API {
     const formData = this.convertParamsToFormData(position);
 
     const response = await axios.post<OpenPositionResponseDTO>(
-      `${API_LIST.POSITIONS.CLOSE}`,
+      `${API_STRING}${API_LIST.POSITIONS.CLOSE}`,
       formData
     );
     return response.data;
@@ -63,14 +66,14 @@ class API {
 
   getAccounts = async () => {
     const response = await axios.get<AccountModelDTO[]>(
-      `${API_LIST.ACCOUNTS.GET_ACCOUNTS}`
+      `${API_STRING}${API_LIST.ACCOUNTS.GET_ACCOUNTS}`
     );
     return response.data;
   };
 
   getAccountById = async (id: number) => {
     const response = await axios.get<AccountModelDTO>(
-      `${API_LIST.ACCOUNTS.GET_ACCOUNT_BY_ID}`,
+      `${API_STRING}${API_LIST.ACCOUNTS.GET_ACCOUNT_BY_ID}`,
       {
         params: {
           id,
@@ -82,14 +85,14 @@ class API {
 
   getHeaders = async () => {
     const response = await axios.get<string[]>(
-      `${API_LIST.ACCOUNTS.GET_HEADERS}`
+      `${API_STRING}${API_LIST.ACCOUNTS.GET_HEADERS}`
     );
     return response.data;
   };
 
   authenticate = async (credentials: UserAuthenticate) => {
     const response = await axios.post<UserAuthenticateResponse>(
-      `${AUTH_API_LIST.TRADER.AUTHENTICATE}`,
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.AUTHENTICATE}`,
       credentials
     );
     return response.data;
@@ -97,7 +100,7 @@ class API {
 
   signUpNewTrader = async (credentials: UserRegistration) => {
     const response = await axios.post<UserAuthenticateResponse>(
-      `${AUTH_API_LIST.TRADER.REGISTER}`,
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.REGISTER}`,
       credentials
     );
     return response.data;
@@ -105,7 +108,7 @@ class API {
 
   getPriceHistory = async (params: HistoryCandlesType) => {
     const response = await axios.get<CandleDTO[]>(
-      `${API_LIST.PRICE_HISTORY.CANDLES}`,
+      `${API_STRING}${API_LIST.PRICE_HISTORY.CANDLES}`,
       {
         params,
       }
@@ -121,18 +124,21 @@ class API {
   };
 
   getKeyValue = async (key: string) => {
-    const response = await axios.get<string>(`${API_LIST.KEY_VALUE.GET}`, {
-      params: {
-        key,
-      },
-    });
+    const response = await axios.get<string>(
+      `${API_STRING}${API_LIST.KEY_VALUE.GET}`,
+      {
+        params: {
+          key,
+        },
+      }
+    );
     return response.data;
   };
 
   setKeyValue = async (params: { key: string; value: string }) => {
     const formData = this.convertParamsToFormData(params);
     const response = await axios.post<void>(
-      `${API_LIST.KEY_VALUE.POST}`,
+      `${API_STRING}${API_LIST.KEY_VALUE.POST}`,
       formData
     );
     return response.data;
@@ -141,7 +147,7 @@ class API {
   openPendingOrder = async (position: OpenPendingOrder) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
-      `${API_LIST.PENDING_ORDERS.ADD}`,
+      `${API_STRING}${API_LIST.PENDING_ORDERS.ADD}`,
       formData
     );
     return response.data;
@@ -150,7 +156,7 @@ class API {
   removePendingOrder = async (position: RemovePendingOrders) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
-      `${API_LIST.PENDING_ORDERS.REMOVE}`,
+      `${API_STRING}${API_LIST.PENDING_ORDERS.REMOVE}`,
       formData
     );
     return response.data;
@@ -159,7 +165,7 @@ class API {
   updateSLTP = async (position: UpdateSLTP) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
-      `${API_LIST.POSITIONS.UPDATE_SL_TP}`,
+      `${API_STRING}${API_LIST.POSITIONS.UPDATE_SL_TP}`,
       formData
     );
     return response.data;
@@ -167,7 +173,7 @@ class API {
 
   confirmEmail = async (link: string) => {
     const response = await axios.post<void>(
-      `${AUTH_API_LIST.PERSONAL_DATA.CONFIRM}`,
+      `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.CONFIRM}`,
       {
         link,
       }
@@ -177,7 +183,7 @@ class API {
 
   getPositionsHistory = async (params: GetHistoryParams) => {
     const response = await axios.get<PositionsHistoryReportDTO>(
-      `${API_LIST.REPORTS.POSITIONS_HISTORY}`,
+      `${API_STRING}${API_LIST.REPORTS.POSITIONS_HISTORY}`,
       {
         params,
       }
@@ -187,7 +193,7 @@ class API {
 
   getBalanceHistory = async (params: GetHistoryParams) => {
     const response = await axios.get<BalanceHistoryReport>(
-      `${API_LIST.REPORTS.BALANCE_HISTORY}`,
+      `${API_STRING}${API_LIST.REPORTS.BALANCE_HISTORY}`,
       {
         params,
       }
@@ -197,7 +203,7 @@ class API {
 
   changePassword = async (params: ChangePasswordParams) => {
     const response = await axios.post<BalanceHistoryDTO[]>(
-      `${AUTH_API_LIST.TRADER.CHANGE_PASSWORD}`,
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.CHANGE_PASSWORD}`,
       params
     );
     return response.data;
@@ -205,7 +211,7 @@ class API {
 
   getPersonalData = async (processId: string) => {
     const response = await axios.get<PersonalDataResponse>(
-      `${AUTH_API_LIST.PERSONAL_DATA.GET}`,
+      `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.GET}`,
       {
         params: {
           processId,
@@ -219,7 +225,7 @@ class API {
     const formData = this.convertParamsToFormData(params);
 
     const response = await axios.post<PersonalDataPostResponse>(
-      `${AUTH_API_LIST.PERSONAL_DATA.POST}`,
+      `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.POST}`,
       formData
     );
     return response.data;
@@ -227,10 +233,38 @@ class API {
 
   getCountries = async (lang = CountriesEnum.EN) => {
     const response = await axios.get<Country[]>(
-      `${AUTH_API_LIST.COMMON.COUNTRIES}/${lang}`
+      `${API_AUTH_STRING}${AUTH_API_LIST.COMMON.COUNTRIES}/${lang}`
     );
     return response.data;
   };
+
+  postDocument = async (documentType: DocumentTypeEnum, file: Blob) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('processId', getProcessId());
+
+    const response = await axios.post<void>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.DOCUMENT.POST}/${documentType}`,
+      formData
+    );
+    return response.data;
+  }
+
+  getFavoriteInstrumets = async (params: {type: AccountTypeEnum, accountId: string}) => {
+    const response = await axios.get<string[]>(
+      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`, {
+        params
+      }
+    );
+    return response.data;
+  };
+
+  postFavoriteInstrumets = async (params: { type: AccountTypeEnum, accountId: string, instruments: string[] }) => {
+    const response = await axios.post<string[]>(
+      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`, params
+    )
+    return response.data
+  }
 }
 
-export default new API();
+export default new API()

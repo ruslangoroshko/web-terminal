@@ -10,7 +10,7 @@ import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import { PrimaryTextSpan, QuoteText } from '../styles/TextsElements';
 import { getNumberSign } from '../helpers/getNumberSign';
-import SvgIcon from './SvgIcon';
+import ImageContainer from './ImageContainer';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -23,12 +23,8 @@ const ActiveInstrument: FC<Props> = props => {
 
   return quotesStore.quotes[instrument.id] ? (
     <FlexContainer>
-      <FlexContainer position="relative" margin="0 12px 0 0">
-        {/* <svg>
-          <use xlinkHref={instrument.avatar}></use>
-        </svg> */}
-        <SvgExternalDiv external={instrument.avatar} />
-        <img src={instrument.avatar} width={60} />
+      <FlexContainer position="relative" margin="0 12px 0 0" width="60px">
+        <ImageContainer instrumentId={instrument.id} />
       </FlexContainer>
       <FlexContainer flexDirection="column" margin="0 52px 0 0">
         <PrimaryTextSpan
@@ -156,9 +152,4 @@ const QuoteImgWrapper = styled(FlexContainer)`
 const LabelWrapper = styled.div`
   width: 22px;
   margin-right: 8px;
-`;
-
-
-const SvgExternalDiv = styled.div<{ external: string }>`
-  background-image: url(${props => props.external});
 `;

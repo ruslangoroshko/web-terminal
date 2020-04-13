@@ -1,25 +1,55 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import Instrument from './Instrument';
 import { useStores } from '../hooks/useStores';
 import styled from '@emotion/styled';
 import { observer } from 'mobx-react-lite';
 import API from '../helpers/API';
 import KeysInApi from '../constants/keysInApi';
+import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 
 interface Props {}
 
 const InstrumentsScrollWrapper: FC<Props> = observer(() => {
-  const { instrumentsStore } = useStores();
+  const { instrumentsStore, mainAppStore } = useStores();
 
   const handleRemoveInstrument = (itemId: string) => async () => {
-    instrumentsStore.setActiveInstrumentsIds(
-      instrumentsStore.activeInstrumentsIds.filter(id => id !== itemId)
+    const newInstruments = instrumentsStore.activeInstrumentsIds.filter(
+      id => id !== itemId
     );
-    await API.setKeyValue({
-      key: KeysInApi.SELECTED_INSTRUMENTS,
-      value: JSON.stringify(instrumentsStore.activeInstrumentsIds),
-    });
+    try {
+      const response = await API.postFavoriteInstrumets({
+        accountId: mainAppStore.activeAccount!.id,
+        type: mainAppStore.activeAccount!.isLive
+          ? AccountTypeEnum.Live
+          : AccountTypeEnum.Demo,
+        instruments: newInstruments,
+      });
+      instrumentsStore.setActiveInstrumentsIds(response);
+    } catch (error) {}
   };
+
+  useEffect(() => {
+    async function fetchFavoriteInstruments(
+      accountId: string,
+      type: AccountTypeEnum
+    ) {
+      const response = await API.getFavoriteInstrumets({
+        type,
+        accountId,
+      });
+      instrumentsStore.setActiveInstrumentsIds(response);
+    }
+
+    // sh@t from backend
+    if (mainAppStore.activeAccount) {
+      fetchFavoriteInstruments(
+        mainAppStore.activeAccount.id,
+        mainAppStore.activeAccount.isLive
+          ? AccountTypeEnum.Live
+          : AccountTypeEnum.Demo
+      );
+    }
+  }, [mainAppStore.activeAccount]);
 
   return (
     <InstrumentsWrapper>

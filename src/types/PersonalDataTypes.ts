@@ -11,8 +11,8 @@ export interface PersonalDataParams {
   countryOfResidence: string;
   countryOfCitizenship: string;
   postalCode: string;
-  sex: SexEnum;
   phone: string;
+  sex: SexEnum;
   address: string;
   uSCitizen: boolean;
 }
@@ -57,4 +57,9 @@ export interface PersonalDataPostResponse {
 export interface PhoneVerificationFormParams {
   customCountryCode: string;
   phone: string;
+}
+
+export interface ProofOfIdentityFormParams {
+  customPassportId: Blob;
+  customProofOfAddress: Blob;
 }

@@ -12,11 +12,7 @@ import { SortByMarketsEnum } from '../../enums/SortByMarketsEnum';
 import { sortByMarketsLabels } from '../../constants/sortByDropdownValues';
 import SortByDropdown from '../SortByDropdown';
 
-interface Props {}
-
-function Markets(props: Props) {
-  const {} = props;
-
+function Markets() {
   const { instrumentsStore, sortingStore } = useStores();
 
   const setActiveInstrumentGroup = (groupId: string) => () => {

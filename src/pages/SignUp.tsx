@@ -11,9 +11,8 @@ import LabelInput from '../components/LabelInput';
 import { PrimaryButton } from '../styles/Buttons';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import SignTypeTabs from '../components/SignTypeTabs';
-import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
-
+import { useHistory } from 'react-router-dom';
 
 function SignUp() {
   const validationSchema = yup.object().shape<UserRegistration>({
@@ -34,6 +33,8 @@ function SignUp() {
     repeatPassword: '',
   };
 
+
+  const {push} = useHistory();
   const { mainAppStore } = useStores();
 
   const handleSubmit = async (
@@ -43,7 +44,7 @@ function SignUp() {
     setSubmitting(true);
     try {
       await mainAppStore.signUp({ email, password });
-      appHistory.push(Page.DASHBOARD);
+      push(Page.DASHBOARD);
     } catch (error) {
       setStatus(error);
       setSubmitting(false);
@@ -73,10 +74,10 @@ function SignUp() {
                         {...field}
                         labelText="Email"
                         value={field.value || ''}
-                        id={Fields.EMAIL}
+                        id={field.name}
                         hasError={!!(meta.touched && meta.error)}
+                        errorText={meta.error}
                       ></LabelInput>
-                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
                     </FlexContainer>
                   )}
                 </Field>
@@ -91,12 +92,12 @@ function SignUp() {
                         {...field}
                         labelText="Password"
                         value={field.value || ''}
-                        id={Fields.PASSWORD}
+                        id={field.name}
                         autoComplete="new-password"
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
+                        errorText={meta.error}
                       ></LabelInput>
-                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
                     </FlexContainer>
                   )}
                 </Field>
@@ -111,19 +112,18 @@ function SignUp() {
                         {...field}
                         labelText="Repeat Password"
                         value={field.value || ''}
-                        id={Fields.REPEAT_PASSWORD}
+                        id={field.name}
                         autoComplete="new-password"
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
+                        errorText={meta.error}
                       ></LabelInput>
-                      <ErrorMessage>{meta.touched && meta.error}</ErrorMessage>
                     </FlexContainer>
                   )}
                 </Field>
                 {formikBag.status && (
                   <ErrorMessage>{formikBag.status}</ErrorMessage>
                 )}
-
                 <PrimaryButton
                   padding="12px"
                   type="submit"
@@ -135,7 +135,7 @@ function SignUp() {
                     fontSize="14px"
                     textTransform="uppercase"
                   >
-                    Submit
+                    Sign up
                   </PrimaryTextSpan>
                 </PrimaryButton>
               </FlexContainer>

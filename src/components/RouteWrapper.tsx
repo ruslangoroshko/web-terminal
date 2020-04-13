@@ -21,7 +21,7 @@ const RouteWrapper: FC<Props> = observer(props => {
       return <Redirect to={Page.DASHBOARD} />;
     } else if (
       !mainAppStore.isAuthorized &&
-      layoutType === RouteLayoutType.Authorized
+      [RouteLayoutType.Authorized, RouteLayoutType.KYC].includes(layoutType)
     ) {
       return <Redirect to={Page.SIGN_IN} />;
     }

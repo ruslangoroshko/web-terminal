@@ -10,12 +10,13 @@ import IconClose from '../../assets/svg/icon-close.svg';
 
 interface Props {
   applyHandler: () => void;
+  confirmText: string;
   // TODO: refactor crutch
   isButton?: boolean;
 }
 
 const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { applyHandler, isButton } = props;
+  const { applyHandler, isButton, confirmText } = props;
 
   const [on, toggle] = useState(false);
 
@@ -76,6 +77,7 @@ const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
           <ConfirmPopup
             toggle={toggle}
             applyHandler={applyHandler}
+            confirmText={confirmText}
           ></ConfirmPopup>
         </FlexContainer>
       )}
