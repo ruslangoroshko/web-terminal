@@ -43,6 +43,19 @@ const AddInstrumentsPopup: FC<Props> = props => {
     }
   }, []);
 
+  const handleClickOutside = (e: any) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      toggle();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <AddInstrumentsPopupWrapper
       width="320px"

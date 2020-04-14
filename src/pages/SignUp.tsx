@@ -26,12 +26,17 @@ function SignUp() {
     repeatPassword: yup
       .string()
       .oneOf([yup.ref(Fields.PASSWORD), null], 'Passwords must match'),
+    
+    userAgreement: yup
+      .boolean()
+      .required(),          
   });
 
   const initialValues: UserRegistration = {
     email: '',
     password: '',
     repeatPassword: '',
+    userAgreement: false
   };
 
   const { push } = useHistory();
@@ -182,6 +187,7 @@ const ErrorMessage = styled.span`
 const CustomCheckboxLink = styled(Link)`
   color: rgba(255, 255, 255, 0.6);
   transition: all 0.4s ease;
+  text-decoration: underline;
   font-size: 12px;
   :hover {
     text-decoration: none;
