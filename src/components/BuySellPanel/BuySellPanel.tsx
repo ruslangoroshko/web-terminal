@@ -414,7 +414,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               <>
                 {quotesStore.quotes[instrument.id] && (
                   <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                    {mainAppStore.activeAccount?.symbol}
+                    {/* {mainAppStore.activeAccount?.symbol} */}
                     {Math.abs(
                       quotesStore.quotes[instrument.id].bid.c -
                         quotesStore.quotes[instrument.id].ask.c
