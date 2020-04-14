@@ -1,17 +1,14 @@
 import React, { FC } from 'react';
-import { PrimaryTextSpan } from '../styles/TextsElements';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../styles/FlexContainer';
 
 interface Props {
-  checkboxText: string;
   id: string;
   checked?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Checkbox: FC<Props> = ({
-  checkboxText,
   id,
   children,
   checked,
@@ -26,9 +23,6 @@ const Checkbox: FC<Props> = ({
       onChange={onChange}
     />
     <CheckboxElement className={`${id}-checkbox`}></CheckboxElement>
-    <PrimaryTextSpan fontSize="14px" color="#fffccc">
-      {checkboxText}
-    </PrimaryTextSpan>
     {children}
   </Label>
 );
@@ -52,6 +46,7 @@ const CheckboxElement = styled(FlexContainer)`
   border: 1px solid rgba(255, 255, 255, 0.19);
   border-radius: 4px;
   width: 16px;
+  min-width: 16px;
   height: 16px;
   margin-right: 8px;
   position: relative;

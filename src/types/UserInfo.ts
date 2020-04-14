@@ -9,6 +9,7 @@ export interface UserRegistration {
   email: string;
   password: string;
   repeatPassword?: string;
+  userAgreement?: boolean;
 }
 
 export interface UserAuthenticateResponse {
