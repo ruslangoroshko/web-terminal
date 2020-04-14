@@ -1,5 +1,5 @@
 export enum AutoCloseTypesEnum {
-  Profit = '$',
-  Percent = '%',
-  Price = '=',
+  Profit,
+  Percent,
+  Price,
 }

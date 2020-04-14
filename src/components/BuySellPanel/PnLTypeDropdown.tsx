@@ -11,6 +11,7 @@ import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
 import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import { useStores } from '../../hooks/useStores';
 import { ObjectKeys } from '../../helpers/objectKeys';
+import autoCloseTypes from '../../constants/autoCloseTypes';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
@@ -37,6 +38,11 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
     toggle();
   };
 
+  const availableAutoCloseTypes = [
+    AutoCloseTypesEnum.Price,
+    AutoCloseTypesEnum.Profit,
+  ];
+
   return (
     <Toggle>
       {({ on, toggle }) => (
@@ -51,8 +57,8 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
               color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
             >
               {dropdownType === 'sl'
-                ? SLTPStore.autoCloseSLType
-                : SLTPStore.autoCloseTPType}
+                ? autoCloseTypes[SLTPStore.autoCloseSLType].symbol
+                : autoCloseTypes[SLTPStore.autoCloseTPType].symbol}
             </PrimaryTextSpan>
             <SvgIcon
               {...IconShevronDown}
@@ -69,23 +75,23 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
               right="0"
               flexDirection="column"
             >
-              {ObjectKeys(AutoCloseTypesEnum).map(key => (
+              {availableAutoCloseTypes.map(key => (
                 <ProfitPercentPrice
                   key={key}
                   justifyContent="space-between"
                   padding="0 8px 8px 4px"
                   margin="0 0 8px 0"
-                  onClick={handleAutoClose(AutoCloseTypesEnum[key], toggle)}
+                  onClick={handleAutoClose(key, toggle)}
                 >
                   <PrimaryTextSpan
                     fontSize="12px"
                     lineHeight="14px"
                     color="rgba(255, 255, 255, 0.5)"
                   >
-                    {key}
+                    {autoCloseTypes[key].name}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan fontSize="12px" lineHeight="14px">
-                    {AutoCloseTypesEnum[key]}
+                    {autoCloseTypes[key].symbol}
                   </PrimaryTextSpan>
                 </ProfitPercentPrice>
               ))}
