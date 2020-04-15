@@ -15,7 +15,6 @@ import {
 } from '../constants/supportedTimeScales';
 import moment from 'moment';
 import DataFeedService from '../services/dataFeedService';
-import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 import ColorsPallete from '../styles/colorPallete';
 import { LineStyles } from '../enums/TradingViewStyles';
 import { MobileMessageModel } from '../types/MobileTVTypes';
@@ -25,7 +24,6 @@ const containerId = 'tv_chart_container';
 
 const MobileTradingView: FC = () => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
-  const [instrumentId, setInstrumentId] = useState('');
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
 
   const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
@@ -39,17 +37,15 @@ const MobileTradingView: FC = () => {
 
   let { port1, port2 } = new MessageChannel();
 
-  const initWebsocketConnection = async (
-    token: string,
-    instrumentId: string
-  ) => {
-    setInstrumentId(instrumentId);
+  const initWebsocketConnection = async (data: MobileMessageModel) => {
     const connection = initConnection(WS_HOST);
     try {
       await connection.start();
       setActiveSession(connection);
       try {
-        await connection.send(Topics.INIT, token);
+        await connection.send(Topics.INIT, data.auth);
+        setStatusSnapshot(data);
+        port2.postMessage(data);
       } catch (error) {
         alert(`ws connection error ${JSON.stringify(error)}`);
       }
@@ -133,7 +129,7 @@ const MobileTradingView: FC = () => {
     const data: MobileMessageModel = JSON.parse(e.data);
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = data.auth;
-      initWebsocketConnection(data.auth, data.instrument);
+      initWebsocketConnection(data);
     } else if (data.type) {
       let newSnapshot: MobileMessageModel = {
         ...statusSnapshot,
@@ -173,6 +169,7 @@ const MobileTradingView: FC = () => {
           break;
       }
       setStatusSnapshot(newSnapshot);
+      port2.postMessage(newSnapshot);
     }
   };
 
@@ -189,9 +186,9 @@ const MobileTradingView: FC = () => {
   useEffect(() => {
     if (activeSession) {
       const widgetOptions: ChartingLibraryWidgetOptions = {
-        symbol: instrumentId,
-        datafeed: new DataFeedService(activeSession, instrumentId),
-        interval: supportedResolutions[BASIC_RESOLUTION_KEY],
+        symbol: statusSnapshot.instrument,
+        datafeed: new DataFeedService(activeSession, statusSnapshot.instrument),
+        interval: statusSnapshot.interval,
         container_id: containerId,
         library_path: CHARTING_LIBRARY_PATH,
         locale: 'en',
@@ -268,7 +265,9 @@ const MobileTradingView: FC = () => {
   }, [activeSession]);
 
   useEffect(() => {
-    tvWidget?.onChartReady(() => {});
+    tvWidget?.onChartReady(() => {
+      port2.postMessage(statusSnapshot);
+    });
   }, [tvWidget]);
 
   return (
