@@ -45,7 +45,10 @@ const MobileTradingView: FC = () => {
       try {
         await connection.send(Topics.INIT, data.auth);
         setStatusSnapshot(data);
+        port1.postMessage(data);
         port2.postMessage(data);
+        port1.postMessage(JSON.stringify(data));
+        port2.postMessage(JSON.stringify(data));
       } catch (error) {
         alert(`ws connection error ${JSON.stringify(error)}`);
       }
@@ -112,6 +115,7 @@ const MobileTradingView: FC = () => {
       });
       setStatusSnapshot(newSnapshot);
       port2.postMessage(newSnapshot);
+
     });
   };
 
@@ -169,7 +173,10 @@ const MobileTradingView: FC = () => {
           break;
       }
       setStatusSnapshot(newSnapshot);
+      port1.postMessage(newSnapshot);
       port2.postMessage(newSnapshot);
+      port1.postMessage(JSON.stringify(newSnapshot));
+      port2.postMessage(JSON.stringify(newSnapshot));
     }
   };
 
@@ -266,7 +273,10 @@ const MobileTradingView: FC = () => {
 
   useEffect(() => {
     tvWidget?.onChartReady(() => {
+      port1.postMessage(statusSnapshot);
       port2.postMessage(statusSnapshot);
+      port1.postMessage(JSON.stringify(statusSnapshot));
+      port2.postMessage(JSON.stringify(statusSnapshot));
     });
   }, [tvWidget]);
 
