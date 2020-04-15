@@ -8,26 +8,11 @@ variables:
   KUBERNETES_APP_SELECTOR_NAME: simple-trading-web-terminal
 
 stages:
-  - build
   - publish-dev
   - publish
   - publish-k8s-dev
   - publish-kubernetes-dev
   - publish-kubernetes-test
-
-build:
-  tags: [monfex]
-  stage: build
-  image: node:latest
-  script:
-    - npm i
-    - npm run build
-  artifacts:
-    paths:
-      - ${BUILD_FOLDER}
-  only:
-    - test
-    - development
 
 publish:
   stage: publish
@@ -37,6 +22,8 @@ publish:
   variables:
     DOCKER_DRIVER: overlay
   script:
+    - npm i
+    - npm run build
     - ls ${BUILD_FOLDER}
     - ls
     - echo "$DOCKER_LOGIN"
@@ -49,12 +36,14 @@ publish:
 
 publish-dev:
   stage: publish-dev
-  #tags: [monfex]
+#  tags: [monfex]
   services:
     - docker:dind
   variables:
     DOCKER_DRIVER: overlay
   script:
+    - npm i
+    - npm run build
     - ls ${BUILD_FOLDER}
     - ls
     - echo "$DOCKER_LOGIN"
