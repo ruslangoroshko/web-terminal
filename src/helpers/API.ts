@@ -181,6 +181,16 @@ class API {
     return response.data;
   };
 
+  forgotEmail = async (email: string) => {
+    const response = await axios.post<void>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.FORGOT_PASSWORD}`,
+      {
+        email,
+      }
+    );
+    return response.data;
+  };
+
   getPositionsHistory = async (params: GetHistoryParams) => {
     const response = await axios.get<PositionsHistoryReportDTO>(
       `${API_STRING}${API_LIST.REPORTS.POSITIONS_HISTORY}`,

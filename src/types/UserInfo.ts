@@ -12,6 +12,10 @@ export interface UserRegistration {
   userAgreement?: boolean;
 }
 
+export interface UserForgotPassword {
+  email: string;
+}
+
 export interface UserAuthenticateResponse {
   result: OperationApiResponseCodes;
   data: {
