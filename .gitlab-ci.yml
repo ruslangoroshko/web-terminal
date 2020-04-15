@@ -22,6 +22,8 @@ publish:
   variables:
     DOCKER_DRIVER: overlay
   script:
+    - apt install nodejs
+    - apt install npm
     - npm i
     - npm run build
     - ls ${BUILD_FOLDER}
