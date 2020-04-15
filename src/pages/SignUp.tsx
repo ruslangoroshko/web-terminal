@@ -12,7 +12,8 @@ import { PrimaryButton } from '../styles/Buttons';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import SignTypeTabs from '../components/SignTypeTabs';
 import Page from '../constants/Pages';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
+import Checkbox from '../components/Checkbox';
 
 function SignUp() {
   const validationSchema = yup.object().shape<UserRegistration>({
@@ -25,16 +26,20 @@ function SignUp() {
     repeatPassword: yup
       .string()
       .oneOf([yup.ref(Fields.PASSWORD), null], 'Passwords must match'),
+    
+    userAgreement: yup
+      .boolean()
+      .required(),          
   });
 
   const initialValues: UserRegistration = {
     email: '',
     password: '',
     repeatPassword: '',
+    userAgreement: false
   };
 
-
-  const {push} = useHistory();
+  const { push } = useHistory();
   const { mainAppStore } = useStores();
 
   const handleSubmit = async (
@@ -121,6 +126,24 @@ function SignUp() {
                     </FlexContainer>
                   )}
                 </Field>
+
+                <FlexContainer margin="0 0 15px 0">
+                  <Checkbox
+                    id="service-agreements"
+                    onChange={e => console.log(e)}
+                  >
+                    <PrimaryTextSpan color="rgba(255,255,255,0.6)" fontSize="12px">
+                      I’m 18 years old, and agree to {' '}
+                      <CustomCheckboxLink to="//monfex.com/terms-of-service" target={'_blank'}>
+                         Terms & Conditions 
+                      </CustomCheckboxLink>
+                      {' '} and {' '}
+                      <CustomCheckboxLink to="//monfex.com/privacy-notice" target={'_blank'}>
+                         Privacy Policy 
+                      </CustomCheckboxLink>
+                    </PrimaryTextSpan>
+                  </Checkbox>
+                </FlexContainer>
                 {formikBag.status && (
                   <ErrorMessage>{formikBag.status}</ErrorMessage>
                 )}
@@ -158,4 +181,16 @@ const ErrorMessage = styled.span`
   position: absolute;
   bottom: -14px;
   font-size: 10px;
+`;
+
+
+const CustomCheckboxLink = styled(Link)`
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.4s ease;
+  text-decoration: underline;
+  font-size: 12px;
+  :hover {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 1);
+  }
 `;

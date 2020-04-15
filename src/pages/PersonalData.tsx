@@ -342,12 +342,19 @@ function PersonalData() {
                   <Field type="checkbox" name={Fields.US_CITIZEN}>
                     {({ field, meta }: FieldProps) => (
                       <Checkbox
-                        checkboxText="I’am a US reportable person"
+                        
                         id="reportable"
                         checked={field.value}
                         onChange={handleChangeUsCitizien(setFieldValue)}
                       >
                         <FlexContainer margin="0 0 0 8px">
+                          <PrimaryTextSpan
+                            color="#fffccc"
+                            fontSize="14px"
+                            marginRight="16px"
+                          >
+                            I’am a US reportable person
+                          </PrimaryTextSpan>
                           <InformationPopup
                             bgColor="rgba(0, 0, 0, 0.6)"
                             classNameTooltip="reportable-tooltip"
