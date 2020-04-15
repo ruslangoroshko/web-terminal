@@ -15,6 +15,8 @@ import SignTypeTabs from '../components/SignTypeTabs';
 import NotificationPopup from '../components/NotificationPopup';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
+import { Link } from 'react-router-dom';
+import Pages from "../constants/Pages"
 
 const SingIn = observer(() => {
   const validationSchema = yup.object().shape<UserAuthenticate>({
@@ -123,6 +125,10 @@ const SingIn = observer(() => {
                     Log in
                   </PrimaryTextSpan>
                 </PrimaryButton>
+
+                <FlexContainer alignItems="center" justifyContent="center" padding="12px 0">
+                  <LinkForgot to={Pages.FORGOT_PASSWORD}>Forgot password?</LinkForgot>
+                </FlexContainer>
               </FlexContainer>
             </CustomForm>
           )}
@@ -142,4 +148,16 @@ const ErrorMessage = styled.span`
   color: red;
   position: absolute;
   bottom: 0;
+`;
+
+const LinkForgot = styled(Link)`
+  font-size: 14px;
+  color: #fff;
+  text-decoration: none;
+  transition: all .4s ease;
+
+  &:hover {
+    text-decoration: none;  
+    color: #00FFF2;
+  }
 `;
