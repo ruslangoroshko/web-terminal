@@ -28,16 +28,16 @@ const MobileTradingView: FC = () => {
   const [instrumentId, setInstrumentId] = useState('');
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
 
-const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
-  auth: '',
-  chart_type: SeriesStyle.Area,
-  instrument: 'EURUSD',
-  interval: '',
-  resolution: '',
-  type: '',
-});
+  const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
+    auth: '',
+    chart_type: SeriesStyle.Area,
+    instrument: 'EURUSD',
+    interval: '',
+    resolution: '',
+    type: '',
+  });
 
-  const { port1, port2 } = new MessageChannel();
+  let { port1, port2 } = new MessageChannel();
 
   const initWebsocketConnection = async (
     token: string,
@@ -53,7 +53,9 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
       } catch (error) {
         alert(`ws connection error ${JSON.stringify(error)}`);
       }
-    } catch (error) {}
+    } catch (error) {
+      alert(`error ${JSON.stringify(error)}`);
+    }
   };
 
   const setInterval = (newInterval: string) => {
@@ -100,7 +102,7 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
     }
 
     const resolution = supportedResolutions[newResolutionKey];
-    
+
     const newSnapshot = {
       ...statusSnapshot,
       resolution,
@@ -113,13 +115,22 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
         to: moment().valueOf(),
       });
       setStatusSnapshot(newSnapshot);
-      parent.postMessage(newSnapshot, '*');
+      port2.postMessage(newSnapshot);
     });
   };
 
-  const messageHandler = (e: MessageEvent) => {
-    const data: MobileMessageModel = JSON.parse(e.data);
+  const messageHandler = (event: MessageEvent) => {
+    if (event.data !== 'capturePort') {
+      port1.postMessage(event.data);
+    } else if (event.data === 'capturePort') {
+      if (event.ports[0] !== null) {
+        port2 = event.ports[0];
+      }
+    }
+  };
 
+  const port2Handler = (e: MessageEvent) => {
+    const data: MobileMessageModel = JSON.parse(e.data);
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = data.auth;
       initWebsocketConnection(data.auth, data.instrument);
@@ -166,24 +177,8 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
   };
 
   useEffect(() => {
-
     window.addEventListener('message', messageHandler, false);
-
-    port1.addEventListener(
-      'message',
-      function(e) {
-       alert(`message from port1 ${e.data}`);
-      },
-      false
-    );
-
-    port2.addEventListener(
-      'message',
-      function(e) {
-        alert(`message port2 ${JSON.stringify(e.data)}`);
-      },
-      false
-    );
+    port2.addEventListener('message', port2Handler, false);
     port1.start();
     port2.start();
   }, []);
@@ -269,9 +264,9 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
     }
   }, [activeSession]);
 
-useEffect(() => {
-  tvWidget?.onChartReady(() => {});
-}, [tvWidget]);
+  useEffect(() => {
+    tvWidget?.onChartReady(() => {});
+  }, [tvWidget]);
 
   return (
     <FlexContainer height="100vh" width="100vw">
