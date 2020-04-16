@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Formik, Field, Form, FieldProps } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
@@ -16,6 +16,8 @@ import NotificationPopup from '../components/NotificationPopup';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { Link } from 'react-router-dom';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelFields';
 import Pages from '../constants/Pages';
 import validationInputTexts from '../constants/validationInputTexts';
 
@@ -49,6 +51,10 @@ const SingIn = observer(() => {
       notificationStore.openNotification();
     }
   };
+
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.LOGIN_VIEW);
+  }, []);
 
   return (
     <SignFlowLayout>

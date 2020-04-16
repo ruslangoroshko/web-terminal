@@ -15,7 +15,8 @@ import { RootStore } from './RootStore';
 import Fields from '../constants/fields';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
-import { init } from 'mixpanel-browser';
+import mixpanel, { init } from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelFields';
 
 interface MainAppStoreProps {
   token: string;
@@ -147,6 +148,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
+      mixpanel.track(mixpanelEvents.LOGIN);
     }
 
     if (
@@ -157,6 +159,23 @@ export class MainAppStore implements MainAppStoreProps {
 
     return response.result;
   };
+
+  @action
+  signUp = async (credentials: UserRegistration) => {
+    const response = await API.signUpNewTrader(credentials);
+    if (response.result === OperationApiResponseCodes.Ok) {
+      this.isAuthorized = true;
+      this.setTokenHandler(response.data.token);
+      this.handleInitConnection(response.data.token);
+    }
+
+    if (
+      response.result === OperationApiResponseCodes.InvalidUserNameOrPassword
+    ) {
+      this.isAuthorized = false;
+    }
+    return response.result;
+  }
 
   @action
   signOut = () => {
@@ -170,20 +189,6 @@ export class MainAppStore implements MainAppStoreProps {
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = token;
     this.token = token;
   };
-
-  @action
-  signUp = (credentials: UserRegistration) =>
-    new Promise(async (resolve, reject) => {
-      const response = await API.signUpNewTrader(credentials);
-      if (response.result === OperationApiResponseCodes.Ok) {
-        this.isAuthorized = true;
-        this.setTokenHandler(response.data.token);
-        this.handleInitConnection(response.data.token);
-        resolve();
-      } else {
-        reject(apiResponseCodeMessages[response.result]);
-      }
-    });
 
   @computed
   get sortedAccounts() {
