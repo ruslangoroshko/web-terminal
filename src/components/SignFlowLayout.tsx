@@ -74,13 +74,17 @@ const SignFlowLayout: FC<Props> = props => {
           </FlexContainer>
 
           <FlexContainer>
-            <LinkItem to={Pages.SUPPORT} target={"_blank"}>
+            <LinkItem to={Pages.SUPPORT} target="_blank">
               Support
             </LinkItem>
-            <LinkItem to={Pages.FAQ} target={"_blank"}>
+            {/* TODO open when add link for FAQ */}
+            {/* <LinkItem to={Pages.FAQ} target="_blank">
               FAQ
-            </LinkItem>
-            <LinkItem to={Pages.ABOUT_US} target={"_blank"}>
+            </LinkItem> */}
+            <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" marginRight="24px" fontSize="10px">
+              FAQ
+            </PrimaryTextSpan>
+            <LinkItem to={Pages.ABOUT_US} target="_blank">
               About us
             </LinkItem>
           </FlexContainer>
@@ -108,6 +112,7 @@ const ButtonImage = styled.img`
   border: 1px solid #a6a6a6;
   border-radius: 10px;
 `;
+
 
 const LinkItem = styled(Link)`
   margin-right: 24px;
