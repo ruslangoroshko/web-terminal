@@ -16,6 +16,7 @@ import Fields from '../constants/fields';
 
 import CheckDone from '../assets/svg/icon-check-done.svg';
 import SvgIcon from '../components/SvgIcon';
+import validationInputTexts from '../constants/validationInputTexts';
 
 interface Props {}
 
@@ -23,8 +24,8 @@ function ForgotPassword(props: Props) {
   const validationSchema = yup.object().shape<UserForgotPassword>({
     email: yup
       .string()
-      .email()
-      .required('Required any value'),
+      .required(validationInputTexts.EMAIL)
+      .email(validationInputTexts.EMAIL),
   });
 
   const initialValues: UserForgotPassword = {
@@ -38,7 +39,7 @@ function ForgotPassword(props: Props) {
 
   const handlerSubmit = (
     { email }: UserForgotPassword,
-    { setStatus, setSubmitting }: FormikHelpers<UserForgotPassword>
+    { setSubmitting }: FormikHelpers<UserForgotPassword>
   ) => {
     setIsLoading(true);
     API.forgotEmail(email)
@@ -63,7 +64,7 @@ function ForgotPassword(props: Props) {
               Check your email
             </PrimaryTextParagraph>
 
-            <FlexContainer alignItems="center">
+            <FlexContainer alignItems="center" padding="20px 0">
               <FlexContainer margin="0 20px 0 0">
                 <SvgIcon {...CheckDone} fillColor="#005E5E" />
               </FlexContainer>
@@ -106,7 +107,7 @@ function ForgotPassword(props: Props) {
               validationSchema={validationSchema}
             >
               {formikBag => (
-                <CustomForm translate="en">
+                <CustomForm translate="en" noValidate>
                   <FlexContainer flexDirection="column">
                     <Field type="text" name={Fields.EMAIL}>
                       {({ field, meta }: FieldProps) => (

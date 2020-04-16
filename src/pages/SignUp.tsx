@@ -14,33 +14,48 @@ import SignTypeTabs from '../components/SignTypeTabs';
 import Page from '../constants/Pages';
 import { useHistory, Link } from 'react-router-dom';
 import Checkbox from '../components/Checkbox';
+import Pages from '../constants/Pages';
+import validationInputTexts from '../constants/validationInputTexts';
 
 function SignUp() {
   const validationSchema = yup.object().shape<UserRegistration>({
-    email: yup.string().required('Required any value'),
+    email: yup
+      .string()
+      .required(validationInputTexts.EMAIL)
+      .email(validationInputTexts.EMAIL),
     password: yup
       .string()
-      .required('Required any value')
+      .required(validationInputTexts.REQUIRED_FIELD)
       .min(8, 'min 8 characters')
       .matches(/^(?=.*\d)(?=.*[a-zA-Z])/, 'min one number and one symbol'),
     repeatPassword: yup
       .string()
-      .oneOf([yup.ref(Fields.PASSWORD), null], 'Passwords must match'),
-    
+      .required(validationInputTexts.REPEAT_PASSWORD)
+      .oneOf(
+        [yup.ref(Fields.PASSWORD), null],
+        validationInputTexts.REPEAT_PASSWORD_MATCH
+      ),
+
     userAgreement: yup
-      .boolean()
-      .required(),          
+      .bool()
+      .oneOf([true], validationInputTexts.USER_AGREEMENT),
   });
 
   const initialValues: UserRegistration = {
     email: '',
     password: '',
     repeatPassword: '',
-    userAgreement: false
+    userAgreement: false,
   };
 
   const { push } = useHistory();
   const { mainAppStore } = useStores();
+
+  const handleChangeUserAgreements = (setFieldValue: any) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFieldValue(Fields.USER_AGREEMENT, e.target.checked);
+  };
 
   const handleSubmit = async (
     { email, password }: UserRegistration,
@@ -65,8 +80,8 @@ function SignUp() {
           onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
-          {formikBag => (
-            <CustomForm translate="en">
+          {({ setFieldValue, status, isSubmitting }) => (
+            <CustomForm translate="en" noValidate>
               <FlexContainer flexDirection="column">
                 <Field type="text" name={Fields.EMAIL}>
                   {({ field, meta }: FieldProps) => (
@@ -126,31 +141,44 @@ function SignUp() {
                     </FlexContainer>
                   )}
                 </Field>
-
                 <FlexContainer margin="0 0 15px 0">
-                  <Checkbox
-                    id="service-agreements"
-                    onChange={e => console.log(e)}
-                  >
-                    <PrimaryTextSpan color="rgba(255,255,255,0.6)" fontSize="12px">
-                      I’m 18 years old, and agree to {' '}
-                      <CustomCheckboxLink to="//monfex.com/terms-of-service" target={'_blank'}>
-                         Terms & Conditions 
-                      </CustomCheckboxLink>
-                      {' '} and {' '}
-                      <CustomCheckboxLink to="//monfex.com/privacy-notice" target={'_blank'}>
-                         Privacy Policy 
-                      </CustomCheckboxLink>
-                    </PrimaryTextSpan>
-                  </Checkbox>
+                  <Field type="checkbox" name={Fields.USER_AGREEMENT}>
+                    {({ field, meta }: FieldProps) => (
+                      <Checkbox
+                        id="user-agreements"
+                        checked={field.value}
+                        onChange={handleChangeUserAgreements(setFieldValue)}
+                        hasError={!!meta.error}
+                        errorText={meta.error}
+                      >
+                        <PrimaryTextSpan
+                          color="rgba(255,255,255,0.6)"
+                          fontSize="12px"
+                        >
+                          I’m 18 years old, and agree to&nbsp;
+                          <CustomCheckboxLink
+                            to={Pages.TERMS_OF_SERVICE}
+                            target="_blank"
+                          >
+                            Terms & Conditions
+                          </CustomCheckboxLink>
+                          &nbsp; and&nbsp;
+                          <CustomCheckboxLink
+                            to={Pages.PRIVACY_POLICY}
+                            target="_blank"
+                          >
+                            Privacy Policy
+                          </CustomCheckboxLink>
+                        </PrimaryTextSpan>
+                      </Checkbox>
+                    )}
+                  </Field>
                 </FlexContainer>
-                {formikBag.status && (
-                  <ErrorMessage>{formikBag.status}</ErrorMessage>
-                )}
+
                 <PrimaryButton
                   padding="12px"
                   type="submit"
-                  disabled={formikBag.isSubmitting}
+                  disabled={isSubmitting}
                 >
                   <PrimaryTextSpan
                     color="#1c2026"
@@ -182,7 +210,6 @@ const ErrorMessage = styled.span`
   bottom: -14px;
   font-size: 10px;
 `;
-
 
 const CustomCheckboxLink = styled(Link)`
   color: rgba(255, 255, 255, 0.6);

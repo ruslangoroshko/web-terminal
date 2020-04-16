@@ -17,7 +17,10 @@ const Page = {
 
   ABOUT_US: '//www.monfex.com/why-us',
   FAQ: '#',
-  SUPPORT: '//www.monfex.com/contact-us'
+  SUPPORT: '//www.monfex.com/contact-us',
+
+  TERMS_OF_SERVICE: '//monfex.com/terms-of-service',
+  PRIVACY_POLICY: '//monfex.com/privacy-notice'
 };
 
 Object.freeze(Page);
