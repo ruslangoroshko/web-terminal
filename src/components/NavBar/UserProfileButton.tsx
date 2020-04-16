@@ -12,7 +12,7 @@ import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import { Observer } from 'mobx-react-lite';
 import { identify, people, Dict } from 'mixpanel-browser';
 import KYCStatus from '../../constants/KYCStatus';
-import mixpanelEvents from '../../constants/mixpanelFields';
+import mixpanelEvents from '../../constants/mixpanelEvents';
 
 function UserProfileButton() {
 

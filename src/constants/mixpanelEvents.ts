@@ -17,7 +17,9 @@ const mixpanelEvents = {
     TOTAL_ACCOUNT_PNL: 'total_account_p&l',
     TOTAL_ACCOUNT_DEPOSITS_NUMBER: 'total_account_deposits_number',
     TOTAL_ACCOUNT_WITHDRAW_NUMBER: 'total_account_withdraw_number',
-    TOTAL_ACCOUNT_TRADES_NUMBER: 'total_account_trades_number'
+    TOTAL_ACCOUNT_TRADES_NUMBER: 'total_account_trades_number',
+    MARKET_ORDER: 'market order',
+    LIMIT_ORDER: 'limit order',
 }
 
 Object.freeze(mixpanelEvents);

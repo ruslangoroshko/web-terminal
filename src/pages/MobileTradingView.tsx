@@ -45,7 +45,6 @@ const MobileTradingView: FC = () => {
   let { port1, port2 } = new MessageChannel();
 
   const initWebsocketConnection = async (data: MobileMessageModel) => {
-    alert(JSON.stringify(data))
     const connection = initConnection(WS_HOST);
     try {
       await connection.start();
