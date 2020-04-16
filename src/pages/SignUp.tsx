@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Formik, Field, Form, FieldProps, FormikHelpers } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
@@ -14,6 +14,8 @@ import SignTypeTabs from '../components/SignTypeTabs';
 import Page from '../constants/Pages';
 import { useHistory, Link } from 'react-router-dom';
 import Checkbox from '../components/Checkbox';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelFields';
 
 function SignUp() {
   const validationSchema = yup.object().shape<UserRegistration>({
@@ -55,6 +57,10 @@ function SignUp() {
       setSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.SIGN_UP_VIEW);
+  }, []);
 
   return (
     <SignFlowLayout>

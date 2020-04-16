@@ -1,5 +1,9 @@
-const mixpanelFields = {
+const mixpanelEvents = {
     LAST_LOGIN: 'last login',
+    LOGIN_VIEW: 'login view',
+    LOGIN: 'login',
+    SIGN_UP_VIEW: 'sign up view',
+    SIGN_UP: 'sign up',
     FIRST_NAME: '$first_name',
     LAST_NAME: '$last_name',
     EMAIL: '$email',
@@ -16,6 +20,6 @@ const mixpanelFields = {
     TOTAL_ACCOUNT_TRADES_NUMBER: 'total_account_trades_number'
 }
 
-Object.freeze(mixpanelFields);
+Object.freeze(mixpanelEvents);
 
-export default mixpanelFields;
+export default mixpanelEvents;

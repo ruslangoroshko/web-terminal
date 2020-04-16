@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Formik, Field, Form, FieldProps } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
@@ -17,6 +17,8 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { Link } from 'react-router-dom';
 import Pages from "../constants/Pages"
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelFields';
 
 const SingIn = observer(() => {
   const validationSchema = yup.object().shape<UserAuthenticate>({
@@ -46,6 +48,10 @@ const SingIn = observer(() => {
       notificationStore.openNotification();
     }
   };
+
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.LOGIN_VIEW);
+  }, []);
 
   return (
     <SignFlowLayout>
