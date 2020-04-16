@@ -33,6 +33,7 @@ function SignUp() {
       .string()
       .required(validationInputTexts.REQUIRED_FIELD)
       .min(8, 'min 8 characters')
+      .max(40, 'max 40 symbols')
       .matches(/^(?=.*\d)(?=.*[a-zA-Z])/, 'min one number and one symbol'),
     repeatPassword: yup
       .string()
