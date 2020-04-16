@@ -18,6 +18,7 @@ import DataFeedService from '../services/dataFeedService';
 import ColorsPallete from '../styles/colorPallete';
 import { LineStyles } from '../enums/TradingViewStyles';
 import { MobileMessageModel } from '../types/MobileTVTypes';
+import { window } from 'global';
 
 const containerId = 'tv_chart_container';
 
@@ -187,7 +188,6 @@ const MobileTradingView: FC = () => {
     port1.start();
     port2.start();
     
-    // @ts-ignore
     window.initWebsocketConnection = (data: any) => {
       alert(data);
     };
