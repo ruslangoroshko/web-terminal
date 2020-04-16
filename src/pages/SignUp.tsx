@@ -32,9 +32,9 @@ function SignUp() {
     password: yup
       .string()
       .required(validationInputTexts.REQUIRED_FIELD)
-      .min(8, 'min 8 characters')
-      .max(40, 'max 40 symbols')
-      .matches(/^(?=.*\d)(?=.*[a-zA-Z])/, 'min one number and one symbol'),
+      .min(8, validationInputTexts.PASSWORD_MIN_CHARACTERS)
+      .max(40, validationInputTexts.PASSWORD_MAX_CHARACTERS)
+      .matches(/^(?=.*\d)(?=.*[a-zA-Z])/, validationInputTexts.PASSWORD_MATCH),
     repeatPassword: yup
       .string()
       .required(validationInputTexts.REPEAT_PASSWORD)

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import SignFlowLayout from '../components/SignFlowLayout';
 import { Formik, Field, Form, FieldProps, FormikHelpers } from 'formik';
 import LabelInput from '../components/LabelInput';
