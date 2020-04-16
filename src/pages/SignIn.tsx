@@ -16,14 +16,18 @@ import NotificationPopup from '../components/NotificationPopup';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { Link } from 'react-router-dom';
-import Pages from "../constants/Pages"
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelFields';
+import Pages from '../constants/Pages';
+import validationInputTexts from '../constants/validationInputTexts';
 
 const SingIn = observer(() => {
   const validationSchema = yup.object().shape<UserAuthenticate>({
-    email: yup.string().required('Required any value'),
-    password: yup.string().required('Required any value'),
+    email: yup
+      .string()
+      .required(validationInputTexts.EMAIL)
+      .email(validationInputTexts.EMAIL),
+    password: yup.string().required(validationInputTexts.REQUIRED_FIELD),
   });
 
   const initialValues: UserAuthenticate = {
@@ -36,7 +40,6 @@ const SingIn = observer(() => {
   const handleSubmit = async (credentials: UserAuthenticate) => {
     try {
       const result = await mainAppStore.signIn(credentials);
-
       if (result !== OperationApiResponseCodes.Ok) {
         notificationStore.notificationMessage = apiResponseCodeMessages[result];
         notificationStore.isSuccessfull = false;
@@ -77,7 +80,7 @@ const SingIn = observer(() => {
           validationSchema={validationSchema}
         >
           {formikBag => (
-            <CustomForm translate="en">
+            <CustomForm translate="en" noValidate>
               <FlexContainer flexDirection="column">
                 <Field type="text" name={Fields.EMAIL}>
                   {({ field, meta }: FieldProps) => (
@@ -112,7 +115,7 @@ const SingIn = observer(() => {
                         type="password"
                         hasError={!!(meta.touched && meta.error)}
                         errorText={meta.error}
-                        ></LabelInput>
+                      ></LabelInput>
                     </FlexContainer>
                   )}
                 </Field>
@@ -132,8 +135,14 @@ const SingIn = observer(() => {
                   </PrimaryTextSpan>
                 </PrimaryButton>
 
-                <FlexContainer alignItems="center" justifyContent="center" padding="12px 0">
-                  <LinkForgot to={Pages.FORGOT_PASSWORD}>Forgot password?</LinkForgot>
+                <FlexContainer
+                  alignItems="center"
+                  justifyContent="center"
+                  padding="12px 0"
+                >
+                  <LinkForgot to={Pages.FORGOT_PASSWORD}>
+                    Forgot password?
+                  </LinkForgot>
                 </FlexContainer>
               </FlexContainer>
             </CustomForm>
@@ -160,10 +169,10 @@ const LinkForgot = styled(Link)`
   font-size: 14px;
   color: #fff;
   text-decoration: none;
-  transition: all .4s ease;
+  transition: all 0.4s ease;
 
   &:hover {
-    text-decoration: none;  
-    color: #00FFF2;
+    text-decoration: none;
+    color: #00fff2;
   }
 `;

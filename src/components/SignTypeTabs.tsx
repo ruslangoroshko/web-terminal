@@ -43,6 +43,11 @@ const CustomNavLink = styled(NavLink)`
   display: flex;
   justify-content: center;
   align-items: center;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
 
   &.selected {
     background-color: rgba(255, 255, 255, 0.03);
