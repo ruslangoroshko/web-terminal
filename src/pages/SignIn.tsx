@@ -17,7 +17,7 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { Link } from 'react-router-dom';
 import mixpanel from 'mixpanel-browser';
-import mixpanelEvents from '../constants/mixpanelFields';
+import mixpanelEvents from '../constants/mixpanelEvents';
 import Pages from '../constants/Pages';
 import validationInputTexts from '../constants/validationInputTexts';
 

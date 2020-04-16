@@ -16,7 +16,7 @@ import Fields from '../constants/fields';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import mixpanel, { init } from 'mixpanel-browser';
-import mixpanelEvents from '../constants/mixpanelFields';
+import mixpanelEvents from '../constants/mixpanelEvents';
 
 interface MainAppStoreProps {
   token: string;

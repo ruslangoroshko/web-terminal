@@ -15,7 +15,7 @@ import Page from '../constants/Pages';
 import { useHistory, Link } from 'react-router-dom';
 import Checkbox from '../components/Checkbox';
 import mixpanel from 'mixpanel-browser';
-import mixpanelEvents from '../constants/mixpanelFields';
+import mixpanelEvents from '../constants/mixpanelEvents';
 import Pages from '../constants/Pages';
 import validationInputTexts from '../constants/validationInputTexts';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
