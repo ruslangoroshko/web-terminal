@@ -181,7 +181,7 @@ function SignUp() {
                         id="user-agreements"
                         checked={field.value}
                         onChange={handleChangeUserAgreements(setFieldValue)}
-                        hasError={!!meta.error}
+                        hasError={!!(meta.touched && meta.error)}
                         errorText={meta.error}
                       >
                         <PrimaryTextSpan
