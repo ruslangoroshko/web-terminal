@@ -4,6 +4,7 @@ const Page = {
   SIGN_UP: '/sign-up',
   EMAIL_CONFIRMATION: '/confirm/:id',
   FORGOT_PASSWORD: '/reset-password',
+  RESET_PASSWORD: '/recovery/:token',
   PERSONAL_DATA: '/personal-data',
   PHONE_VERIFICATION: '/phone-verification',
   PROOF_OF_IDENTITY: '/proof-of-identity',

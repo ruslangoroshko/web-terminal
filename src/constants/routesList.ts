@@ -9,6 +9,7 @@ import AccountBalance from '../pages/AccountBalance';
 import PhoneVerification from '../pages/PhoneVerification';
 import ProofOfIdentity from '../pages/ProofOfIdentity';
 import ForgotPassword from '../pages/ForgotPassword';
+import ResetPassword from '../pages/ResetPassword';
 
 export enum RouteLayoutType {
   Authorized,
@@ -43,6 +44,13 @@ const routesList = [
   {
     component: ForgotPassword,
     path: Page.FORGOT_PASSWORD,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.Public,
+  },
+  {
+    component: ResetPassword,
+    path: Page.RESET_PASSWORD,
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.Public,
