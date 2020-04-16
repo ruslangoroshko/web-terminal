@@ -16,6 +16,10 @@ import { useHistory, Link } from 'react-router-dom';
 import Checkbox from '../components/Checkbox';
 import Pages from '../constants/Pages';
 import validationInputTexts from '../constants/validationInputTexts';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
+import NotificationPopup from '../components/NotificationPopup';
+import { observer, Observer } from 'mobx-react-lite';
 
 function SignUp() {
   const validationSchema = yup.object().shape<UserRegistration>({
@@ -49,7 +53,7 @@ function SignUp() {
   };
 
   const { push } = useHistory();
-  const { mainAppStore } = useStores();
+  const { mainAppStore, notificationStore } = useStores();
 
   const handleChangeUserAgreements = (setFieldValue: any) => (
     e: React.ChangeEvent<HTMLInputElement>
@@ -63,9 +67,18 @@ function SignUp() {
   ) => {
     setSubmitting(true);
     try {
-      await mainAppStore.signUp({ email, password });
-      push(Page.DASHBOARD);
+      const result = await mainAppStore.signUp({ email, password });
+      if (result !== OperationApiResponseCodes.Ok) {
+        notificationStore.notificationMessage = apiResponseCodeMessages[result];
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+      } else {
+        push(Page.DASHBOARD);
+      }
     } catch (error) {
+      notificationStore.notificationMessage = error;
+      notificationStore.isSuccessfull = false;
+      notificationStore.openNotification();
       setStatus(error);
       setSubmitting(false);
     }
@@ -73,6 +86,20 @@ function SignUp() {
 
   return (
     <SignFlowLayout>
+      <FlexContainer
+        position="absolute"
+        bottom="100px"
+        left="100px"
+        zIndex="100"
+      >
+        <Observer>
+          {() => (
+            <NotificationPopup
+              show={notificationStore.isActiveNotification}
+            ></NotificationPopup>
+          )}
+        </Observer>
+      </FlexContainer>
       <FlexContainer width="320px" flexDirection="column">
         <SignTypeTabs></SignTypeTabs>
         <Formik
