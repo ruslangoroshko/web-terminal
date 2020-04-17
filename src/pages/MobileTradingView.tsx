@@ -130,8 +130,12 @@ const MobileTradingView: FC = () => {
   };
 
   const port2Handler = (e: MessageEvent) => {
-    console.log(e.data);
     const data: MobileMessageModel = JSON.parse(e.data);
+    initHandler(data);
+  };
+
+
+  const initHandler = (data: MobileMessageModel) => {
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = data.auth;
       initWebsocketConnection(data);
@@ -141,7 +145,6 @@ const MobileTradingView: FC = () => {
       };
       switch (data.type) {
         case mobileChartMessageTypes.SET_CANDLE_TYPE:
-          console.log('setChartType', data.chart_type);
           tvWidget?.chart().setChartType(data.chart_type);
           newSnapshot = {
             ...newSnapshot,
@@ -150,7 +153,6 @@ const MobileTradingView: FC = () => {
           break;
 
         case mobileChartMessageTypes.SET_INSTRUMENT:
-          console.log('setSymbol', data.instrument, data.interval);
           tvWidget?.setSymbol(data.instrument, data.interval, () => {
             newSnapshot = {
               ...newSnapshot,
@@ -164,7 +166,6 @@ const MobileTradingView: FC = () => {
           break;
 
         case mobileChartMessageTypes.SET_RESOLUTION:
-          console.log('setResolution', data.resolution);
           tvWidget?.chart().setResolution(data.resolution, () => {
             newSnapshot = {
               ...newSnapshot,
@@ -180,22 +181,19 @@ const MobileTradingView: FC = () => {
       setStatusSnapshot(newSnapshot);
       port2.postMessage(newSnapshot);
     }
-  };
+  }
 
   useEffect(() => {
     window.addEventListener('message', messageHandler, false);
     port2.addEventListener('message', port2Handler, false);
     port1.start();
     port2.start();
-    console.log('PAGE IS LOADED');
     // @ts-ignore
-    window.initWebsocketConnection = port2Handler;
+    window.initWebsocketConnection = initHandler;
   }, []);
 
   useEffect(() => {
     if (activeSession) {
-      console.log('activeSession IS LOADED', JSON.stringify(statusSnapshot));
-
       const widgetOptions: ChartingLibraryWidgetOptions = {
         debug: true,
         symbol: statusSnapshot.instrument,
