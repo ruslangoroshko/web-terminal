@@ -78,7 +78,7 @@ class DataFeedService implements IBasicDataFeed {
 
     setTimeout(function() {
       onResolve(symbol_stub);
-      console.log('Resolving that symbol....', symbol_stub);
+      console.log('Resolving that symbol....', symbolName);
     }, 0);
   };
 

@@ -26,6 +26,7 @@ const MainApp = () => {
           @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic,cyrillic-ext');
           ${reboot};
           ${slickSliderStyles};
+          
           html {
             font-size: 14px;
             line-height: 1.4;

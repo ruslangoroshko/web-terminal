@@ -112,6 +112,8 @@ const MobileTradingView: FC = () => {
       interval: newInterval,
     };
 
+    console.log('resolution', resolution);
+
     tvWidget?.chart().setResolution(resolution, () => {
       tvWidget?.chart().setVisibleRange({
         from: from.valueOf(),
@@ -144,6 +146,7 @@ const MobileTradingView: FC = () => {
       };
       switch (data.type) {
         case mobileChartMessageTypes.SET_CANDLE_TYPE:
+          console.log('setChartType', data.chart_type);
           tvWidget?.chart().setChartType(data.chart_type);
           newSnapshot = {
             ...newSnapshot,
@@ -152,12 +155,13 @@ const MobileTradingView: FC = () => {
           break;
 
         case mobileChartMessageTypes.SET_INSTRUMENT:
-          tvWidget?.setSymbol(data.instrument, data.interval, () => {});
-          newSnapshot = {
-            ...newSnapshot,
-            instrument: data.instrument,
-          };
-
+          console.log('setSymbol', data.instrument, data.interval);
+          tvWidget?.setSymbol(data.instrument, data.interval, () => {
+            newSnapshot = {
+              ...newSnapshot,
+              instrument: data.instrument,
+            };
+          });
           break;
 
         case mobileChartMessageTypes.SET_INTERVAL:
@@ -165,12 +169,14 @@ const MobileTradingView: FC = () => {
           break;
 
         case mobileChartMessageTypes.SET_RESOLUTION:
-          tvWidget?.chart().setResolution(data.resolution, () => {});
-          newSnapshot = {
-            ...newSnapshot,
-            resolution: data.resolution,
-          };
-
+          console.log('setResolution', data.resolution);
+          tvWidget?.chart().setResolution(data.resolution, () => {
+            newSnapshot = {
+              ...newSnapshot,
+              resolution: data.resolution,
+            };
+          });
+          
           break;
 
         default:
@@ -186,7 +192,7 @@ const MobileTradingView: FC = () => {
     port2.addEventListener('message', port2Handler, false);
     port1.start();
     port2.start();
-    
+    console.log('PAGE IS LOADED');
     // @ts-ignore
     window.initWebsocketConnection = initWebsocketConnection;
   }, []);
@@ -196,7 +202,7 @@ const MobileTradingView: FC = () => {
       const widgetOptions: ChartingLibraryWidgetOptions = {
         symbol: statusSnapshot.instrument,
         datafeed: new DataFeedService(activeSession, statusSnapshot.instrument),
-        interval: statusSnapshot.interval,
+        interval: statusSnapshot.resolution,
         container_id: containerId,
         library_path: CHARTING_LIBRARY_PATH,
         locale: 'en',
@@ -273,7 +279,9 @@ const MobileTradingView: FC = () => {
   }, [activeSession]);
 
   useEffect(() => {
-    tvWidget?.onChartReady(() => {});
+    tvWidget?.onChartReady(() => {
+      console.log('tvWidget IS LOADED', JSON.stringify(statusSnapshot));
+    });
   }, [tvWidget]);
 
   return (
