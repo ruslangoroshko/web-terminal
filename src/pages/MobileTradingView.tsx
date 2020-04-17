@@ -40,10 +40,10 @@ const MobileTradingView: FC = () => {
   let { port1, port2 } = new MessageChannel();
 
   const initWebsocketConnection = async (data: MobileMessageModel) => {
+    setStatusSnapshot(data);
     const connection = initConnection(WS_HOST);
     try {
       await connection.start();
-      setStatusSnapshot(data);
       setActiveSession(connection);
       try {
         await connection.send(Topics.INIT, data.auth);
@@ -130,6 +130,7 @@ const MobileTradingView: FC = () => {
   };
 
   const port2Handler = (e: MessageEvent) => {
+    console.log(e.data);
     const data: MobileMessageModel = JSON.parse(e.data);
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = data.auth;
@@ -177,7 +178,7 @@ const MobileTradingView: FC = () => {
           break;
       }
       setStatusSnapshot(newSnapshot);
-      port1.postMessage(newSnapshot);
+      port2.postMessage(newSnapshot);
     }
   };
 
