@@ -69,7 +69,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
             <ProfitPercentPriceWrapper
               width="112px"
               backgroundColor="#000"
-              padding="8px"
+              padding="8px 8px 0"
               position="absolute"
               top="100%"
               right="0"

@@ -191,6 +191,14 @@ class API {
     return response.data;
   };
 
+  recoveryPassword = async (data: object) => {
+    const response = await axios.post<any[]>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.PASSWORD_RECOVERY}`,
+      data
+    );
+    return response.data;
+  };
+
   getPositionsHistory = async (params: GetHistoryParams) => {
     const response = await axios.get<PositionsHistoryReportDTO>(
       `${API_STRING}${API_LIST.REPORTS.POSITIONS_HISTORY}`,

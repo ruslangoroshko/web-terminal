@@ -16,6 +16,11 @@ export interface UserForgotPassword {
   email: string;
 }
 
+export interface ResetPassword {
+  password: string;
+  repeatPassword?: string;
+}
+
 export interface UserAuthenticateResponse {
   result: OperationApiResponseCodes;
   data: {
