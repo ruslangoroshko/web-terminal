@@ -6,7 +6,10 @@ import Topics from '../constants/websocketTopics';
 import { FlexContainer } from '../styles/FlexContainer';
 import mobileChartMessageTypes from '../constants/MobileChartMessageTypes';
 import {
-  IChartingLibraryWidget, ChartingLibraryWidgetOptions, SeriesStyle, widget,
+  IChartingLibraryWidget,
+  ChartingLibraryWidgetOptions,
+  SeriesStyle,
+  widget,
 } from '../vendor/charting_library/charting_library.min';
 import {
   supportedResolutions,
@@ -26,22 +29,14 @@ const MobileTradingView: FC = () => {
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
   let isInitialized = false;
 
-  let statusSnapshot: MobileMessageModel = {
+  const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
     auth: '',
     chart_type: SeriesStyle.Area,
     instrument: 'EURUSD',
     interval: '',
     resolution: '',
     type: '',
-  }
-
-  const setStatusSnapshot = (newSnapshot: MobileMessageModel) => {
-    statusSnapshot = {
-      ...statusSnapshot,
-      ...newSnapshot,
-    };
-  }
-  
+  })
 
   let { port1, port2 } = new MessageChannel();
 
@@ -49,11 +44,11 @@ const MobileTradingView: FC = () => {
     const connection = initConnection(WS_HOST);
     try {
       await connection.start();
+      setStatusSnapshot(data);
       setActiveSession(connection);
-      isInitialized=true;
+      isInitialized = true;
       try {
         await connection.send(Topics.INIT, data.auth);
-        setStatusSnapshot(data);
         port2.postMessage(JSON.stringify(data));
       } catch (error) {
         alert(`ws connection error ${JSON.stringify(error)}`);
@@ -123,7 +118,6 @@ const MobileTradingView: FC = () => {
       });
       setStatusSnapshot(newSnapshot);
       port2.postMessage(newSnapshot);
-
     });
   };
 
@@ -178,7 +172,7 @@ const MobileTradingView: FC = () => {
               resolution: data.resolution,
             };
           });
-          
+
           break;
 
         default:
@@ -204,7 +198,7 @@ const MobileTradingView: FC = () => {
       console.log('activeSession IS LOADED', JSON.stringify(statusSnapshot));
 
       const widgetOptions: ChartingLibraryWidgetOptions = {
-        debug:true,
+        debug: true,
         symbol: statusSnapshot.instrument,
         datafeed: new DataFeedService(activeSession, statusSnapshot.instrument),
         interval: statusSnapshot.resolution,
