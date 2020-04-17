@@ -199,6 +199,8 @@ const MobileTradingView: FC = () => {
 
   useEffect(() => {
     if (activeSession) {
+      console.log('activeSession IS LOADED', JSON.stringify(statusSnapshot));
+
       const widgetOptions: ChartingLibraryWidgetOptions = {
         debug:true,
         symbol: statusSnapshot.instrument,
@@ -278,7 +280,6 @@ const MobileTradingView: FC = () => {
       const tvWidget = new widget(widgetOptions);
 
       tvWidget.onChartReady(async () => {
-        console.log('tvWidget IS LOADED', JSON.stringify(statusSnapshot));
         setTvWidget(tvWidget);
       });
 
