@@ -24,6 +24,7 @@ const containerId = 'tv_chart_container';
 const MobileTradingView: FC = () => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
+  let isInitialized = false;
 
   let statusSnapshot: MobileMessageModel = {
     auth: '',
@@ -49,6 +50,7 @@ const MobileTradingView: FC = () => {
     try {
       await connection.start();
       setActiveSession(connection);
+      isInitialized=true;
       try {
         await connection.send(Topics.INIT, data.auth);
         setStatusSnapshot(data);
@@ -137,7 +139,7 @@ const MobileTradingView: FC = () => {
 
   const port2Handler = (e: MessageEvent) => {
     const data: MobileMessageModel = JSON.parse(e.data);
-    if (!activeSession) {
+    if (!isInitialized) {
       Axios.defaults.headers['Authorization'] = data.auth;
       initWebsocketConnection(data);
     } else if (data.type) {
