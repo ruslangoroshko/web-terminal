@@ -274,15 +274,18 @@ const MobileTradingView: FC = () => {
         },
       };
 
-      setTvWidget(new widget(widgetOptions));
+      const tvWidget = new widget(widgetOptions);
+
+      tvWidget.onChartReady(async () => {
+        console.log('tvWidget IS LOADED', JSON.stringify(statusSnapshot));
+        setTvWidget(tvWidget);
+      });
+
+      return () => {
+        tvWidget.remove();
+      };
     }
   }, [activeSession]);
-
-  useEffect(() => {
-    tvWidget?.onChartReady(() => {
-      console.log('tvWidget IS LOADED', JSON.stringify(statusSnapshot));
-    });
-  }, [tvWidget]);
 
   return (
     <FlexContainer height="100vh" width="100vw">
