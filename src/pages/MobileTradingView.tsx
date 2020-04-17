@@ -200,6 +200,7 @@ const MobileTradingView: FC = () => {
   useEffect(() => {
     if (activeSession) {
       const widgetOptions: ChartingLibraryWidgetOptions = {
+        debug:true,
         symbol: statusSnapshot.instrument,
         datafeed: new DataFeedService(activeSession, statusSnapshot.instrument),
         interval: statusSnapshot.resolution,
