@@ -189,7 +189,7 @@ const MobileTradingView: FC = () => {
     port2.start();
     console.log('PAGE IS LOADED');
     // @ts-ignore
-    window.initWebsocketConnection = initWebsocketConnection;
+    window.initWebsocketConnection = port2Handler;
   }, []);
 
   useEffect(() => {
