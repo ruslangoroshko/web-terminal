@@ -97,7 +97,7 @@ function ProfileDropdown() {
       </FlexWithBottomBorder>
       <FlexWithBottomBorder
         margin="0 0 16px 0"
-        padding="0 0 16px 0"
+        padding="0"
         flexDirection="column"
       >
         <FlexContainer margin="0 0 16px">
