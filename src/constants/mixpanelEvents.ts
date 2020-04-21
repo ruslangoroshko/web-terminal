@@ -20,6 +20,8 @@ const mixpanelEvents = {
     TOTAL_ACCOUNT_TRADES_NUMBER: 'total_account_trades_number',
     MARKET_ORDER: 'market order',
     LIMIT_ORDER: 'limit order',
+    FORGOT_PASSWORD: 'forgot password',
+    FORGOT_PASSWORD_VIEW: 'forgot password view',
 }
 
 Object.freeze(mixpanelEvents);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SignFlowLayout from '../components/SignFlowLayout';
 import { Formik, Field, Form, FieldProps, FormikHelpers } from 'formik';
 import LabelInput from '../components/LabelInput';
@@ -17,6 +17,8 @@ import Fields from '../constants/fields';
 import CheckDone from '../assets/svg/icon-check-done.svg';
 import SvgIcon from '../components/SvgIcon';
 import validationInputTexts from '../constants/validationInputTexts';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
 
 interface Props {}
 
@@ -47,6 +49,10 @@ function ForgotPassword(props: Props) {
       .catch(() => setSubmitting(true))
       .finally(() => setIsLoading(false));
   };
+
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_VIEW);
+  }, []);
 
   return (
     <SignFlowLayout>
