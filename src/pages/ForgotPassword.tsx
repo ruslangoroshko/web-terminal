@@ -52,9 +52,6 @@ function ForgotPassword(props: Props) {
     try {
       const result = await API.forgotEmail(email);
       if (result !== OperationApiResponseCodes.Ok) {
-        notificationStore.notificationMessage = apiResponseCodeMessages[result];
-        notificationStore.isSuccessfull = false;
-        notificationStore.openNotification();
         setIsSuccessfull(true)
       } else {
         setSubmitting(true)
