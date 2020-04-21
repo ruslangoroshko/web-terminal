@@ -49,10 +49,7 @@ const MobileTradingView: FC = () => {
         await connection.send(Topics.INIT, data.auth);
         port2.postMessage(JSON.stringify(data));
         //@ts-ignore
-        if (window.webkit) {
-          //@ts-ignore
-          window.webkit.messageHandlers.callback.postMessage(data);
-        }
+        window.webkit?.messageHandlers?.callback?.postMessage(data);
       } catch (error) {
         alert(`ws connection error ${JSON.stringify(error)}`);
       }
@@ -122,10 +119,7 @@ const MobileTradingView: FC = () => {
       setStatusSnapshot(newSnapshot);
       port2.postMessage(newSnapshot);
       //@ts-ignore
-      if (window.webkit) {
-        //@ts-ignore
-        window.webkit.messageHandlers.callback.postMessage(data);
-      }
+      window.webkit?.messageHandlers?.callback?.postMessage(newSnapshot);
     });
   };
 
@@ -190,10 +184,7 @@ const MobileTradingView: FC = () => {
       setStatusSnapshot(newSnapshot);
       port2.postMessage(newSnapshot);
       //@ts-ignore
-      if (window.webkit) {
-        //@ts-ignore
-        window.webkit.messageHandlers.callback.postMessage(data);
-      }
+      window.webkit?.messageHandlers?.callback?.postMessage(newSnapshot);
     }
   };
 
