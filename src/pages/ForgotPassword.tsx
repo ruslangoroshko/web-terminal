@@ -19,6 +19,9 @@ import SvgIcon from '../components/SvgIcon';
 import validationInputTexts from '../constants/validationInputTexts';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import { useStores } from '../hooks/useStores';
+import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 
 interface Props {}
 
@@ -38,16 +41,37 @@ function ForgotPassword(props: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccessful, setIsSuccessfull] = useState(false);
+  const { notificationStore } = useStores();
 
-  const handlerSubmit = (
+  const handlerSubmit = async (
     { email }: UserForgotPassword,
     { setSubmitting }: FormikHelpers<UserForgotPassword>
   ) => {
     setIsLoading(true);
-    API.forgotEmail(email)
-      .then(() => setIsSuccessfull(true))
-      .catch(() => setSubmitting(true))
-      .finally(() => setIsLoading(false));
+
+    try {
+      const result = await API.forgotEmail(email);
+      if (result !== OperationApiResponseCodes.Ok) {
+        notificationStore.notificationMessage = apiResponseCodeMessages[result];
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+        setIsSuccessfull(true)
+      } else {
+        setSubmitting(true)
+        setIsSuccessfull(false)
+      }
+      setIsLoading(false);
+    } catch (error) {
+      notificationStore.notificationMessage = error;
+      notificationStore.isSuccessfull = false;
+      notificationStore.openNotification();
+      setSubmitting(true)
+      setIsLoading(false);
+    }
+
+    //  .then((result) => setIsSuccessfull(true))
+    //  .catch(() => setSubmitting(true))
+    //  .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {
