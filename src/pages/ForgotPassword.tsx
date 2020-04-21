@@ -53,6 +53,7 @@ function ForgotPassword(props: Props) {
       const result = await API.forgotEmail(email);
       if (result !== OperationApiResponseCodes.Ok) {
         setIsSuccessfull(true)
+        mixpanel.track(mixpanelEvents.FORGOT_PASSWORD);
       } else {
         setSubmitting(true)
         setIsSuccessfull(false)

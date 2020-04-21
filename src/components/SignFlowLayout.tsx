@@ -81,7 +81,7 @@ const SignFlowLayout: FC<Props> = props => {
             {/* <LinkItem to={Pages.FAQ} target="_blank">
               FAQ
             </LinkItem> */}
-            <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" marginRight="24px" fontSize="10px">
+            <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" marginRight="24px" fontSize="10px" lineHeight="1.5">
               FAQ
             </PrimaryTextSpan>
             <LinkItem to={Pages.ABOUT_US} target="_blank">
