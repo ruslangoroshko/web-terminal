@@ -62,7 +62,7 @@ function ConfirmationPopup(props: Props) {
         <Observer>
           {() => (
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              {quotesStore.quotes[instrumentId].bid.c.toFixed(digits)}
+              {quotesStore.quotes[instrumentId].ask.c.toFixed(digits)}
             </PrimaryTextSpan>
           )}
         </Observer>
