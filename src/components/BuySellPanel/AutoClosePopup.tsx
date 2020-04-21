@@ -61,13 +61,13 @@ function AutoClosePopup(props: Props) {
           type="button"
           hasValues={!!(values.sl || values.tp)}
         >
-          <PrimaryTextSpan color="#fffccc">
-            {values.sl || values.tp
-              ? `${`+${mainAppStore.activeAccount?.symbol}${values.tp}` ||
-                  'Non Set'} —${mainAppStore.activeAccount?.symbol ||
-                  '' + values.sl ||
-                  'Non Set'}`
-              : 'Set'}
+          <PrimaryTextSpan color="#fffccc" fontSize="14px">
+            {values.sl || values.tp ? (
+              `
+                +${mainAppStore.activeAccount?.symbol}${values.tp ? `${values.tp}` : 'Non Set'}
+                –${mainAppStore.activeAccount?.symbol}${values.sl ? `${values.sl}` : 'Non Set'}
+              `
+            ): 'Set'}
           </PrimaryTextSpan>
         </ButtonAutoClosePurchase>
         {!!(values.sl || values.tp) && (
