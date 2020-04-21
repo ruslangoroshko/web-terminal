@@ -107,16 +107,16 @@ function ProfileDropdown() {
             </PrimaryTextSpan>
           </NavLink>
         </FlexContainer>
-        <FlexContainer margin="0 0 16px">
+        {/* <FlexContainer margin="0 0 16px">
           <PrimaryTextSpan fontSize="12px" color="#fffccc">
             Settings
           </PrimaryTextSpan>
-        </FlexContainer>
-        <FlexContainer>
+        </FlexContainer> */}
+        {/* <FlexContainer>
           <PrimaryTextSpan fontSize="12px" color="#fffccc">
             Historical quotes
           </PrimaryTextSpan>
-        </FlexContainer>
+        </FlexContainer> */}
       </FlexWithBottomBorder>
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={mainAppStore.signOut}>
