@@ -24,6 +24,8 @@ export interface FlexContainerProps {
   borderRadius?: string;
   border?: string;
   boxShadow?: string;
+  marginRight?: string;
+  marginBottom?: string;
 }
 
 export const FlexContainer = styled.div<FlexContainerProps>`
@@ -37,6 +39,8 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   max-height: ${props => props.maxHeight};
   max-width: ${props => props.maxWidth};
   padding: ${props => props.padding};
+  margin-right: ${props => props.marginRight};
+  margin-bottom: ${props => props.marginBottom};
   margin: ${props => props.margin};
   flex-wrap: ${props => props.flexWrap};
   flex-direction: ${props => props.flexDirection};
