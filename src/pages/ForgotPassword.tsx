@@ -66,10 +66,6 @@ function ForgotPassword(props: Props) {
       setSubmitting(true)
       setIsLoading(false);
     }
-
-    //  .then((result) => setIsSuccessfull(true))
-    //  .catch(() => setSubmitting(true))
-    //  .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {
