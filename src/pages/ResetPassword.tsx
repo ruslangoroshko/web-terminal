@@ -65,7 +65,10 @@ function ResetPassword(props: Props) {
   const handleSubmitForm = async ({ password }: ResetPassword) => {
     setIsLoading(true);
     try {
-      const result = await API.recoveryPassword({ token: token || '', password })
+      const result = await API.recoveryPassword({
+        token: token || '',
+        password,
+      });
       if (result !== OperationApiResponseCodes.Ok) {
         setIsSuccessfull(true);
       } else {
@@ -184,7 +187,7 @@ function ResetPassword(props: Props) {
               Set a new password
             </PrimaryTextParagraph>
 
-            <CustomForm  onSubmit={handleSubmit} noValidate>
+            <CustomForm onSubmit={handleSubmit} noValidate>
               <FlexContainer flexDirection="column">
                 <FlexContainer
                   position="relative"
