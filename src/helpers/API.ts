@@ -193,7 +193,7 @@ class API {
   };
 
   recoveryPassword = async (data: object) => {
-    const response = await axios.post<any[]>(
+    const response = await axios.post<OperationApiResponseCodes>(
       `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.PASSWORD_RECOVERY}`,
       data
     );

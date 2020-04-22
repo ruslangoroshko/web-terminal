@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import SignFlowLayout from '../components/SignFlowLayout';
-import { Formik, Field, Form, FieldProps, FormikHelpers } from 'formik';
+import {
+  Formik,
+  Field,
+  Form,
+  FieldProps,
+  FormikHelpers,
+  useFormik,
+} from 'formik';
 import LabelInput from '../components/LabelInput';
 import { UserForgotPassword } from '../types/UserInfo';
 import * as yup from 'yup';
@@ -21,7 +28,6 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import { useStores } from '../hooks/useStores';
-import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 
 interface Props {}
 
@@ -43,27 +49,26 @@ function ForgotPassword(props: Props) {
   const [isSuccessful, setIsSuccessfull] = useState(false);
   const { notificationStore } = useStores();
 
-  const handlerSubmit = async (
+  const handleSubmitForm = async (
     { email }: UserForgotPassword,
     { setSubmitting }: FormikHelpers<UserForgotPassword>
   ) => {
-    setIsLoading(true);
-
     try {
+      setIsLoading(true);
       const result = await API.forgotEmail(email);
       if (result !== OperationApiResponseCodes.Ok) {
-        setIsSuccessfull(true)
+        setIsSuccessfull(true);
         mixpanel.track(mixpanelEvents.FORGOT_PASSWORD);
       } else {
-        setSubmitting(true)
-        setIsSuccessfull(false)
+        setSubmitting(true);
+        setIsSuccessfull(false);
       }
       setIsLoading(false);
     } catch (error) {
       notificationStore.notificationMessage = error;
       notificationStore.isSuccessfull = false;
       notificationStore.openNotification();
-      setSubmitting(true)
+      setSubmitting(true);
       setIsLoading(false);
     }
   };
@@ -72,9 +77,35 @@ function ForgotPassword(props: Props) {
     mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_VIEW);
   }, []);
 
+  const {
+    values,
+    setFieldValue,
+    validateForm,
+    handleSubmit,
+    handleChange,
+    errors,
+    touched,
+    isSubmitting,
+  } = useFormik({
+    initialValues,
+    onSubmit: handleSubmitForm,
+    validationSchema,
+    validateOnBlur: false,
+    validateOnChange: true,
+  });
+
+  const handlerClickSubmit = async () => {
+    const curErrors = await validateForm();
+    const curErrorsKeys = Object.keys(curErrors);
+    if (curErrorsKeys.length) {
+      const el = document.getElementById(curErrorsKeys[0]);
+      if (el) el.focus();
+    }
+  };
+
   return (
     <SignFlowLayout>
-      <LoaderFullscreen isLoading={isLoading} />
+      {isLoading && <LoaderFullscreen isLoading={isLoading} />}
 
       <FlexContainer width="320px" maxWidth="100%" flexDirection="column">
         {isSuccessful ? (
@@ -125,51 +156,41 @@ function ForgotPassword(props: Props) {
               To begin changing your password, please enter your e-mail
             </PrimaryTextParagraph>
 
-            <Formik
-              initialValues={initialValues}
-              onSubmit={handlerSubmit}
-              validationSchema={validationSchema}
-            >
-              {formikBag => (
-                <CustomForm translate="en" noValidate>
-                  <FlexContainer flexDirection="column">
-                    <Field type="text" name={Fields.EMAIL}>
-                      {({ field, meta }: FieldProps) => (
-                        <FlexContainer
-                          position="relative"
-                          flexDirection="column"
-                          margin="0 0 16px 0"
-                        >
-                          <LabelInput
-                            {...field}
-                            labelText="Email"
-                            value={field.value || ''}
-                            id={Fields.EMAIL}
-                            hasError={!!(meta.touched && meta.error)}
-                            errorText={meta.error}
-                          ></LabelInput>
-                        </FlexContainer>
-                      )}
-                    </Field>
+            <CustomForm noValidate onSubmit={handleSubmit}>
+              <FlexContainer flexDirection="column">
+                <FlexContainer
+                  position="relative"
+                  flexDirection="column"
+                  margin="0 0 16px 0"
+                >
+                  <LabelInput
+                    name={Fields.EMAIL}
+                    labelText="Email"
+                    value={values.email || ''}
+                    onChange={handleChange}
+                    id={Fields.EMAIL}
+                    hasError={!!(touched.email && errors.email)}
+                    errorText={errors.email}
+                  ></LabelInput>
+                </FlexContainer>
 
-                    <PrimaryButton
-                      padding="12px"
-                      type="submit"
-                      disabled={formikBag.isSubmitting}
-                    >
-                      <PrimaryTextSpan
-                        color="#1c2026"
-                        fontWeight="bold"
-                        fontSize="14px"
-                        textTransform="uppercase"
-                      >
-                        Confirm
-                      </PrimaryTextSpan>
-                    </PrimaryButton>
-                  </FlexContainer>
-                </CustomForm>
-              )}
-            </Formik>
+                <PrimaryButton
+                  padding="12px"
+                  type="submit"
+                  onClick={handlerClickSubmit}
+                  disabled={isSubmitting}
+                >
+                  <PrimaryTextSpan
+                    color="#1c2026"
+                    fontWeight="bold"
+                    fontSize="14px"
+                    textTransform="uppercase"
+                  >
+                    Confirm
+                  </PrimaryTextSpan>
+                </PrimaryButton>
+              </FlexContainer>
+            </CustomForm>
 
             <FlexContainer
               alignItems="center"
@@ -187,7 +208,7 @@ function ForgotPassword(props: Props) {
 
 export default ForgotPassword;
 
-const CustomForm = styled(Form)`
+const CustomForm = styled.form`
   margin: 0;
 `;
 
