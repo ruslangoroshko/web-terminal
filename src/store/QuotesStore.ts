@@ -66,7 +66,7 @@ export class QuotesStore implements IQuotesStore {
 
   @computed
   get total() {
-    return +this.profit + this.available;
+    return +this.profit + this.available + this.invest;
   }
 
   @computed
