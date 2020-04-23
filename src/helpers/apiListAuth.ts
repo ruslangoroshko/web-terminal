@@ -14,10 +14,11 @@ const AUTH_API_LIST = {
   },
   COMMON: {
     COUNTRIES: '/auth/v1/Common/Countries',
+    SERVER_INFO: '/auth/v1/Common/ServerInfo',
   },
   DOCUMENT: {
-    POST: '/auth/v1/Documents/Identity'
-  }
+    POST: '/auth/v1/Documents/Identity',
+  },
 };
 
 Object.freeze(AUTH_API_LIST);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Global, css } from '@emotion/core';
 import { reboot } from './styles/reboot';
 import injectInerceptors from './http/interceptors';
@@ -9,24 +9,46 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { slickSliderStyles } from './styles/slickSlider';
 import 'react-dates/lib/css/_datepicker.css';
 import reactDatePickerOverrides from './styles/react-date-picker-overrides';
+import LoaderFullscreen from './components/LoaderFullscreen';
+import API from './helpers/API';
 
 const MainApp = () => {
-  injectInerceptors();
+  const [tradingUrl, setTradingUrl] = useState('');
+
+  useEffect(() => {
+    async function fetchTradingUrl() {
+      try {
+        const response = await API.getTradingUrl();
+        setTradingUrl(response.tradingUrl);
+        injectInerceptors(response.tradingUrl);
+      } catch (error) {
+        setTradingUrl('/');
+      }
+    }
+    if (IS_LIVE) {
+      fetchTradingUrl();
+    } else {
+      setTradingUrl('/');
+    }
+  }, []);
 
   return (
     <>
+      <LoaderFullscreen isLoading={!tradingUrl} />
       <Helmet>
         <link rel="shortcut icon" href={favicon} />
       </Helmet>
-      <Router>
-        <RoutingLayout></RoutingLayout>
-      </Router>
+      {!!tradingUrl && (
+        <Router>
+          <RoutingLayout></RoutingLayout>
+        </Router>
+      )}
       <Global
         styles={css`
           @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic,cyrillic-ext');
           ${reboot};
           ${slickSliderStyles};
-          
+
           html {
             font-size: 14px;
             line-height: 1.4;
@@ -36,7 +58,7 @@ const MainApp = () => {
           body {
             background-color: #1c2026;
           }
-         
+
           ${reactDatePickerOverrides}
         `}
       />

@@ -34,6 +34,7 @@ import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
 import { getProcessId } from './getProcessId';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import { ServerInfoType } from '../types/ServerInfoTypes';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -267,23 +268,39 @@ class API {
       formData
     );
     return response.data;
-  }
+  };
 
-  getFavoriteInstrumets = async (params: {type: AccountTypeEnum, accountId: string}) => {
+  getFavoriteInstrumets = async (params: {
+    type: AccountTypeEnum;
+    accountId: string;
+  }) => {
     const response = await axios.get<string[]>(
-      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`, {
-        params
+      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`,
+      {
+        params,
       }
     );
     return response.data;
   };
 
-  postFavoriteInstrumets = async (params: { type: AccountTypeEnum, accountId: string, instruments: string[] }) => {
+  postFavoriteInstrumets = async (params: {
+    type: AccountTypeEnum;
+    accountId: string;
+    instruments: string[];
+  }) => {
     const response = await axios.post<string[]>(
-      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`, params
-    )
-    return response.data
-  }
+      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`,
+      params
+    );
+    return response.data;
+  };
+
+  getTradingUrl = async () => {
+    const response = await axios.get<ServerInfoType>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.COMMON.SERVER_INFO}`
+    );
+    return response.data;
+  };
 }
 
-export default new API()
+export default new API();
