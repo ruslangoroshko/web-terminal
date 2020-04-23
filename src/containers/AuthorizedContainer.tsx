@@ -91,7 +91,7 @@ const RenderExpandedTabByType = observer(() => {
 
 const AuthorizedContainer: FC<Props> = props => {
   const { children } = props;
-  const { tabsStore } = useStores();
+  const { tabsStore, mainAppStore } = useStores();
 
   return (
     <FlexContainer
@@ -100,7 +100,7 @@ const AuthorizedContainer: FC<Props> = props => {
       position="relative"
       flexDirection="column"
     >
-      <NavBar></NavBar>
+      {mainAppStore.isAuthorized && <NavBar></NavBar>}
       <FlexContainer height="calc(100vh - 48px)">
         <SideBar></SideBar>
         <SideBarAndPageContentWrapper width="100%">

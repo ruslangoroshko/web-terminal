@@ -10,25 +10,22 @@ const injectInerceptors = () => {
     },
     function(error: AxiosError) {
       if (error.response?.status === 401) {
-        debugger;
         appHistory.push(Page.SIGN_IN);
       }
       return Promise.reject(error);
     }
   );
   axios.interceptors.request.use(function(config: AxiosRequestConfig) {
-    const traditngUrl = localStorage.getItem(LOCAL_STORAGE_TRADING_URL);
-    if (IS_LIVE && traditngUrl) {
-      if (!config.url) {
-        config.url = traditngUrl;
+    const tradingUrl = localStorage.getItem(LOCAL_STORAGE_TRADING_URL);
+
+    // TODO: sink about eat
+    if (IS_LIVE && tradingUrl && config.url && !config.url.includes('auth/')) {
+      if (config.url.includes('://')) {
+        const arrayOfSubpath = config.url.split('://')[1].split('/');
+        const subPath = arrayOfSubpath.slice(1).join('/');
+        config.url = `${tradingUrl}/${subPath}`;
       } else {
-        if (config.url.includes('://')) {
-          const arrayOfSubpath = config.url.split('://')[1].split('/');
-          const subPath = arrayOfSubpath.slice(1).join('/');
-          config.url = `${traditngUrl}/${subPath}`;
-        } else {
-          config.url = `${traditngUrl}${config.url}`;
-        }
+        config.url = `${tradingUrl}${config.url}`;
       }
     }
     return config;
