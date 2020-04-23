@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
@@ -14,88 +14,125 @@ import VisaSecureImage from '../../assets/images/visa-secure.png';
 import SvgIcon from '../SvgIcon';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { DepositTypeEnum } from '../../enums/DepositTypeEnum';
-
+import Modal from '../Modal';
+import VisaMasterCardForm from './VisaMasterCardForm';
+import { Observer } from 'mobx-react-lite';
 
 const DepositPopupWrapper: FC = ({ children }) => {
   const { mainAppStore, depositFundsStore } = useStores();
 
+  const renderDepositType = () => {
+    switch (depositFundsStore.activeDepositType) {
+      case DepositTypeEnum.VisaMaster:
+        return <VisaMasterCardForm />;
+
+      case DepositTypeEnum.BankTransfer:
+        return <VisaMasterCardForm />;
+
+      default:
+        return null;
+    }
+  }
+
   return (
-    <FlexContainer flexDirection="column">
-      {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified && (
-        <FlexContainer backgroundColor="rgba(0,0,0,0.2)" padding="20px 12px">
-          <PrimaryTextSpan
-            marginRight="4px"
-            color="rgba(255,255,255, 0.4)"
-            fontSize="12px"
-          >
-            Plese be aware that you need to verify your account within 15 days
-            after deposit.
-          </PrimaryTextSpan>
-          <CustomLink to={Page.PERSONAL_DATA}>Upload now</CustomLink>
-        </FlexContainer>
-      )}
-      <FlexContainer backgroundColor="#191B25" position="relative">
-        <FlexContainer position="absolute" right="16px" top="16px">
-          <ButtonWithoutStyles onClick={depositFundsStore.togglePopup}>
-            <SvgIcon
-              {...IconClose}
-              fillColor="rgba(255, 255, 255, 0.6)"
-              hoverFillColor="#00FFF2"
-            />
-          </ButtonWithoutStyles>
-        </FlexContainer>
-        <FlexContainer marginRight="40px" flexDirection="column">
-          <FlexContainer padding="24px 20px" flexDirection="column">
-            <PrimaryTextSpan
-              fontSize="24px"
-              fontWeight="bold"
-              color="#fffccc"
-              marginBottom="8px"
+    <Modal>
+      <ModalBackground
+        position="fixed"
+        top="0"
+        left="0"
+        right="0"
+        bottom="0"
+        alignItems="center"
+        justifyContent="center"
+        zIndex="1001"
+      >
+        <FlexContainer flexDirection="column" width="796px">
+          {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified && (
+            <FlexContainer
+              backgroundColor="rgba(0,0,0,0.2)"
+              padding="20px 12px"
             >
-              Deposit Funds
-            </PrimaryTextSpan>
-            <PrimaryTextSpan
-              marginBottom="4px"
-              fontSize="12px"
-              color="rgba(255,255,255, 0.4)"
-            >
-              Deposit limit $1,000
-            </PrimaryTextSpan>
-            <CustomLink to={Page.FAQ} target="_blank">
-              See deposit fees
-            </CustomLink>
-          </FlexContainer>
-          <FlexContainer flexDirection="column">
-            <PaymentMethodItem
-              isActive={
-                depositFundsStore.activeDepositType ===
-                DepositTypeEnum.VisaMaster
-              }
-            >
-              <FlexContainer marginRight="8px">
-                <img src={VisaMasterImage} width={32} />
+              <PrimaryTextSpan
+                marginRight="4px"
+                color="rgba(255,255,255, 0.4)"
+                fontSize="12px"
+              >
+                Plese be aware that you need to verify your account within 15
+                days after deposit.
+              </PrimaryTextSpan>
+              <CustomLink to={Page.PERSONAL_DATA}>Upload now</CustomLink>
+            </FlexContainer>
+          )}
+          <FlexContainer backgroundColor="#191B25" position="relative">
+            <FlexContainer position="absolute" right="16px" top="16px">
+              <ButtonWithoutStyles onClick={depositFundsStore.togglePopup}>
+                <SvgIcon
+                  {...IconClose}
+                  fillColor="rgba(255, 255, 255, 0.6)"
+                  hoverFillColor="#00FFF2"
+                />
+              </ButtonWithoutStyles>
+            </FlexContainer>
+            <FlexContainer marginRight="40px" flexDirection="column">
+              <FlexContainer padding="24px 20px" flexDirection="column">
+                <PrimaryTextSpan
+                  fontSize="24px"
+                  fontWeight="bold"
+                  color="#fffccc"
+                  marginBottom="8px"
+                >
+                  Deposit Funds
+                </PrimaryTextSpan>
+                <PrimaryTextSpan
+                  marginBottom="4px"
+                  fontSize="12px"
+                  color="rgba(255,255,255, 0.4)"
+                >
+                  Deposit limit $1,000
+                </PrimaryTextSpan>
+                <CustomLink to={Page.FAQ} target="_blank">
+                  See deposit fees
+                </CustomLink>
               </FlexContainer>
               <FlexContainer flexDirection="column">
-                <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                  Visa / Mastercard
-                </PrimaryTextSpan>
-                <PrimaryTextSpan fontSize="12px" color="rgba(255,255,255,0.4)">
-                  Instantly
-                </PrimaryTextSpan>
+                <PaymentMethodItem
+                  isActive={
+                    depositFundsStore.activeDepositType ===
+                    DepositTypeEnum.VisaMaster
+                  }
+                >
+                  <FlexContainer marginRight="8px">
+                    <img src={VisaMasterImage} width={32} />
+                  </FlexContainer>
+                  <FlexContainer flexDirection="column">
+                    <PrimaryTextSpan fontSize="12px" color="#fffccc">
+                      Visa / Mastercard
+                    </PrimaryTextSpan>
+                    <PrimaryTextSpan
+                      fontSize="12px"
+                      color="rgba(255,255,255,0.4)"
+                    >
+                      Instantly
+                    </PrimaryTextSpan>
+                  </FlexContainer>
+                </PaymentMethodItem>
               </FlexContainer>
-            </PaymentMethodItem>
+            </FlexContainer>
+            <FlexContainer flexDirection="column">
+              <Observer>{() => <>{renderDepositType()}</>}</Observer>
+              <FlexContainer alignItems="center">
+                <ImageBadge src={SslCertifiedImage} width={120}></ImageBadge>
+                <ImageBadge
+                  src={MastercardIdCheckImage}
+                  width={110}
+                ></ImageBadge>
+                <ImageBadge src={VisaSecureImage} width={28}></ImageBadge>
+              </FlexContainer>
+            </FlexContainer>
           </FlexContainer>
         </FlexContainer>
-        <FlexContainer flexDirection="column">
-          {children}
-          <FlexContainer alignItems="center">
-            <ImageBadge src={SslCertifiedImage} width={120}></ImageBadge>
-            <ImageBadge src={MastercardIdCheckImage} width={110}></ImageBadge>
-            <ImageBadge src={VisaSecureImage} width={28}></ImageBadge>
-          </FlexContainer>
-        </FlexContainer>
-      </FlexContainer>
-    </FlexContainer>
+      </ModalBackground>
+    </Modal>
   );
 };
 
@@ -105,6 +142,7 @@ const CustomLink = styled(Link)`
   font-size: 12px;
   color: #00fff2;
   font-weight: bold;
+  line-height: 120%;
   &:hover {
     text-decoration: none;
   }
@@ -142,5 +180,13 @@ const ImageBadge = styled.img`
   margin-right: 30px;
   &:last-of-type {
     margin-right: 0;
+  }
+`;
+
+const ModalBackground = styled(FlexContainer)`
+  background-color: rgba(37, 38, 54, 0.8);
+  @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+    background-color: rgba(37, 38, 54, 0.6);
+    backdrop-filter: blur(12px);
   }
 `;
