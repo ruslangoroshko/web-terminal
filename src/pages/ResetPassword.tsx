@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import SignFlowLayout from '../components/SignFlowLayout';
-import { Formik, Field, Form, FieldProps, FormikHelpers } from 'formik';
+import {
+  Formik,
+  Field,
+  Form,
+  FieldProps,
+  FormikHelpers,
+  useFormik,
+} from 'formik';
 import LabelInput from '../components/LabelInput';
 import { ResetPassword } from '../types/UserInfo';
 import * as yup from 'yup';
@@ -16,6 +23,10 @@ import Fields from '../constants/fields';
 import CheckDone from '../assets/svg/icon-check-done.svg';
 import SvgIcon from '../components/SvgIcon';
 import validationInputTexts from '../constants/validationInputTexts';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
+import { useStores } from '../hooks/useStores';
 
 interface Props {}
 
@@ -49,17 +60,58 @@ function ResetPassword(props: Props) {
   const [isSuccessful, setIsSuccessfull] = useState(false);
   const [isNotSuccessful, setNotIsSuccessfull] = useState(false);
 
-  const handlerSubmit = async ({ password }: ResetPassword) => {
+  const { notificationStore } = useStores();
+
+  const handleSubmitForm = async ({ password }: ResetPassword) => {
     setIsLoading(true);
-    API.recoveryPassword({ token: token || '', password })
-      .then(() => setIsSuccessfull(true))
-      .catch(() => setNotIsSuccessfull(true))
-      .finally(() => setIsLoading(false));
+    try {
+      const result = await API.recoveryPassword({
+        token: token || '',
+        password,
+      });
+      if (result !== OperationApiResponseCodes.Ok) {
+        setIsSuccessfull(true);
+      } else {
+        setNotIsSuccessfull(true);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      notificationStore.notificationMessage = error;
+      notificationStore.isSuccessfull = false;
+      notificationStore.openNotification();
+      setIsSuccessfull(false);
+      setNotIsSuccessfull(false);
+    }
   };
 
+  const {
+    values,
+    setFieldValue,
+    validateForm,
+    handleSubmit,
+    handleChange,
+    errors,
+    touched,
+    isSubmitting,
+  } = useFormik({
+    initialValues,
+    onSubmit: handleSubmitForm,
+    validationSchema,
+    validateOnBlur: false,
+    validateOnChange: true,
+  });
+
+  const handlerClickSubmit = async () => {
+    const curErrors = await validateForm();
+    const curErrorsKeys = Object.keys(curErrors);
+    if (curErrorsKeys.length) {
+      const el = document.getElementById(curErrorsKeys[0]);
+      if (el) el.focus();
+    }
+  };
   return (
     <SignFlowLayout>
-      <LoaderFullscreen isLoading={isLoading} />
+      {isLoading && <LoaderFullscreen isLoading={isLoading} />}
 
       <FlexContainer width="320px" maxWidth="100%" flexDirection="column">
         {isSuccessful && (
@@ -135,73 +187,62 @@ function ResetPassword(props: Props) {
               Set a new password
             </PrimaryTextParagraph>
 
-            <Formik
-              initialValues={initialValues}
-              onSubmit={handlerSubmit}
-              validationSchema={validationSchema}
-            >
-              {formikBag => (
-                <CustomForm translate="en" noValidate>
-                  <FlexContainer flexDirection="column">
-                    <Field type="text" name={Fields.PASSWORD}>
-                      {({ field, meta }: FieldProps) => (
-                        <FlexContainer
-                          position="relative"
-                          flexDirection="column"
-                          margin="0 0 16px 0"
-                        >
-                          <LabelInput
-                            {...field}
-                            labelText="Password"
-                            value={field.value || ''}
-                            id={field.name}
-                            autoComplete="new-password"
-                            type="password"
-                            hasError={!!(meta.touched && meta.error)}
-                            errorText={meta.error}
-                          ></LabelInput>
-                        </FlexContainer>
-                      )}
-                    </Field>
-                    <Field type="text" name={Fields.REPEAT_PASSWORD}>
-                      {({ field, meta }: FieldProps) => (
-                        <FlexContainer
-                          position="relative"
-                          flexDirection="column"
-                          margin="0 0 16px 0"
-                        >
-                          <LabelInput
-                            {...field}
-                            labelText="Repeat Password"
-                            value={field.value || ''}
-                            id={field.name}
-                            autoComplete="new-password"
-                            type="password"
-                            hasError={!!(meta.touched && meta.error)}
-                            errorText={meta.error}
-                          ></LabelInput>
-                        </FlexContainer>
-                      )}
-                    </Field>
+            <CustomForm onSubmit={handleSubmit} noValidate>
+              <FlexContainer flexDirection="column">
+                <FlexContainer
+                  position="relative"
+                  flexDirection="column"
+                  margin="0 0 16px 0"
+                >
+                  <LabelInput
+                    name={Fields.PASSWORD}
+                    id={Fields.PASSWORD}
+                    labelText="Password"
+                    value={values.password || ''}
+                    onChange={handleChange}
+                    autoComplete="new-password"
+                    type="password"
+                    hasError={!!(touched.password && errors.password)}
+                    errorText={errors.password}
+                  ></LabelInput>
+                </FlexContainer>
+                <FlexContainer
+                  position="relative"
+                  flexDirection="column"
+                  margin="0 0 16px 0"
+                >
+                  <LabelInput
+                    name={Fields.REPEAT_PASSWORD}
+                    id={Fields.REPEAT_PASSWORD}
+                    onChange={handleChange}
+                    labelText="Repeat Password"
+                    value={values.repeatPassword || ''}
+                    autoComplete="new-password"
+                    type="password"
+                    hasError={
+                      !!(touched.repeatPassword && errors.repeatPassword)
+                    }
+                    errorText={errors.repeatPassword}
+                  ></LabelInput>
+                </FlexContainer>
 
-                    <PrimaryButton
-                      padding="12px"
-                      type="submit"
-                      disabled={formikBag.isSubmitting}
-                    >
-                      <PrimaryTextSpan
-                        color="#1c2026"
-                        fontWeight="bold"
-                        fontSize="14px"
-                        textTransform="uppercase"
-                      >
-                        Confirm
-                      </PrimaryTextSpan>
-                    </PrimaryButton>
-                  </FlexContainer>
-                </CustomForm>
-              )}
-            </Formik>
+                <PrimaryButton
+                  padding="12px"
+                  type="submit"
+                  onClick={handlerClickSubmit}
+                  disabled={isSubmitting}
+                >
+                  <PrimaryTextSpan
+                    color="#1c2026"
+                    fontWeight="bold"
+                    fontSize="14px"
+                    textTransform="uppercase"
+                  >
+                    Confirm
+                  </PrimaryTextSpan>
+                </PrimaryButton>
+              </FlexContainer>
+            </CustomForm>
 
             <FlexContainer
               alignItems="center"
@@ -249,7 +290,7 @@ const FallDownIco = () => {
   );
 };
 
-const CustomForm = styled(Form)`
+const CustomForm = styled.form`
   margin: 0;
 `;
 
