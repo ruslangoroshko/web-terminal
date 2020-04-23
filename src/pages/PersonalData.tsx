@@ -45,7 +45,7 @@ function PersonalData() {
     countryOfResidence: yup
       .mixed()
       .oneOf(countriesNames, 'No matches')
-      .required(),
+      .required('Required field'),
     city: yup
       .string()
       .min(2, 'Min 2 symbols')
