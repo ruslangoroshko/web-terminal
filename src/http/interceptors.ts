@@ -16,21 +16,22 @@ const injectInerceptors = () => {
       return Promise.reject(error);
     }
   );
-  axios.interceptors.request.use(
-    function(config: AxiosRequestConfig) {
-      const traditngUrl = localStorage.getItem(LOCAL_STORAGE_TRADING_URL);
-      if (IS_LIVE && traditngUrl) {
-        if(!config.url) {
-          config.url = traditngUrl
-        } else {
+  axios.interceptors.request.use(function(config: AxiosRequestConfig) {
+    const traditngUrl = localStorage.getItem(LOCAL_STORAGE_TRADING_URL);
+    if (IS_LIVE && traditngUrl) {
+      if (!config.url) {
+        config.url = traditngUrl;
+      } else {
+        if (config.url.includes('://')) {
           const arrayOfSubpath = config.url.split('://')[1].split('/');
           const subPath = arrayOfSubpath.slice(1).join('/');
-          config.url = `${traditngUrl}/${subPath}` ;
+          config.url = `${traditngUrl}/${subPath}`;
+        } else {
+          config.url = `${traditngUrl}/${config.url}`;
         }
-       
       }
-      return config;
     }
-  );
+    return config;
+  });
 };
 export default injectInerceptors;
