@@ -25,5 +25,8 @@ export interface UserAuthenticateResponse {
   result: OperationApiResponseCodes;
   data: {
     token: string;
+    tradingUrl: string;
+    signalRConnectionTimeOut: string;
+    signalRReconnectTimeOut: string;
   };
 }

@@ -1,7 +1,7 @@
 import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
 import { AccountModelWebSocketDTO } from '../types/AccountsTypes';
-import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
+import { LOCAL_STORAGE_TOKEN_KEY, LOCAL_STORAGE_TRADING_URL } from '../constants/global';
 import { action, observable, computed } from 'mobx';
 import API from '../helpers/API';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
@@ -147,7 +147,8 @@ export class MainAppStore implements MainAppStoreProps {
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
-      this.handleInitConnection(response.data.token);
+      this.handleInitConnection(response.data.token); 
+      localStorage.setItem(LOCAL_STORAGE_TRADING_URL, response.data.tradingUrl);
       mixpanel.track(mixpanelEvents.LOGIN);
     }
 
@@ -167,6 +168,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
+      localStorage.setItem(LOCAL_STORAGE_TRADING_URL, response.data.tradingUrl);
     }
 
     if (
