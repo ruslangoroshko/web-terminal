@@ -148,7 +148,6 @@ export class MainAppStore implements MainAppStoreProps {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token); 
-      localStorage.setItem(LOCAL_STORAGE_TRADING_URL, response.data.tradingUrl);
       mixpanel.track(mixpanelEvents.LOGIN);
     }
 
@@ -168,7 +167,6 @@ export class MainAppStore implements MainAppStoreProps {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
-      localStorage.setItem(LOCAL_STORAGE_TRADING_URL, response.data.tradingUrl);
     }
 
     if (
