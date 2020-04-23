@@ -27,7 +27,7 @@ const injectInerceptors = () => {
           const subPath = arrayOfSubpath.slice(1).join('/');
           config.url = `${traditngUrl}/${subPath}`;
         } else {
-          config.url = `${traditngUrl}/${config.url}`;
+          config.url = `${traditngUrl}${config.url}`;
         }
       }
     }
