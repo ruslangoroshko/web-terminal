@@ -100,7 +100,9 @@ const AuthorizedContainer: FC<Props> = props => {
       position="relative"
       flexDirection="column"
     >
-      {mainAppStore.isAuthorized && <NavBar></NavBar>}
+      <Observer>
+        {() => <>{mainAppStore.isAuthorized && <NavBar></NavBar>}</>}
+      </Observer>
       <FlexContainer height="calc(100vh - 48px)">
         <SideBar></SideBar>
         <SideBarAndPageContentWrapper width="100%">
