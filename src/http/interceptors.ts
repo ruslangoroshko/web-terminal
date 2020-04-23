@@ -1,9 +1,8 @@
 import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
 import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
-import { LOCAL_STORAGE_TRADING_URL } from '../constants/global';
 
-const injectInerceptors = () => {
+const injectInerceptors = (tradingUrl: string) => {
   axios.interceptors.response.use(
     function(config: AxiosResponse) {
       return config;
@@ -16,8 +15,6 @@ const injectInerceptors = () => {
     }
   );
   axios.interceptors.request.use(function(config: AxiosRequestConfig) {
-    const tradingUrl = localStorage.getItem(LOCAL_STORAGE_TRADING_URL);
-
     // TODO: sink about eat
     if (IS_LIVE && tradingUrl && config.url && !config.url.includes('auth/')) {
       if (config.url.includes('://')) {

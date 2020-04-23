@@ -31,7 +31,7 @@ const API_LIST = {
   },
   INSTRUMENTS: {
     FAVOURITES: '/api/v1/Instruments/Favorites'
-  }
+  },
 };
 
 Object.freeze(API_LIST);
