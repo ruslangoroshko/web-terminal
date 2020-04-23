@@ -14,3 +14,12 @@ export interface MixpanelTypes {
     total_account_withdraw_number: number;
     total_account_trades_number: number;
 }
+
+export interface MixpanelMarketOrder {
+    label: string;
+    value: number;
+    multiplier: string;
+    trend: 'buy' | 'sell';
+    sltp: 'yes' | 'no';
+    event_ref: "markets" | 'instrument page';
+}

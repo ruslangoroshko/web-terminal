@@ -6,7 +6,10 @@ import Topics from '../constants/websocketTopics';
 import { FlexContainer } from '../styles/FlexContainer';
 import mobileChartMessageTypes from '../constants/MobileChartMessageTypes';
 import {
-  IChartingLibraryWidget, ChartingLibraryWidgetOptions, SeriesStyle, widget,
+  IChartingLibraryWidget,
+  ChartingLibraryWidgetOptions,
+  SeriesStyle,
+  widget,
 } from '../vendor/charting_library/charting_library.min';
 import {
   supportedResolutions,
@@ -15,45 +18,44 @@ import {
 } from '../constants/supportedTimeScales';
 import moment from 'moment';
 import DataFeedService from '../services/dataFeedService';
-import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 import ColorsPallete from '../styles/colorPallete';
 import { LineStyles } from '../enums/TradingViewStyles';
 import { MobileMessageModel } from '../types/MobileTVTypes';
 
 const containerId = 'tv_chart_container';
 
-
 const MobileTradingView: FC = () => {
   const [activeSession, setActiveSession] = useState<HubConnection>();
-  const [instrumentId, setInstrumentId] = useState('');
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget>();
 
-const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
-  auth: '',
-  chart_type: SeriesStyle.Area,
-  instrument: 'EURUSD',
-  interval: '',
-  resolution: '',
-  type: '',
-});
+  const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
+    auth: '',
+    chart_type: SeriesStyle.Area,
+    instrument: 'EURUSD',
+    interval: '',
+    resolution: '',
+    type: '',
+  });
 
-  const { port1, port2 } = new MessageChannel();
+  let { port1, port2 } = new MessageChannel();
 
-  const initWebsocketConnection = async (
-    token: string,
-    instrumentId: string
-  ) => {
-    setInstrumentId(instrumentId);
+  const initWebsocketConnection = async (data: MobileMessageModel) => {
+    setStatusSnapshot(data);
     const connection = initConnection(WS_HOST);
     try {
       await connection.start();
       setActiveSession(connection);
       try {
-        await connection.send(Topics.INIT, token);
+        await connection.send(Topics.INIT, data.auth);
+        port2.postMessage(JSON.stringify(data));
+        //@ts-ignore
+        window.webkit?.messageHandlers?.callback?.postMessage(data);
       } catch (error) {
         alert(`ws connection error ${JSON.stringify(error)}`);
       }
-    } catch (error) {}
+    } catch (error) {
+      alert(`error ${JSON.stringify(error)}`);
+    }
   };
 
   const setInterval = (newInterval: string) => {
@@ -100,12 +102,14 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
     }
 
     const resolution = supportedResolutions[newResolutionKey];
-    
+
     const newSnapshot = {
       ...statusSnapshot,
       resolution,
       interval: newInterval,
     };
+
+    console.log('resolution', resolution);
 
     tvWidget?.chart().setResolution(resolution, () => {
       tvWidget?.chart().setVisibleRange({
@@ -113,16 +117,31 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
         to: moment().valueOf(),
       });
       setStatusSnapshot(newSnapshot);
-      parent.postMessage(newSnapshot, '*');
+      port2.postMessage(newSnapshot);
+      //@ts-ignore
+      window.webkit?.messageHandlers?.callback?.postMessage(newSnapshot);
     });
   };
 
-  const messageHandler = (e: MessageEvent) => {
-    const data: MobileMessageModel = JSON.parse(e.data);
+  const messageHandler = (event: MessageEvent) => {
+    if (event.data !== 'capturePort') {
+      port1.postMessage(event.data);
+    } else if (event.data === 'capturePort') {
+      if (event.ports[0] !== null) {
+        port2 = event.ports[0];
+      }
+    }
+  };
 
+  const port2Handler = (e: MessageEvent) => {
+    const data: MobileMessageModel = JSON.parse(e.data);
+    initHandler(data);
+  };
+
+  const initHandler = (data: MobileMessageModel) => {
     if (!activeSession) {
       Axios.defaults.headers['Authorization'] = data.auth;
-      initWebsocketConnection(data.auth, data.instrument);
+      initWebsocketConnection(data);
     } else if (data.type) {
       let newSnapshot: MobileMessageModel = {
         ...statusSnapshot,
@@ -137,12 +156,12 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
           break;
 
         case mobileChartMessageTypes.SET_INSTRUMENT:
-          tvWidget?.setSymbol(data.instrument, data.interval, () => {});
-          newSnapshot = {
-            ...newSnapshot,
-            instrument: data.instrument,
-          };
-
+          tvWidget?.setSymbol(data.instrument, data.interval, () => {
+            newSnapshot = {
+              ...newSnapshot,
+              instrument: data.instrument,
+            };
+          });
           break;
 
         case mobileChartMessageTypes.SET_INTERVAL:
@@ -150,11 +169,12 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
           break;
 
         case mobileChartMessageTypes.SET_RESOLUTION:
-          tvWidget?.chart().setResolution(data.resolution, () => {});
-          newSnapshot = {
-            ...newSnapshot,
-            resolution: data.resolution,
-          };
+          tvWidget?.chart().setResolution(data.resolution, () => {
+            newSnapshot = {
+              ...newSnapshot,
+              resolution: data.resolution,
+            };
+          });
 
           break;
 
@@ -162,38 +182,28 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
           break;
       }
       setStatusSnapshot(newSnapshot);
+      port2.postMessage(newSnapshot);
+      //@ts-ignore
+      window.webkit?.messageHandlers?.callback?.postMessage(newSnapshot);
     }
   };
 
   useEffect(() => {
-
     window.addEventListener('message', messageHandler, false);
-
-    port1.addEventListener(
-      'message',
-      function(e) {
-       alert(`message from port1 ${e.data}`);
-      },
-      false
-    );
-
-    port2.addEventListener(
-      'message',
-      function(e) {
-        alert(`message port2 ${JSON.stringify(e.data)}`);
-      },
-      false
-    );
+    port2.addEventListener('message', port2Handler, false);
     port1.start();
     port2.start();
+    // @ts-ignore
+    window.initWebsocketConnection = initHandler;
   }, []);
 
   useEffect(() => {
     if (activeSession) {
       const widgetOptions: ChartingLibraryWidgetOptions = {
-        symbol: instrumentId,
-        datafeed: new DataFeedService(activeSession, instrumentId),
-        interval: supportedResolutions[BASIC_RESOLUTION_KEY],
+        debug: true,
+        symbol: statusSnapshot.instrument,
+        datafeed: new DataFeedService(activeSession, statusSnapshot.instrument),
+        interval: statusSnapshot.resolution,
         container_id: containerId,
         library_path: CHARTING_LIBRARY_PATH,
         locale: 'en',
@@ -265,13 +275,17 @@ const [statusSnapshot, setStatusSnapshot] = useState<MobileMessageModel>({
         },
       };
 
-      setTvWidget(new widget(widgetOptions));
+      const tvWidget = new widget(widgetOptions);
+
+      tvWidget.onChartReady(async () => {
+        setTvWidget(tvWidget);
+      });
+
+      return () => {
+        tvWidget.remove();
+      };
     }
   }, [activeSession]);
-
-useEffect(() => {
-  tvWidget?.onChartReady(() => {});
-}, [tvWidget]);
 
   return (
     <FlexContainer height="100vh" width="100vw">

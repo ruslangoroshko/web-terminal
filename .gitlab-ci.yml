@@ -16,7 +16,6 @@ stages:
   - publish-kubernetes-test
 
 build:
-  tags: [monfex]
   stage: build
   image: node:latest
   script:
@@ -31,7 +30,6 @@ build:
 
 publish:
   stage: publish
-  tags: [monfex]
   services:
     - docker:dind
   variables:

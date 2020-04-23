@@ -126,7 +126,7 @@ const Portfolio: FC<Props> = () => {
                     lineHeight="16px"
                     fontWeight="bold"
                   >
-                    {getNumberSign(quotesStore.totalEquity)}
+                    {/* {getNumberSign(quotesStore.totalEquity)} */}
                     {mainAppStore.activeAccount?.symbol}
                     {Math.abs(quotesStore.totalEquity).toFixed(2)}
                   </PrimaryTextSpan>

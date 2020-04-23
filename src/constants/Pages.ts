@@ -3,6 +3,8 @@ const Page = {
   SIGN_IN: '/sign-in',
   SIGN_UP: '/sign-up',
   EMAIL_CONFIRMATION: '/confirm/:id',
+  FORGOT_PASSWORD: '/reset-password',
+  RESET_PASSWORD: '/recovery/:token',
   PERSONAL_DATA: '/personal-data',
   PHONE_VERIFICATION: '/phone-verification',
   PROOF_OF_IDENTITY: '/proof-of-identity',
@@ -16,7 +18,10 @@ const Page = {
 
   ABOUT_US: '//www.monfex.com/why-us',
   FAQ: '#',
-  SUPPORT: '//www.monfex.com/contact-us'
+  SUPPORT: '//www.monfex.com/contact-us',
+
+  TERMS_OF_SERVICE: '//monfex.com/terms-of-service',
+  PRIVACY_POLICY: '//monfex.com/privacy-notice'
 };
 
 Object.freeze(Page);

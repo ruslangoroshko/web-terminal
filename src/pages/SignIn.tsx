@@ -1,5 +1,5 @@
-import React from 'react';
-import { Formik, Field, Form, FieldProps } from 'formik';
+import React, { useEffect } from 'react';
+import { Formik, Field, Form, FieldProps, useFormik } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { UserAuthenticate } from '../types/UserInfo';
@@ -15,11 +15,19 @@ import SignTypeTabs from '../components/SignTypeTabs';
 import NotificationPopup from '../components/NotificationPopup';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
+import { Link } from 'react-router-dom';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
+import Pages from '../constants/Pages';
+import validationInputTexts from '../constants/validationInputTexts';
 
 const SingIn = observer(() => {
   const validationSchema = yup.object().shape<UserAuthenticate>({
-    email: yup.string().required('Required any value'),
-    password: yup.string().required('Required any value'),
+    email: yup
+      .string()
+      .required(validationInputTexts.EMAIL)
+      .email(validationInputTexts.EMAIL),
+    password: yup.string().required(validationInputTexts.REQUIRED_FIELD),
   });
 
   const initialValues: UserAuthenticate = {
@@ -29,10 +37,9 @@ const SingIn = observer(() => {
 
   const { mainAppStore, notificationStore } = useStores();
 
-  const handleSubmit = async (credentials: UserAuthenticate) => {
+  const handleSubmitForm = async (credentials: UserAuthenticate) => {
     try {
       const result = await mainAppStore.signIn(credentials);
-
       if (result !== OperationApiResponseCodes.Ok) {
         notificationStore.notificationMessage = apiResponseCodeMessages[result];
         notificationStore.isSuccessfull = false;
@@ -44,6 +51,38 @@ const SingIn = observer(() => {
       notificationStore.openNotification();
     }
   };
+
+  const {
+    values,
+    setFieldError,
+    setFieldValue,
+    validateForm,
+    handleChange,
+    handleSubmit,
+    errors,
+    touched,
+    isSubmitting,
+  } = useFormik({
+    initialValues,
+    onSubmit: handleSubmitForm,
+    validationSchema,
+    validateOnBlur: false,
+    validateOnChange: true,
+  });
+
+  const handlerClickSubmit = async () => {
+    const curErrors = await validateForm();
+    const curErrorsKeys = Object.keys(curErrors);
+    if (curErrorsKeys.length) {
+      const el = document.getElementById(curErrorsKeys[0]);
+      if (el) el.focus();
+    }
+  };
+
+  
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.LOGIN_VIEW);
+  }, []);
 
   return (
     <SignFlowLayout>
@@ -63,70 +102,67 @@ const SingIn = observer(() => {
       </FlexContainer>
       <FlexContainer width="320px" flexDirection="column">
         <SignTypeTabs></SignTypeTabs>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          validationSchema={validationSchema}
-        >
-          {formikBag => (
-            <CustomForm translate="en">
-              <FlexContainer flexDirection="column">
-                <Field type="text" name={Fields.EMAIL}>
-                  {({ field, meta }: FieldProps) => (
-                    <FlexContainer
-                      position="relative"
-                      flexDirection="column"
-                      margin="0 0 16px 0"
-                    >
-                      <LabelInput
-                        {...field}
-                        labelText="Email"
-                        value={field.value || ''}
-                        id={Fields.EMAIL}
-                        hasError={!!(meta.touched && meta.error)}
-                        errorText={meta.error}
-                      ></LabelInput>
-                    </FlexContainer>
-                  )}
-                </Field>
-                <Field type="text" name={Fields.PASSWORD}>
-                  {({ field, meta }: FieldProps) => (
-                    <FlexContainer
-                      position="relative"
-                      flexDirection="column"
-                      margin="0 0 16px 0"
-                    >
-                      <LabelInput
-                        {...field}
-                        labelText="Password"
-                        value={field.value || ''}
-                        id={Fields.PASSWORD}
-                        type="password"
-                        hasError={!!(meta.touched && meta.error)}
-                        errorText={meta.error}
-                        ></LabelInput>
-                    </FlexContainer>
-                  )}
-                </Field>
+        <CustomForm noValidate onSubmit={handleSubmit}>
+          <FlexContainer flexDirection="column">
+            <FlexContainer
+              position="relative"
+              flexDirection="column"
+              margin="0 0 16px 0"
+            >
+              <LabelInput
+                name={Fields.EMAIL}
+                onChange={handleChange}
+                labelText="Email"
+                value={values.email || ''}
+                id={Fields.EMAIL}
+                hasError={!!(touched.email && errors.email)}
+                errorText={errors.email}
+              ></LabelInput>
+            </FlexContainer>
+            <FlexContainer
+              position="relative"
+              flexDirection="column"
+              margin="0 0 16px 0"
+            >
+              <LabelInput
+                name={Fields.PASSWORD}
+                onChange={handleChange}
+                labelText="Password"
+                value={values.password || ''}
+                id={Fields.PASSWORD}
+                type="password"
+                hasError={!!(touched.password && errors.password)}
+                errorText={errors.password}
+              ></LabelInput>
+            </FlexContainer>
 
-                <PrimaryButton
-                  padding="12px"
-                  type="submit"
-                  //disabled={!formikBag.isValid || formikBag.isSubmitting}
-                >
-                  <PrimaryTextSpan
-                    color="#1c2026"
-                    fontWeight="bold"
-                    fontSize="14px"
-                    textTransform="uppercase"
-                  >
-                    Log in
-                  </PrimaryTextSpan>
-                </PrimaryButton>
-              </FlexContainer>
-            </CustomForm>
-          )}
-        </Formik>
+            <PrimaryButton
+              padding="12px"
+              type="submit"
+              onClick={handlerClickSubmit}
+              //disabled={!formikBag.isValid || formikBag.isSubmitting}
+            >
+              <PrimaryTextSpan
+                color="#1c2026"
+                fontWeight="bold"
+                fontSize="14px"
+                textTransform="uppercase"
+              >
+                Log in
+              </PrimaryTextSpan>
+            </PrimaryButton>
+
+            <FlexContainer
+              alignItems="center"
+              justifyContent="center"
+              padding="12px 0"
+            >
+              <LinkForgot to={Pages.FORGOT_PASSWORD}>
+                Forgot password?
+              </LinkForgot>
+            </FlexContainer>
+          </FlexContainer>
+        </CustomForm>
       </FlexContainer>
     </SignFlowLayout>
   );
@@ -134,7 +170,7 @@ const SingIn = observer(() => {
 
 export default SingIn;
 
-const CustomForm = styled(Form)`
+const CustomForm = styled.form`
   margin: 0;
 `;
 
@@ -142,4 +178,16 @@ const ErrorMessage = styled.span`
   color: red;
   position: absolute;
   bottom: 0;
+`;
+
+const LinkForgot = styled(Link)`
+  font-size: 14px;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.4s ease;
+
+  &:hover {
+    text-decoration: none;
+    color: #00fff2;
+  }
 `;

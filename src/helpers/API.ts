@@ -33,6 +33,7 @@ import { Country } from '../types/CountriesTypes';
 import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
 import { getProcessId } from './getProcessId';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -177,6 +178,24 @@ class API {
       {
         link,
       }
+    );
+    return response.data;
+  };
+
+  forgotEmail = async (email: string) => {
+    const response = await axios.post<OperationApiResponseCodes>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.FORGOT_PASSWORD}`,
+      {
+        email,
+      }
+    );
+    return response.data;
+  };
+
+  recoveryPassword = async (data: object) => {
+    const response = await axios.post<OperationApiResponseCodes>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.PASSWORD_RECOVERY}`,
+      data
     );
     return response.data;
   };

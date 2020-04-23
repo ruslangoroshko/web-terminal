@@ -1,36 +1,51 @@
 import React, { FC } from 'react';
-import { PrimaryTextSpan } from '../styles/TextsElements';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../styles/FlexContainer';
+import ErropPopup from './ErropPopup';
 
 interface Props {
-  checkboxText: string;
   id: string;
   checked?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  hasError?: boolean;
+  errorText?: string;
+  isError?: boolean;
 }
 
 const Checkbox: FC<Props> = ({
-  checkboxText,
   id,
   children,
   checked,
   onChange,
+  hasError,
+  errorText,
 }) => (
-  <Label htmlFor={id}>
-    <InputCheckbox
-      checkboxClass={id}
-      id={id}
-      type="checkbox"
-      checked={checked}
-      onChange={onChange}
-    />
-    <CheckboxElement className={`${id}-checkbox`}></CheckboxElement>
-    <PrimaryTextSpan fontSize="14px" color="#fffccc">
-      {checkboxText}
-    </PrimaryTextSpan>
-    {children}
-  </Label>
+  <>
+    <Label htmlFor={id}>
+      <InputCheckbox
+        checkboxClass={id}
+        id={id}
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+      />
+      <CheckboxElement
+        className={`${id}-checkbox ${hasError && `hasError`}`}
+      ></CheckboxElement>
+      {children}
+
+      {hasError && (
+        <ErropPopup
+          textColor="#fffccc"
+          bgColor="#ED145B"
+          classNameTooltip={id}
+          direction="right"
+        >
+          {errorText}
+        </ErropPopup>
+      )}
+    </Label>
+  </>
 );
 
 export default Checkbox;
@@ -39,6 +54,7 @@ const Label = styled.label`
   display: flex;
   align-items: center;
   margin: 0;
+  position: relative;
 
   &:hover {
     cursor: pointer;
@@ -52,9 +68,15 @@ const CheckboxElement = styled(FlexContainer)`
   border: 1px solid rgba(255, 255, 255, 0.19);
   border-radius: 4px;
   width: 16px;
+  min-width: 16px;
   height: 16px;
   margin-right: 8px;
   position: relative;
+  transition: all 0.4s ease;
+
+  &.hasError {
+    border-color: #ff2b47;
+  }
 
   &:before {
     content: '';

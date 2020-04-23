@@ -1,17 +1,20 @@
-import React, { useState, useEffect, FC } from 'react'
-import { FlexContainer } from '../styles/FlexContainer'
+import React, { useState, useEffect, FC } from 'react';
+import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
-import { Formik, Field, FieldProps, Form } from 'formik';
+import { Formik, Field, FieldProps, Form, useFormik } from 'formik';
 import Fields from '../constants/fields';
 import LabelInput from '../components/LabelInput';
 import AutoCompleteDropdown from '../components/KYC/AutoCompleteDropdown';
 import { PrimaryButton } from '../styles/Buttons';
 import styled from '@emotion/styled';
-import { PhoneVerificationFormParams, PersonalDataParams } from '../types/PersonalDataTypes';
+import {
+  PhoneVerificationFormParams,
+  PersonalDataParams,
+} from '../types/PersonalDataTypes';
 import { Country } from '../types/CountriesTypes';
 import API from '../helpers/API';
 import { CountriesEnum } from '../enums/CountriesEnum';
-import * as yup from 'yup'
+import * as yup from 'yup';
 import KeysInApi from '../constants/keysInApi';
 import { useStores } from '../hooks/useStores';
 import { KYCstepsEnum } from '../enums/KYCsteps';
@@ -39,7 +42,6 @@ const PhoneVerification: FC<Props> = props => {
 
   const { kycStore } = useStores();
 
-
   const [initialValues, setInitialValuesForm] = useState<
     PhoneVerificationFormParams
   >({
@@ -47,7 +49,9 @@ const PhoneVerification: FC<Props> = props => {
     phone: '',
   });
 
-  const [initialValuesPeronalData, setValuesPeronalData] = useState<PersonalDataParams>({
+  const [initialValuesPeronalData, setValuesPeronalData] = useState<
+    PersonalDataParams
+  >({
     city: '',
     countryOfCitizenship: '',
     countryOfResidence: '',
@@ -59,14 +63,14 @@ const PhoneVerification: FC<Props> = props => {
     sex: SexEnum.Unknown,
     address: '',
     uSCitizen: false,
-    phone: ''
+    phone: '',
   });
 
   const handleChangeCountry = (setFieldValue: any) => (country: Country) => {
     setFieldValue(Fields.PHONE, country.dial);
-  }
+  };
 
-  const handleSubmit = ({ phone }: PhoneVerificationFormParams) => {
+  const handleSubmitForm = ({ phone }: PhoneVerificationFormParams) => {
     try {
       API.setKeyValue({
         key: KeysInApi.PERSONAL_DATA,
@@ -75,7 +79,7 @@ const PhoneVerification: FC<Props> = props => {
       kycStore.filledStep = KYCstepsEnum.PersonalData;
       push(Page.PROOF_OF_IDENTITY);
     } catch (error) {}
-  };;
+  };
 
   useEffect(() => {
     async function fetchCountries() {
@@ -90,11 +94,14 @@ const PhoneVerification: FC<Props> = props => {
         const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
 
         if (response) {
-          const parsed : PersonalDataParams = JSON.parse(response);
+          const parsed: PersonalDataParams = JSON.parse(response);
           if (parsed instanceof Object) {
             setValuesPeronalData(parsed);
-            const { phone, countryOfCitizenship} = parsed;
-            setInitialValuesForm({phone, customCountryCode:countryOfCitizenship});
+            const { phone, countryOfCitizenship } = parsed;
+            setInitialValuesForm({
+              phone,
+              customCountryCode: countryOfCitizenship,
+            });
             kycStore.filledStep = KYCstepsEnum.PhoneVerification;
           }
         }
@@ -104,6 +111,31 @@ const PhoneVerification: FC<Props> = props => {
     fetchCountries();
     kycStore.currentStep = KYCstepsEnum.PhoneVerification;
   }, []);
+
+  const {
+    values,
+    setFieldValue,
+    validateForm,
+    handleSubmit,
+    handleChange,
+    errors,
+    touched,
+  } = useFormik({
+    initialValues,
+    onSubmit: handleSubmitForm,
+    validationSchema,
+    validateOnBlur: false,
+    validateOnChange: true,
+  });
+
+  const handlerClickSubmit = async () => {
+    const curErrors = await validateForm();
+    const curErrorsKeys = Object.keys(curErrors);
+    if (curErrorsKeys.length) {
+      const el = document.getElementById(curErrorsKeys[0]);
+      if (el) el.focus();
+    }
+  };
 
   return (
     <FlexContainer
@@ -131,64 +163,53 @@ const PhoneVerification: FC<Props> = props => {
           Improve your account protection by linking your phone number.
         </PrimaryTextSpan>
         <FlexContainer flexDirection="column">
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            validationSchema={validationSchema}
-            enableReinitialize
-          >
-            {({ submitForm, setFieldValue }) => (
-              <CustomForm translate="en">
-                <FlexContainer width="320px" margin="0 0 28px 0">
-                  <Field type="text" name={Fields.CUSTOM_COUNTRY}>
-                    {({ field, meta }: FieldProps) => (
-                      <FlexContainer flexDirection="column" width="100%">
-                        <AutoCompleteDropdown
-                          labelText="Country"
-                          id={field.name}
-                          {...field}
-                          hasError={!!(meta.touched && meta.error)}
-                          dropdownItemsList={countries}
-                          setFieldValue={setFieldValue}
-                          handleChange={handleChangeCountry(setFieldValue)}
-                        ></AutoCompleteDropdown>
-                      </FlexContainer>
-                    )}
-                  </Field>
-                </FlexContainer>
-                <FlexContainer width="320px" margin="0 0 28px 0">
-                  <Field type="text" name={Fields.PHONE} flexDirection="column">
-                    {({ field, meta }: FieldProps) => (
-                      <FlexContainer width="100%" flexDirection="column">
-                        <LabelInput
-                          labelText="Phone"
-                          id={field.name}
-                          {...field}
-                          hasError={!!(meta.touched && meta.error)}
-                          errorText={meta.error}
-                        />
-                      </FlexContainer>
-                    )}
-                  </Field>
-                </FlexContainer>
-                <FlexContainer>
-                  <PrimaryButton
-                    type="button"
-                    onClick={submitForm}
-                    padding="8px 32px"
-                  >
-                    <PrimaryTextSpan
-                      color="#003A38"
-                      fontWeight="bold"
-                      fontSize="14px"
-                    >
-                      Save and continue
-                    </PrimaryTextSpan>
-                  </PrimaryButton>
-                </FlexContainer>
-              </CustomForm>
-            )}
-          </Formik>
+          <CustomForm onSubmit={handleSubmit} noValidate>
+            <FlexContainer width="320px" margin="0 0 28px 0">
+              <FlexContainer flexDirection="column" width="100%">
+                <AutoCompleteDropdown
+                  labelText="Country"
+                  id={Fields.CUSTOM_COUNTRY}
+                  onChange={handleChange}
+                  name={Fields.CUSTOM_COUNTRY}
+                  value={values.customCountryCode || ''}
+                  hasError={
+                    !!(touched.customCountryCode && errors.customCountryCode)
+                  }
+                  dropdownItemsList={countries}
+                  setFieldValue={setFieldValue}
+                  handleChange={handleChangeCountry(setFieldValue)}
+                ></AutoCompleteDropdown>
+              </FlexContainer>
+            </FlexContainer>
+            <FlexContainer width="320px" margin="0 0 28px 0">
+            <FlexContainer width="100%" flexDirection="column">
+                    <LabelInput
+                      labelText="Phone"
+                      name={Fields.PHONE}
+                      id={Fields.PHONE}
+                      onChange={handleChange}
+                      value={values.phone || ''}
+                      hasError={!!(touched.phone && errors.phone)}
+                      errorText={errors.phone}
+                    />
+                  </FlexContainer>
+            </FlexContainer>
+            <FlexContainer>
+              <PrimaryButton
+                type="submit"
+                onClick={handlerClickSubmit}
+                padding="8px 32px"
+              >
+                <PrimaryTextSpan
+                  color="#003A38"
+                  fontWeight="bold"
+                  fontSize="14px"
+                >
+                  Save and continue
+                </PrimaryTextSpan>
+              </PrimaryButton>
+            </FlexContainer>
+          </CustomForm>
         </FlexContainer>
       </FlexContainer>
     </FlexContainer>
@@ -197,7 +218,6 @@ const PhoneVerification: FC<Props> = props => {
 
 export default PhoneVerification;
 
-
-const CustomForm = styled(Form)`
+const CustomForm = styled.form`
   margin: 0;
 `;

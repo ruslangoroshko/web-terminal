@@ -1,5 +1,12 @@
-import React from 'react';
-import { Formik, Field, Form, FieldProps, FormikHelpers } from 'formik';
+import React, { useEffect } from 'react';
+import {
+  Formik,
+  Field,
+  Form,
+  FieldProps,
+  FormikHelpers,
+  useFormik,
+} from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { UserRegistration } from '../types/UserInfo';
@@ -12,136 +19,229 @@ import { PrimaryButton } from '../styles/Buttons';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import SignTypeTabs from '../components/SignTypeTabs';
 import Page from '../constants/Pages';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
+import Checkbox from '../components/Checkbox';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
+import Pages from '../constants/Pages';
+import validationInputTexts from '../constants/validationInputTexts';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
+import NotificationPopup from '../components/NotificationPopup';
+import { observer, Observer } from 'mobx-react-lite';
 
 function SignUp() {
   const validationSchema = yup.object().shape<UserRegistration>({
-    email: yup.string().required('Required any value'),
+    email: yup
+      .string()
+      .required(validationInputTexts.EMAIL)
+      .email(validationInputTexts.EMAIL),
     password: yup
       .string()
-      .required('Required any value')
-      .min(8, 'min 8 characters')
-      .matches(/^(?=.*\d)(?=.*[a-zA-Z])/, 'min one number and one symbol'),
+      .required(validationInputTexts.REQUIRED_FIELD)
+      .min(8, validationInputTexts.PASSWORD_MIN_CHARACTERS)
+      .max(40, validationInputTexts.PASSWORD_MAX_CHARACTERS)
+      .matches(/^(?=.*\d)(?=.*[a-zA-Z])/, validationInputTexts.PASSWORD_MATCH),
     repeatPassword: yup
       .string()
-      .oneOf([yup.ref(Fields.PASSWORD), null], 'Passwords must match'),
+      .required(validationInputTexts.REPEAT_PASSWORD)
+      .oneOf(
+        [yup.ref(Fields.PASSWORD), null],
+        validationInputTexts.REPEAT_PASSWORD_MATCH
+      ),
+
+    userAgreement: yup
+      .bool()
+      .oneOf([true], validationInputTexts.USER_AGREEMENT),
   });
 
   const initialValues: UserRegistration = {
     email: '',
     password: '',
     repeatPassword: '',
+    userAgreement: false,
   };
 
+  const { push } = useHistory();
+  const { mainAppStore, notificationStore } = useStores();
 
-  const {push} = useHistory();
-  const { mainAppStore } = useStores();
-
-  const handleSubmit = async (
+  const handleSubmitForm = async (
     { email, password }: UserRegistration,
     { setStatus, setSubmitting }: FormikHelpers<UserRegistration>
   ) => {
     setSubmitting(true);
     try {
-      await mainAppStore.signUp({ email, password });
-      push(Page.DASHBOARD);
+      const result = await mainAppStore.signUp({ email, password });
+      if (result !== OperationApiResponseCodes.Ok) {
+        notificationStore.notificationMessage = apiResponseCodeMessages[result];
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+      } else {
+        push(Page.DASHBOARD);
+      }
     } catch (error) {
+      notificationStore.notificationMessage = error;
+      notificationStore.isSuccessfull = false;
+      notificationStore.openNotification();
       setStatus(error);
       setSubmitting(false);
     }
   };
 
+  const {
+    values,
+    setFieldError,
+    setFieldValue,
+    validateForm,
+    handleSubmit,
+    handleChange,
+    errors,
+    touched,
+    isSubmitting,
+  } = useFormik({
+    initialValues,
+    onSubmit: handleSubmitForm,
+    validationSchema,
+    validateOnBlur: false,
+    validateOnChange: true,
+  });
+
+  const handleChangeUserAgreements = (setFieldValue: any) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFieldValue(Fields.USER_AGREEMENT, e.target.checked);
+    e.target.checked ? setFieldError(Fields.USER_AGREEMENT, '') : setFieldError(Fields.USER_AGREEMENT, validationInputTexts.USER_AGREEMENT);
+  };
+  const handlerClickSubmit = async () => {
+    const curErrors = await validateForm();
+    const curErrorsKeys = Object.keys(curErrors);
+    if (curErrorsKeys.length) {
+      const el = document.getElementById(curErrorsKeys[0]);
+      if (el) el.focus();
+    }
+  };
+
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.SIGN_UP_VIEW);
+  }, []);
+
   return (
     <SignFlowLayout>
+      <FlexContainer
+        position="absolute"
+        bottom="100px"
+        left="100px"
+        zIndex="100"
+      >
+        <Observer>
+          {() => (
+            <NotificationPopup
+              show={notificationStore.isActiveNotification}
+            ></NotificationPopup>
+          )}
+        </Observer>
+      </FlexContainer>
       <FlexContainer width="320px" flexDirection="column">
         <SignTypeTabs></SignTypeTabs>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          validationSchema={validationSchema}
-        >
-          {formikBag => (
-            <CustomForm translate="en">
-              <FlexContainer flexDirection="column">
-                <Field type="text" name={Fields.EMAIL}>
-                  {({ field, meta }: FieldProps) => (
-                    <FlexContainer
-                      position="relative"
-                      flexDirection="column"
-                      margin="0 0 16px 0"
-                    >
-                      <LabelInput
-                        {...field}
-                        labelText="Email"
-                        value={field.value || ''}
-                        id={field.name}
-                        hasError={!!(meta.touched && meta.error)}
-                        errorText={meta.error}
-                      ></LabelInput>
-                    </FlexContainer>
-                  )}
-                </Field>
-                <Field type="text" name={Fields.PASSWORD}>
-                  {({ field, meta }: FieldProps) => (
-                    <FlexContainer
-                      position="relative"
-                      flexDirection="column"
-                      margin="0 0 16px 0"
-                    >
-                      <LabelInput
-                        {...field}
-                        labelText="Password"
-                        value={field.value || ''}
-                        id={field.name}
-                        autoComplete="new-password"
-                        type="password"
-                        hasError={!!(meta.touched && meta.error)}
-                        errorText={meta.error}
-                      ></LabelInput>
-                    </FlexContainer>
-                  )}
-                </Field>
-                <Field type="text" name={Fields.REPEAT_PASSWORD}>
-                  {({ field, meta }: FieldProps) => (
-                    <FlexContainer
-                      position="relative"
-                      flexDirection="column"
-                      margin="0 0 16px 0"
-                    >
-                      <LabelInput
-                        {...field}
-                        labelText="Repeat Password"
-                        value={field.value || ''}
-                        id={field.name}
-                        autoComplete="new-password"
-                        type="password"
-                        hasError={!!(meta.touched && meta.error)}
-                        errorText={meta.error}
-                      ></LabelInput>
-                    </FlexContainer>
-                  )}
-                </Field>
-                {formikBag.status && (
-                  <ErrorMessage>{formikBag.status}</ErrorMessage>
-                )}
-                <PrimaryButton
-                  padding="12px"
-                  type="submit"
-                  disabled={formikBag.isSubmitting}
-                >
-                  <PrimaryTextSpan
-                    color="#1c2026"
-                    fontWeight="bold"
-                    fontSize="14px"
-                    textTransform="uppercase"
+        <CustomForm noValidate onSubmit={handleSubmit}>
+          <FlexContainer flexDirection="column">
+            <FlexContainer
+              position="relative"
+              flexDirection="column"
+              margin="0 0 16px 0"
+            >
+              <LabelInput
+                onChange={handleChange}
+                name={Fields.EMAIL}
+                labelText="Email"
+                value={values.email || ''}
+                id={Fields.EMAIL}
+                hasError={!!(touched.email && errors.email)}
+                errorText={errors.email}
+              ></LabelInput>
+            </FlexContainer>
+            <FlexContainer
+              position="relative"
+              flexDirection="column"
+              margin="0 0 16px 0"
+            >
+              <LabelInput
+                onChange={handleChange}
+                name={Fields.PASSWORD}
+                labelText="Password"
+                value={values.password || ''}
+                id={Fields.PASSWORD}
+                autoComplete="new-password"
+                type="password"
+                hasError={!!(touched.password && errors.password)}
+                errorText={errors.password}
+              ></LabelInput>
+            </FlexContainer>
+            <FlexContainer
+              position="relative"
+              flexDirection="column"
+              margin="0 0 16px 0"
+            >
+              <LabelInput
+                onChange={handleChange}
+                labelText="Repeat Password"
+                value={values.repeatPassword || ''}
+                id={Fields.REPEAT_PASSWORD}
+                name={Fields.REPEAT_PASSWORD}
+                autoComplete="new-password"
+                type="password"
+                hasError={!!(touched.repeatPassword && errors.repeatPassword)}
+                errorText={errors.repeatPassword}
+              ></LabelInput>
+            </FlexContainer>
+            <FlexContainer margin="0 0 15px 0">
+              <Checkbox
+                id="user-agreements"
+                checked={values.userAgreement}
+                onChange={handleChangeUserAgreements(setFieldValue)}
+                hasError={
+                  !!(
+                    !errors.email &&
+                    !errors.password &&
+                    !errors.repeatPassword &&
+                    errors.userAgreement
+                  )
+                }
+                errorText={errors.userAgreement}
+              >
+                <PrimaryTextSpan color="rgba(255,255,255,0.6)" fontSize="12px">
+                  I’m 18 years old, and agree to&nbsp;
+                  <CustomCheckboxLink
+                    to={Pages.TERMS_OF_SERVICE}
+                    target="_blank"
                   >
-                    Sign up
-                  </PrimaryTextSpan>
-                </PrimaryButton>
-              </FlexContainer>
-            </CustomForm>
-          )}
-        </Formik>
+                    Terms & Conditions
+                  </CustomCheckboxLink>
+                  &nbsp; and&nbsp;
+                  <CustomCheckboxLink to={Pages.PRIVACY_POLICY} target="_blank">
+                    Privacy Policy
+                  </CustomCheckboxLink>
+                </PrimaryTextSpan>
+              </Checkbox>
+            </FlexContainer>
+
+            <PrimaryButton
+              padding="12px"
+              type="submit"
+              disabled={isSubmitting}
+              onClick={handlerClickSubmit}
+            >
+              <PrimaryTextSpan
+                color="#1c2026"
+                fontWeight="bold"
+                fontSize="14px"
+                textTransform="uppercase"
+              >
+                Sign up
+              </PrimaryTextSpan>
+            </PrimaryButton>
+          </FlexContainer>
+        </CustomForm>
       </FlexContainer>
     </SignFlowLayout>
   );
@@ -149,7 +249,7 @@ function SignUp() {
 
 export default SignUp;
 
-const CustomForm = styled(Form)`
+const CustomForm = styled.form`
   margin: 0;
 `;
 
@@ -158,4 +258,15 @@ const ErrorMessage = styled.span`
   position: absolute;
   bottom: -14px;
   font-size: 10px;
+`;
+
+const CustomCheckboxLink = styled(Link)`
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.4s ease;
+  text-decoration: underline;
+  font-size: 12px;
+  :hover {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 1);
+  }
 `;

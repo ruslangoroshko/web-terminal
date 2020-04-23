@@ -9,11 +9,24 @@ export interface UserRegistration {
   email: string;
   password: string;
   repeatPassword?: string;
+  userAgreement?: boolean;
+}
+
+export interface UserForgotPassword {
+  email: string;
+}
+
+export interface ResetPassword {
+  password: string;
+  repeatPassword?: string;
 }
 
 export interface UserAuthenticateResponse {
   result: OperationApiResponseCodes;
   data: {
     token: string;
+    tradingUrl: string;
+    signalRConnectionTimeOut: string;
+    signalRReconnectTimeOut: string;
   };
 }

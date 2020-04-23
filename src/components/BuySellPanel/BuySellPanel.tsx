@@ -28,6 +28,9 @@ import { keyframes } from '@emotion/core';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
 import { Observer } from 'mobx-react-lite';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../../constants/mixpanelEvents';
+import { MixpanelMarketOrder } from '../../types/MixpanelTypes';
 
 // TODO: too much code, refactor
 
@@ -121,6 +124,17 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         notificationStore.isSuccessfull =
           response.result === OperationApiResponseCodes.Ok;
         notificationStore.openNotification();
+
+        if (response.result === OperationApiResponseCodes.Ok) {
+          mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
+            value: values.investmentAmount,
+            multiplier: `x${values.multiplier}`,
+            sltp: 'no',
+            trend: values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+            label: values.instrumentId,
+            event_ref: 'instrument page',
+          } as MixpanelMarketOrder);
+        }
         resetForm();
       } catch (error) {
         notificationStore.notificationMessage = error;
@@ -135,6 +149,17 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         notificationStore.isSuccessfull =
           response.result === OperationApiResponseCodes.Ok;
         notificationStore.openNotification();
+
+        if (response.result === OperationApiResponseCodes.Ok) {
+          mixpanel.track(mixpanelEvents.MARKET_ORDER, {
+            value: values.investmentAmount,
+            multiplier: `x${values.multiplier}`,
+            sltp: values.sl || values.tp ? 'yes' : 'no',
+            trend: values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+            label: values.instrumentId,
+            event_ref: 'instrument page',
+          } as MixpanelMarketOrder);
+        }
         resetForm();
       } catch (error) {
         notificationStore.notificationMessage = error;
@@ -414,7 +439,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               <>
                 {quotesStore.quotes[instrument.id] && (
                   <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                    {mainAppStore.activeAccount?.symbol}
+                    {/* {mainAppStore.activeAccount?.symbol} */}
                     {Math.abs(
                       quotesStore.quotes[instrument.id].bid.c -
                         quotesStore.quotes[instrument.id].ask.c
@@ -596,7 +621,7 @@ const fadein = keyframes`
 const ConfirmPopupWrapper = styled(FlexContainer)`
   animation: ${fadein} 0.2s ease forwards;
 
-  @media (max-height: 700px) { 
+  @media (max-height: 700px) {
     top: -40px;
   }
 `;

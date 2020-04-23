@@ -34,6 +34,7 @@ const AccountInfo: FC<Props> = observer(props => {
       [Fields.ACCOUNT_ID]: account.id,
     });
     tabsStore.sideBarTabType = null;
+    mainAppStore.setActiveAccount(account);
     toggle();
   };
 
@@ -91,7 +92,7 @@ const AccountInfo: FC<Props> = observer(props => {
             </FlexContainer>
             <PrimaryTextSpan>
               {account.symbol}
-              {quotesStore.available.toFixed(2)}
+              {account.balance}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>

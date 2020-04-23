@@ -12,7 +12,7 @@ import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import { Observer } from 'mobx-react-lite';
 import { identify, people, Dict } from 'mixpanel-browser';
 import KYCStatus from '../../constants/KYCStatus';
-import mixpanelFields from '../../constants/mixpanelFields';
+import mixpanelEvents from '../../constants/mixpanelEvents';
 
 function UserProfileButton() {
 
@@ -37,13 +37,13 @@ function UserProfileButton() {
         const response = await API.getPersonalData(getProcessId());
         identify(response.data.id);
         people.set({
-          [mixpanelFields.FIRST_NAME]: response.data.firstName,
-          [mixpanelFields.LAST_NAME]: response.data.lastName,
-          [mixpanelFields.EMAIL]: response.data.email,
-          [mixpanelFields.AVATAR]: response.data.avatar,
-          [mixpanelFields.USER_KYC_STATUS]: KYCStatus[response.data.kyc],
-          [mixpanelFields.PHONE]: response.data.phone,
-          [mixpanelFields.LAST_LOGIN]: new Date().toISOString(),
+          [mixpanelEvents.FIRST_NAME]: response.data.firstName,
+          [mixpanelEvents.LAST_NAME]: response.data.lastName,
+          [mixpanelEvents.EMAIL]: response.data.email,
+          [mixpanelEvents.AVATAR]: response.data.avatar,
+          [mixpanelEvents.USER_KYC_STATUS]: KYCStatus[response.data.kyc],
+          [mixpanelEvents.PHONE]: response.data.phone,
+          [mixpanelEvents.LAST_LOGIN]: new Date().toISOString(),
         });
         mainAppStore.profileStatus = response.data.kyc;
       } catch (error) {}

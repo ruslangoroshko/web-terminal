@@ -2,6 +2,7 @@ const Fields = {
   ACCOUNT_ID: 'accountId',
   EMAIL: 'email',
   PASSWORD: 'password',
+  USER_AGREEMENT: 'userAgreement',
   REPEAT_PASSWORD: 'repeatPassword',
   TAKE_PROFIT: 'tp',
   TAKE_PROFIT_RATE: 'tpRate',

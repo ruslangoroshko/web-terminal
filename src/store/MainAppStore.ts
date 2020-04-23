@@ -1,7 +1,7 @@
 import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
 import { AccountModelWebSocketDTO } from '../types/AccountsTypes';
-import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
+import { LOCAL_STORAGE_TOKEN_KEY, LOCAL_STORAGE_TRADING_URL } from '../constants/global';
 import { action, observable, computed } from 'mobx';
 import API from '../helpers/API';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
@@ -15,7 +15,8 @@ import { RootStore } from './RootStore';
 import Fields from '../constants/fields';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
-import { init } from 'mixpanel-browser';
+import mixpanel, { init } from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
 
 interface MainAppStoreProps {
   token: string;
@@ -146,7 +147,9 @@ export class MainAppStore implements MainAppStoreProps {
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
-      this.handleInitConnection(response.data.token);
+      this.handleInitConnection(response.data.token); 
+      localStorage.setItem(LOCAL_STORAGE_TRADING_URL, response.data.tradingUrl);
+      mixpanel.track(mixpanelEvents.LOGIN);
     }
 
     if (
@@ -157,6 +160,24 @@ export class MainAppStore implements MainAppStoreProps {
 
     return response.result;
   };
+
+  @action
+  signUp = async (credentials: UserRegistration) => {
+    const response = await API.signUpNewTrader(credentials);
+    if (response.result === OperationApiResponseCodes.Ok) {
+      this.isAuthorized = true;
+      this.setTokenHandler(response.data.token);
+      this.handleInitConnection(response.data.token);
+      localStorage.setItem(LOCAL_STORAGE_TRADING_URL, response.data.tradingUrl);
+    }
+
+    if (
+      response.result === OperationApiResponseCodes.InvalidUserNameOrPassword
+    ) {
+      this.isAuthorized = false;
+    }
+    return response.result;
+  }
 
   @action
   signOut = () => {
@@ -170,20 +191,6 @@ export class MainAppStore implements MainAppStoreProps {
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = token;
     this.token = token;
   };
-
-  @action
-  signUp = (credentials: UserRegistration) =>
-    new Promise(async (resolve, reject) => {
-      const response = await API.signUpNewTrader(credentials);
-      if (response.result === OperationApiResponseCodes.Ok) {
-        this.isAuthorized = true;
-        this.setTokenHandler(response.data.token);
-        this.handleInitConnection(response.data.token);
-        resolve();
-      } else {
-        reject(apiResponseCodeMessages[response.result]);
-      }
-    });
 
   @computed
   get sortedAccounts() {
