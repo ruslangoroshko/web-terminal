@@ -73,7 +73,7 @@ const DepositPopupWrapper: FC = ({ children }) => {
                 />
               </ButtonWithoutStyles>
             </FlexContainer>
-            <FlexContainer marginRight="40px" flexDirection="column">
+            <FlexContainer marginRight="40px" flexDirection="column" width="220px">
               <FlexContainer padding="24px 20px" flexDirection="column">
                 <PrimaryTextSpan
                   fontSize="24px"
@@ -118,7 +118,7 @@ const DepositPopupWrapper: FC = ({ children }) => {
                 </PaymentMethodItem>
               </FlexContainer>
             </FlexContainer>
-            <FlexContainer flexDirection="column">
+            <FlexContainer flexDirection="column" padding="0 40px 20px 0" width="calc(100% - 220px)">
               <Observer>{() => <>{renderDepositType()}</>}</Observer>
               <FlexContainer alignItems="center">
                 <ImageBadge src={SslCertifiedImage} width={120}></ImageBadge>
