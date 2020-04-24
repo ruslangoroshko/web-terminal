@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import { getImageSource } from '../helpers/getImageSource';
+import { useStores } from '../hooks/useStores';
 
 interface Props {
     instrumentId: string;
@@ -8,8 +9,9 @@ interface Props {
 
 function ImageContainer(props: Props) {
   const { instrumentId } = props;
+  const {mainAppStore } = useStores();
 
-  return <ImageElem src={getImageSource(instrumentId)} />;
+  return <ImageElem src={`${mainAppStore.tradingUrl}${getImageSource(instrumentId)}`} />;
 }
 
 export default ImageContainer;
