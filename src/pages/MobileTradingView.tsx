@@ -35,13 +35,14 @@ const MobileTradingView: FC = () => {
     interval: '',
     resolution: '',
     type: '',
+    tradingUrl: '/',
   });
 
   let { port1, port2 } = new MessageChannel();
 
   const initWebsocketConnection = async (data: MobileMessageModel) => {
     setStatusSnapshot(data);
-    const connection = initConnection(WS_HOST);
+    const connection = initConnection(`${data.tradingUrl}/signalr`);
     try {
       await connection.start();
       setActiveSession(connection);
