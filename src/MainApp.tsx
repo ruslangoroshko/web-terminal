@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Global, css } from '@emotion/core';
 import { reboot } from './styles/reboot';
-import injectInerceptors from './http/interceptors';
 import Helmet from 'react-helmet';
 import favicon from './assets/images/favicon.ico';
 import RoutingLayout from './routing/RoutingLayout';
@@ -11,6 +10,7 @@ import 'react-dates/lib/css/_datepicker.css';
 import reactDatePickerOverrides from './styles/react-date-picker-overrides';
 import LoaderFullscreen from './components/LoaderFullscreen';
 import { useStores } from './hooks/useStores';
+import { Observer } from 'mobx-react-lite';
 
 const MainApp = () => {
 
@@ -27,7 +27,9 @@ const MainApp = () => {
 
   return (
     <>
-      <LoaderFullscreen isLoading={!mainAppStore.tradingUrl} />
+      <Observer>
+        {() => <LoaderFullscreen isLoading={!mainAppStore.tradingUrl} />}
+      </Observer>
       <Helmet>
         <link rel="shortcut icon" href={favicon} />
       </Helmet>

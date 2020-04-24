@@ -40,7 +40,7 @@ interface MainAppStoreProps {
 
 export class MainAppStore implements MainAppStoreProps {
   @observable isLoading = true;
-  @observable isInitLoading = false;
+  @observable isInitLoading = true;
   @observable isAuthorized = false;
   @observable activeSession?: HubConnection;
   @observable activeAccount?: AccountModelWebSocketDTO;
@@ -65,7 +65,6 @@ export class MainAppStore implements MainAppStoreProps {
   }
 
   handleInitConnection = async (token = this.token) => {
-    this.isInitLoading = true;
     const wsConnectSub =
       this.tradingUrl[this.tradingUrl.length - 1] === '/'
         ? 'signalr'
@@ -114,6 +113,7 @@ export class MainAppStore implements MainAppStoreProps {
   };
 
   fetchTradingUrl = async (token = this.token) => {
+    this.isInitLoading = true;
     try {
       const response = await API.getTradingUrl();
       this.setTradingUrl(response.tradingUrl);
@@ -121,6 +121,8 @@ export class MainAppStore implements MainAppStoreProps {
       this.handleInitConnection(token);
     } catch (error) {
       this.setTradingUrl('/');
+      this.isLoading = false;
+      this.isInitLoading = false;
     }
   };
 
