@@ -69,6 +69,11 @@ const AutoCompleteDropdown: FC<Props> = props => {
     };
   }, []);
 
+  useEffect(() => {
+    inputRef.current?.addEventListener('focus', toggleFocus);
+    return () => inputRef.current?.removeEventListener('focus', toggleFocus);
+  }, [])
+
   const renderItems = () => {
     const filteredList = dropdownItemsList.filter(
       item => !value || item.name.toLowerCase().includes(value.toLowerCase())

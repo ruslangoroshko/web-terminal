@@ -19,7 +19,7 @@ const AccountNavPanel = () => {
       >
         Account
       </PrimaryTextParagraph>
-      <FlexContainer flexDirection="column">
+      {/* <FlexContainer flexDirection="column">
         <CustomNavLink to={Page.ACCOUNT_PROFILE} activeClassName="active">
           <AccountLinkSpan color="#fffccc">Profile</AccountLinkSpan>
         </CustomNavLink>
@@ -31,7 +31,7 @@ const AccountNavPanel = () => {
         <CustomNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="active">
           <AccountLinkSpan color="#fffccc">Withdraw</AccountLinkSpan>
         </CustomNavLink>
-      </FlexContainer>
+      </FlexContainer> */}
       <FlexContainer flexDirection="column">
         <CustomNavLink
           to={Page.ACCOUNT_BALANCE_HISTORY}
@@ -39,7 +39,7 @@ const AccountNavPanel = () => {
         >
           <AccountLinkSpan color="#fffccc">Balance history</AccountLinkSpan>
         </CustomNavLink>
-        <CustomNavLink to={Page.ACCOUNT_SETTINGS} activeClassName="active">
+        {/* <CustomNavLink to={Page.ACCOUNT_SETTINGS} activeClassName="active">
           <AccountLinkSpan color="#fffccc">Settings</AccountLinkSpan>
         </CustomNavLink>
         <CustomNavLink
@@ -47,7 +47,7 @@ const AccountNavPanel = () => {
           activeClassName="active"
         >
           <AccountLinkSpan color="#fffccc">Historical quotes</AccountLinkSpan>
-        </CustomNavLink>
+        </CustomNavLink> */}
       </FlexContainer>
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={mainAppStore.signOut}>
