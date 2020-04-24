@@ -5,7 +5,10 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import Topics from '../constants/websocketTopics';
 import TVChartContainer from '../containers/ChartContainer';
-import { InstrumentModelWSDTO, PriceChangeWSDTO } from '../types/InstrumentsTypes';
+import {
+  InstrumentModelWSDTO,
+  PriceChangeWSDTO,
+} from '../types/InstrumentsTypes';
 import { PositionModelWSDTO } from '../types/Positions';
 import SvgIcon from '../components/SvgIcon';
 import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';
@@ -24,7 +27,6 @@ import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import NotificationPopup from '../components/NotificationPopup';
 import DemoRealPopup from '../components/DemoRealPopup';
 import { PendingOrdersWSDTO } from '../types/PendingOrdersTypes';
-import LoaderFullscreen from '../components/LoaderFullscreen';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
@@ -42,7 +44,10 @@ const Dashboard = observer(() => {
       mainAppStore.activeSession?.on(
         Topics.INSTRUMENTS,
         (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-          if (mainAppStore.activeAccount && response.accountId === mainAppStore.activeAccount.id) {
+          if (
+            mainAppStore.activeAccount &&
+            response.accountId === mainAppStore.activeAccount.id
+          ) {
             response.data.forEach(item => {
               quotesStore.setQuote({
                 ask: {
@@ -122,7 +127,11 @@ const Dashboard = observer(() => {
     >
       <Observer>
         {() => (
-          <>{!mainAppStore.activeAccount && <DemoRealPopup></DemoRealPopup>}</>
+          <>
+            {!mainAppStore.isInitLoading &&
+              !mainAppStore.isLoading &&
+              !mainAppStore.activeAccount && <DemoRealPopup></DemoRealPopup>}
+          </>
         )}
       </Observer>
       <FlexContainer
@@ -231,9 +240,4 @@ const ChartWrapper = styled(FlexContainer)`
 const ChartInstruments = styled(FlexContainer)`
   grid-row: 2 / span 1;
   grid-column: 1 / span 1;
-`;
-
-const BuySellPanelWrapper = styled(FlexContainer)`
-  grid-row: 1 / span 2;
-  grid-column: 2 / span 1;
 `;

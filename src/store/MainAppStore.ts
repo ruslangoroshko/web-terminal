@@ -1,7 +1,7 @@
 import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
 import { AccountModelWebSocketDTO } from '../types/AccountsTypes';
-import { LOCAL_STORAGE_TOKEN_KEY, LOCAL_STORAGE_TRADING_URL } from '../constants/global';
+import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
 import { action, observable, computed } from 'mobx';
 import API from '../helpers/API';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
@@ -10,13 +10,13 @@ import Topics from '../constants/websocketTopics';
 import Axios from 'axios';
 import RequestHeaders from '../constants/headers';
 import KeysInApi from '../constants/keysInApi';
-import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { RootStore } from './RootStore';
 import Fields from '../constants/fields';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import mixpanel, { init } from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
+import injectInerceptors from '../http/interceptors';
 
 interface MainAppStoreProps {
   token: string;
@@ -30,6 +30,7 @@ interface MainAppStoreProps {
   accounts: AccountModelWebSocketDTO[];
   setActiveAccount: (acc: AccountModelWebSocketDTO) => void;
   activeAccountId: string;
+  tradingUrl: string;
   profileStatus: PersonalDataKYCEnum;
 }
 
@@ -45,7 +46,9 @@ export class MainAppStore implements MainAppStoreProps {
   @observable activeAccount?: AccountModelWebSocketDTO;
   @observable accounts: AccountModelWebSocketDTO[] = [];
   @observable activeAccountId: string = '';
-  @observable profileStatus: PersonalDataKYCEnum = PersonalDataKYCEnum.NotVerified;
+  @observable profileStatus: PersonalDataKYCEnum =
+    PersonalDataKYCEnum.NotVerified;
+  @observable tradingUrl = '';
   token = '';
   rootStore: RootStore;
 
@@ -54,16 +57,20 @@ export class MainAppStore implements MainAppStoreProps {
     init(MIXPANEL_TOKEN);
     this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
-    if (this.token) {
-      this.handleInitConnection(this.token);
-    } else {
-      this.isInitLoading = false;
-    }
+    // if (this.token) {
+    //   this.handleInitConnection(this.token);
+    // } else {
+    //   this.isInitLoading = false;
+    // }
   }
 
-  handleInitConnection = async (token: string) => {
-    const connection = initConnection(WS_HOST);
-
+  handleInitConnection = async (token = this.token) => {
+    const wsConnectSub =
+      this.tradingUrl[this.tradingUrl.length - 1] === '/'
+        ? 'signalr'
+        : `/signalr`;
+    const connectionString = IS_LIVE ? this.tradingUrl + wsConnectSub : WS_HOST;
+    const connection = initConnection(connectionString);
     try {
       await connection.start();
       try {
@@ -71,7 +78,6 @@ export class MainAppStore implements MainAppStoreProps {
         this.activeSession = connection;
         this.isAuthorized = true;
         this.isInitLoading = false;
-
       } catch (error) {
         this.isAuthorized = false;
         this.isInitLoading = false;
@@ -106,6 +112,19 @@ export class MainAppStore implements MainAppStoreProps {
     });
   };
 
+  fetchTradingUrl = async (token = this.token) => {
+    try {
+      const response = await API.getTradingUrl();
+      this.setTradingUrl(response.tradingUrl);
+      injectInerceptors(response.tradingUrl);
+      this.handleInitConnection(token);
+    } catch (error) {
+      this.setTradingUrl('/');
+      this.isLoading = false;
+      this.isInitLoading = false;
+    }
+  };
+
   getActiveAccount = async () => {
     try {
       const activeAccountId = await API.getKeyValue(
@@ -117,17 +136,15 @@ export class MainAppStore implements MainAppStoreProps {
 
       if (activeAccount) {
         this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: activeAccount.id
+          [Fields.ACCOUNT_ID]: activeAccount.id,
         });
         this.setActiveAccount(activeAccount);
       }
       this.isLoading = false;
-      this.isInitLoading = false;
     } catch (error) {
-      this.isInitLoading = false;
       this.isLoading = false;
     }
-  }
+  };
 
   @action
   setActiveAccount = (account: AccountModelWebSocketDTO) => {
@@ -138,7 +155,7 @@ export class MainAppStore implements MainAppStoreProps {
       key: KeysInApi.ACTIVE_ACCOUNT_ID,
       value: account.id,
     });
-  }
+  };
 
   @action
   signIn = async (credentials: UserAuthenticate) => {
@@ -147,7 +164,7 @@ export class MainAppStore implements MainAppStoreProps {
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
-      this.handleInitConnection(response.data.token); 
+      this.fetchTradingUrl(response.data.token);
       mixpanel.track(mixpanelEvents.LOGIN);
     }
 
@@ -166,7 +183,7 @@ export class MainAppStore implements MainAppStoreProps {
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
-      this.handleInitConnection(response.data.token);
+      this.fetchTradingUrl(response.data.token);
     }
 
     if (
@@ -175,13 +192,18 @@ export class MainAppStore implements MainAppStoreProps {
       this.isAuthorized = false;
     }
     return response.result;
-  }
+  };
 
   @action
   signOut = () => {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
     this.token = '';
     this.isAuthorized = false;
+  };
+
+  @action
+  setTradingUrl = (tradingUrl: string) => {
+    this.tradingUrl = tradingUrl;
   };
 
   setTokenHandler = (token: string) => {
