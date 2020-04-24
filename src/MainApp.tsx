@@ -31,14 +31,16 @@ const MainApp = () => {
         setTradingUrl('/');
       }
     }
-    if (IS_LIVE) {
-      fetchTradingUrl();
-    } else {
-      setTradingUrl('/');
-      mainAppStore.setTradingUrl('/');
-      mainAppStore.handleInitConnection();
+    if (mainAppStore.isAuthorized) {
+      if (IS_LIVE) {
+        fetchTradingUrl();
+      } else {
+        setTradingUrl('/');
+        mainAppStore.setTradingUrl('/');
+        mainAppStore.handleInitConnection();
+      }
     }
-  }, []);
+  }, [mainAppStore.isAuthorized]);
 
   return (
     <>
@@ -46,11 +48,9 @@ const MainApp = () => {
       <Helmet>
         <link rel="shortcut icon" href={favicon} />
       </Helmet>
-      {!!tradingUrl && (
-        <Router>
-          <RoutingLayout></RoutingLayout>
-        </Router>
-      )}
+      <Router>
+        <RoutingLayout></RoutingLayout>
+      </Router>
       <Global
         styles={css`
           @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic,cyrillic-ext');
