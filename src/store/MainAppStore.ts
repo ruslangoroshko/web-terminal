@@ -39,7 +39,7 @@ interface MainAppStoreProps {
 
 export class MainAppStore implements MainAppStoreProps {
   @observable isLoading = true;
-  @observable isInitLoading = true;
+  @observable isInitLoading = false;
   @observable isAuthorized = false;
   @observable activeSession?: HubConnection;
   @observable activeAccount?: AccountModelWebSocketDTO;
@@ -56,18 +56,18 @@ export class MainAppStore implements MainAppStoreProps {
     init(MIXPANEL_TOKEN);
     this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
-    if (this.token) {
-      this.handleInitConnection(this.token);
-    } else {
-      this.isInitLoading = false;
-    }
+    // if (this.token) {
+    //   this.handleInitConnection(this.token);
+    // } else {
+    //   this.isInitLoading = false;
+    // }
   }
 
-  handleInitConnection = async (token: string) => {
+  handleInitConnection = async (token = this.token) => {
+    this.isInitLoading = true;
     const wsConnectSub = this.tradingUrl.includes('/') ? 'signalr' : `/signalr`;
     const connectionString = IS_LIVE ? this.tradingUrl + wsConnectSub : WS_HOST;
     const connection = initConnection(connectionString);
-
     try {
       await connection.start();
       try {

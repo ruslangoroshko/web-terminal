@@ -24,6 +24,7 @@ const MainApp = () => {
         const response = await API.getTradingUrl();
         setTradingUrl(response.tradingUrl);
         injectInerceptors(response.tradingUrl);
+        mainAppStore.handleInitConnection();
       } catch (error) {
         mainAppStore.setTradingUrl('/');
         setTradingUrl('/');
@@ -34,6 +35,7 @@ const MainApp = () => {
     } else {
       setTradingUrl('/');
       mainAppStore.setTradingUrl('/');
+      mainAppStore.handleInitConnection();
     }
   }, []);
 
