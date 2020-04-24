@@ -10,32 +10,16 @@ import { slickSliderStyles } from './styles/slickSlider';
 import 'react-dates/lib/css/_datepicker.css';
 import reactDatePickerOverrides from './styles/react-date-picker-overrides';
 import LoaderFullscreen from './components/LoaderFullscreen';
-import API from './helpers/API';
 import { useStores } from './hooks/useStores';
 
 const MainApp = () => {
-  const [tradingUrl, setTradingUrl] = useState('');
 
   const { mainAppStore } = useStores();
 
   useEffect(() => {
-    async function fetchTradingUrl() {
-      try {
-        const response = await API.getTradingUrl();
-        mainAppStore.setTradingUrl(response.tradingUrl);
-        setTradingUrl('/');
-        injectInerceptors(response.tradingUrl);
-        mainAppStore.handleInitConnection();
-      } catch (error) {
-        mainAppStore.setTradingUrl('/');
-        setTradingUrl('/');
-      }
-    }
-    
     if (IS_LIVE) {
-      fetchTradingUrl();
+      mainAppStore.fetchTradingUrl();
     } else {
-      setTradingUrl('/');
       mainAppStore.setTradingUrl('/');
       mainAppStore.handleInitConnection();
     }
@@ -43,7 +27,7 @@ const MainApp = () => {
 
   return (
     <>
-      <LoaderFullscreen isLoading={!tradingUrl} />
+      <LoaderFullscreen isLoading={!mainAppStore.tradingUrl} />
       <Helmet>
         <link rel="shortcut icon" href={favicon} />
       </Helmet>

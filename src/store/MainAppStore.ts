@@ -16,6 +16,7 @@ import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import mixpanel, { init } from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
+import injectInerceptors from '../http/interceptors';
 
 interface MainAppStoreProps {
   token: string;
@@ -65,7 +66,10 @@ export class MainAppStore implements MainAppStoreProps {
 
   handleInitConnection = async (token = this.token) => {
     this.isInitLoading = true;
-    const wsConnectSub = this.tradingUrl[this.tradingUrl.length - 1] === '/' ? 'signalr' : `/signalr`;
+    const wsConnectSub =
+      this.tradingUrl[this.tradingUrl.length - 1] === '/'
+        ? 'signalr'
+        : `/signalr`;
     const connectionString = IS_LIVE ? this.tradingUrl + wsConnectSub : WS_HOST;
     const connection = initConnection(connectionString);
     try {
@@ -109,6 +113,17 @@ export class MainAppStore implements MainAppStoreProps {
     });
   };
 
+  fetchTradingUrl = async (token = this.token) => {
+    try {
+      const response = await API.getTradingUrl();
+      this.setTradingUrl(response.tradingUrl);
+      injectInerceptors(response.tradingUrl);
+      this.handleInitConnection(token);
+    } catch (error) {
+      this.setTradingUrl('/');
+    }
+  };
+
   getActiveAccount = async () => {
     try {
       const activeAccountId = await API.getKeyValue(
@@ -150,7 +165,7 @@ export class MainAppStore implements MainAppStoreProps {
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
-      this.handleInitConnection(response.data.token);
+      this.fetchTradingUrl(response.data.token);
       mixpanel.track(mixpanelEvents.LOGIN);
     }
 
@@ -169,7 +184,7 @@ export class MainAppStore implements MainAppStoreProps {
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
-      this.handleInitConnection(response.data.token);
+      this.fetchTradingUrl(response.data.token);
     }
 
     if (
