@@ -11,9 +11,12 @@ import 'react-dates/lib/css/_datepicker.css';
 import reactDatePickerOverrides from './styles/react-date-picker-overrides';
 import LoaderFullscreen from './components/LoaderFullscreen';
 import API from './helpers/API';
+import { useStores } from './hooks/useStores';
 
 const MainApp = () => {
   const [tradingUrl, setTradingUrl] = useState('');
+
+  const { mainAppStore } = useStores();
 
   useEffect(() => {
     async function fetchTradingUrl() {
@@ -22,6 +25,7 @@ const MainApp = () => {
         setTradingUrl(response.tradingUrl);
         injectInerceptors(response.tradingUrl);
       } catch (error) {
+        mainAppStore.setTradingUrl('/');
         setTradingUrl('/');
       }
     }
@@ -29,6 +33,7 @@ const MainApp = () => {
       fetchTradingUrl();
     } else {
       setTradingUrl('/');
+      mainAppStore.setTradingUrl('/');
     }
   }, []);
 
