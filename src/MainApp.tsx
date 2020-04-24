@@ -23,6 +23,7 @@ const MainApp = () => {
       try {
         const response = await API.getTradingUrl();
         mainAppStore.setTradingUrl(response.tradingUrl);
+        setTradingUrl('/');
         injectInerceptors(response.tradingUrl);
         mainAppStore.handleInitConnection();
       } catch (error) {
