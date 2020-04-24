@@ -31,14 +31,13 @@ const MainApp = () => {
         setTradingUrl('/');
       }
     }
-    if (mainAppStore.isAuthorized) {
-      if (IS_LIVE) {
-        fetchTradingUrl();
-      } else {
-        setTradingUrl('/');
-        mainAppStore.setTradingUrl('/');
-        mainAppStore.handleInitConnection();
-      }
+    
+    if (IS_LIVE) {
+      fetchTradingUrl();
+    } else {
+      setTradingUrl('/');
+      mainAppStore.setTradingUrl('/');
+      mainAppStore.handleInitConnection();
     }
   }, [mainAppStore.isAuthorized]);
 
