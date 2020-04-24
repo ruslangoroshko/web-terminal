@@ -42,6 +42,7 @@ const MobileTradingView: FC = () => {
 
   const initWebsocketConnection = async (data: MobileMessageModel) => {
     setStatusSnapshot(data);
+    console.log(JSON.stringify(data));
     const connection = initConnection(`${data.tradingUrl}/signalr`);
     try {
       await connection.start();
