@@ -22,7 +22,7 @@ const MainApp = () => {
     async function fetchTradingUrl() {
       try {
         const response = await API.getTradingUrl();
-        setTradingUrl(response.tradingUrl);
+        mainAppStore.setTradingUrl(response.tradingUrl);
         injectInerceptors(response.tradingUrl);
         mainAppStore.handleInitConnection();
       } catch (error) {
