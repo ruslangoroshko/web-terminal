@@ -48,7 +48,7 @@ export class MainAppStore implements MainAppStoreProps {
   @observable activeAccountId: string = '';
   @observable profileStatus: PersonalDataKYCEnum =
     PersonalDataKYCEnum.NotVerified;
-  tradingUrl = '';
+  @observable tradingUrl = '';
   token = '';
   rootStore: RootStore;
 
@@ -116,7 +116,6 @@ export class MainAppStore implements MainAppStoreProps {
   };
 
   fetchTradingUrl = async (token = this.token) => {
-    this.isInitLoading = true;
     try {
       const response = await API.getTradingUrl();
       this.setTradingUrl(response.tradingUrl);

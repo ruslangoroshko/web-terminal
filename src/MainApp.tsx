@@ -13,7 +13,6 @@ import { useStores } from './hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 
 const MainApp = () => {
-
   const { mainAppStore } = useStores();
 
   useEffect(() => {
@@ -24,7 +23,6 @@ const MainApp = () => {
       mainAppStore.handleInitConnection();
     }
   }, [mainAppStore.isAuthorized]);
-
   return (
     <>
       <Observer>
@@ -33,9 +31,18 @@ const MainApp = () => {
       <Helmet>
         <link rel="shortcut icon" href={favicon} />
       </Helmet>
-      <Router>
-        <RoutingLayout></RoutingLayout>
-      </Router>
+      <Observer>
+        {() => (
+          <>
+            {!!mainAppStore.tradingUrl && (
+              <Router>
+                <RoutingLayout></RoutingLayout>
+              </Router>
+            )}
+          </>
+        )}
+      </Observer>
+
       <Global
         styles={css`
           @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic,cyrillic-ext');
