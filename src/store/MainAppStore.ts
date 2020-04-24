@@ -78,13 +78,16 @@ export class MainAppStore implements MainAppStoreProps {
         this.activeSession = connection;
         this.isAuthorized = true;
         this.isInitLoading = false;
+        this.isLoading = false;
       } catch (error) {
         this.isAuthorized = false;
         this.isInitLoading = false;
+        this.isLoading = false;
       }
     } catch (error) {
       this.isInitLoading = false;
       this.isAuthorized = false;
+      this.isLoading = false;
     }
 
     connection.on(Topics.UNAUTHORIZED, () => {
