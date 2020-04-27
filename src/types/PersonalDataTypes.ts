@@ -12,7 +12,7 @@ export interface PersonalDataParams {
   countryOfCitizenship: string;
   postalCode: string;
   phone: string;
-  sex: SexEnum;
+  sex?: SexEnum;
   address: string;
   uSCitizen: boolean;
 }
