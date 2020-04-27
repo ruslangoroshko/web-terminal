@@ -8,7 +8,7 @@ import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import styled from '@emotion/styled';
 
 interface Props {
-  selected: SexEnum;
+  selected?: SexEnum;
   selectHandler: (sex: SexEnum) => void;
 }
 
@@ -55,9 +55,9 @@ function GenderDropdown(props: Props) {
         <PrimaryTextSpan marginBottom="8px" color="rgba(255, 255, 255, 0.4)">
           Gender
         </PrimaryTextSpan>
-        <FlexContainer justifyContent="space-between" alignItems="center">
+        <FlexContainer justifyContent="space-between" alignItems="center" minHeight="21px">
           <PrimaryTextSpan marginBottom="4px">
-            {SexEnum[selected]}
+            {selected && SexEnum[selected]}
           </PrimaryTextSpan>
           <SvgIcon
             {...IconShevron}
