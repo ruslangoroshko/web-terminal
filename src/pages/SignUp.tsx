@@ -29,6 +29,7 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import NotificationPopup from '../components/NotificationPopup';
 import { observer, Observer } from 'mobx-react-lite';
+import BadRequestPopup from '../components/BadRequestPopup';
 
 function SignUp() {
   const validationSchema = yup.object().shape<UserRegistration>({
@@ -63,7 +64,7 @@ function SignUp() {
   };
 
   const { push } = useHistory();
-  const { mainAppStore, notificationStore } = useStores();
+  const { mainAppStore, notificationStore, badRequestPopupStore } = useStores();
 
   const handleSubmitForm = async (
     { email, password }: UserRegistration,
@@ -80,9 +81,8 @@ function SignUp() {
         push(Page.DASHBOARD);
       }
     } catch (error) {
-      notificationStore.notificationMessage = error;
-      notificationStore.isSuccessfull = false;
-      notificationStore.openNotification();
+      badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
       setStatus(error);
       setSubmitting(false);
     }
@@ -127,6 +127,10 @@ function SignUp() {
 
   return (
     <SignFlowLayout>
+      <Observer>
+        {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
+      </Observer>
+
       <FlexContainer
         position="absolute"
         bottom="100px"
