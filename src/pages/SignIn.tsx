@@ -28,7 +28,11 @@ const SingIn = observer(() => {
       .string()
       .required(validationInputTexts.EMAIL)
       .email(validationInputTexts.EMAIL),
-    password: yup.string().required(validationInputTexts.REQUIRED_FIELD),
+    password: yup
+      .string()
+      .required(validationInputTexts.REQUIRED_FIELD)
+      .min(8, validationInputTexts.PASSWORD_MIN_CHARACTERS)
+      .max(40, validationInputTexts.PASSWORD_MAX_CHARACTERS),
   });
 
   const initialValues: UserAuthenticate = {
