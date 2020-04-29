@@ -8,6 +8,7 @@ import { useStores } from '../../hooks/useStores';
 import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import IconClose from '../../assets/svg/icon-close.svg';
 import VisaMasterImage from '../../assets/images/visa-master.png';
+import BitcoinImage from '../../assets/images/bitcoin.png';
 import MastercardIdCheckImage from '../../assets/images/mastercard-id-check.png';
 import SslCertifiedImage from '../../assets/images/ssl-certified.png';
 import VisaSecureImage from '../../assets/images/visa-secure.png';
@@ -20,6 +21,9 @@ import { Observer } from 'mobx-react-lite';
 
 const DepositPopupWrapper: FC = ({ children }) => {
   const { mainAppStore, depositFundsStore } = useStores();
+  const setActiveDepositType = (depositType: DepositTypeEnum) => () => {
+    depositFundsStore.setActiveDepositType(depositType);
+  };
 
   const renderDepositType = () => {
     switch (depositFundsStore.activeDepositType) {
@@ -29,10 +33,13 @@ const DepositPopupWrapper: FC = ({ children }) => {
       case DepositTypeEnum.BankTransfer:
         return <VisaMasterCardForm />;
 
+      case DepositTypeEnum.Bitcoin:
+        return <VisaMasterCardForm />;
+
       default:
         return null;
     }
-  }
+  };
 
   return (
     <Modal>
@@ -73,7 +80,11 @@ const DepositPopupWrapper: FC = ({ children }) => {
                 />
               </ButtonWithoutStyles>
             </FlexContainer>
-            <FlexContainer marginRight="40px" flexDirection="column" width="220px">
+            <FlexContainer
+              marginRight="40px"
+              flexDirection="column"
+              width="220px"
+            >
               <FlexContainer padding="24px 20px" flexDirection="column">
                 <PrimaryTextSpan
                   fontSize="24px"
@@ -95,30 +106,67 @@ const DepositPopupWrapper: FC = ({ children }) => {
                 </CustomLink>
               </FlexContainer>
               <FlexContainer flexDirection="column">
-                <PaymentMethodItem
-                  isActive={
-                    depositFundsStore.activeDepositType ===
-                    DepositTypeEnum.VisaMaster
-                  }
-                >
-                  <FlexContainer marginRight="8px">
-                    <img src={VisaMasterImage} width={32} />
-                  </FlexContainer>
-                  <FlexContainer flexDirection="column">
-                    <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                      Visa / Mastercard
-                    </PrimaryTextSpan>
-                    <PrimaryTextSpan
-                      fontSize="12px"
-                      color="rgba(255,255,255,0.4)"
-                    >
-                      Instantly
-                    </PrimaryTextSpan>
-                  </FlexContainer>
-                </PaymentMethodItem>
+                <Observer>
+                  {() => (
+                    <>
+                      <PaymentMethodItem
+                        isActive={
+                          depositFundsStore.activeDepositType ===
+                          DepositTypeEnum.VisaMaster
+                        }
+                        onClick={setActiveDepositType(
+                          DepositTypeEnum.VisaMaster
+                        )}
+                      >
+                        <FlexContainer marginRight="8px">
+                          <img src={VisaMasterImage} width={32} />
+                        </FlexContainer>
+                        <FlexContainer flexDirection="column">
+                          <PrimaryTextSpan fontSize="12px" color="#fffccc">
+                            Visa / Mastercard
+                          </PrimaryTextSpan>
+                          <PrimaryTextSpan
+                            fontSize="12px"
+                            color="rgba(255,255,255,0.4)"
+                          >
+                            Instantly
+                          </PrimaryTextSpan>
+                        </FlexContainer>
+                      </PaymentMethodItem>
+                      <PaymentMethodItem
+                        isActive={
+                          depositFundsStore.activeDepositType ===
+                          DepositTypeEnum.Bitcoin
+                        }
+                        onClick={setActiveDepositType(
+                          DepositTypeEnum.Bitcoin
+                        )}
+                      >
+                        <FlexContainer marginRight="8px">
+                          <img src={BitcoinImage} width={26} />
+                        </FlexContainer>
+                        <FlexContainer flexDirection="column">
+                          <PrimaryTextSpan fontSize="12px" color="#fffccc">
+                            Bitcoin
+                          </PrimaryTextSpan>
+                          <PrimaryTextSpan
+                            fontSize="12px"
+                            color="rgba(255,255,255,0.4)"
+                          >
+                            Instantly
+                          </PrimaryTextSpan>
+                        </FlexContainer>
+                      </PaymentMethodItem>
+                    </>
+                  )}
+                </Observer>
               </FlexContainer>
             </FlexContainer>
-            <FlexContainer flexDirection="column" padding="0 40px 20px 0" width="calc(100% - 220px)">
+            <FlexContainer
+              flexDirection="column"
+              padding="0 40px 20px 0"
+              width="calc(100% - 220px)"
+            >
               <Observer>{() => <>{renderDepositType()}</>}</Observer>
               <FlexContainer alignItems="center">
                 <ImageBadge src={SslCertifiedImage} width={120}></ImageBadge>
@@ -173,6 +221,7 @@ const PaymentMethodItem = styled(FlexContainer)<{ isActive: boolean }>`
       ),
       rgba(255, 255, 255, 0.08);
     box-shadow: inset 2px 0px 0px #00ffdd;
+    cursor: pointer;
   }
 `;
 

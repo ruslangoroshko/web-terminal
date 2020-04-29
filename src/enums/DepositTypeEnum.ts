@@ -1,4 +1,5 @@
 export enum DepositTypeEnum {
-    VisaMaster,
-    BankTransfer
+  VisaMaster,
+  BankTransfer,
+  Bitcoin,
 }
