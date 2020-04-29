@@ -123,7 +123,7 @@ function PurchaseAtPopup(props: Props) {
         </ButtonAutoClosePurchase>
       )}
       {on && (
-        <FlexContainer position="absolute" top="20px" right="100%">
+        <SetPriceWrapper position="absolute" bottom="0px" right="100%">
           <Wrapper
             position="relative"
             padding="16px"
@@ -230,7 +230,7 @@ function PurchaseAtPopup(props: Props) {
               Apply
             </ButtonApply>
           </Wrapper>
-        </FlexContainer>
+        </SetPriceWrapper>
       )}
     </FlexContainer>
   );
@@ -355,5 +355,14 @@ const ClearPurchaseAtButton = styled(ButtonWithoutStyles)`
   transition: background-color 0.2s ease;
   &:hover {
     background-color: rgba(255, 255, 255, 0.5);
+  }
+`;
+
+const SetPriceWrapper = styled(FlexContainer)`
+  top: 20px;
+  bottom: auto;
+  @media (max-height: 700px) {
+    top: auto;
+    bottom: 0;
   }
 `;

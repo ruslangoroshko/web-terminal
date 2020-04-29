@@ -148,7 +148,7 @@ const Dashboard = observer(() => {
           )}
         </Observer>
       </FlexContainer>
-      <FlexContainer flexDirection="column" margin="0 0 20px 0">
+      <FlexContainer flexDirection="column">
         <FlexContainer>
           <InstrumentsScrollWrapper></InstrumentsScrollWrapper>
           <FlexContainer position="relative" alignItems="center">
