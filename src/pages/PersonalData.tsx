@@ -24,6 +24,8 @@ import { useStores } from '../hooks/useStores';
 import { KYCstepsEnum } from '../enums/KYCsteps';
 import Page from '../constants/Pages';
 import { useHistory } from 'react-router-dom';
+import { Observer } from 'mobx-react-lite';
+import BadRequestPopup from '../components/BadRequestPopup';
 
 function PersonalData() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -93,7 +95,7 @@ function PersonalData() {
     phone: '',
   });
 
-  const { kycStore } = useStores();
+  const { kycStore, badRequestPopupStore } = useStores();
 
   const handleSubmitForm = async (values: PersonalDataParams) => {
     try {
@@ -121,7 +123,10 @@ function PersonalData() {
       try {
         const response = await API.getCountries(CountriesEnum.EN);
         setCountries(response);
-      } catch (error) {}
+      } catch (error) {
+        badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
+      }
     }
 
     async function fetchCurrentStep() {
@@ -136,7 +141,10 @@ function PersonalData() {
             kycStore.filledStep = KYCstepsEnum.PersonalData;
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
+      }
     }
     kycStore.currentStep = KYCstepsEnum.PersonalData;
 
@@ -180,6 +188,14 @@ function PersonalData() {
       backgroundColor="#252636"
       padding="40px"
     >
+      <Observer>
+        {() => (
+          <>
+            {badRequestPopupStore.isActive && <BadRequestPopup />}
+          </>
+        )}
+      </Observer>
+      
       <FlexContainer width="568px" flexDirection="column">
         <PrimaryTextParagraph
           fontSize="30px"

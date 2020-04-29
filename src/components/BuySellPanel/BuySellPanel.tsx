@@ -31,6 +31,7 @@ import { Observer } from 'mobx-react-lite';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import { MixpanelMarketOrder } from '../../types/MixpanelTypes';
+import BadRequestPopup from '../BadRequestPopup';
 
 // TODO: too much code, refactor
 
@@ -39,7 +40,12 @@ interface Props {
 }
 
 const BuySellPanel: FC<Props> = ({ instrument }) => {
-  const { quotesStore, notificationStore, mainAppStore } = useStores();
+  const {
+    quotesStore,
+    notificationStore,
+    mainAppStore,
+    badRequestPopupStore,
+  } = useStores();
 
   const initialValues: OpenPositionModelFormik = {
     processId: getProcessId(),
@@ -137,9 +143,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         }
         resetForm();
       } catch (error) {
-        notificationStore.notificationMessage = error;
-        notificationStore.isSuccessfull = false;
-        notificationStore.openNotification();
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
       }
     } else {
       try {
@@ -162,9 +167,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         }
         resetForm();
       } catch (error) {
-        notificationStore.notificationMessage = error;
-        notificationStore.isSuccessfull = false;
-        notificationStore.openNotification();
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
       }
     }
   };
@@ -259,6 +263,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   }, []);
   return (
     <FlexContainer padding="16px" flexDirection="column">
+      <Observer>
+        {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
+      </Observer>
       <CustomForm autoComplete="off" onSubmit={handleSubmit}>
         <FlexContainer
           justifyContent="space-between"

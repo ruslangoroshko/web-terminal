@@ -28,6 +28,8 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import { useStores } from '../hooks/useStores';
+import { Observer } from 'mobx-react-lite';
+import BadRequestPopup from '../components/BadRequestPopup';
 
 interface Props {}
 
@@ -47,7 +49,7 @@ function ForgotPassword(props: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccessful, setIsSuccessfull] = useState(false);
-  const { notificationStore } = useStores();
+  const { notificationStore, badRequestPopupStore } = useStores();
 
   const handleSubmitForm = async (
     { email }: UserForgotPassword,
@@ -65,9 +67,8 @@ function ForgotPassword(props: Props) {
       }
       setIsLoading(false);
     } catch (error) {
-      notificationStore.notificationMessage = error;
-      notificationStore.isSuccessfull = false;
-      notificationStore.openNotification();
+      badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
       setSubmitting(true);
       setIsLoading(false);
     }
@@ -107,6 +108,14 @@ function ForgotPassword(props: Props) {
     <SignFlowLayout>
       {isLoading && <LoaderFullscreen isLoading={isLoading} />}
 
+      <Observer>
+        {() => (
+          <>
+            {badRequestPopupStore.isActive && <BadRequestPopup />}
+          </>
+        )}
+      </Observer>
+      
       <FlexContainer width="320px" maxWidth="100%" flexDirection="column">
         {isSuccessful ? (
           <>
