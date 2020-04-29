@@ -20,6 +20,7 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import Pages from '../constants/Pages';
 import validationInputTexts from '../constants/validationInputTexts';
+import BadRequestPopup from '../components/BadRequestPopup';
 
 const SingIn = observer(() => {
   const validationSchema = yup.object().shape<UserAuthenticate>({
@@ -35,7 +36,7 @@ const SingIn = observer(() => {
     password: '',
   };
 
-  const { mainAppStore, notificationStore } = useStores();
+  const { mainAppStore, notificationStore, badRequestPopupStore } = useStores();
 
   const handleSubmitForm = async (credentials: UserAuthenticate) => {
     try {
@@ -46,9 +47,8 @@ const SingIn = observer(() => {
         notificationStore.openNotification();
       }
     } catch (error) {
-      notificationStore.notificationMessage = error;
-      notificationStore.isSuccessfull = false;
-      notificationStore.openNotification();
+      badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
     }
   };
 
@@ -79,13 +79,15 @@ const SingIn = observer(() => {
     }
   };
 
-  
   useEffect(() => {
     mixpanel.track(mixpanelEvents.LOGIN_VIEW);
   }, []);
 
   return (
     <SignFlowLayout>
+      <Observer>
+        {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
+      </Observer>
       <FlexContainer
         position="absolute"
         bottom="100px"

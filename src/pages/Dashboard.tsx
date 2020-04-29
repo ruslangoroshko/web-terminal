@@ -28,6 +28,7 @@ import NotificationPopup from '../components/NotificationPopup';
 import DemoRealPopup from '../components/DemoRealPopup';
 import { PendingOrdersWSDTO } from '../types/PendingOrdersTypes';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
+import BadRequestPopup from '../components/BadRequestPopup';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -134,6 +135,7 @@ const Dashboard = observer(() => {
           </>
         )}
       </Observer>
+
       <FlexContainer
         position="absolute"
         bottom="100px"

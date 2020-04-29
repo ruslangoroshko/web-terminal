@@ -116,7 +116,6 @@ const PhoneVerification: FC<Props> = props => {
         }
       } catch (error) {}
     }
-
     if (countries.length) {
       fetchCurrentStep();
     }
