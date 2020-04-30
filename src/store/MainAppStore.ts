@@ -150,6 +150,7 @@ export class MainAppStore implements MainAppStoreProps {
   setActiveAccount = (account: AccountModelWebSocketDTO) => {
     this.activeAccount = account;
     this.rootStore.quotesStore.available = account.balance;
+    this.rootStore.historyStore.positionsHistoryReport.positionsHistory = [];
 
     API.setKeyValue({
       key: KeysInApi.ACTIVE_ACCOUNT_ID,
