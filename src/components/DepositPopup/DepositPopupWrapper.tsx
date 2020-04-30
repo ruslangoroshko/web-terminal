@@ -18,6 +18,7 @@ import { DepositTypeEnum } from '../../enums/DepositTypeEnum';
 import Modal from '../Modal';
 import VisaMasterCardForm from './VisaMasterCardForm';
 import { Observer } from 'mobx-react-lite';
+import BitcoinForm from './BitcoinForm';
 
 const DepositPopupWrapper: FC = ({ children }) => {
   const { mainAppStore, depositFundsStore } = useStores();
@@ -34,7 +35,7 @@ const DepositPopupWrapper: FC = ({ children }) => {
         return <VisaMasterCardForm />;
 
       case DepositTypeEnum.Bitcoin:
-        return <VisaMasterCardForm />;
+        return <BitcoinForm />;
 
       default:
         return null;
@@ -53,7 +54,12 @@ const DepositPopupWrapper: FC = ({ children }) => {
         justifyContent="center"
         zIndex="1001"
       >
-        <FlexContainer flexDirection="column" width="796px">
+        <FlexContainer
+          flexDirection="column"
+          width="796px"
+          backgroundColor="rgba(0, 0, 0, 0.32)"
+          boxShadow="box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.24), 0px 8px 16px rgba(37, 38, 54, 0.6)"
+        >
           {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified && (
             <FlexContainer
               backgroundColor="rgba(0,0,0,0.2)"
@@ -70,7 +76,7 @@ const DepositPopupWrapper: FC = ({ children }) => {
               <CustomLink to={Page.PERSONAL_DATA}>Upload now</CustomLink>
             </FlexContainer>
           )}
-          <FlexContainer backgroundColor="#191B25" position="relative">
+          <FlexContainer position="relative">
             <FlexContainer position="absolute" right="16px" top="16px">
               <ButtonWithoutStyles onClick={depositFundsStore.togglePopup}>
                 <SvgIcon
@@ -138,9 +144,7 @@ const DepositPopupWrapper: FC = ({ children }) => {
                           depositFundsStore.activeDepositType ===
                           DepositTypeEnum.Bitcoin
                         }
-                        onClick={setActiveDepositType(
-                          DepositTypeEnum.Bitcoin
-                        )}
+                        onClick={setActiveDepositType(DepositTypeEnum.Bitcoin)}
                       >
                         <FlexContainer marginRight="8px">
                           <img src={BitcoinImage} width={26} />

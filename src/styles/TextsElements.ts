@@ -7,6 +7,7 @@ interface PrimaryTextType {
   fontSize?:
     | '12px'
     | '11px'
+    | '13px'
     | '14px'
     | '16px'
     | '10px'
@@ -22,10 +23,11 @@ interface PrimaryTextType {
   textAlign?: 'left' | 'center' | 'right';
   textOverflow?: 'ellipsis';
   overflow?: 'hidden';
+  fontFamily?: 'sf_ui_text' | "'Roboto', sans-serif";
 }
 
 export const PrimaryTextSpan = styled.span<PrimaryTextType>`
-  font-family: 'Roboto', sans-serif;
+  font-family: ${props => props.fontFamily || "'Roboto', sans-serif"};
   font-style: ${props => props.fontStyle};
   font-weight: ${props => props.fontWeight || 'normal'};
   font-size: ${props => props.fontSize || '14px'};
@@ -42,7 +44,7 @@ export const PrimaryTextSpan = styled.span<PrimaryTextType>`
 `;
 
 export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
-  font-family: 'Roboto', sans-serif;
+  font-family: ${props => props.fontFamily || "'Roboto', sans-serif"};
   font-style: ${props => props.fontStyle};
   font-weight: ${props => props.fontWeight};
   font-size: ${props => props.fontSize || '16px'};

@@ -9,6 +9,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { slickSliderStyles } from './styles/slickSlider';
 import 'react-dates/lib/css/_datepicker.css';
 import reactDatePickerOverrides from './styles/react-date-picker-overrides';
+import { SFfonts } from './styles/SFfonts';
 
 const MainApp = () => {
   injectInerceptors();
@@ -37,7 +38,9 @@ const MainApp = () => {
             background-color: #1c2026;
           }
          
-          ${reactDatePickerOverrides}
+          ${reactDatePickerOverrides};
+
+          ${SFfonts};
         `}
       />
     </>

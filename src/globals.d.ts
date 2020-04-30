@@ -13,6 +13,16 @@ declare module '*.svg' {
   export default value;
 }
 
+declare module '*.woff' {
+  const value: any;
+  export default value;
+}
+
+declare module '*.woff2' {
+  const value: any;
+  export default value;
+}
+
 
 declare const WS_HOST: string;
 declare const API_STRING: string;
@@ -23,3 +33,4 @@ declare const IS_LIVE: string;
 declare const MIXPANEL_TOKEN: string;
 
 declare module 'global';
+declare module 'react-qr-code';

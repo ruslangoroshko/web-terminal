@@ -87,7 +87,9 @@ const VisaMasterCardForm = () => {
           onChange={handleChangeCheckbox}
           checked={imCardHolder}
         >
-          <PrimaryTextSpan>I confirm that I am the cardholder.&nbsp;</PrimaryTextSpan>
+          <PrimaryTextSpan>
+            I confirm that I am the cardholder.&nbsp;
+          </PrimaryTextSpan>
           <LearnMoreLink to="">Learn more</LearnMoreLink>
         </Checkbox>
       </FlexContainer>
@@ -127,6 +129,7 @@ const Input = styled.input`
 
 const LearnMoreLink = styled(Link)`
   color: #fffccc;
+  line-height: 120%;
   &:hover {
     color: #fffccc;
   }
