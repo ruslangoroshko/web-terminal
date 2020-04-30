@@ -19,4 +19,10 @@ export enum OperationApiResponseCodes {
   AccountNotFound,
   InstrumentNotFound,
   InstrumentCanNotBeUsed,
+  OperationIsNotPossibleDuringSwap,
+  MaxAmountPendingOrders,
+  TechnicalError,
+  MultiplierNotFound,
+  MaximumAmountOfDemoAccount,
+  TradingDisabled,
 }
