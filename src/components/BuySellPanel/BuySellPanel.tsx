@@ -90,7 +90,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   ) => {
     formikHelpers.setSubmitting(false);
     const { SLTPType, sl, tp, operation, ...otherValues } = values;
-
+    
     let fieldForTakeProfit = Fields.TAKE_PROFIT;
     let fieldForStopLoss = Fields.STOP_LOSS;
 
@@ -191,6 +191,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     validateOnChange: false,
   });
 
+  useEffect(() => {
+    setFieldValue(Fields.INSTRUMNENT_ID, instrument.id)
+  }, [instrument])
+
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
       ? values.investmentAmount + 1
@@ -256,11 +260,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
   return (
     <FlexContainer padding="16px" flexDirection="column">
       <Observer>

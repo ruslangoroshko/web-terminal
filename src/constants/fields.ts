@@ -11,6 +11,7 @@ const Fields = {
   STOP_LOSS_RATE: 'slRate',
   STOP_LOSS_PRICE: 'slPrice',
   AMOUNT: 'investmentAmount',
+  INSTRUMNENT_ID: 'instrumentId',
   MULTIPLIER: 'multiplier',
   PURCHASE_AT: 'purchaseAt',
   OPERATION: 'operation',
