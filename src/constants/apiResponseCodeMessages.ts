@@ -32,6 +32,16 @@ const apiResponseCodeMessages = {
   [OperationApiResponseCodes.InstrumentNotFound]: 'Asset is not found.',
   [OperationApiResponseCodes.InstrumentCanNotBeUsed]:
     'Asset is not available now.',
+  [OperationApiResponseCodes.OperationIsNotPossibleDuringSwap]:
+    'Operation is not possible during the swap.',
+  [OperationApiResponseCodes.MaxAmountPendingOrders]:
+    'You exceed the maximum amount for pending orders.',
+  [OperationApiResponseCodes.TechnicalError]: 'Technical Error.',
+  [OperationApiResponseCodes.MultiplierNotFound]: 'Multiplier not found.',
+  [OperationApiResponseCodes.MaximumAmountOfDemoAccount]:
+    'You exceed the maximum amount of demo account.',
+  [OperationApiResponseCodes.TradingDisabled]:
+    'Trading is not available for this asset now. Please try again later.',
 };
 
 Object.freeze(apiResponseCodeMessages);
