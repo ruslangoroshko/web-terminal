@@ -62,7 +62,7 @@ const BitcoinForm = () => {
         >
           {bitcoinWalletString}
         </PrimaryTextSpan>
-        <SvgIcon {...CopyIcon} fillColor="rgba(255, 255, 255, 0.6))" />
+        <SvgIcon {...CopyIcon} fillColor="rgba(255, 255, 255, 0.6)" />
       </BitcoinWalletStringWrapper>
       <FlexContainer>
         <FlexContainer
