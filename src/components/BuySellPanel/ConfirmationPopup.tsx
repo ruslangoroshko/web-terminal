@@ -16,19 +16,15 @@ import { Observer } from 'mobx-react-lite';
 
 interface Props {
   closePopup: () => void;
-  applyHandler: () => void;
   values: OpenPositionModelFormik;
   instrumentId: string;
   digits: number;
 }
 
 function ConfirmationPopup(props: Props) {
-  const { closePopup, applyHandler, values, instrumentId, digits } = props;
+  const { closePopup, values, instrumentId, digits } = props;
   const { quotesStore, mainAppStore } = useStores();
-  const apply = () => {
-    applyHandler();
-    closePopup();
-  };
+
   return (
     <FlexContainer
       padding="24px"
@@ -102,9 +98,9 @@ function ConfirmationPopup(props: Props) {
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column">
-        <PrimaryButton type="button" onClick={apply} padding="8px 16px">
+        <PrimaryButton type="submit" padding="8px 16px">
           <PrimaryTextSpan fontSize="14px" color="#1c2026" fontWeight="bold">
-            Confirm Buying
+            Confirm {values.operation === AskBidEnum.Buy? 'Buying' : 'Selling'}
           </PrimaryTextSpan>
         </PrimaryButton>
       </FlexContainer>

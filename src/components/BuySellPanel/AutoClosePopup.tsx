@@ -32,6 +32,8 @@ function AutoClosePopup(props: Props) {
   const handleApply = () => {
     setFieldValue(Fields.TAKE_PROFIT, SLTPStore.takeProfitValue);
     setFieldValue(Fields.STOP_LOSS, SLTPStore.stopLossValue);
+    setFieldValue(Fields.TAKE_PROFIT_TYPE, SLTPStore.autoCloseTPType);
+    setFieldValue(Fields.STOP_LOSS_TYPE, SLTPStore.autoCloseSLType);
   };
 
   const handleClickOutside = (e: any) => {
@@ -43,6 +45,8 @@ function AutoClosePopup(props: Props) {
   const clearSLTP = () => {
     setFieldValue(Fields.TAKE_PROFIT, null);
     setFieldValue(Fields.STOP_LOSS, null);
+    setFieldValue(Fields.TAKE_PROFIT_TYPE, undefined);
+    setFieldValue(Fields.STOP_LOSS_TYPE, undefined);
   };
 
   useEffect(() => {

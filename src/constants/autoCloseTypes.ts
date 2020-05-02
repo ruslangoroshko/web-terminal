@@ -1,15 +1,15 @@
-import { AutoCloseTypesEnum } from './../enums/AutoCloseTypesEnum';
+import { TpSlTypeEnum } from '../enums/TpSlTypeEnum';
 
 const autoCloseTypes = {
-    [AutoCloseTypesEnum.Percent]: {
+    [TpSlTypeEnum.Percent]: {
         name: "Percent",
         symbol: '%'
     },
-    [AutoCloseTypesEnum.Price]: {
+    [TpSlTypeEnum.Price]: {
         name: "Price",
         symbol: '='
     },
-    [AutoCloseTypesEnum.Profit]: {
+    [TpSlTypeEnum.Currency]: {
         name: "Profit",
         symbol: '$'
     },

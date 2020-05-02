@@ -22,7 +22,6 @@ import ErropPopup from '../ErropPopup';
 import MultiplierDropdown from './MultiplierDropdown';
 import InvestAmountDropdown from './InvestAmountDropdown';
 import { getProcessId } from '../../helpers/getProcessId';
-import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import ConfirmationPopup from './ConfirmationPopup';
 import { keyframes } from '@emotion/core';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
@@ -54,9 +53,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     operation: null,
     multiplier: instrument.multiplier[0],
     investmentAmount: 50,
-    SLTPType: AutoCloseTypesEnum.Profit,
-    sl: null,
-    tp: null,
     purchaseAt: null,
   };
 
@@ -88,36 +84,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     values: OpenPositionModelFormik,
     formikHelpers: FormikHelpers<OpenPositionModelFormik>
   ) => {
-    formikHelpers.setSubmitting(false);
-    const { SLTPType, sl, tp, operation, ...otherValues } = values;
-    
-    let fieldForTakeProfit = Fields.TAKE_PROFIT;
-    let fieldForStopLoss = Fields.STOP_LOSS;
-
-    switch (SLTPType) {
-      case AutoCloseTypesEnum.Profit:
-        fieldForTakeProfit = Fields.TAKE_PROFIT;
-        fieldForStopLoss = Fields.STOP_LOSS;
-        break;
-
-      case AutoCloseTypesEnum.Percent:
-        fieldForTakeProfit = Fields.TAKE_PROFIT_RATE;
-        fieldForStopLoss = Fields.STOP_LOSS_RATE;
-        break;
-
-      case AutoCloseTypesEnum.Price:
-        fieldForTakeProfit = Fields.TAKE_PROFIT_PRICE;
-        fieldForStopLoss = Fields.STOP_LOSS_PRICE;
-        break;
-
-      default:
-        break;
-    }
+    formikHelpers.setSubmitting(true);
+    const { operation, ...otherValues } = values;
 
     const modelToSubmit = {
       ...otherValues,
-      [fieldForTakeProfit]: tp,
-      [fieldForStopLoss]: sl,
       operation: operation === null ? AskBidEnum.Buy : operation,
     };
 
@@ -177,7 +148,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     values,
     setFieldError,
     setFieldValue,
-    submitForm,
     resetForm,
     handleSubmit,
     getFieldProps,
@@ -192,8 +162,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   });
 
   useEffect(() => {
-    setFieldValue(Fields.INSTRUMNENT_ID, instrument.id)
-  }, [instrument])
+    setFieldValue(Fields.INSTRUMNENT_ID, instrument.id);
+  }, [instrument]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
@@ -207,11 +177,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const openConfirmBuyingPopup = (operationType: AskBidEnum) => () => {
-    setFieldValue(Fields.OPERATION, operationType);
-  };
-
-  const confirmBuying = () => {
-    submitForm();
+    setFieldValue(Fields.OPERATION, operationType, false);
   };
 
   const [investedAmountDropdown, toggleInvestemAmountDropdown] = useState(
@@ -250,7 +216,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const investOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     let filteredValue = e.target.value.replace(',', '.');
-    setFieldValue('investmentAmount', filteredValue);
+    setFieldValue(Fields.AMOUNT, filteredValue);
   };
 
   const investOnFocusHandler = () => {
@@ -450,7 +416,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               <>
                 {quotesStore.quotes[instrument.id] && (
                   <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                    {/* {mainAppStore.activeAccount?.symbol} */}
                     {Math.abs(
                       quotesStore.quotes[instrument.id].bid.c -
                         quotesStore.quotes[instrument.id].ask.c
@@ -466,7 +431,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             <ConfirmPopupWrapper position="absolute" right="100%" top="0px">
               <ConfirmationPopup
                 closePopup={closePopup}
-                applyHandler={confirmBuying}
                 values={values}
                 digits={instrument.digits}
                 instrumentId={instrument.id}

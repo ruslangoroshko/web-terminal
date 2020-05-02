@@ -8,10 +8,9 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SvgIcon from '../SvgIcon';
 
 import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
-import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import { useStores } from '../../hooks/useStores';
-import { ObjectKeys } from '../../helpers/objectKeys';
 import autoCloseTypes from '../../constants/autoCloseTypes';
+import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
@@ -22,7 +21,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
   const { SLTPStore } = useStores();
 
   const handleAutoClose = (
-    autoClose: AutoCloseTypesEnum,
+    autoClose: TpSlTypeEnum,
     toggle: () => void
   ) => () => {
     switch (dropdownType) {
@@ -38,10 +37,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
     toggle();
   };
 
-  const availableAutoCloseTypes = [
-    AutoCloseTypesEnum.Price,
-    AutoCloseTypesEnum.Profit,
-  ];
+  const availableAutoCloseTypes = [TpSlTypeEnum.Currency, TpSlTypeEnum.Price];
 
   return (
     <Toggle>

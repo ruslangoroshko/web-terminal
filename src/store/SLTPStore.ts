@@ -1,19 +1,19 @@
 import { OpenPositionModelFormik } from '../types/Positions';
-import { AutoCloseTypesEnum } from '../enums/AutoCloseTypesEnum';
 import { observable, action } from 'mobx';
+import { TpSlTypeEnum } from '../enums/TpSlTypeEnum';
 
 interface ContextProps {
   initialValues?: OpenPositionModelFormik;
-  autoCloseTPType: AutoCloseTypesEnum;
-  autoCloseSLType: AutoCloseTypesEnum;
+  autoCloseTPType: TpSlTypeEnum;
+  autoCloseSLType: TpSlTypeEnum;
   takeProfitValue: string;
   stopLossValue: string;
   purchaseAtValue: string;
 }
 
 export class SLTPStore implements ContextProps {
-  @observable autoCloseTPType = AutoCloseTypesEnum.Profit;
-  @observable autoCloseSLType = AutoCloseTypesEnum.Profit;
+  @observable autoCloseTPType = TpSlTypeEnum.Currency;
+  @observable autoCloseSLType = TpSlTypeEnum.Currency;
   @observable takeProfitValue: string = '';
   @observable stopLossValue: string = '';
   @observable purchaseAtValue: string = '';
@@ -23,6 +23,6 @@ export class SLTPStore implements ContextProps {
     this.purchaseAtValue = '';
     this.stopLossValue = '';
     this.takeProfitValue = '';
-    this.autoCloseTPType = AutoCloseTypesEnum.Profit;
+    this.autoCloseTPType = TpSlTypeEnum.Currency;
   };
 }

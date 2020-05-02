@@ -5,8 +5,8 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 
 interface Props {
   updateSLTP: () => void;
-  stopLossValue: number | null;
-  takeProfitValue: number | null;
+  stopLossValue?: number;
+  takeProfitValue?: number;
   investedAmount: number;
   isDisabled?: boolean;
   children: React.ReactNode;

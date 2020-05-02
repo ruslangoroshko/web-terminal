@@ -7,7 +7,6 @@ import { AskBidEnum } from '../../enums/AskBid';
 import SvgIcon from '../SvgIcon';
 import IconShevronDown from '../../assets/svg/icon-shevron-logo-down.svg';
 import IconShevronUp from '../../assets/svg/icon-shevron-logo-up.svg';
-import test from '../../assets/images/test2.png';
 import { useStores } from '../../hooks/useStores';
 import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
 import API from '../../helpers/API';
@@ -16,7 +15,6 @@ import { getProcessId } from '../../helpers/getProcessId';
 import moment from 'moment';
 import InformationPopup from '../InformationPopup';
 import Fields from '../../constants/fields';
-import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
@@ -81,49 +79,14 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
   };
 
   const updateSLTP = () => {
-    let fieldForTakeProfit = Fields.TAKE_PROFIT;
-    let fieldForStopLoss = Fields.STOP_LOSS;
-
-    switch (SLTPStore.autoCloseTPType) {
-      case AutoCloseTypesEnum.Profit:
-        fieldForTakeProfit = Fields.TAKE_PROFIT;
-        break;
-
-      case AutoCloseTypesEnum.Percent:
-        fieldForTakeProfit = Fields.TAKE_PROFIT_RATE;
-        break;
-
-      case AutoCloseTypesEnum.Price:
-        fieldForTakeProfit = Fields.TAKE_PROFIT_PRICE;
-        break;
-
-      default:
-        break;
-    }
-
-    switch (SLTPStore.autoCloseSLType) {
-      case AutoCloseTypesEnum.Profit:
-        fieldForStopLoss = Fields.STOP_LOSS;
-        break;
-
-      case AutoCloseTypesEnum.Percent:
-        fieldForStopLoss = Fields.STOP_LOSS_RATE;
-        break;
-
-      case AutoCloseTypesEnum.Price:
-        fieldForStopLoss = Fields.STOP_LOSS_PRICE;
-        break;
-
-      default:
-        break;
-    }
-
     const values: UpdateSLTP = {
       accountId: mainAppStore.activeAccount!.id,
       positionId: id,
       processId: getProcessId(),
-      [fieldForTakeProfit]: SLTPStore.takeProfitValue,
-      [fieldForStopLoss]: SLTPStore.stopLossValue,
+      tp: +SLTPStore.takeProfitValue,
+      sl: +SLTPStore.stopLossValue,
+      tpType: SLTPStore.autoCloseTPType,
+      slType: SLTPStore.autoCloseSLType,
     };
 
     API.updateSLTP(values);
@@ -311,8 +274,8 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
           <FlexContainer ref={clickableWrapper}>
             <AutoClosePopupSideBar
               ref={instrumentRef}
-              stopLossValue={stopLossInCurrency || stopLossRate || null}
-              takeProfitValue={takeProfitInCurrency || takeProfitRate || null}
+              stopLossValue={stopLossInCurrency || stopLossRate}
+              takeProfitValue={takeProfitInCurrency || takeProfitRate}
               investedAmount={investmentAmount}
               updateSLTP={updateSLTP}
             >

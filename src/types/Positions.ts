@@ -1,6 +1,6 @@
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
-import { AutoCloseTypesEnum } from '../enums/AutoCloseTypesEnum';
 import { AskBidEnum } from '../enums/AskBid';
+import { TpSlTypeEnum } from '../enums/TpSlTypeEnum';
 
 export interface OpenPositionModel {
   processId: string;
@@ -31,9 +31,10 @@ export interface OpenPositionModelFormik {
   instrumentId: string;
   operation: AskBidEnum | null;
   multiplier: number;
-  tp: number | null;
-  sl: number | null;
-  SLTPType: AutoCloseTypesEnum;
+  tp?: number;
+  sl?: number;
+  tpType?: TpSlTypeEnum;
+  slType?: TpSlTypeEnum;
   purchaseAt: number | null;
 }
 
@@ -77,6 +78,6 @@ export interface UpdateSLTP {
   positionId: number;
   tp?: number;
   sl?: number;
-  tpRate?: number;
-  slRate?: number;
+  tpType?: TpSlTypeEnum;
+  slType?: TpSlTypeEnum;
 }
