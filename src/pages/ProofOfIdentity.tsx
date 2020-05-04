@@ -13,9 +13,11 @@ import LoaderFullscreen from '../components/LoaderFullscreen';
 import { useStores } from '../hooks/useStores';
 import { KYCstepsEnum } from '../enums/KYCsteps';
 import { useHistory } from 'react-router-dom';
+import { Observer } from 'mobx-react-lite';
+import BadRequestPopup from '../components/BadRequestPopup';
 
 function ProofOfIdentity() {
-  const { kycStore } = useStores();
+  const { kycStore, badRequestPopupStore } = useStores();
 
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
@@ -41,8 +43,11 @@ function ProofOfIdentity() {
       API.postPersonalData(JSON.parse(response)).finally(() => {
         push(Page.DASHBOARD);
       });
-    } catch (error) {}
-  }
+    } catch (error) {
+      badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
+    }
+  };
 
   const submitFiles = async () => {
     setIsLoading(true);
@@ -58,9 +63,13 @@ function ProofOfIdentity() {
         await postPersonalData();
         setIsLoading(false);
       } catch (error) {
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
         setIsLoading(false);
       }
     } catch (error) {
+      badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
       setIsLoading(false);
     }
   };
@@ -82,6 +91,10 @@ function ProofOfIdentity() {
       backgroundColor="#252636"
       padding="40px 32px"
     >
+      <Observer>
+        {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
+      </Observer>
+      
       <LoaderFullscreen isLoading={isLoading} />
       <FlexContainer width="568px" flexDirection="column" padding="20px 0 0 0">
         <PrimaryTextParagraph

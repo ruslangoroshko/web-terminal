@@ -24,6 +24,8 @@ import { useStores } from '../hooks/useStores';
 import { KYCstepsEnum } from '../enums/KYCsteps';
 import Page from '../constants/Pages';
 import { useHistory } from 'react-router-dom';
+import { Observer } from 'mobx-react-lite';
+import BadRequestPopup from '../components/BadRequestPopup';
 
 function PersonalData() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -87,13 +89,13 @@ function PersonalData() {
     lastName: '',
     postalCode: '',
     processId: getProcessId(),
-    sex: SexEnum.Unknown,
+    //sex: SexEnum.Unknown,
     address: '',
     uSCitizen: false,
     phone: '',
   });
 
-  const { kycStore } = useStores();
+  const { kycStore, badRequestPopupStore } = useStores();
 
   const handleSubmitForm = async (values: PersonalDataParams) => {
     try {
@@ -121,7 +123,10 @@ function PersonalData() {
       try {
         const response = await API.getCountries(CountriesEnum.EN);
         setCountries(response);
-      } catch (error) {}
+      } catch (error) {
+        badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
+      }
     }
 
     async function fetchCurrentStep() {
@@ -129,7 +134,6 @@ function PersonalData() {
 
       try {
         const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
-
         if (response) {
           const parsed = JSON.parse(response);
           if (parsed instanceof Object) {
@@ -137,7 +141,10 @@ function PersonalData() {
             kycStore.filledStep = KYCstepsEnum.PersonalData;
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
+      }
     }
     kycStore.currentStep = KYCstepsEnum.PersonalData;
 
@@ -152,13 +159,15 @@ function PersonalData() {
     handleSubmit,
     handleChange,
     errors,
-    touched
+    touched,
+    getFieldProps,
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
     validationSchema,
     validateOnBlur: false,
     validateOnChange: true,
+    enableReinitialize: true,
   });
 
   const handlerClickSubmit = async () => {
@@ -179,6 +188,14 @@ function PersonalData() {
       backgroundColor="#252636"
       padding="40px"
     >
+      <Observer>
+        {() => (
+          <>
+            {badRequestPopupStore.isActive && <BadRequestPopup />}
+          </>
+        )}
+      </Observer>
+      
       <FlexContainer width="568px" flexDirection="column">
         <PrimaryTextParagraph
           fontSize="30px"
@@ -206,11 +223,9 @@ function PersonalData() {
                 width="50%"
               >
                 <LabelInput
-                  name={Fields.FIRST_NAME}
-                  value={values.firstName || ''}
-                  labelText="First name"
+                  {...getFieldProps(Fields.FIRST_NAME)}
                   id={Fields.FIRST_NAME}
-                  onChange={handleChange}
+                  labelText="First name"
                   hasError={!!(touched.firstName && errors.firstName)}
                   errorText={errors.firstName}
                 />
@@ -220,9 +235,7 @@ function PersonalData() {
                 <LabelInput
                   labelText="Last name"
                   id={Fields.LAST_NAME}
-                  onChange={handleChange}
-                  name={Fields.LAST_NAME}
-                  value={values.lastName || ''}
+                  {...getFieldProps(Fields.LAST_NAME)}
                   hasError={!!(touched.lastName && errors.lastName)}
                   errorText={errors.lastName}
                 />
@@ -266,10 +279,8 @@ function PersonalData() {
               >
                 <AutoCompleteDropdown
                   labelText="Country of residence"
+                  {...getFieldProps(Fields.COUNTRY_OF_RESIDENCE)}
                   id={Fields.COUNTRY_OF_RESIDENCE}
-                  name={Fields.COUNTRY_OF_RESIDENCE}
-                  value={values.countryOfResidence}
-                  onChange={handleChange}
                   hasError={
                     !!(touched.countryOfResidence && errors.countryOfResidence)
                   }
@@ -280,10 +291,8 @@ function PersonalData() {
               <FlexContainer width="50%" flexDirection="column">
                 <LabelInput
                   labelText="City"
+                  {...getFieldProps(Fields.CITY)}
                   id={Fields.CITY}
-                  name={Fields.CITY}
-                  onChange={handleChange}
-                  value={values.city || ''}
                   hasError={!!(touched.city && errors.city)}
                   errorText={errors.city}
                 />
@@ -297,10 +306,8 @@ function PersonalData() {
               >
                 <AutoCompleteDropdown
                   labelText="Сitizenship"
+                  {...getFieldProps(Fields.COUNTRY_OF_CITIENZENSHIP)}
                   id={Fields.COUNTRY_OF_CITIENZENSHIP}
-                  name={Fields.COUNTRY_OF_CITIENZENSHIP}
-                  onChange={handleChange}
-                  value={values.countryOfCitizenship || ''}
                   hasError={
                     !!(
                       touched.countryOfCitizenship &&
@@ -314,10 +321,8 @@ function PersonalData() {
               <FlexContainer width="50%" flexDirection="column">
                 <LabelInput
                   labelText="Postal code"
+                  {...getFieldProps(Fields.POSTAL_CODE)}
                   id={Fields.POSTAL_CODE}
-                  name={Fields.POSTAL_CODE}
-                  onChange={handleChange}
-                  value={values.postalCode || ''}
                   hasError={!!(touched.postalCode && errors.postalCode)}
                   errorText={errors.postalCode}
                 />
@@ -327,10 +332,8 @@ function PersonalData() {
               <FlexContainer flexDirection="column" width="100%">
                 <LabelInput
                   labelText="Address of residence"
+                  {...getFieldProps(Fields.ADDRESS)}
                   id={Fields.ADDRESS}
-                  name={Fields.ADDRESS}
-                  value={values.address || ''}
-                  onChange={handleChange}
                   hasError={!!(touched.address && errors.address)}
                   errorText={errors.address}
                 />

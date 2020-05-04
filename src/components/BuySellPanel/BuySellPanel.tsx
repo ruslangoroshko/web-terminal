@@ -22,7 +22,6 @@ import ErropPopup from '../ErropPopup';
 import MultiplierDropdown from './MultiplierDropdown';
 import InvestAmountDropdown from './InvestAmountDropdown';
 import { getProcessId } from '../../helpers/getProcessId';
-import { AutoCloseTypesEnum } from '../../enums/AutoCloseTypesEnum';
 import ConfirmationPopup from './ConfirmationPopup';
 import { keyframes } from '@emotion/core';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
@@ -31,6 +30,7 @@ import { Observer } from 'mobx-react-lite';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import { MixpanelMarketOrder } from '../../types/MixpanelTypes';
+import BadRequestPopup from '../BadRequestPopup';
 
 // TODO: too much code, refactor
 
@@ -39,7 +39,12 @@ interface Props {
 }
 
 const BuySellPanel: FC<Props> = ({ instrument }) => {
-  const { quotesStore, notificationStore, mainAppStore } = useStores();
+  const {
+    quotesStore,
+    notificationStore,
+    mainAppStore,
+    badRequestPopupStore,
+  } = useStores();
 
   const initialValues: OpenPositionModelFormik = {
     processId: getProcessId(),
@@ -48,9 +53,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     operation: null,
     multiplier: instrument.multiplier[0],
     investmentAmount: 50,
-    SLTPType: AutoCloseTypesEnum.Profit,
-    sl: null,
-    tp: null,
     purchaseAt: null,
   };
 
@@ -82,36 +84,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     values: OpenPositionModelFormik,
     formikHelpers: FormikHelpers<OpenPositionModelFormik>
   ) => {
-    formikHelpers.setSubmitting(false);
-    const { SLTPType, sl, tp, operation, ...otherValues } = values;
-
-    let fieldForTakeProfit = Fields.TAKE_PROFIT;
-    let fieldForStopLoss = Fields.STOP_LOSS;
-
-    switch (SLTPType) {
-      case AutoCloseTypesEnum.Profit:
-        fieldForTakeProfit = Fields.TAKE_PROFIT;
-        fieldForStopLoss = Fields.STOP_LOSS;
-        break;
-
-      case AutoCloseTypesEnum.Percent:
-        fieldForTakeProfit = Fields.TAKE_PROFIT_RATE;
-        fieldForStopLoss = Fields.STOP_LOSS_RATE;
-        break;
-
-      case AutoCloseTypesEnum.Price:
-        fieldForTakeProfit = Fields.TAKE_PROFIT_PRICE;
-        fieldForStopLoss = Fields.STOP_LOSS_PRICE;
-        break;
-
-      default:
-        break;
-    }
+    formikHelpers.setSubmitting(true);
+    const { operation, ...otherValues } = values;
 
     const modelToSubmit = {
       ...otherValues,
-      [fieldForTakeProfit]: tp,
-      [fieldForStopLoss]: sl,
       operation: operation === null ? AskBidEnum.Buy : operation,
     };
 
@@ -137,9 +114,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         }
         resetForm();
       } catch (error) {
-        notificationStore.notificationMessage = error;
-        notificationStore.isSuccessfull = false;
-        notificationStore.openNotification();
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
       }
     } else {
       try {
@@ -162,9 +138,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         }
         resetForm();
       } catch (error) {
-        notificationStore.notificationMessage = error;
-        notificationStore.isSuccessfull = false;
-        notificationStore.openNotification();
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
       }
     }
   };
@@ -173,7 +148,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     values,
     setFieldError,
     setFieldValue,
-    submitForm,
     resetForm,
     handleSubmit,
     getFieldProps,
@@ -187,6 +161,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     validateOnChange: false,
   });
 
+  useEffect(() => {
+    setFieldValue(Fields.INSTRUMNENT_ID, instrument.id);
+  }, [instrument]);
+
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
       ? values.investmentAmount + 1
@@ -199,11 +177,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const openConfirmBuyingPopup = (operationType: AskBidEnum) => () => {
-    setFieldValue(Fields.OPERATION, operationType);
-  };
-
-  const confirmBuying = () => {
-    submitForm();
+    setFieldValue(Fields.OPERATION, operationType, false);
   };
 
   const [investedAmountDropdown, toggleInvestemAmountDropdown] = useState(
@@ -242,7 +216,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const investOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     let filteredValue = e.target.value.replace(',', '.');
-    setFieldValue('investmentAmount', filteredValue);
+    setFieldValue(Fields.AMOUNT, filteredValue);
   };
 
   const investOnFocusHandler = () => {
@@ -252,13 +226,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
   return (
     <FlexContainer padding="16px" flexDirection="column">
+      <Observer>
+        {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
+      </Observer>
       <CustomForm autoComplete="off" onSubmit={handleSubmit}>
         <FlexContainer
           justifyContent="space-between"
@@ -439,7 +416,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               <>
                 {quotesStore.quotes[instrument.id] && (
                   <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                    {/* {mainAppStore.activeAccount?.symbol} */}
                     {Math.abs(
                       quotesStore.quotes[instrument.id].bid.c -
                         quotesStore.quotes[instrument.id].ask.c
@@ -455,7 +431,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             <ConfirmPopupWrapper position="absolute" right="100%" top="0px">
               <ConfirmationPopup
                 closePopup={closePopup}
-                applyHandler={confirmBuying}
                 values={values}
                 digits={instrument.digits}
                 instrumentId={instrument.id}

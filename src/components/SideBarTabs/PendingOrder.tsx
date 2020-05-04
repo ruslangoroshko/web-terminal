@@ -104,14 +104,10 @@ function PendingOrder(props: Props) {
             <AutoClosePopupSideBar
               ref={instrumentRef}
               stopLossValue={
-                pendingOrder.stopLossInCurrency ||
-                pendingOrder.stopLossRate ||
-                null
+                pendingOrder.stopLossInCurrency || pendingOrder.stopLossRate
               }
               takeProfitValue={
-                pendingOrder.takeProfitInCurrency ||
-                pendingOrder.takeProfitRate ||
-                null
+                pendingOrder.takeProfitInCurrency || pendingOrder.takeProfitRate
               }
               investedAmount={pendingOrder.investmentAmount}
               updateSLTP={() => {}}

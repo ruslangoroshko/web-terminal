@@ -22,4 +22,10 @@ export class NotificationStore implements ContextProps {
   openNotification = () => {
     this.isActiveNotification = true;
   };
+
+  // TODO: rewrite to actions
+  @action
+  setNotification = (notification: string) => {
+    this.notificationMessage = notification;
+  }
 }

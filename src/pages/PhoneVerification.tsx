@@ -88,18 +88,27 @@ const PhoneVerification: FC<Props> = props => {
         setCountries(response);
       } catch (error) {}
     }
+    fetchCountries();
 
+    kycStore.currentStep = KYCstepsEnum.PhoneVerification;
+  }, []);
+
+  useEffect(() => {
     async function fetchCurrentStep() {
       try {
         const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
-
         if (response) {
           const parsed: PersonalDataParams = JSON.parse(response);
           if (parsed instanceof Object) {
             setValuesPeronalData(parsed);
             const { phone, countryOfCitizenship } = parsed;
+
             setInitialValuesForm({
-              phone,
+              phone:
+                phone ||
+                countries.find(item => item.name === countryOfCitizenship)
+                  ?.dial ||
+                '',
               customCountryCode: countryOfCitizenship,
             });
             kycStore.filledStep = KYCstepsEnum.PhoneVerification;
@@ -107,10 +116,10 @@ const PhoneVerification: FC<Props> = props => {
         }
       } catch (error) {}
     }
-    fetchCurrentStep();
-    fetchCountries();
-    kycStore.currentStep = KYCstepsEnum.PhoneVerification;
-  }, []);
+    if (countries.length) {
+      fetchCurrentStep();
+    }
+  }, [countries]);
 
   const {
     values,
@@ -120,12 +129,14 @@ const PhoneVerification: FC<Props> = props => {
     handleChange,
     errors,
     touched,
+    getFieldProps,
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
     validationSchema,
     validateOnBlur: false,
     validateOnChange: true,
+    enableReinitialize: true,
   });
 
   const handlerClickSubmit = async () => {
@@ -168,10 +179,8 @@ const PhoneVerification: FC<Props> = props => {
               <FlexContainer flexDirection="column" width="100%">
                 <AutoCompleteDropdown
                   labelText="Country"
+                  {...getFieldProps(Fields.CUSTOM_COUNTRY)}
                   id={Fields.CUSTOM_COUNTRY}
-                  onChange={handleChange}
-                  name={Fields.CUSTOM_COUNTRY}
-                  value={values.customCountryCode || ''}
                   hasError={
                     !!(touched.customCountryCode && errors.customCountryCode)
                   }
@@ -182,17 +191,15 @@ const PhoneVerification: FC<Props> = props => {
               </FlexContainer>
             </FlexContainer>
             <FlexContainer width="320px" margin="0 0 28px 0">
-            <FlexContainer width="100%" flexDirection="column">
-                    <LabelInput
-                      labelText="Phone"
-                      name={Fields.PHONE}
-                      id={Fields.PHONE}
-                      onChange={handleChange}
-                      value={values.phone || ''}
-                      hasError={!!(touched.phone && errors.phone)}
-                      errorText={errors.phone}
-                    />
-                  </FlexContainer>
+              <FlexContainer width="100%" flexDirection="column">
+                <LabelInput
+                  labelText="Phone"
+                  {...getFieldProps(Fields.PHONE)}
+                  id={Fields.PHONE}
+                  hasError={!!(touched.phone && errors.phone)}
+                  errorText={errors.phone}
+                />
+              </FlexContainer>
             </FlexContainer>
             <FlexContainer>
               <PrimaryButton

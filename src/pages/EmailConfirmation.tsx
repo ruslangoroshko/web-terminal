@@ -7,6 +7,9 @@ import API from '../helpers/API';
 import styled from '@emotion/styled';
 import Page from '../constants/Pages';
 import LoaderFullscreen from '../components/LoaderFullscreen';
+import { Observer } from 'mobx-react-lite';
+import { useStores } from '../hooks/useStores';
+import BadRequestPopup from '../components/BadRequestPopup';
 
 interface Props {}
 
@@ -14,8 +17,9 @@ function EmailConfirmation(props: Props) {
   const {} = props;
   const { id } = useParams();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const {badRequestPopupStore} = useStores();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [isSuccessful, setIsSuccessfull] = useState(false);
 
   useEffect(() => {
@@ -23,8 +27,10 @@ function EmailConfirmation(props: Props) {
       .then(() => {
         setIsSuccessfull(true);
       })
-      .catch(() => {
+      .catch((error) => {
         setIsSuccessfull(false);
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
       })
       .finally(() => {
         setIsLoading(false);
@@ -33,6 +39,13 @@ function EmailConfirmation(props: Props) {
 
   return (
     <SignFlowLayout>
+      <Observer>
+        {() => (
+          <>
+            {badRequestPopupStore.isActive && <BadRequestPopup />}
+          </>
+        )}
+      </Observer>
       <LoaderFullscreen isLoading={isLoading} />
       <FlexContainer width="100%" flexDirection="column" alignItems="center">
         {isSuccessful ? (

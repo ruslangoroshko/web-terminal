@@ -7,5 +7,4 @@ export interface MobileMessageModel {
     interval: string;
     resolution: string;
     chart_type: SeriesStyle;
-    tradingUrl: string;
 }

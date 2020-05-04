@@ -17,9 +17,11 @@ import { TableGrid, Th, DisplayContents } from '../styles/TableElements';
 import TradingHistoryExpandedItem from '../components/SideBarTabs/TradingHistoryExpandedItem';
 import BalanceHistoryItem from '../components/BalanceHistoryItem';
 import InfinityScrollList from '../components/InfinityScrollList';
+import BadRequestPopup from '../components/BadRequestPopup';
+import { Observer } from 'mobx-react-lite';
 
 function AccountBalance() {
-  const { mainAppStore } = useStores();
+  const { mainAppStore, badRequestPopupStore } = useStores();
 
   const [isLoading, setIsLoading] = useState(true);
   const [balanceHistoryReport, setBalanceHistoryReport] = useState<
@@ -57,6 +59,8 @@ function AccountBalance() {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
+      badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
     }
   };
   useEffect(() => {
@@ -69,6 +73,10 @@ function AccountBalance() {
 
   return (
     <AccountSettingsContainer>
+      <Observer>
+        {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
+      </Observer>
+      
       <FlexContainer flexDirection="column">
         {/* <PrimaryTextParagraph
           color="#fffccc"

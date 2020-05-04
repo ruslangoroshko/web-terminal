@@ -16,12 +16,12 @@ const Page = {
   ACCOUNT_SETTINGS: '/account-settings',
   ACCOUNT_HISTORY_QUOTES: '/account-history-quotes',
 
-  ABOUT_US: '//www.monfex.com/why-us',
+  ABOUT_US: 'https://www.monfex.com/why-us',
   FAQ: '#',
-  SUPPORT: '//www.monfex.com/contact-us',
+  SUPPORT: 'https://www.monfex.com/contact-us',
 
-  TERMS_OF_SERVICE: '//monfex.com/terms-of-service',
-  PRIVACY_POLICY: '//monfex.com/privacy-notice'
+  TERMS_OF_SERVICE: 'https://monfex.com/terms-of-service',
+  PRIVACY_POLICY: 'https://www.monfex.com/privacy-policy',
 };
 
 Object.freeze(Page);

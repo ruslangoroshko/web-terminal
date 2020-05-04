@@ -21,6 +21,7 @@ import DataFeedService from '../services/dataFeedService';
 import ColorsPallete from '../styles/colorPallete';
 import { LineStyles } from '../enums/TradingViewStyles';
 import { MobileMessageModel } from '../types/MobileTVTypes';
+import { useLocation } from 'react-router-dom';
 
 const containerId = 'tv_chart_container';
 
@@ -35,15 +36,19 @@ const MobileTradingView: FC = () => {
     interval: '',
     resolution: '',
     type: '',
-    tradingUrl: '/',
   });
+
+  const { search } = useLocation();
+
+  const querySearchParams = new URLSearchParams(search);
+  const tradingUrl = querySearchParams.get('api');
 
   let { port1, port2 } = new MessageChannel();
 
   const initWebsocketConnection = async (data: MobileMessageModel) => {
     setStatusSnapshot(data);
     console.log(JSON.stringify(data));
-    const connection = initConnection(`${data.tradingUrl}/signalr`);
+    const connection = initConnection(`${tradingUrl}/signalr`);
     try {
       await connection.start();
       setActiveSession(connection);

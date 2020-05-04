@@ -17,8 +17,8 @@ import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
 
 interface Props {
-  takeProfitValue: number | null;
-  stopLossValue: number | null;
+  takeProfitValue?: number;
+  stopLossValue?: number;
   toggle: (arg0: boolean) => void;
   handleApply: () => void;
   investedAmount: number;
