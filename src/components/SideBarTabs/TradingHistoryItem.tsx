@@ -72,7 +72,7 @@ function TradingHistoryItem(props: Props) {
               {moment(closeDate).format('DD MMM')}
             </PrimaryTextSpan>
             <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
-              {moment(closeDate).format('hh:mm')}
+              {moment(closeDate).format('hh:mm:ss')}
             </PrimaryTextSpan>
           </FlexContainer>
           <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
@@ -172,7 +172,7 @@ function TradingHistoryItem(props: Props) {
                     Opened
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {moment(openDate).format('DD MMM, HH:mm')}
+                    {moment(openDate).format('DD MMM, HH:mm:ss')}
                   </PrimaryTextSpan>
                 </FlexContainer>
                 <FlexContainer
@@ -186,7 +186,7 @@ function TradingHistoryItem(props: Props) {
                     Closed
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {moment(closeDate).format('DD MMM, HH:mm')}
+                    {moment(closeDate).format('DD MMM, HH:mm:ss')}
                   </PrimaryTextSpan>
                 </FlexContainer>
                 <FlexContainer
@@ -215,7 +215,7 @@ function TradingHistoryItem(props: Props) {
                     Overnight fee
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    -{currencySymbol}
+                    {getNumberSign(swaps.reduce((acc, prev) => acc + prev.amount, 0))}{currencySymbol}
                     {Math.abs(
                       swaps.reduce((acc, prev) => acc + prev.amount, 0)
                     ).toFixed(2)}

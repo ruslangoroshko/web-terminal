@@ -141,7 +141,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
             fontSize="10px"
             lineHeight="12px"
           >
-            {moment(openDate).format('DD MMM, HH:mm')}
+            {moment(openDate).format('DD MMM, HH:mm:ss')}
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer flexDirection="column" alignItems="flex-end">
@@ -191,7 +191,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                     Opened
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {moment(openDate).format('DD MMM, HH:mm')}
+                    {moment(openDate).format('DD MMM, HH:mm:ss')}
                   </PrimaryTextSpan>
                 </FlexContainer>
                 <FlexContainer
@@ -225,7 +225,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                     Overnight fee
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    -{mainAppStore.activeAccount?.symbol}
+                    {getNumberSign(swap)}{mainAppStore.activeAccount?.symbol}
                     {Math.abs(swap).toFixed(2)}
                   </PrimaryTextSpan>
                 </FlexContainer>
