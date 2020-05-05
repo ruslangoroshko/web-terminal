@@ -35,7 +35,7 @@ function TradingHistoryItem(props: Props) {
       openPrice,
       operation,
       profit,
-      swaps,
+      swap: swaps,
     },
     currencySymbol,
   } = props;
@@ -215,10 +215,9 @@ function TradingHistoryItem(props: Props) {
                     Overnight fee
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {getNumberSign(swaps.reduce((acc, prev) => acc + prev.amount, 0))}{currencySymbol}
-                    {Math.abs(
-                      swaps.reduce((acc, prev) => acc + prev.amount, 0)
-                    ).toFixed(2)}
+                    {getNumberSign(swaps)}
+                    {currencySymbol}
+                    {Math.abs(swaps).toFixed(2)}
                   </PrimaryTextSpan>
                 </FlexContainer>
                 <FlexContainer justifyContent="space-between">
