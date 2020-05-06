@@ -153,6 +153,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     getFieldProps,
     errors,
     touched,
+    isSubmitting,
   } = useFormik({
     initialValues,
     onSubmit,
@@ -434,6 +435,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 values={values}
                 digits={instrument.digits}
                 instrumentId={instrument.id}
+                disabled={isSubmitting}
               ></ConfirmationPopup>
             </ConfirmPopupWrapper>
           )}

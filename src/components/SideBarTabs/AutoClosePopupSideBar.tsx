@@ -24,6 +24,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     } = props;
 
     const [on, toggle] = useState(false);
+    const [isTop, setIsTop] = useState(true);
 
     const [popupPosition, setPopupPosition] = useState({
       top: 0,
@@ -47,6 +48,10 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         // @ts-ignore
       } = ref.current.getBoundingClientRect();
       setPopupPosition({ top, left, width, bottom, height });
+      const rect = wrapperRef.current?.getBoundingClientRect();
+      if (rect && window.innerHeight - rect.top - 240 <= 0) {
+        setIsTop(false);
+      }
     };
 
     const handleClickOutside = (e: any) => {
@@ -72,9 +77,14 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
           <FlexContainer
             position="absolute"
             // FIXME: think about this stupid sheet
-            top={`${popupPosition.top +
-              Math.round(popupPosition.height / 5)}px`}
+            top={
+              isTop
+                ? `${popupPosition.top +
+                    Math.round(popupPosition.height / 5)}px`
+                : 'auto'
+            }
             left={`${Math.round(popupPosition.width * 0.75)}px`}
+            bottom={isTop ? 'auto' : '20px'}
             zIndex="101"
           >
             <SetAutoclose
