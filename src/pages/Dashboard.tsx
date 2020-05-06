@@ -128,14 +128,9 @@ const Dashboard = observer(() => {
     >
       <Observer>
         {() => (
-          <>
-            {!mainAppStore.isInitLoading &&
-              !mainAppStore.isLoading &&
-              !mainAppStore.activeAccount && <DemoRealPopup></DemoRealPopup>}
-          </>
+          <>{mainAppStore.isDemoRealPopup && <DemoRealPopup></DemoRealPopup>}</>
         )}
       </Observer>
-
       <FlexContainer
         position="absolute"
         bottom="100px"
@@ -189,6 +184,7 @@ const Dashboard = observer(() => {
                       instrumentId={
                         instrumentsStore.activeInstrument.instrumentItem.id
                       }
+                      instruments={instrumentsStore.instruments}
                     />
                   </ChartWrapper>
                   <BuySellPanel

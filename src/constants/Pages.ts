@@ -8,7 +8,6 @@ const Page = {
   PERSONAL_DATA: '/personal-data',
   PHONE_VERIFICATION: '/phone-verification',
   PROOF_OF_IDENTITY: '/proof-of-identity',
-  MOBILE_TRADING_VIEW: '/mobile',
   ACCOUNT_PROFILE: '/account-profile',
   ACCOUNT_DEPOSIT: '/account-deposit',
   ACCOUNT_WITHDRAW: '/account-withdraw',

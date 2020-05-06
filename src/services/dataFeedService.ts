@@ -20,6 +20,7 @@ import historyProvider from './historyProvider';
 import StreamingService from './streamingService';
 import { HubConnection } from '@aspnet/signalr';
 import { supportedResolutions } from '../constants/supportedTimeScales';
+import { IActiveInstrument } from '../types/InstrumentsTypes';
 
 class DataFeedService implements IBasicDataFeed {
   static config = {
@@ -32,10 +33,16 @@ class DataFeedService implements IBasicDataFeed {
 
   activeSession: HubConnection;
   stream: StreamingService;
+  instruments: IActiveInstrument[];
 
-  constructor(activeSession: HubConnection, instrumentId: string) {
+  constructor(
+    activeSession: HubConnection,
+    instrumentId: string,
+    instruments: IActiveInstrument[]
+  ) {
     this.activeSession = activeSession;
     this.stream = new StreamingService(this.activeSession, instrumentId);
+    this.instruments = instruments;
   }
 
   onReady = (callback: OnReadyCallback) => {
@@ -54,6 +61,7 @@ class DataFeedService implements IBasicDataFeed {
     onResolve: ResolveCallback,
     onError: ErrorCallback
   ) => {
+    
     const symbol_stub: LibrarySymbolInfo = {
       full_name: symbolName,
       listed_exchange: '',
@@ -65,7 +73,10 @@ class DataFeedService implements IBasicDataFeed {
       ticker: symbolName,
       exchange: symbolName,
       minmov: 1,
-      pricescale: 100000,
+      pricescale:
+        10 **
+        (this.instruments.find(item => item.instrumentItem.id === symbolName)
+          ?.instrumentItem.digits || 2),
       has_intraday: true,
       intraday_multipliers: [supportedResolutions['1 minute']],
       has_weekly_and_monthly: true,
@@ -186,22 +197,3 @@ class DataFeedService implements IBasicDataFeed {
 }
 
 export default DataFeedService;
-
-function periodLengthSeconds(
-  resolution: string,
-  requiredPeriodsCount: number
-): number {
-  let daysCount = 0;
-
-  if (resolution === 'D' || resolution === '1D') {
-    daysCount = requiredPeriodsCount;
-  } else if (resolution === 'M' || resolution === '1M') {
-    daysCount = 31 * requiredPeriodsCount;
-  } else if (resolution === 'W' || resolution === '1W') {
-    daysCount = 7 * requiredPeriodsCount;
-  } else {
-    daysCount = (requiredPeriodsCount * parseInt(resolution)) / (24 * 60);
-  }
-
-  return daysCount * 24 * 60 * 60;
-}
