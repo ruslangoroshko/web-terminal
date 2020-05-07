@@ -11,6 +11,7 @@ import reactDatePickerOverrides from './styles/react-date-picker-overrides';
 import LoaderFullscreen from './components/LoaderFullscreen';
 import { useStores } from './hooks/useStores';
 import { Observer } from 'mobx-react-lite';
+import injectInerceptors from './http/interceptors';
 
 const MainApp = () => {
   const { mainAppStore } = useStores();
@@ -20,6 +21,7 @@ const MainApp = () => {
       mainAppStore.fetchTradingUrl();
     } else {
       mainAppStore.setTradingUrl('/');
+      injectInerceptors('/');
       mainAppStore.handleInitConnection();
     }
   }, [mainAppStore.isAuthorized]);
