@@ -4,7 +4,6 @@ import Page from './Pages';
 import SignUp from '../pages/SignUp';
 import EmailConfirmation from '../pages/EmailConfirmation';
 import PersonalData from '../pages/PersonalData';
-import MobileTradingView from '../pages/MobileTradingView';
 import AccountBalance from '../pages/AccountBalance';
 import PhoneVerification from '../pages/PhoneVerification';
 import ProofOfIdentity from '../pages/ProofOfIdentity';
@@ -87,13 +86,6 @@ const routesList = [
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.KYC,
-  },
-  {
-    component: MobileTradingView,
-    path: Page.MOBILE_TRADING_VIEW,
-    exact: true,
-    strict: true,
-    layoutType: RouteLayoutType.Public,
   },
 ];
 

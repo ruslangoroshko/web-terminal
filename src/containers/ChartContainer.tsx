@@ -13,6 +13,7 @@ import { useStores } from '../hooks/useStores';
 import { supportedResolutions } from '../constants/supportedTimeScales';
 import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 import { observer } from 'mobx-react-lite';
+import { IActiveInstrument } from '../types/InstrumentsTypes';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -26,14 +27,19 @@ const containerId = 'tv_chart_container';
 
 interface IProps {
   instrumentId: string;
+  instruments: IActiveInstrument[];
 }
 
-const ChartContainer: FC<IProps> = observer(({ instrumentId }) => {
+const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
   const { mainAppStore, tradingViewStore } = useStores();
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: instrumentId,
-      datafeed: new DataFeedService(mainAppStore.activeSession!, instrumentId),
+      datafeed: new DataFeedService(
+        mainAppStore.activeSession!,
+        instrumentId,
+        instruments
+      ),
       interval: supportedResolutions[BASIC_RESOLUTION_KEY],
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
@@ -41,7 +47,6 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId }) => {
       custom_css_url: 'custom_trading_view_styles.css',
       disabled_features: [
         'header_widget',
-        // 'legend_widget',
         'timeframes_toolbar',
         'use_localstorage_for_settings',
         'border_around_the_chart',

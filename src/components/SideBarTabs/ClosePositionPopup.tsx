@@ -26,12 +26,20 @@ const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
     width: 0,
   });
 
+  const [isTop, setIsTop] = useState(true);
+
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleToggle = () => {
     toggle(!on);
     // @ts-ignore
     const { top, left, width } = ref.current.getBoundingClientRect();
+
+    const rect = wrapperRef.current?.getBoundingClientRect();
+
+    if (rect && window.innerHeight - rect.top - 150 <= 0) {
+      setIsTop(false);
+    }
     setPopupPosition({ top, left, width });
   };
 
@@ -70,7 +78,8 @@ const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
       {on && (
         <FlexContainer
           position="absolute"
-          top={`${Math.round(popupPosition.top + 26)}px`}
+          top={isTop ? `${Math.round(popupPosition.top + 26)}px` : 'auto'}
+          bottom={isTop ? 'auto' : '20px'}
           left={`${Math.round(popupPosition.width * 0.75)}px`}
           zIndex="101"
         >

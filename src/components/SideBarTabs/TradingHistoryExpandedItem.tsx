@@ -33,7 +33,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
       openPrice,
       operation,
       profit,
-      swaps,
+      swap: swaps,
     },
     currencySymbol,
   } = props;
@@ -208,7 +208,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   Opened
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {moment(openPrice).format('DD MMM, HH:mm')}
+                  {moment(openPrice).format('DD MMM, HH:mm:ss')}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
@@ -231,10 +231,9 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   Overnight fee
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  -{currencySymbol}
-                  {Math.abs(
-                    swaps.reduce((acc, prev) => acc + prev.amount, 0)
-                  ).toFixed(2)}
+                  {getNumberSign(swaps)}
+                  {currencySymbol}
+                  {Math.abs(swaps).toFixed(2)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between">

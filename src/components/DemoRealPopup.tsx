@@ -28,6 +28,7 @@ function DemoRealPopup() {
           [Fields.ACCOUNT_ID]: acc.id,
         });
         mainAppStore.setActiveAccount(acc);
+        mainAppStore.isDemoRealPopup = false;
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);

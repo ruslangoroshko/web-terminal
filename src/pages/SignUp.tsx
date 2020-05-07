@@ -1,12 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  Formik,
-  Field,
-  Form,
-  FieldProps,
-  FormikHelpers,
-  useFormik,
-} from 'formik';
+import { FormikHelpers, useFormik } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { UserRegistration } from '../types/UserInfo';
@@ -19,7 +12,7 @@ import { PrimaryButton } from '../styles/Buttons';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import SignTypeTabs from '../components/SignTypeTabs';
 import Page from '../constants/Pages';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Checkbox from '../components/Checkbox';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
@@ -28,7 +21,7 @@ import validationInputTexts from '../constants/validationInputTexts';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import NotificationPopup from '../components/NotificationPopup';
-import { observer, Observer } from 'mobx-react-lite';
+import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
 
 function SignUp() {
@@ -50,7 +43,6 @@ function SignUp() {
         [yup.ref(Fields.PASSWORD), null],
         validationInputTexts.REPEAT_PASSWORD_MATCH
       ),
-
     userAgreement: yup
       .bool()
       .oneOf([true], validationInputTexts.USER_AGREEMENT),
@@ -110,7 +102,12 @@ function SignUp() {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setFieldValue(Fields.USER_AGREEMENT, e.target.checked);
-    e.target.checked ? setFieldError(Fields.USER_AGREEMENT, '') : setFieldError(Fields.USER_AGREEMENT, validationInputTexts.USER_AGREEMENT);
+    e.target.checked
+      ? setFieldError(Fields.USER_AGREEMENT, '')
+      : setFieldError(
+          Fields.USER_AGREEMENT,
+          validationInputTexts.USER_AGREEMENT
+        );
   };
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
@@ -215,16 +212,19 @@ function SignUp() {
               >
                 <PrimaryTextSpan color="rgba(255,255,255,0.6)" fontSize="12px">
                   I’m 18 years old, and agree to&nbsp;
-                  <CustomCheckboxLink
-                    to={Pages.TERMS_OF_SERVICE}
+                  <CustomCheckboxLinkExternal
+                    href={Pages.TERMS_OF_SERVICE}
                     target="_blank"
                   >
-                    Terms & Conditions
-                  </CustomCheckboxLink>
+                    Terms &amp; Conditions
+                  </CustomCheckboxLinkExternal>
                   &nbsp; and&nbsp;
-                  <CustomCheckboxLink to={Pages.PRIVACY_POLICY} target="_blank">
+                  <CustomCheckboxLinkExternal
+                    href={Pages.PRIVACY_POLICY}
+                    target="_blank"
+                  >
                     Privacy Policy
-                  </CustomCheckboxLink>
+                  </CustomCheckboxLinkExternal>
                 </PrimaryTextSpan>
               </Checkbox>
             </FlexContainer>
@@ -257,14 +257,7 @@ const CustomForm = styled.form`
   margin: 0;
 `;
 
-const ErrorMessage = styled.span`
-  color: red;
-  position: absolute;
-  bottom: -14px;
-  font-size: 10px;
-`;
-
-const CustomCheckboxLink = styled(Link)`
+const CustomCheckboxLinkExternal = styled.a`
   color: rgba(255, 255, 255, 0.6);
   transition: all 0.4s ease;
   text-decoration: underline;

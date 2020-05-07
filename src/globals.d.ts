@@ -21,5 +21,3 @@ declare const AUTH_TOKEN: string;
 declare const CHARTING_LIBRARY_PATH: string;
 declare const IS_LIVE: string;
 declare const MIXPANEL_TOKEN: string;
-
-declare module 'global';

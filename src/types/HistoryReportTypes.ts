@@ -25,14 +25,7 @@ export interface PositionHistoryDTO {
   leverage: number;
   closeReason: number;
   operation: AskBidEnum;
-  swaps: [
-    {
-      dateTime: number;
-      long: number;
-      short: number;
-      amount: number;
-    }
-  ];
+  swap: number;
 }
 
 export interface BalanceHistoryDTO {

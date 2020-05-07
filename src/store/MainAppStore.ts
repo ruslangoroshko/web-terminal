@@ -32,6 +32,7 @@ interface MainAppStoreProps {
   activeAccountId: string;
   tradingUrl: string;
   profileStatus: PersonalDataKYCEnum;
+  isDemoRealPopup: boolean;
 }
 
 // TODO: think about application initialization
@@ -41,6 +42,7 @@ interface MainAppStoreProps {
 export class MainAppStore implements MainAppStoreProps {
   @observable isLoading = true;
   @observable isInitLoading = true;
+  @observable isDemoRealPopup = false;
   @observable isAuthorized = false;
   @observable activeSession?: HubConnection;
   @observable activeAccount?: AccountModelWebSocketDTO;
@@ -57,11 +59,6 @@ export class MainAppStore implements MainAppStoreProps {
     init(MIXPANEL_TOKEN);
     this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
-    // if (this.token) {
-    //   this.handleInitConnection(this.token);
-    // } else {
-    //   this.isInitLoading = false;
-    // }
   }
 
   handleInitConnection = async (token = this.token) => {
@@ -139,6 +136,8 @@ export class MainAppStore implements MainAppStoreProps {
           [Fields.ACCOUNT_ID]: activeAccount.id,
         });
         this.setActiveAccount(activeAccount);
+      } else {
+        this.isDemoRealPopup = true;
       }
       this.isLoading = false;
     } catch (error) {
@@ -155,6 +154,8 @@ export class MainAppStore implements MainAppStoreProps {
     API.setKeyValue({
       key: KeysInApi.ACTIVE_ACCOUNT_ID,
       value: account.id,
+    }).finally(() => {
+      this.isDemoRealPopup = false;
     });
   };
 

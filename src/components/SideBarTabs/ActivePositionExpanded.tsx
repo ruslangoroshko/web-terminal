@@ -255,7 +255,7 @@ function ActivePositionExpanded(props: Props) {
                   Overnight fee
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  -{mainAppStore.activeAccount?.symbol}
+                  {getNumberSign(swap)}{mainAppStore.activeAccount?.symbol}
                   {Math.abs(swap).toFixed(2)}
                 </PrimaryTextSpan>
               </FlexContainer>

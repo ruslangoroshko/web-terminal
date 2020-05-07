@@ -66,7 +66,7 @@ function PendingOrder(props: Props) {
             {pendingOrder.instrument}
           </PrimaryTextSpan>
           <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="10px">
-            {moment(pendingOrder.created).format('DD MMM, HH:mm')}
+            {moment(pendingOrder.created).format('DD MMM, HH:mm:ss')}
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 24px 0 0">

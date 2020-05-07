@@ -164,7 +164,7 @@ function OrderExpandedItem(props: Props) {
                   Created
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {moment(created).format('DD MMM, HH:mm')}
+                  {moment(created).format('DD MMM, HH:mm:ss')}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between">
