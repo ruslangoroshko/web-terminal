@@ -19,10 +19,13 @@ import BalanceHistoryItem from '../components/BalanceHistoryItem';
 import InfinityScrollList from '../components/InfinityScrollList';
 import BadRequestPopup from '../components/BadRequestPopup';
 import { Observer } from 'mobx-react-lite';
+import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
+import IconClose from '../assets/svg/icon-popup-close.svg';
+import { useHistory } from 'react-router-dom';
 
 function AccountBalance() {
   const { mainAppStore, badRequestPopupStore } = useStores();
-
+  const {goBack} = useHistory()
   const [isLoading, setIsLoading] = useState(true);
   const [balanceHistoryReport, setBalanceHistoryReport] = useState<
     BalanceHistoryReport
@@ -73,10 +76,17 @@ function AccountBalance() {
 
   return (
     <AccountSettingsContainer>
+      <IconButton onClick={goBack}>
+        <SvgIcon
+          {...IconClose}
+          fillColor="rgba(255, 255, 255, 0.6)"
+          hoverFillColor="#00FFDD"
+        ></SvgIcon>
+      </IconButton>
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
-      
+
       <FlexContainer flexDirection="column">
         {/* <PrimaryTextParagraph
           color="#fffccc"
@@ -190,3 +200,14 @@ function AccountBalance() {
 }
 
 export default AccountBalance;
+
+const IconButton = styled(ButtonWithoutStyles)`
+  margin-right: 8px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  &:last-of-type {
+    margin-right: 0;
+  }
+`;
