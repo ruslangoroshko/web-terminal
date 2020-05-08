@@ -1,25 +1,27 @@
 import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
 import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 
 const injectInerceptors = (tradingUrl: string) => {
   axios.interceptors.response.use(
-    function (config: AxiosResponse) {
-      // TODO change to contstant
-      if (config.data.result === 16) {
-        // TODO change error object
-        return Promise.reject("Technical Error");
+    function(config: AxiosResponse) {
+      if (config.data.result === OperationApiResponseCodes.TechnicalError) {
+        return Promise.reject(
+          apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
+        );
       }
       return config;
     },
-    function (error: AxiosError) {
+    function(error: AxiosError) {
       if (error.response?.status === 401) {
         appHistory.push(Page.SIGN_IN);
       }
       return Promise.reject(error);
     }
   );
-  axios.interceptors.request.use(function (config: AxiosRequestConfig) {
+  axios.interceptors.request.use(function(config: AxiosRequestConfig) {
     // TODO: sink about eat
     if (IS_LIVE && tradingUrl && config.url && !config.url.includes('auth/')) {
       if (config.url.includes('://')) {
