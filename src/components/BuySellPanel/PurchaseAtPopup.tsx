@@ -359,7 +359,7 @@ const ClearPurchaseAtButton = styled(ButtonWithoutStyles)`
 `;
 
 const SetPriceWrapper = styled(FlexContainer)`
-  top: 20px;
+  top: -54px;
   bottom: auto;
   @media (max-height: 700px) {
     top: auto;
