@@ -1,8 +1,14 @@
+import { LOCAL_STORAGE_TOKEN_KEY } from './../constants/global';
 import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
 import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
+import { useStores } from '../hooks/useStores';
+
+
 
 const injectInerceptors = (tradingUrl: string) => {
+  
+
   axios.interceptors.response.use(
     function (config: AxiosResponse) {
       // TODO change to contstant
@@ -10,8 +16,13 @@ const injectInerceptors = (tradingUrl: string) => {
         // TODO change error object
         return Promise.reject("Technical Error");
       }
+      if (config.data.result === -1) {
+        localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+        location.reload();
+      }
       return config;
     },
+
     function (error: AxiosError) {
       if (error.response?.status === 401) {
         appHistory.push(Page.SIGN_IN);
