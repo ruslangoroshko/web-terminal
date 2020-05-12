@@ -27,6 +27,7 @@ declare module '*.woff2' {
 declare const WS_HOST: string;
 declare const API_STRING: string;
 declare const API_AUTH_STRING: string;
+declare const API_DEPOSIT_STRING: string;
 declare const AUTH_TOKEN: string;
 declare const CHARTING_LIBRARY_PATH: string;
 declare const IS_LIVE: string;

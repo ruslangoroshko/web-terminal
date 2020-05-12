@@ -34,6 +34,13 @@ import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
 import { getProcessId } from './getProcessId';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import {
+  GetCryptoWalletRequest,
+  GetCryptoWalletResponse,
+  DepositCreateRequest,
+  DepositCreateResponse,
+} from '../types/DepositAPITypes';
+import API_DEPOSIT from './apiDeposit';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -267,23 +274,48 @@ class API {
       formData
     );
     return response.data;
-  }
+  };
 
-  getFavoriteInstrumets = async (params: {type: AccountTypeEnum, accountId: string}) => {
+  getFavoriteInstrumets = async (params: {
+    type: AccountTypeEnum;
+    accountId: string;
+  }) => {
     const response = await axios.get<string[]>(
-      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`, {
-        params
+      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`,
+      {
+        params,
       }
     );
     return response.data;
   };
 
-  postFavoriteInstrumets = async (params: { type: AccountTypeEnum, accountId: string, instruments: string[] }) => {
+  postFavoriteInstrumets = async (params: {
+    type: AccountTypeEnum;
+    accountId: string;
+    instruments: string[];
+  }) => {
     const response = await axios.post<string[]>(
-      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`, params
-    )
-    return response.data
-  }
+      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`,
+      params
+    );
+    return response.data;
+  };
+
+  getCryptoWallet = async (params: GetCryptoWalletRequest) => {
+    const response = await axios.post<GetCryptoWalletResponse>(
+      `${API_DEPOSIT_STRING}${API_DEPOSIT.DEPOSIT.GET_CRYPTO_WALLET}`,
+      params
+    );
+    return response.data;
+  };
+
+  createDeposit = async (params: DepositCreateRequest) => {
+    const response = await axios.post<DepositCreateResponse>(
+      `${API_DEPOSIT_STRING}${API_DEPOSIT.DEPOSIT.CREATE}`,
+      params
+    );
+    return response.data;
+  };
 }
 
-export default new API()
+export default new API();

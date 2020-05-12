@@ -9,12 +9,23 @@ import styled from '@emotion/styled';
 import CopyIcon from '../../assets/svg/icon-copy.svg';
 import SvgIcon from '../SvgIcon';
 import QRCode from 'react-qr-code';
+import API from '../../helpers/API';
+import { useStores } from '../../hooks/useStores';
 
 const BitcoinForm = () => {
   const [bitcoinWalletString, setBitcoinWalletString] = useState('');
+  const {} = useStores();
 
   useEffect(() => {
-    async function fetchBitcoinString() {}
+    async function fetchBitcoinString() {
+      try {
+        const response = API.getCryptoWallet({
+          authToken: 
+        });
+      } catch (error) {
+        
+      }
+    }
 
     fetchBitcoinString();
   }, []);
