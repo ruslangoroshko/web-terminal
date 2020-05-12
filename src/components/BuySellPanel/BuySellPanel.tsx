@@ -53,7 +53,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     operation: null,
     multiplier: instrument.multiplier[0],
     investmentAmount: 50,
-    purchaseAt: null,
+    openPrice: null,
   };
 
   const validationSchema = yup.object().shape({
@@ -77,7 +77,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     multiplier: yup.number().required('Required amount'),
     tp: yup.number().nullable(),
     sl: yup.number().nullable(),
-    purchaseAt: yup.number().nullable(),
+    openPrice: yup.number().nullable(),
   });
 
   const onSubmit = async (
@@ -92,7 +92,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       operation: operation === null ? AskBidEnum.Buy : operation,
     };
 
-    if (values.purchaseAt) {
+    if (values.openPrice) {
       try {
         const response = await API.openPendingOrder(modelToSubmit);
 
@@ -485,7 +485,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         </FlexContainer>
         <PurchaseAtPopup
           setFieldValue={setFieldValue}
-          purchaseAtValue={values.purchaseAt}
+          purchaseAtValue={values.openPrice}
           instrumentId={instrument.id}
           digits={instrument.digits}
         ></PurchaseAtPopup>

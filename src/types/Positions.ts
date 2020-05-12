@@ -35,7 +35,7 @@ export interface OpenPositionModelFormik {
   sl?: number;
   tpType?: TpSlTypeEnum;
   slType?: TpSlTypeEnum;
-  purchaseAt: number | null;
+  openPrice: number | null;
 }
 
 export interface OpenPositionResponseDTO {
