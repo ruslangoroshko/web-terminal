@@ -1,3 +1,4 @@
+import { LOCAL_STORAGE_TOKEN_KEY } from './../constants/global';
 import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
 import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
@@ -12,8 +13,13 @@ const injectInerceptors = (tradingUrl: string) => {
           apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
         );
       }
+      if (config.data.result === -1) {
+        localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+        location.reload();
+      }
       return config;
     },
+
     function(error: AxiosError) {
       if (error.response?.status === 401) {
         appHistory.push(Page.SIGN_IN);
