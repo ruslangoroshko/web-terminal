@@ -53,10 +53,10 @@ export interface PositionModelWSDTO {
   operation: number;
   swap: number;
   commission: number;
-  takeProfitInCurrency?: number;
-  stopLossInCurrency?: number;
-  takeProfitRate?: number;
-  stopLossRate?: number;
+  tp?: number;
+  sl?: number;
+  tpType?: TpSlTypeEnum;
+  slType?: TpSlTypeEnum;
   timeStamp: number;
 }
 
