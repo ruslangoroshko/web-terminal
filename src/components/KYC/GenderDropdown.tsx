@@ -26,6 +26,7 @@ function GenderDropdown(props: Props) {
 
   const handleToggle = () => {
     toggle(!on);
+    console.log('toggle check');
   };
 
   const handleChooseSex = (sex: SexEnum) => () => {
@@ -52,12 +53,18 @@ function GenderDropdown(props: Props) {
         flexDirection="column"
         onClick={handleToggle}
       >
-        <PrimaryTextSpan marginBottom="8px" color="rgba(255, 255, 255, 0.4)">
-          Gender
-        </PrimaryTextSpan>
-        <FlexContainer justifyContent="space-between" alignItems="center" minHeight="21px">
+        <Label
+          isSelect={!isNaN(Number(selected))}
+
+        >Gender</Label>
+        <FlexContainer
+          justifyContent="space-between"
+          alignItems="center"
+          minHeight="21px"
+        >
           <PrimaryTextSpan marginBottom="4px">
-            {selected && SexEnum[selected]}
+            {/* TODO change this kostyl */}
+            {!isNaN(Number(selected)) && SexEnum[Number(selected)]}
           </PrimaryTextSpan>
           <SvgIcon
             {...IconShevron}
@@ -102,8 +109,18 @@ function GenderDropdown(props: Props) {
 export default GenderDropdown;
 
 const GenderContainer = styled(FlexContainer)<{ isActive: boolean }>`
+  padding-top: 23px;
   border-bottom: 1px solid
-    ${props => (props.isActive ? 'rgba(255, 255, 255, 0.2)' : '#21B3A4')};
+    ${props => (props.isActive ? '#21B3A4' : 'rgba(255, 255, 255, 0.2)')};
+  transition: border 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    & > span {
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
 `;
 
 const GenderItem = styled(ButtonWithoutStyles)`
@@ -120,4 +137,16 @@ const GenderItem = styled(ButtonWithoutStyles)`
       color: #21b3a4;
     }
   }
+`;
+
+const Label = styled(PrimaryTextSpan)<{ isSelect: boolean }>`
+  position: absolute;
+  bottom: 0px;
+  transform: ${({isSelect}) => isSelect ? 'translateY(-30px)' : 'translateY(-4px)' };
+  transition: transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
+  font-size: ${({isSelect}) => isSelect ? '11px' : '14px' };
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: ${({isSelect}) => isSelect ? 'uppercase' : 'none' };
+
+  
 `;
