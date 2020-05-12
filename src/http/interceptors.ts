@@ -13,7 +13,10 @@ const injectInerceptors = (tradingUrl: string) => {
           apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
         );
       }
-      if (config.data.result === -1) {
+      if (
+        config.data.result ===
+        OperationApiResponseCodes.InvalidUserNameOrPassword
+      ) {
         localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
         location.reload();
       }
