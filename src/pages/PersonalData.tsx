@@ -173,6 +173,7 @@ function PersonalData() {
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
     const curErrorsKeys = Object.keys(curErrors);
+    console.log(curErrorsKeys)
     if (curErrorsKeys.length) {
       const el = document.getElementById(curErrorsKeys[0]);
       if (el) el.focus();
@@ -266,6 +267,8 @@ function PersonalData() {
               </FlexContainer>
               <FlexContainer width="50%" flexDirection="column">
                 <GenderDropdown
+                  hasError={!!errors.sex}
+                  errorText={errors.sex}
                   selectHandler={handleChangeGender(setFieldValue)}
                   selected={values.sex}
                 ></GenderDropdown>

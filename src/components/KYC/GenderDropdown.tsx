@@ -8,6 +8,8 @@ import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import styled from '@emotion/styled';
 
 interface Props {
+  hasError?: boolean;
+  errorText?: string;
   selected?: SexEnum;
   selectHandler: (sex: SexEnum) => void;
 }
@@ -26,7 +28,6 @@ function GenderDropdown(props: Props) {
 
   const handleToggle = () => {
     toggle(!on);
-    console.log('toggle check');
   };
 
   const handleChooseSex = (sex: SexEnum) => () => {
@@ -52,6 +53,7 @@ function GenderDropdown(props: Props) {
         isActive={on}
         flexDirection="column"
         onClick={handleToggle}
+        hasError={props.hasError || false}
       >
         <Label
           isSelect={!isNaN(Number(selected))}
@@ -108,10 +110,11 @@ function GenderDropdown(props: Props) {
 
 export default GenderDropdown;
 
-const GenderContainer = styled(FlexContainer)<{ isActive: boolean }>`
+const GenderContainer = styled(FlexContainer)<{ isActive: boolean, hasError: boolean }>`
   padding-top: 23px;
   border-bottom: 1px solid
     ${props => (props.isActive ? '#21B3A4' : 'rgba(255, 255, 255, 0.2)')};
+  border-bottom: ${props => props.hasError && '1px solid #ED145B !important'};
   transition: border 0.2s ease;
   cursor: pointer;
 
