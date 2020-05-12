@@ -173,7 +173,6 @@ function PersonalData() {
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
     const curErrorsKeys = Object.keys(curErrors);
-    console.log(curErrorsKeys)
     if (curErrorsKeys.length) {
       const el = document.getElementById(curErrorsKeys[0]);
       if (el) el.focus();
