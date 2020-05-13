@@ -63,7 +63,7 @@ function DemoRealPopup() {
             padding="65px 52px 40px"
             alignItems="center"
           >
-            <FlexContainer margin="0 0 42px 0">
+            <FlexContainer margin="0 0 42px 0" flexDirection="column">
               <img width={174} src={RealDemoImage}></img>
             </FlexContainer>
             <PrimaryTextParagraph
