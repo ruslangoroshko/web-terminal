@@ -243,6 +243,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           flexWrap="wrap"
           margin="0 0 4px 0"
           alignItems="center"
+
         >
           <PrimaryTextSpan
             fontSize="11px"
@@ -258,7 +259,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             width="212px"
             direction="left"
           >
-            <PrimaryTextSpan color="#fffccc" fontSize="12px">
+            <PrimaryTextSpan color="#fffccc" fontSize="12px">``
               The amount you’d like to invest
             </PrimaryTextSpan>
           </InformationPopup>
@@ -496,7 +497,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 export default BuySellPanel;
 
 const InvestInput = styled.input`
-  height: 100%;
   width: 100%;
   outline: none;
   border: none;
