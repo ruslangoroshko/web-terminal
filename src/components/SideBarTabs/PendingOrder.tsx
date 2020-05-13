@@ -103,12 +103,8 @@ function PendingOrder(props: Props) {
           <FlexContainer margin="0 4px 0 0">
             <AutoClosePopupSideBar
               ref={instrumentRef}
-              stopLossValue={
-                pendingOrder.stopLossInCurrency || pendingOrder.stopLossRate
-              }
-              takeProfitValue={
-                pendingOrder.takeProfitInCurrency || pendingOrder.takeProfitRate
-              }
+              stopLossValue={pendingOrder.sl}
+              takeProfitValue={pendingOrder.tp}
               investedAmount={pendingOrder.investmentAmount}
               updateSLTP={() => {}}
               isDisabled

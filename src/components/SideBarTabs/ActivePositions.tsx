@@ -37,10 +37,11 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
       commission,
       swap,
       id,
-      stopLossInCurrency,
-      stopLossRate,
-      takeProfitInCurrency,
-      takeProfitRate,
+      tp,
+      timeStamp,
+      sl,
+      slType,
+      tpType,
     },
   } = props;
 
@@ -225,7 +226,8 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                     Overnight fee
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {getNumberSign(swap)}{mainAppStore.activeAccount?.symbol}
+                    {getNumberSign(swap)}
+                    {mainAppStore.activeAccount?.symbol}
                     {Math.abs(swap).toFixed(2)}
                   </PrimaryTextSpan>
                 </FlexContainer>
@@ -274,8 +276,8 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
           <FlexContainer ref={clickableWrapper}>
             <AutoClosePopupSideBar
               ref={instrumentRef}
-              stopLossValue={stopLossInCurrency || stopLossRate}
-              takeProfitValue={takeProfitInCurrency || takeProfitRate}
+              stopLossValue={sl}
+              takeProfitValue={tp}
               investedAmount={investmentAmount}
               updateSLTP={updateSLTP}
             >
@@ -283,11 +285,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                 <PrimaryTextSpan
                   fontSize="12px"
                   lineHeight="14px"
-                  color={
-                    takeProfitInCurrency || takeProfitRate
-                      ? '#fffccc'
-                      : 'rgba(255, 255, 255, 0.6)'
-                  }
+                  color={tp ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
                 >
                   TP
                 </PrimaryTextSpan>
@@ -295,11 +293,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                 <PrimaryTextSpan
                   fontSize="12px"
                   lineHeight="14px"
-                  color={
-                    stopLossInCurrency || stopLossRate
-                      ? '#fffccc'
-                      : 'rgba(255, 255, 255, 0.6)'
-                  }
+                  color={sl ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
                 >
                   SL
                 </PrimaryTextSpan>
