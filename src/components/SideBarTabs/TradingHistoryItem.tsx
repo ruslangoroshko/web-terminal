@@ -202,7 +202,7 @@ function TradingHistoryItem(props: Props) {
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {currencySymbol}
-                    {equity}
+                    {equity.toFixed(2)}
                   </PrimaryTextSpan>
                 </FlexContainer>
                 <FlexContainer
