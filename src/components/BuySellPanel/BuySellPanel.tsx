@@ -196,7 +196,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       !investAmountRef.current.contains(e.target)
     ) {
       toggleInvestemAmountDropdown(false);
-      closePopup();
     }
   };
 
