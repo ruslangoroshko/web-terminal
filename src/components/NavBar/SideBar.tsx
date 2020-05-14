@@ -7,10 +7,11 @@ import SideBarButton from './SideBarButton';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
 import { SideBarTabType } from '../../enums/SideBarTabType';
-import { observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
+import Badge from '../../styles/Badge';
 
 const SideBar = observer(() => {
-  const { tabsStore, dateRangeStore } = useStores();
+  const { tabsStore, dateRangeStore, quotesStore, historyStore } = useStores();
   const setSideBarActive = (tabType: SideBarTabType) => () => {
     tabsStore.isTabExpanded = false;
 
@@ -25,6 +26,12 @@ const SideBar = observer(() => {
       dateRangeStore.resetDatepicker();
     }
   };
+
+  const pendingOrdersCount = quotesStore.pendingOrders.length;
+  const activeOrdersCount = quotesStore.activePositions.length;
+  const historyCount =
+    historyStore.positionsHistoryReport.positionsHistory.length;
+
   return (
     <BottonNavBarWrapper
       flexDirection="column"
@@ -45,13 +52,33 @@ const SideBar = observer(() => {
         title="Portfolio"
         isActive={tabsStore.sideBarTabType === SideBarTabType.Portfolio}
         setSideBarActive={setSideBarActive(SideBarTabType.Portfolio)}
-      />
+      >
+        <Observer>
+          {() => (
+            <>
+              {(activeOrdersCount > 0 || pendingOrdersCount > 0) && (
+                <CustomBadge>
+                  {pendingOrdersCount > 0
+                    ? `${activeOrdersCount}/${pendingOrdersCount}`
+                    : activeOrdersCount}
+                </CustomBadge>
+              )}
+            </>
+          )}
+        </Observer>
+      </SideBarButton>
       <SideBarButton
         iconProps={IconHistory}
         title="History"
         isActive={tabsStore.sideBarTabType === SideBarTabType.History}
         setSideBarActive={setSideBarActive(SideBarTabType.History)}
-      />
+      >
+        <Observer>
+          {() => (
+            <>{historyCount > 0 && <CustomBadge>{historyCount}</CustomBadge>}</>
+          )}
+        </Observer>
+      </SideBarButton>
     </BottonNavBarWrapper>
   );
 });
@@ -60,4 +87,12 @@ export default SideBar;
 
 const BottonNavBarWrapper = styled(FlexContainer)`
   min-width: 60px;
+`;
+
+const CustomBadge = styled(Badge)`
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
 `;
