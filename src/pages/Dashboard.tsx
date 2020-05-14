@@ -146,7 +146,7 @@ const Dashboard = observer(() => {
         </Observer>
       </FlexContainer>
       <FlexContainer flexDirection="column">
-        <FlexContainer marginBottom="20px">
+        <FlexContainer marginBottom="20px" height="40px">
           <InstrumentsScrollWrapper></InstrumentsScrollWrapper>
           <FlexContainer position="relative" alignItems="center">
             <Toggle>
@@ -173,38 +173,36 @@ const Dashboard = observer(() => {
           )}
         </Observer>
       </FlexContainer>
-      <FlexContainer>
-        <GridWrapper>
-          <Observer>
-            {() => (
-              <>
-                {instrumentsStore.activeInstrument && (
-                  <>
-                    <ChartWrapper padding="20px 0 0 0">
-                      <TVChartContainer
-                        instrumentId={
-                          instrumentsStore.activeInstrument.instrumentItem.id
-                        }
-                        instruments={instrumentsStore.instruments}
-                      />
-                    </ChartWrapper>
-                    <BuySellPanel
-                      instrument={
-                        instrumentsStore.activeInstrument.instrumentItem
+      <GridWrapper>
+        <Observer>
+          {() => (
+            <>
+              {instrumentsStore.activeInstrument && (
+                <>
+                  <ChartWrapper padding="20px 0 0 0">
+                    <TVChartContainer
+                      instrumentId={
+                        instrumentsStore.activeInstrument.instrumentItem.id
                       }
-                    ></BuySellPanel>
-                    <ChartInstruments justifyContent="space-between">
-                      <ChartSettingsButtons></ChartSettingsButtons>
-                      <ChartIntervalTimeScale></ChartIntervalTimeScale>
-                      <ChartTimeFomat></ChartTimeFomat>
-                    </ChartInstruments>
-                  </>
-                )}
-              </>
-            )}
-          </Observer>
-        </GridWrapper>
-      </FlexContainer>
+                      instruments={instrumentsStore.instruments}
+                    />
+                  </ChartWrapper>
+                  <BuySellPanel
+                    instrument={
+                      instrumentsStore.activeInstrument.instrumentItem
+                    }
+                  ></BuySellPanel>
+                  <ChartInstruments justifyContent="space-between">
+                    <ChartSettingsButtons></ChartSettingsButtons>
+                    <ChartIntervalTimeScale></ChartIntervalTimeScale>
+                    <ChartTimeFomat></ChartTimeFomat>
+                  </ChartInstruments>
+                </>
+              )}
+            </>
+          )}
+        </Observer>
+      </GridWrapper>
     </FlexContainer>
   );
 });
@@ -227,7 +225,7 @@ const GridWrapper = styled.div`
   grid-template-columns: 1fr 172px;
   grid-template-rows: 1fr 32px;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 180px);
   grid-row-gap: 0;
   grid-column-gap: 1px;
 `;
