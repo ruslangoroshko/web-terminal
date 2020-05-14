@@ -58,7 +58,9 @@ function ConfirmationPopup(props: Props) {
         <Observer>
           {() => (
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              {quotesStore.quotes[instrumentId].ask.c.toFixed(digits)}
+              {quotesStore.quotes[instrumentId][
+                values.operation === AskBidEnum.Buy ? 'ask' : 'bid'
+              ].c.toFixed(digits)}
             </PrimaryTextSpan>
           )}
         </Observer>
