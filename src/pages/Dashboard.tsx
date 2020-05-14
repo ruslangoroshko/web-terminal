@@ -120,9 +120,9 @@ const Dashboard = observer(() => {
   }, [mainAppStore.activeAccount]);
 
   return (
-    <DashboardWrapper
-      height="100%"
+    <FlexContainer
       width="100%"
+      height="100%"
       flexDirection="column"
       position="relative"
     >
@@ -146,7 +146,7 @@ const Dashboard = observer(() => {
         </Observer>
       </FlexContainer>
       <FlexContainer flexDirection="column">
-        <FlexContainer>
+        <FlexContainer marginBottom="20px">
           <InstrumentsScrollWrapper></InstrumentsScrollWrapper>
           <FlexContainer position="relative" alignItems="center">
             <Toggle>
@@ -163,7 +163,7 @@ const Dashboard = observer(() => {
         </FlexContainer>
         <Observer>
           {() => (
-            <FlexContainer position="relative" padding="24px 20px">
+            <FlexContainer position="relative">
               {instrumentsStore.activeInstrument && (
                 <ActiveInstrument
                   instrument={instrumentsStore.activeInstrument.instrumentItem}
@@ -173,37 +173,39 @@ const Dashboard = observer(() => {
           )}
         </Observer>
       </FlexContainer>
-      <GridWrapper>
-        <Observer>
-          {() => (
-            <>
-              {instrumentsStore.activeInstrument && (
-                <>
-                  <ChartWrapper>
-                    <TVChartContainer
-                      instrumentId={
-                        instrumentsStore.activeInstrument.instrumentItem.id
+      <FlexContainer>
+        <GridWrapper>
+          <Observer>
+            {() => (
+              <>
+                {instrumentsStore.activeInstrument && (
+                  <>
+                    <ChartWrapper padding="20px 0 0 0">
+                      <TVChartContainer
+                        instrumentId={
+                          instrumentsStore.activeInstrument.instrumentItem.id
+                        }
+                        instruments={instrumentsStore.instruments}
+                      />
+                    </ChartWrapper>
+                    <BuySellPanel
+                      instrument={
+                        instrumentsStore.activeInstrument.instrumentItem
                       }
-                      instruments={instrumentsStore.instruments}
-                    />
-                  </ChartWrapper>
-                  <BuySellPanel
-                    instrument={
-                      instrumentsStore.activeInstrument.instrumentItem
-                    }
-                  ></BuySellPanel>
-                  <ChartInstruments justifyContent="space-between">
-                    <ChartSettingsButtons></ChartSettingsButtons>
-                    <ChartIntervalTimeScale></ChartIntervalTimeScale>
-                    <ChartTimeFomat></ChartTimeFomat>
-                  </ChartInstruments>
-                </>
-              )}
-            </>
-          )}
-        </Observer>
-      </GridWrapper>
-    </DashboardWrapper>
+                    ></BuySellPanel>
+                    <ChartInstruments justifyContent="space-between">
+                      <ChartSettingsButtons></ChartSettingsButtons>
+                      <ChartIntervalTimeScale></ChartIntervalTimeScale>
+                      <ChartTimeFomat></ChartTimeFomat>
+                    </ChartInstruments>
+                  </>
+                )}
+              </>
+            )}
+          </Observer>
+        </GridWrapper>
+      </FlexContainer>
+    </FlexContainer>
   );
 });
 

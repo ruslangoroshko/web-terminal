@@ -22,7 +22,7 @@ const ActiveInstrument: FC<Props> = props => {
   const { quotesStore, instrumentsStore } = useStores();
 
   return quotesStore.quotes[instrument.id] ? (
-    <FlexContainer>
+    <FlexContainer padding="0 20px">
       <FlexContainer position="relative" margin="0 12px 0 0" width="60px">
         <ImageContainer instrumentId={instrument.id} />
       </FlexContainer>
