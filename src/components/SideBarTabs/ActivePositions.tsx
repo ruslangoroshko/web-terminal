@@ -148,7 +148,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <PrimaryTextSpan marginBottom="4px" fontSize="12px" lineHeight="14px">
             {mainAppStore.activeAccount?.symbol}
-            {investmentAmount}
+            {investmentAmount.toFixed(2)}
           </PrimaryTextSpan>
           <PrimaryTextSpan
             color="rgba(255, 255, 255, 0.5)"
