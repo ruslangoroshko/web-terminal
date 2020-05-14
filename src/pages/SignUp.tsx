@@ -65,12 +65,14 @@ function SignUp() {
     { setStatus, setSubmitting }: FormikHelpers<UserRegistration>
   ) => {
     setSubmitting(true);
+    mainAppStore.isInitLoading = true;
     try {
       const result = await mainAppStore.signUp({ email, password });
       if (result !== OperationApiResponseCodes.Ok) {
         notificationStore.notificationMessage = apiResponseCodeMessages[result];
         notificationStore.isSuccessfull = false;
         notificationStore.openNotification();
+        mainAppStore.isInitLoading = false;
       } else {
         push(Page.DASHBOARD);
       }
@@ -79,6 +81,7 @@ function SignUp() {
       badRequestPopupStore.setMessage(error);
       setStatus(error);
       setSubmitting(false);
+      mainAppStore.isInitLoading = false;
     }
   };
 
