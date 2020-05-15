@@ -119,7 +119,7 @@ const PortfolioExpanded: FC<Props> = props => {
                       color="#fffccc"
                     >
                       {mainAppStore.activeAccount?.symbol}
-                      {quotesStore.invest}
+                      {quotesStore.invest.toFixed(2)}
                     </PrimaryTextSpan>
                   )}
                 </Observer>

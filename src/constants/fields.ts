@@ -11,7 +11,7 @@ const Fields = {
   AMOUNT: 'investmentAmount',
   INSTRUMNENT_ID: 'instrumentId',
   MULTIPLIER: 'multiplier',
-  PURCHASE_AT: 'purchaseAt',
+  PURCHASE_AT: 'openPrice',
   OPERATION: 'operation',
   COUNTRY_OF_CITIENZENSHIP: 'countryOfCitizenship',
   COUNTRY_OF_RESIDENCE: 'countryOfResidence',

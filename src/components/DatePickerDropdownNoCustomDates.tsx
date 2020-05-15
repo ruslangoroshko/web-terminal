@@ -218,6 +218,7 @@ const DatePickerWrapper = styled(FlexContainer)`
     0px 8px 16px rgba(37, 38, 54, 0.6);
   border-radius: 4px;
   padding: 0 16px;
+  z-index: 1;
 `;
 
 const DefinedDaterangeWrapper = styled(FlexContainer)`

@@ -97,7 +97,8 @@ function TradingHistoryItem(props: Props) {
         </FlexContainer>
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
-            {investmentAmount}
+            {currencySymbol}
+            {investmentAmount.toFixed(2)}
           </PrimaryTextSpan>
           <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="10px">
             &times;{leverage}
@@ -201,7 +202,7 @@ function TradingHistoryItem(props: Props) {
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {currencySymbol}
-                    {equity}
+                    {equity.toFixed(2)}
                   </PrimaryTextSpan>
                 </FlexContainer>
                 <FlexContainer

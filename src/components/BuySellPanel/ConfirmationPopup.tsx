@@ -58,7 +58,9 @@ function ConfirmationPopup(props: Props) {
         <Observer>
           {() => (
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              {quotesStore.quotes[instrumentId].ask.c.toFixed(digits)}
+              {quotesStore.quotes[instrumentId][
+                values.operation === AskBidEnum.Buy ? 'ask' : 'bid'
+              ].c.toFixed(digits)}
             </PrimaryTextSpan>
           )}
         </Observer>
@@ -94,7 +96,7 @@ function ConfirmationPopup(props: Props) {
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
           {mainAppStore.activeAccount?.symbol}
-          {values.investmentAmount * values.multiplier}
+          {(values.investmentAmount * values.multiplier).toFixed(digits)}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column">

@@ -266,6 +266,8 @@ function PersonalData() {
               </FlexContainer>
               <FlexContainer width="50%" flexDirection="column">
                 <GenderDropdown
+                  hasError={!!errors.sex}
+                  errorText={errors.sex}
                   selectHandler={handleChangeGender(setFieldValue)}
                   selected={values.sex}
                 ></GenderDropdown>

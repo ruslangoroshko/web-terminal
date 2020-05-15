@@ -1,12 +1,28 @@
+import { LOCAL_STORAGE_TOKEN_KEY } from './../constants/global';
 import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
 import { appHistory } from '../routing/history';
 import Page from '../constants/Pages';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 
 const injectInerceptors = (tradingUrl: string) => {
   axios.interceptors.response.use(
     function(config: AxiosResponse) {
+      if (config.data.result === OperationApiResponseCodes.TechnicalError) {
+        return Promise.reject(
+          apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
+        );
+      }
+      if (
+        config.data.result ===
+        OperationApiResponseCodes.InvalidUserNameOrPassword
+      ) {
+        localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+        location.reload();
+      }
       return config;
     },
+
     function(error: AxiosError) {
       if (error.response?.status === 401) {
         appHistory.push(Page.SIGN_IN);

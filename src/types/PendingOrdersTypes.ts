@@ -1,4 +1,5 @@
 import { AskBidEnum } from '../enums/AskBid';
+import { TpSlTypeEnum } from '../enums/TpSlTypeEnum';
 
 export interface PendingOrdersWSDTO {
   id: number;
@@ -8,9 +9,9 @@ export interface PendingOrdersWSDTO {
   instrument: string;
   multiplier: number;
   operation: AskBidEnum;
-  takeProfitInCurrency?: number;
-  stopLossInCurrency?: number;
-  takeProfitRate?: number;
-  stopLossRate?: number;
+  tp?: number;
+  sl?: number;
+  tpType?: TpSlTypeEnum;
+  slType?: TpSlTypeEnum;
   timeStamp: number;
 }

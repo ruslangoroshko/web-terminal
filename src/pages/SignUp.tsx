@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormikHelpers, useFormik } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
@@ -58,17 +58,21 @@ function SignUp() {
   const { push } = useHistory();
   const { mainAppStore, notificationStore, badRequestPopupStore } = useStores();
 
+  const [validateAssigments, setValitdateAssigments] = useState(false);
+
   const handleSubmitForm = async (
     { email, password }: UserRegistration,
     { setStatus, setSubmitting }: FormikHelpers<UserRegistration>
   ) => {
     setSubmitting(true);
+    mainAppStore.isInitLoading = true;
     try {
       const result = await mainAppStore.signUp({ email, password });
       if (result !== OperationApiResponseCodes.Ok) {
         notificationStore.notificationMessage = apiResponseCodeMessages[result];
         notificationStore.isSuccessfull = false;
         notificationStore.openNotification();
+        mainAppStore.isInitLoading = false;
       } else {
         push(Page.DASHBOARD);
       }
@@ -77,6 +81,7 @@ function SignUp() {
       badRequestPopupStore.setMessage(error);
       setStatus(error);
       setSubmitting(false);
+      mainAppStore.isInitLoading = false;
     }
   };
 
@@ -109,6 +114,7 @@ function SignUp() {
           validationInputTexts.USER_AGREEMENT
         );
   };
+
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
     const curErrorsKeys = Object.keys(curErrors);
@@ -116,8 +122,15 @@ function SignUp() {
       const el = document.getElementById(curErrorsKeys[0]);
       if (el) el.focus();
     }
+    if (
+      curErrorsKeys.length === 1 &&
+      curErrorsKeys.includes(Fields.USER_AGREEMENT)
+    ) {
+      setValitdateAssigments(true);
+      setFieldError(Fields.USER_AGREEMENT, '');
+    }
   };
-
+  
   useEffect(() => {
     mixpanel.track(mixpanelEvents.SIGN_UP_VIEW);
   }, []);
@@ -127,7 +140,6 @@ function SignUp() {
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
-
       <FlexContainer
         position="absolute"
         bottom="100px"
@@ -200,14 +212,7 @@ function SignUp() {
                 id="user-agreements"
                 checked={values.userAgreement}
                 onChange={handleChangeUserAgreements(setFieldValue)}
-                hasError={
-                  !!(
-                    !errors.email &&
-                    !errors.password &&
-                    !errors.repeatPassword &&
-                    errors.userAgreement
-                  )
-                }
+                hasError={!!(validateAssigments && errors.userAgreement)}
                 errorText={errors.userAgreement}
               >
                 <PrimaryTextSpan color="rgba(255,255,255,0.6)" fontSize="12px">
@@ -228,7 +233,6 @@ function SignUp() {
                 </PrimaryTextSpan>
               </Checkbox>
             </FlexContainer>
-
             <PrimaryButton
               padding="12px"
               type="submit"

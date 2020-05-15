@@ -39,6 +39,12 @@ const TradingHistory: FC = () => {
     fetchPositionsHistory().finally(() => {
       setIsLoading(false);
     });
+    return () => {
+      historyStore.positionsHistoryReport = {
+        ...historyStore.positionsHistoryReport,
+        positionsHistory: []
+      }
+    }
   }, []);
 
   return (

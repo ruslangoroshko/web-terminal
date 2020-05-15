@@ -45,6 +45,10 @@ function SetAutoclose(props: Props) {
   const [slError, setSlError] = useState('');
 
   const handleBeforeInput = (e: any) => {
+    if (!e.data.match(/^\d|\.|\,/)) {
+      e.preventDefault();
+      return;
+    }
     if ([',', '.'].includes(e.data)) {
       if (
         !e.currentTarget.value ||
@@ -53,10 +57,6 @@ function SetAutoclose(props: Props) {
         e.preventDefault();
         return;
       }
-    }
-    if (!e.data.match(/^\d|\.|\,/)) {
-      e.preventDefault();
-      return;
     }
     const regex = `^[0-9]+(\.[0-9]{1,${instrumentsStore.activeInstrument!
       .instrumentItem.digits - 1}})?$`;
@@ -271,14 +271,24 @@ function SetAutoclose(props: Props) {
           isDisabled={isDisabled}
         ></PnLTypeDropdown>
       </InputWrapper>
-      {!isDisabled && (
-        <ButtonApply
-          onClick={handleApplyValues}
-          disabled={!!(tpError || slError)}
-        >
-          Apply
-        </ButtonApply>
-      )}
+      <Observer>
+        {() => (
+          <>
+            {!isDisabled && (
+              <ButtonApply
+                onClick={handleApplyValues}
+                disabled={
+                  !!(tpError || slError) ||
+                  (!SLTPStore.takeProfitValue.length &&
+                    !SLTPStore.stopLossValue.length)
+                }
+              >
+                Apply
+              </ButtonApply>
+            )}
+          </>
+        )}
+      </Observer>
     </Wrapper>
   );
 }

@@ -54,15 +54,15 @@ function PurchaseAtPopup(props: Props) {
   };
 
   const handleBeforeInput = (e: any) => {
+    if (!e.data.match(/^\d|\.|\,/)) {
+      e.preventDefault();
+      return;
+    }
     if (e.currentTarget.value && [',', '.'].includes(e.data)) {
       if (e.currentTarget.value.includes('.')) {
         e.preventDefault();
         return;
       }
-    }
-    if (!e.data.match(/^\d|\.|\,/)) {
-      e.preventDefault();
-      return;
     }
     const regex = `^[0-9]+(\.[0-9]{1,${instrumentsStore.activeInstrument!
       .instrumentItem.digits - 1}})?$`;
@@ -359,7 +359,7 @@ const ClearPurchaseAtButton = styled(ButtonWithoutStyles)`
 `;
 
 const SetPriceWrapper = styled(FlexContainer)`
-  top: 20px;
+  top: -54px;
   bottom: auto;
   @media (max-height: 700px) {
     top: auto;

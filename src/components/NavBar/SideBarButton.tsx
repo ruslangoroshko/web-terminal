@@ -10,13 +10,15 @@ interface Props {
   title: string;
   isActive?: boolean;
   setSideBarActive: () => void;
+  children?: React.ReactNode;
 }
 
 function SideBarButton(props: Props) {
-  const { iconProps, title, isActive, setSideBarActive } = props;
+  const { iconProps, title, isActive, setSideBarActive, children } = props;
 
   return (
     <ButtonWrapper onClick={setSideBarActive}>
+      
       <FlexContainer margin="0 0 8px 0" justifyContent="center">
         <SvgIcon
           {...iconProps}
@@ -29,6 +31,7 @@ function SideBarButton(props: Props) {
       >
         {title}
       </PrimaryTextParagraph>
+      {children}
     </ButtonWrapper>
   );
 }
@@ -36,6 +39,7 @@ function SideBarButton(props: Props) {
 export default SideBarButton;
 
 const ButtonWrapper = styled(ButtonWithoutStyles)`
+  position: relative;
   flex-direction: column;
   align-items: center;
   padding: 8px 0;

@@ -22,6 +22,7 @@ import Page from '../constants/Pages';
 import { useHistory } from 'react-router-dom';
 import { getProcessId } from '../helpers/getProcessId';
 import { SexEnum } from '../enums/Sex';
+import validationInputTexts from '../constants/validationInputTexts';
 
 interface Props {}
 
@@ -36,7 +37,7 @@ const PhoneVerification: FC<Props> = props => {
       .min(11, 'Min 11 symbols')
       .max(20, 'Max 20 symbols')
       .required(),
-    customCountryCode: yup.mixed().oneOf(countriesNames, 'No matches'),
+    customCountryCode: yup.mixed().oneOf(countriesNames, 'No matches').required(validationInputTexts.REQUIRED_FIELD),
   });
   const { push } = useHistory();
 
@@ -142,6 +143,7 @@ const PhoneVerification: FC<Props> = props => {
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
     const curErrorsKeys = Object.keys(curErrors);
+    console.log(curErrorsKeys)
     if (curErrorsKeys.length) {
       const el = document.getElementById(curErrorsKeys[0]);
       if (el) el.focus();
@@ -184,6 +186,7 @@ const PhoneVerification: FC<Props> = props => {
                   hasError={
                     !!(touched.customCountryCode && errors.customCountryCode)
                   }
+                  errorText={errors.customCountryCode}
                   dropdownItemsList={countries}
                   setFieldValue={setFieldValue}
                   handleChange={handleChangeCountry(setFieldValue)}

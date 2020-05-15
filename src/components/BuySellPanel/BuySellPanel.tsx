@@ -53,7 +53,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     operation: null,
     multiplier: instrument.multiplier[0],
     investmentAmount: 50,
-    purchaseAt: null,
+    openPrice: null,
   };
 
   const validationSchema = yup.object().shape({
@@ -77,7 +77,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     multiplier: yup.number().required('Required amount'),
     tp: yup.number().nullable(),
     sl: yup.number().nullable(),
-    purchaseAt: yup.number().nullable(),
+    openPrice: yup.number().nullable(),
   });
 
   const onSubmit = async (
@@ -90,9 +90,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     const modelToSubmit = {
       ...otherValues,
       operation: operation === null ? AskBidEnum.Buy : operation,
+      tpType: otherValues.tp ? otherValues.tpType : null,
+      slType: otherValues.sl ? otherValues.slType : null,
     };
 
-    if (values.purchaseAt) {
+    if (values.openPrice) {
       try {
         const response = await API.openPendingOrder(modelToSubmit);
 
@@ -168,8 +170,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
-      ? values.investmentAmount + 1
-      : values.investmentAmount - 1;
+      ? +(values.investmentAmount + 1).toFixed(instrument.digits)
+      : values.investmentAmount < 1
+      ? 0
+      : +(values.investmentAmount - 1).toFixed(instrument.digits);
     setFieldValue(Fields.AMOUNT, newValue);
   };
 
@@ -200,6 +204,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const investOnBeforeInputHandler = (e: any) => {
+    if (!e.data.match(/^\d|\.|\,/)) {
+      e.preventDefault();
+      return;
+    }
     if ([',', '.'].includes(e.data)) {
       if (
         !e.currentTarget.value ||
@@ -208,10 +216,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         e.preventDefault();
         return;
       }
-    }
-    if (!e.data.match(/^\d|\.|\,/)) {
-      e.preventDefault();
-      return;
     }
   };
 
@@ -259,7 +263,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              The amount you’d like to invest
+              `` The amount you’d like to invest
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -484,7 +488,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         </FlexContainer>
         <PurchaseAtPopup
           setFieldValue={setFieldValue}
-          purchaseAtValue={values.purchaseAt}
+          purchaseAtValue={values.openPrice}
           instrumentId={instrument.id}
           digits={instrument.digits}
         ></PurchaseAtPopup>
@@ -496,7 +500,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 export default BuySellPanel;
 
 const InvestInput = styled.input`
-  height: 100%;
   width: 100%;
   outline: none;
   border: none;

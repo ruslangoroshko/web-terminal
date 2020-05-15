@@ -120,9 +120,9 @@ const Dashboard = observer(() => {
   }, [mainAppStore.activeAccount]);
 
   return (
-    <DashboardWrapper
-      height="100%"
+    <FlexContainer
       width="100%"
+      height="100%"
       flexDirection="column"
       position="relative"
     >
@@ -146,7 +146,7 @@ const Dashboard = observer(() => {
         </Observer>
       </FlexContainer>
       <FlexContainer flexDirection="column">
-        <FlexContainer>
+        <FlexContainer marginBottom="20px" height="40px">
           <InstrumentsScrollWrapper></InstrumentsScrollWrapper>
           <FlexContainer position="relative" alignItems="center">
             <Toggle>
@@ -163,7 +163,7 @@ const Dashboard = observer(() => {
         </FlexContainer>
         <Observer>
           {() => (
-            <FlexContainer position="relative" padding="24px 20px">
+            <FlexContainer position="relative">
               {instrumentsStore.activeInstrument && (
                 <ActiveInstrument
                   instrument={instrumentsStore.activeInstrument.instrumentItem}
@@ -179,7 +179,7 @@ const Dashboard = observer(() => {
             <>
               {instrumentsStore.activeInstrument && (
                 <>
-                  <ChartWrapper>
+                  <ChartWrapper padding="20px 0 0 0">
                     <TVChartContainer
                       instrumentId={
                         instrumentsStore.activeInstrument.instrumentItem.id
@@ -203,7 +203,7 @@ const Dashboard = observer(() => {
           )}
         </Observer>
       </GridWrapper>
-    </DashboardWrapper>
+    </FlexContainer>
   );
 });
 
@@ -225,7 +225,7 @@ const GridWrapper = styled.div`
   grid-template-columns: 1fr 172px;
   grid-template-rows: 1fr 32px;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 180px);
   grid-row-gap: 0;
   grid-column-gap: 1px;
 `;

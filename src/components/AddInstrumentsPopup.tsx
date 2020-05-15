@@ -118,7 +118,7 @@ const AddInstrumentsPopupWrapper = styled(FlexContainer)`
   background-color: rgba(0, 0, 0, 0.64);
 
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-    background-color: rgba(0, 0, 0, 0.34);
+    background-color: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(12px);
   }
 `;

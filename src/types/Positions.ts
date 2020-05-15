@@ -35,7 +35,7 @@ export interface OpenPositionModelFormik {
   sl?: number;
   tpType?: TpSlTypeEnum;
   slType?: TpSlTypeEnum;
-  purchaseAt: number | null;
+  openPrice: number | null;
 }
 
 export interface OpenPositionResponseDTO {
@@ -53,10 +53,10 @@ export interface PositionModelWSDTO {
   operation: number;
   swap: number;
   commission: number;
-  takeProfitInCurrency?: number;
-  stopLossInCurrency?: number;
-  takeProfitRate?: number;
-  stopLossRate?: number;
+  tp?: number;
+  sl?: number;
+  tpType?: TpSlTypeEnum;
+  slType?: TpSlTypeEnum;
   timeStamp: number;
 }
 
