@@ -55,7 +55,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     investmentAmount: 50,
     openPrice: null,
   };
- 
+
   const validationSchema = yup.object().shape({
     investmentAmount: yup
       .number()
@@ -90,8 +90,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     const modelToSubmit = {
       ...otherValues,
       operation: operation === null ? AskBidEnum.Buy : operation,
-      tpType: otherValues.tp? otherValues.tpType : null,
-      slType: otherValues.sl? otherValues.slType : null,
+      tpType: otherValues.tp ? otherValues.tpType : null,
+      slType: otherValues.sl ? otherValues.slType : null,
     };
 
     if (values.openPrice) {
@@ -170,8 +170,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
-      ? values.investmentAmount + 1
-      : values.investmentAmount - 1;
+      ? +(values.investmentAmount + 1).toFixed(instrument.digits)
+      : values.investmentAmount < 1
+      ? 0
+      : +(values.investmentAmount - 1).toFixed(instrument.digits);
     setFieldValue(Fields.AMOUNT, newValue);
   };
 
@@ -245,7 +247,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           flexWrap="wrap"
           margin="0 0 4px 0"
           alignItems="center"
-
         >
           <PrimaryTextSpan
             fontSize="11px"
@@ -261,8 +262,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             width="212px"
             direction="left"
           >
-            <PrimaryTextSpan color="#fffccc" fontSize="12px">``
-              The amount you’d like to invest
+            <PrimaryTextSpan color="#fffccc" fontSize="12px">
+              `` The amount you’d like to invest
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
