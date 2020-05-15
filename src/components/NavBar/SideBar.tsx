@@ -72,13 +72,7 @@ const SideBar = observer(() => {
         title="History"
         isActive={tabsStore.sideBarTabType === SideBarTabType.History}
         setSideBarActive={setSideBarActive(SideBarTabType.History)}
-      >
-        <Observer>
-          {() => (
-            <>{historyCount > 0 && <CustomBadge>{historyCount}</CustomBadge>}</>
-          )}
-        </Observer>
-      </SideBarButton>
+      />
     </BottonNavBarWrapper>
   );
 });
