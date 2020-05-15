@@ -50,12 +50,13 @@ const SingIn = observer(() => {
         notificationStore.notificationMessage = apiResponseCodeMessages[result];
         notificationStore.isSuccessfull = false;
         notificationStore.openNotification();
+        mainAppStore.isInitLoading = false;
       }
-      mainAppStore.isInitLoading = false;
     } catch (error) {
       mainAppStore.isInitLoading = false;
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
+      mainAppStore.isInitLoading = false;
     }
   };
 

@@ -100,6 +100,8 @@ const AuthorizedContainer: FC<Props> = props => {
       position="relative"
       flexDirection="column"
       minHeight="700px"
+      maxHeight="100vh"
+      overflow="hidden"
     >
       <Observer>
         {() => <>{mainAppStore.isAuthorized && <NavBar></NavBar>}</>}

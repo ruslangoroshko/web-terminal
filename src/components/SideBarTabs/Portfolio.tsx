@@ -105,7 +105,7 @@ const Portfolio: FC<Props> = () => {
                     fontWeight="bold"
                   >
                     {mainAppStore.activeAccount?.symbol}
-                    {quotesStore.invest}
+                    {quotesStore.invest.toFixed(2)}
                   </PrimaryTextSpan>
                 )}
               </Observer>

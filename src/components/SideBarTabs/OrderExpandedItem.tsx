@@ -109,7 +109,7 @@ function OrderExpandedItem(props: Props) {
           marginBottom="2px"
         >
           {currencySymbol}
-          {investmentAmount}
+          {investmentAmount.toFixed(2)}
         </PrimaryTextSpan>
         <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="11px">
           &times;{multiplier}

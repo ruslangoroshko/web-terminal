@@ -93,7 +93,7 @@ function PendingOrder(props: Props) {
         >
           <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
             {currencySymbol}
-            {pendingOrder.investmentAmount}
+            {pendingOrder.investmentAmount.toFixed(2)}
           </PrimaryTextSpan>
           <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
             &times;{pendingOrder.multiplier}
