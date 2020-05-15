@@ -274,7 +274,11 @@ function SetAutoclose(props: Props) {
       {!isDisabled && (
         <ButtonApply
           onClick={handleApplyValues}
-          disabled={!!(tpError || slError)}
+          disabled={
+            !!(tpError || slError) ||
+            (!SLTPStore.takeProfitValue.length &&
+              !SLTPStore.stopLossValue.length)
+          }
         >
           Apply
         </ButtonApply>

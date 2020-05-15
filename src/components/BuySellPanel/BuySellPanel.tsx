@@ -55,7 +55,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     investmentAmount: 50,
     openPrice: null,
   };
-
+  console.log(quotesStore.available);
   const validationSchema = yup.object().shape({
     investmentAmount: yup
       .number()

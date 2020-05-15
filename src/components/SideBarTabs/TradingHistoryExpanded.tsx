@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
@@ -39,6 +39,15 @@ const TradingHistoryExpanded: FC = () => {
       ],
     };
   };
+
+  useEffect(() => {
+    return () => {
+      historyStore.positionsHistoryReport = {
+        ...historyStore.positionsHistoryReport,
+        positionsHistory: []
+      }
+    }
+  }, [])
 
   return (
     <TradingHistoryExpandedWrapper
