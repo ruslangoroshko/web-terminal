@@ -96,7 +96,7 @@ function ConfirmationPopup(props: Props) {
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
           {mainAppStore.activeAccount?.symbol}
-          {values.investmentAmount * values.multiplier}
+          {(values.investmentAmount * values.multiplier).toFixed(digits)}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column">

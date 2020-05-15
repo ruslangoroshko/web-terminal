@@ -200,6 +200,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const investOnBeforeInputHandler = (e: any) => {
+    if (!e.data.match(/^\d|\.|\,/)) {
+      e.preventDefault();
+      return;
+    }
     if ([',', '.'].includes(e.data)) {
       if (
         !e.currentTarget.value ||
@@ -208,10 +212,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         e.preventDefault();
         return;
       }
-    }
-    if (!e.data.match(/^\d|\.|\,/)) {
-      e.preventDefault();
-      return;
     }
   };
 

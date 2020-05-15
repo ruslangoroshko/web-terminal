@@ -54,15 +54,15 @@ function PurchaseAtPopup(props: Props) {
   };
 
   const handleBeforeInput = (e: any) => {
+    if (!e.data.match(/^\d|\.|\,/)) {
+      e.preventDefault();
+      return;
+    }
     if (e.currentTarget.value && [',', '.'].includes(e.data)) {
       if (e.currentTarget.value.includes('.')) {
         e.preventDefault();
         return;
       }
-    }
-    if (!e.data.match(/^\d|\.|\,/)) {
-      e.preventDefault();
-      return;
     }
     const regex = `^[0-9]+(\.[0-9]{1,${instrumentsStore.activeInstrument!
       .instrumentItem.digits - 1}})?$`;
