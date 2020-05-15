@@ -55,7 +55,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     investmentAmount: 50,
     openPrice: null,
   };
-
+  console.log(quotesStore.available);
   const validationSchema = yup.object().shape({
     investmentAmount: yup
       .number()
@@ -64,9 +64,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         `Minimum trade volume [$${instrument.minOperationVolume /
           initialValues.multiplier}]. Please increase your trade amount or multiplier.`
       )
-      .lessThan(
-        quotesStore.available,
-        `Insufficient funds to open a position. You have only [${quotesStore.available}]`
+      .test(
+        'investmentAmount',
+        `Insufficient funds to open a position. You have only [${quotesStore.available}]`,
+        value => value < quotesStore.available
       )
       .max(
         instrument.maxOperationVolume / initialValues.multiplier,
