@@ -29,9 +29,7 @@ const SideBar = observer(() => {
 
   const pendingOrdersCount = quotesStore.pendingOrders.length;
   const activeOrdersCount = quotesStore.activePositions.length;
-  const historyCount =
-    historyStore.positionsHistoryReport.positionsHistory.length;
-
+  
   return (
     <BottonNavBarWrapper
       flexDirection="column"
