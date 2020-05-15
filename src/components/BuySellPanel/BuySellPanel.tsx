@@ -55,7 +55,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     investmentAmount: 50,
     openPrice: null,
   };
-  console.log(quotesStore.available);
+ 
   const validationSchema = yup.object().shape({
     investmentAmount: yup
       .number()
@@ -90,6 +90,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     const modelToSubmit = {
       ...otherValues,
       operation: operation === null ? AskBidEnum.Buy : operation,
+      tpType: otherValues.tp? otherValues.tpType : null,
+      slType: otherValues.sl? otherValues.slType : null,
     };
 
     if (values.openPrice) {

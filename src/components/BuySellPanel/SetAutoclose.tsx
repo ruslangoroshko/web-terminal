@@ -271,18 +271,24 @@ function SetAutoclose(props: Props) {
           isDisabled={isDisabled}
         ></PnLTypeDropdown>
       </InputWrapper>
-      {!isDisabled && (
-        <ButtonApply
-          onClick={handleApplyValues}
-          disabled={
-            !!(tpError || slError) ||
-            (!SLTPStore.takeProfitValue.length &&
-              !SLTPStore.stopLossValue.length)
-          }
-        >
-          Apply
-        </ButtonApply>
-      )}
+      <Observer>
+        {() => (
+          <>
+            {!isDisabled && (
+              <ButtonApply
+                onClick={handleApplyValues}
+                disabled={
+                  !!(tpError || slError) ||
+                  (!SLTPStore.takeProfitValue.length &&
+                    !SLTPStore.stopLossValue.length)
+                }
+              >
+                Apply
+              </ButtonApply>
+            )}
+          </>
+        )}
+      </Observer>
     </Wrapper>
   );
 }
