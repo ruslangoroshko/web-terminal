@@ -34,6 +34,7 @@ import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
 import { getProcessId } from './getProcessId';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import { createDepositParams, getCryptoWalletParams } from "../types/DepositTypes";
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -269,11 +270,11 @@ class API {
     return response.data;
   }
 
-  getFavoriteInstrumets = async (params: {type: AccountTypeEnum, accountId: string}) => {
+  getFavoriteInstrumets = async (params: { type: AccountTypeEnum, accountId: string }) => {
     const response = await axios.get<string[]>(
       `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`, {
-        params
-      }
+      params
+    }
     );
     return response.data;
   };
@@ -284,6 +285,20 @@ class API {
     )
     return response.data
   }
+
+  createDeposit = async (params: createDepositParams) => {
+    const response = await axios.post<BalanceHistoryDTO[]>(
+      `https://deposit-dev.monfex.biz${API_LIST.DEPOSIT.CREATE}`, params
+    );
+    return response.data;
+  };
+
+  getCryptoWallet = async (params: getCryptoWalletParams) => {
+    const response = await axios.post<BalanceHistoryDTO[]>(
+      `https://deposit-dev.monfex.biz${API_LIST.DEPOSIT.GET_CRYPTO_WALLET}`, params
+    );
+    return response.data;
+  };
 }
 
 export default new API()
