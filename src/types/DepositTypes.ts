@@ -16,3 +16,8 @@ export interface DepositCreateDTO {
 	status: DepositApiResponseCodes;
 	redirectUrl: string;
 }
+
+export interface getCryptoWalletDTO {
+	status: DepositApiResponseCodes;
+	walletAddress: string;
+}

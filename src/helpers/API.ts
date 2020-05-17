@@ -34,7 +34,7 @@ import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
 import { getProcessId } from './getProcessId';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
-import { createDepositParams, getCryptoWalletParams } from "../types/DepositTypes";
+import { createDepositParams, getCryptoWalletParams, DepositCreateDTO, getCryptoWalletDTO } from "../types/DepositTypes";
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -286,15 +286,16 @@ class API {
     return response.data
   }
 
+  // TODO ask: How to get api url ?
   createDeposit = async (params: createDepositParams) => {
-    const response = await axios.post<BalanceHistoryDTO[]>(
+    const response = await axios.post<DepositCreateDTO[]>(
       `https://deposit-dev.monfex.biz${API_LIST.DEPOSIT.CREATE}`, params
     );
     return response.data;
   };
 
   getCryptoWallet = async (params: getCryptoWalletParams) => {
-    const response = await axios.post<BalanceHistoryDTO[]>(
+    const response = await axios.post<getCryptoWalletDTO[]>(
       `https://deposit-dev.monfex.biz${API_LIST.DEPOSIT.GET_CRYPTO_WALLET}`, params
     );
     return response.data;
