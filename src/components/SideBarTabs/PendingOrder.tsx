@@ -131,6 +131,7 @@ export default PendingOrder;
 
 const OrderWrapper = styled(FlexContainer)`
   transition: all 0.2s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.3);

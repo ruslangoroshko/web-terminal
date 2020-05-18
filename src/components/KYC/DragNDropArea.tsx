@@ -1,11 +1,11 @@
-import React, { useCallback } from 'react'
+import React, { useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
-import IconFileUpload from '../../assets/svg/icon-upload-file.svg'
+import IconFileUpload from '../../assets/svg/icon-upload-file.svg';
 import styled from '@emotion/styled';
-import {useDropzone} from 'react-dropzone'
+import { useDropzone } from 'react-dropzone';
 import SvgIcon from '../SvgIcon';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
-import IconClose from '../../assets/svg/icon-close.svg'
+import IconClose from '../../assets/svg/icon-close.svg';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 
 interface Props {
@@ -17,108 +17,107 @@ interface Props {
 const FIVE_MB = 5242880;
 const allowedFileTypes = ['image/png', 'image/jpg', 'image/jpeg'];
 
-
 function DragNDropArea(props: Props) {
-    const { onFileReceive, file, fileUrl } = props;
+  const { onFileReceive, file, fileUrl } = props;
 
-    const onDrop = useCallback(acceptedFiles => {
-      const file = acceptedFiles[0];
-      console.log(file);
+  const onDrop = useCallback(acceptedFiles => {
+    const file = acceptedFiles[0];
+    console.log(file);
 
-      if (file.size <= FIVE_MB && allowedFileTypes.includes(file.type)) {
-        onFileReceive(acceptedFiles[0]);
-      }
-    }, []);
+    if (file.size <= FIVE_MB && allowedFileTypes.includes(file.type)) {
+      onFileReceive(acceptedFiles[0]);
+    }
+  }, []);
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-      onDrop,
-    });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+  });
 
-    return file.size === 0 ? (
-      <DnDWrapper
-        {...getRootProps()}
-        border="1px dashed rgba(255, 255, 255, 0.3)"
-        height="120px"
-        width="100%"
-        borderRadius="4px"
-        flexDirection="column"
+  return file.size === 0 ? (
+    <DnDWrapper
+      {...getRootProps()}
+      border="1px dashed rgba(255, 255, 255, 0.3)"
+      height="120px"
+      width="100%"
+      borderRadius="4px"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <input {...getInputProps()} />
+      {isDragActive ? (
+        <PrimaryTextSpan color="#fffccc" fontSize="14px">
+          Drop the files here ...
+        </PrimaryTextSpan>
+      ) : (
+        <FlexContainer flexDirection="column" alignItems="center">
+          <FlexContainer margin="0 0 10px 0">
+            <SvgIcon {...IconFileUpload} fillColor="#fffccc" />
+          </FlexContainer>
+          <PrimaryTextSpan color="#777A7A" fontSize="14px" marginBottom="4px">
+            Drop file here to upload or{' '}
+            <PrimaryTextSpan color="#00FFDD" textDecoration="underline">
+              choose file
+            </PrimaryTextSpan>
+          </PrimaryTextSpan>
+          <PrimaryTextSpan fontSize="10px" color="rgba(255,255,255,0.4)">
+            Maximum upload file size: 5MB
+          </PrimaryTextSpan>
+          <PrimaryTextSpan fontSize="10px" color="rgba(255,255,255,0.4)">
+            Allowed file types: png, jpg
+          </PrimaryTextSpan>
+        </FlexContainer>
+      )}
+    </DnDWrapper>
+  ) : (
+    <FlexContainer
+      backgroundColor="#1C2026"
+      padding="20px"
+      alignItems="center"
+      position="relative"
+    >
+      <FlexContainer
+        backgroundColor="#151919"
+        borderRadius="50%"
         alignItems="center"
         justifyContent="center"
+        position="absolute"
+        top="20px"
+        right="20px"
       >
-        <input {...getInputProps()} />
-        {isDragActive ? (
-          <PrimaryTextSpan color="#fffccc" fontSize="14px">
-            Drop the files here ...
-          </PrimaryTextSpan>
-        ) : (
-          <FlexContainer flexDirection="column" alignItems="center">
-            <FlexContainer margin="0 0 10px 0">
-              <SvgIcon {...IconFileUpload} fillColor="#fffccc" />
-            </FlexContainer>
-            <PrimaryTextSpan color="#777A7A" fontSize="14px" marginBottom="4px">
-              Drop file here to upload or{' '}
-              <PrimaryTextSpan color="#00FFDD" textDecoration="underline">
-                choose file
-              </PrimaryTextSpan>
-            </PrimaryTextSpan>
-            <PrimaryTextSpan fontSize="10px" color="rgba(255,255,255,0.4)">
-              Maximum upload file size: 5MB
-            </PrimaryTextSpan>
-            <PrimaryTextSpan fontSize="10px" color="rgba(255,255,255,0.4)">
-              Allowed file types: png, jpg
-            </PrimaryTextSpan>
-          </FlexContainer>
-        )}
-      </DnDWrapper>
-    ) : (
-      <FlexContainer
-        backgroundColor="#1C2026"
-        padding="20px"
-        alignItems="center"
-        position="relative"
-      >
-        <FlexContainer
-          backgroundColor="#151919"
-          borderRadius="50%"
-          alignItems="center"
-          justifyContent="center"
-          position="absolute"
-          top="20px"
-          right="20px"
-        >
-          <ButtonWithoutStyles>
-            <SvgIcon {...IconClose} fillColor="rgba(255,255,255,0.4)" />
-          </ButtonWithoutStyles>
+        <ButtonWithoutStyles>
+          <SvgIcon {...IconClose} fillColor="rgba(255,255,255,0.4)" />
+        </ButtonWithoutStyles>
+      </FlexContainer>
+      <FlexContainer>
+        <FlexContainer width="46px" height="46px" margin="0 18px 0 0">
+          <img src={fileUrl} width="100%" />
         </FlexContainer>
-        <FlexContainer>
-          <FlexContainer width="46px" height="46px" margin="0 18px 0 0">
-            <img src={fileUrl} width="100%" />
-          </FlexContainer>
-          <FlexContainer flexDirection="column">
-            <PrimaryTextSpan
-              fontSize="11px"
-              color="rgba(255,255,255,0.4)"
-              marginBottom="8px"
-            >
-              Front side photo of your document
+        <FlexContainer flexDirection="column">
+          <PrimaryTextSpan
+            fontSize="11px"
+            color="rgba(255,255,255,0.4)"
+            marginBottom="8px"
+          >
+            Front side photo of your document
+          </PrimaryTextSpan>
+          <FileNameText color="#fffccc" fontSize="14px">
+            {file.name} -{' '}
+            <PrimaryTextSpan color="rgba(255,255,255,0.4)">
+              {Math.round(file.size / 1024)}kb
             </PrimaryTextSpan>
-            <FileNameText color="#fffccc" fontSize="14px">
-              {file.name} -{' '}
-              <PrimaryTextSpan color="rgba(255,255,255,0.4)">
-                {Math.round(file.size / 1024)}kb
-              </PrimaryTextSpan>
-            </FileNameText>
-          </FlexContainer>
+          </FileNameText>
         </FlexContainer>
       </FlexContainer>
-    );
-   
+    </FlexContainer>
+  );
 }
 
-export default DragNDropArea
+export default DragNDropArea;
 
 const DnDWrapper = styled(FlexContainer)`
   transition: all 0.2s ease;
+  will-change: border;
 
   &:hover {
     cursor: pointer;

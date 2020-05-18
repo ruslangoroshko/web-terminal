@@ -146,6 +146,7 @@ const Input = styled.input<{ hasError?: boolean }>`
   line-height: 16px;
   padding-bottom: 4px;
   transition: border 0.2s ease;
+  will-change: border;
 
   &:hover {
     border-bottom: 1px solid rgba(255, 255, 255, 0.4);

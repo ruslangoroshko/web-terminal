@@ -11,7 +11,6 @@ import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
 interface IQuotesStore {
   quotes: BidAskKeyValueList;
   activePositions: PositionModelWSDTO[];
-  available: number;
   invest: number;
   total: number;
   totalEquity: number;
@@ -23,7 +22,6 @@ export class QuotesStore implements IQuotesStore {
   @observable quotes: BidAskKeyValueList = {};
   @observable activePositions: PositionModelWSDTO[] = [];
   @observable pendingOrders: PendingOrdersWSDTO[] = [];
-  @observable available = 0;
   rootStore: RootStore;
 
   constructor(rootStore: RootStore) {
@@ -66,7 +64,11 @@ export class QuotesStore implements IQuotesStore {
 
   @computed
   get total() {
-    return +this.profit + this.available + this.invest;
+    return (
+      +this.profit +
+      (this.rootStore.mainAppStore.activeAccount?.balance || 0) +
+      this.invest
+    );
   }
 
   @computed

@@ -22,13 +22,10 @@ import { useStores } from '../hooks/useStores';
 import Toggle from '../components/Toggle';
 import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
 import { Observer, observer } from 'mobx-react-lite';
-import { activeInstrumentsInit } from '../helpers/activeInstrumentsHelper';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import NotificationPopup from '../components/NotificationPopup';
 import DemoRealPopup from '../components/DemoRealPopup';
 import { PendingOrdersWSDTO } from '../types/PendingOrdersTypes';
-import { AccountTypeEnum } from '../enums/AccountTypeEnum';
-import BadRequestPopup from '../components/BadRequestPopup';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -69,13 +66,6 @@ const Dashboard = observer(() => {
               });
             });
             instrumentsStore.setInstruments(response.data);
-            activeInstrumentsInit(
-              instrumentsStore,
-              mainAppStore.activeAccount.id,
-              mainAppStore.activeAccount.isLive
-                ? AccountTypeEnum.Live
-                : AccountTypeEnum.Demo
-            );
           }
         }
       );

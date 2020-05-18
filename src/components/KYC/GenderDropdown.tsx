@@ -116,6 +116,7 @@ const GenderContainer = styled(FlexContainer)<{ isActive: boolean, hasError: boo
     ${props => (props.isActive ? '#21B3A4' : 'rgba(255, 255, 255, 0.2)')};
   border-bottom: ${props => props.hasError && '1px solid #ED145B !important'};
   transition: border 0.2s ease;
+  will-change: border;
   cursor: pointer;
 
   &:hover {
@@ -137,6 +138,7 @@ const GenderItem = styled(ButtonWithoutStyles)`
   &:hover {
     > span {
       transition: all 0.2s ease;
+      will-change: color;
       color: #21b3a4;
     }
   }

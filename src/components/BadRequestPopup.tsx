@@ -125,12 +125,12 @@ const TextBlockForDev = styled.input`
 `;
 
 const CustomButton = styled(ButtonWithoutStyles)`
-  transition: all 0.2s ease;
   border-radius: 4px;
   background-color: #00fff2;
   width: 200px;
   height: 40px;
   transition: all 0.2s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: #9ffff2;

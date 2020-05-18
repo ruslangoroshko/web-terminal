@@ -29,7 +29,6 @@ interface MainAppStoreProps {
   activeAccount?: AccountModelWebSocketDTO;
   accounts: AccountModelWebSocketDTO[];
   setActiveAccount: (acc: AccountModelWebSocketDTO) => void;
-  activeAccountId: string;
   tradingUrl: string;
   profileStatus: PersonalDataKYCEnum;
   isDemoRealPopup: boolean;
@@ -47,7 +46,6 @@ export class MainAppStore implements MainAppStoreProps {
   @observable activeSession?: HubConnection;
   @observable activeAccount?: AccountModelWebSocketDTO;
   @observable accounts: AccountModelWebSocketDTO[] = [];
-  @observable activeAccountId: string = '';
   @observable profileStatus: PersonalDataKYCEnum =
     PersonalDataKYCEnum.NotVerified;
   @observable tradingUrl = '';
@@ -100,7 +98,6 @@ export class MainAppStore implements MainAppStoreProps {
     connection.on(
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
-        this.rootStore.quotesStore.available = response.data.balance;
         this.setActiveAccount(response.data);
       }
     );
@@ -135,7 +132,7 @@ export class MainAppStore implements MainAppStoreProps {
         this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: activeAccount.id,
         });
-        this.setActiveAccount(activeAccount);
+        this.activeAccount = activeAccount;
       } else {
         this.isDemoRealPopup = true;
       }
@@ -148,14 +145,12 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setActiveAccount = (account: AccountModelWebSocketDTO) => {
     this.activeAccount = account;
-    this.rootStore.quotesStore.available = account.balance;
-    this.rootStore.historyStore.positionsHistoryReport.positionsHistory = [];
 
+    // TODO: think how remove crutch
+    this.rootStore.historyStore.positionsHistoryReport.positionsHistory = [];
     API.setKeyValue({
       key: KeysInApi.ACTIVE_ACCOUNT_ID,
       value: account.id,
-    }).finally(() => {
-      this.isDemoRealPopup = false;
     });
   };
 

@@ -353,6 +353,8 @@ const ClearPurchaseAtButton = styled(ButtonWithoutStyles)`
   transform: translateY(-50%);
   right: 12px;
   transition: background-color 0.2s ease;
+  will-change: background-color;
+  
   &:hover {
     background-color: rgba(255, 255, 255, 0.5);
   }

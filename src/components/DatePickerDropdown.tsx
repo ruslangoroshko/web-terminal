@@ -231,6 +231,7 @@ const InputLabelWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
   border-radius: 4px;
   padding: 8px;
   transition: background-color 0.2s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.08);
@@ -247,6 +248,7 @@ const ButtonRightArrow = styled(ButtonWithoutStyles)`
   top: 16px;
   right: 16px;
   transition: background-color 0.2s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.4);
@@ -263,6 +265,7 @@ const SelectDateButton = styled(ButtonWithoutStyles)`
   width: 100%;
   justify-content: space-between;
   transition: color 0.2s ease;
+  will-change: color;
 
   &:hover > span {
     color: #00fff2;

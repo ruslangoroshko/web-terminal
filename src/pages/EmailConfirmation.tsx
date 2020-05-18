@@ -97,6 +97,7 @@ const LinkToDashboard = styled(Link)`
   justify-content: center;
   align-items: center;
   transition: background-color 0.2s ease;
+  will-change: background-color;
   background-color: #00ffdd;
   box-shadow: 0px 4px 8px rgba(0, 255, 242, 0.17),
     inset 0px -3px 6px rgba(0, 255, 242, 0.26);

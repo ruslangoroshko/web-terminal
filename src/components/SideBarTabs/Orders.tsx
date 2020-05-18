@@ -154,6 +154,7 @@ const TabPortfolitButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
     props.isActive ? 'inset 0px 1px 0px #00ffdd' : 'none'};
   border-radius: 0px 0px 4px 4px;
   transition: all 0.2s ease;
+  will-change: background;
 
   &:hover {
     color: #fffcbd;
@@ -182,6 +183,7 @@ const SortByWrapper = styled(FlexContainer)`
 
 const DropdownItemText = styled(PrimaryTextSpan)`
   transition: color 0.2s ease;
+  will-change: color;
   margin-bottom: 16px;
 
   &:hover {

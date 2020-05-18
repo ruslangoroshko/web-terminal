@@ -79,6 +79,7 @@ const CustomNavLink = styled(NavLink)`
 
 const AccountLinkSpan = styled(PrimaryTextSpan)`
   transition: color 0.2s ease;
+  will-change: color;
 
   &:hover {
     color: #21b3a4;

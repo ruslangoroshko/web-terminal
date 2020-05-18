@@ -55,7 +55,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     investmentAmount: 50,
     openPrice: null,
   };
-  console.log(quotesStore.available);
   const validationSchema = yup.object().shape({
     investmentAmount: yup
       .number()
@@ -66,8 +65,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       )
       .test(
         'investmentAmount',
-        `Insufficient funds to open a position. You have only [${quotesStore.available}]`,
-        value => value < quotesStore.available
+        `Insufficient funds to open a position. You have only [${mainAppStore.activeAccount?.balance}]`,
+        value => value < (mainAppStore.activeAccount?.balance || 0)
       )
       .max(
         instrument.maxOperationVolume / initialValues.multiplier,
@@ -168,6 +167,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   useEffect(() => {
     setFieldValue(Fields.INSTRUMNENT_ID, instrument.id);
   }, [instrument]);
+
+  useEffect(() => {
+    setFieldValue(Fields.ACCOUNT_ID, mainAppStore.activeAccount?.id);
+  }, [mainAppStore.activeAccount]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
@@ -524,6 +527,7 @@ const ButtonSell = styled(ButtonWithoutStyles)`
   align-items: center;
   margin-bottom: 18px;
   transition: background-color 0.2s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: #ff557e;

@@ -109,6 +109,7 @@ const DemoButton = styled(ButtonWithoutStyles)`
   height: 40px;
   margin-right: 30px;
   transition: all 0.2s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: #ff557e;
@@ -116,12 +117,12 @@ const DemoButton = styled(ButtonWithoutStyles)`
 `;
 
 const RealButton = styled(ButtonWithoutStyles)`
-  transition: all 0.2s ease;
   border-radius: 4px;
   background-color: #00fff2;
   width: 200px;
   height: 40px;
   transition: all 0.2s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: #9ffff2;

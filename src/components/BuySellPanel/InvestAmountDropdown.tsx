@@ -49,7 +49,7 @@ const InvestAmountDropdown: FC<Props> = observer(props => {
       ))}
       <DropDownItem
         flexDirection="column"
-        onClick={handleChangeAmount(quotesStore.available)}
+        onClick={handleChangeAmount(mainAppStore.activeAccount?.balance || 0)}
       >
         <PrimaryTextParagraph
           color="rgba(255,255,255,0.3)"
@@ -61,7 +61,7 @@ const InvestAmountDropdown: FC<Props> = observer(props => {
         </PrimaryTextParagraph>
         <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="#fffccc">
           {mainAppStore.activeAccount?.symbol}
-          {quotesStore.available}
+          {mainAppStore.activeAccount?.balance.toFixed(2)}
         </PrimaryTextSpan>
       </DropDownItem>
     </MultiplierDropdownWrapper>

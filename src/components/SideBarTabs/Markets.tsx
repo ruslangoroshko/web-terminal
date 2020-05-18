@@ -224,6 +224,7 @@ const SortByWrapper = styled(FlexContainer)`
 
 const DropdownItemText = styled(PrimaryTextSpan)`
   transition: color 0.2s ease;
+  will-change: color;
   margin-bottom: 16px;
   cursor: pointer;
 

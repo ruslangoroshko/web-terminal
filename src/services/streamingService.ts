@@ -87,7 +87,6 @@ class StreamingService {
     const subIndex = this.subscriptions.findIndex(e => e.listenerGuid === uid);
     console.log('unsubscribed');
     if (subIndex === -1) {
-      //console.log("No subscription found for ",uid)
       return;
     }
 

@@ -231,6 +231,7 @@ const DateRangeItemButton = styled(ButtonWithoutStyles)`
   margin-bottom: 16px;
   width: 100%;
   text-align: left;
+  will-change: color;
 
   &:last-of-type {
     margin-bottom: 0;
@@ -251,6 +252,7 @@ const ButtonRightArrow = styled(ButtonWithoutStyles)`
   top: 16px;
   right: 16px;
   transition: background-color 0.2s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.4);
@@ -267,6 +269,7 @@ const SelectDateButton = styled(ButtonWithoutStyles)`
   width: 100%;
   justify-content: space-between;
   transition: color 0.2s ease;
+  will-change: color;
 
   &:hover > span {
     color: #00fff2;

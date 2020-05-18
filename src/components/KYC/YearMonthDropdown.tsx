@@ -104,6 +104,7 @@ export default YearMonthDropdown;
 const DroppdownItem = styled(PrimaryTextParagraph)`
   transition: all 0.2s ease;
   margin-bottom: 8px;
+  will-change: color;
 
   &:last-of-type {
     margin-bottom: 0;

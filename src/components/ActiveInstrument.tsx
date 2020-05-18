@@ -1,10 +1,6 @@
 import React, { FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
-import baseImg from '../assets/images/base.png';
-import quoteImg from '../assets/images/quote.png';
-import { AskBidEnum } from '../enums/AskBid';
-import calculateGrowth from '../helpers/calculateGrowth';
 import { InstrumentModelWSDTO } from '../types/InstrumentsTypes';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';

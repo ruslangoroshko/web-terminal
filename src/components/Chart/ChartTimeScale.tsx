@@ -127,6 +127,7 @@ export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
   font-size: 12px;
   line-height: 16px;
   transition: all 0.2s ease;
+  will-change: background;
 
   &:hover {
     background: radial-gradient(

@@ -27,7 +27,7 @@ function AccountSwitcherDropdown() {
                         fontSize="16px"
                       >
                         {mainAppStore.activeAccount?.symbol}
-                        {quotesStore.available.toFixed(2)}
+                        {mainAppStore.activeAccount?.balance.toFixed(2)}
                       </PrimaryTextSpan>
                     )}
                   </Observer>
