@@ -33,11 +33,16 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
       accountId: string,
       type: AccountTypeEnum
     ) {
-      const response = await API.getFavoriteInstrumets({
-        type,
-        accountId,
-      });
-      instrumentsStore.setActiveInstrumentsIds(response);
+      try {
+        const response = await API.getFavoriteInstrumets({
+          type,
+          accountId,
+        });
+        instrumentsStore.setActiveInstrumentsIds(response);
+        instrumentsStore.setActiveInstrument(
+          response[0] || instrumentsStore.instruments[0].instrumentItem.id
+        );
+      } catch (error) {}
     }
 
     // sh@t from backend

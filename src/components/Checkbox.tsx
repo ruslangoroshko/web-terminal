@@ -62,7 +62,6 @@ const Label = styled.label`
 `;
 
 const CheckboxElement = styled(FlexContainer)`
-  transition: background-color 0.2s ease;
   overflow: hidden;
   padding: 4px;
   border: 1px solid rgba(255, 255, 255, 0.19);
@@ -72,7 +71,8 @@ const CheckboxElement = styled(FlexContainer)`
   height: 16px;
   margin-right: 8px;
   position: relative;
-  transition: all 0.4s ease;
+  transition: background-color 0.2s ease;
+  will-change: background-color;
 
   &.hasError {
     border-color: #ff2b47;

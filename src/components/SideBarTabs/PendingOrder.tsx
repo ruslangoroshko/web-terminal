@@ -105,6 +105,7 @@ function PendingOrder(props: Props) {
               ref={instrumentRef}
               stopLossValue={pendingOrder.sl}
               takeProfitValue={pendingOrder.tp}
+              operation={pendingOrder.operation}
               investedAmount={pendingOrder.investmentAmount}
               updateSLTP={() => {}}
               isDisabled
@@ -131,6 +132,7 @@ export default PendingOrder;
 
 const OrderWrapper = styled(FlexContainer)`
   transition: all 0.2s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.3);

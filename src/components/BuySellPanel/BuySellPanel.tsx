@@ -31,8 +31,12 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import { MixpanelMarketOrder } from '../../types/MixpanelTypes';
 import BadRequestPopup from '../BadRequestPopup';
+import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 
 // TODO: too much code, refactor
+
+const PRECISION_USD = 2;
+const DEFAULT_INVEST_AMOUNT = 10;
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -52,7 +56,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     instrumentId: instrument.id,
     operation: null,
     multiplier: instrument.multiplier[0],
-    investmentAmount: 50,
+    investmentAmount: DEFAULT_INVEST_AMOUNT,
     openPrice: null,
   };
 
@@ -64,9 +68,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         `Minimum trade volume [$${instrument.minOperationVolume /
           initialValues.multiplier}]. Please increase your trade amount or multiplier.`
       )
-      .lessThan(
-        quotesStore.available,
-        `Insufficient funds to open a position. You have only [${quotesStore.available}]`
+      .test(
+        Fields.AMOUNT,
+        `Insufficient funds to open a position. You have only [${mainAppStore.activeAccount?.balance}]`,
+        value => {
+          if (value) {
+            return value < (mainAppStore.activeAccount?.balance || 0);
+          }
+          return true;
+        }
       )
       .max(
         instrument.maxOperationVolume / initialValues.multiplier,
@@ -75,8 +85,70 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       )
       .required('Please fill Invest amount'),
     multiplier: yup.number().required('Required amount'),
-    tp: yup.number().nullable(),
-    sl: yup.number().nullable(),
+    tp: yup
+      .number()
+      .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
+        is: (operation, tpType) =>
+          operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
+        then: yup
+          .number()
+          .nullable()
+          .test(
+            Fields.TAKE_PROFIT,
+            'Error message: This level is higher or lower than the one currently allowed',
+            value => {
+              const currentPrice = quotesStore.quotes[instrument.id].ask.c;
+              return value > currentPrice;
+            }
+          ),
+      })
+      .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
+        is: (operation, tpType) =>
+          operation === AskBidEnum.Sell && tpType === TpSlTypeEnum.Price,
+        then: yup
+          .number()
+          .nullable()
+          .test(
+            Fields.TAKE_PROFIT,
+            'Error message: This level is higher or lower than the one currently allowed',
+            value => {
+              const currentPrice = quotesStore.quotes[instrument.id].ask.c;
+              return value < currentPrice;
+            }
+          ),
+      }),
+    sl: yup
+      .number()
+      .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
+        is: (operation, slType) =>
+          operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
+        then: yup
+          .number()
+          .nullable()
+          .test(
+            Fields.STOP_LOSS,
+            'Error message: This level is higher or lower than the one currently allowed',
+            value => {
+              const currentPrice = quotesStore.quotes[instrument.id].bid.c;
+              return value < currentPrice;
+            }
+          ),
+      })
+      .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
+        is: (operation, slType) =>
+          operation === AskBidEnum.Sell && slType === TpSlTypeEnum.Price,
+        then: yup
+          .number()
+          .nullable()
+          .test(
+            Fields.STOP_LOSS,
+            'Error message: This level is higher or lower than the one currently allowed',
+            value => {
+              const currentPrice = quotesStore.quotes[instrument.id].bid.c;
+              return value > currentPrice;
+            }
+          ),
+      }),
     openPrice: yup.number().nullable(),
   });
 
@@ -168,12 +240,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     setFieldValue(Fields.INSTRUMNENT_ID, instrument.id);
   }, [instrument]);
 
+  useEffect(() => {
+    setFieldValue(Fields.ACCOUNT_ID, mainAppStore.activeAccount?.id);
+  }, [mainAppStore.activeAccount]);
+
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
-      ? +(values.investmentAmount + 1).toFixed(instrument.digits)
+      ? Number(+values.investmentAmount + 1).toFixed(PRECISION_USD)
       : values.investmentAmount < 1
       ? 0
-      : +(values.investmentAmount - 1).toFixed(instrument.digits);
+      : Number(+values.investmentAmount - 1).toFixed(PRECISION_USD);
     setFieldValue(Fields.AMOUNT, newValue);
   };
 
@@ -204,7 +280,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const investOnBeforeInputHandler = (e: any) => {
-    if (!e.data.match(/^\d|\.|\,/)) {
+    if (!e.data.match(/^[0-9.,]*$/)) {
       e.preventDefault();
       return;
     }
@@ -217,6 +293,25 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         return;
       }
     }
+    // see another regex
+    const regex = `^[0-9]+(\.[0-9]{1,${PRECISION_USD - 1}})?$`;
+
+    if (
+      e.currentTarget.value &&
+      e.currentTarget.value[e.currentTarget.value.length - 1] !== '.' &&
+      !e.currentTarget.value.match(regex)
+    ) {
+      e.preventDefault();
+      return;
+    }
+
+    if (
+      ![',', '.'].includes(e.data) &&
+      +(e.currentTarget.value + e.data) > 10 ** 7
+    ) {
+      e.preventDefault();
+      return;
+    }
   };
 
   const investOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -227,6 +322,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   const investOnFocusHandler = () => {
     setFieldError(Fields.AMOUNT, '');
     toggleInvestemAmountDropdown(true);
+  };
+
+  const investOnBlurHandler = () => {
+    if (!values.investmentAmount) {
+      setFieldValue(Fields.AMOUNT, DEFAULT_INVEST_AMOUNT);
+    }
   };
 
   useEffect(() => {
@@ -263,7 +364,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              `` The amount you’d like to invest
+              The amount you’d like to invest
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -294,6 +395,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               onBeforeInput={investOnBeforeInputHandler}
               onChange={investOnChangeHandler}
               onFocus={investOnFocusHandler}
+              onBlur={investOnBlurHandler}
             />
             {investedAmountDropdown && (
               <InvestAmountDropdown
@@ -371,17 +473,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           </InformationPopup>
         </FlexContainer>
         <FlexContainer position="relative" flexDirection="column">
-          {(touched.sl && errors.sl) ||
-            (touched.tp && errors.tp && (
-              <ErropPopup
-                textColor="#fffccc"
-                bgColor={ColorsPallete.RAZZMATAZZ}
-                classNameTooltip={Fields.AMOUNT}
-                direction="left"
-              >
-                {errors.sl || errors.tp}
-              </ErropPopup>
-            ))}
+          {((touched.sl && errors.sl) || (touched.tp && errors.tp)) && (
+            <ErropPopup
+              textColor="#fffccc"
+              bgColor={ColorsPallete.RAZZMATAZZ}
+              classNameTooltip={Fields.AMOUNT}
+              direction="left"
+            >
+              {errors.sl || errors.tp}
+            </ErropPopup>
+          )}
           <AutoClosePopup
             setFieldValue={setFieldValue}
             setFieldError={setFieldError}
@@ -402,7 +503,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             {() => (
               <PrimaryTextSpan fontSize="12px" color="#fffccc">
                 {mainAppStore.activeAccount?.symbol}
-                {values.investmentAmount * values.multiplier}
+                {(values.investmentAmount * values.multiplier).toFixed(
+                  PRECISION_USD
+                )}
               </PrimaryTextSpan>
             )}
           </Observer>
@@ -523,6 +626,7 @@ const ButtonSell = styled(ButtonWithoutStyles)`
   align-items: center;
   margin-bottom: 18px;
   transition: background-color 0.2s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: #ff557e;

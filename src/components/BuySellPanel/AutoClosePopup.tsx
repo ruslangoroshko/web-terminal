@@ -90,6 +90,7 @@ function AutoClosePopup(props: Props) {
             handleApply={handleApply}
             stopLossValue={values.sl}
             takeProfitValue={values.tp}
+            operation={values.operation}
             toggle={toggle}
             investedAmount={+values.investmentAmount}
           />

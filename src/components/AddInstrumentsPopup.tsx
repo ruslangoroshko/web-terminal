@@ -151,6 +151,7 @@ const SearchInput = styled.input`
   line-height: 14px;
   padding-bottom: 4px;
   transition: border-bottom 0.2s ease;
+  will-change: border-bottom;
 
   &:focus {
     content: '';

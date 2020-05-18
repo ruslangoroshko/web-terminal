@@ -277,6 +277,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
             <AutoClosePopupSideBar
               ref={instrumentRef}
               stopLossValue={sl}
+              operation={operation}
               takeProfitValue={tp}
               investedAmount={investmentAmount}
               updateSLTP={updateSLTP}
@@ -316,6 +317,7 @@ export default ActivePositionsPortfolioTab;
 
 const InstrumentInfoWrapper = styled(FlexContainer)`
   transition: all 0.2s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.3);
@@ -333,6 +335,7 @@ const SetSLTPButton = styled(FlexContainer)`
   background-color: transparent;
   padding: 4px 8px;
   transition: background-color 0.2s ease;
+  will-change: background-color;
   border-radius: 4px;
 
   &:hover {

@@ -50,6 +50,7 @@ const AccordionButton = styled(ButtonWithoutStyles)<{
   display: flex;
   align-items: center;
   transition: background-color 0.6s ease;
+  will-change: background-color;
 
   &:hover {
     background-color: #b4b9c5;
@@ -65,4 +66,5 @@ const Content = styled.div<{ maxHeight?: string }>`
   max-height: ${props => props.maxHeight};
   overflow: hidden;
   transition: max-height 0.6s ease;
+  will-change: max-height;
 `;

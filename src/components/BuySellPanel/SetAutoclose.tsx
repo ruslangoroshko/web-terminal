@@ -15,10 +15,14 @@ import { Observer } from 'mobx-react-lite';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
+import { AskBidEnum } from '../../enums/AskBid';
+
+const PRECISION = 2;
 
 interface Props {
   takeProfitValue?: number;
   stopLossValue?: number;
+  operation: AskBidEnum | null;
   toggle: (arg0: boolean) => void;
   handleApply: () => void;
   investedAmount: number;
@@ -32,23 +36,25 @@ function SetAutoclose(props: Props) {
     toggle,
     handleApply,
     investedAmount,
+    operation,
     isDisabled,
   } = props;
 
-  const { SLTPStore, instrumentsStore } = useStores();
+  const { SLTPStore, quotesStore, instrumentsStore } = useStores();
 
   const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
-    SLTPStore.takeProfitValue = e.target.value;
+    SLTPStore.takeProfitValue = e.target.value.replace(',', '.');
   };
 
   const [tpError, setTpError] = useState('');
   const [slError, setSlError] = useState('');
 
   const handleBeforeInput = (e: any) => {
-    if (!e.data.match(/^\d|\.|\,/)) {
+    if (!e.data.match(/^[0-9.,]*$/)) {
       e.preventDefault();
       return;
     }
+
     if ([',', '.'].includes(e.data)) {
       if (
         !e.currentTarget.value ||
@@ -58,13 +64,20 @@ function SetAutoclose(props: Props) {
         return;
       }
     }
-    const regex = `^[0-9]+(\.[0-9]{1,${instrumentsStore.activeInstrument!
-      .instrumentItem.digits - 1}})?$`;
+    const regex = `^[0-9]+(\.[0-9]{1,${PRECISION - 1}})?$`;
 
     if (
       e.currentTarget.value &&
       e.currentTarget.value[e.currentTarget.value.length - 1] !== '.' &&
       !e.currentTarget.value.match(regex)
+    ) {
+      e.preventDefault();
+      return;
+    }
+
+    if (
+      ![',', '.'].includes(e.data) &&
+      +(e.currentTarget.value + e.data) > 10 ** 7
     ) {
       e.preventDefault();
       return;
@@ -80,8 +93,9 @@ function SetAutoclose(props: Props) {
   const handleStopLossBlur = () => {
     if (+SLTPStore.stopLossValue > investedAmount) {
       setSlError('Stop loss level can not be higher than the Invest amount');
+    } else {
+      setSlError('');
     }
-    setSlError('');
 
     if (SLTPStore.stopLossValue) {
       SLTPStore.stopLossValue = `${+SLTPStore.stopLossValue}`;
@@ -89,6 +103,7 @@ function SetAutoclose(props: Props) {
   };
 
   const handleChangeLoss = (e: ChangeEvent<HTMLInputElement>) => {
+    setSlError('');
     SLTPStore.stopLossValue = e.target.value;
   };
 

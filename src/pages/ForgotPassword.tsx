@@ -226,6 +226,7 @@ const LinkForgot = styled(Link)`
   color: #fff;
   text-decoration: none;
   transition: all 0.4s ease;
+  will-change: color;
 
   &:hover {
     text-decoration: none;
@@ -244,6 +245,7 @@ const LinkForgotSuccess = styled(Link)`
   color: #fffcd1;
   border-radius: 5px;
   transition: all 0.4s ease;
+  will-change: background-color;
   width: 100%;
 
   &:hover {
