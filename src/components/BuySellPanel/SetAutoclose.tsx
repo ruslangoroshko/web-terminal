@@ -15,7 +15,6 @@ import { Observer } from 'mobx-react-lite';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
-import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { AskBidEnum } from '../../enums/AskBid';
 
 const PRECISION = 2;

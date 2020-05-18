@@ -31,10 +31,12 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import { MixpanelMarketOrder } from '../../types/MixpanelTypes';
 import BadRequestPopup from '../BadRequestPopup';
+import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 
 // TODO: too much code, refactor
 
 const PRECISION_USD = 2;
+const DEFAULT_INVEST_AMOUNT = 10;
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -54,9 +56,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     instrumentId: instrument.id,
     operation: null,
     multiplier: instrument.multiplier[0],
-    investmentAmount: 50,
+    investmentAmount: DEFAULT_INVEST_AMOUNT,
     openPrice: null,
   };
+
   const validationSchema = yup.object().shape({
     investmentAmount: yup
       .number()
@@ -68,7 +71,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       .test(
         Fields.AMOUNT,
         `Insufficient funds to open a position. You have only [${mainAppStore.activeAccount?.balance}]`,
-        value => value < (mainAppStore.activeAccount?.balance || 0)
+        value => {
+          if (value) {
+            return value < (mainAppStore.activeAccount?.balance || 0);
+          }
+          return true;
+        }
       )
       .max(
         instrument.maxOperationVolume / initialValues.multiplier,
@@ -79,8 +87,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     multiplier: yup.number().required('Required amount'),
     tp: yup
       .number()
-      .when(Fields.OPERATION, {
-        is: AskBidEnum.Buy,
+      .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
+        is: (operation, tpType) =>
+          operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
         then: yup
           .number()
           .nullable()
@@ -93,8 +102,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             }
           ),
       })
-      .when(Fields.OPERATION, {
-        is: AskBidEnum.Sell,
+      .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
+        is: (operation, tpType) =>
+          operation === AskBidEnum.Sell && tpType === TpSlTypeEnum.Price,
         then: yup
           .number()
           .nullable()
@@ -109,8 +119,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       }),
     sl: yup
       .number()
-      .when(Fields.OPERATION, {
-        is: AskBidEnum.Buy,
+      .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
+        is: (operation, slType) =>
+          operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
         then: yup
           .number()
           .nullable()
@@ -123,8 +134,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             }
           ),
       })
-      .when(Fields.OPERATION, {
-        is: AskBidEnum.Sell,
+      .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
+        is: (operation, slType) =>
+          operation === AskBidEnum.Sell && slType === TpSlTypeEnum.Price,
         then: yup
           .number()
           .nullable()
@@ -312,6 +324,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     toggleInvestemAmountDropdown(true);
   };
 
+  const investOnBlurHandler = () => {
+    if (!values.investmentAmount) {
+      setFieldValue(Fields.AMOUNT, DEFAULT_INVEST_AMOUNT);
+    }
+  };
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -377,6 +395,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               onBeforeInput={investOnBeforeInputHandler}
               onChange={investOnChangeHandler}
               onFocus={investOnFocusHandler}
+              onBlur={investOnBlurHandler}
             />
             {investedAmountDropdown && (
               <InvestAmountDropdown
