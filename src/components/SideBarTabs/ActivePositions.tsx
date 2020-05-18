@@ -277,6 +277,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
             <AutoClosePopupSideBar
               ref={instrumentRef}
               stopLossValue={sl}
+              operation={operation}
               takeProfitValue={tp}
               investedAmount={investmentAmount}
               updateSLTP={updateSLTP}

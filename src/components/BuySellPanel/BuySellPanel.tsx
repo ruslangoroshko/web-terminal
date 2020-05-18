@@ -34,7 +34,7 @@ import BadRequestPopup from '../BadRequestPopup';
 
 // TODO: too much code, refactor
 
-const PRECISION = 2;
+const PRECISION_USD = 2;
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -66,7 +66,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           initialValues.multiplier}]. Please increase your trade amount or multiplier.`
       )
       .test(
-        'investmentAmount',
+        Fields.AMOUNT,
         `Insufficient funds to open a position. You have only [${mainAppStore.activeAccount?.balance}]`,
         value => value < (mainAppStore.activeAccount?.balance || 0)
       )
@@ -77,8 +77,66 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       )
       .required('Please fill Invest amount'),
     multiplier: yup.number().required('Required amount'),
-    tp: yup.number().nullable(),
-    sl: yup.number().nullable(),
+    tp: yup
+      .number()
+      .when(Fields.OPERATION, {
+        is: AskBidEnum.Buy,
+        then: yup
+          .number()
+          .nullable()
+          .test(
+            Fields.TAKE_PROFIT,
+            'Error message: This level is higher or lower than the one currently allowed',
+            value => {
+              const currentPrice = quotesStore.quotes[instrument.id].ask.c;
+              return value > currentPrice;
+            }
+          ),
+      })
+      .when(Fields.OPERATION, {
+        is: AskBidEnum.Sell,
+        then: yup
+          .number()
+          .nullable()
+          .test(
+            Fields.TAKE_PROFIT,
+            'Error message: This level is higher or lower than the one currently allowed',
+            value => {
+              const currentPrice = quotesStore.quotes[instrument.id].ask.c;
+              return value < currentPrice;
+            }
+          ),
+      }),
+    sl: yup
+      .number()
+      .when(Fields.OPERATION, {
+        is: AskBidEnum.Buy,
+        then: yup
+          .number()
+          .nullable()
+          .test(
+            Fields.STOP_LOSS,
+            'Error message: This level is higher or lower than the one currently allowed',
+            value => {
+              const currentPrice = quotesStore.quotes[instrument.id].bid.c;
+              return value < currentPrice;
+            }
+          ),
+      })
+      .when(Fields.OPERATION, {
+        is: AskBidEnum.Sell,
+        then: yup
+          .number()
+          .nullable()
+          .test(
+            Fields.STOP_LOSS,
+            'Error message: This level is higher or lower than the one currently allowed',
+            value => {
+              const currentPrice = quotesStore.quotes[instrument.id].bid.c;
+              return value > currentPrice;
+            }
+          ),
+      }),
     openPrice: yup.number().nullable(),
   });
 
@@ -176,10 +234,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
-      ? Number(+values.investmentAmount + 1).toFixed(2)
+      ? Number(+values.investmentAmount + 1).toFixed(PRECISION_USD)
       : values.investmentAmount < 1
       ? 0
-      : Number(+values.investmentAmount - 1).toFixed(2);
+      : Number(+values.investmentAmount - 1).toFixed(PRECISION_USD);
     setFieldValue(Fields.AMOUNT, newValue);
   };
 
@@ -224,7 +282,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       }
     }
     // see another regex
-    const regex = `^[0-9]+(\.[0-9]{1,${PRECISION - 1}})?$`;
+    const regex = `^[0-9]+(\.[0-9]{1,${PRECISION_USD - 1}})?$`;
 
     if (
       e.currentTarget.value &&
@@ -288,7 +346,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              `` The amount you’d like to invest
+              The amount you’d like to invest
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -396,17 +454,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           </InformationPopup>
         </FlexContainer>
         <FlexContainer position="relative" flexDirection="column">
-          {(touched.sl && errors.sl) ||
-            (touched.tp && errors.tp && (
-              <ErropPopup
-                textColor="#fffccc"
-                bgColor={ColorsPallete.RAZZMATAZZ}
-                classNameTooltip={Fields.AMOUNT}
-                direction="left"
-              >
-                {errors.sl || errors.tp}
-              </ErropPopup>
-            ))}
+          {((touched.sl && errors.sl) || (touched.tp && errors.tp)) && (
+            <ErropPopup
+              textColor="#fffccc"
+              bgColor={ColorsPallete.RAZZMATAZZ}
+              classNameTooltip={Fields.AMOUNT}
+              direction="left"
+            >
+              {errors.sl || errors.tp}
+            </ErropPopup>
+          )}
           <AutoClosePopup
             setFieldValue={setFieldValue}
             setFieldError={setFieldError}
@@ -427,7 +484,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             {() => (
               <PrimaryTextSpan fontSize="12px" color="#fffccc">
                 {mainAppStore.activeAccount?.symbol}
-                {(values.investmentAmount * values.multiplier).toFixed(2)}
+                {(values.investmentAmount * values.multiplier).toFixed(
+                  PRECISION_USD
+                )}
               </PrimaryTextSpan>
             )}
           </Observer>

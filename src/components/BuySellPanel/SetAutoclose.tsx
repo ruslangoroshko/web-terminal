@@ -15,12 +15,15 @@ import { Observer } from 'mobx-react-lite';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
+import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
+import { AskBidEnum } from '../../enums/AskBid';
 
 const PRECISION = 2;
 
 interface Props {
   takeProfitValue?: number;
   stopLossValue?: number;
+  operation: AskBidEnum | null;
   toggle: (arg0: boolean) => void;
   handleApply: () => void;
   investedAmount: number;
@@ -34,10 +37,11 @@ function SetAutoclose(props: Props) {
     toggle,
     handleApply,
     investedAmount,
+    operation,
     isDisabled,
   } = props;
 
-  const { SLTPStore, instrumentsStore } = useStores();
+  const { SLTPStore, quotesStore, instrumentsStore } = useStores();
 
   const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
     SLTPStore.takeProfitValue = e.target.value.replace(',', '.');
@@ -90,8 +94,9 @@ function SetAutoclose(props: Props) {
   const handleStopLossBlur = () => {
     if (+SLTPStore.stopLossValue > investedAmount) {
       setSlError('Stop loss level can not be higher than the Invest amount');
+    } else {
+      setSlError('');
     }
-    setSlError('');
 
     if (SLTPStore.stopLossValue) {
       SLTPStore.stopLossValue = `${+SLTPStore.stopLossValue}`;
@@ -99,6 +104,7 @@ function SetAutoclose(props: Props) {
   };
 
   const handleChangeLoss = (e: ChangeEvent<HTMLInputElement>) => {
+    setSlError('');
     SLTPStore.stopLossValue = e.target.value;
   };
 

@@ -105,6 +105,7 @@ function PendingOrder(props: Props) {
               ref={instrumentRef}
               stopLossValue={pendingOrder.sl}
               takeProfitValue={pendingOrder.tp}
+              operation={pendingOrder.operation}
               investedAmount={pendingOrder.investmentAmount}
               updateSLTP={() => {}}
               isDisabled

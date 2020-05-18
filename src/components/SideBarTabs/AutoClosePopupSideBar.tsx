@@ -2,12 +2,14 @@ import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import { AskBidEnum } from '../../enums/AskBid';
 
 interface Props {
   updateSLTP: () => void;
   stopLossValue?: number;
   takeProfitValue?: number;
   investedAmount: number;
+  operation: AskBidEnum;
   isDisabled?: boolean;
   children: React.ReactNode;
 }
@@ -21,6 +23,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       investedAmount,
       isDisabled,
       children,
+      operation,
     } = props;
 
     const [on, toggle] = useState(false);
@@ -91,6 +94,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               handleApply={updateSLTP}
               stopLossValue={Math.abs(stopLossValue || 0)}
               takeProfitValue={takeProfitValue}
+              operation={operation}
               toggle={toggle}
               investedAmount={investedAmount}
               isDisabled={isDisabled}
