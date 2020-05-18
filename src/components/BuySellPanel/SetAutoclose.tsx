@@ -49,6 +49,7 @@ function SetAutoclose(props: Props) {
       e.preventDefault();
       return;
     }
+    
     if ([',', '.'].includes(e.data)) {
       if (
         !e.currentTarget.value ||
@@ -65,6 +66,14 @@ function SetAutoclose(props: Props) {
       e.currentTarget.value &&
       e.currentTarget.value[e.currentTarget.value.length - 1] !== '.' &&
       !e.currentTarget.value.match(regex)
+    ) {
+      e.preventDefault();
+      return;
+    }
+
+    if (
+      ![',', '.'].includes(e.data) &&
+      +(e.currentTarget.value + e.data) > 10 ** 7
     ) {
       e.preventDefault();
       return;

@@ -75,6 +75,14 @@ function PurchaseAtPopup(props: Props) {
       e.preventDefault();
       return;
     }
+
+    if (
+      ![',', '.'].includes(e.data) &&
+      +(e.currentTarget.value + e.data) > 10 ** 7
+    ) {
+      e.preventDefault();
+      return;
+    }
   };
 
   const clearPurchaseAt = () => {

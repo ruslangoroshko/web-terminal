@@ -221,6 +221,25 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         return;
       }
     }
+
+    const regex = `^[0-9]+(\.[0-9]{1,${instrument.digits - 1}})?$`;
+
+    if (
+      e.currentTarget.value &&
+      e.currentTarget.value[e.currentTarget.value.length - 1] !== '.' &&
+      !e.currentTarget.value.match(regex)
+    ) {
+      e.preventDefault();
+      return;
+    }
+
+    if (
+      ![',', '.'].includes(e.data) &&
+      +(e.currentTarget.value + e.data) > 10 ** 7
+    ) {
+      e.preventDefault();
+      return;
+    }
   };
 
   const investOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
