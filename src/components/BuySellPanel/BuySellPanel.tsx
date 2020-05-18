@@ -34,6 +34,8 @@ import BadRequestPopup from '../BadRequestPopup';
 
 // TODO: too much code, refactor
 
+const PRECISION = 2;
+
 interface Props {
   instrument: InstrumentModelWSDTO;
 }
@@ -221,8 +223,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         return;
       }
     }
-
-    const regex = `^[0-9]+(\.[0-9]{1,${instrument.digits - 1}})?$`;
+    // see another regex
+    const regex = `^[0-9]+(\.[0-9]{1,${PRECISION - 1}})?$`;
 
     if (
       e.currentTarget.value &&
@@ -425,7 +427,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             {() => (
               <PrimaryTextSpan fontSize="12px" color="#fffccc">
                 {mainAppStore.activeAccount?.symbol}
-                {values.investmentAmount * values.multiplier}
+                {(values.investmentAmount * values.multiplier).toFixed(2)}
               </PrimaryTextSpan>
             )}
           </Observer>
