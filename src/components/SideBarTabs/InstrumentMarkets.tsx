@@ -104,7 +104,7 @@ const InstrumentWrapper = styled(FlexContainer)`
 const InstrumentHoverWrapper = styled(FlexContainer)`
   transition: all 0.2s ease;
   will-change: background-color;
-
+  min-height: 57px;
   &:hover {
     background-color: rgba(0, 0, 0, 0.3);
     cursor: pointer;
