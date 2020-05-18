@@ -16,6 +16,8 @@ import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
 
+const PRECISION = 2;
+
 interface Props {
   takeProfitValue?: number;
   stopLossValue?: number;
@@ -49,7 +51,7 @@ function SetAutoclose(props: Props) {
       e.preventDefault();
       return;
     }
-    
+
     if ([',', '.'].includes(e.data)) {
       if (
         !e.currentTarget.value ||
@@ -59,8 +61,7 @@ function SetAutoclose(props: Props) {
         return;
       }
     }
-    const regex = `^[0-9]+(\.[0-9]{1,${instrumentsStore.activeInstrument!
-      .instrumentItem.digits - 1}})?$`;
+    const regex = `^[0-9]+(\.[0-9]{1,${PRECISION - 1}})?$`;
 
     if (
       e.currentTarget.value &&
