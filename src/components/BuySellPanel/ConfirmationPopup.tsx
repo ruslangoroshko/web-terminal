@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import IconClose from '../../assets/svg/icon-close.svg';
@@ -25,8 +25,25 @@ function ConfirmationPopup(props: Props) {
   const { closePopup, values, instrumentId, digits, disabled } = props;
   const { quotesStore, mainAppStore } = useStores();
 
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (e: any) => {
+    console.log('click outside')
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      closePopup();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <FlexContainer
+      ref={wrapperRef}
       padding="24px"
       width="248px"
       backgroundColor="#1c2026"
