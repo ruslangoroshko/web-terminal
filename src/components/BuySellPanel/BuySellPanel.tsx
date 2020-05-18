@@ -176,10 +176,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
-      ? +(values.investmentAmount + 1).toFixed(instrument.digits)
+      ? Number(+values.investmentAmount + 1).toFixed(2)
       : values.investmentAmount < 1
       ? 0
-      : +(values.investmentAmount - 1).toFixed(instrument.digits);
+      : Number(+values.investmentAmount - 1).toFixed(2);
     setFieldValue(Fields.AMOUNT, newValue);
   };
 
