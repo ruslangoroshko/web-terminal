@@ -24,7 +24,7 @@ function PurchaseAtPopup(props: Props) {
   const { setFieldValue, purchaseAtValue, instrumentId, digits } = props;
 
   const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
-    SLTPStore.purchaseAtValue = e.target.value;
+    SLTPStore.purchaseAtValue = e.target.value.replace(',', '.');
   };
 
   const [on, toggle] = useState(false);
@@ -54,7 +54,7 @@ function PurchaseAtPopup(props: Props) {
   };
 
   const handleBeforeInput = (e: any) => {
-    if (!e.data.match(/^\d|\.|\,/)) {
+    if (!e.data.match(/^[0-9.,]*$/)) {
       e.preventDefault();
       return;
     }
@@ -354,7 +354,7 @@ const ClearPurchaseAtButton = styled(ButtonWithoutStyles)`
   right: 12px;
   transition: background-color 0.2s ease;
   will-change: background-color;
-  
+
   &:hover {
     background-color: rgba(255, 255, 255, 0.5);
   }

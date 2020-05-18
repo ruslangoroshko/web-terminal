@@ -38,14 +38,14 @@ function SetAutoclose(props: Props) {
   const { SLTPStore, instrumentsStore } = useStores();
 
   const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
-    SLTPStore.takeProfitValue = e.target.value;
+    SLTPStore.takeProfitValue = e.target.value.replace(',', '.');
   };
 
   const [tpError, setTpError] = useState('');
   const [slError, setSlError] = useState('');
 
   const handleBeforeInput = (e: any) => {
-    if (!e.data.match(/^\d|\.|\,/)) {
+    if (!e.data.match(/^[0-9.,]*$/)) {
       e.preventDefault();
       return;
     }

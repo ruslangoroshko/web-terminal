@@ -208,7 +208,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const investOnBeforeInputHandler = (e: any) => {
-    if (!e.data.match(/^\d|\.|\,/)) {
+    if (!e.data.match(/^[0-9.,]*$/)) {
       e.preventDefault();
       return;
     }
