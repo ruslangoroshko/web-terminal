@@ -34,17 +34,7 @@ import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
 import { getProcessId } from './getProcessId';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
-<<<<<<< HEAD
-import {
-  GetCryptoWalletRequest,
-  GetCryptoWalletResponse,
-  DepositCreateRequest,
-  DepositCreateResponse,
-} from '../types/DepositAPITypes';
-import API_DEPOSIT from './apiDeposit';
-=======
-import { createDepositParams, getCryptoWalletParams, DepositCreateDTO, getCryptoWalletDTO } from "../types/DepositTypes";
->>>>>>> b63b4825f76a2915419368cfaf7195525c26f55a
+import { GetCryptoWalletDTO, GetCryptoWalletParams, CreateDepositParams, DepositCreateDTO } from '../types/DepositTypes';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -300,15 +290,15 @@ class API {
     return response.data
   }
 
-  createDeposit = async (params: createDepositParams) => {
+  createDeposit = async (params: CreateDepositParams) => {
     const response = await axios.post<DepositCreateDTO[]>(
       `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE}`, params
     );
     return response.data;
   };
 
-  getCryptoWallet = async (params: getCryptoWalletParams) => {
-    const response = await axios.post<getCryptoWalletDTO[]>(
+  getCryptoWallet = async (params: GetCryptoWalletParams) => {
+    const response = await axios.post<GetCryptoWalletDTO[]>(
       `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.GET_CRYPTO_WALLET}`, params
     );
     return response.data;

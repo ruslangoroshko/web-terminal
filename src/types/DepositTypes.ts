@@ -1,13 +1,13 @@
 import { DepositApiResponseCodes } from './../enums/DepositApiResponseCodes';
 
-export interface createDepositParams {
+export interface CreateDepositParams {
 	paymentMethod: string;
 	depositSum: number;
 	currency: string;
 	authToken: string;
 }
 
-export interface getCryptoWalletParams {
+export interface GetCryptoWalletParams {
 	authToken: string;
 	currency: string;
 }
@@ -17,7 +17,7 @@ export interface DepositCreateDTO {
 	redirectUrl: string;
 }
 
-export interface getCryptoWalletDTO {
+export interface GetCryptoWalletDTO {
 	status: DepositApiResponseCodes;
 	walletAddress: string;
 }

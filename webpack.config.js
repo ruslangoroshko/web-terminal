@@ -103,7 +103,7 @@ module.exports = (env, argv) => {
         API_DEPOSIT_STRING:
           argv.mode === 'production'
             ? JSON.stringify('/deposit')
-            : JSON.stringify('http://localhost:5678/deposit'),
+            : JSON.stringify('http://localhost:5688'),
         AUTH_TOKEN: JSON.stringify('TraderID'),
         CHARTING_LIBRARY_PATH:
           argv.mode === 'production'
