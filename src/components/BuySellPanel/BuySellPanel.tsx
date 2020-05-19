@@ -438,7 +438,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              The amount you’d like to invest
+              The coefficient that multiplies the potential profit and level of risk accordingly the value of Multiplier.
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -468,7 +468,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              The amount you’d like to invest
+              When the position reached the specified take profit or stop loss level, the position will be closed automatically.
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -585,7 +585,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              The amount you’d like to invest
+              Position will be opened automatically when the price reaches this level.
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
