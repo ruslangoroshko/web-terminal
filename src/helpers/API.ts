@@ -34,6 +34,7 @@ import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
 import { getProcessId } from './getProcessId';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+<<<<<<< HEAD
 import {
   GetCryptoWalletRequest,
   GetCryptoWalletResponse,
@@ -41,6 +42,9 @@ import {
   DepositCreateResponse,
 } from '../types/DepositAPITypes';
 import API_DEPOSIT from './apiDeposit';
+=======
+import { createDepositParams, getCryptoWalletParams, DepositCreateDTO, getCryptoWalletDTO } from "../types/DepositTypes";
+>>>>>>> b63b4825f76a2915419368cfaf7195525c26f55a
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -276,15 +280,11 @@ class API {
     return response.data;
   };
 
-  getFavoriteInstrumets = async (params: {
-    type: AccountTypeEnum;
-    accountId: string;
-  }) => {
+  getFavoriteInstrumets = async (params: { type: AccountTypeEnum, accountId: string }) => {
     const response = await axios.get<string[]>(
-      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`,
-      {
-        params,
-      }
+      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`, {
+      params
+    }
     );
     return response.data;
   };
@@ -295,24 +295,21 @@ class API {
     instruments: string[];
   }) => {
     const response = await axios.post<string[]>(
-      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`,
-      params
+      `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`, params
+    )
+    return response.data
+  }
+
+  createDeposit = async (params: createDepositParams) => {
+    const response = await axios.post<DepositCreateDTO[]>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE}`, params
     );
     return response.data;
   };
 
-  getCryptoWallet = async (params: GetCryptoWalletRequest) => {
-    const response = await axios.post<GetCryptoWalletResponse>(
-      `${API_DEPOSIT_STRING}${API_DEPOSIT.DEPOSIT.GET_CRYPTO_WALLET}`,
-      params
-    );
-    return response.data;
-  };
-
-  createDeposit = async (params: DepositCreateRequest) => {
-    const response = await axios.post<DepositCreateResponse>(
-      `${API_DEPOSIT_STRING}${API_DEPOSIT.DEPOSIT.CREATE}`,
-      params
+  getCryptoWallet = async (params: getCryptoWalletParams) => {
+    const response = await axios.post<getCryptoWalletDTO[]>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.GET_CRYPTO_WALLET}`, params
     );
     return response.data;
   };

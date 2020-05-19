@@ -11,6 +11,7 @@ import { paymentCurrencies } from '../../constants/paymentCurrencies';
 import Checkbox from '../Checkbox';
 import { Link } from 'react-router-dom';
 import { PrimaryButton } from '../../styles/Buttons';
+import API from '../../helpers/API';
 
 const VisaMasterCardForm = () => {
   const [amount, setAmount] = useState(1);
@@ -43,6 +44,21 @@ const VisaMasterCardForm = () => {
   const handleChangeCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
     setImCardHolder(event.target.checked);
   };
+
+  const handleClickDepositButton = () => {
+    const params = {
+      paymentMethod: '',
+	    depositSum: amount,
+	    currency: 'USD',
+	    authToken: ''
+    }
+    try {
+      const result = API.createDeposit(params);
+      console.log(result)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <FlexContainer flexDirection="column" padding="50px 0 0 0">
@@ -94,7 +110,7 @@ const VisaMasterCardForm = () => {
         </Checkbox>
       </FlexContainer>
       <FlexContainer marginBottom="40px">
-        <PrimaryButton padding="12px 20px" width="180px">
+        <PrimaryButton padding="12px 20px" width="180px" onClick={handleClickDepositButton}>
           <PrimaryTextSpan color="#003A38" fontSize="14px" fontWeight="bold">
             Deposit {amount}
           </PrimaryTextSpan>
