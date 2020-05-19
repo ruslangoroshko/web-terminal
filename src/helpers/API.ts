@@ -286,17 +286,16 @@ class API {
     return response.data
   }
 
-  // TODO ask: How to get api url ?
   createDeposit = async (params: createDepositParams) => {
     const response = await axios.post<DepositCreateDTO[]>(
-      `https://deposit-dev.monfex.biz${API_LIST.DEPOSIT.CREATE}`, params
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE}`, params
     );
     return response.data;
   };
 
   getCryptoWallet = async (params: getCryptoWalletParams) => {
     const response = await axios.post<getCryptoWalletDTO[]>(
-      `https://deposit-dev.monfex.biz${API_LIST.DEPOSIT.GET_CRYPTO_WALLET}`, params
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.GET_CRYPTO_WALLET}`, params
     );
     return response.data;
   };
