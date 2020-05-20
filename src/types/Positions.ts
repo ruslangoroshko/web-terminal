@@ -22,6 +22,7 @@ export interface OpenPendingOrder {
   instrumentId: string;
   operation: AskBidEnum;
   multiplier: number;
+  openPrice: number;
 }
 
 export interface OpenPositionModelFormik {
@@ -35,7 +36,7 @@ export interface OpenPositionModelFormik {
   sl: number | null;
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
-  openPrice: number | null;
+  openPrice?: number | null;
 }
 
 export interface OpenPositionResponseDTO {

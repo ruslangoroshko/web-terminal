@@ -127,6 +127,7 @@ function SetAutoclose(props: Props) {
       takeProfitValue !== null ? takeProfitValue.toString() : '';
     SLTPStore.stopLossValue =
       stopLossValue !== null ? stopLossValue.toString() : '';
+    console.log(stopLossType, takeProfitType);
     SLTPStore.autoCloseSLType =
       stopLossType !== null ? stopLossType : TpSlTypeEnum.Currency;
     SLTPStore.autoCloseTPType =
@@ -135,7 +136,7 @@ function SetAutoclose(props: Props) {
     return () => {
       return SLTPStore.clearStore();
     };
-  }, []);
+  }, [stopLossType, takeProfitType]);
 
   const removeSL = () => {
     SLTPStore.stopLossValue = '';
@@ -200,7 +201,7 @@ function SetAutoclose(props: Props) {
                 placeholder="Non Set"
                 onChange={handleChangeProfit}
                 onBlur={handleTakeProfitBlur}
-                value={SLTPStore.takeProfitValue || ''}
+                value={SLTPStore.takeProfitValue}
                 disabled={isDisabled}
               ></InputPnL>
               {!!SLTPStore.takeProfitValue && !isDisabled && (
@@ -273,7 +274,7 @@ function SetAutoclose(props: Props) {
                 placeholder="Non Set"
                 onChange={handleChangeLoss}
                 onBlur={handleStopLossBlur}
-                value={SLTPStore.stopLossValue || ''}
+                value={SLTPStore.stopLossValue}
                 disabled={isDisabled}
               ></InputPnL>
               {!!SLTPStore.stopLossValue && !isDisabled && (

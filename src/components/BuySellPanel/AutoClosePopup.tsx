@@ -2,7 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import { PrimaryTextSpan } from '../../styles/TextsElements';
+import {
+  PrimaryTextSpan,
+  PrimaryTextParagraph,
+} from '../../styles/TextsElements';
 import Fields from '../../constants/fields';
 import { OpenPositionModelFormik } from '../../types/Positions';
 import { useStores } from '../../hooks/useStores';
@@ -10,6 +13,7 @@ import SetAutoclose from './SetAutoclose';
 import IconClose from '../../assets/svg/icon-close.svg';
 import { SecondaryButton } from '../../styles/Buttons';
 import SvgIcon from '../SvgIcon';
+import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
@@ -30,10 +34,16 @@ function AutoClosePopup(props: Props) {
   };
 
   const handleApply = () => {
-    setFieldValue(Fields.TAKE_PROFIT, SLTPStore.takeProfitValue);
-    setFieldValue(Fields.STOP_LOSS, SLTPStore.stopLossValue);
-    setFieldValue(Fields.TAKE_PROFIT_TYPE, SLTPStore.autoCloseTPType);
-    setFieldValue(Fields.STOP_LOSS_TYPE, SLTPStore.autoCloseSLType);
+    setFieldValue(Fields.TAKE_PROFIT, +SLTPStore.takeProfitValue || null);
+    setFieldValue(Fields.STOP_LOSS, +SLTPStore.stopLossValue || null);
+    setFieldValue(
+      Fields.TAKE_PROFIT_TYPE,
+      SLTPStore.takeProfitValue ? SLTPStore.autoCloseTPType : null
+    );
+    setFieldValue(
+      Fields.STOP_LOSS_TYPE,
+      SLTPStore.stopLossValue ? SLTPStore.autoCloseSLType : null
+    );
   };
 
   const handleClickOutside = (e: any) => {
@@ -45,8 +55,8 @@ function AutoClosePopup(props: Props) {
   const clearSLTP = () => {
     setFieldValue(Fields.TAKE_PROFIT, null);
     setFieldValue(Fields.STOP_LOSS, null);
-    setFieldValue(Fields.TAKE_PROFIT_TYPE, undefined);
-    setFieldValue(Fields.STOP_LOSS_TYPE, undefined);
+    setFieldValue(Fields.TAKE_PROFIT_TYPE, null);
+    setFieldValue(Fields.STOP_LOSS_TYPE, null);
   };
 
   useEffect(() => {
@@ -57,6 +67,30 @@ function AutoClosePopup(props: Props) {
     };
   }, []);
 
+  const renderTPValue = () => {
+    return `+${
+      values.tp !== null
+        ? `${
+            values.tpType === TpSlTypeEnum.Currency
+              ? mainAppStore.activeAccount?.symbol
+              : ''
+          }${values.tp}`
+        : 'Non Set'
+    }`;
+  };
+
+  const renderSLValue = () => {
+    return `—${
+      values.sl !== null
+        ? `${
+            values.slType === TpSlTypeEnum.Currency
+              ? mainAppStore.activeAccount?.symbol
+              : ''
+          }${values.sl}`
+        : 'Non Set'
+    }`;
+  };
+
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
       <FlexContainer width="100%" position="relative">
@@ -65,14 +99,27 @@ function AutoClosePopup(props: Props) {
           type="button"
           hasValues={!!(values.sl || values.tp)}
         >
-          <PrimaryTextSpan color="#fffccc" fontSize="14px">
+          <FlexContainer flexDirection="column">
             {values.sl || values.tp ? (
-              `
-                +${mainAppStore.activeAccount?.symbol}${values.tp ? `${values.tp}` : 'Non Set'}
-                –${mainAppStore.activeAccount?.symbol}${values.sl ? `${values.sl}` : 'Non Set'}
-              `
-            ): 'Set'}
-          </PrimaryTextSpan>
+              <FlexContainer
+                justifyContent="space-between"
+                alignItems="center"
+                padding="0 20px 0 0"
+                width="100%"
+              >
+                <PrimaryTextSpan color="#fffccc" fontSize="14px">
+                  {renderTPValue()}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan color="#fffccc" fontSize="14px">
+                  {renderSLValue()}
+                </PrimaryTextSpan>
+              </FlexContainer>
+            ) : (
+              <PrimaryTextParagraph color="#fffccc" fontSize="14px">
+                Set
+              </PrimaryTextParagraph>
+            )}
+          </FlexContainer>
         </ButtonAutoClosePurchase>
         {!!(values.sl || values.tp) && (
           <ClearSLTPButton type="button" onClick={clearSLTP}>
@@ -90,6 +137,8 @@ function AutoClosePopup(props: Props) {
             handleApply={handleApply}
             stopLossValue={values.sl}
             takeProfitValue={values.tp}
+            stopLossType={values.slType}
+            takeProfitType={values.tpType}
             operation={values.operation}
             toggle={toggle}
             investedAmount={+values.investmentAmount}

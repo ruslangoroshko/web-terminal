@@ -15,7 +15,7 @@ import { SecondaryButton } from '../../styles/Buttons';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
-  purchaseAtValue: number | null;
+  purchaseAtValue?: number | null;
   instrumentId: string;
   digits: number;
 }

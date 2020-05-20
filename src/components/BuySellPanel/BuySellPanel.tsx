@@ -57,7 +57,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     operation: null,
     multiplier: instrument.multiplier[0],
     investmentAmount: DEFAULT_INVEST_AMOUNT,
-    openPrice: null,
+    tp: null,
+    sl: null,
+    slType: null,
+    tpType: null,
   };
 
   const validationSchema = yup.object().shape({
@@ -87,6 +90,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     multiplier: yup.number().required('Required amount'),
     tp: yup
       .number()
+      .nullable()
       .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
         is: (operation, tpType) =>
           operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
@@ -119,6 +123,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       }),
     sl: yup
       .number()
+      .nullable()
       .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
         is: (operation, slType) =>
           operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
@@ -150,6 +155,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           ),
       }),
     openPrice: yup.number().nullable(),
+    tpType: yup.number().nullable(),
+    slType: yup.number().nullable(),
   });
 
   const onSubmit = async (
@@ -159,14 +166,14 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     formikHelpers.setSubmitting(true);
     const { operation, ...otherValues } = values;
 
-    const modelToSubmit = {
-      ...otherValues,
-      operation: operation === null ? AskBidEnum.Buy : operation,
-      tpType: otherValues.tp ? otherValues.tpType : null,
-      slType: otherValues.sl ? otherValues.slType : null,
-    };
 
-    if (values.openPrice) {
+
+    if (otherValues.openPrice) {
+      const modelToSubmit = {
+        ...otherValues,
+        operation: operation === null ? AskBidEnum.Buy : operation,
+        openPrice: otherValues.openPrice || 0
+      };
       try {
         const response = await API.openPendingOrder(modelToSubmit);
 
@@ -192,6 +199,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         badRequestPopupStore.setMessage(error);
       }
     } else {
+      const modelToSubmit = {
+        ...otherValues,
+        operation: operation === null ? AskBidEnum.Buy : operation,
+      };
       try {
         const response = await API.openPosition(modelToSubmit);
         notificationStore.notificationMessage =
@@ -438,7 +449,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              The coefficient that multiplies the potential profit and level of risk accordingly the value of Multiplier.
+              The coefficient that multiplies the potential profit and level of
+              risk accordingly the value of Multiplier.
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -468,7 +480,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              When the position reached the specified take profit or stop loss level, the position will be closed automatically.
+              When the position reached the specified take profit or stop loss
+              level, the position will be closed automatically.
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -585,7 +598,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              Position will be opened automatically when the price reaches this level.
+              Position will be opened automatically when the price reaches this
+              level.
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
