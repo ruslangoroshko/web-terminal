@@ -11,20 +11,48 @@ import SvgIcon from '../SvgIcon';
 import QRCode from 'react-qr-code';
 import API from '../../helpers/API';
 import { useStores } from '../../hooks/useStores';
+import { GetCryptoWalletStatuses } from '../../enums/GetCryptoWalletStatuses';
+import {
+  GetCryptoWalletDTO,
+  GetCryptoWalletParams,
+} from '../../types/DepositTypes';
+import { DepositCurrency } from '../../enums/DepositCurrency';
+import { DepositApiResponseCodes } from '../../enums/DepositApiResponseCodes';
+import LoaderForComponents from '../LoaderForComponents';
+import { Observer } from 'mobx-react-lite';
+import NotificationPopup from '../NotificationPopup';
+import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 
 const BitcoinForm = () => {
   const [bitcoinWalletString, setBitcoinWalletString] = useState('');
-  const {} = useStores();
+  const [isLoading, setLoading] = useState(true);
+
+  const { mainAppStore, notificationStore } = useStores();
 
   useEffect(() => {
     async function fetchBitcoinString() {
       try {
-        const response = API.getCryptoWallet({
-          authToken: 'hEDza/n7UZ0HPUN8Vt15Iw/Omjrhx64lSaJskcEUNz7f5CvudKN2TQzOuVc8GVG5zO/VTpqxzBMqWVT9n5r5BQ==',
-          currency: 'USD'
+        const response = await API.getCryptoWallet({
+          authToken: mainAppStore.token || '',
+          currency: DepositCurrency.BTC,
         });
+
+        if (response.status === DepositApiResponseCodes.Success) {
+          setBitcoinWalletString(response.walletAddress);
+          setLoading(false);
+        } else {
+          console.log(response);
+          notificationStore.notificationMessage = `${response.status}`;
+          notificationStore.isSuccessfull = false;
+          notificationStore.openNotification();
+          setLoading(false);
+        }
       } catch (error) {
-        
+        // TODO - Add BadRequestPopup after marge
+        notificationStore.notificationMessage = error;
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+        setLoading(false);
       }
     }
 
@@ -33,6 +61,14 @@ const BitcoinForm = () => {
 
   return (
     <FlexContainer flexDirection="column" padding="24px 0">
+      <Observer>
+        {() => (
+          <NotificationPopup
+            show={notificationStore.isActiveNotification}
+          ></NotificationPopup>
+        )}
+      </Observer>
+      <LoaderForComponents withoutBackground={true} isLoading={isLoading} />
       <PrimaryTextParagraph
         fontSize="16px"
         color="#fffccc"
@@ -74,7 +110,9 @@ const BitcoinForm = () => {
         >
           {bitcoinWalletString}
         </PrimaryTextSpan>
-        <SvgIcon {...CopyIcon} fillColor="rgba(255, 255, 255, 0.6)" />
+        <ButtonWithoutStyles onClick={() => console.log('copy text')}>
+          <SvgIcon {...CopyIcon} fillColor="rgba(255, 255, 255, 0.6)" />
+        </ButtonWithoutStyles>
       </BitcoinWalletStringWrapper>
       <FlexContainer>
         <FlexContainer
