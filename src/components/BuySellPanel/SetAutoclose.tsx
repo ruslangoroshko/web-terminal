@@ -17,14 +17,15 @@ import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
 import { AskBidEnum } from '../../enums/AskBid';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
+import { PositionModelWSDTO } from '../../types/Positions';
 
 const PRECISION = 2;
 
 interface Props {
-  takeProfitValue: number | null;
-  takeProfitType: TpSlTypeEnum | null;
-  stopLossValue?: number;
-  stopLossType: TpSlTypeEnum | null;
+  takeProfitValue: PositionModelWSDTO['tp'];
+  takeProfitType: PositionModelWSDTO['tpType'];
+  stopLossValue: PositionModelWSDTO['sl'];
+  stopLossType: PositionModelWSDTO['slType'];
   operation: AskBidEnum | null;
   toggle: (arg0: boolean) => void;
   handleApply: () => void;
@@ -96,10 +97,7 @@ function SetAutoclose(props: Props) {
   };
 
   const handleStopLossBlur = () => {
-    if (
-    
-      +SLTPStore.stopLossValue > investedAmount
-    ) {
+    if (+SLTPStore.stopLossValue > investedAmount) {
       setSlError('Stop loss level can not be higher than the Invest amount');
     } else {
       setSlError('');
@@ -125,8 +123,10 @@ function SetAutoclose(props: Props) {
   };
 
   useEffect(() => {
-    SLTPStore.takeProfitValue = takeProfitValue ? takeProfitValue : '';
-    SLTPStore.stopLossValue = stopLossValue ? stopLossValue : null;
+    SLTPStore.takeProfitValue =
+      takeProfitValue !== null ? takeProfitValue.toString() : '';
+    SLTPStore.stopLossValue =
+      stopLossValue !== null ? stopLossValue.toString() : '';
     SLTPStore.autoCloseSLType =
       stopLossType !== null ? stopLossType : TpSlTypeEnum.Currency;
     SLTPStore.autoCloseTPType =
@@ -138,11 +138,11 @@ function SetAutoclose(props: Props) {
   }, []);
 
   const removeSL = () => {
-    SLTPStore.stopLossValue = null;
+    SLTPStore.stopLossValue = '';
   };
 
   const removeTP = () => {
-    SLTPStore.takeProfitValue = null;
+    SLTPStore.takeProfitValue = '';
   };
 
   return (

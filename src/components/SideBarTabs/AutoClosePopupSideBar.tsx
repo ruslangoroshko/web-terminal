@@ -3,11 +3,14 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { AskBidEnum } from '../../enums/AskBid';
+import { PositionModelWSDTO } from '../../types/Positions';
 
 interface Props {
   updateSLTP: () => void;
-  stopLossValue?: number;
-  takeProfitValue?: number;
+  stopLossValue: PositionModelWSDTO['sl'];
+  stopLossType: PositionModelWSDTO['slType'];
+  takeProfitValue: PositionModelWSDTO['tp'];
+  takeProfitType: PositionModelWSDTO['tpType'];
   investedAmount: number;
   operation: AskBidEnum;
   isDisabled?: boolean;
@@ -19,7 +22,9 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     const {
       updateSLTP,
       stopLossValue,
+      stopLossType,
       takeProfitValue,
+      takeProfitType,
       investedAmount,
       isDisabled,
       children,
@@ -92,6 +97,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
           >
             <SetAutoclose
               handleApply={updateSLTP}
+              stopLossType={stopLossType}
+              takeProfitType={takeProfitType}
               stopLossValue={Math.abs(stopLossValue || 0)}
               takeProfitValue={takeProfitValue}
               operation={operation}

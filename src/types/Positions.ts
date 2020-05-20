@@ -9,10 +9,10 @@ export interface OpenPositionModel {
   instrumentId: string;
   operation: AskBidEnum;
   multiplier: number;
-  tp?: number;
-  sl?: number;
-  tpRate?: number;
-  slRate?: number;
+  tp: number | null;
+  sl: number | null;
+  tpType: TpSlTypeEnum | null;
+  slType: TpSlTypeEnum | null;
 }
 
 export interface OpenPendingOrder {
