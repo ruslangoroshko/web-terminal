@@ -309,9 +309,9 @@ class API {
   };
 
   getCryptoWallet = async (params: GetCryptoWalletParams) => {
-    const response = await axios.get<GetCryptoWalletDTO[]>(
+    const response = await axios.post<GetCryptoWalletDTO[]>(
       `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.GET_CRYPTO_WALLET}`,
-      { params }
+      params
     );
     return response.data;
   };

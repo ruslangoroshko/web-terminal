@@ -20,8 +20,8 @@ const BitcoinForm = () => {
     async function fetchBitcoinString() {
       try {
         const response = API.getCryptoWallet({
-          authToken: 'token',
-          currency: 'cur'
+          authToken: 'hEDza/n7UZ0HPUN8Vt15Iw/Omjrhx64lSaJskcEUNz7f5CvudKN2TQzOuVc8GVG5zO/VTpqxzBMqWVT9n5r5BQ==',
+          currency: 'USD'
         });
       } catch (error) {
         
