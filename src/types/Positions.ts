@@ -31,10 +31,10 @@ export interface OpenPositionModelFormik {
   instrumentId: string;
   operation: AskBidEnum | null;
   multiplier: number;
-  tp?: number;
-  sl?: number;
-  tpType?: TpSlTypeEnum;
-  slType?: TpSlTypeEnum;
+  tp: number | null;
+  sl: number | null;
+  tpType: TpSlTypeEnum | null;
+  slType: TpSlTypeEnum | null;
   openPrice: number | null;
 }
 
@@ -53,10 +53,10 @@ export interface PositionModelWSDTO {
   operation: number;
   swap: number;
   commission: number;
-  tp?: number;
-  sl?: number;
-  tpType?: TpSlTypeEnum;
-  slType?: TpSlTypeEnum;
+  tp: number | null;
+  sl: number | null;
+  tpType: TpSlTypeEnum | null;
+  slType: TpSlTypeEnum | null;
   timeStamp: number;
 }
 
@@ -76,8 +76,8 @@ export interface UpdateSLTP {
   processId: string;
   accountId: string;
   positionId: number;
-  tp?: number;
-  sl?: number;
-  tpType?: TpSlTypeEnum;
-  slType?: TpSlTypeEnum;
+  tp: number | null;
+  sl: number | null;
+  tpType: TpSlTypeEnum | null;
+  slType: TpSlTypeEnum | null;
 }
