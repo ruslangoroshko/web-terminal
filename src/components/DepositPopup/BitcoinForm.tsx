@@ -29,6 +29,18 @@ const BitcoinForm = () => {
 
   const { mainAppStore, notificationStore } = useStores();
 
+  const handleCopyText = () => {
+    if (bitcoinWalletString) {
+      var el = document.createElement('textarea');
+      el.value = bitcoinWalletString;
+      el.setAttribute('readonly', '');
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    }
+  };
+
   useEffect(() => {
     async function fetchBitcoinString() {
       try {
@@ -110,7 +122,7 @@ const BitcoinForm = () => {
         >
           {bitcoinWalletString}
         </PrimaryTextSpan>
-        <ButtonWithoutStyles onClick={() => console.log('copy text')}>
+        <ButtonWithoutStyles disabled={!!bitcoinWalletString} onClick={handleCopyText}>
           <SvgIcon {...CopyIcon} fillColor="rgba(255, 255, 255, 0.6)" />
         </ButtonWithoutStyles>
       </BitcoinWalletStringWrapper>
