@@ -64,7 +64,8 @@ function PurchaseAtPopup(props: Props) {
         return;
       }
     }
-    const regex = `^[0-9]+(\.[0-9]{1,${instrumentsStore.activeInstrument!
+
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${instrumentsStore.activeInstrument!
       .instrumentItem.digits - 1}})?$`;
 
     if (
@@ -76,10 +77,7 @@ function PurchaseAtPopup(props: Props) {
       return;
     }
 
-    if (
-      ![',', '.'].includes(e.data) &&
-      +(e.currentTarget.value + e.data) > 10 ** 7
-    ) {
+    if (e.data.length > 1 && !(e.currentTarget.value + e.data).match(regex)) {
       e.preventDefault();
       return;
     }

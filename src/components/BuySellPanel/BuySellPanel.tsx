@@ -68,23 +68,23 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       .number()
       .min(
         instrument.minOperationVolume / initialValues.multiplier,
-        `Minimum trade volume [$${instrument.minOperationVolume /
-          initialValues.multiplier}]. Please increase your trade amount or multiplier.`
+        `Minimum trade volume $${instrument.minOperationVolume /
+          initialValues.multiplier}. Please increase your trade amount or multiplier.`
+      )
+      .max(
+        instrument.maxOperationVolume / initialValues.multiplier,
+        `Maximum trade volume $${instrument.maxOperationVolume /
+          initialValues.multiplier}. Please decrease your trade amount or multiplier.`
       )
       .test(
         Fields.AMOUNT,
-        `Insufficient funds to open a position. You have only [${mainAppStore.activeAccount?.balance}]`,
+        `Insufficient funds to open a position. You have only ${mainAppStore.activeAccount?.balance}`,
         value => {
           if (value) {
             return value < (mainAppStore.activeAccount?.balance || 0);
           }
           return true;
         }
-      )
-      .max(
-        instrument.maxOperationVolume / initialValues.multiplier,
-        `Maximum trade volume [$${instrument.maxOperationVolume /
-          initialValues.multiplier}]. Please decrease your trade amount or multiplier.`
       )
       .required('Please fill Invest amount'),
     multiplier: yup.number().required('Required amount'),
@@ -166,13 +166,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     formikHelpers.setSubmitting(true);
     const { operation, ...otherValues } = values;
 
-
-
     if (otherValues.openPrice) {
       const modelToSubmit = {
         ...otherValues,
         operation: operation === null ? AskBidEnum.Buy : operation,
-        openPrice: otherValues.openPrice || 0
+        openPrice: otherValues.openPrice || 0,
       };
       try {
         const response = await API.openPendingOrder(modelToSubmit);
@@ -291,7 +289,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const investOnBeforeInputHandler = (e: any) => {
-    if (!e.data.match(/^[0-9.,]*$/)) {
+    if (!e.currentTarget.value && [',', '.'].includes(e.data)) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!e.data.match(/^[0-9.,]*$/g)) {
       e.preventDefault();
       return;
     }
@@ -305,7 +308,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       }
     }
     // see another regex
-    const regex = `^[0-9]+(\.[0-9]{1,${PRECISION_USD - 1}})?$`;
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION_USD - 1}})?$`;
 
     if (
       e.currentTarget.value &&
@@ -315,18 +318,14 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       e.preventDefault();
       return;
     }
-
-    if (
-      ![',', '.'].includes(e.data) &&
-      +(e.currentTarget.value + e.data) > 10 ** 7
-    ) {
+    if (e.data.length > 1 && !(e.currentTarget.value + e.data).match(regex)) {
       e.preventDefault();
       return;
     }
   };
 
   const investOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    let filteredValue = e.target.value.replace(',', '.');
+    let filteredValue: any = e.target.value.replace(',', '.');
     setFieldValue(Fields.AMOUNT, filteredValue);
   };
 
