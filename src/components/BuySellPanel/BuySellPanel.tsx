@@ -78,7 +78,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       )
       .test(
         Fields.AMOUNT,
-        `Insufficient funds to open a position. You have only ${mainAppStore.activeAccount?.balance}`,
+        `Insufficient funds to open a position. You have only $${mainAppStore.activeAccount?.balance}`,
         value => {
           if (value) {
             return value < (mainAppStore.activeAccount?.balance || 0);
