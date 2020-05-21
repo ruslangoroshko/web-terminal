@@ -22,6 +22,7 @@ interface PrimaryTextType {
   textAlign?: 'left' | 'center' | 'right';
   textOverflow?: 'ellipsis';
   overflow?: 'hidden';
+  width?: string;
 }
 
 export const PrimaryTextSpan = styled.span<PrimaryTextType>`
@@ -56,6 +57,7 @@ export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
   text-align: ${props => props.textAlign};
   text-overflow: ${props => props.textOverflow};
   overflow: ${props => props.overflow};
+  width: ${props => props.width};
 `;
 
 export const QuoteText = styled(PrimaryTextSpan)<

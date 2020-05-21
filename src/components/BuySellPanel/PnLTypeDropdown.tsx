@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import Toggle from '../Toggle';
@@ -11,6 +11,7 @@ import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
 import { useStores } from '../../hooks/useStores';
 import autoCloseTypes from '../../constants/autoCloseTypes';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
+import { Observer } from 'mobx-react-lite';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
@@ -39,6 +40,27 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
 
   const availableAutoCloseTypes = [TpSlTypeEnum.Currency, TpSlTypeEnum.Price];
 
+  const renderSymbol = () => {
+    switch (dropdownType) {
+      case 'sl':
+        return autoCloseTypes[
+          SLTPStore.autoCloseSLType !== null
+            ? SLTPStore.autoCloseSLType
+            : TpSlTypeEnum.Currency
+        ].symbol;
+
+      case 'tp':
+        return autoCloseTypes[
+          SLTPStore.autoCloseTPType !== null
+            ? SLTPStore.autoCloseTPType
+            : TpSlTypeEnum.Currency
+        ].symbol;
+
+      default:
+        return '';
+    }
+  };
+
   return (
     <Toggle>
       {({ on, toggle }) => (
@@ -52,9 +74,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
             <PrimaryTextSpan
               color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
             >
-              {dropdownType === 'sl'
-                ? autoCloseTypes[SLTPStore.autoCloseSLType].symbol
-                : autoCloseTypes[SLTPStore.autoCloseTPType].symbol}
+              <Observer>{() => <>{renderSymbol()}</>}</Observer>
             </PrimaryTextSpan>
             <SvgIcon
               {...IconShevronDown}

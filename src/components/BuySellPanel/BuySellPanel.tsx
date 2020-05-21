@@ -57,7 +57,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     operation: null,
     multiplier: instrument.multiplier[0],
     investmentAmount: DEFAULT_INVEST_AMOUNT,
-    openPrice: null,
+    tp: null,
+    sl: null,
+    slType: null,
+    tpType: null,
   };
 
   const validationSchema = yup.object().shape({
@@ -65,12 +68,17 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       .number()
       .min(
         instrument.minOperationVolume / initialValues.multiplier,
-        `Minimum trade volume [$${instrument.minOperationVolume /
-          initialValues.multiplier}]. Please increase your trade amount or multiplier.`
+        `Minimum trade volume $${instrument.minOperationVolume /
+          initialValues.multiplier}. Please increase your trade amount or multiplier.`
+      )
+      .max(
+        instrument.maxOperationVolume / initialValues.multiplier,
+        `Maximum trade volume $${instrument.maxOperationVolume /
+          initialValues.multiplier}. Please decrease your trade amount or multiplier.`
       )
       .test(
         Fields.AMOUNT,
-        `Insufficient funds to open a position. You have only [${mainAppStore.activeAccount?.balance}]`,
+        `Insufficient funds to open a position. You have only ${mainAppStore.activeAccount?.balance}`,
         value => {
           if (value) {
             return value < (mainAppStore.activeAccount?.balance || 0);
@@ -78,15 +86,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           return true;
         }
       )
-      .max(
-        instrument.maxOperationVolume / initialValues.multiplier,
-        `Maximum trade volume [$${instrument.maxOperationVolume /
-          initialValues.multiplier}]. Please decrease your trade amount or multiplier.`
-      )
       .required('Please fill Invest amount'),
     multiplier: yup.number().required('Required amount'),
     tp: yup
       .number()
+      .nullable()
       .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
         is: (operation, tpType) =>
           operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
@@ -119,6 +123,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       }),
     sl: yup
       .number()
+      .nullable()
       .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
         is: (operation, slType) =>
           operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
@@ -150,6 +155,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           ),
       }),
     openPrice: yup.number().nullable(),
+    tpType: yup.number().nullable(),
+    slType: yup.number().nullable(),
   });
 
   const onSubmit = async (
@@ -159,14 +166,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     formikHelpers.setSubmitting(true);
     const { operation, ...otherValues } = values;
 
-    const modelToSubmit = {
-      ...otherValues,
-      operation: operation === null ? AskBidEnum.Buy : operation,
-      tpType: otherValues.tp ? otherValues.tpType : null,
-      slType: otherValues.sl ? otherValues.slType : null,
-    };
-
-    if (values.openPrice) {
+    if (otherValues.openPrice) {
+      const modelToSubmit = {
+        ...otherValues,
+        operation: operation === null ? AskBidEnum.Buy : operation,
+        openPrice: otherValues.openPrice || 0,
+      };
       try {
         const response = await API.openPendingOrder(modelToSubmit);
 
@@ -192,6 +197,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         badRequestPopupStore.setMessage(error);
       }
     } else {
+      const modelToSubmit = {
+        ...otherValues,
+        operation: operation === null ? AskBidEnum.Buy : operation,
+      };
       try {
         const response = await API.openPosition(modelToSubmit);
         notificationStore.notificationMessage =
@@ -280,7 +289,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const investOnBeforeInputHandler = (e: any) => {
-    if (!e.data.match(/^[0-9.,]*$/)) {
+    if (!e.currentTarget.value && [',', '.'].includes(e.data)) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!e.data.match(/^[0-9.,]*$/g)) {
       e.preventDefault();
       return;
     }
@@ -294,7 +308,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       }
     }
     // see another regex
-    const regex = `^[0-9]+(\.[0-9]{1,${PRECISION_USD - 1}})?$`;
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION_USD - 1}})?$`;
 
     if (
       e.currentTarget.value &&
@@ -304,18 +318,14 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       e.preventDefault();
       return;
     }
-
-    if (
-      ![',', '.'].includes(e.data) &&
-      +(e.currentTarget.value + e.data) > 10 ** 7
-    ) {
+    if (e.data.length > 1 && !(e.currentTarget.value + e.data).match(regex)) {
       e.preventDefault();
       return;
     }
   };
 
   const investOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    let filteredValue = e.target.value.replace(',', '.');
+    let filteredValue: any = e.target.value.replace(',', '.');
     setFieldValue(Fields.AMOUNT, filteredValue);
   };
 
@@ -438,7 +448,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              The amount you’d like to invest
+              The coefficient that multiplies the potential profit and level of
+              risk accordingly the value of Multiplier.
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -468,7 +479,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              The amount you’d like to invest
+              When the position reached the specified take profit or stop loss
+              level, the position will be closed automatically.
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -585,7 +597,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              The amount you’d like to invest
+              Position will be opened automatically when the price reaches this
+              level.
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>

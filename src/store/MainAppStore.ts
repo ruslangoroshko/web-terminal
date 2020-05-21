@@ -98,7 +98,7 @@ export class MainAppStore implements MainAppStoreProps {
     connection.on(
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
-        this.setActiveAccount(response.data);
+        this.activeAccount = response.data;
       }
     );
     connection.onclose(error => {
@@ -145,7 +145,6 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setActiveAccount = (account: AccountModelWebSocketDTO) => {
     this.activeAccount = account;
-
     // TODO: think how remove crutch
     this.rootStore.historyStore.positionsHistoryReport.positionsHistory = [];
     API.setKeyValue({

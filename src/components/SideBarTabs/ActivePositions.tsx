@@ -84,10 +84,10 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
       accountId: mainAppStore.activeAccount!.id,
       positionId: id,
       processId: getProcessId(),
-      tp: +SLTPStore.takeProfitValue,
-      sl: +SLTPStore.stopLossValue,
-      tpType: SLTPStore.autoCloseTPType,
-      slType: SLTPStore.autoCloseSLType,
+      tp: SLTPStore.takeProfitValue ? +SLTPStore.takeProfitValue : null,
+      sl: SLTPStore.stopLossValue ? +SLTPStore.stopLossValue : null,
+      tpType: SLTPStore.takeProfitValue ? SLTPStore.autoCloseTPType : null,
+      slType: SLTPStore.stopLossValue ? SLTPStore.autoCloseSLType : null,
     };
 
     API.updateSLTP(values);
@@ -277,8 +277,10 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
             <AutoClosePopupSideBar
               ref={instrumentRef}
               stopLossValue={sl}
-              operation={operation}
               takeProfitValue={tp}
+              stopLossType={slType}
+              takeProfitType={tpType}
+              operation={operation}
               investedAmount={investmentAmount}
               updateSLTP={updateSLTP}
             >

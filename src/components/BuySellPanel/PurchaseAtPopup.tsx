@@ -15,7 +15,7 @@ import { SecondaryButton } from '../../styles/Buttons';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
-  purchaseAtValue: number | null;
+  purchaseAtValue?: number | null;
   instrumentId: string;
   digits: number;
 }
@@ -64,7 +64,8 @@ function PurchaseAtPopup(props: Props) {
         return;
       }
     }
-    const regex = `^[0-9]+(\.[0-9]{1,${instrumentsStore.activeInstrument!
+
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${instrumentsStore.activeInstrument!
       .instrumentItem.digits - 1}})?$`;
 
     if (
@@ -76,10 +77,7 @@ function PurchaseAtPopup(props: Props) {
       return;
     }
 
-    if (
-      ![',', '.'].includes(e.data) &&
-      +(e.currentTarget.value + e.data) > 10 ** 7
-    ) {
+    if (e.data.length > 1 && !(e.currentTarget.value + e.data).match(regex)) {
       e.preventDefault();
       return;
     }
@@ -89,9 +87,13 @@ function PurchaseAtPopup(props: Props) {
     setFieldValue(Fields.PURCHASE_AT, null);
   };
 
+  const setCurrentPrice = (value: string) => () => {
+    SLTPStore.purchaseAtValue = value;
+  };
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-    SLTPStore.purchaseAtValue = purchaseAtValue ? `purchaseAtValue` : '';
+    SLTPStore.purchaseAtValue = purchaseAtValue ? `${purchaseAtValue}` : '';
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -186,26 +188,6 @@ function PurchaseAtPopup(props: Props) {
                   ></InputPnL>
                 )}
               </Observer>
-              <FlexContainer>
-                <ButtonIncreaseDecreasePrice type="button">
-                  <PrimaryTextSpan
-                    fontSize="16px"
-                    fontWeight="bold"
-                    color="rgba(255, 255, 255, 0.5)"
-                  >
-                    -
-                  </PrimaryTextSpan>
-                </ButtonIncreaseDecreasePrice>
-                <ButtonIncreaseDecreasePrice type="button">
-                  <PrimaryTextSpan
-                    fontSize="16px"
-                    fontWeight="bold"
-                    color="rgba(255, 255, 255, 0.5)"
-                  >
-                    +
-                  </PrimaryTextSpan>
-                </ButtonIncreaseDecreasePrice>
-              </FlexContainer>
             </InputWrapper>
             <FlexContainer
               justifyContent="space-between"
@@ -219,20 +201,25 @@ function PurchaseAtPopup(props: Props) {
               >
                 Current price
               </PrimaryTextSpan>
-              <PrimaryTextSpan
-                textDecoration="underline"
-                color="rgba(255, 255, 255, 0.8)"
-                fontSize="11px"
-                lineHeight="12px"
-              >
-                <Observer>
-                  {() => (
-                    <>
+              <Observer>
+                {() => (
+                  <ButtonWithoutStyles
+                    type="button"
+                    onClick={setCurrentPrice(
+                      quotesStore.quotes[instrumentId].bid.c.toFixed(digits)
+                    )}
+                  >
+                    <PrimaryTextSpan
+                      textDecoration="underline"
+                      color="rgba(255, 255, 255, 0.8)"
+                      fontSize="11px"
+                      lineHeight="12px"
+                    >
                       {quotesStore.quotes[instrumentId].bid.c.toFixed(digits)}
-                    </>
-                  )}
-                </Observer>
-              </PrimaryTextSpan>
+                    </PrimaryTextSpan>
+                  </ButtonWithoutStyles>
+                )}
+              </Observer>
             </FlexContainer>
             <ButtonApply type="button" onClick={applyPurchaseAt}>
               Apply
@@ -283,7 +270,7 @@ const InputPnL = styled.input`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #ffffff;
+  color: #fffccc;
   padding: 8px 0 8px 8px;
 
   &:-webkit-input-placeholder {
@@ -369,7 +356,7 @@ const ClearPurchaseAtButton = styled(ButtonWithoutStyles)`
 `;
 
 const SetPriceWrapper = styled(FlexContainer)`
-  top: -54px;
+  top: -96px;
   bottom: auto;
   @media (max-height: 700px) {
     top: auto;

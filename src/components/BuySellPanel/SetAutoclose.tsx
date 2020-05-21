@@ -16,12 +16,16 @@ import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
 import { AskBidEnum } from '../../enums/AskBid';
+import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
+import { PositionModelWSDTO } from '../../types/Positions';
 
 const PRECISION = 2;
 
 interface Props {
-  takeProfitValue?: number;
-  stopLossValue?: number;
+  takeProfitValue: PositionModelWSDTO['tp'];
+  takeProfitType: PositionModelWSDTO['tpType'];
+  stopLossValue: PositionModelWSDTO['sl'];
+  stopLossType: PositionModelWSDTO['slType'];
   operation: AskBidEnum | null;
   toggle: (arg0: boolean) => void;
   handleApply: () => void;
@@ -33,6 +37,8 @@ function SetAutoclose(props: Props) {
   const {
     takeProfitValue,
     stopLossValue,
+    stopLossType,
+    takeProfitType,
     toggle,
     handleApply,
     investedAmount,
@@ -64,7 +70,7 @@ function SetAutoclose(props: Props) {
         return;
       }
     }
-    const regex = `^[0-9]+(\.[0-9]{1,${PRECISION - 1}})?$`;
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION - 1}})?$`
 
     if (
       e.currentTarget.value &&
@@ -75,18 +81,16 @@ function SetAutoclose(props: Props) {
       return;
     }
 
-    if (
-      ![',', '.'].includes(e.data) &&
-      +(e.currentTarget.value + e.data) > 10 ** 7
-    ) {
+    if (e.data.length > 1 && !(e.currentTarget.value + e.data).match(regex)) {
       e.preventDefault();
       return;
     }
+
   };
 
   const handleTakeProfitBlur = () => {
     if (SLTPStore.takeProfitValue) {
-      SLTPStore.takeProfitValue = `${+SLTPStore.takeProfitValue}`;
+      SLTPStore.takeProfitValue = SLTPStore.takeProfitValue;
     }
   };
 
@@ -98,13 +102,13 @@ function SetAutoclose(props: Props) {
     }
 
     if (SLTPStore.stopLossValue) {
-      SLTPStore.stopLossValue = `${+SLTPStore.stopLossValue}`;
+      SLTPStore.stopLossValue = SLTPStore.stopLossValue;
     }
   };
 
   const handleChangeLoss = (e: ChangeEvent<HTMLInputElement>) => {
     setSlError('');
-    SLTPStore.stopLossValue = e.target.value;
+    SLTPStore.stopLossValue = e.target.value.replace(',', '.');
   };
 
   const handleApplyValues = () => {
@@ -117,13 +121,20 @@ function SetAutoclose(props: Props) {
   };
 
   useEffect(() => {
-    SLTPStore.takeProfitValue = takeProfitValue ? `${takeProfitValue}` : '';
-    SLTPStore.stopLossValue = stopLossValue ? `${stopLossValue}` : '';
+    SLTPStore.takeProfitValue =
+      takeProfitValue !== null ? takeProfitValue.toString() : '';
+    SLTPStore.stopLossValue =
+      stopLossValue !== null ? stopLossValue.toString() : '';
+    console.log(stopLossType, takeProfitType);
+    SLTPStore.autoCloseSLType =
+      stopLossType !== null ? stopLossType : TpSlTypeEnum.Currency;
+    SLTPStore.autoCloseTPType =
+      takeProfitType !== null ? takeProfitType : TpSlTypeEnum.Currency;
 
     return () => {
       return SLTPStore.clearStore();
     };
-  }, []);
+  }, [stopLossType, takeProfitType]);
 
   const removeSL = () => {
     SLTPStore.stopLossValue = '';
@@ -188,7 +199,7 @@ function SetAutoclose(props: Props) {
                 placeholder="Non Set"
                 onChange={handleChangeProfit}
                 onBlur={handleTakeProfitBlur}
-                value={SLTPStore.takeProfitValue || ''}
+                value={SLTPStore.takeProfitValue}
                 disabled={isDisabled}
               ></InputPnL>
               {!!SLTPStore.takeProfitValue && !isDisabled && (
@@ -261,7 +272,7 @@ function SetAutoclose(props: Props) {
                 placeholder="Non Set"
                 onChange={handleChangeLoss}
                 onBlur={handleStopLossBlur}
-                value={SLTPStore.stopLossValue || ''}
+                value={SLTPStore.stopLossValue}
                 disabled={isDisabled}
               ></InputPnL>
               {!!SLTPStore.stopLossValue && !isDisabled && (
@@ -294,8 +305,8 @@ function SetAutoclose(props: Props) {
                 onClick={handleApplyValues}
                 disabled={
                   !!(tpError || slError) ||
-                  (!SLTPStore.takeProfitValue.length &&
-                    !SLTPStore.stopLossValue.length)
+                  (SLTPStore.takeProfitValue === null &&
+                    SLTPStore.stopLossValue === null)
                 }
               >
                 Apply

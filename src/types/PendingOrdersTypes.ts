@@ -9,9 +9,9 @@ export interface PendingOrdersWSDTO {
   instrument: string;
   multiplier: number;
   operation: AskBidEnum;
-  tp?: number;
-  sl?: number;
-  tpType?: TpSlTypeEnum;
-  slType?: TpSlTypeEnum;
+  tp: number | null;
+  sl: number | null;
+  tpType: TpSlTypeEnum | null;
+  slType: TpSlTypeEnum | null;
   timeStamp: number;
 }
