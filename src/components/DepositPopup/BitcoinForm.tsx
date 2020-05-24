@@ -43,7 +43,6 @@ const BitcoinForm = () => {
       </PrimaryTextParagraph>
       <PrimaryTextParagraph
         fontSize="13px"
-        fontFamily="sf_ui_text"
         color="#fff"
         marginBottom="38px"
       >
