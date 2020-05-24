@@ -95,10 +95,20 @@ function SetAutoclose(props: Props) {
   };
 
   const handleStopLossBlur = () => {
-    if (+SLTPStore.stopLossValue > investedAmount) {
-      setSlError('Stop loss level can not be higher than the Invest amount');
-    } else {
-      setSlError('');
+
+    switch (SLTPStore.autoCloseSLType) {
+      case TpSlTypeEnum.Currency:
+        if (+SLTPStore.stopLossValue > investedAmount) {
+          setSlError(
+            'Stop loss level can not be higher than the Invest amount'
+          );
+        } else {
+          setSlError('');
+        }
+        break;
+
+      default:
+        break;
     }
 
     if (SLTPStore.stopLossValue) {
