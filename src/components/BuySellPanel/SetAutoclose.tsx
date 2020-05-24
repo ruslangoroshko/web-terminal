@@ -70,7 +70,7 @@ function SetAutoclose(props: Props) {
         return;
       }
     }
-    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION - 1}})?$`
+    const regex = `^[0-9]{1,6}([,.][0-9]{1,${PRECISION - 1}})?$`
 
     if (
       e.currentTarget.value &&

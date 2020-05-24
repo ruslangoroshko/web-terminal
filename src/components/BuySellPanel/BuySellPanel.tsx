@@ -308,7 +308,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       }
     }
     // see another regex
-    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION_USD - 1}})?$`;
+    const regex = `^[0-9]{1,6}([,.][0-9]{1,${PRECISION_USD - 1}})?$`;
 
     if (
       e.currentTarget.value &&
