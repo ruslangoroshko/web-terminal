@@ -1,15 +1,16 @@
 import React from 'react';
 import { PrimaryButton } from '../../styles/Buttons';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
+import { useStores } from '../../hooks/useStores';
 
 interface Props {}
 
 function DepositButton(props: Props) {
   const {} = props;
-  const handleClick = () => {};
+  const { depositFundsStore } = useStores();
   return (
     <PrimaryButton
-      onClick={handleClick}
+      onClick={depositFundsStore.togglePopup}
       padding="8px 16px"
       backgroundColor="#00FFF2"
     >

@@ -32,6 +32,10 @@ const API_LIST = {
   INSTRUMENTS: {
     FAVOURITES: '/api/v1/Instruments/Favorites'
   },
+  DEPOSIT: {
+    CREATE: '/Create',
+    GET_CRYPTO_WALLET: '/GetCryptoWallet'
+  }
 };
 
 Object.freeze(API_LIST);

@@ -18,6 +18,7 @@ import TradingHistoryExpanded from '../components/SideBarTabs/TradingHistoryExpa
 import LoaderFullscreen from '../components/LoaderFullscreen';
 import OrdersExpanded from '../components/SideBarTabs/OrdersExpanded';
 import Markets from '../components/SideBarTabs/Markets';
+import DepositPopupWrapper from '../components/DepositPopup/DepositPopupWrapper';
 
 interface Props {}
 
@@ -91,7 +92,8 @@ const RenderExpandedTabByType = observer(() => {
 
 const AuthorizedContainer: FC<Props> = props => {
   const { children } = props;
-  const { tabsStore, mainAppStore } = useStores();
+  const { tabsStore, depositFundsStore, mainAppStore } = useStores();
+
 
   return (
     <FlexContainer
@@ -103,8 +105,15 @@ const AuthorizedContainer: FC<Props> = props => {
       maxHeight="100vh"
       overflow="hidden"
     >
+      <NavBar></NavBar>
       <Observer>
-        {() => <>{mainAppStore.isAuthorized && <NavBar></NavBar>}</>}
+        {() => (
+          <>
+            {depositFundsStore.isActivePopup && (
+              <DepositPopupWrapper></DepositPopupWrapper>
+            )}
+          </>
+        )}
       </Observer>
       <FlexContainer height="calc(100% - 48px)">
         <SideBar></SideBar>

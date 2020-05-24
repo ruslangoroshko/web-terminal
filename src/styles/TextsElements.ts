@@ -7,6 +7,7 @@ interface PrimaryTextType {
   fontSize?:
     | '12px'
     | '11px'
+    | '13px'
     | '14px'
     | '16px'
     | '10px'
@@ -26,7 +27,6 @@ interface PrimaryTextType {
 }
 
 export const PrimaryTextSpan = styled.span<PrimaryTextType>`
-  font-family: 'Roboto', sans-serif;
   font-style: ${props => props.fontStyle};
   font-weight: ${props => props.fontWeight || 'normal'};
   font-size: ${props => props.fontSize || '14px'};
@@ -43,7 +43,6 @@ export const PrimaryTextSpan = styled.span<PrimaryTextType>`
 `;
 
 export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
-  font-family: 'Roboto', sans-serif;
   font-style: ${props => props.fontStyle};
   font-weight: ${props => props.fontWeight};
   font-size: ${props => props.fontSize || '16px'};
