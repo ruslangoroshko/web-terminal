@@ -11,13 +11,14 @@ import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
 import { useStores } from '../../hooks/useStores';
-import { Observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
 import { AskBidEnum } from '../../enums/AskBid';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { PositionModelWSDTO } from '../../types/Positions';
+import { useAsObservableSource } from 'mobx-react-lite';
 
 const PRECISION = 2;
 
@@ -33,7 +34,7 @@ interface Props {
   isDisabled?: boolean;
 }
 
-function SetAutoclose(props: Props) {
+const SetAutoclose = observer((props: Props) => {
   const {
     takeProfitValue,
     stopLossValue,
@@ -70,7 +71,7 @@ function SetAutoclose(props: Props) {
         return;
       }
     }
-    const regex = `^[0-9]{1,6}([,.][0-9]{1,${PRECISION - 1}})?$`
+    const regex = `^[0-9]{1,6}([,.][0-9]{1,${PRECISION - 1}})?$`;
 
     if (
       e.currentTarget.value &&
@@ -85,7 +86,6 @@ function SetAutoclose(props: Props) {
       e.preventDefault();
       return;
     }
-
   };
 
   const handleTakeProfitBlur = () => {
@@ -95,7 +95,7 @@ function SetAutoclose(props: Props) {
   };
 
   const handleStopLossBlur = () => {
-
+    setSlError('');
     switch (SLTPStore.autoCloseSLType) {
       case TpSlTypeEnum.Currency:
         if (+SLTPStore.stopLossValue > investedAmount) {
@@ -135,16 +135,18 @@ function SetAutoclose(props: Props) {
       takeProfitValue !== null ? takeProfitValue.toString() : '';
     SLTPStore.stopLossValue =
       stopLossValue !== null ? stopLossValue.toString() : '';
-    console.log(stopLossType, takeProfitType);
     SLTPStore.autoCloseSLType =
       stopLossType !== null ? stopLossType : TpSlTypeEnum.Currency;
     SLTPStore.autoCloseTPType =
       takeProfitType !== null ? takeProfitType : TpSlTypeEnum.Currency;
-
     return () => {
       return SLTPStore.clearStore();
     };
   }, [stopLossType, takeProfitType]);
+
+  useEffect(() => {
+    handleStopLossBlur();
+  }, [SLTPStore.autoCloseSLType]);
 
   const removeSL = () => {
     SLTPStore.stopLossValue = '';
@@ -327,7 +329,7 @@ function SetAutoclose(props: Props) {
       </Observer>
     </Wrapper>
   );
-}
+});
 
 export default SetAutoclose;
 
