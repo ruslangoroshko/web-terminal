@@ -170,6 +170,7 @@ const DepositPopupWrapper: FC = ({ children }) => {
               flexDirection="column"
               padding="0 40px 20px 0"
               width="calc(100% - 220px)"
+              position="relative"
             >
               <Observer>{() => <>{renderDepositType()}</>}</Observer>
               <FlexContainer alignItems="center">

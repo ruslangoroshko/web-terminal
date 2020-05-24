@@ -5,10 +5,11 @@ import LoaderComponent from './LoaderComponent';
 
 interface Props {
   isLoading: boolean;
+  withoutBackground?: boolean;
 }
 
-const LoaderForComponents: FC<Props> = ({ isLoading }) => (
-  <FixedContainerWrapper isLoading={isLoading}>
+const LoaderForComponents: FC<Props> = ({ isLoading, withoutBackground = false }) => (
+  <FixedContainerWrapper withoutBackground={withoutBackground} isLoading={isLoading}>
     <LoaderComponent />
   </FixedContainerWrapper>
 );
@@ -32,7 +33,7 @@ const fadeOut = keyframes`
     }
 `;
 
-const FixedContainerWrapper = styled.div<{ isLoading: boolean }>`
+const FixedContainerWrapper = styled.div<{ isLoading: boolean, withoutBackground: boolean }>`
   animation: ${props =>
     !props.isLoading &&
     css`
@@ -44,7 +45,7 @@ const FixedContainerWrapper = styled.div<{ isLoading: boolean }>`
   right: 0;
   bottom: 0;
   z-index: 100;
-  background-color: #1c2026;
+  background-color: ${props => props.withoutBackground ? 'rgba(28, 32, 38, 0.8)' : '#1c2026'};
   display: flex;
   justify-content: center;
   align-items: center;
