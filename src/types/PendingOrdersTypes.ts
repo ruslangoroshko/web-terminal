@@ -1,7 +1,7 @@
 import { AskBidEnum } from '../enums/AskBid';
 import { TpSlTypeEnum } from '../enums/TpSlTypeEnum';
 
-export interface PendingOrdersWSDTO {
+export interface PendingOrderWSDTO {
   id: number;
   investmentAmount: number;
   openPrice: number;

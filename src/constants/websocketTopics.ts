@@ -13,6 +13,7 @@ const Topics = {
   INIT: 'init',
   UNAUTHORIZED: 'unauthorized',
   UPDATE_ACTIVE_POSITION: 'updateactiveposition',
+  UPDATE_PENDING_ORDER: 'updatependingorder',
   PRICE_CHANGE: 'pricechange',
   PENDING_ORDERS: 'pendingorders',
   INSTRUMENT_GROUPS: 'instrumentgroups',
