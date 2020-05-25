@@ -202,7 +202,10 @@ const SetAutoclose = observer((props: Props) => {
         width="100%"
         position="relative"
       >
-        <PlusSign>+</PlusSign>
+        {(
+          SLTPStore.autoCloseTPType !== TpSlTypeEnum.Price
+        ) && (<PlusSign>+</PlusSign>)}
+        
         <Observer>
           {() => (
             <>
@@ -275,7 +278,10 @@ const SetAutoclose = observer((props: Props) => {
             {slError}
           </ErropPopup>
         )}
-        <PlusSign>-</PlusSign>
+        {(
+          SLTPStore.autoCloseSLType !== TpSlTypeEnum.Price
+        ) && (<PlusSign>-</PlusSign>)}
+        
         <Observer>
           {() => (
             <>
