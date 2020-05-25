@@ -61,7 +61,7 @@ const MainApp = () => {
             background-color: #1c2026;
           }
 
-          ${reactDatePickerOverrides}
+          ${reactDatePickerOverrides};
         `}
       />
     </>

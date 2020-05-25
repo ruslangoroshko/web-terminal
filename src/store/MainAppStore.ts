@@ -102,7 +102,6 @@ export class MainAppStore implements MainAppStoreProps {
       }
     );
     connection.onclose(error => {
-      console.log(error);
     });
   };
 

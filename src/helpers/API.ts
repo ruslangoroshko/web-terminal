@@ -35,6 +35,12 @@ import { getProcessId } from './getProcessId';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import { ServerInfoType } from '../types/ServerInfoTypes';
+import {
+  GetCryptoWalletDTO,
+  GetCryptoWalletParams,
+  CreateDepositParams,
+  DepositCreateDTO,
+} from '../types/DepositTypes';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -290,6 +296,22 @@ class API {
   }) => {
     const response = await axios.post<string[]>(
       `${API_STRING}${API_LIST.INSTRUMENTS.FAVOURITES}`,
+      params
+    );
+    return response.data;
+  };
+
+  createDeposit = async (params: CreateDepositParams) => {
+    const response = await axios.post<DepositCreateDTO>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE}`,
+      params
+    );
+    return response.data;
+  };
+
+  getCryptoWallet = async (params: GetCryptoWalletParams) => {
+    const response = await axios.post<GetCryptoWalletDTO>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.GET_CRYPTO_WALLET}`,
       params
     );
     return response.data;

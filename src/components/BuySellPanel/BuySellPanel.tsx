@@ -1,4 +1,11 @@
-import React, { ChangeEvent, useRef, useEffect, FC, useState } from 'react';
+import React, {
+  ChangeEvent,
+  useRef,
+  useEffect,
+  FC,
+  useState,
+  useCallback,
+} from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -63,101 +70,102 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     tpType: null,
   };
 
-  const validationSchema = yup.object().shape({
-    investmentAmount: yup
-      .number()
-      .min(
-        instrument.minOperationVolume / initialValues.multiplier,
-        `Minimum trade volume $${instrument.minOperationVolume /
-          initialValues.multiplier}. Please increase your trade amount or multiplier.`
-      )
-      .max(
-        instrument.maxOperationVolume / initialValues.multiplier,
-        `Maximum trade volume $${instrument.maxOperationVolume /
-          initialValues.multiplier}. Please decrease your trade amount or multiplier.`
-      )
-      .test(
-        Fields.AMOUNT,
-        `Insufficient funds to open a position. You have only $${mainAppStore.activeAccount?.balance}`,
-        value => {
-          if (value) {
-            return value < (mainAppStore.activeAccount?.balance || 0);
-          }
-          return true;
-        }
-      )
-      .required('Please fill Invest amount'),
-    multiplier: yup.number().required('Required amount'),
-    tp: yup
-      .number()
-      .nullable()
-      .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
-        is: (operation, tpType) =>
-          operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
-        then: yup
+  const currentPriceAsk = useCallback(
+    () => quotesStore.quotes[instrument.id].ask.c,
+    [quotesStore.quotes[instrument.id].ask.c]
+  );
+  const currentPriceBid = useCallback(
+    () => quotesStore.quotes[instrument.id].bid.c,
+    [quotesStore.quotes[instrument.id].bid.c]
+  );
+
+  const validationSchema = useCallback(
+    () =>
+      yup.object().shape({
+        investmentAmount: yup
+          .number()
+          .min(
+            instrument.minOperationVolume / initialValues.multiplier,
+            `Minimum trade volume $${instrument.minOperationVolume /
+              initialValues.multiplier}. Please increase your trade amount or multiplier.`
+          )
+          .max(
+            instrument.maxOperationVolume / initialValues.multiplier,
+            `Maximum trade volume $${instrument.maxOperationVolume /
+              initialValues.multiplier}. Please decrease your trade amount or multiplier.`
+          )
+          .test(
+            Fields.AMOUNT,
+            `Insufficient funds to open a position. You have only $${mainAppStore.activeAccount?.balance}`,
+            value => {
+              if (value) {
+                return value < (mainAppStore.activeAccount?.balance || 0);
+              }
+              return true;
+            }
+          )
+          .required('Please fill Invest amount'),
+        multiplier: yup.number().required('Required amount'),
+        tp: yup
           .number()
           .nullable()
-          .test(
-            Fields.TAKE_PROFIT,
-            'Error message: This level is higher or lower than the one currently allowed',
-            value => {
-              const currentPrice = quotesStore.quotes[instrument.id].ask.c;
-              return value > currentPrice;
-            }
-          ),
-      })
-      .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
-        is: (operation, tpType) =>
-          operation === AskBidEnum.Sell && tpType === TpSlTypeEnum.Price,
-        then: yup
+          .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
+            is: (operation, tpType) =>
+              operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
+            then: yup
+              .number()
+              .nullable()
+              .test(
+                Fields.TAKE_PROFIT,
+                'Error message: This level is higher or lower than the one currently allowed',
+                value => value > currentPriceAsk()
+              ),
+          })
+          .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
+            is: (operation, tpType) =>
+              operation === AskBidEnum.Sell && tpType === TpSlTypeEnum.Price,
+            then: yup
+              .number()
+              .nullable()
+              .test(
+                Fields.TAKE_PROFIT,
+                'Error message: This level is higher or lower than the one currently allowed',
+                value => value < currentPriceBid()
+              ),
+          }),
+        sl: yup
           .number()
           .nullable()
-          .test(
-            Fields.TAKE_PROFIT,
-            'Error message: This level is higher or lower than the one currently allowed',
-            value => {
-              const currentPrice = quotesStore.quotes[instrument.id].ask.c;
-              return value < currentPrice;
-            }
-          ),
+          .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
+            is: (operation, slType) =>
+              operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
+            then: yup
+              .number()
+              .nullable()
+              .test(
+                Fields.STOP_LOSS,
+                'Error message: This level is higher or lower than the one currently allowed',
+                value => value < currentPriceAsk()
+              ),
+          })
+          .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
+            is: (operation, slType) =>
+              operation === AskBidEnum.Sell && slType === TpSlTypeEnum.Price,
+            then: yup
+              .number()
+              .nullable()
+              .test(
+                Fields.STOP_LOSS,
+                'Error message: This level is higher or lower than the one currently allowed',
+                value => value < currentPriceBid()
+              ),
+          }),
+        openPrice: yup.number().nullable(),
+        tpType: yup.number().nullable(),
+        slType: yup.number().nullable(),
       }),
-    sl: yup
-      .number()
-      .nullable()
-      .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
-        is: (operation, slType) =>
-          operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
-        then: yup
-          .number()
-          .nullable()
-          .test(
-            Fields.STOP_LOSS,
-            'Error message: This level is higher or lower than the one currently allowed',
-            value => {
-              const currentPrice = quotesStore.quotes[instrument.id].bid.c;
-              return value < currentPrice;
-            }
-          ),
-      })
-      .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
-        is: (operation, slType) =>
-          operation === AskBidEnum.Sell && slType === TpSlTypeEnum.Price,
-        then: yup
-          .number()
-          .nullable()
-          .test(
-            Fields.STOP_LOSS,
-            'Error message: This level is higher or lower than the one currently allowed',
-            value => {
-              const currentPrice = quotesStore.quotes[instrument.id].bid.c;
-              return value > currentPrice;
-            }
-          ),
-      }),
-    openPrice: yup.number().nullable(),
-    tpType: yup.number().nullable(),
-    slType: yup.number().nullable(),
-  });
+    [instrument]
+  );
 
   const onSubmit = async (
     values: OpenPositionModelFormik,
@@ -308,7 +316,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       }
     }
     // see another regex
-    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION_USD - 1}})?$`;
+    const regex = `^[0-9]{1,6}([,.][0-9]{1,${PRECISION_USD - 1}})?$`;
 
     if (
       e.currentTarget.value &&

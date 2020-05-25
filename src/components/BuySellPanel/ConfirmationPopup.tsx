@@ -28,7 +28,6 @@ function ConfirmationPopup(props: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = (e: any) => {
-    console.log('click outside')
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
       closePopup();
     }

@@ -10,6 +10,7 @@ import { KYCstore } from './KYCstore';
 import { NotificationStore } from './NotificationStore';
 import { SortingStore } from './SortingStore';
 import { BadRequestPopupStore } from "./BadRequestPopupStore";
+import { DepositFundsStore } from './DepositFundsStore';
 
 export class RootStore {
   quotesStore: QuotesStore;
@@ -24,6 +25,7 @@ export class RootStore {
   notificationStore: NotificationStore;
   sortingStore: SortingStore;
   badRequestPopupStore: BadRequestPopupStore;
+  depositFundsStore: DepositFundsStore;
 
   constructor() {
     this.quotesStore = new QuotesStore(this);
@@ -38,5 +40,6 @@ export class RootStore {
     this.notificationStore = new NotificationStore();
     this.sortingStore = new SortingStore(this);
     this.badRequestPopupStore = new BadRequestPopupStore();
+    this.depositFundsStore = new DepositFundsStore();
   }
 }
