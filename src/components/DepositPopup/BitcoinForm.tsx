@@ -80,7 +80,7 @@ const BitcoinForm = () => {
           ></NotificationPopup>
         )}
       </Observer>
-      <LoaderForComponents withoutBackground={true} isLoading={isLoading} />
+      <LoaderForComponents backgroundColor="#1c2026" isLoading={isLoading} />
       <PrimaryTextParagraph
         fontSize="16px"
         color="#fffccc"

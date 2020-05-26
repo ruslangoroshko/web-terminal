@@ -1,20 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import AccountSettingsContainer from '../containers/AccountSettingsContainer';
 import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
 import API from '../helpers/API';
 import { useStores } from '../hooks/useStores';
-import moment from 'moment';
-import {
-  BalanceHistoryDTO,
-  BalanceHistoryReport,
-} from '../types/HistoryReportTypes';
+import { BalanceHistoryReport } from '../types/HistoryReportTypes';
 import styled from '@emotion/styled';
 import SvgIcon from '../components/SvgIcon';
 import IconNoTradingHistory from '../assets/svg/icon-no-trading-history.svg';
 import DatePickerDropdown from '../components/DatePickerDropdown';
-import { TableGrid, Th, DisplayContents } from '../styles/TableElements';
-import TradingHistoryExpandedItem from '../components/SideBarTabs/TradingHistoryExpandedItem';
+import { TableGrid, Th } from '../styles/TableElements';
 import BalanceHistoryItem from '../components/BalanceHistoryItem';
 import InfinityScrollList from '../components/InfinityScrollList';
 import BadRequestPopup from '../components/BadRequestPopup';
@@ -86,14 +81,6 @@ function AccountBalance() {
       </Observer>
 
       <FlexContainer flexDirection="column">
-        {/* <PrimaryTextParagraph
-          color="#fffccc"
-          fontSize="20px"
-          fontWeight="bold"
-          marginBottom="20px"
-        >
-          Balance History
-        </PrimaryTextParagraph> */}
         <FlexContainer
           justifyContent="space-between"
           alignItems="flex-end"
@@ -116,7 +103,12 @@ function AccountBalance() {
         </FlexContainer>
         <FlexContainer flexDirection="column" position="relative">
           <Observer>
-            {() => <LoaderForComponents isLoading={isLoading} />}
+            {() => (
+              <LoaderForComponents
+                isLoading={isLoading}
+                backgroundColor="#252637"
+              />
+            )}
           </Observer>
 
           <TableGrid columnsCount={4}>
