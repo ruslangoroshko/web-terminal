@@ -81,7 +81,7 @@ const DepositPopupWrapper: FC = ({ children }) => {
             </FlexContainer>
           )}
           <FlexContainer position="relative">
-            <FlexContainer position="absolute" right="16px" top="16px">
+            <FlexContainer position="absolute" right="16px" top="16px" zIndex="300">
               <ButtonWithoutStyles onClick={depositFundsStore.togglePopup}>
                 <SvgIcon
                   {...IconClose}
