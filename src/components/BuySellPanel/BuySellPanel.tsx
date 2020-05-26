@@ -312,6 +312,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       e.preventDefault();
       return;
     }
+    
     if ([',', '.'].includes(e.data)) {
       if (
         !e.currentTarget.value ||

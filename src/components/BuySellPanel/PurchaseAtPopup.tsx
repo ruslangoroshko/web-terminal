@@ -54,12 +54,21 @@ function PurchaseAtPopup(props: Props) {
   };
 
   const handleBeforeInput = (e: any) => {
-    if (!e.data.match(/^[0-9.,]*$/)) {
+    if (!e.currentTarget.value && [',', '.'].includes(e.data)) {
       e.preventDefault();
       return;
     }
-    if (e.currentTarget.value && [',', '.'].includes(e.data)) {
-      if (e.currentTarget.value.includes('.')) {
+
+    if (!e.data.match(/^[0-9.,]*$/g)) {
+      e.preventDefault();
+      return;
+    }
+    
+    if ([',', '.'].includes(e.data)) {
+      if (
+        !e.currentTarget.value ||
+        (e.currentTarget.value && e.currentTarget.value.includes('.'))
+      ) {
         e.preventDefault();
         return;
       }
