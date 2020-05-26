@@ -38,6 +38,10 @@ const BitcoinForm = () => {
       el.select();
       document.execCommand('copy');
       document.body.removeChild(el);
+
+      notificationStore.notificationMessage = 'Copied to clipboard';
+      notificationStore.isSuccessfull = true;
+      notificationStore.openNotification();
     }
   };
 
@@ -67,9 +71,11 @@ const BitcoinForm = () => {
     <FlexContainer flexDirection="column" padding="24px 0">
       <Observer>
         {() => (
-          <NotificationPopup
-            show={notificationStore.isActiveNotification}
-          ></NotificationPopup>
+          <FixedNotify>
+            <NotificationPopup
+              show={notificationStore.isActiveNotification}
+            ></NotificationPopup>
+          </FixedNotify>
         )}
       </Observer>
       <LoaderForComponents withoutBackground={true} isLoading={isLoading} />
@@ -81,11 +87,7 @@ const BitcoinForm = () => {
       >
         Bitcoin
       </PrimaryTextParagraph>
-      <PrimaryTextParagraph
-        fontSize="13px"
-        color="#fff"
-        marginBottom="38px"
-      >
+      <PrimaryTextParagraph fontSize="13px" color="#fff" marginBottom="38px">
         Send funds to the address provided below
       </PrimaryTextParagraph>
       <FlexContainer>
@@ -113,7 +115,7 @@ const BitcoinForm = () => {
         >
           {bitcoinWalletString}
         </PrimaryTextSpan>
-        <ButtonWithoutStyles disabled={!!bitcoinWalletString} onClick={handleCopyText}>
+        <ButtonWithoutStyles onClick={handleCopyText}>
           <SvgIcon {...CopyIcon} fillColor="rgba(255, 255, 255, 0.6)" />
         </ButtonWithoutStyles>
       </BitcoinWalletStringWrapper>
@@ -150,4 +152,11 @@ export default BitcoinForm;
 const BitcoinWalletStringWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   padding-bottom: 8px;
+`;
+
+const FixedNotify = styled.span`
+  position: fixed;
+  z-index: 9999;
+  bottom: 40px;
+  left: 40px;
 `;
