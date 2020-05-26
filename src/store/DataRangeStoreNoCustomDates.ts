@@ -11,7 +11,7 @@ interface ContextProps {
   focusedInput: FocusedInputShape | null;
 }
 
-export class DateRangeStore implements ContextProps {
+export class DataRangeStoreNoCustomDates implements ContextProps {
   @observable openedDropdown = false;
   @observable dropdownValueType: ShowDatesDropdownEnum =
     ShowDatesDropdownEnum.Week;

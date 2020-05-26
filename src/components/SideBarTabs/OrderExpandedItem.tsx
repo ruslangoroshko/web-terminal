@@ -13,11 +13,11 @@ import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
 import { SecondaryButton } from '../../styles/Buttons';
 import { DisplayContents, Td } from '../../styles/TableElements';
-import { PendingOrdersWSDTO } from '../../types/PendingOrdersTypes';
+import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
 
 interface Props {
-  position: PendingOrdersWSDTO;
+  position: PendingOrderWSDTO;
   currencySymbol: string;
 }
 

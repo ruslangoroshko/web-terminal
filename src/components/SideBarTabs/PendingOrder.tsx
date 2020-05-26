@@ -13,11 +13,11 @@ import { useStores } from '../../hooks/useStores';
 import { getProcessId } from '../../helpers/getProcessId';
 import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import ClosePositionPopup from './ClosePositionPopup';
-import { PendingOrdersWSDTO } from '../../types/PendingOrdersTypes';
+import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
 
 interface Props {
-  pendingOrder: PendingOrdersWSDTO;
+  pendingOrder: PendingOrderWSDTO;
   currencySymbol: string;
 }
 

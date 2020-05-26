@@ -19,9 +19,10 @@ import Modal from '../Modal';
 import VisaMasterCardForm from './VisaMasterCardForm';
 import { Observer } from 'mobx-react-lite';
 import BitcoinForm from './BitcoinForm';
+import BadRequestPopup from '../BadRequestPopup';
 
 const DepositPopupWrapper: FC = ({ children }) => {
-  const { mainAppStore, depositFundsStore } = useStores();
+  const { mainAppStore, depositFundsStore, badRequestPopupStore } = useStores();
   const setActiveDepositType = (depositType: DepositTypeEnum) => () => {
     depositFundsStore.setActiveDepositType(depositType);
   };
@@ -44,6 +45,9 @@ const DepositPopupWrapper: FC = ({ children }) => {
 
   return (
     <Modal>
+      <Observer>
+        {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
+      </Observer>
       <ModalBackground
         position="fixed"
         top="0"
@@ -77,7 +81,7 @@ const DepositPopupWrapper: FC = ({ children }) => {
             </FlexContainer>
           )}
           <FlexContainer position="relative">
-            <FlexContainer position="absolute" right="16px" top="16px">
+            <FlexContainer position="absolute" right="16px" top="16px" zIndex="300">
               <ButtonWithoutStyles onClick={depositFundsStore.togglePopup}>
                 <SvgIcon
                   {...IconClose}

@@ -43,7 +43,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
   return (
     <DisplayContents>
       <Td>
-        <FlexContainer width="32px" height="32px">
+        <FlexContainer width="32px" height="32px" marginRight="8px">
           <ImageContainer instrumentId={instrument} />
         </FlexContainer>
         <FlexContainer flexDirection="column" width="170px">

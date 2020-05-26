@@ -25,7 +25,7 @@ import { Observer, observer } from 'mobx-react-lite';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import NotificationPopup from '../components/NotificationPopup';
 import DemoRealPopup from '../components/DemoRealPopup';
-import { PendingOrdersWSDTO } from '../types/PendingOrdersTypes';
+import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -81,7 +81,7 @@ const Dashboard = observer(() => {
 
       mainAppStore.activeSession?.on(
         Topics.PENDING_ORDERS,
-        (response: ResponseFromWebsocket<PendingOrdersWSDTO[]>) => {
+        (response: ResponseFromWebsocket<PendingOrderWSDTO[]>) => {
           if (mainAppStore.activeAccount?.id === response.accountId) {
             quotesStore.pendingOrders = response.data;
           }
@@ -104,6 +104,28 @@ const Dashboard = observer(() => {
         Topics.PRICE_CHANGE,
         (response: ResponseFromWebsocket<PriceChangeWSDTO[]>) => {
           instrumentsStore.setPricesChanges(response.data);
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.UPDATE_ACTIVE_POSITION,
+        (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            quotesStore.activePositions = quotesStore.activePositions.map(
+              item => (item.id === response.data.id ? response.data : item)
+            );
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.UPDATE_PENDING_ORDER,
+        (response: ResponseFromWebsocket<PendingOrderWSDTO>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            quotesStore.pendingOrders = quotesStore.pendingOrders.map(item =>
+              item.id === response.data.id ? response.data : item
+            );
+          }
         }
       );
     }

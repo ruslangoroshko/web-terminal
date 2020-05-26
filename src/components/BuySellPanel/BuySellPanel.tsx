@@ -44,6 +44,7 @@ import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 
 const PRECISION_USD = 2;
 const DEFAULT_INVEST_AMOUNT = 10;
+const MAX_INPUT_VALUE = 9999999.99;
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -179,6 +180,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         ...otherValues,
         operation: operation === null ? AskBidEnum.Buy : operation,
         openPrice: otherValues.openPrice || 0,
+        investmentAmount: +otherValues.investmentAmount,
       };
       try {
         const response = await API.openPendingOrder(modelToSubmit);
@@ -208,6 +210,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       const modelToSubmit = {
         ...otherValues,
         operation: operation === null ? AskBidEnum.Buy : operation,
+        investmentAmount: +otherValues.investmentAmount,
       };
       try {
         const response = await API.openPosition(modelToSubmit);
@@ -267,7 +270,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       : values.investmentAmount < 1
       ? 0
       : Number(+values.investmentAmount - 1).toFixed(PRECISION_USD);
-    setFieldValue(Fields.AMOUNT, newValue);
+
+    if (newValue <= MAX_INPUT_VALUE) {
+      setFieldValue(Fields.AMOUNT, newValue);
+    }
   };
 
   const closePopup = () => {
@@ -296,6 +302,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
   };
 
+  // TODO: make one helper for all inputs (autoclose, price at)
   const investOnBeforeInputHandler = (e: any) => {
     if (!e.currentTarget.value && [',', '.'].includes(e.data)) {
       e.preventDefault();
@@ -306,6 +313,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       e.preventDefault();
       return;
     }
+
     if ([',', '.'].includes(e.data)) {
       if (
         !e.currentTarget.value ||
@@ -316,12 +324,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       }
     }
     // see another regex
-    const regex = `^[0-9]{1,6}([,.][0-9]{1,${PRECISION_USD - 1}})?$`;
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION_USD}})?$`;
 
     if (
       e.currentTarget.value &&
-      e.currentTarget.value[e.currentTarget.value.length - 1] !== '.' &&
-      !e.currentTarget.value.match(regex)
+      ![',', '.'].includes(e.data) &&
+      !(e.currentTarget.value + e.data).match(regex)
     ) {
       e.preventDefault();
       return;

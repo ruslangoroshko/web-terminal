@@ -3,7 +3,7 @@ import { FlexContainer } from '../styles/FlexContainer';
 
 interface Props {
   listData: any[];
-  getData: () => void;
+  getData: (arg0: boolean) => void;
   isFetching: boolean;
   noMoreData: boolean;
 }
@@ -22,7 +22,7 @@ const InfinityScrollList: FC<Props> = ({
     entries => {
       const target = entries[0];
       if (target.isIntersecting && !noMoreData) {
-        !isFetching && getData();
+        !isFetching && getData(true);
       }
     },
     [isFetching, listData]

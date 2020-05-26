@@ -16,6 +16,8 @@ import SvgIcon from '../SvgIcon';
 import IconClose from '../../assets/svg/icon-close.svg';
 import Topics from '../../constants/websocketTopics';
 import Fields from '../../constants/fields';
+import { useHistory } from 'react-router-dom';
+import Page from '../../constants/Pages';
 
 interface Props {
   account: AccountModelWebSocketDTO;
@@ -26,6 +28,7 @@ const AccountInfo: FC<Props> = observer(props => {
   const { account, toggle } = props;
 
   const { quotesStore, mainAppStore, tabsStore } = useStores();
+  const { push } = useHistory();
 
   const isActiveAccount = mainAppStore.activeAccount?.id === account.id;
 
@@ -36,6 +39,7 @@ const AccountInfo: FC<Props> = observer(props => {
     tabsStore.sideBarTabType = null;
     mainAppStore.setActiveAccount(account);
     toggle();
+    push(Page.DASHBOARD);
   };
 
   return (

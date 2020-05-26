@@ -3,7 +3,7 @@ import { BidAskKeyValueList, BidAskModelWSDTO } from '../types/BidAsk';
 import { PositionModelWSDTO } from '../types/Positions';
 import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
 import { AskBidEnum } from '../enums/AskBid';
-import { PendingOrdersWSDTO } from '../types/PendingOrdersTypes';
+import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { RootStore } from './RootStore';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
@@ -15,13 +15,13 @@ interface IQuotesStore {
   total: number;
   totalEquity: number;
   profit: number;
-  pendingOrders: PendingOrdersWSDTO[];
+  pendingOrders: PendingOrderWSDTO[];
 }
 
 export class QuotesStore implements IQuotesStore {
   @observable quotes: BidAskKeyValueList = {};
   @observable activePositions: PositionModelWSDTO[] = [];
-  @observable pendingOrders: PendingOrdersWSDTO[] = [];
+  @observable pendingOrders: PendingOrderWSDTO[] = [];
   rootStore: RootStore;
 
   constructor(rootStore: RootStore) {
@@ -145,13 +145,13 @@ export class QuotesStore implements IQuotesStore {
   ) => (ascending ? b.openDate - a.openDate : a.openDate - b.openDate);
 
   sortByDateOpenedPendingOrders = (ascending: boolean) => (
-    a: PendingOrdersWSDTO,
-    b: PendingOrdersWSDTO
+    a: PendingOrderWSDTO,
+    b: PendingOrderWSDTO
   ) => (ascending ? b.created - a.created : a.created - b.created);
 
   sortByInvestment = (ascending: boolean) => (
-    a: PositionModelWSDTO | PendingOrdersWSDTO,
-    b: PositionModelWSDTO | PendingOrdersWSDTO
+    a: PositionModelWSDTO | PendingOrderWSDTO,
+    b: PositionModelWSDTO | PendingOrderWSDTO
   ) =>
     ascending
       ? b.investmentAmount - a.investmentAmount

@@ -18,9 +18,6 @@ import { getProcessId } from '../../helpers/getProcessId';
 import { AskBidEnum } from '../../enums/AskBid';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { PositionModelWSDTO } from '../../types/Positions';
-import { useAsObservableSource } from 'mobx-react-lite';
-
-const PRECISION = 2;
 
 interface Props {
   takeProfitValue: PositionModelWSDTO['tp'];
@@ -56,7 +53,7 @@ const SetAutoclose = observer((props: Props) => {
   const [tpError, setTpError] = useState('');
   const [slError, setSlError] = useState('');
 
-  const handleBeforeInput = (e: any) => {
+  const handleBeforeInput = (fieldType: TpSlTypeEnum | null) => (e: any) => {
     if (!e.data.match(/^[0-9.,]*$/)) {
       e.preventDefault();
       return;
@@ -71,17 +68,33 @@ const SetAutoclose = observer((props: Props) => {
         return;
       }
     }
-    const regex = `^[0-9]{1,6}([,.][0-9]{1,${PRECISION - 1}})?$`;
+
+    let PRECISION = 2;
+
+    switch (fieldType) {
+      case TpSlTypeEnum.Currency:
+        PRECISION = 2;
+        break;
+
+      case TpSlTypeEnum.Price:
+        PRECISION =
+          instrumentsStore.activeInstrument?.instrumentItem.digits || 2;
+        break;
+
+      default:
+        break;
+    }
+
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION}})?$`;
 
     if (
       e.currentTarget.value &&
-      e.currentTarget.value[e.currentTarget.value.length - 1] !== '.' &&
-      !e.currentTarget.value.match(regex)
+      ![',', '.'].includes(e.data) &&
+      !(e.currentTarget.value + e.data).match(regex)
     ) {
       e.preventDefault();
       return;
     }
-
     if (e.data.length > 1 && !(e.currentTarget.value + e.data).match(regex)) {
       e.preventDefault();
       return;
@@ -202,12 +215,15 @@ const SetAutoclose = observer((props: Props) => {
         width="100%"
         position="relative"
       >
-        <PlusSign>+</PlusSign>
+        {(
+          SLTPStore.autoCloseTPType !== TpSlTypeEnum.Price
+        ) && (<PlusSign>+</PlusSign>)}
+        
         <Observer>
           {() => (
             <>
               <InputPnL
-                onBeforeInput={handleBeforeInput}
+                onBeforeInput={handleBeforeInput(SLTPStore.autoCloseTPType)}
                 placeholder="Non Set"
                 onChange={handleChangeProfit}
                 onBlur={handleTakeProfitBlur}
@@ -275,12 +291,15 @@ const SetAutoclose = observer((props: Props) => {
             {slError}
           </ErropPopup>
         )}
-        <PlusSign>-</PlusSign>
+        {(
+          SLTPStore.autoCloseSLType !== TpSlTypeEnum.Price
+        ) && (<PlusSign>-</PlusSign>)}
+        
         <Observer>
           {() => (
             <>
               <InputPnL
-                onBeforeInput={handleBeforeInput}
+                onBeforeInput={handleBeforeInput(SLTPStore.autoCloseSLType)}
                 placeholder="Non Set"
                 onChange={handleChangeLoss}
                 onBlur={handleStopLossBlur}

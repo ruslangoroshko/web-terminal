@@ -1,10 +1,5 @@
 import { observable } from 'mobx';
-import {
-  PositionHistoryDTO,
-  BalanceHistoryDTO,
-  BalanceHistoryReport,
-  PositionsHistoryReportDTO,
-} from '../types/HistoryReportTypes';
+import { PositionsHistoryReportDTO } from '../types/HistoryReportTypes';
 import moment, { Moment } from 'moment';
 import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 
