@@ -75,6 +75,7 @@ const VisaMasterCardForm = () => {
         border="1px solid rgba(255, 255, 255, 0.19)"
         backgroundColor="rgba(255, 255, 255, 0.06)"
         marginBottom="10px"
+        maxHeight="40px"
       >
         <Input
           value={amount}
@@ -122,6 +123,7 @@ const VisaMasterCardForm = () => {
 
 export default VisaMasterCardForm;
 
+
 const GridDiv = styled.div`
   width: 100%;
   display: grid;
@@ -134,7 +136,7 @@ const Input = styled.input`
   border: none;
   outline: none;
   width: calc(100% - 140px);
-  height: 100%;
+  height: 40px;
   color: #fffccc;
   font-size: 14px;
   font-weight: bold;
