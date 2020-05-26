@@ -79,7 +79,14 @@ function AccountBalance() {
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
-
+      <Observer>
+        {() => (
+          <LoaderForComponents
+            isLoading={isLoading}
+            backgroundColor="#252637"
+          />
+        )}
+      </Observer>
       <FlexContainer flexDirection="column">
         <FlexContainer
           justifyContent="space-between"
@@ -101,16 +108,7 @@ function AccountBalance() {
             </FlexContainer>
           </FlexContainer>
         </FlexContainer>
-        <FlexContainer flexDirection="column" position="relative">
-          <Observer>
-            {() => (
-              <LoaderForComponents
-                isLoading={isLoading}
-                backgroundColor="#252637"
-              />
-            )}
-          </Observer>
-
+        <FlexContainer flexDirection="column">
           <TableGrid columnsCount={4}>
             <Th>
               <FlexContainer padding="0 0 0 12px">

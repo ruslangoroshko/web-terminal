@@ -68,16 +68,19 @@ const SetAutoclose = observer((props: Props) => {
         return;
       }
     }
+
     let PRECISION = 2;
+
     switch (fieldType) {
       case TpSlTypeEnum.Currency:
         PRECISION = 2;
         break;
+
       case TpSlTypeEnum.Price:
         PRECISION =
           instrumentsStore.activeInstrument?.instrumentItem.digits || 2;
-
         break;
+
       default:
         break;
     }
