@@ -108,7 +108,7 @@ function AccountBalance() {
             </FlexContainer>
           </FlexContainer>
         </FlexContainer>
-        <FlexContainer flexDirection="column">
+        <FlexContainer flexDirection="column" maxHeight="calc(100vh - 200px)">
           <TableGrid columnsCount={4}>
             <Th>
               <FlexContainer padding="0 0 0 12px">

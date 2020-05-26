@@ -302,6 +302,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
   };
 
+  // TODO: make one helper for all inputs (autoclose, price at)
   const investOnBeforeInputHandler = (e: any) => {
     if (!e.currentTarget.value && [',', '.'].includes(e.data)) {
       e.preventDefault();
@@ -312,7 +313,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       e.preventDefault();
       return;
     }
-    
+
     if ([',', '.'].includes(e.data)) {
       if (
         !e.currentTarget.value ||

@@ -11,6 +11,7 @@ import { NotificationStore } from './NotificationStore';
 import { SortingStore } from './SortingStore';
 import { BadRequestPopupStore } from "./BadRequestPopupStore";
 import { DepositFundsStore } from './DepositFundsStore';
+import { DataRangeStoreNoCustomDates } from './DataRangeStoreNoCustomDates';
 
 export class RootStore {
   quotesStore: QuotesStore;
@@ -20,6 +21,7 @@ export class RootStore {
   tradingViewStore: TradingViewStore;
   instrumentsStore: InstrumentsStore;
   dateRangeStore: DateRangeStore;
+  dataRangeStoreNoCustomDates: DataRangeStoreNoCustomDates;
   historyStore: HistoryStore;
   kycStore: KYCstore;
   notificationStore: NotificationStore;
@@ -35,6 +37,7 @@ export class RootStore {
     this.tradingViewStore = new TradingViewStore();
     this.instrumentsStore = new InstrumentsStore(this);
     this.dateRangeStore = new DateRangeStore();
+    this.dataRangeStoreNoCustomDates = new DataRangeStoreNoCustomDates();
     this.historyStore = new HistoryStore();
     this.kycStore = new KYCstore();
     this.notificationStore = new NotificationStore();

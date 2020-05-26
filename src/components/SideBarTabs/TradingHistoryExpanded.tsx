@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
@@ -16,27 +16,30 @@ import DatePickerDropdown from '../DatePickerDropdown';
 import API from '../../helpers/API';
 import TradingHistoryExpandedItem from './TradingHistoryExpandedItem';
 import { Th, TableGrid } from '../../styles/TableElements';
+import InfinityScrollList from '../InfinityScrollList';
 
 const TradingHistoryExpanded: FC = () => {
   const { tabsStore, mainAppStore, historyStore } = useStores();
+  const [isLoading, setIsLoading] = useState(false);
+  
   const closeExpanded = () => {
     tabsStore.isTabExpanded = false;
   };
 
-  const fetchPositionsHistory = async () => {
+  const fetchPositionsHistory = async (isScrolling = false) => {
     const response = await API.getPositionsHistory({
       accountId: mainAppStore.activeAccount!.id,
       startDate: historyStore.positionsStartDate.valueOf(),
       endDate: historyStore.positionsEndDate.valueOf(),
-      page: 1,
+      page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
       pageSize: 20,
     });
     historyStore.positionsHistoryReport = {
       ...response,
-      positionsHistory: [
+      positionsHistory: isScrolling? [
         ...historyStore.positionsHistoryReport.positionsHistory,
         ...response.positionsHistory,
-      ],
+      ] : response.positionsHistory,
     };
   };
 
@@ -44,6 +47,7 @@ const TradingHistoryExpanded: FC = () => {
     return () => {
       historyStore.positionsHistoryReport = {
         ...historyStore.positionsHistoryReport,
+        page: 1,
         positionsHistory: []
       }
     }
@@ -95,7 +99,7 @@ const TradingHistoryExpanded: FC = () => {
               </Observer>
             </FlexContainer>
           </FlexContainer>
-          <FlexContainer flexDirection="column">
+          <FlexContainer flexDirection="column" maxHeight="calc(100vh - 200px)">
             <TableGrid columnsCount={7}>
               <Th>
                 <FlexContainer padding="0 0 0 12px">
@@ -156,7 +160,16 @@ const TradingHistoryExpanded: FC = () => {
               <Th></Th>
               <Observer>
                 {() => (
-                  <>
+                  <InfinityScrollList
+                  getData={fetchPositionsHistory}
+                  listData={historyStore.positionsHistoryReport.positionsHistory}
+                  isFetching={isLoading}
+                  // WATCH CLOSELY
+                  noMoreData={
+                    historyStore.positionsHistoryReport.totalItems <
+                    historyStore.positionsHistoryReport.page *
+                      historyStore.positionsHistoryReport.pageSize
+                  }>
                     {historyStore.positionsHistoryReport.positionsHistory.map(
                       item => (
                         <TradingHistoryExpandedItem
@@ -168,7 +181,7 @@ const TradingHistoryExpanded: FC = () => {
                         />
                       )
                     )}
-                  </>
+                  </InfinityScrollList>
                 )}
               </Observer>
             </TableGrid>

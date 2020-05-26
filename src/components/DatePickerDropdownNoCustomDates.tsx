@@ -15,47 +15,47 @@ import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 import moment from 'moment';
 import { DayPickerRangeController } from 'react-dates';
 
-interface Props {
+ interface Props {
   datesChangeCallback: () => void;
 }
 
 const DatePickerDropdownNoCustomDates: FC<Props> = observer(
   ({ datesChangeCallback }) => {
-    const { dateRangeStore } = useStores();
+    const { dataRangeStoreNoCustomDates } = useStores();
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     const toggle = (flag: boolean) => () => {
-      dateRangeStore.openedDropdown = flag;
+      dataRangeStoreNoCustomDates.openedDropdown = flag;
     };
 
     const handleSelectRange = (dateRange: ShowDatesDropdownEnum) => () => {
-      dateRangeStore.dropdownValueType = dateRange;
+      dataRangeStoreNoCustomDates.dropdownValueType = dateRange;
 
       switch (dateRange) {
         case ShowDatesDropdownEnum.Today:
-          dateRangeStore.startDate = moment().startOf('d');
-          dateRangeStore.endDate = moment();
+          dataRangeStoreNoCustomDates.startDate = moment().startOf('d');
+          dataRangeStoreNoCustomDates.endDate = moment();
           break;
 
         case ShowDatesDropdownEnum.Week:
-          dateRangeStore.startDate = moment().subtract(1, 'w');
-          dateRangeStore.endDate = moment();
+          dataRangeStoreNoCustomDates.startDate = moment().subtract(1, 'w');
+          dataRangeStoreNoCustomDates.endDate = moment();
           break;
 
         case ShowDatesDropdownEnum.Month:
-          dateRangeStore.startDate = moment().subtract(1, 'm');
-          dateRangeStore.endDate = moment();
+          dataRangeStoreNoCustomDates.startDate = moment().subtract(1, 'm');
+          dataRangeStoreNoCustomDates.endDate = moment();
           break;
 
         case ShowDatesDropdownEnum.Year:
-          dateRangeStore.startDate = moment().subtract(1, 'y');
-          dateRangeStore.endDate = moment();
+          dataRangeStoreNoCustomDates.startDate = moment().subtract(1, 'y');
+          dataRangeStoreNoCustomDates.endDate = moment();
           break;
 
         default:
           break;
       }
-      dateRangeStore.openedDropdown = false;
+      dataRangeStoreNoCustomDates.openedDropdown = false;
       datesChangeCallback();
     };
 
@@ -77,39 +77,55 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
       <FlexContainer position="relative" width="190px" ref={wrapperRef}>
         <Observer>
           {() => (
-            <ButtonDropdown onClick={toggle(!dateRangeStore.openedDropdown)}>
+            <ButtonDropdown
+              onClick={toggle(!dataRangeStoreNoCustomDates.openedDropdown)}
+            >
               <PrimaryTextSpan
                 fontSize="10px"
-                color={dateRangeStore.openedDropdown ? '#00FFDD' : '#fffccc'}
+                color={
+                  dataRangeStoreNoCustomDates.openedDropdown
+                    ? '#00FFDD'
+                    : '#fffccc'
+                }
                 textTransform="uppercase"
                 marginRight="4px"
               >
-                {dateRangeStore.dropdownValueType ===
+                {dataRangeStoreNoCustomDates.dropdownValueType ===
                 ShowDatesDropdownEnum.Custom
                   ? `${
-                      dateRangeStore.startDate
-                        ? dateRangeStore.startDate.format('DD/MM/YYYY')
+                      dataRangeStoreNoCustomDates.startDate
+                        ? dataRangeStoreNoCustomDates.startDate.format(
+                            'DD/MM/YYYY'
+                          )
                         : ''
                     } - ${
-                      dateRangeStore.endDate
-                        ? dateRangeStore.endDate.format('DD/MM/YYYY')
+                      dataRangeStoreNoCustomDates.endDate
+                        ? dataRangeStoreNoCustomDates.endDate.format(
+                            'DD/MM/YYYY'
+                          )
                         : ''
                     }`
-                  : ShowDatesDropdownEnum[dateRangeStore.dropdownValueType]}
+                  : ShowDatesDropdownEnum[
+                      dataRangeStoreNoCustomDates.dropdownValueType
+                    ]}
               </PrimaryTextSpan>
               <SvgIcon
                 {...IconDroplistShevron}
                 fillColor={
-                  dateRangeStore.openedDropdown ? '#00FFDD' : '#fffccc'
+                  dataRangeStoreNoCustomDates.openedDropdown
+                    ? '#00FFDD'
+                    : '#fffccc'
                 }
                 transformProp={
-                  dateRangeStore.openedDropdown ? 'rotate(0)' : 'rotate(180deg)'
+                  dataRangeStoreNoCustomDates.openedDropdown
+                    ? 'rotate(0)'
+                    : 'rotate(180deg)'
                 }
               />
             </ButtonDropdown>
           )}
         </Observer>
-        {dateRangeStore.openedDropdown && (
+        {dataRangeStoreNoCustomDates.openedDropdown && (
           <DatePickerWrapper flexDirection="column">
             <DefinedDaterangeWrapper
               flexDirection="column"
@@ -145,32 +161,35 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
               </DateRangeItemButton>
             </DefinedDaterangeWrapper>
             <FlexContainer padding="16px 0" position="relative">
-              <SelectDateButton onClick={dateRangeStore.toggleDatepicker}>
+              <SelectDateButton
+                onClick={dataRangeStoreNoCustomDates.toggleDatepicker}
+              >
                 <PrimaryTextSpan>Select Date</PrimaryTextSpan>
                 <SvgIcon
                   {...IconCalendar}
                   fillColor="rgba(255, 255, 255, 0.6)"
                 />
               </SelectDateButton>
-              {dateRangeStore.focusedInput && (
+              {dataRangeStoreNoCustomDates.focusedInput && (
                 <FlexContainer position="absolute" top="100%" left="100%">
                   <DayPickerRangeController
                     keepOpenOnDateSelect={false}
-                    startDate={dateRangeStore.startDate}
-                    endDate={dateRangeStore.endDate}
-                    onOutsideClick={dateRangeStore.closeDatepicker}
+                    startDate={dataRangeStoreNoCustomDates.startDate}
+                    endDate={dataRangeStoreNoCustomDates.endDate}
+                    onOutsideClick={dataRangeStoreNoCustomDates.closeDatepicker}
                     onDatesChange={({ startDate, endDate }) => {
-                      dateRangeStore.startDate = startDate || moment();
-                      dateRangeStore.endDate = endDate || moment();
-                      dateRangeStore.dropdownValueType =
+                      dataRangeStoreNoCustomDates.startDate =
+                        startDate || moment();
+                      dataRangeStoreNoCustomDates.endDate = endDate || moment();
+                      dataRangeStoreNoCustomDates.dropdownValueType =
                         ShowDatesDropdownEnum.Custom;
                       datesChangeCallback();
                     }}
-                    focusedInput={dateRangeStore.focusedInput}
+                    focusedInput={dataRangeStoreNoCustomDates.focusedInput}
                     onFocusChange={focusedInput => {
-                      dateRangeStore.focusedInput = focusedInput;
+                      dataRangeStoreNoCustomDates.focusedInput = focusedInput;
                       if (focusedInput === null) {
-                        dateRangeStore.closeDropdown();
+                        dataRangeStoreNoCustomDates.closeDropdown();
                       }
                     }}
                     numberOfMonths={2}

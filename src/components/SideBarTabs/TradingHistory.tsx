@@ -15,33 +15,33 @@ import InfinityScrollList from '../InfinityScrollList';
 const TradingHistory: FC = () => {
   const { tabsStore, mainAppStore, historyStore } = useStores();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchPositionsHistory = async () => {
+  const fetchPositionsHistory = async (isScrolling = false) => {
     const response = await API.getPositionsHistory({
       accountId: mainAppStore.activeAccount!.id,
       startDate: historyStore.positionsStartDate.valueOf(),
       endDate: historyStore.positionsEndDate.valueOf(),
-      page: 1,
+      page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
       pageSize: 20,
     });
     historyStore.positionsHistoryReport = {
       ...response,
-      positionsHistory: [
+      positionsHistory: isScrolling? [
         ...historyStore.positionsHistoryReport.positionsHistory,
         ...response.positionsHistory,
-      ],
+      ] : response.positionsHistory,
     };
   };
 
   useEffect(() => {
-    setIsLoading(true);
     fetchPositionsHistory().finally(() => {
       setIsLoading(false);
     });
     return () => {
       historyStore.positionsHistoryReport = {
         ...historyStore.positionsHistoryReport,
+        page: 1,
         positionsHistory: []
       }
     }
