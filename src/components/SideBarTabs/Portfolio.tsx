@@ -248,6 +248,7 @@ const PortfolioWrapper = styled(FlexContainer)`
 const ActivePositionsWrapper = styled(FlexContainer)`
   overflow-y: auto;
   height: 100%;
+  max-height: calc(100% - 205px);
 
   ::-webkit-scrollbar {
     width: 4px;

@@ -14,6 +14,7 @@ const StepsContainter = observer(() => {
       padding="30px 30px 40px"
       backgroundColor="#212130"
       justifyContent="center"
+      minHeight="165px"
     >
       <FlexContainer width="560px" justifyContent="space-between">
         <StepIndicator

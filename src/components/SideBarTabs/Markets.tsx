@@ -204,6 +204,7 @@ const SortingWrapper = styled(FlexContainer)`
 
 const MarketsWrapper = styled(FlexContainer)`
   overflow-y: auto;
+  max-height: calc(100% - 135px);
 
   ::-webkit-scrollbar {
     width: 4px;

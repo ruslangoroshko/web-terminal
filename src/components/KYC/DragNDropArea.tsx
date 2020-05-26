@@ -37,7 +37,7 @@ function DragNDropArea(props: Props) {
     <DnDWrapper
       {...getRootProps()}
       border="1px dashed rgba(255, 255, 255, 0.3)"
-      height="120px"
+      minHeight="120px"
       width="100%"
       borderRadius="4px"
       flexDirection="column"

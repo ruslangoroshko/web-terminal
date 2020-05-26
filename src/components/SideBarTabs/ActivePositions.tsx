@@ -112,6 +112,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
       ref={instrumentRef}
       flexDirection="column"
       onClick={setInstrumentActive}
+      minHeight="79px"
     >
       <InstrumentInfoWrapperForBorder
         justifyContent="space-between"
