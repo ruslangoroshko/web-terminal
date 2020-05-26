@@ -67,6 +67,10 @@ function AccountBalance() {
     }
   }, [mainAppStore.activeAccount]);
 
+  useEffect(() => {
+    document.title = 'Balance history';
+  }, []);
+
   return (
     <AccountSettingsContainer>
       <IconButton onClick={goBack}>

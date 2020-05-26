@@ -133,6 +133,7 @@ function SignUp() {
   
   useEffect(() => {
     mixpanel.track(mixpanelEvents.SIGN_UP_VIEW);
+    document.title = 'Sign Up';
   }, []);
 
   return (

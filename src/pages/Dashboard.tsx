@@ -131,6 +131,10 @@ const Dashboard = observer(() => {
     }
   }, [mainAppStore.activeAccount]);
 
+  useEffect(() => {
+    document.title = 'Monfex trading platform';
+  }, []);
+  
   return (
     <FlexContainer
       width="100%"
