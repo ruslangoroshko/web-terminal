@@ -6,8 +6,8 @@ import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 interface ContextProps {
   openedDropdown: boolean;
   dropdownValueType: ShowDatesDropdownEnum;
-  startDate: moment.Moment | null;
-  endDate: moment.Moment | null;
+  startDate: moment.Moment;
+  endDate: moment.Moment;
   focusedInput: FocusedInputShape | null;
 }
 
@@ -15,8 +15,8 @@ export class DateRangeStore implements ContextProps {
   @observable openedDropdown = false;
   @observable dropdownValueType: ShowDatesDropdownEnum =
     ShowDatesDropdownEnum.Week;
-  @observable startDate: moment.Moment | null = moment().subtract(1, 'w');
-  @observable endDate: moment.Moment | null = moment();
+  @observable startDate: moment.Moment = moment().subtract(1, 'w');
+  @observable endDate: moment.Moment = moment();
   @observable focusedInput: FocusedInputShape | null = null;
 
   @action
@@ -47,8 +47,8 @@ export class DateRangeStore implements ContextProps {
 
   @action
   resetDatepicker = () => {
-    this.startDate = null;
-    this.endDate = null;
+    this.startDate = moment().subtract(1, 'w');
+    this.endDate = moment();
     this.focusedInput = null;
     this.dropdownValueType = ShowDatesDropdownEnum.Week;
   };

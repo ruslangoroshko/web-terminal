@@ -65,18 +65,18 @@ function PurchaseAtPopup(props: Props) {
       }
     }
 
-    const regex = `^[0-9]{1,6}([,.][0-9]{1,${instrumentsStore.activeInstrument!
-      .instrumentItem.digits - 1}})?$`;
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${
+      instrumentsStore.activeInstrument!.instrumentItem.digits
+    }})?$`;
 
     if (
       e.currentTarget.value &&
-      e.currentTarget.value[e.currentTarget.value.length - 1] !== '.' &&
-      !e.currentTarget.value.match(regex)
+      ![',', '.'].includes(e.data) &&
+      !(e.currentTarget.value + e.data).match(regex)
     ) {
       e.preventDefault();
       return;
     }
-
     if (e.data.length > 1 && !(e.currentTarget.value + e.data).match(regex)) {
       e.preventDefault();
       return;

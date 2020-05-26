@@ -160,8 +160,8 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
                     endDate={dateRangeStore.endDate}
                     onOutsideClick={dateRangeStore.closeDatepicker}
                     onDatesChange={({ startDate, endDate }) => {
-                      dateRangeStore.startDate = startDate;
-                      dateRangeStore.endDate = endDate;
+                      dateRangeStore.startDate = startDate || moment();
+                      dateRangeStore.endDate = endDate || moment();
                       dateRangeStore.dropdownValueType =
                         ShowDatesDropdownEnum.Custom;
                       datesChangeCallback();

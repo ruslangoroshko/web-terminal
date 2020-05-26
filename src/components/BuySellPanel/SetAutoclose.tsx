@@ -71,17 +71,16 @@ const SetAutoclose = observer((props: Props) => {
         return;
       }
     }
-    const regex = `^[0-9]{1,6}([,.][0-9]{1,${PRECISION - 1}})?$`;
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION}})?$`;
 
     if (
       e.currentTarget.value &&
-      e.currentTarget.value[e.currentTarget.value.length - 1] !== '.' &&
-      !e.currentTarget.value.match(regex)
+      ![',', '.'].includes(e.data) &&
+      !(e.currentTarget.value + e.data).match(regex)
     ) {
       e.preventDefault();
       return;
     }
-
     if (e.data.length > 1 && !(e.currentTarget.value + e.data).match(regex)) {
       e.preventDefault();
       return;

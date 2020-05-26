@@ -22,10 +22,11 @@ import { Observer } from 'mobx-react-lite';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import IconClose from '../assets/svg/icon-popup-close.svg';
 import { useHistory } from 'react-router-dom';
+import LoaderForComponents from '../components/LoaderForComponents';
 
 function AccountBalance() {
-  const { mainAppStore, badRequestPopupStore } = useStores();
-  const {goBack} = useHistory()
+  const { mainAppStore, badRequestPopupStore, dateRangeStore } = useStores();
+  const { goBack } = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [balanceHistoryReport, setBalanceHistoryReport] = useState<
     BalanceHistoryReport
@@ -36,27 +37,24 @@ function AccountBalance() {
     totalItems: 0,
   });
 
-  const fetchBalanceHistory = async () => {
+  const fetchBalanceHistory = async (isScrolling = false) => {
     setIsLoading(true);
 
     try {
       const response = await API.getBalanceHistory({
         // FIXME: typings
         accountId: mainAppStore.activeAccount!.id,
-        endDate: moment().valueOf(),
-        startDate: moment()
-          .subtract(1, 'w')
-          .valueOf(),
-        page: balanceHistoryReport.page + 1,
+        endDate: dateRangeStore.endDate.valueOf(),
+        startDate: dateRangeStore.startDate.valueOf(),
+        page: isScrolling ? balanceHistoryReport.page + 1 : 1,
         pageSize: 20,
       });
 
       const newBalanceHistory: BalanceHistoryReport = {
         ...response,
-        balanceHistory: [
-          ...balanceHistoryReport.balanceHistory,
-          ...response.balanceHistory,
-        ],
+        balanceHistory: isScrolling
+          ? [...balanceHistoryReport.balanceHistory, ...response.balanceHistory]
+          : response.balanceHistory,
       };
       setBalanceHistoryReport(newBalanceHistory);
       setIsLoading(false);
@@ -116,7 +114,11 @@ function AccountBalance() {
             </FlexContainer>
           </FlexContainer>
         </FlexContainer>
-        <FlexContainer flexDirection="column">
+        <FlexContainer flexDirection="column" position="relative">
+          <Observer>
+            {() => <LoaderForComponents isLoading={isLoading} />}
+          </Observer>
+
           <TableGrid columnsCount={4}>
             <Th>
               <FlexContainer padding="0 0 0 12px">
