@@ -5,6 +5,7 @@ import {
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
+import { useStores } from '../../hooks/useStores';
 import AmountPlaceholder from './AmountPlaceholder';
 import CurrencyDropdown from './CurrencyDropdown';
 import { paymentCurrencies } from '../../constants/paymentCurrencies';
@@ -20,6 +21,8 @@ const VisaMasterCardForm = () => {
   const [imCardHolder, setImCardHolder] = useState(false);
 
   const placeholderValues = [50, 100, 250, 500, 1000];
+
+  const { mainAppStore, notificationStore, badRequestPopupStore } = useStores();
 
   const investOnBeforeInputHandler = (e: any) => {
     if ([',', '.'].includes(e.data)) {
@@ -47,10 +50,10 @@ const VisaMasterCardForm = () => {
 
   const handleClickDepositButton = () => {
     const params = {
-      paymentMethod: '',
+      paymentMethod: 'BANK_CARDS',
 	    depositSum: amount,
 	    currency: 'USD',
-	    authToken: ''
+	    authToken: mainAppStore.token || '',
     }
     try {
       const result = API.createDeposit(params);
