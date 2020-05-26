@@ -44,6 +44,7 @@ import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 
 const PRECISION_USD = 2;
 const DEFAULT_INVEST_AMOUNT = 10;
+const MAX_INPUT_VALUE = 9999999.99;
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -179,6 +180,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         ...otherValues,
         operation: operation === null ? AskBidEnum.Buy : operation,
         openPrice: otherValues.openPrice || 0,
+        investmentAmount: +otherValues.investmentAmount,
       };
       try {
         const response = await API.openPendingOrder(modelToSubmit);
@@ -208,6 +210,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       const modelToSubmit = {
         ...otherValues,
         operation: operation === null ? AskBidEnum.Buy : operation,
+        investmentAmount: +otherValues.investmentAmount,
       };
       try {
         const response = await API.openPosition(modelToSubmit);
@@ -267,7 +270,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       : values.investmentAmount < 1
       ? 0
       : Number(+values.investmentAmount - 1).toFixed(PRECISION_USD);
-    setFieldValue(Fields.AMOUNT, newValue);
+
+    if (newValue <= MAX_INPUT_VALUE) {
+      setFieldValue(Fields.AMOUNT, newValue);
+    }
   };
 
   const closePopup = () => {
