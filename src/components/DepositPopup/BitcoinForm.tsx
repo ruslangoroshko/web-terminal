@@ -27,7 +27,7 @@ const BitcoinForm = () => {
   const [bitcoinWalletString, setBitcoinWalletString] = useState('');
   const [isLoading, setLoading] = useState(true);
 
-  const { mainAppStore, notificationStore } = useStores();
+  const { mainAppStore, notificationStore, badRequestPopupStore } = useStores();
 
   const handleCopyText = () => {
     if (bitcoinWalletString) {
@@ -48,26 +48,18 @@ const BitcoinForm = () => {
           authToken: mainAppStore.token || '',
           currency: DepositCurrency.BTC,
         });
-
         if (response.status === DepositApiResponseCodes.Success) {
           setBitcoinWalletString(response.walletAddress);
           setLoading(false);
         } else {
-          console.log(response);
-          notificationStore.notificationMessage = `${response.status}`;
-          notificationStore.isSuccessfull = false;
-          notificationStore.openNotification();
+          badRequestPopupStore.setMessage('Technical error');
           setLoading(false);
         }
       } catch (error) {
-        // TODO - Add BadRequestPopup after marge
-        notificationStore.notificationMessage = error;
-        notificationStore.isSuccessfull = false;
-        notificationStore.openNotification();
-        setLoading(false);
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
       }
     }
-
     fetchBitcoinString();
   }, []);
 
