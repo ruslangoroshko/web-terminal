@@ -160,7 +160,7 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
                 </PrimaryTextSpan>
               </DateRangeItemButton>
             </DefinedDaterangeWrapper>
-            <FlexContainer padding="16px 0" position="relative">
+            {/* <FlexContainer padding="16px 0" position="relative">
               <SelectDateButton
                 onClick={dataRangeStoreNoCustomDates.toggleDatepicker}
               >
@@ -217,7 +217,7 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
                   />
                 </FlexContainer>
               )}
-            </FlexContainer>
+            </FlexContainer> */}
           </DatePickerWrapper>
         )}
       </FlexContainer>
@@ -241,7 +241,7 @@ const DatePickerWrapper = styled(FlexContainer)`
 `;
 
 const DefinedDaterangeWrapper = styled(FlexContainer)`
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  /* border-bottom: 1px solid rgba(255, 255, 255, 0.16); */
   padding: 16px 0;
 `;
 
