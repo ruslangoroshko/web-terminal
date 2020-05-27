@@ -58,18 +58,21 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     badRequestPopupStore,
   } = useStores();
 
-  const initialValues: OpenPositionModelFormik = {
-    processId: getProcessId(),
-    accountId: mainAppStore.activeAccount?.id || '',
-    instrumentId: instrument.id,
-    operation: null,
-    multiplier: instrument.multiplier[0],
-    investmentAmount: DEFAULT_INVEST_AMOUNT,
-    tp: null,
-    sl: null,
-    slType: null,
-    tpType: null,
-  };
+  const initialValues = useCallback(
+    () => ({
+      processId: getProcessId(),
+      accountId: mainAppStore.activeAccount?.id || '',
+      instrumentId: instrument.id,
+      operation: null,
+      multiplier: instrument.multiplier[0],
+      investmentAmount: DEFAULT_INVEST_AMOUNT,
+      tp: null,
+      sl: null,
+      slType: null,
+      tpType: null,
+    }),
+    [instrument]
+  );
 
   const currentPriceAsk = useCallback(
     () => quotesStore.quotes[instrument.id].ask.c,
@@ -86,14 +89,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         investmentAmount: yup
           .number()
           .min(
-            instrument.minOperationVolume / initialValues.multiplier,
+            instrument.minOperationVolume / initialValues().multiplier,
             `Minimum trade volume $${instrument.minOperationVolume /
-              initialValues.multiplier}. Please increase your trade amount or multiplier.`
+              initialValues()
+                .multiplier}. Please increase your trade amount or multiplier.`
           )
           .max(
-            instrument.maxOperationVolume / initialValues.multiplier,
+            instrument.maxOperationVolume / initialValues().multiplier,
             `Maximum trade volume $${instrument.maxOperationVolume /
-              initialValues.multiplier}. Please decrease your trade amount or multiplier.`
+              initialValues()
+                .multiplier}. Please decrease your trade amount or multiplier.`
           )
           .test(
             Fields.AMOUNT,
@@ -249,7 +254,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     touched,
     isSubmitting,
   } = useFormik({
-    initialValues,
+    initialValues: initialValues(),
     onSubmit,
     validationSchema,
     validateOnBlur: false,
@@ -258,6 +263,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     setFieldValue(Fields.INSTRUMNENT_ID, instrument.id);
+    setFieldValue(Fields.MULTIPLIER, instrument.multiplier[0]);
   }, [instrument]);
 
   useEffect(() => {
@@ -469,11 +475,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
-        <MultiplierDropdown
-          multipliers={instrument.multiplier}
-          selectedMultiplier={values.multiplier}
-          setFieldValue={setFieldValue}
-        ></MultiplierDropdown>
+        <Observer>
+          {() => (
+            <MultiplierDropdown
+              multipliers={instrument.multiplier}
+              selectedMultiplier={values.multiplier}
+              setFieldValue={setFieldValue}
+            ></MultiplierDropdown>
+          )}
+        </Observer>
         <FlexContainer
           justifyContent="space-between"
           flexWrap="wrap"

@@ -43,7 +43,7 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
           break;
 
         case ShowDatesDropdownEnum.Month:
-          dataRangeStoreNoCustomDates.startDate = moment().subtract(1, 'm');
+          dataRangeStoreNoCustomDates.startDate = moment().subtract(1, 'months');
           dataRangeStoreNoCustomDates.endDate = moment();
           break;
 
@@ -211,7 +211,7 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
                     }
                     renderMonthElement={({ month }) => (
                       <PrimaryTextParagraph>
-                        {month.format()}
+                        {month.format('MMMM YYYY')}
                       </PrimaryTextParagraph>
                     )}
                   />
