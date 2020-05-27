@@ -27,7 +27,12 @@ interface Props {
 const AccountInfo: FC<Props> = observer(props => {
   const { account, toggle } = props;
 
-  const { quotesStore, mainAppStore, tabsStore } = useStores();
+  const {
+    quotesStore,
+    mainAppStore,
+    tabsStore,
+    notificationStore,
+  } = useStores();
   const { push } = useHistory();
 
   const isActiveAccount = mainAppStore.activeAccount?.id === account.id;
@@ -39,6 +44,11 @@ const AccountInfo: FC<Props> = observer(props => {
     tabsStore.sideBarTabType = null;
     mainAppStore.setActiveAccount(account);
     toggle();
+    notificationStore.notificationMessage = `Your account has been switched on ${
+      account.isLive ? 'Real' : 'Demo'
+    }`;
+    notificationStore.isSuccessfull = true;
+    notificationStore.openNotification();
     push(Page.DASHBOARD);
   };
 
