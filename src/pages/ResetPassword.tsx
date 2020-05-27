@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SignFlowLayout from '../components/SignFlowLayout';
 import {
   Formik,
@@ -111,6 +111,11 @@ function ResetPassword(props: Props) {
       if (el) el.focus();
     }
   };
+
+  useEffect(() => {
+    document.title = 'Reset password';
+  }, []);
+
   return (
     <SignFlowLayout>
       {isLoading && <LoaderFullscreen isLoading={isLoading} />}

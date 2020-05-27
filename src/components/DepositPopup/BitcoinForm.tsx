@@ -57,11 +57,12 @@ const BitcoinForm = () => {
           setLoading(false);
         } else {
           badRequestPopupStore.setMessage('Technical error');
+          badRequestPopupStore.openModal();
           setLoading(false);
         }
       } catch (error) {
-        badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
+        badRequestPopupStore.openModal();
       }
     }
     fetchBitcoinString();

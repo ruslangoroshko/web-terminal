@@ -74,7 +74,7 @@ function PersonalData() {
     phone: yup.string(),
   });
 
-  const [birthday, setBirthday] = useState<moment.Moment>(moment('01.01.2001'));
+  const [birthday, setBirthday] = useState<moment.Moment>(moment('2001-01-01T14:48:00.000Z'));
 
   const [focused, setFocused] = useState(false);
 

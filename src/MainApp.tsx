@@ -25,6 +25,11 @@ const MainApp = () => {
       mainAppStore.handleInitConnection();
     }
   }, [mainAppStore.isAuthorized]);
+
+  useEffect(() => {
+    document.title = 'Monfex trading platform';
+  }, []);
+
   return (
     <>
       <Observer>

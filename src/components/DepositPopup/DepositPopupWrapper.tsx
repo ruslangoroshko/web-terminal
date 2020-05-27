@@ -129,7 +129,7 @@ const DepositPopupWrapper: FC = ({ children }) => {
                         )}
                       >
                         <FlexContainer marginRight="8px">
-                          <img src={VisaMasterImage} width={32} />
+                          <img src={VisaMasterImage} width={32} height={28} />
                         </FlexContainer>
                         <FlexContainer flexDirection="column">
                           <PrimaryTextSpan fontSize="12px" color="#fffccc">
@@ -151,7 +151,7 @@ const DepositPopupWrapper: FC = ({ children }) => {
                         onClick={setActiveDepositType(DepositTypeEnum.Bitcoin)}
                       >
                         <FlexContainer marginRight="8px">
-                          <img src={BitcoinImage} width={26} />
+                          <img src={BitcoinImage} width={26} height={26} />
                         </FlexContainer>
                         <FlexContainer flexDirection="column">
                           <PrimaryTextSpan fontSize="12px" color="#fffccc">

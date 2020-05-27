@@ -61,6 +61,7 @@ function TradingHistoryItem(props: Props) {
       flexDirection="column"
       padding="0 16px"
       onClick={switchInstrument}
+      minHeight="57px"
     >
       <TradingHistoryItemWrapperBorder
         padding="12px 0"

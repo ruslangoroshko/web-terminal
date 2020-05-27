@@ -5,6 +5,7 @@ import {
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
+import { useStores } from '../../hooks/useStores';
 import AmountPlaceholder from './AmountPlaceholder';
 import CurrencyDropdown from './CurrencyDropdown';
 import { paymentCurrencies } from '../../constants/paymentCurrencies';
@@ -20,6 +21,8 @@ const VisaMasterCardForm = () => {
   const [imCardHolder, setImCardHolder] = useState(false);
 
   const placeholderValues = [50, 100, 250, 500, 1000];
+
+  const { mainAppStore, notificationStore, badRequestPopupStore } = useStores();
 
   const investOnBeforeInputHandler = (e: any) => {
     if ([',', '.'].includes(e.data)) {
@@ -47,10 +50,10 @@ const VisaMasterCardForm = () => {
 
   const handleClickDepositButton = () => {
     const params = {
-      paymentMethod: '',
+      paymentMethod: 'BANK_CARDS',
 	    depositSum: amount,
 	    currency: 'USD',
-	    authToken: ''
+	    authToken: mainAppStore.token || '',
     }
     try {
       const result = API.createDeposit(params);
@@ -75,6 +78,7 @@ const VisaMasterCardForm = () => {
         border="1px solid rgba(255, 255, 255, 0.19)"
         backgroundColor="rgba(255, 255, 255, 0.06)"
         marginBottom="10px"
+        maxHeight="40px"
       >
         <Input
           value={amount}
@@ -122,6 +126,7 @@ const VisaMasterCardForm = () => {
 
 export default VisaMasterCardForm;
 
+
 const GridDiv = styled.div`
   width: 100%;
   display: grid;
@@ -134,7 +139,7 @@ const Input = styled.input`
   border: none;
   outline: none;
   width: calc(100% - 140px);
-  height: 100%;
+  height: 40px;
   color: #fffccc;
   font-size: 14px;
   font-weight: bold;

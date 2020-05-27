@@ -22,7 +22,7 @@ const StepIndicator: FC<Props> = observer(props => {
       <FlexContainer
         borderRadius="50%"
         width="48px"
-        height="48px"
+        minHeight="48px"
         backgroundColor={
           isMoreThanOrCurrentStep ? '#005E5E' : 'rgba(255, 255, 255, 0.06)'
         }

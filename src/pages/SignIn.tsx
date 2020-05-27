@@ -89,6 +89,8 @@ const SingIn = observer(() => {
 
   useEffect(() => {
     mixpanel.track(mixpanelEvents.LOGIN_VIEW);
+
+    document.title = 'Log In';
   }, []);
 
   return (
