@@ -142,8 +142,8 @@ function PersonalData() {
           }
         }
       } catch (error) {
+        badRequestPopupStore.setMessage(error);
         badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
       }
     }
     kycStore.currentStep = KYCstepsEnum.PersonalData;
