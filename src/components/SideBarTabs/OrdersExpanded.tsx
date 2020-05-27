@@ -58,7 +58,7 @@ const OrdersExpanded: FC = () => {
       <FlexContainer width="100%" justifyContent="center">
         <FlexContainer flexDirection="column" width="1020px">
           <FlexContainer flexDirection="column" justifyContent="center">
-            <TableGrid columnsCount={7}>
+            <TableGrid columnsCount={7} maxHeight="calc(100vh - 180px)">
               <Th>
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"

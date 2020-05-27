@@ -22,7 +22,7 @@ export const Th = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;
 
-export const TableGrid = styled.div<{ columnsCount: number; height?: string }>`
+export const TableGrid = styled.div<{ columnsCount: number; height?: string; maxHeight?: string; }>`
   display: grid;
   height: ${props => props.height};
   overflow-y: auto;
@@ -30,5 +30,6 @@ export const TableGrid = styled.div<{ columnsCount: number; height?: string }>`
       ${props => props.columnsCount - 1},
       minmax(100px, 1fr)
     );
-  padding-bottom: 200px;  
+  padding-bottom: 100px;  
+  max-height: ${props => props.maxHeight}
 `;
