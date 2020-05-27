@@ -160,7 +160,7 @@ const PortfolioExpanded: FC<Props> = props => {
             </ButtonCloseAll> */}
           </FlexContainer>
           <FlexContainer flexDirection="column" justifyContent="center">
-            <TableGrid columnsCount={9}>
+            <TableGrid columnsCount={9} maxHeight="calc(100vh - 235px)">
               <Th>
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
