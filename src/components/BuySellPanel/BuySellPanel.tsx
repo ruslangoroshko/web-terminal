@@ -158,7 +158,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value < currentPriceBid()
+                value => value > currentPriceBid()
               ),
           }),
         openPrice: yup.number().nullable(),
