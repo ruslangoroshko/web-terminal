@@ -126,7 +126,6 @@ export class MainAppStore implements MainAppStoreProps {
       const activeAccount = this.accounts.find(
         item => item.id === activeAccountId
       );
-
       if (activeAccount) {
         this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: activeAccount.id,
@@ -138,6 +137,8 @@ export class MainAppStore implements MainAppStoreProps {
       this.isLoading = false;
     } catch (error) {
       this.isLoading = false;
+      this.rootStore.badRequestPopupStore.setMessage(error);
+      this.rootStore.badRequestPopupStore.openModal();
     }
   };
 
