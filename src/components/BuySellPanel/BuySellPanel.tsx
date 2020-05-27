@@ -310,20 +310,22 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   // TODO: make one helper for all inputs (autoclose, price at)
   const investOnBeforeInputHandler = (e: any) => {
-    if (!e.currentTarget.value && [',', '.'].includes(e.data)) {
-      e.preventDefault();
-      return;
-    }
+    const currTargetValue = e.currentTarget.value;
 
     if (!e.data.match(/^[0-9.,]*$/g)) {
       e.preventDefault();
       return;
     }
 
+    if (!currTargetValue && [',', '.'].includes(e.data)) {
+      e.preventDefault();
+      return;
+    }
+
     if ([',', '.'].includes(e.data)) {
       if (
-        !e.currentTarget.value ||
-        (e.currentTarget.value && e.currentTarget.value.includes('.'))
+        !currTargetValue ||
+        (currTargetValue && currTargetValue.includes('.'))
       ) {
         e.preventDefault();
         return;
@@ -331,16 +333,19 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
     // see another regex
     const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION_USD}})?$`;
-
+    const splittedValue =
+      currTargetValue.substring(0, e.currentTarget.selectionStart) +
+      e.data +
+      currTargetValue.substring(e.currentTarget.selectionStart);
     if (
-      e.currentTarget.value &&
+      currTargetValue &&
       ![',', '.'].includes(e.data) &&
-      !(e.currentTarget.value + e.data).match(regex)
+      !splittedValue.match(regex)
     ) {
       e.preventDefault();
       return;
     }
-    if (e.data.length > 1 && !(e.currentTarget.value + e.data).match(regex)) {
+    if (e.data.length > 1 && !splittedValue.match(regex)) {
       e.preventDefault();
       return;
     }
