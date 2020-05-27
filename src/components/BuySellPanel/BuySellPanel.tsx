@@ -361,8 +361,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     toggleInvestemAmountDropdown(true);
   };
 
-  const investOnBlurHandler = () => {
-    if (!values.investmentAmount) {
+  const investOnBlurHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    if (
+      !investAmountRef.current?.contains(e.target) &&
+      !values.investmentAmount
+    ) {
       setFieldValue(Fields.AMOUNT, DEFAULT_INVEST_AMOUNT);
     }
   };
@@ -441,7 +444,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               />
             )}
             <PlusMinusButtonWrapper flexDirection="column">
-              <PlusButton type="button" onClick={handleChangeInputAmount(true)}>
+              <PlusButton
+                type="button"
+                onClick={handleChangeInputAmount(true)}
+              >
                 <PrimaryTextSpan fontWeight="bold">&#43;</PrimaryTextSpan>
               </PlusButton>
               <MinusButton
