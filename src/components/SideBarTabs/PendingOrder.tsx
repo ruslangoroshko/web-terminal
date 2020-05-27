@@ -56,6 +56,7 @@ function PendingOrder(props: Props) {
       onClick={switchInstrument}
       ref={instrumentRef}
       padding="0 16px"
+      minHeight="67px"
     >
       <OrderWrapperWithBorder padding="12px 0" justifyContent="space-between">
         <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
