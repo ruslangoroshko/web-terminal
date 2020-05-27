@@ -83,8 +83,7 @@ function PendingOrder(props: Props) {
             </PrimaryTextSpan>
           </FlexContainer>
           <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
-            at {currencySymbol}
-            {pendingOrder.openPrice}
+            at {pendingOrder.openPrice}
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer
