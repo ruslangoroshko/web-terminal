@@ -211,7 +211,7 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
                     }
                     renderMonthElement={({ month }) => (
                       <PrimaryTextParagraph>
-                        {month.format()}
+                        {month.format('MMMM YYYY')}
                       </PrimaryTextParagraph>
                     )}
                   />
