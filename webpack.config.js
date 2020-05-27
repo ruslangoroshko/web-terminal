@@ -4,6 +4,9 @@ const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = (env, argv) => {
+  const reCaptchaKey = '6LeM1vwUAAAAAI11ZbVvby8DFwiD8eftdFReegmr';
+  const reCaptchaKeyDev = '6Le22PwUAAAAADoNtCk9zkQb-HXjuARfS1rRrIze';
+
   return {
     mode: argv.mode,
     entry: {
@@ -85,6 +88,11 @@ module.exports = (env, argv) => {
           viewport: 'width=device-width, initial-scale=1.0',
         },
         title: 'Hello world - Shadi',
+        captcha:
+          'https://www.google.com/recaptcha/api.js?render=' + argv.mode ===
+          'production'
+            ? JSON.stringify(reCaptchaKey)
+            : JSON.stringify(reCaptchaKeyDev),
       }),
       new webpack.DefinePlugin({
         WS_HOST:
@@ -99,8 +107,8 @@ module.exports = (env, argv) => {
           argv.mode === 'production'
             ? JSON.stringify('')
             : JSON.stringify('http://localhost:5679'),
-        
-            // TODO: exlude api auth string "auth"
+
+        // TODO: exlude api auth string "auth"
         API_DEPOSIT_STRING:
           argv.mode === 'production'
             ? JSON.stringify('/deposit')
@@ -112,6 +120,10 @@ module.exports = (env, argv) => {
             : JSON.stringify('./src/vendor/charting_library/'),
         IS_LIVE: argv.mode === 'production',
         MIXPANEL_TOKEN: JSON.stringify('582507549d28c813188211a0d15ec940'),
+        RECAPTCHA_KEY:
+          argv.mode === 'production'
+            ? JSON.stringify(reCaptchaKey)
+            : JSON.stringify(reCaptchaKeyDev),
       }),
       new CopyPlugin([
         { from: './src/vendor/charting_library/', to: 'charting_library' },

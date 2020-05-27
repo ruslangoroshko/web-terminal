@@ -131,7 +131,7 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
               </PrimaryTextSpan>
             </DateRangeItemButton>
           </DefinedDaterangeWrapper>
-          <FlexContainer padding="16px 0" position="relative">
+          {/* <FlexContainer padding="16px 0" position="relative">
             <SelectDateButton onClick={dateRangeStore.toggleDatepicker}>
               <PrimaryTextSpan>Select Date</PrimaryTextSpan>
               <SvgIcon {...IconCalendar} fillColor="rgba(255, 255, 255, 0.6)" />
@@ -180,7 +180,7 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
                 />
               </FlexContainer>
             )}
-          </FlexContainer>
+          </FlexContainer> */}
         </DatePickerWrapper>
       )}
     </FlexContainer>
@@ -202,7 +202,7 @@ const DatePickerWrapper = styled(FlexContainer)`
 `;
 
 const DefinedDaterangeWrapper = styled(FlexContainer)`
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  /* border-bottom: 1px solid rgba(255, 255, 255, 0.16); */
   padding: 16px 0;
 `;
 

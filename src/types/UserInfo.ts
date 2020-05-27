@@ -10,6 +10,7 @@ export interface UserRegistration {
   password: string;
   repeatPassword?: string;
   userAgreement?: boolean;
+  captcha: string;
 }
 
 export interface UserForgotPassword {

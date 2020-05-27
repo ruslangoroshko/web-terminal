@@ -46,6 +46,7 @@ function SignUp() {
     userAgreement: yup
       .bool()
       .oneOf([true], validationInputTexts.USER_AGREEMENT),
+    captcha: yup.string(),
   });
 
   const initialValues: UserRegistration = {
@@ -53,6 +54,7 @@ function SignUp() {
     password: '',
     repeatPassword: '',
     userAgreement: false,
+    captcha: '',
   };
 
   const { push } = useHistory();
@@ -66,23 +68,38 @@ function SignUp() {
   ) => {
     setSubmitting(true);
     mainAppStore.isInitLoading = true;
-    try {
-      const result = await mainAppStore.signUp({ email, password });
-      if (result !== OperationApiResponseCodes.Ok) {
-        notificationStore.notificationMessage = apiResponseCodeMessages[result];
-        notificationStore.isSuccessfull = false;
-        notificationStore.openNotification();
-        mainAppStore.isInitLoading = false;
-      } else {
-        push(Page.DASHBOARD);
-      }
-    } catch (error) {
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
-      setStatus(error);
-      setSubmitting(false);
-      mainAppStore.isInitLoading = false;
-    }
+
+    grecaptcha.ready(function() {
+      grecaptcha
+        .execute(RECAPTCHA_KEY, {
+          action: 'submit',
+        })
+        .then(async function(token: any) {
+          debugger;
+          try {
+            const result = await mainAppStore.signUp({
+              email,
+              password,
+              captcha: token,
+            });
+            if (result !== OperationApiResponseCodes.Ok) {
+              notificationStore.notificationMessage =
+                apiResponseCodeMessages[result];
+              notificationStore.isSuccessfull = false;
+              notificationStore.openNotification();
+              mainAppStore.isInitLoading = false;
+            } else {
+              push(Page.DASHBOARD);
+            }
+          } catch (error) {
+            badRequestPopupStore.openModal();
+            badRequestPopupStore.setMessage(error);
+            setStatus(error);
+            setSubmitting(false);
+            mainAppStore.isInitLoading = false;
+          }
+        });
+    });
   };
 
   const {
@@ -130,9 +147,10 @@ function SignUp() {
       setFieldError(Fields.USER_AGREEMENT, '');
     }
   };
-  
+
   useEffect(() => {
     mixpanel.track(mixpanelEvents.SIGN_UP_VIEW);
+    // TODO: add react-helmet for dynamic title
     document.title = 'Sign Up';
   }, []);
 
