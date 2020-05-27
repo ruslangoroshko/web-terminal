@@ -68,38 +68,37 @@ function SignUp() {
   ) => {
     setSubmitting(true);
     mainAppStore.isInitLoading = true;
-
-    grecaptcha.ready(function() {
-      grecaptcha
-        .execute(RECAPTCHA_KEY, {
-          action: 'submit',
-        })
-        .then(async function(token: any) {
-          debugger;
-          try {
-            const result = await mainAppStore.signUp({
-              email,
-              password,
-              captcha: token,
-            });
-            if (result !== OperationApiResponseCodes.Ok) {
-              notificationStore.notificationMessage =
-                apiResponseCodeMessages[result];
-              notificationStore.isSuccessfull = false;
-              notificationStore.openNotification();
-              mainAppStore.isInitLoading = false;
-            } else {
-              push(Page.DASHBOARD);
-            }
-          } catch (error) {
-            badRequestPopupStore.openModal();
-            badRequestPopupStore.setMessage(error);
-            setStatus(error);
-            setSubmitting(false);
-            mainAppStore.isInitLoading = false;
-          }
-        });
-    });
+    try {
+      const result = await mainAppStore.signUp({
+        email,
+        password,
+        captcha: token,
+      });
+      if (result !== OperationApiResponseCodes.Ok) {
+        notificationStore.notificationMessage =
+          apiResponseCodeMessages[result];
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+        mainAppStore.isInitLoading = false;
+      } else {
+        push(Page.DASHBOARD);
+      }
+    } catch (error) {
+      badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
+      setStatus(error);
+      setSubmitting(false);
+      mainAppStore.isInitLoading = false;
+    }
+    // grecaptcha.ready(function() {
+    //   grecaptcha
+    //     .execute(RECAPTCHA_KEY, {
+    //       action: 'submit',
+    //     })
+    //     .then(async function(token: any) {
+         
+    //     });
+    // });
   };
 
   const {
