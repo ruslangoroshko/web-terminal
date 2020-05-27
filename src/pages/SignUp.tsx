@@ -72,7 +72,7 @@ function SignUp() {
       const result = await mainAppStore.signUp({
         email,
         password,
-        captcha: token,
+        captcha: '',
       });
       if (result !== OperationApiResponseCodes.Ok) {
         notificationStore.notificationMessage =
