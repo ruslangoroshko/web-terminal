@@ -12,6 +12,7 @@ import { OpenPositionModelFormik } from '../../types/Positions';
 import { AskBidEnum } from '../../enums/AskBid';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
+import styled from '@emotion/styled';
 
 interface Props {
   closePopup: () => void;
@@ -116,14 +117,42 @@ function ConfirmationPopup(props: Props) {
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column">
-        <PrimaryButton type="submit" padding="8px 16px" disabled={disabled}>
-          <PrimaryTextSpan fontSize="14px" color="#1c2026" fontWeight="bold">
-            Confirm {values.operation === AskBidEnum.Buy ? 'Buying' : 'Selling'}
-          </PrimaryTextSpan>
-        </PrimaryButton>
+        {values.operation === AskBidEnum.Buy ? (
+          <PrimaryButton type="submit" padding="8px 16px" disabled={disabled}>
+            <PrimaryTextSpan fontSize="14px" color="#1c2026" fontWeight="bold">
+              Confirm Buying
+            </PrimaryTextSpan>
+          </PrimaryButton>
+        ) : (
+          <ButtonSell type="submit" disabled={disabled}>
+            <PrimaryTextSpan fontSize="14px" color="#1c2026" fontWeight="bold">
+              Confirm Selling
+            </PrimaryTextSpan>
+          </ButtonSell>
+        )}
       </FlexContainer>
     </FlexContainer>
   );
 }
 
 export default ConfirmationPopup;
+
+const ButtonSell = styled(ButtonWithoutStyles)`
+  background-color: #ed145b;
+  border-radius: 4px;
+  padding: 8px 16px;
+  transition: background-color 0.2s ease;
+  will-change: background-color;
+
+  &:hover {
+    background-color: #ff557e;
+  }
+
+  &:focus {
+    background-color: #bd1d51;
+  }
+
+  &:disabled {
+    background-color: rgba(255, 255, 255, 0.04);
+  }
+`;
