@@ -195,7 +195,7 @@ const Dashboard = observer(() => {
             <>
               {instrumentsStore.activeInstrument && (
                 <>
-                  <ChartWrapper padding="20px 0 0 0">
+                  <ChartWrapper padding="0 0 0 0">
                     <TVChartContainer
                       instrumentId={
                         instrumentsStore.activeInstrument.instrumentItem.id
