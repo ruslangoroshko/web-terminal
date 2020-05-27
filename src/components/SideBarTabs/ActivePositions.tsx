@@ -1,4 +1,4 @@
-import React, { FC, useRef } from 'react';
+import React, { FC, useRef, useMemo, useCallback } from 'react';
 import { observer, Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
@@ -25,7 +25,7 @@ interface Props {
   position: PositionModelWSDTO;
 }
 
-const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
+const ActivePositionsPortfolioTab: FC<Props> = props => {
   const {
     position: {
       instrument,
@@ -60,16 +60,20 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
     instrumentsStore,
   } = useStores();
 
-  const PnL = calculateFloatingProfitAndLoss({
-    investment: investmentAmount,
-    multiplier: multiplier,
-    costs: swap + commission,
-    side: isBuy ? 1 : -1,
-    currentPrice: isBuy
-      ? quotesStore.quotes[instrument].bid.c
-      : quotesStore.quotes[instrument].ask.c,
-    openPrice: openPrice,
-  });
+  const PnL = useCallback(
+    () =>
+      calculateFloatingProfitAndLoss({
+        investment: investmentAmount,
+        multiplier: multiplier,
+        costs: swap + commission,
+        side: isBuy ? 1 : -1,
+        currentPrice: isBuy
+          ? quotesStore.quotes[instrument].bid.c
+          : quotesStore.quotes[instrument].ask.c,
+        openPrice: openPrice,
+      }),
+    [quotesStore.quotes[instrument].bid.c, quotesStore.quotes[instrument].bid.c]
+  );
 
   const closePosition = () => {
     API.closePosition({
@@ -209,9 +213,9 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
                   <Observer>
                     {() => (
                       <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                        {getNumberSign(PnL + investmentAmount)}
+                        {getNumberSign(PnL() + investmentAmount)}
                         {mainAppStore.activeAccount?.symbol}
-                        {Math.abs(PnL + investmentAmount).toFixed(2)}
+                        {Math.abs(PnL() + investmentAmount).toFixed(2)}
                       </PrimaryTextSpan>
                     )}
                   </Observer>
@@ -254,24 +258,30 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
               alignItems="flex-end"
               margin="0 8px 0 0"
             >
-              <QuoteText
-                isGrowth={PnL >= 0}
-                marginBottom="4px"
-                fontSize="12px"
-                lineHeight="14px"
-              >
-                {PnL >= 0 ? '+' : '-'}
-                {mainAppStore.activeAccount?.symbol}
-                {Math.abs(PnL)}
-              </QuoteText>
-              <PrimaryTextSpan
-                fontSize="10px"
-                lineHeight="12px"
-                color="rgba(255, 255, 255, 0.5)"
-              >
-                {PnL >= 0 ? '+' : ''}
-                {calculateInPercent(investmentAmount, PnL)}%
-              </PrimaryTextSpan>
+              <Observer>
+                {() => (
+                  <>
+                    <QuoteText
+                      isGrowth={PnL() >= 0}
+                      marginBottom="4px"
+                      fontSize="12px"
+                      lineHeight="14px"
+                    >
+                      {PnL() >= 0 ? '+' : '-'}
+                      {mainAppStore.activeAccount?.symbol}
+                      {Math.abs(PnL())}
+                    </QuoteText>
+                    <PrimaryTextSpan
+                      fontSize="10px"
+                      lineHeight="12px"
+                      color="rgba(255, 255, 255, 0.5)"
+                    >
+                      {PnL() >= 0 ? '+' : ''}
+                      {calculateInPercent(investmentAmount, PnL())}%
+                    </PrimaryTextSpan>
+                  </>
+                )}
+              </Observer>
             </FlexContainer>
           </FlexContainer>
           <FlexContainer ref={clickableWrapper}>
@@ -314,7 +324,7 @@ const ActivePositionsPortfolioTab: FC<Props> = observer(props => {
       </InstrumentInfoWrapperForBorder>
     </InstrumentInfoWrapper>
   );
-});
+};
 
 export default ActivePositionsPortfolioTab;
 

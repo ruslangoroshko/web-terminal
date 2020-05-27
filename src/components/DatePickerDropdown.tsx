@@ -43,7 +43,7 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
         break;
 
       case ShowDatesDropdownEnum.Month:
-        dateRangeStore.startDate = moment().subtract(1, 'm');
+        dateRangeStore.startDate = moment().subtract(1, 'months');
         dateRangeStore.endDate = moment();
 
         break;

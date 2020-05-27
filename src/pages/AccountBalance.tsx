@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import AccountSettingsContainer from '../containers/AccountSettingsContainer';
 import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
@@ -32,33 +32,44 @@ function AccountBalance() {
     totalItems: 0,
   });
 
-  const fetchBalanceHistory = async (isScrolling = false) => {
-    setIsLoading(true);
+  const fetchBalanceHistory = useCallback(
+    async (isScrolling = false) => {
+      setIsLoading(true);
 
-    try {
-      const response = await API.getBalanceHistory({
-        // FIXME: typings
-        accountId: mainAppStore.activeAccount!.id,
-        endDate: dateRangeStore.endDate.valueOf(),
-        startDate: dateRangeStore.startDate.valueOf(),
-        page: isScrolling ? balanceHistoryReport.page + 1 : 1,
-        pageSize: 20,
-      });
+      try {
+        const response = await API.getBalanceHistory({
+          // FIXME: typings
+          accountId: mainAppStore.activeAccount!.id,
+          endDate: dateRangeStore.endDate.valueOf(),
+          startDate: dateRangeStore.startDate.valueOf(),
+          page: isScrolling ? balanceHistoryReport.page + 1 : 1,
+          pageSize: 20,
+        });
 
-      const newBalanceHistory: BalanceHistoryReport = {
-        ...response,
-        balanceHistory: isScrolling
-          ? [...balanceHistoryReport.balanceHistory, ...response.balanceHistory]
-          : response.balanceHistory,
-      };
-      setBalanceHistoryReport(newBalanceHistory);
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
-    }
-  };
+        const newBalanceHistory: BalanceHistoryReport = {
+          ...response,
+          balanceHistory: isScrolling
+            ? [
+                ...balanceHistoryReport.balanceHistory,
+                ...response.balanceHistory,
+              ]
+            : response.balanceHistory,
+        };
+        setBalanceHistoryReport(newBalanceHistory);
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
+      }
+    },
+    [
+      dateRangeStore.endDate,
+      dateRangeStore.startDate,
+      balanceHistoryReport.page,
+      mainAppStore.activeAccount,
+    ]
+  );
   useEffect(() => {
     if (mainAppStore.activeAccount) {
       fetchBalanceHistory().finally(() => {
