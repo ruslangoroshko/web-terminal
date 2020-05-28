@@ -361,9 +361,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     toggleInvestemAmountDropdown(true);
   };
 
-  const investOnBlurHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const investOnBlurHandler = (e: React.FocusEvent<HTMLInputElement>) => {
     if (
-      !investAmountRef.current?.contains(e.target) &&
+      // TODO: research typings
+      // @ts-ignore 
+      !investAmountRef.current?.contains(e.relatedTarget) &&
       !values.investmentAmount
     ) {
       setFieldValue(Fields.AMOUNT, DEFAULT_INVEST_AMOUNT);

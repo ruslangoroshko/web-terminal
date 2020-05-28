@@ -174,7 +174,7 @@ const PortfolioWrapper = styled(FlexContainer)`
 
 const ActivePositionsWrapper = styled(FlexContainer)`
   overflow: auto;
-  max-height: calc(100vh - 236px);
+  max-height: calc(100vh - 126px);
 `;
 
 const SortByWrapper = styled(FlexContainer)`
