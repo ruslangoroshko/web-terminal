@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { MainAppStore } from '../store/MainAppStore';
+import API from '../helpers/API';
 
 const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
   axios.interceptors.response.use(
@@ -24,7 +25,10 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
 
     function(error: AxiosError) {
       if (error.response?.status === 401) {
-        mainAppStore.signOut();
+        // API.refreshToken({
+        //   refreshToken: mainAppStore.
+        // })
+        //mainAppStore.signOut();
       }
       return Promise.reject(error);
     }
