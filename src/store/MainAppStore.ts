@@ -109,7 +109,7 @@ export class MainAppStore implements MainAppStoreProps {
     try {
       const response = await API.getTradingUrl();
       this.setTradingUrl(response.tradingUrl);
-      injectInerceptors(response.tradingUrl);
+      injectInerceptors(response.tradingUrl, this);
       this.handleInitConnection(token);
     } catch (error) {
       this.setTradingUrl('/');
