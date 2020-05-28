@@ -199,6 +199,7 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
     this.token = '';
     this.isAuthorized = false;
+    delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
   };
 
   @action
