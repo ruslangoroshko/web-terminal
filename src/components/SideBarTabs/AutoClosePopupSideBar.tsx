@@ -105,6 +105,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               toggle={toggle}
               investedAmount={investedAmount}
               isDisabled={isDisabled}
+              edited={false}
             />
           </FlexContainer>
         )}
