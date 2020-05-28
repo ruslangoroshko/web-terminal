@@ -28,7 +28,7 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
         // API.refreshToken({
         //   refreshToken: mainAppStore.
         // })
-        //mainAppStore.signOut();
+        mainAppStore.signOut();
       }
       return Promise.reject(error);
     }
