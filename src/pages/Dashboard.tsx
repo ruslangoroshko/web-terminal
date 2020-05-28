@@ -134,7 +134,7 @@ const Dashboard = observer(() => {
   useEffect(() => {
     document.title = 'Monfex trading platform';
   }, []);
-  
+
   return (
     <FlexContainer
       width="100%"
@@ -189,36 +189,45 @@ const Dashboard = observer(() => {
           )}
         </Observer>
       </FlexContainer>
-      <GridWrapper>
+
+      
         <Observer>
           {() => (
             <>
               {instrumentsStore.activeInstrument && (
                 <>
-                  <ChartWrapper padding="0 0 0 0">
-                    <TVChartContainer
-                      instrumentId={
-                        instrumentsStore.activeInstrument.instrumentItem.id
-                      }
-                      instruments={instrumentsStore.instruments}
-                    />
-                  </ChartWrapper>
-                  <BuySellPanel
-                    instrument={
-                      instrumentsStore.activeInstrument.instrumentItem
-                    }
-                  ></BuySellPanel>
-                  <ChartInstruments justifyContent="space-between">
-                    <ChartSettingsButtons></ChartSettingsButtons>
-                    <ChartIntervalTimeScale></ChartIntervalTimeScale>
-                    <ChartTimeFomat></ChartTimeFomat>
-                  </ChartInstruments>
+                  <FlexContainer width="100%" height="100%" maxHeight="calc(100% - 123px)">
+                    <FlexContainer width="100%" maxWidth="calc(100% - 175px)" maxHeight="calc(100vh - 175px)" flexDirection="column">
+                      <ChartWrapper padding="0 0 0 0" height="100%" maxHeight="calc(100vh - 200px)" minHeight="445px">
+                        <TVChartContainer
+                          instrumentId={
+                            instrumentsStore.activeInstrument.instrumentItem.id
+                          }
+                          instruments={instrumentsStore.instruments}
+                        />
+                      </ChartWrapper>
+
+                      <ChartInstruments justifyContent="space-between">
+                        <ChartSettingsButtons></ChartSettingsButtons>
+                        <ChartIntervalTimeScale></ChartIntervalTimeScale>
+                        <ChartTimeFomat></ChartTimeFomat>
+                      </ChartInstruments>
+                    </FlexContainer>
+
+                    <FlexContainer flexDirection="column" width="175px">
+                      <BuySellPanel
+                        instrument={
+                          instrumentsStore.activeInstrument.instrumentItem
+                        }
+                      ></BuySellPanel>
+                    </FlexContainer>
+                  </FlexContainer>
                 </>
               )}
             </>
           )}
         </Observer>
-      </GridWrapper>
+      
     </FlexContainer>
   );
 });
