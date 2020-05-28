@@ -54,21 +54,6 @@ const SetAutoclose = observer((props: Props) => {
   const [slError, setSlError] = useState('');
 
   const handleBeforeInput = (fieldType: TpSlTypeEnum | null) => (e: any) => {
-    if (!e.data.match(/^[0-9.,]*$/)) {
-      e.preventDefault();
-      return;
-    }
-
-    if ([',', '.'].includes(e.data)) {
-      if (
-        !e.currentTarget.value ||
-        (e.currentTarget.value && e.currentTarget.value.includes('.'))
-      ) {
-        e.preventDefault();
-        return;
-      }
-    }
-
     let PRECISION = 2;
 
     switch (fieldType) {
@@ -85,17 +70,42 @@ const SetAutoclose = observer((props: Props) => {
         break;
     }
 
-    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION}})?$`;
+    const currTargetValue = e.currentTarget.value;
 
+    if (!e.data.match(/^[0-9.,]*$/g)) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!currTargetValue && [',', '.'].includes(e.data)) {
+      e.preventDefault();
+      return;
+    }
+
+    if ([',', '.'].includes(e.data)) {
+      if (
+        !currTargetValue ||
+        (currTargetValue && currTargetValue.includes('.'))
+      ) {
+        e.preventDefault();
+        return;
+      }
+    }
+    // see another regex
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION}})?$`;
+    const splittedValue =
+      currTargetValue.substring(0, e.currentTarget.selectionStart) +
+      e.data +
+      currTargetValue.substring(e.currentTarget.selectionStart);
     if (
-      e.currentTarget.value &&
+      currTargetValue &&
       ![',', '.'].includes(e.data) &&
-      !(e.currentTarget.value + e.data).match(regex)
+      !splittedValue.match(regex)
     ) {
       e.preventDefault();
       return;
     }
-    if (e.data.length > 1 && !(e.currentTarget.value + e.data).match(regex)) {
+    if (e.data.length > 1 && !splittedValue.match(regex)) {
       e.preventDefault();
       return;
     }
