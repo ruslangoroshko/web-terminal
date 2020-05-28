@@ -241,7 +241,8 @@ const GridWrapper = styled.div`
   grid-template-columns: 1fr 172px;
   grid-template-rows: 1fr 32px;
   width: 100%;
-  height: calc(100% - 123px);
+  height: 100%;
+  max-height: calc(100% - 131px);
   grid-row-gap: 0;
   grid-column-gap: 1px;
 `;
