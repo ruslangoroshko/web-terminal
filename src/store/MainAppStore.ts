@@ -1,7 +1,7 @@
+import { LOCAL_STORAGE_TOKEN_KEY, LOCAL_STORAGE_REFRESH_TOKEN_KEY } from './../constants/global';
 import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
 import { AccountModelWebSocketDTO } from '../types/AccountsTypes';
-import { LOCAL_STORAGE_TOKEN_KEY } from '../constants/global';
 import { action, observable, computed } from 'mobx';
 import API from '../helpers/API';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
@@ -20,6 +20,7 @@ import injectInerceptors from '../http/interceptors';
 
 interface MainAppStoreProps {
   token: string;
+  refreshToken: string;
   isAuthorized: boolean;
   signIn: (credentials: UserAuthenticate) => void;
   signUp: (credentials: UserRegistration) => Promise<unknown>;
@@ -50,12 +51,14 @@ export class MainAppStore implements MainAppStoreProps {
     PersonalDataKYCEnum.NotVerified;
   @observable tradingUrl = '';
   token = '';
+  refreshToken = '';
   rootStore: RootStore;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     init(MIXPANEL_TOKEN);
     this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
+    this.refreshToken = localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY)  || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
   }
 
@@ -109,7 +112,7 @@ export class MainAppStore implements MainAppStoreProps {
     try {
       const response = await API.getTradingUrl();
       this.setTradingUrl(response.tradingUrl);
-      injectInerceptors(response.tradingUrl);
+      injectInerceptors(response.tradingUrl, this);
       this.handleInitConnection(token);
     } catch (error) {
       this.setTradingUrl('/');
@@ -161,6 +164,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
       this.fetchTradingUrl(response.data.token);
+      this.setrefreshToken(response.data.refreshToken);
       mixpanel.track(mixpanelEvents.LOGIN);
     }
 
@@ -195,6 +199,7 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
     this.token = '';
     this.isAuthorized = false;
+    delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
   };
 
   @action
@@ -206,6 +211,11 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, token);
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = token;
     this.token = token;
+  };
+
+  setrefreshToken = (refreshToken: string) => {
+    localStorage.setItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY, refreshToken);
+    this.refreshToken = refreshToken;
   };
 
   @computed

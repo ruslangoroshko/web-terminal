@@ -21,7 +21,7 @@ const MainApp = () => {
       mainAppStore.fetchTradingUrl();
     } else {
       mainAppStore.setTradingUrl('/');
-      injectInerceptors('/');
+      injectInerceptors('/', mainAppStore);
       mainAppStore.handleInitConnection();
     }
   }, [mainAppStore.isAuthorized]);

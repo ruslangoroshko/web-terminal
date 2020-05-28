@@ -29,6 +29,7 @@ interface Props {
   handleApply: () => void;
   investedAmount: number;
   isDisabled?: boolean;
+  edited?: boolean;
 }
 
 const SetAutoclose = observer((props: Props) => {
@@ -42,6 +43,7 @@ const SetAutoclose = observer((props: Props) => {
     investedAmount,
     operation,
     isDisabled,
+    edited = true,
   } = props;
 
   const { SLTPStore, quotesStore, instrumentsStore } = useStores();
@@ -219,16 +221,16 @@ const SetAutoclose = observer((props: Props) => {
         </InformationPopup>
       </FlexContainer>
       <InputWrapper
-        padding="0 0 0 22px"
+        padding={edited ? "0 0 0 22px" : "0 0 0 8px"}
         margin="0 0 16px 0"
         height="32px"
         width="100%"
         position="relative"
       >
-        {(
-          SLTPStore.autoCloseTPType !== TpSlTypeEnum.Price
-        ) && (<PlusSign>+</PlusSign>)}
-        
+        {edited && (SLTPStore.autoCloseTPType !== TpSlTypeEnum.Price) && (
+          <PlusSign>+</PlusSign>
+        )}
+
         <Observer>
           {() => (
             <>
@@ -238,9 +240,9 @@ const SetAutoclose = observer((props: Props) => {
                 onChange={handleChangeProfit}
                 onBlur={handleTakeProfitBlur}
                 value={SLTPStore.takeProfitValue}
-                disabled={isDisabled}
+                disabled={edited ? isDisabled : true}
               ></InputPnL>
-              {!!SLTPStore.takeProfitValue && !isDisabled && (
+              {edited && (!!SLTPStore.takeProfitValue && !isDisabled) && (
                 <CloseValueButtonWrapper
                   position="absolute"
                   top="50%"
@@ -259,7 +261,7 @@ const SetAutoclose = observer((props: Props) => {
         </Observer>
         <PnLTypeDropdown
           dropdownType="tp"
-          isDisabled={isDisabled}
+          isDisabled={edited ? isDisabled : true}
         ></PnLTypeDropdown>
       </InputWrapper>
       <FlexContainer
@@ -285,7 +287,7 @@ const SetAutoclose = observer((props: Props) => {
         </InformationPopup>
       </FlexContainer>
       <InputWrapper
-        padding="0 0 0 22px"
+        padding={edited ? "0 0 0 22px" : "0 0 0 8px"}
         margin={isDisabled ? '0' : '0 0 16px 0'}
         height="32px"
         width="100%"
@@ -301,10 +303,10 @@ const SetAutoclose = observer((props: Props) => {
             {slError}
           </ErropPopup>
         )}
-        {(
-          SLTPStore.autoCloseSLType !== TpSlTypeEnum.Price
-        ) && (<PlusSign>-</PlusSign>)}
-        
+        {edited && (SLTPStore.autoCloseSLType !== TpSlTypeEnum.Price) && (
+          <PlusSign>-</PlusSign>
+        )}
+
         <Observer>
           {() => (
             <>
@@ -314,9 +316,9 @@ const SetAutoclose = observer((props: Props) => {
                 onChange={handleChangeLoss}
                 onBlur={handleStopLossBlur}
                 value={SLTPStore.stopLossValue}
-                disabled={isDisabled}
+                disabled={edited ? isDisabled : true}
               ></InputPnL>
-              {!!SLTPStore.stopLossValue && !isDisabled && (
+              {edited && (!!SLTPStore.stopLossValue && !isDisabled) && (
                 <CloseValueButtonWrapper
                   position="absolute"
                   top="50%"
@@ -335,27 +337,30 @@ const SetAutoclose = observer((props: Props) => {
         </Observer>
         <PnLTypeDropdown
           dropdownType="sl"
-          isDisabled={isDisabled}
+          isDisabled={edited ? isDisabled : true}
         ></PnLTypeDropdown>
       </InputWrapper>
-      <Observer>
-        {() => (
-          <>
-            {!isDisabled && (
-              <ButtonApply
-                onClick={handleApplyValues}
-                disabled={
-                  !!(tpError || slError) ||
-                  (SLTPStore.takeProfitValue === null &&
-                    SLTPStore.stopLossValue === null)
-                }
-              >
-                Apply
-              </ButtonApply>
-            )}
-          </>
-        )}
-      </Observer>
+      
+      {edited && (
+        <Observer>
+          {() => (
+            <>
+              {!isDisabled && (
+                <ButtonApply
+                  onClick={handleApplyValues}
+                  disabled={
+                    !!(tpError || slError) ||
+                    (SLTPStore.takeProfitValue === null &&
+                      SLTPStore.stopLossValue === null)
+                  }
+                >
+                  Apply
+                </ButtonApply>
+              )}
+            </>
+          )}
+        </Observer>
+      )}
     </Wrapper>
   );
 });

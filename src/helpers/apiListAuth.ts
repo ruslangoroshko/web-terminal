@@ -5,6 +5,7 @@ const AUTH_API_LIST = {
     CHANGE_PASSWORD: '/auth/v1/Trader/ChangePassword',
     FORGOT_PASSWORD: '/auth/v1/Trader/ForgotPassword',
     PASSWORD_RECOVERY: '/auth/v1/Trader/PasswordRecovery',
+    REFRESH_TOKEN: '/auth/v1/Trader/RefreshToken',
   },
   PERSONAL_DATA: {
     CONFIRM: '/auth/v1/PersonalData/Confirm',

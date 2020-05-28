@@ -1,3 +1,4 @@
+import { RefreshToken, RefreshTokenDTO } from './../types/RefreshToken';
 import axios from 'axios';
 import {
   OpenPositionResponseDTO,
@@ -151,6 +152,8 @@ class API {
     );
     return response.data;
   };
+
+
 
   openPendingOrder = async (position: OpenPendingOrder) => {
     const formData = this.convertParamsToFormData(position);
@@ -320,6 +323,14 @@ class API {
   getTradingUrl = async () => {
     const response = await axios.get<ServerInfoType>(
       `${API_AUTH_STRING}${AUTH_API_LIST.COMMON.SERVER_INFO}`
+    );
+    return response.data;
+  };
+
+  refreshToken = async (params: RefreshToken) => {
+    const response = await axios.post<RefreshTokenDTO>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.REFRESH_TOKEN}`,
+      params
     );
     return response.data;
   };
