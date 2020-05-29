@@ -1,4 +1,7 @@
-import { LOCAL_STORAGE_TOKEN_KEY, LOCAL_STORAGE_REFRESH_TOKEN_KEY } from './../constants/global';
+import {
+  LOCAL_STORAGE_TOKEN_KEY,
+  LOCAL_STORAGE_REFRESH_TOKEN_KEY,
+} from './../constants/global';
 import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
 import { AccountModelWebSocketDTO } from '../types/AccountsTypes';
@@ -58,7 +61,8 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore = rootStore;
     init(MIXPANEL_TOKEN);
     this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
-    this.refreshToken = localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY)  || '';
+    this.refreshToken =
+      localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
   }
 
@@ -75,7 +79,6 @@ export class MainAppStore implements MainAppStoreProps {
         await connection.send(Topics.INIT, token);
         this.activeSession = connection;
         this.isAuthorized = true;
-        this.isInitLoading = false;
       } catch (error) {
         this.isAuthorized = false;
         this.isInitLoading = false;
@@ -87,6 +90,8 @@ export class MainAppStore implements MainAppStoreProps {
 
     connection.on(Topics.UNAUTHORIZED, () => {
       localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+      this.isInitLoading = false;
+      this.isLoading = false;
       this.isAuthorized = false;
     });
 
@@ -104,8 +109,7 @@ export class MainAppStore implements MainAppStoreProps {
         this.activeAccount = response.data;
       }
     );
-    connection.onclose(error => {
-    });
+    connection.onclose(error => {});
   };
 
   fetchTradingUrl = async (token = this.token) => {
@@ -137,6 +141,7 @@ export class MainAppStore implements MainAppStoreProps {
       } else {
         this.isDemoRealPopup = true;
       }
+      this.isInitLoading = false;
       this.isLoading = false;
     } catch (error) {
       this.isLoading = false;
@@ -199,6 +204,8 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
     this.token = '';
     this.isAuthorized = false;
+    this.rootStore.quotesStore.activePositions = [];
+    this.rootStore.quotesStore.pendingOrders = [];
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
   };
 
