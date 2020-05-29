@@ -2,11 +2,9 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = (env, argv) => {
-  const reCaptchaKey = '6LeM1vwUAAAAAI11ZbVvby8DFwiD8eftdFReegmr';
-  const reCaptchaKeyDev = '6Le22PwUAAAAADoNtCk9zkQb-HXjuARfS1rRrIze';
-
   return {
     mode: argv.mode,
     entry: {
@@ -70,6 +68,15 @@ module.exports = (env, argv) => {
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
     },
+    optimization: {
+      minimizer: [
+        new TerserPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: argv.mode !== 'production', // Must be set to true if using source-maps in production
+        }),
+      ],
+    },
     devtool: 'source-map',
     target: 'web',
     stats: 'errors-only',
@@ -88,11 +95,10 @@ module.exports = (env, argv) => {
           viewport: 'width=device-width, initial-scale=1.0',
         },
         title: 'Hello world - Shadi',
-        // captcha:
-        //   'https://www.google.com/recaptcha/api.js?render=' + argv.mode ===
-        //   'production'
-        //     ? JSON.stringify(reCaptchaKey)
-        //     : JSON.stringify(reCaptchaKeyDev),
+        captcha: JSON.stringify(
+          'https://www.google.com/recaptcha/api.js?render=' +
+            (argv.mode === 'production' ? argv.reCaptchaKey : '')
+        ),
       }),
       new webpack.DefinePlugin({
         WS_HOST:
@@ -122,8 +128,12 @@ module.exports = (env, argv) => {
         MIXPANEL_TOKEN: JSON.stringify('582507549d28c813188211a0d15ec940'),
         RECAPTCHA_KEY:
           argv.mode === 'production'
-            ? JSON.stringify(reCaptchaKey)
-            : JSON.stringify(reCaptchaKeyDev),
+            ? JSON.stringify(argv.reCaptchaKey)
+            : JSON.stringify(''),
+        RECAPTCHA_KEY_SECRET:
+          argv.mode === 'production'
+            ? JSON.stringify(argv.reCaptchaKeySecret)
+            : JSON.stringify(''),
       }),
       new CopyPlugin([
         { from: './src/vendor/charting_library/', to: 'charting_library' },
