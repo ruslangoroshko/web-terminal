@@ -31,13 +31,13 @@ const BalanceHistoryItem: FC<Props> = props => {
         <QuoteText fontSize="12px" isGrowth={amount >= 0}>
           {getNumberSign(amount)}
           {mainAppStore.activeAccount?.symbol}
-          {Math.abs(amount)}
+          {Math.abs(amount).toFixed(2)}
         </QuoteText>
       </Td>
       <Td alignItems="center">
         <PrimaryTextSpan fontSize="12px" color="#fffccc">
           {mainAppStore.activeAccount?.symbol}
-          {balance}
+          {balance.toFixed(2)}
         </PrimaryTextSpan>
       </Td>
       <Td alignItems="center">
