@@ -353,6 +353,7 @@ const ButtonAutoClosePurchase = styled(SecondaryButton)<{
 
   display: flex;
   justify-content: ${props => (props.hasPrice ? 'space-between' : 'center')};
+  align-items: center;
 `;
 
 const ClearPurchaseAtButton = styled(ButtonWithoutStyles)`
