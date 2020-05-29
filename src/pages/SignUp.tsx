@@ -67,38 +67,38 @@ function SignUp() {
     { setStatus, setSubmitting }: FormikHelpers<UserRegistration>
   ) => {
     setSubmitting(true);
-  
-    grecaptcha.ready(function() {
-      grecaptcha
-        .execute(RECAPTCHA_KEY, {
-          action: 'submit',
-        })
-        .then(async function(token: any) {
-          mainAppStore.isInitLoading = true;
-          try {
-            const result = await mainAppStore.signUp({
-              email,
-              password,
-              captcha: '',
-            });
-            if (result !== OperationApiResponseCodes.Ok) {
-              notificationStore.notificationMessage =
-                apiResponseCodeMessages[result];
-              notificationStore.isSuccessfull = false;
-              notificationStore.openNotification();
-              mainAppStore.isInitLoading = false;
-            } else {
-              push(Page.DASHBOARD);
-            }
-          } catch (error) {
-            badRequestPopupStore.openModal();
-            badRequestPopupStore.setMessage(error);
-            setStatus(error);
-            setSubmitting(false);
-            mainAppStore.isInitLoading = false;
-          }
-        });
-    });
+    mainAppStore.isInitLoading = true;
+    try {
+      const result = await mainAppStore.signUp({
+        email,
+        password,
+        captcha: '',
+      });
+      if (result !== OperationApiResponseCodes.Ok) {
+        notificationStore.notificationMessage =
+          apiResponseCodeMessages[result];
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+        mainAppStore.isInitLoading = false;
+      } else {
+        push(Page.DASHBOARD);
+      }
+    } catch (error) {
+      badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
+      setStatus(error);
+      setSubmitting(false);
+      mainAppStore.isInitLoading = false;
+    }
+    // grecaptcha.ready(function() {
+    //   grecaptcha
+    //     .execute(RECAPTCHA_KEY, {
+    //       action: 'submit',
+    //     })
+    //     .then(async function(token: any) {
+         
+    //     });
+    // });
   };
 
   const {
