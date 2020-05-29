@@ -3,11 +3,10 @@ import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { MainAppStore } from '../store/MainAppStore';
-import API from '../helpers/API';
 
 const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
   axios.interceptors.response.use(
-    function(config: AxiosResponse) {
+    function (config: AxiosResponse) {
       if (config.data.result === OperationApiResponseCodes.TechnicalError) {
         return Promise.reject(
           apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
@@ -23,17 +22,17 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
       return config;
     },
 
-    function(error: AxiosError) {
+    function (error: AxiosError) {
       if (error.response?.status === 401) {
-        // API.refreshToken({
-        //   refreshToken: mainAppStore.
-        // })
+        // if (mainAppStore.refreshToken) {
+        //   mainAppStore.postRefreshToken();
+        // }
         mainAppStore.signOut();
       }
       return Promise.reject(error);
     }
   );
-  axios.interceptors.request.use(function(config: AxiosRequestConfig) {
+  axios.interceptors.request.use(function (config: AxiosRequestConfig) {
     // TODO: sink about eat
     if (IS_LIVE && tradingUrl && config.url && !config.url.includes('auth/')) {
       if (config.url.includes('://')) {

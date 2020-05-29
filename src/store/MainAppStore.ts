@@ -121,6 +121,16 @@ export class MainAppStore implements MainAppStoreProps {
     }
   };
 
+  postRefreshToken = async (refreshToken = this.refreshToken) => {
+    try {
+      const result = await API.refreshToken({ refreshToken });
+      console.log(result)
+      debugger
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   getActiveAccount = async () => {
     try {
       const activeAccountId = await API.getKeyValue(
@@ -164,7 +174,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
       this.fetchTradingUrl(response.data.token);
-      this.setrefreshToken(response.data.refreshToken);
+      this.setRefreshToken(response.data.refreshToken);
       mixpanel.track(mixpanelEvents.LOGIN);
     }
 
@@ -197,7 +207,9 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   signOut = () => {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+    localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY);
     this.token = '';
+    this.refreshToken = '';
     this.isAuthorized = false;
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
   };
@@ -213,7 +225,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.token = token;
   };
 
-  setrefreshToken = (refreshToken: string) => {
+  setRefreshToken = (refreshToken: string) => {
     localStorage.setItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY, refreshToken);
     this.refreshToken = refreshToken;
   };
