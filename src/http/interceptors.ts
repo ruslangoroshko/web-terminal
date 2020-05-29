@@ -4,6 +4,7 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { MainAppStore } from '../store/MainAppStore';
 
+
 const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
   axios.interceptors.response.use(
     function (config: AxiosResponse) {
@@ -23,7 +24,10 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
     },
 
     function (error: AxiosError) {
-      if (error.response?.status === 401) {
+      if (error.response?.status === 500) {
+        mainAppStore.rootStore.badRequestPopupStore.setMessage(error.response?.statusText);
+        mainAppStore.rootStore.badRequestPopupStore.openModal();
+      } else if (error.response?.status === 401) {
         // if (mainAppStore.refreshToken) {
         //   mainAppStore.postRefreshToken();
         // }

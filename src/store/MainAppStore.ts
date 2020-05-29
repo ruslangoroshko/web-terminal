@@ -20,6 +20,7 @@ import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import mixpanel, { init } from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import injectInerceptors from '../http/interceptors';
+import { BadRequestPopupStore } from './BadRequestPopupStore';
 
 interface MainAppStoreProps {
   token: string;
