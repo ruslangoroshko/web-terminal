@@ -46,8 +46,6 @@ function AccountBalance() {
           pageSize: 20,
         });
 
-        console.log(response.balanceHistory)
-
         const newBalanceHistory: BalanceHistoryReport = {
           ...response,
           balanceHistory: isScrolling
