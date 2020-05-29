@@ -88,11 +88,10 @@ module.exports = (env, argv) => {
           viewport: 'width=device-width, initial-scale=1.0',
         },
         title: 'Hello world - Shadi',
-        captcha:
-          'https://www.google.com/recaptcha/api.js?render=' + argv.mode ===
-          'production'
-            ? JSON.stringify(reCaptchaKey)
-            : JSON.stringify(reCaptchaKeyDev),
+        captcha: JSON.stringify(
+          'https://www.google.com/recaptcha/api.js?render=' +
+            (argv.mode === 'production' ? reCaptchaKey : reCaptchaKeyDev)
+        ),
       }),
       new webpack.DefinePlugin({
         WS_HOST:
