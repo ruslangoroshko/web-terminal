@@ -33,8 +33,8 @@ const API_LIST = {
     FAVOURITES: '/api/v1/Instruments/Favorites'
   },
   DEPOSIT: {
-    CREATE: '/deposit/Create',
-    GET_CRYPTO_WALLET: '/deposit/GetCryptoWallet'
+    CREATE: '/Create',
+    GET_CRYPTO_WALLET: '/GetCryptoWallet'
   }
 };
 
