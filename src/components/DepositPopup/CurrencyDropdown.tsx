@@ -10,11 +10,15 @@ import SvgIcon from '../SvgIcon';
 interface Props {
   selectedCurrency: string;
   handleSelectCurrency: (value: string) => void;
+  width?: string;
+  disabled?: boolean;
 }
 
 const CurrencyDropdown: FC<Props> = ({
   selectedCurrency,
   handleSelectCurrency,
+  width,
+  disabled = false
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [on, toggle] = useState(false);
@@ -46,9 +50,10 @@ const CurrencyDropdown: FC<Props> = ({
       padding="12px"
       onClick={handleToggleDropdown(!on)}
       borderRadius="4px 4px 0 0"
-      width="140px"
+      width={width || "140px"}
+      justifyContent={disabled ? 'center' : ''}
     >
-      <FlexContainer position="absolute" right="8px" top="16px">
+      {!disabled && (<FlexContainer position="absolute" right="8px" top="16px">
         <ButtonWithoutStyles onClick={handleToggleDropdown(false)}>
           <SvgIcon
             {...IconShevronDropdown}
@@ -57,11 +62,12 @@ const CurrencyDropdown: FC<Props> = ({
             width={8}
           />
         </ButtonWithoutStyles>
-      </FlexContainer>
+      </FlexContainer>)}
+
       <PrimaryTextSpan fontWeight="bold" color="#fffccc" fontSize="14px">
         {selectedCurrency}
       </PrimaryTextSpan>
-      {on && (
+      {on && !disabled && (
         <FlexContainer
           position="absolute"
           top="100%"

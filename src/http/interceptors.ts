@@ -28,9 +28,9 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
         mainAppStore.rootStore.badRequestPopupStore.setMessage(error.response?.statusText);
         mainAppStore.rootStore.badRequestPopupStore.openModal();
       } else if (error.response?.status === 401) {
-        // if (mainAppStore.refreshToken) {
-        //   mainAppStore.postRefreshToken();
-        // }
+        if (mainAppStore.refreshToken) {
+          mainAppStore.postRefreshToken();
+        }
         mainAppStore.signOut();
       }
       return Promise.reject(error);

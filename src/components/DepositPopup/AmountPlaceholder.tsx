@@ -16,13 +16,12 @@ const AmountPlaceholder: FC<Props> = ({ isActive, currencySymbol, value , handle
   }
   return (
     <AmountPlaceholderWrapper
-      backgroundColor={isActive ? '#1A1B25' : 'rgba(255, 255, 255, 0.06)'}
+      backgroundColor={isActive ? '#494C53' : '#23262F'}
       borderRadius="4px"
-      padding="12px"
+      padding="8px 20px"
       onClick={selectValue}
-      border={isActive ? '1px solid #00ffdd' : '1px solid transparent'}
     >
-      <PrimaryTextSpan color="#fffccc" fontSize="12px" fontWeight="bold">
+      <PrimaryTextSpan color={isActive ? "#FFFCCC" : "rgba(196, 196, 196, 0.5)"} fontSize="12px" fontWeight="bold">
         {currencySymbol} {value}
       </PrimaryTextSpan>
     </AmountPlaceholderWrapper>
@@ -33,10 +32,12 @@ export default AmountPlaceholder;
 
 const AmountPlaceholderWrapper = styled(FlexContainer)`
   transition: all 0.2s ease;
- 
   &:hover {
     cursor: pointer;
-    background-color: #1a1b25;
-    border-color: #00ffdd;
+    background-color: #494C53;
+    color: "#FFFCCC";
+  }
+  &:not(:last-of-type) {
+    margin-right: 8px;
   }
 `;
