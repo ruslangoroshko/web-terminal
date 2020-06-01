@@ -20,7 +20,7 @@ build:
   image: node:latest
   script:
     - npm i
-    - npm run build
+    - npm run build --env.RECAPTCHA_KEY=$RECAPTCHA_KEY --env.RECAPTCHA_KEY_SECRET=$RECAPTCHA_KEY_SECRET
   artifacts:
     paths:
       - ${BUILD_FOLDER}
