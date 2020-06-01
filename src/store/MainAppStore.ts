@@ -129,8 +129,10 @@ export class MainAppStore implements MainAppStoreProps {
   postRefreshToken = async (refreshToken = this.refreshToken) => {
     try {
       const result = await API.refreshToken({ refreshToken });
-      console.log(result)
-      debugger
+      if (result.refreshToken) {
+        this.setRefreshToken(result.refreshToken);
+        this.setTokenHandler(result.token);
+      }
     } catch (error) {
       console.log(error)
     }

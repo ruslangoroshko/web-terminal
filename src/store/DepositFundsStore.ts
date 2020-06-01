@@ -15,6 +15,11 @@ export class DepositFundsStore implements Props {
     this.isActivePopup = !this.isActivePopup;
   }
 
+  @action
+  openPopup = () => {
+    this.isActivePopup = true;
+  }
+
   @action 
   setActiveDepositType = (newActiveDepositeType: DepositTypeEnum) => {
     this.activeDepositType = newActiveDepositeType;

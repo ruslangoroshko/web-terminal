@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { FlexContainer, FlexContainerProps } from '../styles/FlexContainer';
 import NavBar from '../components/NavBar/NavBar';
 import SideBar from '../components/NavBar/SideBar';
@@ -19,6 +19,7 @@ import LoaderFullscreen from '../components/LoaderFullscreen';
 import OrdersExpanded from '../components/SideBarTabs/OrdersExpanded';
 import Markets from '../components/SideBarTabs/Markets';
 import DepositPopupWrapper from '../components/DepositPopup/DepositPopupWrapper';
+import DepositPaymentResultPopup from '../components/DepositPopup/DepositPaymentResultPopup/DepositPaymentResultPopup';
 
 interface Props {}
 
@@ -94,7 +95,6 @@ const AuthorizedContainer: FC<Props> = props => {
   const { children } = props;
   const { tabsStore, depositFundsStore, mainAppStore } = useStores();
 
-
   return (
     <FlexContainer
       height="100vh"
@@ -109,12 +109,16 @@ const AuthorizedContainer: FC<Props> = props => {
       <Observer>
         {() => (
           <>
-            {depositFundsStore.isActivePopup && (
-              <DepositPopupWrapper></DepositPopupWrapper>
+            {mainAppStore.activeAccount && (
+              <>
+                <DepositPaymentResultPopup />
+                <DepositPopupWrapper />
+              </>
             )}
           </>
         )}
       </Observer>
+
       <FlexContainer height="calc(100% - 48px)">
         <SideBar></SideBar>
         <SideBarAndPageContentWrapper width="100%">

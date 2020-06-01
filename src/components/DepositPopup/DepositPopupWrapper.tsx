@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Page from '../../constants/Pages';
 import { useStores } from '../../hooks/useStores';
 import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
@@ -18,8 +18,33 @@ import VisaMasterCardForm from './VisaMasterCardForm';
 import { Observer } from 'mobx-react-lite';
 import BitcoinForm from './BitcoinForm';
 import BadRequestPopup from '../BadRequestPopup';
+import HashLocation from '../../constants/hashLocation';
 
-const DepositPopupWrapper: FC = ({ children }) => {
+
+const DepositPopupWrapper = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === HashLocation.Deposit) {
+      depositFundsStore.openPopup();
+    }
+  }, [location]);
+
+  const { depositFundsStore } = useStores();
+  return (
+    <Observer>
+      {() => (
+        <>
+          {depositFundsStore.isActivePopup && <DepositPopupInner />}
+        </>
+      )}
+    </Observer>
+  )
+}
+
+
+const DepositPopupInner: FC = ({ children }) => {
+  
   const { mainAppStore, depositFundsStore, badRequestPopupStore } = useStores();
   const setActiveDepositType = (depositType: DepositTypeEnum) => () => {
     depositFundsStore.setActiveDepositType(depositType);
@@ -99,20 +124,9 @@ const DepositPopupWrapper: FC = ({ children }) => {
                   fontSize="16px"
                   fontWeight="bold"
                   color="#fffccc"
-                  // marginBottom="8px"
                 >
                   Deposit Funds
                 </PrimaryTextSpan>
-                {/* <PrimaryTextSpan
-                  marginBottom="4px"
-                  fontSize="12px"
-                  color="rgba(255,255,255, 0.4)"
-                >
-                  Deposit limit $1,000
-                </PrimaryTextSpan>
-                <CustomLink to={Page.FAQ} target="_blank">
-                  See deposit fees
-                </CustomLink> */}
               </FlexContainer>
             </HeaderDepositPopup>
 
@@ -186,10 +200,7 @@ const DepositPopupWrapper: FC = ({ children }) => {
                 position="relative"
               >
                 <Observer>{() => <>{renderDepositType()}</>}</Observer>
-                
               </FlexContainer>
-
-
             </FlexContainer>
           </FlexContainer>
         </FlexContainer>
