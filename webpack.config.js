@@ -97,7 +97,7 @@ module.exports = (env, argv) => {
         title: 'Hello world - Shadi',
         captcha: JSON.stringify(
           'https://www.google.com/recaptcha/api.js?render=' +
-            (argv.mode === 'production' ? argv.reCaptchaKey : '')
+            (argv.mode === 'production' ? env.RECAPTCHA_KEY : '')
         ),
       }),
       new webpack.DefinePlugin({
@@ -113,7 +113,6 @@ module.exports = (env, argv) => {
           argv.mode === 'production'
             ? JSON.stringify('')
             : JSON.stringify('http://localhost:5679'),
-
         // TODO: exlude api auth string "auth"
         API_DEPOSIT_STRING:
           argv.mode === 'production'
@@ -128,11 +127,11 @@ module.exports = (env, argv) => {
         MIXPANEL_TOKEN: JSON.stringify('582507549d28c813188211a0d15ec940'),
         RECAPTCHA_KEY:
           argv.mode === 'production'
-            ? JSON.stringify(argv.reCaptchaKey)
+            ? JSON.stringify(env.RECAPTCHA_KEY)
             : JSON.stringify(''),
         RECAPTCHA_KEY_SECRET:
           argv.mode === 'production'
-            ? JSON.stringify(argv.reCaptchaKeySecret)
+            ? JSON.stringify(env.RECAPTCHA_KEY_SECRET)
             : JSON.stringify(''),
       }),
       new CopyPlugin([
