@@ -39,7 +39,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
           accountId,
         });
         instrumentsStore.setActiveInstrumentsIds(response);
-        instrumentsStore.setActiveInstrument(
+        instrumentsStore.switchInstrument(
           response[0] || instrumentsStore.instruments[0].instrumentItem.id
         );
       } catch (error) {}
@@ -54,7 +54,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
           : AccountTypeEnum.Demo
       );
     }
-  }, [mainAppStore.activeAccount]);
+  }, [mainAppStore.activeAccount?.id]);
 
   return (
     <InstrumentsWrapper>
