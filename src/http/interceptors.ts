@@ -1,8 +1,8 @@
-import { LOCAL_STORAGE_TOKEN_KEY } from './../constants/global';
 import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { MainAppStore } from '../store/MainAppStore';
+import RequestHeaders from '../constants/headers';
 
 
 const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
@@ -28,9 +28,13 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
         mainAppStore.rootStore.badRequestPopupStore.openModal();
       } else if (error.response?.status === 401) {
         if (mainAppStore.refreshToken) {
-          mainAppStore.postRefreshToken();
+          mainAppStore.postRefreshToken().then(() => {
+              axios.defaults.headers[RequestHeaders.AUTHORIZATION] = mainAppStore.token;
+              return axios.request(error.config);
+          });
+        } else {
+          mainAppStore.signOut();
         }
-        mainAppStore.signOut();
       }
       return Promise.reject(error);
     }
