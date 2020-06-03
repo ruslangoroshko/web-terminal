@@ -74,7 +74,7 @@ const SignFlowLayout: FC<Props> = props => {
           </FlexContainer>
 
           <FlexContainer>
-            <LinkItem to={Pages.SUPPORT} target="_blank">
+            <LinkItem to={{pathname: Pages.SUPPORT}} target="_blank">
               Support
             </LinkItem>
             {/* TODO open when add link for FAQ */}
@@ -84,7 +84,7 @@ const SignFlowLayout: FC<Props> = props => {
             <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" marginRight="24px" fontSize="10px" lineHeight="1.5">
               FAQ
             </PrimaryTextSpan>
-            <LinkItem to={Pages.ABOUT_US} target="_blank">
+            <LinkItem to={{pathname: Pages.ABOUT_US}} target="_blank">
               About us
             </LinkItem>
           </FlexContainer>
