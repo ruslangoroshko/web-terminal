@@ -147,7 +147,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                 >
                   {profit >= 0 ? '+' : '-'}
                   {currencySymbol}
-                  {Math.abs(profit)}
+                  {Math.abs(profit).toFixed(2)}
                 </QuoteText>
                 <PrimaryTextSpan
                   fontSize="11px"

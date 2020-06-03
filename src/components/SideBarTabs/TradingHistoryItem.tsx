@@ -118,7 +118,7 @@ function TradingHistoryItem(props: Props) {
             >
               {getNumberSign(profit)}
               {currencySymbol}
-              {Math.abs(profit)}
+              {Math.abs(profit).toFixed(2)}
             </QuoteText>
             <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" fontSize="10px">
               {profit >= 0 ? '+' : ''}

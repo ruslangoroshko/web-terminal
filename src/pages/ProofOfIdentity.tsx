@@ -90,7 +90,7 @@ function ProofOfIdentity() {
       alignItems="center"
       backgroundColor="#252636"
       padding="40px 32px"
-      minHeight="100%"
+      minHeight="900px"
     >
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
@@ -186,12 +186,12 @@ function ProofOfIdentity() {
             fileUrl={customProofOfAddress.fileSrc}
           />
         </FlexContainer>
-        <FlexContainer margin="0 0 32px 0">
+        <FlexContainer margin="0 0 32px 0" justifyContent="center">
           <PrimaryButton onClick={submitFiles} padding="8px 32px">
             Save and continue
           </PrimaryButton>
         </FlexContainer>
-        <FlexContainer>
+        <FlexContainer justifyContent="center">
           <ButtonWithoutStyles onClick={attachLater}>
             <PrimaryTextSpan color="#07FAFF" fontSize="14px">
               Attach documents later

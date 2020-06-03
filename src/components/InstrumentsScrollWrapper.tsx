@@ -4,13 +4,12 @@ import { useStores } from '../hooks/useStores';
 import styled from '@emotion/styled';
 import { observer } from 'mobx-react-lite';
 import API from '../helpers/API';
-import KeysInApi from '../constants/keysInApi';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 
 interface Props {}
 
 const InstrumentsScrollWrapper: FC<Props> = observer(() => {
-  const { instrumentsStore, mainAppStore } = useStores();
+  const { instrumentsStore, mainAppStore, badRequestPopupStore } = useStores();
 
   const handleRemoveInstrument = (itemId: string) => async () => {
     const newInstruments = instrumentsStore.activeInstrumentsIds.filter(
@@ -25,7 +24,10 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
         instruments: newInstruments,
       });
       instrumentsStore.setActiveInstrumentsIds(response);
-    } catch (error) {}
+    } catch (error) {
+      badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
+    }
   };
 
   useEffect(() => {
@@ -39,10 +41,13 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
           accountId,
         });
         instrumentsStore.setActiveInstrumentsIds(response);
-        instrumentsStore.setActiveInstrument(
+        instrumentsStore.switchInstrument(
           response[0] || instrumentsStore.instruments[0].instrumentItem.id
         );
-      } catch (error) {}
+      } catch (error) {
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
+      }
     }
 
     // sh@t from backend
@@ -54,7 +59,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
           : AccountTypeEnum.Demo
       );
     }
-  }, [mainAppStore.activeAccount]);
+  }, [mainAppStore.activeAccount?.id]);
 
   return (
     <InstrumentsWrapper>

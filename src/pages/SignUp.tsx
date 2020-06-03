@@ -68,37 +68,37 @@ function SignUp() {
   ) => {
     setSubmitting(true);
     mainAppStore.isInitLoading = true;
-    try {
-      const result = await mainAppStore.signUp({
-        email,
-        password,
-        captcha: '',
-      });
-      if (result !== OperationApiResponseCodes.Ok) {
-        notificationStore.notificationMessage =
-          apiResponseCodeMessages[result];
-        notificationStore.isSuccessfull = false;
-        notificationStore.openNotification();
-        mainAppStore.isInitLoading = false;
-      } else {
-        push(Page.DASHBOARD);
-      }
-    } catch (error) {
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
-      setStatus(error);
-      setSubmitting(false);
-      mainAppStore.isInitLoading = false;
-    }
-    // grecaptcha.ready(function() {
-    //   grecaptcha
-    //     .execute(RECAPTCHA_KEY, {
-    //       action: 'submit',
-    //     })
-    //     .then(async function(token: any) {
-         
-    //     });
-    // });
+
+    grecaptcha.ready(function() {
+      grecaptcha
+        .execute(RECAPTCHA_KEY, {
+          action: 'submit',
+        })
+        .then(async function(token: any) {
+          try {
+            const result = await mainAppStore.signUp({
+              email,
+              password,
+              captcha: '',
+            });
+            if (result !== OperationApiResponseCodes.Ok) {
+              notificationStore.notificationMessage =
+                apiResponseCodeMessages[result];
+              notificationStore.isSuccessfull = false;
+              notificationStore.openNotification();
+              mainAppStore.isInitLoading = false;
+            } else {
+              push(Page.DASHBOARD);
+            }
+          } catch (error) {
+            badRequestPopupStore.openModal();
+            badRequestPopupStore.setMessage(error);
+            setStatus(error);
+            setSubmitting(false);
+            mainAppStore.isInitLoading = false;
+          }
+        });
+    });
   };
 
   const {

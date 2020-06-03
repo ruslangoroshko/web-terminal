@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = (env, argv) => {
   return {
@@ -67,6 +68,15 @@ module.exports = (env, argv) => {
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
     },
+    optimization: {
+      minimizer: [
+        new TerserPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: argv.mode !== 'production', // Must be set to true if using source-maps in production
+        }),
+      ],
+    },
     devtool: 'source-map',
     target: 'web',
     stats: 'errors-only',
@@ -87,7 +97,7 @@ module.exports = (env, argv) => {
         title: 'Hello world - Shadi',
         captcha: JSON.stringify(
           'https://www.google.com/recaptcha/api.js?render=' +
-            (argv.mode === 'production' ? argv.reCaptchaKey : '')
+            (argv.mode === 'production' ? process.env.RECAPTCHA_KEY : '')
         ),
       }),
       new webpack.DefinePlugin({
@@ -103,12 +113,11 @@ module.exports = (env, argv) => {
           argv.mode === 'production'
             ? JSON.stringify('')
             : JSON.stringify('http://localhost:5679'),
-
         // TODO: exlude api auth string "auth"
         API_DEPOSIT_STRING:
           argv.mode === 'production'
             ? JSON.stringify('/deposit')
-            : JSON.stringify('http://localhost:5680'),
+            : JSON.stringify('http://localhost:5680/deposit'),
         AUTH_TOKEN: JSON.stringify('TraderID'),
         CHARTING_LIBRARY_PATH:
           argv.mode === 'production'
@@ -118,11 +127,11 @@ module.exports = (env, argv) => {
         MIXPANEL_TOKEN: JSON.stringify('582507549d28c813188211a0d15ec940'),
         RECAPTCHA_KEY:
           argv.mode === 'production'
-            ? JSON.stringify(argv.reCaptchaKey)
+            ? JSON.stringify(process.env.RECAPTCHA_KEY)
             : JSON.stringify(''),
         RECAPTCHA_KEY_SECRET:
           argv.mode === 'production'
-            ? JSON.stringify(argv.reCaptchaKeySecret)
+            ? JSON.stringify(process.env.RECAPTCHA_KEY_SECRET)
             : JSON.stringify(''),
       }),
       new CopyPlugin([

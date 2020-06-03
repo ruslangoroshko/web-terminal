@@ -69,12 +69,12 @@ const SignFlowLayout: FC<Props> = props => {
         <FlexContainer justifyContent="space-between" width="100%">
           <FlexContainer>
             <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
-              ©2017–{new Date().getFullYear()} Monfex. All rights reserved. v 1.0.8
+              ©2017–{new Date().getFullYear()} Monfex. All rights reserved. v 1.0.10
             </PrimaryTextSpan>
           </FlexContainer>
 
           <FlexContainer>
-            <LinkItem to={Pages.SUPPORT} target="_blank">
+            <LinkItem to={{pathname: Pages.SUPPORT}} target="_blank">
               Support
             </LinkItem>
             {/* TODO open when add link for FAQ */}
@@ -84,7 +84,7 @@ const SignFlowLayout: FC<Props> = props => {
             <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" marginRight="24px" fontSize="10px" lineHeight="1.5">
               FAQ
             </PrimaryTextSpan>
-            <LinkItem to={Pages.ABOUT_US} target="_blank">
+            <LinkItem to={{pathname: Pages.ABOUT_US}} target="_blank">
               About us
             </LinkItem>
           </FlexContainer>

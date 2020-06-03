@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export interface FlexContainerProps {
-  justifyContent?: 'center' | 'flex-start' | 'flex-end' | 'space-between';
+  justifyContent?: 'center' | 'flex-start' | 'flex-end' | 'space-between' | 'space-around' | '';
   flexDirection?: 'column' | 'row';
   alignItems?: 'center' | 'flex-start' | 'flex-end';
   flexWrap?: 'wrap' | 'nowrap';
