@@ -364,7 +364,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   const investOnBlurHandler = (e: React.FocusEvent<HTMLInputElement>) => {
     if (
       // TODO: research typings
-      // @ts-ignore 
+      // @ts-ignore
       !investAmountRef.current?.contains(e.relatedTarget) &&
       !values.investmentAmount
     ) {
@@ -379,12 +379,22 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     };
   }, []);
 
+  const onKeyDown = (keyEvent: any) => {
+    if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
+      keyEvent.preventDefault();
+    }
+  };
+
   return (
     <FlexContainer padding="16px" flexDirection="column">
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
-      <CustomForm autoComplete="off" onSubmit={handleSubmit}>
+      <CustomForm
+        autoComplete="off"
+        onSubmit={handleSubmit}
+        onKeyDown={onKeyDown}
+      >
         <FlexContainer
           justifyContent="space-between"
           flexWrap="wrap"
@@ -446,10 +456,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               />
             )}
             <PlusMinusButtonWrapper flexDirection="column">
-              <PlusButton
-                type="button"
-                onClick={handleChangeInputAmount(true)}
-              >
+              <PlusButton type="button" onClick={handleChangeInputAmount(true)}>
                 <PrimaryTextSpan fontWeight="bold">&#43;</PrimaryTextSpan>
               </PlusButton>
               <MinusButton
