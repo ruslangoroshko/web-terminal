@@ -269,7 +269,7 @@ const ActivePositionsPortfolioTab: FC<Props> = props => {
                     >
                       {PnL() >= 0 ? '+' : '-'}
                       {mainAppStore.activeAccount?.symbol}
-                      {Math.abs(PnL())}
+                      {Math.abs(PnL()).toFixed(2)}
                     </QuoteText>
                     <PrimaryTextSpan
                       fontSize="10px"
