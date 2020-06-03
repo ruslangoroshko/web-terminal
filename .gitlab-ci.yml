@@ -9,6 +9,7 @@ variables:
 
 stages:
   - build
+  - build-test
   - publish-dev
   - publish
   - publish-k8s-dev
@@ -19,10 +20,18 @@ build:
   stage: build
   image: node:latest
   script:
-    - echo "$RECAPTCHA_KEY"
-    - echo "$RECAPTCHA_KEY_DEV"
-    - echo "$RECAPTCHA_KEY_SECRET"
-    - echo "$RECAPTCHA_KEY_SECRET_DEV"
+    - npm i
+    - npm run build -- --RECAPTCHA_KEY=$RECAPTCHA_KEY_DEV --RECAPTCHA_KEY_SECRET=$RECAPTCHA_KEY_SECRET_DEV
+  artifacts:
+    paths:
+      - ${BUILD_FOLDER}
+  only:
+    - development
+
+build-test:
+  stage: build-test
+  image: node:latest
+  script:
     - npm i
     - npm run build -- --RECAPTCHA_KEY=$RECAPTCHA_KEY --RECAPTCHA_KEY_SECRET=$RECAPTCHA_KEY_SECRET
   artifacts:
@@ -30,7 +39,6 @@ build:
       - ${BUILD_FOLDER}
   only:
     - test
-    - development
 
 publish:
   stage: publish
