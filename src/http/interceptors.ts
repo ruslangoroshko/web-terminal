@@ -17,8 +17,7 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
         config.data.result ===
         OperationApiResponseCodes.InvalidUserNameOrPassword
       ) {
-        localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
-        location.reload();
+        mainAppStore.signOut();
       }
       return config;
     },
