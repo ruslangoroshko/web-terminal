@@ -26,10 +26,12 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
       if (error.response?.status === 500) {
         mainAppStore.rootStore.badRequestPopupStore.setMessage(error.response?.statusText);
         mainAppStore.rootStore.badRequestPopupStore.openModal();
+        mainAppStore.isLoading = false;
       } else if (error.response?.status === 401) {
         if (mainAppStore.refreshToken) {
           mainAppStore.postRefreshToken().then(() => {
               axios.defaults.headers[RequestHeaders.AUTHORIZATION] = mainAppStore.token;
+              error.config.headers[RequestHeaders.AUTHORIZATION] = mainAppStore.token;
               return axios.request(error.config);
           });
         } else {

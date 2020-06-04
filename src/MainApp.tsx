@@ -66,6 +66,10 @@ const MainApp = () => {
             background-color: #1c2026;
           }
 
+          .grecaptcha-badge {
+            visibility: hidden;
+          }
+
           ${reactDatePickerOverrides};
         `}
       />
