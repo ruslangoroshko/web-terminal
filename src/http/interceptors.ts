@@ -31,6 +31,7 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
         if (mainAppStore.refreshToken) {
           mainAppStore.postRefreshToken().then(() => {
               axios.defaults.headers[RequestHeaders.AUTHORIZATION] = mainAppStore.token;
+              error.config.headers[RequestHeaders.AUTHORIZATION] = mainAppStore.token;
               return axios.request(error.config);
           });
         } else {
