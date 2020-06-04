@@ -74,12 +74,12 @@ function SignUp() {
         .execute(RECAPTCHA_KEY, {
           action: 'submit',
         })
-        .then(async function(token: any) {
+        .then(async function(captcha: any) {
           try {
             const result = await mainAppStore.signUp({
               email,
               password,
-              captcha: '',
+              captcha,
             });
             if (result !== OperationApiResponseCodes.Ok) {
               notificationStore.notificationMessage =

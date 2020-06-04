@@ -134,7 +134,8 @@ export class MainAppStore implements MainAppStoreProps {
         this.setTokenHandler(result.token);
       }
     } catch (error) {
-      console.log(error)
+      this.setRefreshToken('');
+      this.setTokenHandler('');
     }
   }
 
@@ -201,6 +202,7 @@ export class MainAppStore implements MainAppStoreProps {
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
+      this.setRefreshToken(response.data.refreshToken);
       this.fetchTradingUrl(response.data.token);
     }
 
