@@ -31,6 +31,8 @@ function OrderExpandedItem(props: Props) {
       openPrice,
       operation,
       created,
+      tp,
+      sl
     },
     currencySymbol,
   } = props;
@@ -46,6 +48,7 @@ function OrderExpandedItem(props: Props) {
       processId: getProcessId(),
     });
   };
+
   return (
     <DisplayContents>
       <Td>
@@ -117,12 +120,24 @@ function OrderExpandedItem(props: Props) {
       </Td>
       <Td justifyContent="center" alignItems="center">
         <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="11px">
-          &mdash;
+          {tp !== null ? (
+            <>
+              {tp < 0 && '-'}
+              {currencySymbol}
+              {Math.abs(tp).toFixed(2)}
+            </>
+          ) : '-'}
         </PrimaryTextSpan>
       </Td>
       <Td justifyContent="center" alignItems="center">
         <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="11px">
-          &mdash;
+          {sl !== null ? (
+            <>
+              {sl < 0 && '-'}
+              {currencySymbol}
+              {Math.abs(sl).toFixed(2)}
+            </>
+          ) : '-'}
         </PrimaryTextSpan>
       </Td>
       <Td alignItems="center" justifyContent="center">
