@@ -4,9 +4,9 @@ const validationInputTexts = {
     REPEAT_PASSWORD_MATCH: 'Passwords must match',
     REQUIRED_FIELD: 'Required any value',
     USER_AGREEMENT: 'Please accept the Terms of service and Privacy Policy to continue',
-    PASSWORD_MIN_CHARACTERS: 'min 8 characters',
-    PASSWORD_MAX_CHARACTERS: 'max 40 symbols',
-    PASSWORD_MATCH: 'min one number and one symbol'
+    PASSWORD_MIN_CHARACTERS: 'Min 8 characters',
+    PASSWORD_MAX_CHARACTERS: 'Max 40 symbols',
+    PASSWORD_MATCH: 'Min one number and one letter'
 }
 
 Object.freeze(validationInputTexts)
