@@ -1,6 +1,7 @@
 const Fields = {
   ACCOUNT_ID: 'accountId',
   EMAIL: 'email',
+  OLD_PASSWORD: 'oldPassword',
   PASSWORD: 'password',
   USER_AGREEMENT: 'userAgreement',
   REPEAT_PASSWORD: 'repeatPassword',
