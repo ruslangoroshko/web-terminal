@@ -37,6 +37,8 @@ function ActivePositionExpanded(props: Props) {
       openPrice,
       operation,
       swap,
+      tp, 
+      sl
     },
     currencySymbol,
   } = props;
@@ -66,7 +68,7 @@ function ActivePositionExpanded(props: Props) {
   return (
     <DisplayContents>
       <Td>
-        <FlexContainer width="32px" height="32px">
+        <FlexContainer width="32px" height="32px" marginRight="8px">
           <ImageContainer instrumentId={instrument} />
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 8px 0 0" width="170px">
@@ -177,14 +179,30 @@ function ActivePositionExpanded(props: Props) {
       <Td justifyContent="center" alignItems="center">
         <FlexContainer flexDirection="column" alignItems="center">
           <PrimaryTextSpan fontSize="12px" color="#fff">
-            Set
+            {tp !== null ? (
+              <>
+                {tp < 0 && '-'}
+                {currencySymbol}
+                {Math.abs(tp).toFixed(2)}
+              </>
+            ) : (
+              '-'
+            )}
           </PrimaryTextSpan>
         </FlexContainer>
       </Td>
       <Td justifyContent="center" alignItems="center">
         <FlexContainer flexDirection="column" alignItems="center">
           <PrimaryTextSpan fontSize="12px" color="#fff">
-            Set
+            {sl !== null ? (
+              <>
+                {sl < 0 && '-'}
+                {currencySymbol}
+                {Math.abs(sl).toFixed(2)}
+              </>
+            ) : (
+              '-'
+            )}
           </PrimaryTextSpan>
         </FlexContainer>
       </Td>
@@ -255,7 +273,8 @@ function ActivePositionExpanded(props: Props) {
                   Overnight fee
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {getNumberSign(swap)}{mainAppStore.activeAccount?.symbol}
+                  {getNumberSign(swap)}
+                  {mainAppStore.activeAccount?.symbol}
                   {Math.abs(swap).toFixed(2)}
                 </PrimaryTextSpan>
               </FlexContainer>
