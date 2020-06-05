@@ -97,6 +97,12 @@ function SignUp() {
             setSubmitting(false);
             mainAppStore.isInitLoading = false;
           }
+        }).catch(() => {
+          badRequestPopupStore.openModal();
+          badRequestPopupStore.setMessage('Technical error');
+          setStatus('Technical error');
+          setSubmitting(false);
+          mainAppStore.isInitLoading = false;
         });
     });
   };
