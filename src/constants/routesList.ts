@@ -5,6 +5,7 @@ import SignUp from '../pages/SignUp';
 import EmailConfirmation from '../pages/EmailConfirmation';
 import PersonalData from '../pages/PersonalData';
 import AccountBalance from '../pages/AccountBalance';
+import AccountSecurity from "../pages/AccountSecurity";
 import PhoneVerification from '../pages/PhoneVerification';
 import ProofOfIdentity from '../pages/ProofOfIdentity';
 import ForgotPassword from '../pages/ForgotPassword';
@@ -67,6 +68,13 @@ const routesList = [
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.Authorized,
+  },
+  {
+    component: AccountSecurity,
+    path: Page.ACCOUNT_SEQURITY,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.Authorized
   },
   {
     component: PersonalData,
