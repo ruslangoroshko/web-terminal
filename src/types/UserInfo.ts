@@ -27,8 +27,8 @@ export interface UserAuthenticateResponse {
   data: {
     token: string;
     tradingUrl: string;
-    signalRConnectionTimeOut: number;
-    signalRReconnectTimeOut: number;
+    signalRConnectionTimeOut: string;
+    signalRReconnectTimeOut: string;
     refreshToken: string;
   };
 }

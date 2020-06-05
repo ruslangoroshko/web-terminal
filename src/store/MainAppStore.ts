@@ -37,6 +37,7 @@ interface MainAppStoreProps {
   tradingUrl: string;
   profileStatus: PersonalDataKYCEnum;
   isDemoRealPopup: boolean;
+  signalRReconnectTimeOut: string;
 }
 
 // TODO: think about application initialization
@@ -57,6 +58,7 @@ export class MainAppStore implements MainAppStoreProps {
   token = '';
   refreshToken = '';
   rootStore: RootStore;
+  signalRReconnectTimeOut = '';
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -74,21 +76,25 @@ export class MainAppStore implements MainAppStoreProps {
         : `/signalr`;
     const connectionString = IS_LIVE ? this.tradingUrl + wsConnectSub : WS_HOST;
     const connection = initConnection(connectionString);
-    try {
-      await connection.start();
-      try {
-        await connection.send(Topics.INIT, token);
-        this.activeSession = connection;
-        this.isAuthorized = true;
-      } catch (error) {
-        this.isAuthorized = false;
-        this.isInitLoading = false;
-      }
-    } catch (error) {
-      this.isInitLoading = false;
-      this.isAuthorized = false;
-    }
 
+    const reconnectionInterval = setInterval(async () => {
+      try {
+        await connection.start();
+        clearInterval(reconnectionInterval);
+        try {
+          await connection.send(Topics.INIT, token);
+          this.activeSession = connection;
+        } catch (error) {
+          this.isAuthorized = false;
+          this.isInitLoading = false;
+        }
+      } catch (error) {
+        this.isInitLoading = false;
+        this.isAuthorized = false;
+      }
+  
+    }, this.signalRReconnectTimeOut? +this.signalRReconnectTimeOut : 10000);
+   
     connection.on(Topics.UNAUTHORIZED, () => {
       localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
       this.isInitLoading = false;
@@ -181,6 +187,7 @@ export class MainAppStore implements MainAppStoreProps {
 
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
+      this.signalRReconnectTimeOut = response.data.signalRReconnectTimeOut;
       this.setTokenHandler(response.data.token);
       this.fetchTradingUrl(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
@@ -200,6 +207,7 @@ export class MainAppStore implements MainAppStoreProps {
   signUp = async (credentials: UserRegistration) => {
     const response = await API.signUpNewTrader(credentials);
     if (response.result === OperationApiResponseCodes.Ok) {
+      this.signalRReconnectTimeOut = response.data.signalRReconnectTimeOut;
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
