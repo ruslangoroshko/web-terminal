@@ -12,13 +12,14 @@ interface Props {
   onFileReceive: (file: Blob) => void;
   file: any;
   fileUrl: string;
+  hasError?: boolean;
 }
 
 const FIVE_MB = 5242880;
 const allowedFileTypes = ['image/png', 'image/jpg', 'image/jpeg'];
 
 function DragNDropArea(props: Props) {
-  const { onFileReceive, file, fileUrl } = props;
+  const { onFileReceive, file, fileUrl, hasError = false } = props;
 
   const onDrop = useCallback(acceptedFiles => {
     const file = acceptedFiles[0];
@@ -36,15 +37,15 @@ function DragNDropArea(props: Props) {
   return file.size === 0 ? (
     <DnDWrapper
       {...getRootProps()}
-      border="1px dashed rgba(255, 255, 255, 0.3)"
       minHeight="120px"
       width="100%"
       borderRadius="4px"
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
+      hasError={hasError}
     >
-      <input {...getInputProps()} />
+      <input required {...getInputProps()} />
       {isDragActive ? (
         <PrimaryTextSpan color="#fffccc" fontSize="14px">
           Drop the files here ...
@@ -118,6 +119,7 @@ export default DragNDropArea;
 const DnDWrapper = styled(FlexContainer)`
   transition: all 0.2s ease;
   will-change: border;
+  border: ${({hasError}) => `1px dashed ${hasError ? '#d44e4e' : 'rgba(255, 255, 255, 0.3)'}`};
 
   &:hover {
     cursor: pointer;
