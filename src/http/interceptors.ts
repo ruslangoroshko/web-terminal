@@ -30,7 +30,6 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
         mainAppStore.isLoading = false;
       } else if (error.response?.status === 401) {
         if (mainAppStore.refreshToken) {
-          
           mainAppStore.postRefreshToken().then(() => {
             axios.defaults.headers[RequestHeaders.AUTHORIZATION] =
               mainAppStore.token;

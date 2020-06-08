@@ -83,6 +83,7 @@ export class MainAppStore implements MainAppStoreProps {
         clearInterval(reconnectionInterval);
         try {
           await connection.send(Topics.INIT, token);
+          this.isAuthorized = true;
           this.activeSession = connection;
         } catch (error) {
           this.isAuthorized = false;
