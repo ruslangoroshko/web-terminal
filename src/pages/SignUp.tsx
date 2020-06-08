@@ -74,36 +74,39 @@ function SignUp() {
         .execute(RECAPTCHA_KEY, {
           action: 'submit',
         })
-        .then(async function(captcha: any) {
-          try {
-            const result = await mainAppStore.signUp({
-              email,
-              password,
-              captcha,
-            });
-            if (result !== OperationApiResponseCodes.Ok) {
-              notificationStore.notificationMessage =
-                apiResponseCodeMessages[result];
-              notificationStore.isSuccessfull = false;
-              notificationStore.openNotification();
+        .then(
+          async function(captcha: any) {
+            try {
+              const result = await mainAppStore.signUp({
+                email,
+                password,
+                captcha,
+              });
+              if (result !== OperationApiResponseCodes.Ok) {
+                notificationStore.notificationMessage =
+                  apiResponseCodeMessages[result];
+                notificationStore.isSuccessfull = false;
+                notificationStore.openNotification();
+                mainAppStore.isInitLoading = false;
+              } else {
+                push(Page.DASHBOARD);
+              }
+            } catch (error) {
+              badRequestPopupStore.openModal();
+              badRequestPopupStore.setMessage(error);
+              setStatus(error);
+              setSubmitting(false);
               mainAppStore.isInitLoading = false;
-            } else {
-              push(Page.DASHBOARD);
             }
-          } catch (error) {
+          },
+          () => {
             badRequestPopupStore.openModal();
-            badRequestPopupStore.setMessage(error);
-            setStatus(error);
+            badRequestPopupStore.setMessage('Technical error');
+            setStatus('Technical error');
             setSubmitting(false);
             mainAppStore.isInitLoading = false;
           }
-        }).catch(() => {
-          badRequestPopupStore.openModal();
-          badRequestPopupStore.setMessage('Technical error');
-          setStatus('Technical error');
-          setSubmitting(false);
-          mainAppStore.isInitLoading = false;
-        });
+        );
     });
   };
 
