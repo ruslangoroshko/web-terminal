@@ -124,7 +124,7 @@ function OrderExpandedItem(props: Props) {
             <>
               {tp < 0 && '-'}
               {currencySymbol}
-              {Math.abs(tp).toFixed(2)}
+              {Math.abs(tp)}
             </>
           ) : '-'}
         </PrimaryTextSpan>
@@ -135,7 +135,7 @@ function OrderExpandedItem(props: Props) {
             <>
               {sl < 0 && '-'}
               {currencySymbol}
-              {Math.abs(sl).toFixed(2)}
+              {Math.abs(sl)}
             </>
           ) : '-'}
         </PrimaryTextSpan>
