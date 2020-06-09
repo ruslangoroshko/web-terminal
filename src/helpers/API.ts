@@ -14,6 +14,7 @@ import {
   UserAuthenticate,
   UserAuthenticateResponse,
   UserRegistration,
+  ChangePasswordRespone,
 } from '../types/UserInfo';
 import { HistoryCandlesType, CandleDTO } from '../types/HistoryTypes';
 import {
@@ -202,6 +203,8 @@ class API {
     return response.data;
   };
 
+
+
   recoveryPassword = async (data: object) => {
     const response = await axios.post<OperationApiResponseCodes>(
       `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.PASSWORD_RECOVERY}`,
@@ -210,6 +213,7 @@ class API {
     return response.data;
   };
 
+  
   getPositionsHistory = async (params: GetHistoryParams) => {
     const response = await axios.get<PositionsHistoryReportDTO>(
       `${API_STRING}${API_LIST.REPORTS.POSITIONS_HISTORY}`,
@@ -231,7 +235,7 @@ class API {
   };
 
   changePassword = async (params: ChangePasswordParams) => {
-    const response = await axios.post<BalanceHistoryDTO[]>(
+    const response = await axios.post<ChangePasswordRespone>(
       `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.CHANGE_PASSWORD}`,
       params
     );

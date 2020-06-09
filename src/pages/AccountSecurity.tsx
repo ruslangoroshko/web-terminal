@@ -5,25 +5,21 @@ import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
 import * as yup from 'yup';
 import API from '../helpers/API';
 import { useStores } from '../hooks/useStores';
-import { BalanceHistoryReport } from '../types/HistoryReportTypes';
 import styled from '@emotion/styled';
 import SvgIcon from '../components/SvgIcon';
-import IconNoTradingHistory from '../assets/svg/icon-no-trading-history.svg';
-import DatePickerDropdown from '../components/DatePickerDropdown';
-import { TableGrid, Th } from '../styles/TableElements';
-import BalanceHistoryItem from '../components/BalanceHistoryItem';
-import InfinityScrollList from '../components/InfinityScrollList';
 import BadRequestPopup from '../components/BadRequestPopup';
 import { Observer } from 'mobx-react-lite';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import IconClose from '../assets/svg/icon-popup-close.svg';
 import { useHistory } from 'react-router-dom';
 import LoaderForComponents from '../components/LoaderForComponents';
-import LabelInput from '../components/LabelInput';
 import { useFormik } from 'formik';
 import Fields from '../constants/fields';
 import validationInputTexts from '../constants/validationInputTexts';
 import { PrimaryButton } from '../styles/Buttons';
+import ErropPopup from '../components/ErropPopup';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import NotificationPopup from '../components/NotificationPopup';
 
 function AccountSecurity() {
   const validationSchema = yup.object().shape({
@@ -53,7 +49,7 @@ function AccountSecurity() {
     repeatPassword: '',
   };
 
-  const { mainAppStore, badRequestPopupStore, dateRangeStore } = useStores();
+  const { mainAppStore, badRequestPopupStore, dateRangeStore, notificationStore } = useStores();
   const { goBack } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,10 +57,39 @@ function AccountSecurity() {
     document.title = 'Change password';
   }, []);
 
-  const handleSubmitForm = () => {};
+  const handleSubmitForm = async () => {
+    setIsLoading(true);
+    
+    try {
+      const response = await API.changePassword({
+        oldPassword: values.oldPassword,
+        newPassword: values.password
+      });
+      if (response.result === OperationApiResponseCodes.Ok) {
+        resetForm();
+        setIsLoading(false);
+        notificationStore.notificationMessage = "Your password has been changed";
+        notificationStore.isSuccessfull = true;
+        notificationStore.openNotification();
+      } else {
+        resetForm();
+        setIsLoading(false);
+        notificationStore.notificationMessage = "You entered the wrong current password";
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+      }
+    } catch (error) {
+      setIsLoading(false);
+      badRequestPopupStore.setMessage(error);
+      badRequestPopupStore.openModal();
+    }
+  };
+
+
   const {
     values,
     setFieldValue,
+    resetForm,
     validateForm,
     handleSubmit,
     handleChange,
@@ -90,6 +115,21 @@ function AccountSecurity() {
 
   return (
     <AccountSettingsContainer>
+      <FlexContainer
+        position="absolute"
+        bottom="100px"
+        left="14px"
+        zIndex="100"
+      >
+        <Observer>
+          {() => (
+            <NotificationPopup
+              show={notificationStore.isActiveNotification}
+            ></NotificationPopup>
+          )}
+        </Observer>
+      </FlexContainer>
+
       <IconButton onClick={goBack}>
         <SvgIcon
           {...IconClose}
@@ -100,6 +140,7 @@ function AccountSecurity() {
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
+
       <Observer>
         {() => (
           <LoaderForComponents
@@ -120,7 +161,6 @@ function AccountSecurity() {
 
         <CustomForm onSubmit={handleSubmit} noValidate>
           <FlexContainer flexDirection="column" width="360px">
-
             <FlexContainer flexDirection="column">
               <FlexContainer
                 margin="0 0 6px 0"
@@ -143,6 +183,7 @@ function AccountSecurity() {
                 width="100%"
                 position="relative"
                 justifyContent="space-between"
+                hasError={!!(touched.oldPassword && errors.oldPassword)}
               >
                 <InputField
                   name={Fields.OLD_PASSWORD}
@@ -151,6 +192,17 @@ function AccountSecurity() {
                   value={values.oldPassword}
                   type="password"
                 ></InputField>
+
+                {!!(touched.oldPassword && errors.oldPassword) && (
+                  <ErropPopup
+                    textColor="#fffccc"
+                    bgColor="#ED145B"
+                    classNameTooltip={Fields.OLD_PASSWORD}
+                    direction="right"
+                  >
+                    {errors.oldPassword}
+                  </ErropPopup>
+                )}
               </InputWrapper>
             </FlexContainer>
 
@@ -176,6 +228,7 @@ function AccountSecurity() {
                 width="100%"
                 position="relative"
                 justifyContent="space-between"
+                hasError={!!(touched.oldPassword && errors.oldPassword)}
               >
                 <InputField
                   name={Fields.PASSWORD}
@@ -184,6 +237,16 @@ function AccountSecurity() {
                   value={values.password}
                   type="password"
                 ></InputField>
+                {!!(touched.password && errors.password) && (
+                  <ErropPopup
+                    textColor="#fffccc"
+                    bgColor="#ED145B"
+                    classNameTooltip={Fields.PASSWORD}
+                    direction="right"
+                  >
+                    {errors.password}
+                  </ErropPopup>
+                )}
               </InputWrapper>
             </FlexContainer>
 
@@ -209,6 +272,7 @@ function AccountSecurity() {
                 width="100%"
                 position="relative"
                 justifyContent="space-between"
+                hasError={!!(touched.oldPassword && errors.oldPassword)}
               >
                 <InputField
                   name={Fields.REPEAT_PASSWORD}
@@ -217,6 +281,17 @@ function AccountSecurity() {
                   value={values.repeatPassword}
                   type="password"
                 ></InputField>
+
+                {!!(touched.repeatPassword && errors.repeatPassword) && (
+                  <ErropPopup
+                    textColor="#fffccc"
+                    bgColor="#ED145B"
+                    classNameTooltip={Fields.REPEAT_PASSWORD}
+                    direction="right"
+                  >
+                    {errors.repeatPassword}
+                  </ErropPopup>
+                )}
               </InputWrapper>
             </FlexContainer>
 
@@ -293,7 +368,7 @@ const InputField = styled.input`
 
 const InputWrapper = styled(FlexContainer)`
   border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid ${props => props.hasError ? "#ED145B" : "rgba(255, 255, 255, 0.1)"};
   color: #fff;
   background-color: rgba(255, 255, 255, 0.06);
 `;
