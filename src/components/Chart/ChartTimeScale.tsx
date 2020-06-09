@@ -50,12 +50,12 @@ const ChartIntervalTimeScale: FC<Props> = observer(() => {
 
       case supportedInterval['3Y']:
         from = moment().subtract(1, 'y');
-        newResolutionKey = '1 day';
+        newResolutionKey = '1 month';
         break;
 
       case supportedInterval['All']:
         from = moment().subtract(1, 'y');
-        newResolutionKey = '1 day';
+        newResolutionKey = '1 month';
         break;
 
       default:
