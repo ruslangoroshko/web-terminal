@@ -33,9 +33,9 @@ const AccountNavPanel = () => {
         </CustomNavLink>
       </FlexContainer> */}
       <FlexContainer flexDirection="column">
-        {/* <CustomNavLink to={Page.ACCOUNT_SEQURITY} activeClassName="active">
-          <AccountLinkSpan color="#fffccc">Sequrity</AccountLinkSpan>
-        </CustomNavLink> */}
+        <CustomNavLink to={Page.ACCOUNT_SEQURITY} activeClassName="active">
+          <AccountLinkSpan color="#fffccc">Security</AccountLinkSpan>
+        </CustomNavLink>
 
         <CustomNavLink
           to={Page.ACCOUNT_BALANCE_HISTORY}

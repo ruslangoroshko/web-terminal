@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { useStores } from '../hooks/useStores';
@@ -13,7 +12,6 @@ import { NavLink, Link } from 'react-router-dom';
 import Page from '../constants/Pages';
 import IconInfo from '../assets/svg/icon-info.svg';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
-
 
 function ProfileDropdown() {
   const { mainAppStore } = useStores();
@@ -67,15 +65,21 @@ function ProfileDropdown() {
       boxShadow="box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.24), 0px 8px 16px rgba(37, 38, 54, 0.6)"
     >
       {renderStatusLabel()}
-     
+
       <FlexWithBottomBorder
         margin="0 0 16px 0"
         padding="0 0 16px 0"
-        alignItems="center"
+        flexDirection="column"
       >
-        <PrimaryTextSpan fontSize="12px" color="#fffccc">
+        <PrimaryTextSpan fontSize="12px" color="#fffccc" marginBottom="16px">
           Profile
         </PrimaryTextSpan>
+
+        <NavLink to={Page.ACCOUNT_SEQURITY}>
+          <PrimaryTextSpan fontSize="12px" color="#fffccc">
+            Security
+          </PrimaryTextSpan>
+        </NavLink>
       </FlexWithBottomBorder>
       <FlexWithBottomBorder
         margin="0 0 16px 0"

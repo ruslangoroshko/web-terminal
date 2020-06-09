@@ -45,7 +45,7 @@ function DragNDropArea(props: Props) {
       justifyContent="center"
       hasError={hasError}
     >
-      <input required {...getInputProps()} />
+      <input {...getInputProps()} accept=".png, .jpg, .jpeg" multiple={false} />
       {isDragActive ? (
         <PrimaryTextSpan color="#fffccc" fontSize="14px">
           Drop the files here ...
