@@ -20,7 +20,8 @@ import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import mixpanel, { init } from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import injectInerceptors from '../http/interceptors';
-import { BadRequestPopupStore } from './BadRequestPopupStore';
+import { InstrumentModelWSDTO } from '../types/InstrumentsTypes';
+import { AskBidEnum } from '../enums/AskBid';
 
 interface MainAppStoreProps {
   token: string;
@@ -83,6 +84,7 @@ export class MainAppStore implements MainAppStoreProps {
         clearInterval(reconnectionInterval);
         try {
           await connection.send(Topics.INIT, token);
+          this.isAuthorized = true;
           this.activeSession = connection;
         } catch (error) {
           this.isAuthorized = false;
@@ -116,6 +118,38 @@ export class MainAppStore implements MainAppStoreProps {
         this.activeAccount = response.data;
       }
     );
+
+    connection.on(
+      Topics.INSTRUMENTS,
+      (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
+        if (
+          this.activeAccount &&
+          response.accountId === this.activeAccount.id
+        ) {
+          response.data.forEach(item => {
+            this.rootStore.quotesStore.setQuote({
+              ask: {
+                c: item.ask || 0,
+                h: 0,
+                l: 0,
+                o: 0,
+              },
+              bid: {
+                c: item.bid || 0,
+                h: 0,
+                l: 0,
+                o: 0,
+              },
+              dir: AskBidEnum.Buy,
+              dt: Date.now(),
+              id: item.id,
+            });
+          });
+          this.rootStore.instrumentsStore.setInstruments(response.data);
+        }
+      }
+    );
+
     connection.onclose(error => {});
   };
 
@@ -232,6 +266,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.quotesStore.activePositions = [];
     this.rootStore.quotesStore.pendingOrders = [];
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
+    this.activeAccount = undefined;
   };
 
   @action

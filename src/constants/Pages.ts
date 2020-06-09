@@ -13,7 +13,7 @@ const Page = {
   ACCOUNT_WITHDRAW: '/account-withdraw',
   ACCOUNT_BALANCE_HISTORY: '/account-balance-history',
   ACCOUNT_SETTINGS: '/account-settings',
-  ACCOUNT_SEQURITY: '/account-sequrity',
+  ACCOUNT_SEQURITY: '/account-security',
   ACCOUNT_HISTORY_QUOTES: '/account-history-quotes',
 
   ABOUT_US: 'https://www.monfex.com/why-us',

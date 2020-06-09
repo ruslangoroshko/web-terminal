@@ -20,12 +20,15 @@ const AddInstrumentsPopup: FC<Props> = props => {
   const [isLeft, setIsLeft] = useState(true);
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    const searchValue = e.target.value.toLowerCase();
+    const searchValue = e.target.value.trim().toLowerCase();
     instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments
       .filter(
         item =>
           !searchValue ||
-          item.instrumentItem.id.toLowerCase().includes(searchValue)
+          item.instrumentItem.id.toLowerCase().includes(searchValue) ||
+          item.instrumentItem.base.toLowerCase().includes(searchValue) || 
+          item.instrumentItem.name.toLowerCase().includes(searchValue) ||
+          item.instrumentItem.quote.toLowerCase().includes(searchValue)
       )
       .map(item => item.instrumentItem);
   };

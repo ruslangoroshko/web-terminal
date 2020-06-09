@@ -22,6 +22,10 @@ export interface ResetPassword {
   repeatPassword?: string;
 }
 
+export interface ChangePasswordRespone {
+  result: OperationApiResponseCodes;
+}
+
 export interface UserAuthenticateResponse {
   result: OperationApiResponseCodes;
   data: {
