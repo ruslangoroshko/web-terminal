@@ -59,7 +59,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
           : AccountTypeEnum.Demo
       );
     }
-  }, [mainAppStore.activeAccount?.id]);
+  }, [mainAppStore.activeAccount]);
 
   return (
     <InstrumentsWrapper>

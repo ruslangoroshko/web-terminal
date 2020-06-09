@@ -4,7 +4,7 @@ import { reboot } from './styles/reboot';
 import Helmet from 'react-helmet';
 import favicon from './assets/images/favicon.ico';
 import RoutingLayout from './routing/RoutingLayout';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, } from 'react-router-dom';
 import { slickSliderStyles } from './styles/slickSlider';
 import 'react-dates/lib/css/_datepicker.css';
 import reactDatePickerOverrides from './styles/react-date-picker-overrides';
@@ -15,7 +15,6 @@ import injectInerceptors from './http/interceptors';
 
 const MainApp = () => {
   const { mainAppStore } = useStores();
-  // const { pathname } = useLocation();
 
   useEffect(() => {
     if (IS_LIVE) {
