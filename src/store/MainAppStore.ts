@@ -233,6 +233,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.quotesStore.activePositions = [];
     this.rootStore.quotesStore.pendingOrders = [];
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
+    delete this.activeAccount;
   };
 
   @action

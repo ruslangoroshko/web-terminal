@@ -14,10 +14,9 @@ import BadRequestPopup from '../components/BadRequestPopup';
 interface Props {}
 
 function EmailConfirmation(props: Props) {
-  const {} = props;
   const { id } = useParams();
 
-  const {badRequestPopupStore} = useStores();
+  const { badRequestPopupStore, mainAppStore } = useStores();
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccessful, setIsSuccessfull] = useState(false);
@@ -26,8 +25,9 @@ function EmailConfirmation(props: Props) {
     API.confirmEmail(id || '')
       .then(() => {
         setIsSuccessfull(true);
+        mainAppStore.fetchTradingUrl();
       })
-      .catch((error) => {
+      .catch(error => {
         setIsSuccessfull(false);
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
@@ -40,11 +40,7 @@ function EmailConfirmation(props: Props) {
   return (
     <SignFlowLayout>
       <Observer>
-        {() => (
-          <>
-            {badRequestPopupStore.isActive && <BadRequestPopup />}
-          </>
-        )}
+        {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
       <LoaderFullscreen isLoading={isLoading} />
       <FlexContainer width="100%" flexDirection="column" alignItems="center">
