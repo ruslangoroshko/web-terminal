@@ -26,6 +26,7 @@ import { AskBidEnum } from '../enums/AskBid';
 interface MainAppStoreProps {
   token: string;
   refreshToken: string;
+  isInterceptorsInjected: boolean;
   isAuthorized: boolean;
   signIn: (credentials: UserAuthenticate) => void;
   signUp: (credentials: UserRegistration) => Promise<unknown>;
@@ -56,6 +57,7 @@ export class MainAppStore implements MainAppStoreProps {
   @observable profileStatus: PersonalDataKYCEnum =
     PersonalDataKYCEnum.NotVerified;
   @observable tradingUrl = '';
+  @observable isInterceptorsInjected = false;
   token = '';
   refreshToken = '';
   rootStore: RootStore;
@@ -157,7 +159,9 @@ export class MainAppStore implements MainAppStoreProps {
     try {
       const response = await API.getTradingUrl();
       this.setTradingUrl(response.tradingUrl);
-      injectInerceptors(response.tradingUrl, this);
+      if (!this.isInterceptorsInjected) {
+        injectInerceptors(response.tradingUrl, this);
+      }
       this.handleInitConnection(token);
     } catch (error) {
       this.setTradingUrl('/');
