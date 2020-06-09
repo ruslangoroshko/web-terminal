@@ -30,11 +30,36 @@ function ProofOfIdentity() {
     fileSrc: '',
   });
 
+  const [error, setError] = useState({
+    passport: false,
+    address: false
+  });
+
+  const validateSubmit = () => {
+    let errorsFile = {...error}
+    if (!customProofOfAddress.file.size) {
+      errorsFile.address = true;
+    } else {
+      errorsFile.address = false;
+    }
+    if (!customPassportId.file.size) {
+      errorsFile.passport = true;
+    } else {
+      errorsFile.passport = false;
+    }
+    setError(errorsFile);
+    if (!errorsFile.address && !errorsFile.passport) {
+      return true;
+    }
+    return false;
+  }
+
   const handleFileReceive = (method: (file: any) => void) => (file: any) => {
     method({
       file,
       fileSrc: URL.createObjectURL(file),
     });
+    setError({ address: false, passport: false });
   };
 
   const postPersonalData = async () => {
@@ -49,7 +74,14 @@ function ProofOfIdentity() {
     }
   };
 
+  
+
   const submitFiles = async () => {
+    const validateFile = validateSubmit();
+    if (!validateFile) {
+      return;
+    }
+    
     setIsLoading(true);
     try {
       await Axios.all([
@@ -146,6 +178,7 @@ function ProofOfIdentity() {
 
         <FlexContainer flexDirection="column" margin="0 0 64px 0" minHeight="120px">
           <DragNDropArea
+            hasError={error.passport}
             onFileReceive={handleFileReceive(setCustomPassportId)}
             file={customPassportId.file}
             fileUrl={customPassportId.fileSrc}
@@ -181,6 +214,7 @@ function ProofOfIdentity() {
 
         <FlexContainer flexDirection="column" margin="0 0 64px 0" minHeight="120px">
           <DragNDropArea
+            hasError={error.address}
             onFileReceive={handleFileReceive(setCustomProofOfAddress)}
             file={customProofOfAddress.file}
             fileUrl={customProofOfAddress.fileSrc}

@@ -26,6 +26,7 @@ export interface FlexContainerProps {
   boxShadow?: string;
   marginRight?: string;
   marginBottom?: string;
+  hasError?: boolean;
 }
 
 export const FlexContainer = styled.div<FlexContainerProps>`
