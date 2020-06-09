@@ -39,36 +39,6 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     if (mainAppStore.activeAccount) {
-      mainAppStore.activeSession?.on(
-        Topics.INSTRUMENTS,
-        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-          if (
-            mainAppStore.activeAccount &&
-            response.accountId === mainAppStore.activeAccount.id
-          ) {
-            response.data.forEach(item => {
-              quotesStore.setQuote({
-                ask: {
-                  c: item.ask || 0,
-                  h: 0,
-                  l: 0,
-                  o: 0,
-                },
-                bid: {
-                  c: item.bid || 0,
-                  h: 0,
-                  l: 0,
-                  o: 0,
-                },
-                dir: AskBidEnum.Buy,
-                dt: Date.now(),
-                id: item.id,
-              });
-            });
-            instrumentsStore.setInstruments(response.data);
-          }
-        }
-      );
 
       mainAppStore.activeSession?.on(
         Topics.ACTIVE_POSITIONS,
