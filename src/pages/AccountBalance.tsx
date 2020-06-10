@@ -18,10 +18,11 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import IconClose from '../assets/svg/icon-popup-close.svg';
 import { useHistory } from 'react-router-dom';
 import LoaderForComponents from '../components/LoaderForComponents';
+import Page from '../constants/Pages';
 
 function AccountBalance() {
   const { mainAppStore, badRequestPopupStore, dateRangeStore } = useStores();
-  const { goBack } = useHistory();
+  const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [balanceHistoryReport, setBalanceHistoryReport] = useState<
     BalanceHistoryReport
@@ -84,7 +85,7 @@ function AccountBalance() {
 
   return (
     <AccountSettingsContainer>
-      <IconButton onClick={goBack}>
+      <IconButton onClick={() => push(Page.DASHBOARD)}>
         <SvgIcon
           {...IconClose}
           fillColor="rgba(255, 255, 255, 0.6)"

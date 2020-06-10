@@ -20,6 +20,7 @@ import { PrimaryButton } from '../styles/Buttons';
 import ErropPopup from '../components/ErropPopup';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import NotificationPopup from '../components/NotificationPopup';
+import Page from '../constants/Pages';
 
 function AccountSecurity() {
   const validationSchema = yup.object().shape({
@@ -50,7 +51,7 @@ function AccountSecurity() {
   };
 
   const { mainAppStore, badRequestPopupStore, dateRangeStore, notificationStore } = useStores();
-  const { goBack } = useHistory();
+  const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -130,7 +131,7 @@ function AccountSecurity() {
         </Observer>
       </FlexContainer>
 
-      <IconButton onClick={goBack}>
+      <IconButton onClick={() => push(Page.DASHBOARD)}>
         <SvgIcon
           {...IconClose}
           fillColor="rgba(255, 255, 255, 0.6)"
