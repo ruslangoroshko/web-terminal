@@ -19,6 +19,7 @@ import { SecondaryButton } from '../../styles/Buttons';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
 import { DisplayContents, Td } from '../../styles/TableElements';
 import ImageContainer from '../ImageContainer';
+import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -38,7 +39,9 @@ function ActivePositionExpanded(props: Props) {
       operation,
       swap,
       tp, 
-      sl
+      sl,
+      tpType,
+      slType
     },
     currencySymbol,
   } = props;
@@ -181,8 +184,8 @@ function ActivePositionExpanded(props: Props) {
           <PrimaryTextSpan fontSize="12px" color="#fff">
             {tp !== null ? (
               <>
-                {tp < 0 && '-'}
-                {currencySymbol}
+                {tpType !== TpSlTypeEnum.Price && tp < 0 && '-'}
+                {tpType !== TpSlTypeEnum.Price && currencySymbol}
                 {Math.abs(tp)}
               </>
             ) : (
@@ -196,8 +199,8 @@ function ActivePositionExpanded(props: Props) {
           <PrimaryTextSpan fontSize="12px" color="#fff">
             {sl !== null ? (
               <>
-                {sl < 0 && '-'}
-                {currencySymbol}
+                {slType !== TpSlTypeEnum.Price && sl < 0 && '-'}
+                {slType !== TpSlTypeEnum.Price && currencySymbol}
                 {Math.abs(sl)}
               </>
             ) : (
