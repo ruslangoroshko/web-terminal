@@ -39,7 +39,7 @@ function AccountSecurity() {
       .required('Password must be at least 8 characters long')
       .oneOf(
         [yup.ref(Fields.PASSWORD), null],
-        validationInputTexts.REPEAT_PASSWORD_MATCH
+        "New password and confirmation don't match"
       ),
   });
   //
