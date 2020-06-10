@@ -40,9 +40,9 @@ const NavBar = observer(() => (
         <DepositButton />
       </FlexContainer>
       <UserProfileButton></UserProfileButton>
-      <NavBarButtonsWrapper>
+      {/* <NavBarButtonsWrapper>
         <SwitchThemeButton></SwitchThemeButton>
-      </NavBarButtonsWrapper>
+      </NavBarButtonsWrapper> */}
       <NavBarButtonsWrapper>
         <LanguageButton></LanguageButton>
       </NavBarButtonsWrapper>

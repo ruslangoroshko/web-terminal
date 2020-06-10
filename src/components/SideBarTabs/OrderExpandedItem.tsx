@@ -127,7 +127,7 @@ function OrderExpandedItem(props: Props) {
             <>
               {tpType !== TpSlTypeEnum.Price && tp < 0 && '-'}
               {tpType !== TpSlTypeEnum.Price && currencySymbol}
-              {Math.abs(tp)}
+              {tpType === TpSlTypeEnum.Price ? Math.abs(tp) : Math.abs(tp).toFixed(2)}
             </>
           ) : '-'}
         </PrimaryTextSpan>
@@ -138,7 +138,7 @@ function OrderExpandedItem(props: Props) {
             <>
               {slType !== TpSlTypeEnum.Price && sl < 0 && '-'}
               {slType !== TpSlTypeEnum.Price && currencySymbol}
-              {Math.abs(sl)}
+              {slType === TpSlTypeEnum.Price ? Math.abs(sl) : Math.abs(sl).toFixed(2)}
             </>
           ) : '-'}
         </PrimaryTextSpan>
