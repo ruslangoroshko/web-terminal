@@ -15,6 +15,7 @@ import { SecondaryButton } from '../../styles/Buttons';
 import { DisplayContents, Td } from '../../styles/TableElements';
 import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
+import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 
 interface Props {
   position: PendingOrderWSDTO;
@@ -32,7 +33,9 @@ function OrderExpandedItem(props: Props) {
       operation,
       created,
       tp,
-      sl
+      sl,
+      slType,
+      tpType
     },
     currencySymbol,
   } = props;
@@ -122,8 +125,8 @@ function OrderExpandedItem(props: Props) {
         <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="11px">
           {tp !== null ? (
             <>
-              {tp < 0 && '-'}
-              {currencySymbol}
+              {tpType !== TpSlTypeEnum.Price && tp < 0 && '-'}
+              {tpType !== TpSlTypeEnum.Price && currencySymbol}
               {Math.abs(tp)}
             </>
           ) : '-'}
@@ -133,8 +136,8 @@ function OrderExpandedItem(props: Props) {
         <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="11px">
           {sl !== null ? (
             <>
-              {sl < 0 && '-'}
-              {currencySymbol}
+              {slType !== TpSlTypeEnum.Price && sl < 0 && '-'}
+              {slType !== TpSlTypeEnum.Price && currencySymbol}
               {Math.abs(sl)}
             </>
           ) : '-'}
