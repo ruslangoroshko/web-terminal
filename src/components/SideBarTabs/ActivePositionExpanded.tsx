@@ -186,7 +186,8 @@ function ActivePositionExpanded(props: Props) {
               <>
                 {tpType !== TpSlTypeEnum.Price && tp < 0 && '-'}
                 {tpType !== TpSlTypeEnum.Price && currencySymbol}
-                {Math.abs(tp)}
+                {tpType === TpSlTypeEnum.Price ? Math.abs(tp) : Math.abs(tp).toFixed(2)}
+                
               </>
             ) : (
               '-'
@@ -201,7 +202,7 @@ function ActivePositionExpanded(props: Props) {
               <>
                 {slType !== TpSlTypeEnum.Price && sl < 0 && '-'}
                 {slType !== TpSlTypeEnum.Price && currencySymbol}
-                {Math.abs(sl)}
+                {slType === TpSlTypeEnum.Price ? Math.abs(sl) : Math.abs(sl).toFixed(2)}
               </>
             ) : (
               '-'
