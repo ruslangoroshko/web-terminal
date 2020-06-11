@@ -23,8 +23,8 @@ function EmailConfirmation(props: Props) {
 
   useEffect(() => {
     API.confirmEmail(id || '')
-      .then(() => {
-        setIsSuccessfull(true);
+      .then((response) => {
+        setIsSuccessfull(!!response.result);
         mainAppStore.fetchTradingUrl();
       })
       .catch(error => {
