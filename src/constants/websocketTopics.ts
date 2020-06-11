@@ -17,6 +17,7 @@ const Topics = {
   PRICE_CHANGE: 'pricechange',
   PENDING_ORDERS: 'pendingorders',
   INSTRUMENT_GROUPS: 'instrumentgroups',
+  SERVER_ERROR: 'servererror',
 };
 
 Object.freeze(Topics);
