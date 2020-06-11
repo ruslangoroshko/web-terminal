@@ -101,8 +101,12 @@ function SignUp() {
           },
           () => {
             badRequestPopupStore.openModal();
-            badRequestPopupStore.setMessage('Technical error');
-            setStatus('Technical error');
+            badRequestPopupStore.setMessage(
+              apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
+            );
+            setStatus(
+              apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
+            );
             setSubmitting(false);
             mainAppStore.isInitLoading = false;
           }

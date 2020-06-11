@@ -22,6 +22,8 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import injectInerceptors from '../http/interceptors';
 import { InstrumentModelWSDTO } from '../types/InstrumentsTypes';
 import { AskBidEnum } from '../enums/AskBid';
+import { ServerError } from '../types/ServerErrorType';
+import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 
 interface MainAppStoreProps {
   token: string;
@@ -80,25 +82,27 @@ export class MainAppStore implements MainAppStoreProps {
     const connectionString = IS_LIVE ? this.tradingUrl + wsConnectSub : WS_HOST;
     const connection = initConnection(connectionString);
 
-    const reconnectionInterval = setInterval(async () => {
-      try {
-        await connection.start();
-        clearInterval(reconnectionInterval);
+    const reconnectionInterval = setInterval(
+      async () => {
         try {
-          await connection.send(Topics.INIT, token);
-          this.isAuthorized = true;
-          this.activeSession = connection;
+          await connection.start();
+          clearInterval(reconnectionInterval);
+          try {
+            await connection.send(Topics.INIT, token);
+            this.isAuthorized = true;
+            this.activeSession = connection;
+          } catch (error) {
+            this.isAuthorized = false;
+            this.isInitLoading = false;
+          }
         } catch (error) {
-          this.isAuthorized = false;
           this.isInitLoading = false;
+          this.isAuthorized = false;
         }
-      } catch (error) {
-        this.isInitLoading = false;
-        this.isAuthorized = false;
-      }
-  
-    }, this.signalRReconnectTimeOut? +this.signalRReconnectTimeOut : 10000);
-   
+      },
+      this.signalRReconnectTimeOut ? +this.signalRReconnectTimeOut : 10000
+    );
+
     connection.on(Topics.UNAUTHORIZED, () => {
       localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
       this.isInitLoading = false;
@@ -152,7 +156,21 @@ export class MainAppStore implements MainAppStoreProps {
       }
     );
 
-    connection.onclose(error => {});
+    connection.on(
+      Topics.SERVER_ERROR,
+      (response: ResponseFromWebsocket<ServerError>) => {
+        this.rootStore.badRequestPopupStore.openModal();
+        this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
+      }
+    );
+
+    connection.onclose(error => {
+      this.rootStore.badRequestPopupStore.openModal();
+      this.rootStore.badRequestPopupStore.setMessage(
+        error?.message ||
+          apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
+      );
+    });
   };
 
   fetchTradingUrl = async (token = this.token) => {
@@ -181,7 +199,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.setRefreshToken('');
       this.setTokenHandler('');
     }
-  }
+  };
 
   getActiveAccount = async () => {
     try {
