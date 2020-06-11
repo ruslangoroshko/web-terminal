@@ -50,7 +50,7 @@ function AccountSecurity() {
     repeatPassword: '',
   };
 
-  const { mainAppStore, badRequestPopupStore, dateRangeStore, notificationStore } = useStores();
+  const { mainAppStore, badRequestPopupStore, notificationStore } = useStores();
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
 

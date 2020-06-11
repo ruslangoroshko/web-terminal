@@ -51,7 +51,7 @@ function BirthDayPicker({
         handleSetBirthday(date || moment());
       }}
       isOutsideRange={(date)=> {
-       return date > moment('01.01.2002');
+       return date > moment().subtract(18, "years");
       }}
       focused={focused}
       onFocusChange={({ focused }) => setFocused(!!focused)}
