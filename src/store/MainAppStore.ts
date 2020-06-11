@@ -97,7 +97,6 @@ export class MainAppStore implements MainAppStoreProps {
           }
         } catch (error) {
           this.isInitLoading = false;
-          this.isAuthorized = false;
         }
       },
       this.signalRReconnectTimeOut ? +this.signalRReconnectTimeOut : 10000
