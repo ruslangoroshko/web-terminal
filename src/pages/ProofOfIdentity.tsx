@@ -17,6 +17,9 @@ import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
 
 function ProofOfIdentity() {
+
+  const [isSubmiting, setSubmit] = useState(true);
+
   const { kycStore, badRequestPopupStore } = useStores();
 
   const { push } = useHistory();
@@ -82,7 +85,7 @@ function ProofOfIdentity() {
       return;
     }
     
-    setIsLoading(true);
+    setSubmit(false);
     try {
       await Axios.all([
         API.postDocument(DocumentTypeEnum.Id, customPassportId.file),
@@ -93,16 +96,17 @@ function ProofOfIdentity() {
       ]);
       try {
         await postPersonalData();
-        setIsLoading(false);
+    
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
-        setIsLoading(false);
+        setSubmit(true);
+    
       }
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
-      setIsLoading(false);
+      setSubmit(true);
     }
   };
 
@@ -128,7 +132,7 @@ function ProofOfIdentity() {
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
 
-      <LoaderFullscreen isLoading={isLoading} />
+      {/* <LoaderFullscreen isLoading={isLoading} /> */}
       <FlexContainer width="568px" flexDirection="column" padding="20px 0 0 0">
         <FlexContainer flexDirection="column">
           <PrimaryTextParagraph
@@ -221,7 +225,7 @@ function ProofOfIdentity() {
           />
         </FlexContainer>
         <FlexContainer margin="0 0 32px 0" justifyContent="center">
-          <PrimaryButton onClick={submitFiles} padding="8px 32px">
+          <PrimaryButton onClick={submitFiles} padding="8px 32px" disabled={!isSubmiting}>
             Save and continue
           </PrimaryButton>
         </FlexContainer>

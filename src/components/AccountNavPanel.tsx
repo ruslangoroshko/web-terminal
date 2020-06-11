@@ -71,6 +71,10 @@ const CustomNavLink = styled(NavLink)`
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     padding-bottom: 16px;
   }
+  
+  &.active {
+    pointer-events: none;
+  }
 
   &.active > span {
     color: #21b3a4;

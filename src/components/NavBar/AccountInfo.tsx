@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import {
@@ -51,6 +51,8 @@ const AccountInfo: FC<Props> = observer(props => {
     notificationStore.openNotification();
     push(Page.DASHBOARD);
   };
+
+  const profit = useMemo(() => quotesStore.profit, [quotesStore.profit]);
 
   return (
     <AccountWrapper
@@ -156,10 +158,10 @@ const AccountInfo: FC<Props> = observer(props => {
               Profit:
             </PrimaryTextParagraph>
 
-            <QuoteText fontSize="12px" isGrowth={quotesStore.profit >= 0}>
-              {getNumberSign(quotesStore.profit)}
+            <QuoteText fontSize="12px" isGrowth={profit >= 0}>
+              {getNumberSign(profit)}
               {account.symbol}
-              {Math.abs(quotesStore.profit).toFixed(2)}
+              {Math.abs(profit).toFixed(2)}
             </QuoteText>
           </FlexContainer>
           <FlexContainer width="60px" flexDirection="column">
