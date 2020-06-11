@@ -184,7 +184,7 @@ class API {
   };
 
   confirmEmail = async (link: string) => {
-    const response = await axios.post<boolean>(
+    const response = await axios.post<{ result: boolean }>(
       `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.CONFIRM}`,
       {
         link,
