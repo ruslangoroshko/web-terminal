@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PositionModelWSDTO } from '../../types/Positions';
 import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
@@ -50,16 +50,20 @@ function ActivePositionExpanded(props: Props) {
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 
-  const PnL = calculateFloatingProfitAndLoss({
-    investment: investmentAmount,
-    multiplier: multiplier,
-    costs: swap + commission,
-    side: isBuy ? 1 : -1,
-    currentPrice: isBuy
-      ? quotesStore.quotes[instrument].bid.c
-      : quotesStore.quotes[instrument].ask.c,
-    openPrice: openPrice,
-  });
+  const PnL = useMemo(
+    () =>
+      calculateFloatingProfitAndLoss({
+        investment: investmentAmount,
+        multiplier: multiplier,
+        costs: swap + commission,
+        side: isBuy ? 1 : -1,
+        currentPrice: isBuy
+          ? quotesStore.quotes[instrument].bid.c
+          : quotesStore.quotes[instrument].ask.c,
+        openPrice: openPrice,
+      }),
+    [quotesStore.quotes[instrument].bid.c, quotesStore.quotes[instrument].bid.c]
+  );
 
   const closePosition = () => {
     API.closePosition({

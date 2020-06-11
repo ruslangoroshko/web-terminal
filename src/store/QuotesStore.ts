@@ -65,7 +65,7 @@ export class QuotesStore implements IQuotesStore {
   @computed
   get total() {
     return (
-      +this.profit +
+      this.profit +
       (this.rootStore.mainAppStore.activeAccount?.balance || 0) +
       this.invest
     );
@@ -73,7 +73,7 @@ export class QuotesStore implements IQuotesStore {
 
   @computed
   get totalEquity() {
-    return +this.profit + this.invest;
+    return this.profit + this.invest;
   }
 
   // TODO: move to sorting store?

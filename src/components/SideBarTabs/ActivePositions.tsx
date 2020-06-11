@@ -14,7 +14,6 @@ import { PositionModelWSDTO, UpdateSLTP } from '../../types/Positions';
 import { getProcessId } from '../../helpers/getProcessId';
 import moment from 'moment';
 import InformationPopup from '../InformationPopup';
-import Fields from '../../constants/fields';
 import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
@@ -60,7 +59,7 @@ const ActivePositionsPortfolioTab: FC<Props> = props => {
     instrumentsStore,
   } = useStores();
 
-  const PnL = useCallback(
+  const PnL = useMemo(
     () =>
       calculateFloatingProfitAndLoss({
         investment: investmentAmount,
@@ -213,9 +212,9 @@ const ActivePositionsPortfolioTab: FC<Props> = props => {
                   <Observer>
                     {() => (
                       <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                        {getNumberSign(PnL() + investmentAmount)}
+                        {getNumberSign(PnL + investmentAmount)}
                         {mainAppStore.activeAccount?.symbol}
-                        {Math.abs(PnL() + investmentAmount).toFixed(2)}
+                        {Math.abs(PnL + investmentAmount).toFixed(2)}
                       </PrimaryTextSpan>
                     )}
                   </Observer>
@@ -262,22 +261,22 @@ const ActivePositionsPortfolioTab: FC<Props> = props => {
                 {() => (
                   <>
                     <QuoteText
-                      isGrowth={PnL() >= 0}
+                      isGrowth={PnL >= 0}
                       marginBottom="4px"
                       fontSize="12px"
                       lineHeight="14px"
                     >
-                      {PnL() >= 0 ? '+' : '-'}
+                      {PnL >= 0 ? '+' : '-'}
                       {mainAppStore.activeAccount?.symbol}
-                      {Math.abs(PnL()).toFixed(2)}
+                      {Math.abs(PnL).toFixed(2)}
                     </QuoteText>
                     <PrimaryTextSpan
                       fontSize="10px"
                       lineHeight="12px"
                       color="rgba(255, 255, 255, 0.5)"
                     >
-                      {PnL() >= 0 ? '+' : ''}
-                      {calculateInPercent(investmentAmount, PnL())}%
+                      {PnL >= 0 ? '+' : ''}
+                      {calculateInPercent(investmentAmount, PnL)}%
                     </PrimaryTextSpan>
                   </>
                 )}

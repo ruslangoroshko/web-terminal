@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useMemo } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
@@ -38,6 +38,8 @@ const Portfolio: FC<Props> = () => {
     toggle(false);
   };
 
+  const profit = useMemo(() => quotesStore.profit, [quotesStore.profit]);
+
   return (
     <PortfolioWrapper flexDirection="column" height="100%">
       <FlexContainer flexDirection="column" padding="0 8px">
@@ -75,15 +77,15 @@ const Portfolio: FC<Props> = () => {
           <Observer>
             {() => (
               <QuoteText
-                isGrowth={quotesStore.profit >= 0}
+                isGrowth={profit >= 0}
                 fontSize="24px"
                 lineHeight="28px"
                 fontWeight="bold"
                 marginBottom="20px"
               >
-                {getNumberSign(quotesStore.profit)}
+                {getNumberSign(profit)}
                 {mainAppStore.activeAccount?.symbol}
-                {Math.abs(quotesStore.profit).toFixed(2)}
+                {Math.abs(profit).toFixed(2)}
               </QuoteText>
             )}
           </Observer>

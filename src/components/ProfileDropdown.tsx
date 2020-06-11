@@ -75,11 +75,11 @@ function ProfileDropdown() {
           Profile
         </PrimaryTextSpan>
 
-        <NavLink to={Page.ACCOUNT_SEQURITY}>
+        <CustomeNavLink to={Page.ACCOUNT_SEQURITY} activeClassName="is-active">
           <PrimaryTextSpan fontSize="12px" color="#fffccc">
             Security
           </PrimaryTextSpan>
-        </NavLink>
+        </CustomeNavLink>
       </FlexWithBottomBorder>
       <FlexWithBottomBorder
         margin="0 0 16px 0"
@@ -143,4 +143,10 @@ const FlexWithBottomBorder = styled(FlexContainer)`
 const LogoutButton = styled(ButtonWithoutStyles)`
   display: flex;
   justify-content: space-between;
+`;
+
+const CustomeNavLink = styled(NavLink)`
+  &.is-active {
+    pointer-events: none;
+  }
 `;
