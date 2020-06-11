@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
@@ -20,8 +20,7 @@ import { Th, TableGrid } from '../../styles/TableElements';
 
 interface Props {}
 
-const PortfolioExpanded: FC<Props> = props => {
-  const {} = props;
+const PortfolioExpanded: FC<Props> = () => {
   const { tabsStore, mainAppStore, quotesStore } = useStores();
   const closeExpanded = () => {
     tabsStore.isTabExpanded = false;
@@ -30,6 +29,8 @@ const PortfolioExpanded: FC<Props> = props => {
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     tabsStore.portfolioTab = portfolioTab;
   };
+
+  const profit = useMemo(() => quotesStore.profit, [quotesStore.profit]);
 
   return (
     <PortfolioWrapper flexDirection="column" width="100%" position="relative">
@@ -85,14 +86,14 @@ const PortfolioExpanded: FC<Props> = props => {
                 <Observer>
                   {() => (
                     <QuoteText
-                      isGrowth={quotesStore.profit >= 0}
+                      isGrowth={profit >= 0}
                       fontSize="24px"
                       lineHeight="28px"
                       fontWeight="bold"
                     >
-                      {getNumberSign(quotesStore.profit)}
+                      {getNumberSign(profit)}
                       {mainAppStore.activeAccount?.symbol}
-                      {Math.abs(quotesStore.profit).toFixed(2)}
+                      {Math.abs(profit).toFixed(2)}
                     </QuoteText>
                   )}
                 </Observer>
@@ -237,7 +238,7 @@ const PortfolioExpanded: FC<Props> = props => {
               <Observer>
                 {() => (
                   <>
-                    {quotesStore.activePositions.map(item => (
+                    {quotesStore.sortedActivePositions.map(item => (
                       <ActivePositionExpanded
                         key={item.id}
                         currencySymbol={
@@ -250,7 +251,7 @@ const PortfolioExpanded: FC<Props> = props => {
                 )}
               </Observer>
             </TableGrid>
-            {!quotesStore.activePositions.length && (
+            {!quotesStore.sortedActivePositions.length && (
               <FlexContainer
                 flexDirection="column"
                 alignItems="center"

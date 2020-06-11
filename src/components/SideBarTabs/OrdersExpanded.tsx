@@ -117,7 +117,7 @@ const OrdersExpanded: FC = () => {
               <Observer>
                 {() => (
                   <>
-                    {quotesStore.pendingOrders.map(item => (
+                    {quotesStore.sortedPendingOrders.map(item => (
                       <OrderExpandedItem
                         key={item.id}
                         currencySymbol={
@@ -130,7 +130,7 @@ const OrdersExpanded: FC = () => {
                 )}
               </Observer>
             </TableGrid>
-            {!quotesStore.pendingOrders.length && (
+            {!quotesStore.sortedPendingOrders.length && (
               <FlexContainer
                 flexDirection="column"
                 alignItems="center"
