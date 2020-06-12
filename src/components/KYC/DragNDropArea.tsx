@@ -21,14 +21,26 @@ const allowedFileTypes = ['image/png', 'image/jpg', 'image/jpeg'];
 function DragNDropArea(props: Props) {
   const { onFileReceive, file, fileUrl, hasError = false } = props;
 
+  const [inputError, setError] = React.useState(false);
+  React.useEffect(() => {
+    setError(hasError);
+  }, [hasError]);
+
   const onDrop = useCallback(acceptedFiles => {
+    setError(false);
     const file = acceptedFiles[0];
     console.log(file);
 
     if (file.size <= FIVE_MB && allowedFileTypes.includes(file.type)) {
       onFileReceive(acceptedFiles[0]);
+    } else {
+      setError(true);
     }
   }, []);
+
+  const handleFileRemove = () => {
+    onFileReceive(new Blob());
+  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -43,9 +55,13 @@ function DragNDropArea(props: Props) {
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
-      hasError={hasError}
+      hasError={inputError}
     >
-      <input {...getInputProps()} accept=".png, .jpg, .jpeg" multiple={false} />
+      <FileInput
+        {...getInputProps()}
+        accept=".png, .jpg, .jpeg"
+        multiple={false}
+      />
       {isDragActive ? (
         <PrimaryTextSpan color="#fffccc" fontSize="14px">
           Drop the files here ...
@@ -86,7 +102,7 @@ function DragNDropArea(props: Props) {
         top="20px"
         right="20px"
       >
-        <ButtonWithoutStyles>
+        <ButtonWithoutStyles onClick={handleFileRemove}>
           <SvgIcon {...IconClose} fillColor="rgba(255,255,255,0.4)" />
         </ButtonWithoutStyles>
       </FlexContainer>
@@ -119,8 +135,9 @@ export default DragNDropArea;
 const DnDWrapper = styled(FlexContainer)`
   transition: all 0.2s ease;
   will-change: border;
-  border: ${({hasError}) => `1px dashed ${hasError ? '#d44e4e' : 'rgba(255, 255, 255, 0.3)'}`};
-
+  border: ${({ hasError }) =>
+    `1px dashed ${hasError ? '#d44e4e' : 'rgba(255, 255, 255, 0.3)'}`};
+  outline: none;
   &:hover {
     cursor: pointer;
     border: 1px dashed #00ffdd;
@@ -133,3 +150,5 @@ const FileNameText = styled(PrimaryTextSpan)`
   max-width: 200px;
   white-space: nowrap;
 `;
+
+const FileInput = styled.input``;
