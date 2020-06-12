@@ -71,6 +71,7 @@ function ProofOfIdentity() {
       const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
       await API.postPersonalData(JSON.parse(response));
       await API.verifyUser({ processId: getProcessId() });
+      push(Page.DASHBOARD);
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
