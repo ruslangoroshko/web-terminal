@@ -154,8 +154,6 @@ class API {
     return response.data;
   };
 
-
-
   openPendingOrder = async (position: OpenPendingOrder) => {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
@@ -203,8 +201,6 @@ class API {
     return response.data;
   };
 
-
-
   recoveryPassword = async (data: object) => {
     const response = await axios.post<OperationApiResponseCodes>(
       `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.PASSWORD_RECOVERY}`,
@@ -213,7 +209,6 @@ class API {
     return response.data;
   };
 
-  
   getPositionsHistory = async (params: GetHistoryParams) => {
     const response = await axios.get<PositionsHistoryReportDTO>(
       `${API_STRING}${API_LIST.REPORTS.POSITIONS_HISTORY}`,
@@ -334,6 +329,14 @@ class API {
   refreshToken = async (params: RefreshToken) => {
     const response = await axios.post<RefreshTokenDTO>(
       `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.REFRESH_TOKEN}`,
+      params
+    );
+    return response.data;
+  };
+
+  verifyUser = async (params: { processId: string }) => {
+    const response = await axios.post<{ result: OperationApiResponseCodes }>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.ON_VERIFICATION}`,
       params
     );
     return response.data;

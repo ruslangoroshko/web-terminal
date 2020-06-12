@@ -9,15 +9,14 @@ import API from '../helpers/API';
 import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
 import KeysInApi from '../constants/keysInApi';
 import Page from '../constants/Pages';
-import LoaderFullscreen from '../components/LoaderFullscreen';
 import { useStores } from '../hooks/useStores';
 import { KYCstepsEnum } from '../enums/KYCsteps';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
+import { getProcessId } from '../helpers/getProcessId';
 
 function ProofOfIdentity() {
-
   const [isSubmiting, setSubmit] = useState(true);
 
   const { kycStore, badRequestPopupStore } = useStores();
@@ -35,11 +34,13 @@ function ProofOfIdentity() {
 
   const [error, setError] = useState({
     passport: false,
-    address: false
+    address: false,
   });
 
   const validateSubmit = () => {
-    let errorsFile = {...error}
+    let errorsFile = { ...error };
+
+    // TODO: refactor (R)
     if (!customProofOfAddress.file.size) {
       errorsFile.address = true;
     } else {
@@ -55,7 +56,7 @@ function ProofOfIdentity() {
       return true;
     }
     return false;
-  }
+  };
 
   const handleFileReceive = (method: (file: any) => void) => (file: any) => {
     method({
@@ -68,24 +69,23 @@ function ProofOfIdentity() {
   const postPersonalData = async () => {
     try {
       const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
-      API.postPersonalData(JSON.parse(response)).finally(() => {
-        push(Page.DASHBOARD);
-      });
+      await API.postPersonalData(JSON.parse(response));
+      await API.verifyUser({ processId: getProcessId() });
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
     }
   };
 
-  
-
   const submitFiles = async () => {
     const validateFile = validateSubmit();
     if (!validateFile) {
       return;
     }
-    
+
     setSubmit(false);
+
+    // TODO: refactor
     try {
       await Axios.all([
         API.postDocument(DocumentTypeEnum.Id, customPassportId.file),
@@ -94,15 +94,7 @@ function ProofOfIdentity() {
           customProofOfAddress.file
         ),
       ]);
-      try {
-        await postPersonalData();
-    
-      } catch (error) {
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
-        setSubmit(true);
-    
-      }
+      await postPersonalData();
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
@@ -180,7 +172,11 @@ function ProofOfIdentity() {
           </PrimaryTextSpan>
         </FlexContainer>
 
-        <FlexContainer flexDirection="column" margin="0 0 64px 0" minHeight="120px">
+        <FlexContainer
+          flexDirection="column"
+          margin="0 0 64px 0"
+          minHeight="120px"
+        >
           <DragNDropArea
             hasError={error.passport}
             onFileReceive={handleFileReceive(setCustomPassportId)}
@@ -216,7 +212,11 @@ function ProofOfIdentity() {
           </PrimaryTextSpan>
         </FlexContainer>
 
-        <FlexContainer flexDirection="column" margin="0 0 64px 0" minHeight="120px">
+        <FlexContainer
+          flexDirection="column"
+          margin="0 0 64px 0"
+          minHeight="120px"
+        >
           <DragNDropArea
             hasError={error.address}
             onFileReceive={handleFileReceive(setCustomProofOfAddress)}
@@ -225,7 +225,11 @@ function ProofOfIdentity() {
           />
         </FlexContainer>
         <FlexContainer margin="0 0 32px 0" justifyContent="center">
-          <PrimaryButton onClick={submitFiles} padding="8px 32px" disabled={!isSubmiting}>
+          <PrimaryButton
+            onClick={submitFiles}
+            padding="8px 32px"
+            disabled={!isSubmiting}
+          >
             Save and continue
           </PrimaryButton>
         </FlexContainer>
