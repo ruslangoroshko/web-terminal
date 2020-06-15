@@ -49,10 +49,10 @@ const SignFlowLayout: FC<Props> = props => {
           Download App
         </PrimaryTextParagraph>
         <FlexContainer margin="0 0 30px 0" padding="0 0 0 14px">
-          <ButtonAppleStore to={{pathname: "https://apps.apple.com/us/app/monfex/id1496359119?ls=1"}}>
+          <ButtonAppleStore to={{pathname: "https://apps.apple.com/us/app/monfex/id1496359119?ls=1"}} target="_blank">
             <ButtonImage src={ButtonAppleStoreImage} />
           </ButtonAppleStore>
-          <ButtonGoogleStore to={{pathname: "https://play.google.com/store/apps/details?id=com.monfex.trade"}}>
+          <ButtonGoogleStore to={{pathname: "https://play.google.com/store/apps/details?id=com.monfex.trade"}} target="_blank">
             <ButtonImage src={ButtonGoogleStoreImage} />
           </ButtonGoogleStore>
         </FlexContainer>
