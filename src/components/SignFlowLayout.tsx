@@ -13,6 +13,7 @@ import MonfexLogo from '../assets/svg/icon-logo.svg';
 import MonfexLogoText from '../assets/svg/icon-logo-text.svg';
 
 import Pages from "../constants/Pages"
+import Logo from './Logo';
 
 interface Props {}
 
@@ -32,20 +33,9 @@ const SignFlowLayout: FC<Props> = props => {
     >
       <FlexContainer>
         <FlexContainer alignItems="center">
-          <FlexContainer margin="0 6px 0 0">
-            <SvgIcon
-              {...MonfexLogo}
-              fillColor="#00FFDD"
-              width={36}
-              height={22}
-            />
+          <FlexContainer margin="0 6px 0 0" width="154px">
+            <Logo />
           </FlexContainer>
-          <SvgIcon
-            {...MonfexLogoText}
-            fillColor="#21B3A4"
-            width={112}
-            height={22}
-          />
         </FlexContainer>
       </FlexContainer>
       <FlexContainer flexDirection="column">{children}</FlexContainer>
