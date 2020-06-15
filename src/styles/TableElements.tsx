@@ -30,6 +30,6 @@ export const TableGrid = styled.div<{ columnsCount: number; height?: string; max
       ${props => props.columnsCount - 1},
       minmax(100px, 1fr)
     );
-  padding-bottom: 100px;  
+  padding-bottom: 150px;  
   max-height: ${props => props.maxHeight}
 `;

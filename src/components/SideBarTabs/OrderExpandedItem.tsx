@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SvgIcon from '../SvgIcon';
@@ -16,6 +16,7 @@ import { DisplayContents, Td } from '../../styles/TableElements';
 import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
+import ClosePositionPopup from './ClosePositionPopup';
 
 interface Props {
   position: PendingOrderWSDTO;
@@ -35,11 +36,12 @@ function OrderExpandedItem(props: Props) {
       tp,
       sl,
       slType,
-      tpType
+      tpType,
     },
     currencySymbol,
   } = props;
   const { mainAppStore } = useStores();
+  const instrumentRef = useRef<HTMLDivElement>(null);
 
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
@@ -127,9 +129,13 @@ function OrderExpandedItem(props: Props) {
             <>
               {tpType !== TpSlTypeEnum.Price && tp < 0 && '-'}
               {tpType !== TpSlTypeEnum.Price && currencySymbol}
-              {tpType === TpSlTypeEnum.Price ? Math.abs(tp) : Math.abs(tp).toFixed(2)}
+              {tpType === TpSlTypeEnum.Price
+                ? Math.abs(tp)
+                : Math.abs(tp).toFixed(2)}
             </>
-          ) : '-'}
+          ) : (
+            '-'
+          )}
         </PrimaryTextSpan>
       </Td>
       <Td justifyContent="center" alignItems="center">
@@ -138,9 +144,13 @@ function OrderExpandedItem(props: Props) {
             <>
               {slType !== TpSlTypeEnum.Price && sl < 0 && '-'}
               {slType !== TpSlTypeEnum.Price && currencySymbol}
-              {slType === TpSlTypeEnum.Price ? Math.abs(sl) : Math.abs(sl).toFixed(2)}
+              {slType === TpSlTypeEnum.Price
+                ? Math.abs(sl)
+                : Math.abs(sl).toFixed(2)}
             </>
-          ) : '-'}
+          ) : (
+            '-'
+          )}
         </PrimaryTextSpan>
       </Td>
       <Td alignItems="center" justifyContent="center">
@@ -148,12 +158,15 @@ function OrderExpandedItem(props: Props) {
           flexDirection="column"
           alignItems="center"
           margin="0 18px 0 0"
+          position="relative"
         >
-          <ButtonClose onClick={closePosition}>
-            <PrimaryTextSpan fontSize="12px" color="#fff">
-              Cancel order
-            </PrimaryTextSpan>
-          </ButtonClose>
+          <ClosePositionPopup
+            applyHandler={closePosition}
+            ref={instrumentRef}
+            confirmText="Close position?"
+            isButton
+            alignPopup="right"
+          />
         </FlexContainer>
         <FlexContainer flexDirection="column" alignItems="center">
           <InformationPopup
