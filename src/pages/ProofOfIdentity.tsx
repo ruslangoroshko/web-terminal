@@ -38,16 +38,12 @@ function ProofOfIdentity() {
   });
 
   const validateSubmit = () => {
-    let errorsFile = { ...error };
-    // TODO: refactor (R)
-    errorsFile.address = !customProofOfAddress.file.size;
-    errorsFile.passport = !customPassportId.file.size
-    
+    let errorsFile = {
+      address: !customProofOfAddress.file.size,
+      passport: !customPassportId.file.size,
+    };
     setError(errorsFile);
-    if (!errorsFile.address && !errorsFile.passport) {
-      return true;
-    }
-    return false;
+    return !errorsFile.address && !errorsFile.passport;
   };
 
   const handleFileReceive = (method: (file: any) => void) => (file: any) => {
