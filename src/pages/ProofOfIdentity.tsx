@@ -39,18 +39,10 @@ function ProofOfIdentity() {
 
   const validateSubmit = () => {
     let errorsFile = { ...error };
-
     // TODO: refactor (R)
-    if (!customProofOfAddress.file.size) {
-      errorsFile.address = true;
-    } else {
-      errorsFile.address = false;
-    }
-    if (!customPassportId.file.size) {
-      errorsFile.passport = true;
-    } else {
-      errorsFile.passport = false;
-    }
+    errorsFile.address = !customProofOfAddress.file.size;
+    errorsFile.passport = !customPassportId.file.size
+    
     setError(errorsFile);
     if (!errorsFile.address && !errorsFile.passport) {
       return true;
