@@ -13,6 +13,7 @@ import MonfexLogo from '../assets/svg/icon-logo.svg';
 import MonfexLogoText from '../assets/svg/icon-logo-text.svg';
 
 import Pages from "../constants/Pages"
+import Logo from './Logo';
 
 interface Props {}
 
@@ -32,20 +33,9 @@ const SignFlowLayout: FC<Props> = props => {
     >
       <FlexContainer>
         <FlexContainer alignItems="center">
-          <FlexContainer margin="0 6px 0 0">
-            <SvgIcon
-              {...MonfexLogo}
-              fillColor="#00FFDD"
-              width={36}
-              height={22}
-            />
+          <FlexContainer margin="0 6px 0 0" width="154px">
+            <Logo />
           </FlexContainer>
-          <SvgIcon
-            {...MonfexLogoText}
-            fillColor="#21B3A4"
-            width={112}
-            height={22}
-          />
         </FlexContainer>
       </FlexContainer>
       <FlexContainer flexDirection="column">{children}</FlexContainer>
@@ -59,10 +49,10 @@ const SignFlowLayout: FC<Props> = props => {
           Download App
         </PrimaryTextParagraph>
         <FlexContainer margin="0 0 30px 0" padding="0 0 0 14px">
-          <ButtonAppleStore>
+          <ButtonAppleStore to={{pathname: "https://apps.apple.com/us/app/monfex/id1496359119?ls=1"}} target="_blank">
             <ButtonImage src={ButtonAppleStoreImage} />
           </ButtonAppleStore>
-          <ButtonGoogleStore>
+          <ButtonGoogleStore to={{pathname: "https://play.google.com/store/apps/details?id=com.monfex.trade"}} target="_blank">
             <ButtonImage src={ButtonGoogleStoreImage} />
           </ButtonGoogleStore>
         </FlexContainer>
@@ -97,12 +87,12 @@ const SignFlowLayout: FC<Props> = props => {
 
 export default SignFlowLayout;
 
-const ButtonAppleStore = styled(ButtonWithoutStyles)`
+const ButtonAppleStore = styled(Link)`
   width: 120px;
   margin-right: 24px;
 `;
 
-const ButtonGoogleStore = styled(ButtonWithoutStyles)`
+const ButtonGoogleStore = styled(Link)`
   width: 134px;
 `;
 

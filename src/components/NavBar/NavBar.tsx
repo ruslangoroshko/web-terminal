@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
-import MonfexLogo from '../../assets/svg/icon-logo.svg';
+
 import MonfexLogoText from '../../assets/svg/icon-logo-text.svg';
 import styled from '@emotion/styled';
 import SwitchThemeButton from './SwitchThemeButton';
@@ -12,6 +12,7 @@ import SvgIcon from '../SvgIcon';
 import AccountSwitcherDropdown from './AccountSwitcherDropdown';
 import { Link } from 'react-router-dom';
 import Page from '../../constants/Pages';
+import Logo from '../Logo';
 
 const NavBar = observer(() => (
   <FlexContainer
@@ -25,10 +26,9 @@ const NavBar = observer(() => (
     <FlexContainer alignItems="center">
       <Link to={Page.DASHBOARD}>
         <FlexContainer alignItems="center">
-          <FlexContainer margin="0 6px 0 0">
-            <SvgIcon {...MonfexLogo} fillColor="#00FFDD" />
+          <FlexContainer margin="0 6px 0 0"  width="102px">
+            <Logo />
           </FlexContainer>
-          <SvgIcon {...MonfexLogoText} fillColor="#21B3A4" />
         </FlexContainer>
       </Link>
     </FlexContainer>
@@ -51,9 +51,10 @@ const NavBar = observer(() => (
 ));
 export default NavBar;
 
+
+
 const NavBarButtonsWrapper = styled(FlexContainer)`
   border-left: 1px solid rgba(255, 255, 255, 0.08);
-
   padding: 0 8px;
   &:first-of-type {
     border-right: none;

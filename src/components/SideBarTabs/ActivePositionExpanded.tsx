@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PositionModelWSDTO } from '../../types/Positions';
 import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
@@ -20,6 +20,7 @@ import { calculateInPercent } from '../../helpers/calculateInPercent';
 import { DisplayContents, Td } from '../../styles/TableElements';
 import ImageContainer from '../ImageContainer';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
+import ClosePositionPopup from './ClosePositionPopup';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -46,6 +47,8 @@ function ActivePositionExpanded(props: Props) {
     currencySymbol,
   } = props;
   const { quotesStore, mainAppStore } = useStores();
+
+  const instrumentRef = useRef<HTMLDivElement>(null);
 
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
@@ -219,12 +222,16 @@ function ActivePositionExpanded(props: Props) {
           flexDirection="column"
           alignItems="center"
           margin="0 16px 0 0"
+          position="relative"
         >
-          <ButtonClose onClick={closePosition}>
-            <PrimaryTextSpan fontSize="12px" color="#fff">
-              Close
-            </PrimaryTextSpan>
-          </ButtonClose>
+          
+          <ClosePositionPopup
+            applyHandler={closePosition}
+            ref={instrumentRef}
+            confirmText="Close position?"
+            isButton
+            alignPopup="right"
+          />
         </FlexContainer>
         <FlexContainer flexDirection="column" alignItems="center">
           <InformationPopup

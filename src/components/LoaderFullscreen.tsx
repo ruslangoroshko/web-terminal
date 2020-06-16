@@ -7,6 +7,7 @@ import LoaderComponent from './LoaderComponent';
 import SvgIcon from './SvgIcon';
 import MonfexLogo from '../assets/svg/icon-logo.svg';
 import MonfexLogoText from '../assets/svg/icon-logo-text.svg';
+import Logo from './Logo';
 
 interface Props {
   isLoading: boolean;
@@ -32,20 +33,10 @@ const LoaderFullscreen: FC<Props> = ({ isLoading }) => (
           justifyContent="center"
           marginBottom="32px"
         >
-          <FlexContainer margin="0 6px 0 0">
-            <SvgIcon
-              {...MonfexLogo}
-              fillColor="#00FFDD"
-              width={52}
-              height={33}
-            />
+          <FlexContainer margin="0 6px 0 0" width="250px">
+            <Logo />
           </FlexContainer>
-          <SvgIcon
-            {...MonfexLogoText}
-            fillColor="#21B3A4"
-            width={162}
-            height={33}
-          />
+          
         </FlexContainer>
         <FlexContainer alignItems="center">
           <LoaderComponent />

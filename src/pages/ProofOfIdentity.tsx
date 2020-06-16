@@ -38,24 +38,12 @@ function ProofOfIdentity() {
   });
 
   const validateSubmit = () => {
-    let errorsFile = { ...error };
-
-    // TODO: refactor (R)
-    if (!customProofOfAddress.file.size) {
-      errorsFile.address = true;
-    } else {
-      errorsFile.address = false;
-    }
-    if (!customPassportId.file.size) {
-      errorsFile.passport = true;
-    } else {
-      errorsFile.passport = false;
-    }
+    let errorsFile = {
+      address: !customProofOfAddress.file.size,
+      passport: !customPassportId.file.size,
+    };
     setError(errorsFile);
-    if (!errorsFile.address && !errorsFile.passport) {
-      return true;
-    }
-    return false;
+    return !errorsFile.address && !errorsFile.passport;
   };
 
   const handleFileReceive = (method: (file: any) => void) => (file: any) => {

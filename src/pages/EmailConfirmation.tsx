@@ -68,7 +68,7 @@ function EmailConfirmation(props: Props) {
             >
               Email verification failed
             </PrimaryTextParagraph>
-            <PrimaryTextParagraph color="#fffccc">
+            <PrimaryTextParagraph color="#fffccc" marginBottom="12px">
               This link has been expired. Please login to request a new
               verification email.
             </PrimaryTextParagraph>
