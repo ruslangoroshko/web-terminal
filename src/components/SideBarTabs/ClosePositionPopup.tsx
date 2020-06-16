@@ -14,10 +14,11 @@ interface Props {
   // TODO: refactor crutch
   isButton?: boolean;
   alignPopup?: 'left' | 'right';
+  buttonLabel?: string;
 }
 
 const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { applyHandler, isButton, confirmText, alignPopup = 'left' } = props;
+  const { applyHandler, isButton, confirmText, alignPopup = 'left', buttonLabel = 'Close' } = props;
 
   const [on, toggle] = useState(false);
 
@@ -63,7 +64,7 @@ const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
       {isButton ? (
         <CloseButton onClick={handleToggle}>
           <PrimaryTextSpan fontSize="12px" lineHeight="14px">
-            Close
+            {buttonLabel}
           </PrimaryTextSpan>
         </CloseButton>
       ) : (
