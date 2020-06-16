@@ -59,7 +59,7 @@ const SignFlowLayout: FC<Props> = props => {
         <FlexContainer justifyContent="space-between" width="100%">
           <FlexContainer>
             <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
-              ©2017–{new Date().getFullYear()} Monfex. All rights reserved. v 1.0.11
+              ©2017–{new Date().getFullYear()} Monfex. All rights reserved. v 1.0.12
             </PrimaryTextSpan>
           </FlexContainer>
 
