@@ -171,6 +171,7 @@ function OrderExpandedItem(props: Props) {
         </FlexContainer>
         <FlexContainer flexDirection="column" alignItems="center">
           <InformationPopup
+          
             classNameTooltip={`position_expaned_${id}`}
             bgColor="#000"
             width="200px"
