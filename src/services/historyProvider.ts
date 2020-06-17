@@ -38,7 +38,7 @@ export default {
         break;
 
       case supportedResolutions['1 month']:
-        resolutionEnum = CandleTypeEnum.Day;
+        resolutionEnum = CandleTypeEnum.Month;
         break;
 
       default:
