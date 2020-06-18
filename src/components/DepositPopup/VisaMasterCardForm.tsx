@@ -17,26 +17,33 @@ import { Link } from 'react-router-dom';
 import { PrimaryButton } from '../../styles/Buttons';
 import API from '../../helpers/API';
 import { DepositApiResponseCodes } from '../../enums/DepositApiResponseCodes';
+import * as yup from 'yup';
+import { useFormik, Form } from 'formik';
 
 const VisaMasterCardForm = () => {
-  const [amount, setAmount] = useState(500);
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
-
-  const [imCardHolder, setImCardHolder] = useState(false);
-
   const placeholderValues = [250, 500, 1000];
+
+  const validationSchema = yup.object().shape({
+    amount: yup
+      .number()
+      .transform(value => (isNaN(value) ? undefined : value))
+      .integer('min: $50')
+      .positive('min: $50')
+      .min(50, 'min: $50')
+      .max(1000, 'max: $1000')
+      .required('min: $50'),
+  });
+  const initialValues = {
+    amount: 500,
+  };
 
   const { mainAppStore, notificationStore, badRequestPopupStore } = useStores();
 
   const investOnBeforeInputHandler = (e: any) => {
     if ([',', '.'].includes(e.data)) {
-      if (
-        !e.currentTarget.value ||
-        (e.currentTarget.value && e.currentTarget.value.includes('.'))
-      ) {
-        e.preventDefault();
-        return;
-      }
+      e.preventDefault();
+      return;
     }
     if (!e.data.match(/^\d|\.|\,/)) {
       e.preventDefault();
@@ -44,24 +51,13 @@ const VisaMasterCardForm = () => {
     }
   };
 
-  const handleChangeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(+e.target.value);
-  };
-
-  const handleChangeCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setImCardHolder(event.target.checked);
-  };
-
-  useEffect(() => {
-    console.log()
-  }, []);
-
-  const handleClickDepositButton = async () => {
+  const handleSubmitForm = async () => {
     const params = {
       paymentMethod: 'BANK_CARDS',
-      depositSum: amount,
+      depositSum: values.amount,
       currency: 'USD',
       authToken: mainAppStore.token || '',
+      AccountId: mainAppStore.activeAccount?.id
     };
     try {
       const response = await API.createDeposit(params);
@@ -77,66 +73,110 @@ const VisaMasterCardForm = () => {
     }
   };
 
+  const {
+    values,
+    setFieldError,
+    setFieldValue,
+    validateForm,
+    handleChange,
+    handleSubmit,
+    errors,
+    touched,
+    isSubmitting,
+  } = useFormik({
+    initialValues,
+    onSubmit: handleSubmitForm,
+    validationSchema,
+    validateOnBlur: false,
+    validateOnChange: true,
+  });
+
+  const handlerClickSubmit = async () => {
+    const curErrors = await validateForm();
+    const curErrorsKeys = Object.keys(curErrors);
+    if (curErrorsKeys.length) {
+      const el = document.getElementById(curErrorsKeys[0]);
+      if (el) el.focus();
+    }
+  };
+
   return (
     <FlexContainer flexDirection="column" padding="32px 0 0 68px">
-      <PrimaryTextParagraph
-        textTransform="uppercase"
-        fontSize="11px"
-        color="rgba(255,255,255,0.3)"
-        marginBottom="6px"
-      >
-        Amount
-      </PrimaryTextParagraph>
-      <FlexContainer
-        borderRadius="4px"
-        border="1px solid #FFFCCC"
-        backgroundColor="#292C33"
-        marginBottom="10px"
-        maxHeight="48px"
-        alignItems="center"
-      >
-        <Input
-          value={amount}
-          onChange={handleChangeAmount}
-          onBeforeInput={investOnBeforeInputHandler}
-        />
-        <CurrencyDropdown
-          disabled={true}
-          width="80px"
-          handleSelectCurrency={setCurrency}
-          selectedCurrency={currency}
-        ></CurrencyDropdown>
-      </FlexContainer>
-      
-      <FlexContainer marginBottom="92px">
-      {placeholderValues.map(item => (
-          <AmountPlaceholder
-            key={item}
-            isActive={item === amount}
-            value={item}
-            currencySymbol={`${mainAppStore.activeAccount?.symbol}`}
-            handleClick={setAmount}
-          />
-        ))}
-      </FlexContainer>
-
-      <FlexContainer alignItems="center" justifyContent="space-around" marginBottom="20px">
-        <ImageBadge src={SslCertifiedImage} width={120}></ImageBadge>
-        <ImageBadge src={MastercardIdCheckImage} width={110}></ImageBadge>
-        <ImageBadge src={VisaSecureImage} width={28}></ImageBadge>
-      </FlexContainer>
-
-      <FlexContainer marginBottom="40px">
-        <PrimaryButton
-          padding="12px 20px"
-          width="100%"
-          onClick={handleClickDepositButton}
+      <form noValidate onSubmit={handleSubmit}>
+        <PrimaryTextParagraph
+          textTransform="uppercase"
+          fontSize="11px"
+          color="rgba(255,255,255,0.3)"
+          marginBottom="6px"
         >
-          <PrimaryTextSpan color="#003A38" fontSize="14px" fontWeight="bold">
-            Deposit {mainAppStore.activeAccount?.symbol}{amount}
-          </PrimaryTextSpan>
-        </PrimaryButton>
-      </FlexContainer>
+          Amount
+        </PrimaryTextParagraph>
+
+        <FlexContainer
+          borderRadius="4px"
+          border="1px solid #FFFCCC"
+          backgroundColor="#292C33"
+          marginBottom="10px"
+          maxHeight="48px"
+          alignItems="center"
+          position="relative"
+        >
+          <Input
+            value={values.amount}
+            onChange={handleChange}
+            onBeforeInput={investOnBeforeInputHandler}
+            name="amount"
+            id="amount"
+          />
+          {errors.amount && (
+            <ErrorText>{errors.amount}</ErrorText>
+          )}
+          <CurrencyDropdown
+            disabled={true}
+            width="80px"
+            handleSelectCurrency={setCurrency}
+            selectedCurrency={currency}
+          ></CurrencyDropdown>
+        </FlexContainer>
+
+        <FlexContainer marginBottom="92px">
+          {placeholderValues.map(item => (
+            <AmountPlaceholder
+              key={item}
+              isActive={item === values.amount}
+              value={item}
+              currencySymbol={`${mainAppStore.activeAccount?.symbol}`}
+              handleClick={() => {
+                setFieldValue('amount', item);
+              }}
+            />
+          ))}
+        </FlexContainer>
+
+        <FlexContainer
+          alignItems="center"
+          justifyContent="space-around"
+          marginBottom="20px"
+        >
+          <ImageBadge src={SslCertifiedImage} width={120}></ImageBadge>
+          <ImageBadge src={MastercardIdCheckImage} width={110}></ImageBadge>
+          <ImageBadge src={VisaSecureImage} width={28}></ImageBadge>
+        </FlexContainer>
+
+        <FlexContainer marginBottom="40px">
+          <PrimaryButton
+            padding="12px 20px"
+            width="100%"
+            onClick={handlerClickSubmit}
+            disabled={isSubmitting}
+          >
+            <PrimaryTextSpan color="#003A38" fontSize="14px" fontWeight="bold">
+              Deposit {mainAppStore.activeAccount?.symbol}
+              {values.amount}
+            </PrimaryTextSpan>
+          </PrimaryButton>
+        </FlexContainer>
+      </form>
     </FlexContainer>
   );
 };
@@ -144,7 +184,6 @@ const VisaMasterCardForm = () => {
 export default VisaMasterCardForm;
 
 const ImageBadge = styled.img``;
-
 
 const Input = styled.input`
   border: none;
@@ -159,11 +198,21 @@ const Input = styled.input`
   border-right: 1px solid rgba(255, 255, 255, 0.19);
 `;
 
-
 const LearnMoreLink = styled(Link)`
   color: #fffccc;
   line-height: 120%;
   &:hover {
     color: #fffccc;
   }
+`;
+
+const ErrorText = styled.span`
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 16px;
+  color: #ff557e;
+  position: absolute;
+  top: 50%;
+  right: 95px;
+  transform: translateY(-50%);
 `;
