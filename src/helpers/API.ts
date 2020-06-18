@@ -344,7 +344,7 @@ class API {
   };
 
   getInitModel = async () => {
-    const response = await axios.post<InitModel>(`${API_LIST.INIT.GET}`);
+    const response = await axios.get<InitModel>(`${API_LIST.INIT.GET}`);
     return response.data;
   };
 }
