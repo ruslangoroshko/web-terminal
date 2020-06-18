@@ -344,7 +344,26 @@ class API {
   };
 
   getInitModel = async () => {
-    const response = await axios.get<InitModel>(`${API_LIST.INIT.GET}`);
+    const response = IS_LOCAL
+      ? {
+          data: {
+            aboutUrl: '',
+            androidAppLink: '',
+            brandCopyrights: '',
+            brandName: '',
+            brandProperty: '',
+            faqUrl: '',
+            favicon: '',
+            gaAsAccount: '',
+            iosAppLink: '',
+            logo: '',
+            policyUrl: '',
+            supportUrl: '',
+            termsUrl: '',
+            tradingUrl: '',
+          },
+        }
+      : await axios.get<InitModel>(`${API_LIST.INIT.GET}`);
     return response.data;
   };
 }

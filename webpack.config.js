@@ -133,6 +133,7 @@ module.exports = (env, argv) => {
           argv.mode === 'production'
             ? JSON.stringify(process.env.RECAPTCHA_KEY_SECRET)
             : JSON.stringify(''),
+        IS_LOCAL: argv.is_local === 'true',
       }),
       new CopyPlugin([
         { from: './src/vendor/charting_library/', to: 'charting_library' },

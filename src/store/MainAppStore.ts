@@ -43,6 +43,7 @@ interface MainAppStoreProps {
   profileStatus: PersonalDataKYCEnum;
   isDemoRealPopup: boolean;
   signalRReconnectTimeOut: string;
+  initModel: InitModel;
 }
 
 // TODO: think about application initialization
