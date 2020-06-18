@@ -30,12 +30,15 @@ const API_LIST = {
     BALANCE_HISTORY: '/api/v1/Reports/BalanceHistory',
   },
   INSTRUMENTS: {
-    FAVOURITES: '/api/v1/Instruments/Favorites'
+    FAVOURITES: '/api/v1/Instruments/Favorites',
   },
   DEPOSIT: {
     CREATE: '/Create',
-    GET_CRYPTO_WALLET: '/GetCryptoWallet'
-  }
+    GET_CRYPTO_WALLET: '/GetCryptoWallet',
+  },
+  INIT: {
+    GET: '/init/',
+  },
 };
 
 Object.freeze(API_LIST);

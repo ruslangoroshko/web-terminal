@@ -24,6 +24,7 @@ import { InstrumentModelWSDTO } from '../types/InstrumentsTypes';
 import { AskBidEnum } from '../enums/AskBid';
 import { ServerError } from '../types/ServerErrorType';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
+import { InitModel } from '../types/InitAppTypes';
 
 interface MainAppStoreProps {
   token: string;
@@ -49,6 +50,22 @@ interface MainAppStoreProps {
 // think about loader flags - global, local
 
 export class MainAppStore implements MainAppStoreProps {
+  @observable initModel: InitModel = {
+    aboutUrl: '',
+    androidAppLink: '',
+    brandCopyrights: '',
+    brandName: '',
+    brandProperty: '',
+    faqUrl: '',
+    favicon: '',
+    gaAsAccount: '',
+    iosAppLink: '',
+    logo: '',
+    policyUrl: '',
+    supportUrl: '',
+    termsUrl: '',
+    tradingUrl: '',
+  };
   @observable isLoading = true;
   @observable isInitLoading = true;
   @observable isDemoRealPopup = false;
@@ -73,6 +90,16 @@ export class MainAppStore implements MainAppStoreProps {
       localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
   }
+
+  initApp = async () => {
+    try {
+      const initModel = await API.getInitModel();
+      this.initModel = initModel;
+    } catch (error) {
+      this.rootStore.badRequestPopupStore.openModal();
+      this.rootStore.badRequestPopupStore.setMessage(error);
+    }
+  };
 
   handleInitConnection = async (token = this.token) => {
     const wsConnectSub =

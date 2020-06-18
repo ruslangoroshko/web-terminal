@@ -39,7 +39,6 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     if (mainAppStore.activeAccount) {
-
       mainAppStore.activeSession?.on(
         Topics.ACTIVE_POSITIONS,
         (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
@@ -102,7 +101,7 @@ const Dashboard = observer(() => {
   }, [mainAppStore.activeAccount]);
 
   useEffect(() => {
-    document.title = 'Monfex trading platform';
+    document.title = `${mainAppStore.initModel.brandName} trading platform`;
   }, []);
 
   return (
@@ -160,44 +159,56 @@ const Dashboard = observer(() => {
         </Observer>
       </FlexContainer>
 
-      
-        <Observer>
-          {() => (
-            <>
-              {instrumentsStore.activeInstrument && (
-                <>
-                  <FlexContainer width="100%" height="100%" maxHeight="calc(100% - 123px)">
-                    <FlexContainer width="100%" maxWidth="calc(100% - 175px)" maxHeight="calc(100vh - 175px)" flexDirection="column">
-                      <ChartWrapper padding="0 0 0 0" height="100%" maxHeight="calc(100vh - 200px)" minHeight="445px">
-                        <TVChartContainer
-                          instrumentId={
-                            instrumentsStore.activeInstrument.instrumentItem.id
-                          }
-                          instruments={instrumentsStore.instruments}
-                        />
-                      </ChartWrapper>
-
-                      <ChartInstruments justifyContent="space-between">
-                        <ChartSettingsButtons></ChartSettingsButtons>
-                        <ChartIntervalTimeScale></ChartIntervalTimeScale>
-                        <ChartTimeFomat></ChartTimeFomat>
-                      </ChartInstruments>
-                    </FlexContainer>
-
-                    <FlexContainer flexDirection="column" width="175px">
-                      <BuySellPanel
-                        instrument={
-                          instrumentsStore.activeInstrument.instrumentItem
+      <Observer>
+        {() => (
+          <>
+            {instrumentsStore.activeInstrument && (
+              <>
+                <FlexContainer
+                  width="100%"
+                  height="100%"
+                  maxHeight="calc(100% - 123px)"
+                >
+                  <FlexContainer
+                    width="100%"
+                    maxWidth="calc(100% - 175px)"
+                    maxHeight="calc(100vh - 175px)"
+                    flexDirection="column"
+                  >
+                    <ChartWrapper
+                      padding="0 0 0 0"
+                      height="100%"
+                      maxHeight="calc(100vh - 200px)"
+                      minHeight="445px"
+                    >
+                      <TVChartContainer
+                        instrumentId={
+                          instrumentsStore.activeInstrument.instrumentItem.id
                         }
-                      ></BuySellPanel>
-                    </FlexContainer>
+                        instruments={instrumentsStore.instruments}
+                      />
+                    </ChartWrapper>
+
+                    <ChartInstruments justifyContent="space-between">
+                      <ChartSettingsButtons></ChartSettingsButtons>
+                      <ChartIntervalTimeScale></ChartIntervalTimeScale>
+                      <ChartTimeFomat></ChartTimeFomat>
+                    </ChartInstruments>
                   </FlexContainer>
-                </>
-              )}
-            </>
-          )}
-        </Observer>
-      
+
+                  <FlexContainer flexDirection="column" width="175px">
+                    <BuySellPanel
+                      instrument={
+                        instrumentsStore.activeInstrument.instrumentItem
+                      }
+                    ></BuySellPanel>
+                  </FlexContainer>
+                </FlexContainer>
+              </>
+            )}
+          </>
+        )}
+      </Observer>
     </FlexContainer>
   );
 });

@@ -43,6 +43,7 @@ import {
   CreateDepositParams,
   DepositCreateDTO,
 } from '../types/DepositTypes';
+import { InitModel } from '../types/InitAppTypes';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -339,6 +340,11 @@ class API {
       `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.ON_VERIFICATION}`,
       params
     );
+    return response.data;
+  };
+
+  getInitModel = async () => {
+    const response = await axios.post<InitModel>(`${API_LIST.INIT.GET}`);
     return response.data;
   };
 }

@@ -1,9 +1,16 @@
-import React from "react";
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import ProjectLogo from '../assets/images/logo.png';
 import { FlexContainer } from '../styles/FlexContainer';
 
-const Logo = () => <FlexContainer alignItems="flex-start"><LogoImage src={ProjectLogo} /></FlexContainer>;
+interface Props {
+  src: string;
+}
+
+const Logo: FC<Props> = ({ src }) => (
+  <FlexContainer alignItems="flex-start">
+    <LogoImage src={src} />
+  </FlexContainer>
+);
 
 export default Logo;
 

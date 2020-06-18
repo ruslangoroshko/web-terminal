@@ -15,8 +15,7 @@ import KYCStatus from '../../constants/KYCStatus';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 
 function UserProfileButton() {
-
-  const { mainAppStore} = useStores()
+  const { mainAppStore } = useStores();
   const [on, toggle] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const handleToggle = () => {
@@ -39,6 +38,7 @@ function UserProfileButton() {
         people.set({
           [mixpanelEvents.FIRST_NAME]: response.data.firstName,
           [mixpanelEvents.LAST_NAME]: response.data.lastName,
+          [mixpanelEvents.BRAND_NAME]: mainAppStore.initModel.brandName,
           [mixpanelEvents.EMAIL]: response.data.email,
           [mixpanelEvents.AVATAR]: response.data.avatar,
           [mixpanelEvents.USER_KYC_STATUS]: KYCStatus[response.data.kyc],

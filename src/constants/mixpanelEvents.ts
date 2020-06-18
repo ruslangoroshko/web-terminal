@@ -10,6 +10,7 @@ const mixpanelEvents = {
     PHONE: '$phone',
     AVATAR: '$avatar',
     USER_KYC_STATUS: 'user kyc status',
+    BRAND_NAME: 'brand name',
     ACCOUNT_CURRENCY: 'account_currency',
     ACCOUNT_TYPE: 'account_type',
     ACCOUNTS_ALL: 'accounts_all',
