@@ -32,6 +32,7 @@ const AccountInfo: FC<Props> = observer(props => {
     mainAppStore,
     tabsStore,
     notificationStore,
+    depositFundsStore,
   } = useStores();
   const { push } = useHistory();
 
@@ -113,7 +114,10 @@ const AccountInfo: FC<Props> = observer(props => {
           </FlexContainer>
         </FlexContainer>
         {isActiveAccount ? (
-          <PrimaryButton padding="8px 16px">
+          <PrimaryButton
+            padding="8px 16px"
+            onClick={depositFundsStore.togglePopup}
+          >
             <PrimaryTextSpan fontSize="12px" color="#003A38" fontWeight="bold">
               Deposit
             </PrimaryTextSpan>

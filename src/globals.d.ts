@@ -34,6 +34,7 @@ declare const IS_LIVE: string;
 declare const MIXPANEL_TOKEN: string;
 declare const RECAPTCHA_KEY: string;
 declare const grecaptcha: any;
+declare const IS_LOCAL: boolean;
 
 declare module 'global';
 declare module 'react-qr-code';
