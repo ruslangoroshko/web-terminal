@@ -14,7 +14,7 @@ import * as yup from 'yup';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryButton } from '../styles/Buttons';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import API from '../helpers/API';
 import styled from '@emotion/styled';
 import Pages from '../constants/Pages';
@@ -40,6 +40,8 @@ function ForgotPassword(props: Props) {
       .required(validationInputTexts.EMAIL)
       .email(validationInputTexts.EMAIL),
   });
+
+  
 
   const initialValues: UserForgotPassword = {
     email: '',
@@ -75,6 +77,7 @@ function ForgotPassword(props: Props) {
   };
 
   useEffect(() => {
+    document.title = "Reset password";
     mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_VIEW);
   }, []);
 

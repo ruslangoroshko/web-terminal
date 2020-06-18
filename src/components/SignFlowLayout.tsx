@@ -1,24 +1,18 @@
-import React, { FC, useEffect, useState } from 'react';
-
+import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import styled from '@emotion/styled';
-import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import ButtonAppleStoreImage from '../assets/images/button-apple-store.png';
 import ButtonGoogleStoreImage from '../assets/images/button-google-store.png';
-import SvgIcon from './SvgIcon';
-import MonfexLogo from '../assets/svg/icon-logo.svg';
-import MonfexLogoText from '../assets/svg/icon-logo-text.svg';
-
-import Pages from "../constants/Pages"
 import Logo from './Logo';
+import { useStores } from '../hooks/useStores';
 
 interface Props {}
 
 const SignFlowLayout: FC<Props> = props => {
   const { children } = props;
+  const { mainAppStore } = useStores();
 
   return (
     <FlexContainer
@@ -34,7 +28,7 @@ const SignFlowLayout: FC<Props> = props => {
       <FlexContainer>
         <FlexContainer alignItems="center">
           <FlexContainer margin="0 6px 0 0" width="154px">
-            <Logo />
+            <Logo src={mainAppStore.initModel.logo} />
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
@@ -49,36 +43,48 @@ const SignFlowLayout: FC<Props> = props => {
           Download App
         </PrimaryTextParagraph>
         <FlexContainer margin="0 0 30px 0" padding="0 0 0 14px">
-          <ButtonAppleStore to={{pathname: "https://apps.apple.com/us/app/monfex/id1496359119?ls=1"}} target="_blank">
+          <ButtonAppleStore
+            to={{
+              pathname: mainAppStore.initModel.iosAppLink,
+            }}
+            target="_blank"
+          >
             <ButtonImage src={ButtonAppleStoreImage} />
           </ButtonAppleStore>
-          <ButtonGoogleStore to={{pathname: "https://play.google.com/store/apps/details?id=com.monfex.trade"}} target="_blank">
+          <ButtonGoogleStore
+            to={{
+              pathname: mainAppStore.initModel.androidAppLink,
+            }}
+            target="_blank"
+          >
             <ButtonImage src={ButtonGoogleStoreImage} />
           </ButtonGoogleStore>
         </FlexContainer>
         <FlexContainer justifyContent="space-between" width="100%">
           <FlexContainer>
             <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
-              ©2017–{new Date().getFullYear()} Monfex. All rights reserved. v 1.0.12
+              ©2017–{new Date().getFullYear()}{' '}
+              <PrimaryTextSpan textTransform="capitalize" fontSize="10px" color="rgba(255, 255, 255, 0.4)">
+                {mainAppStore.initModel.brandName}
+              </PrimaryTextSpan>
+              . All rights reserved. v 1.0.12
             </PrimaryTextSpan>
           </FlexContainer>
 
           <FlexContainer>
-            <LinkItem to={{pathname: Pages.SUPPORT}} target="_blank">
+            <LinkItem href={mainAppStore.initModel.supportUrl} target="_blank">
               Support
             </LinkItem>
-            {/* TODO open when add link for FAQ */}
-            {/* <LinkItem to={Pages.FAQ} target="_blank">
+            <LinkItem
+              href={mainAppStore.initModel.faqUrl}
+              color="rgba(255, 255, 255, 0.4)"
+            >
               FAQ
-            </LinkItem> */}
-            <PrimaryTextSpan color="rgba(255, 255, 255, 0.4)" marginRight="24px" fontSize="10px" lineHeight="1.5">
-              FAQ
-            </PrimaryTextSpan>
-            <LinkItem to={{pathname: Pages.ABOUT_US}} target="_blank">
+            </LinkItem>
+            <LinkItem href={mainAppStore.initModel.aboutUrl} target="_blank">
               About us
             </LinkItem>
           </FlexContainer>
-
         </FlexContainer>
       </FlexContainer>
     </FlexContainer>
@@ -103,8 +109,7 @@ const ButtonImage = styled.img`
   border-radius: 10px;
 `;
 
-
-const LinkItem = styled(Link)`
+const LinkItem = styled.a`
   margin-right: 24px;
   text-decoration: none;
   font-size: 10px;

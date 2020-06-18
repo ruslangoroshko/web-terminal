@@ -13,6 +13,7 @@ export interface MixpanelTypes {
     total_account_deposits_number: number;
     total_account_withdraw_number: number;
     total_account_trades_number: number;
+    'brand name': string;
 }
 
 export interface MixpanelMarketOrder {

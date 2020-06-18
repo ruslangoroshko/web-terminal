@@ -161,9 +161,10 @@ function OrderExpandedItem(props: Props) {
           position="relative"
         >
           <ClosePositionPopup
+            buttonLabel="Cancel order"
             applyHandler={closePosition}
             ref={instrumentRef}
-            confirmText="Close position?"
+            confirmText="Cancel Order?"
             isButton
             alignPopup="right"
           />

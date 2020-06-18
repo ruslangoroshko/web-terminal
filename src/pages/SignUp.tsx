@@ -16,7 +16,6 @@ import { useHistory } from 'react-router-dom';
 import Checkbox from '../components/Checkbox';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
-import Pages from '../constants/Pages';
 import validationInputTexts from '../constants/validationInputTexts';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
@@ -249,14 +248,14 @@ function SignUp() {
                 <PrimaryTextSpan color="rgba(255,255,255,0.6)" fontSize="12px">
                   I’m 18 years old, and agree to&nbsp;
                   <CustomCheckboxLinkExternal
-                    href={Pages.TERMS_OF_SERVICE}
+                    href={mainAppStore.initModel.termsUrl}
                     target="_blank"
                   >
                     Terms &amp; Conditions
                   </CustomCheckboxLinkExternal>
                   &nbsp; and&nbsp;
                   <CustomCheckboxLinkExternal
-                    href={Pages.PRIVACY_POLICY}
+                    href={mainAppStore.initModel.policyUrl}
                     target="_blank"
                   >
                     Privacy Policy
