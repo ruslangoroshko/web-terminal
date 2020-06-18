@@ -26,6 +26,11 @@ import CardIcon from '../assets/images/master-card.png';
 import BankTransferIcon from '../assets/svg/icon-bank-transfer.svg';
 import BitcoinIcon from '../assets/svg/icon-bitcoin.svg';
 
+import IconFast from '../assets/svg/icon-fast.svg';
+import IconNoCommission from '../assets/images/icon-no-commission.png';
+import IconNoLimits from '../assets/images/icon-no-limit.png';
+import IconFaq from '../assets/images/icon-faq.png';
+
 function AccountSecurity() {
   const {
     mainAppStore,
@@ -114,9 +119,14 @@ function AccountSecurity() {
         {activeTab === 0 && (
           <FlexContainer
             flexDirection="column"
-            minHeight="calc(100vh - 300px)"
+            minHeight="calc(100vh - 234px)"
             justifyContent="space-between"
+            position="relative"
           >
+            <WithdrawPagePopup>
+              123
+            </WithdrawPagePopup>
+
             <FlexContainer flexDirection="column">
               <FlexContainer marginBottom="48px">
                 <FlexContainer flexDirection="column" width="180px">
@@ -350,7 +360,110 @@ function AccountSecurity() {
               </FlexContainer>
             </FlexContainer>
 
-            <FlexContainer>bottom</FlexContainer>
+            <FlexContainer flexDirection="column">
+              <FlexContainer justifyContent="space-between">
+                <WithdrawCardItem>
+                  <FlexContainer>
+                    <SvgIcon {...IconFast} fillColor="#FFFCCC" />
+                  </FlexContainer>
+                  <FlexContainer flexDirection="column">
+                    <PrimaryTextSpan
+                      fontWeight="bold"
+                      fontSize="12px"
+                      color="#FFFCCC"
+                    >
+                      Fast
+                    </PrimaryTextSpan>
+                    <PrimaryTextSpan
+                      fontSize="12px"
+                      color="rgba(255,255,255,0.4)"
+                    >
+                      A request is processed
+                      <br /> within 24 hours
+                    </PrimaryTextSpan>
+                  </FlexContainer>
+                </WithdrawCardItem>
+
+                <WithdrawCardItem>
+                  <FlexContainer>
+                    <img src={IconNoCommission} height="16px" />
+                  </FlexContainer>
+                  <FlexContainer flexDirection="column">
+                    <PrimaryTextSpan
+                      fontWeight="bold"
+                      fontSize="12px"
+                      color="#FFFCCC"
+                    >
+                      No commission
+                    </PrimaryTextSpan>
+                    <PrimaryTextSpan
+                      fontSize="12px"
+                      color="rgba(255,255,255,0.4)"
+                    >
+                      The commission for
+                      <br /> withdrawing is 0%
+                    </PrimaryTextSpan>
+                  </FlexContainer>
+                </WithdrawCardItem>
+
+                <WithdrawCardItem>
+                  <FlexContainer>
+                    <img src={IconNoLimits} height="11px" />
+                  </FlexContainer>
+                  <FlexContainer flexDirection="column">
+                    <PrimaryTextSpan
+                      fontWeight="bold"
+                      fontSize="12px"
+                      color="#FFFCCC"
+                    >
+                      No limits
+                    </PrimaryTextSpan>
+                    <PrimaryTextSpan
+                      fontSize="12px"
+                      color="rgba(255,255,255,0.4)"
+                    >
+                      Unlimited maximum
+                      <br /> withdrawal amount
+                    </PrimaryTextSpan>
+                  </FlexContainer>
+                </WithdrawCardItem>
+              </FlexContainer>
+
+              <FaqOpenBlock>
+                <FlexContainer>
+                  <img src={IconFaq} width="40px" height="40px" />
+
+                  <FlexContainer flexDirection="column" padding="0 16px">
+                    <PrimaryTextSpan
+                      textTransform="uppercase"
+                      color="#FFFCCC"
+                      fontSize="14px"
+                      lineHeight="16px"
+                    >
+                      Faq
+                    </PrimaryTextSpan>
+                    <PrimaryTextSpan
+                      color="#FFFFFF"
+                      fontSize="14px"
+                      lineHeight="16px"
+                    >
+                      Frequently Asked Questions
+                    </PrimaryTextSpan>
+                  </FlexContainer>
+                </FlexContainer>
+                <FlexContainer>
+                  <ButtonOpenFaq>
+                    <PrimaryTextSpan
+                      color="#fffccc"
+                      fontSize="14px"
+                      fontWeight="normal"
+                    >
+                      Open
+                    </PrimaryTextSpan>
+                  </ButtonOpenFaq>
+                </FlexContainer>
+              </FaqOpenBlock>
+            </FlexContainer>
           </FlexContainer>
         )}
 
@@ -363,6 +476,26 @@ function AccountSecurity() {
 }
 
 export default AccountSecurity;
+
+const WithdrawPagePopup = styled(FlexContainer)`
+  position: absolute;
+  background: #fff;
+`;
+
+const FaqOpenBlock = styled(FlexContainer)`
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+  background: rgba(41, 44, 51, 0.5);
+  border: 1px solid rgba(112, 113, 117, 0.5);
+  border-radius: 5px;
+  padding: 16px;
+`;
+
+const ButtonOpenFaq = styled(SecondaryButton)`
+  width: 132px;
+  height: 40px;
+`;
 
 const ErrorText = styled.span`
   font-weight: bold;
@@ -389,6 +522,17 @@ const IconButton = styled(ButtonWithoutStyles)`
   &:last-of-type {
     margin-right: 0;
   }
+`;
+
+const WithdrawCardItem = styled(FlexContainer)`
+  border-radius: 4px;
+  padding: 16px 12px;
+  height: 120px;
+  width: 228px;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.4s ease;
+  background: rgba(255, 255, 255, 0.06);
 `;
 
 const WithdrawPaymenMethodtItem = styled(ButtonWithoutStyles)<{
