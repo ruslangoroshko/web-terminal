@@ -14,7 +14,7 @@ import IconInfo from '../assets/svg/icon-info.svg';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 
 function ProfileDropdown() {
-  const { mainAppStore } = useStores();
+  const { mainAppStore, depositFundsStore } = useStores();
   const renderStatusLabel = () => {
     switch (mainAppStore.profileStatus) {
       case PersonalDataKYCEnum.NotVerified:
@@ -87,9 +87,13 @@ function ProfileDropdown() {
         flexDirection="column"
       >
         <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
-          <PrimaryTextSpan fontSize="12px" color="#fffccc">
-            Deposit
-          </PrimaryTextSpan>
+          <ButtonWithoutStyles
+            onClick={depositFundsStore.togglePopup}
+          >
+            <PrimaryTextSpan fontSize="12px" color="#fffccc">
+              Deposit
+            </PrimaryTextSpan>
+          </ButtonWithoutStyles>
           <SvgIcon {...IconDeposit} fillColor="rgba(255, 255, 255, 0.6)" />
         </FlexContainer>
         <FlexContainer justifyContent="space-between">
