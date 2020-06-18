@@ -16,7 +16,7 @@ import LoaderForComponents from '../components/LoaderForComponents';
 import { useFormik } from 'formik';
 import Fields from '../constants/fields';
 import validationInputTexts from '../constants/validationInputTexts';
-import { PrimaryButton } from '../styles/Buttons';
+import { PrimaryButton, SecondaryButton } from '../styles/Buttons';
 import ErropPopup from '../components/ErropPopup';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import NotificationPopup from '../components/NotificationPopup';
@@ -27,7 +27,12 @@ import BankTransferIcon from '../assets/svg/icon-bank-transfer.svg';
 import BitcoinIcon from '../assets/svg/icon-bitcoin.svg';
 
 function AccountSecurity() {
-  const { mainAppStore, badRequestPopupStore, notificationStore } = useStores();
+  const {
+    mainAppStore,
+    depositFundsStore,
+    badRequestPopupStore,
+    notificationStore,
+  } = useStores();
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
@@ -107,146 +112,245 @@ function AccountSecurity() {
         </FlexContainer>
 
         {activeTab === 0 && (
-          <FlexContainer flexDirection="column">
-            <FlexContainer marginBottom="48px">
-              <FlexContainer flexDirection="column" width="180px">
-                <PrimaryTextSpan
-                  textTransform="uppercase"
-                  fontSize="12px"
-                  color="rgba(255,255,255,0.4)"
-                  marginBottom="8px"
-                >
-                  Total
-                </PrimaryTextSpan>
-                <PrimaryTextSpan
-                  textTransform="uppercase"
-                  fontSize="24px"
-                  fontWeight="bold"
-                  color="#FFFCCC"
-                >
-                  $0.00
-                </PrimaryTextSpan>
-              </FlexContainer>
-
-              <FlexContainer flexDirection="column" width="180px">
-                <PrimaryTextSpan
-                  textTransform="uppercase"
-                  fontSize="12px"
-                  color="rgba(255,255,255,0.4)"
-                  marginBottom="12px"
-                >
-                  Available
-                </PrimaryTextSpan>
-                <PrimaryTextSpan
-                  textTransform="uppercase"
-                  fontSize="14px"
-                  fontWeight="bold"
-                  color="#FFFCCC"
-                >
-                  $0.00
-                </PrimaryTextSpan>
-              </FlexContainer>
-
-              <FlexContainer flexDirection="column" width="180px">
-                <PrimaryTextSpan
-                  textTransform="uppercase"
-                  fontSize="12px"
-                  color="rgba(255,255,255,0.4)"
-                  marginBottom="12px"
-                >
-                  Bonuses
-                </PrimaryTextSpan>
-                <PrimaryTextSpan
-                  textTransform="uppercase"
-                  fontSize="14px"
-                  fontWeight="bold"
-                  color="#FFFCCC"
-                >
-                  $0.00
-                </PrimaryTextSpan>
-              </FlexContainer>
-            </FlexContainer>
-
+          <FlexContainer
+            flexDirection="column"
+            minHeight="calc(100vh - 300px)"
+            justifyContent="space-between"
+          >
             <FlexContainer flexDirection="column">
-              <PrimaryTextSpan
-                textTransform="uppercase"
-                fontSize="12px"
-                color="rgba(255,255,255,0.4)"
-                marginBottom="12px"
-              >
-                Payment methods
-              </PrimaryTextSpan>
-              <FlexContainer width="100%" justifyContent="space-between">
+              <FlexContainer marginBottom="48px">
+                <FlexContainer flexDirection="column" width="180px">
+                  <PrimaryTextSpan
+                    textTransform="uppercase"
+                    fontSize="12px"
+                    color="rgba(255,255,255,0.4)"
+                    marginBottom="8px"
+                  >
+                    Total
+                  </PrimaryTextSpan>
+                  <PrimaryTextSpan
+                    textTransform="uppercase"
+                    fontSize="24px"
+                    fontWeight="bold"
+                    color="#FFFCCC"
+                  >
+                    $0.00
+                  </PrimaryTextSpan>
+                </FlexContainer>
 
-                <WithdrawPaymenMethodtItem active={paymentMeyhod === 0} onClick={() => {setPaymentMethod(0)}}>
-                  <FlexContainer>
-                    <img src={CardIcon} height="20px" />
-                  </FlexContainer>
-                  <FlexContainer flexDirection="column">
+                <FlexContainer flexDirection="column" width="180px">
+                  <PrimaryTextSpan
+                    textTransform="uppercase"
+                    fontSize="12px"
+                    color="rgba(255,255,255,0.4)"
+                    marginBottom="12px"
+                  >
+                    Available
+                  </PrimaryTextSpan>
+                  <PrimaryTextSpan
+                    textTransform="uppercase"
+                    fontSize="14px"
+                    fontWeight="bold"
+                    color="#FFFCCC"
+                  >
+                    $0.00
+                  </PrimaryTextSpan>
+                </FlexContainer>
+
+                <FlexContainer flexDirection="column" width="180px">
+                  <PrimaryTextSpan
+                    textTransform="uppercase"
+                    fontSize="12px"
+                    color="rgba(255,255,255,0.4)"
+                    marginBottom="12px"
+                  >
+                    Bonuses
+                  </PrimaryTextSpan>
+                  <PrimaryTextSpan
+                    textTransform="uppercase"
+                    fontSize="14px"
+                    fontWeight="bold"
+                    color="#FFFCCC"
+                  >
+                    $0.00
+                  </PrimaryTextSpan>
+                </FlexContainer>
+              </FlexContainer>
+
+              <FlexContainer flexDirection="column">
+                <PrimaryTextSpan
+                  textTransform="uppercase"
+                  fontSize="12px"
+                  color="rgba(255,255,255,0.4)"
+                  marginBottom="12px"
+                >
+                  Payment methods
+                </PrimaryTextSpan>
+                <FlexContainer width="100%" justifyContent="space-between">
+                  <WithdrawPaymenMethodtItem
+                    active={paymentMeyhod === 0}
+                    onClick={() => {
+                      setPaymentMethod(0);
+                    }}
+                  >
+                    <FlexContainer>
+                      <img src={CardIcon} height="20px" />
+                    </FlexContainer>
+                    <FlexContainer flexDirection="column">
+                      <PrimaryTextSpan
+                        fontWeight="bold"
+                        fontSize="12px"
+                        color="#FFFCCC"
+                      >
+                        Card ** 7556
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan
+                        fontSize="12px"
+                        color="rgba(255,255,255,0.4)"
+                      >
+                        Up to $10.00
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+                  </WithdrawPaymenMethodtItem>
+
+                  <WithdrawPaymenMethodtItem
+                    active={paymentMeyhod === 1}
+                    onClick={() => {
+                      setPaymentMethod(1);
+                    }}
+                  >
+                    <FlexContainer>
+                      <SvgIcon {...BankTransferIcon} fillColor="#FFFCCC" />
+                    </FlexContainer>
+                    <FlexContainer flexDirection="column">
+                      <PrimaryTextSpan
+                        fontWeight="bold"
+                        fontSize="12px"
+                        color="#FFFCCC"
+                        textAlign="left"
+                      >
+                        Bank transfer
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan
+                        fontSize="12px"
+                        color="rgba(255,255,255,0.4)"
+                        textAlign="left"
+                      >
+                        Other methods will be available
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+                  </WithdrawPaymenMethodtItem>
+
+                  <WithdrawPaymenMethodtItem
+                    active={paymentMeyhod === 2}
+                    onClick={() => {
+                      setPaymentMethod(2);
+                    }}
+                  >
+                    <FlexContainer>
+                      <SvgIcon {...BitcoinIcon} fillColor="#FFFCCC" />
+                    </FlexContainer>
+                    <FlexContainer flexDirection="column">
+                      <PrimaryTextSpan
+                        fontWeight="bold"
+                        fontSize="12px"
+                        color="#FFFCCC"
+                        textAlign="left"
+                      >
+                        Bitcoin
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan
+                        fontSize="12px"
+                        color="rgba(255,255,255,0.4)"
+                        textAlign="left"
+                      >
+                        Other methods will be available
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+                  </WithdrawPaymenMethodtItem>
+                </FlexContainer>
+
+                <FlexContainer
+                  width="100%"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  padding="30px 0"
+                >
+                  <FlexContainer width="calc(100% - 220px)">
                     <PrimaryTextSpan
-                      fontWeight="bold"
-                      fontSize="12px"
+                      fontSize="14px"
                       color="#FFFCCC"
+                      lineHeight="20px"
                     >
-                      Card ** 7556
-                    </PrimaryTextSpan>
-                    <PrimaryTextSpan
-                      fontSize="12px"
-                      color="rgba(255,255,255,0.4)"
-                    >
-                      Up to $10.00
+                      Withdrawals are processed by the same payment systems used
+                      to deposit money into the system.
                     </PrimaryTextSpan>
                   </FlexContainer>
-                </WithdrawPaymenMethodtItem>
+                  <FlexContainer width="160px">
+                    <DeposteButton onClick={depositFundsStore.togglePopup}>
+                      <PrimaryTextSpan color="#fffccc" fontSize="14px">
+                        Make a deposit
+                      </PrimaryTextSpan>
+                    </DeposteButton>
+                  </FlexContainer>
+                </FlexContainer>
 
-                <WithdrawPaymenMethodtItem active={paymentMeyhod === 1} onClick={() => {setPaymentMethod(1)}}>
-                  <FlexContainer>
-                    <SvgIcon {...BankTransferIcon} fillColor="#FFFCCC" />
-                  </FlexContainer>
-                  <FlexContainer flexDirection="column">
-                    <PrimaryTextSpan
-                      fontWeight="bold"
-                      fontSize="12px"
-                      color="#FFFCCC"
-                      textAlign="left"
+                <FlexContainer>
+                  <FlexContainer flexDirection="column" width="340px">
+                    <FlexContainer
+                      margin="0 0 6px 0"
+                      alignItems="center"
+                      justifyContent="space-between"
                     >
-                      Bank transfer
-                    </PrimaryTextSpan>
-                    <PrimaryTextSpan
-                      fontSize="12px"
-                      color="rgba(255,255,255,0.4)"
-                      textAlign="left"
-                    >
-                      Other methods will be available
-                    </PrimaryTextSpan>
-                  </FlexContainer>
-                </WithdrawPaymenMethodtItem>
+                      <PrimaryTextSpan
+                        fontSize="11px"
+                        lineHeight="12px"
+                        color="rgba(255, 255, 255, 0.3)"
+                        textTransform="uppercase"
+                      >
+                        Amount
+                      </PrimaryTextSpan>
+                    </FlexContainer>
 
-                <WithdrawPaymenMethodtItem active={paymentMeyhod === 2} onClick={() => {setPaymentMethod(2)}}>
-                  <FlexContainer>
-                    <SvgIcon {...BitcoinIcon} fillColor="#FFFCCC" />
-                  </FlexContainer>
-                  <FlexContainer flexDirection="column">
-                    <PrimaryTextSpan
-                      fontWeight="bold"
-                      fontSize="12px"
-                      color="#FFFCCC"
-                      textAlign="left"
+                    <InputWrapper
+                      margin="0 0 16px 0"
+                      height="32px"
+                      width="100%"
+                      position="relative"
+                      justifyContent="space-between"
                     >
-                      Bitcoin
-                    </PrimaryTextSpan>
-                    <PrimaryTextSpan
-                      fontSize="12px"
-                      color="rgba(255,255,255,0.4)"
-                      textAlign="left"
-                    >
-                      Other methods will be available
-                    </PrimaryTextSpan>
-                  </FlexContainer>
-                </WithdrawPaymenMethodtItem>
+                      <InputField
+                        name="amount"
+                        id="amount"
+                        //onChange={}
+                        //value={values.oldPassword}
+                        type="text"
+                      ></InputField>
 
+                      <ErrorText>max: $9.00</ErrorText>
+                    </InputWrapper>
+
+                    <PrimaryButton
+                      width="160px"
+                      padding="12px"
+                      type="submit"
+                      //onClick={handlerClickSubmit}
+                      //disabled={!formikBag.isValid || formikBag.isSubmitting}
+                    >
+                      <PrimaryTextSpan
+                        color="#1c2026"
+                        fontWeight="bold"
+                        fontSize="14px"
+                      >
+                        Withdraw
+                      </PrimaryTextSpan>
+                    </PrimaryButton>
+                  </FlexContainer>
+                </FlexContainer>
               </FlexContainer>
             </FlexContainer>
+
+            <FlexContainer>bottom</FlexContainer>
           </FlexContainer>
         )}
 
@@ -260,6 +364,22 @@ function AccountSecurity() {
 
 export default AccountSecurity;
 
+const ErrorText = styled.span`
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 16px;
+  color: #ff557e;
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+`;
+
+const DeposteButton = styled(SecondaryButton)`
+  width: 100%;
+  height: 40px;
+`;
+
 const IconButton = styled(ButtonWithoutStyles)`
   margin-right: 8px;
   position: absolute;
@@ -271,17 +391,20 @@ const IconButton = styled(ButtonWithoutStyles)`
   }
 `;
 
-const WithdrawPaymenMethodtItem = styled(ButtonWithoutStyles)<{active: boolean}>`
+const WithdrawPaymenMethodtItem = styled(ButtonWithoutStyles)<{
+  active: boolean;
+}>`
   display: flex;
-  border: 2px solid ${(props) => props.active ? '#FFFCCC' : 'transparent'};
-  background: ${(props) => props.active ? '#373737' : 'rgba(255, 255, 255, 0.06)'};
+  border: 2px solid ${props => (props.active ? '#FFFCCC' : 'transparent')};
+  background: ${props =>
+    props.active ? '#373737' : 'rgba(255, 255, 255, 0.06)'};
   border-radius: 4px;
   padding: 16px 12px;
   height: 120px;
   width: 228px;
   flex-direction: column;
   justify-content: space-between;
-  transition: all .4s ease;
+  transition: all 0.4s ease;
 `;
 
 const TabControllsWraper = styled(FlexContainer)`
