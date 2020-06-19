@@ -111,7 +111,6 @@ const BitcoinForm = () => {
         <PrimaryTextSpan
           fontWeight="bold"
           fontSize="14px"
-          textTransform="uppercase"
           color="#fffccc"
         >
           {bitcoinWalletString}

@@ -27,12 +27,12 @@ const VisaMasterCardForm = () => {
   const validationSchema = yup.object().shape({
     amount: yup
       .number()
+      .required('min: $50')
       .transform(value => (isNaN(value) ? undefined : value))
-      .integer('min: $50')
-      .positive('min: $50')
       .min(50, 'min: $50')
       .max(1000, 'max: $1000')
-      .required('min: $50'),
+      .integer('min: $50')
+      .positive('min: $50'),
   });
   const initialValues = {
     amount: 500,
@@ -194,6 +194,7 @@ const Input = styled.input`
   font-size: 14px;
   font-weight: bold;
   padding: 24px 16px;
+  padding-right: 100px;
   background-color: transparent;
   border-right: 1px solid rgba(255, 255, 255, 0.19);
 `;
