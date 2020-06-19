@@ -67,7 +67,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         toggle(false);
       }
     };
-
+    
     useEffect(() => {
       document.addEventListener('mousedown', handleClickOutside);
 
@@ -78,7 +78,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     return (
       <FlexContainer ref={wrapperRef}>
-        <ButtonWithoutStyles onClick={handleToggle}>
+        <ButtonWithoutStyles type="button" onClick={handleToggle}>
           {children}
         </ButtonWithoutStyles>
         {on && (
@@ -105,7 +105,6 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               toggle={toggle}
               investedAmount={investedAmount}
               isDisabled={isDisabled}
-              edited={false}
             />
           </FlexContainer>
         )}

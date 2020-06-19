@@ -5,6 +5,7 @@ import React, {
   FC,
   useState,
   useCallback,
+  useMemo,
 } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
@@ -74,11 +75,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     [instrument]
   );
 
-  const currentPriceAsk = useCallback(
+  const currentPriceAsk = useMemo(
     () => quotesStore.quotes[instrument.id].ask.c,
     [quotesStore.quotes[instrument.id].ask.c]
   );
-  const currentPriceBid = useCallback(
+  const currentPriceBid = useMemo(
     () => quotesStore.quotes[instrument.id].bid.c,
     [quotesStore.quotes[instrument.id].bid.c]
   );
@@ -124,7 +125,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .test(
                 Fields.TAKE_PROFIT,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value > currentPriceAsk()
+                value => value > currentPriceAsk
               ),
           })
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
@@ -136,7 +137,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .test(
                 Fields.TAKE_PROFIT,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value < currentPriceBid()
+                value => value < currentPriceBid
               ),
           }),
         sl: yup
@@ -151,7 +152,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value < currentPriceAsk()
+                value => value < currentPriceAsk
               ),
           })
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
@@ -163,7 +164,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value > currentPriceBid()
+                value => value > currentPriceBid
               ),
           }),
         openPrice: yup.number().nullable(),
