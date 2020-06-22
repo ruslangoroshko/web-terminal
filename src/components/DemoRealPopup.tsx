@@ -58,7 +58,7 @@ function DemoRealPopup() {
 
   const handleInvestReal = () => {
     selectRealAccount();
-    depositFundsStore.togglePopup;
+    depositFundsStore.openPopup;
   }
 
   return (
