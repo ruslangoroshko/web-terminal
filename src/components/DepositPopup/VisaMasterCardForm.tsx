@@ -57,7 +57,7 @@ const VisaMasterCardForm = () => {
       depositSum: values.amount,
       currency: 'USD',
       authToken: mainAppStore.token || '',
-      AccountId: mainAppStore.activeAccount?.id
+      accountId: mainAppStore.accounts.find(item => item.isLive)?.id || ''
     };
     try {
       const response = await API.createDeposit(params);

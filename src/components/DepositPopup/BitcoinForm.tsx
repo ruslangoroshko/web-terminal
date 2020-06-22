@@ -51,6 +51,7 @@ const BitcoinForm = () => {
         const response = await API.getCryptoWallet({
           authToken: mainAppStore.token || '',
           currency: DepositCurrency.BTC,
+          accountId: mainAppStore.accounts.find(item => item.isLive)?.id || ''
         });
         if (response.status === DepositApiResponseCodes.Success) {
           setBitcoinWalletString(response.walletAddress);
