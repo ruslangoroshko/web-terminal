@@ -73,7 +73,7 @@ export class InstrumentsStore implements ContextProps {
   setActiveInstrument = (activeInstrumentId: string) => {
     this.activeInstrument = this.instruments.find(
       item => item.instrumentItem.id === activeInstrumentId
-    );
+    ) || this.instruments[0];
   };
 
   @action
