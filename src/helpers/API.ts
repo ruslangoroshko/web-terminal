@@ -43,6 +43,7 @@ import {
   CreateDepositParams,
   DepositCreateDTO,
 } from '../types/DepositTypes';
+import { CreateWithdrawalParams } from '../types/WithdrawalTypes';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -337,6 +338,14 @@ class API {
   verifyUser = async (params: { processId: string }) => {
     const response = await axios.post<{ result: OperationApiResponseCodes }>(
       `${API_AUTH_STRING}${AUTH_API_LIST.PERSONAL_DATA.ON_VERIFICATION}`,
+      params
+    );
+    return response.data;
+  };
+
+  createWithdrawal = async (params: CreateWithdrawalParams) => {
+    const response = await axios.post(
+      `${API_WITHDRAWAL_STRING}${API_LIST.WITHWRAWAL.CREATE}`,
       params
     );
     return response.data;

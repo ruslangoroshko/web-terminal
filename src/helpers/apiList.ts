@@ -35,6 +35,11 @@ const API_LIST = {
   DEPOSIT: {
     CREATE: '/Create',
     GET_CRYPTO_WALLET: '/GetCryptoWallet'
+  },
+  WITHWRAWAL: {
+    CREATE: '/create',
+    HISTORY: '/history',
+    CANCEL: '/cancel'
   }
 };
 
