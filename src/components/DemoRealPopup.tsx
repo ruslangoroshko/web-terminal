@@ -12,9 +12,13 @@ import Topics from '../constants/websocketTopics';
 import Fields from '../constants/fields';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from './BadRequestPopup';
+import { push } from 'mixpanel-browser';
+import HashLocation from '../constants/hashLocation';
+import { useHistory } from 'react-router-dom';
 
 function DemoRealPopup() {
-  const { mainAppStore, badRequestPopupStore } = useStores();
+  const {push} = useHistory();
+  const { mainAppStore, badRequestPopupStore, depositFundsStore } = useStores();
 
   const selectDemoAccount = async () => {
     const acc = mainAppStore.accounts.find(item => !item.isLive);
@@ -35,6 +39,31 @@ function DemoRealPopup() {
       }
     }
   };
+
+  const selectRealAccount = async () => {
+    const acc = mainAppStore.accounts.find(item => item.isLive);
+    if (acc) {
+      try {
+        await API.setKeyValue({
+          key: KeysInApi.ACTIVE_ACCOUNT_ID,
+          value: acc.id,
+        });
+        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+          [Fields.ACCOUNT_ID]: acc.id,
+        });
+        mainAppStore.setActiveAccount(acc);
+        mainAppStore.isDemoRealPopup = false;
+      } catch (error) {
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
+      }
+    }
+  };
+
+  const handleInvestReal = () => {
+    selectRealAccount();
+    push(`/${HashLocation.Deposit}`)
+  }
 
   return (
     <>
@@ -87,7 +116,7 @@ function DemoRealPopup() {
                   Practice on Demo
                 </PrimaryTextSpan>
               </DemoButton>
-              <RealButton>
+              <RealButton onClick={handleInvestReal}>
                 <PrimaryTextSpan fontSize="14px" fontWeight="bold" color="#000">
                   Invest Real funds
                 </PrimaryTextSpan>
