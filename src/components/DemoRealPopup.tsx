@@ -12,8 +12,12 @@ import Topics from '../constants/websocketTopics';
 import Fields from '../constants/fields';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from './BadRequestPopup';
+import { push } from 'mixpanel-browser';
+import HashLocation from '../constants/hashLocation';
+import { useHistory } from 'react-router-dom';
 
 function DemoRealPopup() {
+  const {push} = useHistory();
   const { mainAppStore, badRequestPopupStore, depositFundsStore } = useStores();
 
   const selectDemoAccount = async () => {
@@ -58,7 +62,7 @@ function DemoRealPopup() {
 
   const handleInvestReal = () => {
     selectRealAccount();
-    depositFundsStore.openPopup;
+    push(`/${HashLocation.Deposit}`)
   }
 
   return (
