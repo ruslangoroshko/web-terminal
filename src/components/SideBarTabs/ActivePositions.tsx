@@ -46,7 +46,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     instrumentsStore,
     SLTPStore,
   } = useStores();
-
+  // TODO: remove hardcode
   const initialValues = useCallback(
     () => ({
       accountId: mainAppStore.activeAccount?.id || '',
@@ -57,6 +57,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       sl: position.sl,
       tpType: position.tpType,
       slType: position.slType,
+      operation: position.operation,
     }),
     [position]
   );
@@ -85,7 +86,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.TAKE_PROFIT,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value > currentPriceAsk
+                value => value > currentPriceBid
               ),
           })
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
@@ -97,7 +98,18 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.TAKE_PROFIT,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value < currentPriceBid
+                value => value < currentPriceAsk
+              ),
+          })
+          .when([Fields.TAKE_PROFIT_TYPE], {
+            is: tpType => tpType === TpSlTypeEnum.Currency,
+            then: yup
+              .number()
+              .nullable()
+              .test(
+                Fields.TAKE_PROFIT,
+                'Take profit level should be higher than the current P/L',
+                value => value > PnL
               ),
           }),
         sl: yup
@@ -112,7 +124,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value < currentPriceAsk
+                value => value < currentPriceBid
               ),
           })
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
@@ -124,7 +136,18 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value > currentPriceBid
+                value => value > currentPriceAsk
+              ),
+          })
+          .when([Fields.STOP_LOSS_TYPE], {
+            is: slType => slType === TpSlTypeEnum.Currency,
+            then: yup
+              .number()
+              .nullable()
+              .test(
+                Fields.STOP_LOSS,
+                'Take profit level should be higher than the current P/L',
+                value => value < PnL
               ),
           }),
         tpType: yup.number().nullable(),
@@ -174,10 +197,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     touched,
     isSubmitting,
     submitForm,
+    validateForm,
   } = useFormik<UpdateSLTP>({
     initialValues: initialValues(),
     onSubmit: updateSLTP,
-    validationSchema,
+    validationSchema: validationSchema(),
     validateOnBlur: false,
     validateOnChange: false,
   });
@@ -195,9 +219,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     }
   };
 
-  const handleApply = () => {
-    setFieldValue(Fields.TAKE_PROFIT, +SLTPStore.takeProfitValue || null);
-    setFieldValue(Fields.STOP_LOSS, +SLTPStore.stopLossValue || null);
+  const handleApply = useCallback(() => {
     setFieldValue(
       Fields.TAKE_PROFIT_TYPE,
       SLTPStore.takeProfitValue ? SLTPStore.autoCloseTPType : null
@@ -206,8 +228,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       Fields.STOP_LOSS_TYPE,
       SLTPStore.stopLossValue ? SLTPStore.autoCloseSLType : null
     );
-    submitForm();
-  };
+    setFieldValue(Fields.TAKE_PROFIT, +SLTPStore.takeProfitValue || null);
+    setFieldValue(Fields.STOP_LOSS, +SLTPStore.stopLossValue || null);
+    validateForm(values).then(errors => {
+      debugger;
+      submitForm();
+    });
+  }, [values, SLTPStore.takeProfitValue, SLTPStore.stopLossValue]);
 
   return (
     <InstrumentInfoWrapper
@@ -394,6 +421,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 {errors.sl || errors.tp}
               </ErropPopup>
             )}
+
             <AutoClosePopupSideBar
               ref={instrumentRef}
               stopLossValue={position.sl}
@@ -422,6 +450,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 </PrimaryTextSpan>
               </SetSLTPButton>
             </AutoClosePopupSideBar>
+
             <ClosePositionPopup
               applyHandler={closePosition}
               ref={instrumentRef}
@@ -474,4 +503,8 @@ const SetSLTPButton = styled(FlexContainer)`
       color: rgba(255, 255, 255, 0.4);
     }
   }
+`;
+
+const CustomForm = styled.form`
+  margin: 0;
 `;

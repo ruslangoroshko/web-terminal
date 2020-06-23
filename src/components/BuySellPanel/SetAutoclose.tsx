@@ -162,9 +162,6 @@ const SetAutoclose = observer((props: Props) => {
       stopLossType !== null ? stopLossType : TpSlTypeEnum.Currency;
     SLTPStore.autoCloseTPType =
       takeProfitType !== null ? takeProfitType : TpSlTypeEnum.Currency;
-    return () => {
-      return SLTPStore.clearStore();
-    };
   }, [stopLossType, takeProfitType]);
 
   useEffect(() => {
