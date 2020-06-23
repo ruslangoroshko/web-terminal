@@ -54,7 +54,7 @@ const VisaMasterCardForm = () => {
   const handleSubmitForm = async () => {
     const params = {
       paymentMethod: 'BANK_CARDS',
-      depositSum: values.amount,
+      depositSum: +values.amount,
       currency: 'USD',
       authToken: mainAppStore.token || '',
       accountId: mainAppStore.accounts.find(item => item.isLive)?.id || ''
