@@ -73,7 +73,7 @@ export class InstrumentsStore implements ContextProps {
   setActiveInstrument = (activeInstrumentId: string) => {
     this.activeInstrument = this.instruments.find(
       item => item.instrumentItem.id === activeInstrumentId
-    );
+    ) || this.instruments[0];
   };
 
   @action
@@ -154,7 +154,7 @@ export class InstrumentsStore implements ContextProps {
   switchInstrument = async (instrumentId: string) => {
     const newActiveInstrument = this.instruments.find(
       item => item.instrumentItem.id === instrumentId
-    );
+    ) || this.instruments[0];
     if (newActiveInstrument) {
       this.addActiveInstrumentId(instrumentId);
       this.activeInstrument = newActiveInstrument;

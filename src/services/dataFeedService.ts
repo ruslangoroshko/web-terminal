@@ -78,7 +78,10 @@ class DataFeedService implements IBasicDataFeed {
         (this.instruments.find(item => item.instrumentItem.id === symbolName)
           ?.instrumentItem.digits || 2),
       has_intraday: true,
-      intraday_multipliers: [supportedResolutions['1 minute']],
+      intraday_multipliers: [
+        supportedResolutions['1 minute'],
+        supportedResolutions['1 hour'],
+      ],
       has_weekly_and_monthly: true,
       has_no_volume: true,
       has_empty_bars: false,

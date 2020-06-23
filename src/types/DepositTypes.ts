@@ -10,6 +10,7 @@ export interface CreateDepositParams {
 export interface GetCryptoWalletParams {
 	authToken: string;
 	currency: string;
+	accountId: string;
 }
 
 export interface DepositCreateDTO {

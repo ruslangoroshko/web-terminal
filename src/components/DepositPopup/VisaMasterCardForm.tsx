@@ -57,7 +57,7 @@ const VisaMasterCardForm = () => {
       depositSum: values.amount,
       currency: 'USD',
       authToken: mainAppStore.token || '',
-      AccountId: mainAppStore.activeAccount?.id
+      accountId: mainAppStore.accounts.find(item => item.isLive)?.id || ''
     };
     try {
       const response = await API.createDeposit(params);
@@ -91,6 +91,13 @@ const VisaMasterCardForm = () => {
     validateOnChange: true,
   });
 
+  const handleChangeAmount = (e: any) => {
+    if (e.target.value.length === 15) {
+      return;
+    }
+    handleChange(e);
+  }
+
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
     const curErrorsKeys = Object.keys(curErrors);
@@ -123,7 +130,7 @@ const VisaMasterCardForm = () => {
         >
           <Input
             value={values.amount}
-            onChange={handleChange}
+            onChange={handleChangeAmount}
             onBeforeInput={investOnBeforeInputHandler}
             name="amount"
             id="amount"
