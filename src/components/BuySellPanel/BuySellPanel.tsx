@@ -90,15 +90,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           .number()
           .min(
             instrument.minOperationVolume / initialValues().multiplier,
-            `Minimum trade volume $${instrument.minOperationVolume /
-              initialValues()
-                .multiplier}. Please increase your trade amount or multiplier.`
+            `Minimum trade volume $${instrument.minOperationVolume}. Please increase your trade amount or multiplier.`
           )
           .max(
             instrument.maxOperationVolume / initialValues().multiplier,
-            `Maximum trade volume $${instrument.maxOperationVolume /
-              initialValues()
-                .multiplier}. Please decrease your trade amount or multiplier.`
+            `Maximum trade volume $${instrument.maxOperationVolume}. Please decrease your trade amount or multiplier.`
           )
           .test(
             Fields.AMOUNT,

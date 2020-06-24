@@ -50,16 +50,17 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
       }
     }
 
-    // sh@t from backend
     if (mainAppStore.activeAccount) {
       fetchFavoriteInstruments(
         mainAppStore.activeAccount.id,
+        // sh@t from backend
         mainAppStore.activeAccount.isLive
           ? AccountTypeEnum.Live
           : AccountTypeEnum.Demo
       );
     }
-  }, [mainAppStore.activeAccount]);
+    // TODO: research conditional dependencies
+  }, [mainAppStore.activeAccount?.isLive]);
 
   return (
     <InstrumentsWrapper>
