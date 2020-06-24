@@ -44,6 +44,8 @@ function AutoClosePopup(props: Props) {
       Fields.STOP_LOSS_TYPE,
       SLTPStore.stopLossValue ? SLTPStore.autoCloseSLType : null
     );
+
+    return Promise.resolve();
   };
 
   const handleClickOutside = (e: any) => {

@@ -6,11 +6,13 @@ import { AskBidEnum } from '../../enums/AskBid';
 import { PositionModelWSDTO } from '../../types/Positions';
 
 interface Props {
-  updateSLTP: () => void;
+  updateSLTP: () => Promise<void>;
   stopLossValue: PositionModelWSDTO['sl'];
   stopLossType: PositionModelWSDTO['slType'];
   takeProfitValue: PositionModelWSDTO['tp'];
   takeProfitType: PositionModelWSDTO['tpType'];
+  stopLossError?: string;
+  takeProfitError?: string;
   investedAmount: number;
   operation: AskBidEnum;
   isDisabled?: boolean;
@@ -29,6 +31,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       isDisabled,
       children,
       operation,
+      stopLossError,
+      takeProfitError
     } = props;
 
     const [on, toggle] = useState(false);
@@ -101,6 +105,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               takeProfitType={takeProfitType}
               stopLossValue={stopLossValue}
               takeProfitValue={takeProfitValue}
+              stopLossError={stopLossError}
+              takeProfitError={takeProfitError}
               operation={operation}
               toggle={toggle}
               investedAmount={investedAmount}

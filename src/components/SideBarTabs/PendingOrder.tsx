@@ -109,7 +109,9 @@ function PendingOrder(props: Props) {
               takeProfitType={pendingOrder.tpType}
               operation={pendingOrder.operation}
               investedAmount={pendingOrder.investmentAmount}
-              updateSLTP={() => {}}
+              updateSLTP={() => {
+                return Promise.resolve();
+              }}
               isDisabled
             >
               <SvgIcon

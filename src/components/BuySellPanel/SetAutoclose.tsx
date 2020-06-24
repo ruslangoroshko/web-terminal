@@ -24,9 +24,11 @@ interface Props {
   takeProfitType: PositionModelWSDTO['tpType'];
   stopLossValue: PositionModelWSDTO['sl'];
   stopLossType: PositionModelWSDTO['slType'];
+  stopLossError?: string;
+  takeProfitError?: string;
   operation: AskBidEnum | null;
   toggle: (arg0: boolean) => void;
-  handleApply: () => void;
+  handleApply: () => Promise<void>;
   investedAmount: number;
   isDisabled?: boolean;
 }
@@ -42,6 +44,8 @@ const SetAutoclose = observer((props: Props) => {
     investedAmount,
     operation,
     isDisabled,
+    stopLossError,
+    takeProfitError,
   } = props;
 
   const { SLTPStore, instrumentsStore } = useStores();
@@ -50,8 +54,8 @@ const SetAutoclose = observer((props: Props) => {
     SLTPStore.takeProfitValue = e.target.value.replace(',', '.');
   };
 
-  const [tpError, setTpError] = useState('');
-  const [slError, setSlError] = useState('');
+  const [tpError, setTpError] = useState(takeProfitError);
+  const [slError, setSlError] = useState(stopLossError);
 
   const handleBeforeInput = (fieldType: TpSlTypeEnum | null) => (e: any) => {
     let PRECISION = 2;
@@ -112,6 +116,7 @@ const SetAutoclose = observer((props: Props) => {
   };
 
   const handleTakeProfitBlur = () => {
+    setTpError('');
     if (SLTPStore.takeProfitValue) {
       SLTPStore.takeProfitValue = SLTPStore.takeProfitValue;
     }
@@ -146,7 +151,6 @@ const SetAutoclose = observer((props: Props) => {
 
   const handleApplyValues = () => {
     handleApply();
-    toggle(false);
   };
 
   const handleToggle = () => {
@@ -167,6 +171,16 @@ const SetAutoclose = observer((props: Props) => {
   useEffect(() => {
     handleStopLossBlur();
   }, [SLTPStore.autoCloseSLType]);
+
+  // TODO: refactor this stupid sheet
+  useEffect(() => {
+    if (takeProfitError) {
+      setTpError(takeProfitError);
+    }
+    if (stopLossError) {
+      setTpError(stopLossError);
+    }
+  }, [stopLossError, takeProfitError]);
 
   const removeSL = () => {
     SLTPStore.stopLossValue = '';
@@ -222,6 +236,16 @@ const SetAutoclose = observer((props: Props) => {
         width="100%"
         position="relative"
       >
+        {tpError && (
+          <ErropPopup
+            textColor="#fffccc"
+            bgColor={ColorsPallete.RAZZMATAZZ}
+            classNameTooltip={getProcessId()}
+            direction="left"
+          >
+            {tpError}
+          </ErropPopup>
+        )}
         {isDisabled && SLTPStore.autoCloseTPType !== TpSlTypeEnum.Price && (
           <PlusSign>+</PlusSign>
         )}

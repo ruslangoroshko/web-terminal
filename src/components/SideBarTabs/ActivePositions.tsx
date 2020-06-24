@@ -1,4 +1,4 @@
-import React, { FC, useRef, useMemo, useCallback } from 'react';
+import React, { FC, useRef, useMemo, useCallback, useEffect } from 'react';
 import * as yup from 'yup';
 import { Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
@@ -188,16 +188,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
 
   const {
     values,
-    setFieldError,
     setFieldValue,
-    resetForm,
-    handleSubmit,
-    getFieldProps,
     errors,
-    touched,
-    isSubmitting,
     submitForm,
     validateForm,
+    touched,
   } = useFormik<UpdateSLTP>({
     initialValues: initialValues(),
     onSubmit: updateSLTP,
@@ -218,23 +213,26 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       instrumentsStore.switchInstrument(position.instrument);
     }
   };
-
-  const handleApply = useCallback(() => {
-    setFieldValue(
-      Fields.TAKE_PROFIT_TYPE,
-      SLTPStore.takeProfitValue ? SLTPStore.autoCloseTPType : null
-    );
-    setFieldValue(
+  const validateFormCallback = () => {
+    return validateForm().then(errors => {
+      if (!Object.keys(errors).length) {
+        submitForm();
+      }
+    });
+  };
+  const handleApply = useCallback(async () => {
+    // await setFieldValue(
+    //   Fields.TAKE_PROFIT_TYPE,
+    //   SLTPStore.takeProfitValue ? SLTPStore.autoCloseTPType : null
+    // );
+    await setFieldValue(
       Fields.STOP_LOSS_TYPE,
       SLTPStore.stopLossValue ? SLTPStore.autoCloseSLType : null
     );
-    setFieldValue(Fields.TAKE_PROFIT, +SLTPStore.takeProfitValue || null);
-    setFieldValue(Fields.STOP_LOSS, +SLTPStore.stopLossValue || null);
-    validateForm(values).then(errors => {
-      debugger;
-      submitForm();
-    });
-  }, [values, SLTPStore.takeProfitValue, SLTPStore.stopLossValue]);
+    // await setFieldValue(Fields.TAKE_PROFIT, +SLTPStore.takeProfitValue || null);
+    await setFieldValue(Fields.STOP_LOSS, +SLTPStore.stopLossValue || null);
+    validateFormCallback();
+  }, [SLTPStore.takeProfitValue, SLTPStore.stopLossValue]);
 
   return (
     <InstrumentInfoWrapper
@@ -431,6 +429,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               operation={position.operation}
               investedAmount={position.investmentAmount}
               updateSLTP={handleApply}
+              stopLossError={errors.sl}
+              takeProfitError={errors.tp}
             >
               <SetSLTPButton>
                 <PrimaryTextSpan
@@ -503,8 +503,4 @@ const SetSLTPButton = styled(FlexContainer)`
       color: rgba(255, 255, 255, 0.4);
     }
   }
-`;
-
-const CustomForm = styled.form`
-  margin: 0;
 `;
