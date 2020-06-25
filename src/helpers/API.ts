@@ -1,3 +1,4 @@
+import { WithdrawalHistoryResponseStatus } from './../enums/WithdrawalHistoryResponseStatus';
 import { RefreshToken, RefreshTokenDTO } from './../types/RefreshToken';
 import axios from 'axios';
 import {
@@ -44,6 +45,8 @@ import {
   DepositCreateDTO,
 } from '../types/DepositTypes';
 import { InitModel } from '../types/InitAppTypes';
+import { CreateWithdrawalParams, WithdrawalHistoryDTO, cancelWithdrawalParams } from '../types/WithdrawalTypes';
+
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -366,6 +369,34 @@ class API {
       : await axios.get<InitModel>(`${API_LIST.INIT.GET}`);
     return response.data;
   };
+  createWithdrawal = async (params: CreateWithdrawalParams) => {
+    const response = await axios.post<{status: WithdrawalHistoryResponseStatus}>(
+      `${API_WITHDRAWAL_STRING}${API_LIST.WITHWRAWAL.CREATE}`,
+      params
+    );
+    return response.data;
+  };
+
+  cancelWithdrawal = async (params: cancelWithdrawalParams) => {
+    const response = await axios.post<WithdrawalHistoryDTO>(
+      `${API_WITHDRAWAL_STRING}${API_LIST.WITHWRAWAL.CANCEL}`,
+      params
+    );
+    return response.data;
+  };
+
+  getWithdrawalHistory = async (params: {
+    AuthToken: string | null;
+  }) => {
+    const response = await axios.get<WithdrawalHistoryDTO>(
+      `${API_WITHDRAWAL_STRING}${API_LIST.WITHWRAWAL.HISTORY}`,
+      {
+        params,
+      }
+    );
+    return response.data;
+  };
+
 }
 
 export default new API();

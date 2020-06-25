@@ -39,6 +39,11 @@ const API_LIST = {
   INIT: {
     GET: '/init/',
   },
+  WITHWRAWAL: {
+    CREATE: '/create',
+    HISTORY: '/history',
+    CANCEL: '/cancel'
+  }
 };
 
 Object.freeze(API_LIST);

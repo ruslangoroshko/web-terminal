@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -15,7 +15,6 @@ import { Observer, observer } from 'mobx-react-lite';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
-import { AskBidEnum } from '../../enums/AskBid';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { PositionModelWSDTO } from '../../types/Positions';
 
@@ -24,12 +23,11 @@ interface Props {
   takeProfitType: PositionModelWSDTO['tpType'];
   stopLossValue: PositionModelWSDTO['sl'];
   stopLossType: PositionModelWSDTO['slType'];
-  operation: AskBidEnum | null;
+  slError?: string;
+  tpError?: string;
   toggle: (arg0: boolean) => void;
-  handleApply: () => void;
-  investedAmount: number;
+  handleApply?: () => Promise<void>;
   isDisabled?: boolean;
-  edited?: boolean;
 }
 
 const SetAutoclose = observer((props: Props) => {
@@ -40,20 +38,12 @@ const SetAutoclose = observer((props: Props) => {
     takeProfitType,
     toggle,
     handleApply,
-    investedAmount,
-    operation,
     isDisabled,
-    edited = true,
+    slError,
+    tpError,
   } = props;
 
-  const { SLTPStore, quotesStore, instrumentsStore } = useStores();
-
-  const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
-    SLTPStore.takeProfitValue = e.target.value.replace(',', '.');
-  };
-
-  const [tpError, setTpError] = useState('');
-  const [slError, setSlError] = useState('');
+  const { SLTPStore, instrumentsStore } = useStores();
 
   const handleBeforeInput = (fieldType: TpSlTypeEnum | null) => (e: any) => {
     let PRECISION = 2;
@@ -113,42 +103,21 @@ const SetAutoclose = observer((props: Props) => {
     }
   };
 
-  const handleTakeProfitBlur = () => {
-    if (SLTPStore.takeProfitValue) {
-      SLTPStore.takeProfitValue = SLTPStore.takeProfitValue;
-    }
-  };
-
-  const handleStopLossBlur = () => {
-    setSlError('');
-    switch (SLTPStore.autoCloseSLType) {
-      case TpSlTypeEnum.Currency:
-        if (+SLTPStore.stopLossValue > investedAmount) {
-          setSlError(
-            'Stop loss level can not be higher than the Invest amount'
-          );
-        } else {
-          setSlError('');
-        }
-        break;
-
-      default:
-        break;
-    }
-
-    if (SLTPStore.stopLossValue) {
-      SLTPStore.stopLossValue = SLTPStore.stopLossValue;
-    }
+  const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
+    SLTPStore.takeProfitValue = e.target.value.replace(',', '.');
   };
 
   const handleChangeLoss = (e: ChangeEvent<HTMLInputElement>) => {
-    setSlError('');
     SLTPStore.stopLossValue = e.target.value.replace(',', '.');
   };
 
-  const handleApplyValues = () => {
-    handleApply();
-    toggle(false);
+  const handleApplyValues = async () => {
+    if (handleApply) {
+      try {
+        await handleApply();
+        toggle(false);
+      } catch (error) {}
+    }
   };
 
   const handleToggle = () => {
@@ -156,22 +125,18 @@ const SetAutoclose = observer((props: Props) => {
   };
 
   useEffect(() => {
-    SLTPStore.takeProfitValue =
-      takeProfitValue !== null ? takeProfitValue.toString() : '';
-    SLTPStore.stopLossValue =
-      stopLossValue !== null ? stopLossValue.toString() : '';
     SLTPStore.autoCloseSLType =
       stopLossType !== null ? stopLossType : TpSlTypeEnum.Currency;
     SLTPStore.autoCloseTPType =
       takeProfitType !== null ? takeProfitType : TpSlTypeEnum.Currency;
-    return () => {
-      return SLTPStore.clearStore();
-    };
   }, [stopLossType, takeProfitType]);
 
   useEffect(() => {
-    handleStopLossBlur();
-  }, [SLTPStore.autoCloseSLType]);
+    SLTPStore.takeProfitValue =
+      takeProfitValue !== null ? takeProfitValue.toString() : '';
+    SLTPStore.stopLossValue =
+      stopLossValue !== null ? Math.abs(stopLossValue).toString() : '';
+  }, []);
 
   const removeSL = () => {
     SLTPStore.stopLossValue = '';
@@ -221,16 +186,25 @@ const SetAutoclose = observer((props: Props) => {
         </InformationPopup>
       </FlexContainer>
       <InputWrapper
-        padding={edited ? "0 0 0 22px" : "0 0 0 8px"}
+        padding={isDisabled ? '0 0 0 8px' : '0 0 0 22px'}
         margin="0 0 16px 0"
         height="32px"
         width="100%"
         position="relative"
       >
-        {edited && (SLTPStore.autoCloseTPType !== TpSlTypeEnum.Price) && (
+        {tpError && (
+          <ErropPopup
+            textColor="#fffccc"
+            bgColor={ColorsPallete.RAZZMATAZZ}
+            classNameTooltip={getProcessId()}
+            direction="left"
+          >
+            {tpError}
+          </ErropPopup>
+        )}
+        {SLTPStore.autoCloseTPType !== TpSlTypeEnum.Price && (
           <PlusSign>+</PlusSign>
         )}
-
         <Observer>
           {() => (
             <>
@@ -238,11 +212,10 @@ const SetAutoclose = observer((props: Props) => {
                 onBeforeInput={handleBeforeInput(SLTPStore.autoCloseTPType)}
                 placeholder="Non Set"
                 onChange={handleChangeProfit}
-                onBlur={handleTakeProfitBlur}
                 value={SLTPStore.takeProfitValue}
-                disabled={edited ? isDisabled : true}
+                disabled={isDisabled}
               ></InputPnL>
-              {edited && (!!SLTPStore.takeProfitValue && !isDisabled) && (
+              {!!SLTPStore.takeProfitValue && !isDisabled && (
                 <CloseValueButtonWrapper
                   position="absolute"
                   top="50%"
@@ -261,7 +234,7 @@ const SetAutoclose = observer((props: Props) => {
         </Observer>
         <PnLTypeDropdown
           dropdownType="tp"
-          isDisabled={edited ? isDisabled : true}
+          isDisabled={isDisabled}
         ></PnLTypeDropdown>
       </InputWrapper>
       <FlexContainer
@@ -287,7 +260,7 @@ const SetAutoclose = observer((props: Props) => {
         </InformationPopup>
       </FlexContainer>
       <InputWrapper
-        padding={edited ? "0 0 0 22px" : "0 0 0 8px"}
+        padding={isDisabled ? '0 0 0 8px' : '0 0 0 22px'}
         margin={isDisabled ? '0' : '0 0 16px 0'}
         height="32px"
         width="100%"
@@ -303,10 +276,9 @@ const SetAutoclose = observer((props: Props) => {
             {slError}
           </ErropPopup>
         )}
-        {edited && (SLTPStore.autoCloseSLType !== TpSlTypeEnum.Price) && (
+        {SLTPStore.autoCloseSLType !== TpSlTypeEnum.Price && (
           <PlusSign>-</PlusSign>
         )}
-
         <Observer>
           {() => (
             <>
@@ -314,11 +286,10 @@ const SetAutoclose = observer((props: Props) => {
                 onBeforeInput={handleBeforeInput(SLTPStore.autoCloseSLType)}
                 placeholder="Non Set"
                 onChange={handleChangeLoss}
-                onBlur={handleStopLossBlur}
                 value={SLTPStore.stopLossValue}
-                disabled={edited ? isDisabled : true}
+                disabled={isDisabled}
               ></InputPnL>
-              {edited && (!!SLTPStore.stopLossValue && !isDisabled) && (
+              {!!SLTPStore.stopLossValue && !isDisabled && (
                 <CloseValueButtonWrapper
                   position="absolute"
                   top="50%"
@@ -337,30 +308,27 @@ const SetAutoclose = observer((props: Props) => {
         </Observer>
         <PnLTypeDropdown
           dropdownType="sl"
-          isDisabled={edited ? isDisabled : true}
+          isDisabled={isDisabled}
         ></PnLTypeDropdown>
       </InputWrapper>
-      
-      {edited && (
-        <Observer>
-          {() => (
-            <>
-              {!isDisabled && (
-                <ButtonApply
-                  onClick={handleApplyValues}
-                  disabled={
-                    !!(tpError || slError) ||
-                    (SLTPStore.takeProfitValue === null &&
-                      SLTPStore.stopLossValue === null)
-                  }
-                >
-                  Apply
-                </ButtonApply>
-              )}
-            </>
-          )}
-        </Observer>
-      )}
+      <Observer>
+        {() => (
+          <>
+            {!isDisabled && (
+              <ButtonApply
+                onClick={handleApplyValues}
+                type="button"
+                disabled={
+                  SLTPStore.takeProfitValue === null &&
+                  SLTPStore.stopLossValue === null
+                }
+              >
+                Apply
+              </ButtonApply>
+            )}
+          </>
+        )}
+      </Observer>
     </Wrapper>
   );
 });

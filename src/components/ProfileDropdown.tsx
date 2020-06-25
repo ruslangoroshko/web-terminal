@@ -97,9 +97,12 @@ function ProfileDropdown() {
           <SvgIcon {...IconDeposit} fillColor="rgba(255, 255, 255, 0.6)" />
         </FlexContainer>
         <FlexContainer justifyContent="space-between">
-          <PrimaryTextSpan fontSize="12px" color="#fffccc">
+        <CustomeNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="is-active">
+        <PrimaryTextSpan fontSize="12px" color="#fffccc">
             Withdraw
           </PrimaryTextSpan>
+        </CustomeNavLink>
+          
           <SvgIcon {...IconWithdraw} fillColor="rgba(255, 255, 255, 0.6)" />
         </FlexContainer>
       </FlexWithBottomBorder>

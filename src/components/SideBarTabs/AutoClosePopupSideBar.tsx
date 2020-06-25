@@ -2,17 +2,16 @@ import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import { AskBidEnum } from '../../enums/AskBid';
 import { PositionModelWSDTO } from '../../types/Positions';
 
 interface Props {
-  updateSLTP: () => void;
+  updateSLTP?: () => Promise<void>;
   stopLossValue: PositionModelWSDTO['sl'];
   stopLossType: PositionModelWSDTO['slType'];
   takeProfitValue: PositionModelWSDTO['tp'];
   takeProfitType: PositionModelWSDTO['tpType'];
-  investedAmount: number;
-  operation: AskBidEnum;
+  stopLossError?: string;
+  takeProfitError?: string;
   isDisabled?: boolean;
   children: React.ReactNode;
 }
@@ -25,10 +24,10 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       stopLossType,
       takeProfitValue,
       takeProfitType,
-      investedAmount,
       isDisabled,
       children,
-      operation,
+      stopLossError,
+      takeProfitError,
     } = props;
 
     const [on, toggle] = useState(false);
@@ -78,7 +77,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     return (
       <FlexContainer ref={wrapperRef}>
-        <ButtonWithoutStyles onClick={handleToggle}>
+        <ButtonWithoutStyles type="button" onClick={handleToggle}>
           {children}
         </ButtonWithoutStyles>
         {on && (
@@ -101,11 +100,10 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               takeProfitType={takeProfitType}
               stopLossValue={stopLossValue}
               takeProfitValue={takeProfitValue}
-              operation={operation}
+              slError={stopLossError}
+              tpError={takeProfitError}
               toggle={toggle}
-              investedAmount={investedAmount}
               isDisabled={isDisabled}
-              edited={false}
             />
           </FlexContainer>
         )}
