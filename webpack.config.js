@@ -121,7 +121,7 @@ module.exports = (env, argv) => {
         API_WITHDRAWAL_STRING:
           argv.mode === 'production'
             ? JSON.stringify('/withdrawal')
-            : JSON.stringify('http://localhost:5680/withdrawal'),    
+            : JSON.stringify('http://localhost:5681/withdrawal'),    
         AUTH_TOKEN: JSON.stringify('TraderID'),
         CHARTING_LIBRARY_PATH:
           argv.mode === 'production'

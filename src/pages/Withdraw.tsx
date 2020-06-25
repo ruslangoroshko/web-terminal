@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import AccountSettingsContainer from '../containers/AccountSettingsContainer';
 import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
-import * as yup from 'yup';
 import API from '../helpers/API';
 import { useStores } from '../hooks/useStores';
 import styled from '@emotion/styled';
@@ -13,34 +12,31 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import IconClose from '../assets/svg/icon-popup-close.svg';
 import { useHistory } from 'react-router-dom';
 import LoaderForComponents from '../components/LoaderForComponents';
-import { useFormik } from 'formik';
-import Fields from '../constants/fields';
-import validationInputTexts from '../constants/validationInputTexts';
-import { PrimaryButton, SecondaryButton } from '../styles/Buttons';
-import ErropPopup from '../components/ErropPopup';
-import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import NotificationPopup from '../components/NotificationPopup';
 import Page from '../constants/Pages';
-
-
-
-
-import { TableGrid, DisplayContents, Td } from '../styles/TableElements';
 import WithdrawRequestTab from '../components/Withdraw/WithdrawRequestTab';
-
+import WithdrawHistoryTab from '../components/Withdraw/WithdrawHistoryTab';
+import { WithdrawalHistoryModel } from '../types/WithdrawalTypes';
+import { WithdrawalStatusesEnum } from '../enums/WithdrawalStatusesEnum';
+import { WithdrawalHistoryResponseStatus } from '../enums/WithdrawalHistoryResponseStatus';
+import { WithdrawalTypesEnum } from '../enums/WithdrawalTypesEnum';
+import { WithdrawalTabsEnum } from '../enums/WithdrawalTabsEnum';
 
 function AccountSecurity() {
   const {
     mainAppStore,
-    depositFundsStore,
     badRequestPopupStore,
     notificationStore,
+    withdrawalStore,
   } = useStores();
+
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
-  
+  const openTab = (tab: number) => {
+    withdrawalStore.opentTab(tab);
+  };
 
   useEffect(() => {
     document.title = 'Account withdraw';
@@ -48,6 +44,16 @@ function AccountSecurity() {
 
   return (
     <AccountSettingsContainer>
+      <Observer>
+        {() => (
+          <>
+            {withdrawalStore.loading && (
+              <LoaderForComponents isLoading={withdrawalStore.loading} />
+            )}
+          </>
+        )}
+      </Observer>
+
       <FlexContainer
         position="absolute"
         bottom="100px"
@@ -92,99 +98,43 @@ function AccountSecurity() {
           Withdraw
         </PrimaryTextSpan>
 
-        <FlexContainer marginBottom="46px">
-          <TabControllsWraper alignItems="flex-start" justifyContent="center">
-            <TabControllItem
-              onClick={() => {
-                setActiveTab(0);
-              }}
-              active={activeTab === 0}
-            >
-              Request
-            </TabControllItem>
-            <TabControllItem
-              onClick={() => {
-                setActiveTab(1);
-              }}
-              active={activeTab === 1}
-            >
-              History
-            </TabControllItem>
-          </TabControllsWraper>
-        </FlexContainer>
+        <Observer>
+          {() => (
+            <>
+              <FlexContainer marginBottom="46px">
+                <TabControllsWraper
+                  alignItems="flex-start"
+                  justifyContent="center"
+                >
+                  <TabControllItem
+                    onClick={() => openTab(WithdrawalTabsEnum.Request)}
+                    active={withdrawalStore.activeTab === WithdrawalTabsEnum.Request}
+                  >
+                    Request
+                  </TabControllItem>
+                  <TabControllItem
+                    onClick={() => openTab(WithdrawalTabsEnum.History)}
+                    active={withdrawalStore.activeTab === WithdrawalTabsEnum.History}
+                  >
+                    History
+                  </TabControllItem>
+                </TabControllsWraper>
+              </FlexContainer>
 
-        {activeTab === 0 && <WithdrawRequestTab />}
-
-        {activeTab === 1 && (
-          <FlexContainer flexDirection="column" justifyContent="center">
-            <TableGrid columnsCount={9} maxHeight="calc(100vh - 235px)">
-              <DisplayContents>
-                <Td>
-                  <FlexContainer alignItems="center">
-                    <PrimaryTextSpan
-                      fontSize="12px"
-                      color="#FFFCCC"
-                      whiteSpace="nowrap"
-                      fontWeight="bold"
-                    >
-                      Bank cards (** 7556)
-                    </PrimaryTextSpan>
-                  </FlexContainer>
-                </Td>
-                <Td>
-                  <FlexContainer alignItems="center">
-                    <PrimaryTextSpan
-                      fontSize="12px"
-                      color="rgba(255,255,255,0.4)"
-                      whiteSpace="nowrap"
-                    >
-                      06 Dec 2019, 13:10
-                    </PrimaryTextSpan>
-                  </FlexContainer>
-                </Td>
-                <Td>
-                  <FlexContainer alignItems="center">
-                    <PrimaryTextSpan
-                      fontSize="12px"
-                      color="#FFFCCC"
-                      whiteSpace="nowrap"
-                    >
-                      $5.00
-                    </PrimaryTextSpan>
-                  </FlexContainer>
-                </Td>
-                <Td>
-                  <FlexContainer alignItems="center">
-                    <PrimaryTextSpan
-                      fontSize="12px"
-                      color="#FFFCCC"
-                      whiteSpace="nowrap"
-                    >
-                      Pending
-                    </PrimaryTextSpan>
-                  </FlexContainer>
-                </Td>
-                <Td>
-                  <FlexContainer alignItems="center">
-                    <PrimaryTextSpan
-                      fontSize="12px"
-                      color="#FFFCCC"
-                      whiteSpace="nowrap"
-                    >
-                      Cancel
-                    </PrimaryTextSpan>
-                  </FlexContainer>
-                </Td>
-              </DisplayContents>
-            </TableGrid>
-          </FlexContainer>
-        )}
+              {withdrawalStore.activeTab === WithdrawalTabsEnum.Request && (
+                <WithdrawRequestTab />
+              )}
+              {withdrawalStore.activeTab === WithdrawalTabsEnum.History && (
+                <WithdrawHistoryTab />
+              )}
+            </>
+          )}
+        </Observer>
       </FlexContainer>
     </AccountSettingsContainer>
   );
 }
 export default AccountSecurity;
-
 
 const IconButton = styled(ButtonWithoutStyles)`
   margin-right: 8px;

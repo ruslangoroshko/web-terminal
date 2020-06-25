@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
@@ -6,9 +6,27 @@ import { PrimaryButton } from '../../styles/Buttons';
 import { push } from 'mixpanel-browser';
 import { useHistory } from 'react-router-dom';
 import Page from '../../constants/Pages';
+import { useStores } from '../../hooks/useStores';
+import API from '../../helpers/API';
+import { getProcessId } from '../../helpers/getProcessId';
 
-const WithdrawPagePopup = () => {
+const WithdrawPendingPopup = () => {
   const { push } = useHistory();
+  const { mainAppStore } = useStores();
+
+  const [userEmail, setEmail] = useState('');
+
+  useEffect(() => {
+    async function fetchPersonalData() {
+      try {
+        const response = await API.getPersonalData(getProcessId());
+        setEmail(response.data.email);
+      } catch (error) {}
+    }
+    fetchPersonalData();
+  }, []);
+
+
   return (
     <WithdrawPagePopupWrap alignItems="flex-start">
       <WithdrawPopup
@@ -19,9 +37,12 @@ const WithdrawPagePopup = () => {
       >
         <FlexContainer>
           <PrimaryTextSpan fontSize="14px" color="#ffffff" lineHeight="20px">
-            Withdrawal request can only be submitted when all of KYC
+            Our Customer support will contact you via &nbsp;
+            <PrimaryTextSpan color="#FFFCCC">{userEmail || 'your@email.com'}</PrimaryTextSpan>
             <br />
-            documents have been approved and the account is Fully Verified
+            to confirm and proceed with your withdrawal request. Please be{' '}
+            <br /> note, that you can submit only one withdrawal request at a
+            time
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer>
@@ -29,11 +50,10 @@ const WithdrawPagePopup = () => {
             width="186px"
             padding="12px"
             type="submit"
-            onClick={() => push(Page.PERSONAL_DATA)}
-            //disabled={!formikBag.isValid || formikBag.isSubmitting}
+            onClick={() => push(Page.DASHBOARD)}
           >
             <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
-              Proceed to Verification
+              Back to Trading
             </PrimaryTextSpan>
           </PrimaryButton>
         </FlexContainer>
@@ -42,7 +62,7 @@ const WithdrawPagePopup = () => {
   );
 };
 
-export default WithdrawPagePopup;
+export default WithdrawPendingPopup;
 
 const WithdrawPagePopupWrap = styled(FlexContainer)`
   position: absolute;
