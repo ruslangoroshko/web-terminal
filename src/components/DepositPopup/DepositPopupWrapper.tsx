@@ -20,7 +20,6 @@ import BitcoinForm from './BitcoinForm';
 import BadRequestPopup from '../BadRequestPopup';
 import HashLocation from '../../constants/hashLocation';
 
-
 const DepositPopupWrapper = () => {
   const location = useLocation();
 
@@ -33,18 +32,12 @@ const DepositPopupWrapper = () => {
   const { depositFundsStore } = useStores();
   return (
     <Observer>
-      {() => (
-        <>
-          {depositFundsStore.isActivePopup && <DepositPopupInner />}
-        </>
-      )}
+      {() => <>{depositFundsStore.isActivePopup && <DepositPopupInner />}</>}
     </Observer>
-  )
-}
-
+  );
+};
 
 const DepositPopupInner: FC = ({ children }) => {
-  
   const { mainAppStore, depositFundsStore, badRequestPopupStore } = useStores();
   const setActiveDepositType = (depositType: DepositTypeEnum) => () => {
     depositFundsStore.setActiveDepositType(depositType);
@@ -87,22 +80,29 @@ const DepositPopupInner: FC = ({ children }) => {
           backgroundColor="rgba(0, 0, 0, 0.32)"
           boxShadow="box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.24), 0px 8px 16px rgba(37, 38, 54, 0.6)"
         >
-          {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified && (
-            <FlexContainer
-              backgroundColor="rgba(0,0,0,0.2)"
-              padding="20px 12px"
-            >
-              <PrimaryTextSpan
-                marginRight="4px"
-                color="rgba(255,255,255, 0.4)"
-                fontSize="12px"
-              >
-                Plese be aware that you need to verify your account within 15
-                days after deposit.
-              </PrimaryTextSpan>
-              <CustomLink to={Page.PERSONAL_DATA}>Upload now</CustomLink>
-            </FlexContainer>
-          )}
+          <Observer>
+            {() => (
+              <>
+                {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified && (
+                  <FlexContainer
+                    backgroundColor="rgba(0,0,0,0.2)"
+                    padding="20px 12px"
+                  >
+                    <PrimaryTextSpan
+                      marginRight="4px"
+                      color="rgba(255,255,255, 0.4)"
+                      fontSize="12px"
+                    >
+                      Plese be aware that you need to verify your account within
+                      15 days after deposit.
+                    </PrimaryTextSpan>
+                    <CustomLink to={Page.PERSONAL_DATA}>Upload now</CustomLink>
+                  </FlexContainer>
+                )}
+              </>
+            )}
+          </Observer>
+
           <FlexContainer position="relative" flexDirection="column">
             <HeaderDepositPopup position="relative">
               <FlexContainer
