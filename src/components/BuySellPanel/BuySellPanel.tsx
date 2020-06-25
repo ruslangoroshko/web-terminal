@@ -57,7 +57,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     notificationStore,
     mainAppStore,
     badRequestPopupStore,
+    SLTPStore,
   } = useStores();
+
+  const setAutoCloseWrapperRef = useRef<HTMLDivElement>(null);
 
   const initialValues = useCallback(
     () => ({
@@ -72,7 +75,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       slType: null,
       tpType: null,
     }),
-    [instrument]
+    [instrument, mainAppStore.activeAccount?.id]
   );
 
   const currentPriceAsk = useMemo(
@@ -166,6 +169,19 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 'Error message: This level is higher or lower than the one currently allowed',
                 value => value > currentPriceBid
               ),
+          })
+          .when([Fields.STOP_LOSS_TYPE], {
+            is: slType => slType === TpSlTypeEnum.Currency,
+            then: yup
+              .number()
+              .nullable()
+              .test(
+                Fields.STOP_LOSS,
+                'Stop loss level can not be lower than the Invest amount',
+                function(value) {
+                  return value < this.parent[Fields.AMOUNT];
+                }
+              ),
           }),
         openPrice: yup.number().nullable(),
         tpType: yup.number().nullable(),
@@ -251,6 +267,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     resetForm,
     handleSubmit,
     getFieldProps,
+    validateForm,
     errors,
     touched,
     isSubmitting,
@@ -260,14 +277,17 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     validationSchema,
     validateOnBlur: false,
     validateOnChange: false,
+   // enableReinitialize: true,
   });
 
   useEffect(() => {
+    resetForm();
     setFieldValue(Fields.INSTRUMNENT_ID, instrument.id);
     setFieldValue(Fields.MULTIPLIER, instrument.multiplier[0]);
   }, [instrument]);
 
   useEffect(() => {
+    resetForm();
     setFieldValue(Fields.ACCOUNT_ID, mainAppStore.activeAccount?.id);
   }, [mainAppStore.activeAccount]);
 
@@ -532,20 +552,27 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           </InformationPopup>
         </FlexContainer>
         <FlexContainer position="relative" flexDirection="column">
-          {((touched.sl && errors.sl) || (touched.tp && errors.tp)) && (
-            <ErropPopup
-              textColor="#fffccc"
-              bgColor={ColorsPallete.RAZZMATAZZ}
-              classNameTooltip={Fields.AMOUNT}
-              direction="left"
-            >
-              {errors.sl || errors.tp}
-            </ErropPopup>
-          )}
+          {!setAutoCloseWrapperRef.current &&
+            ((touched.sl && errors.sl) || (touched.tp && errors.tp)) && (
+              <ErropPopup
+                textColor="#fffccc"
+                bgColor={ColorsPallete.RAZZMATAZZ}
+                classNameTooltip={Fields.AMOUNT}
+                direction="left"
+              >
+                {errors.sl || errors.tp}
+              </ErropPopup>
+            )}
           <AutoClosePopup
+            ref={setAutoCloseWrapperRef}
             setFieldValue={setFieldValue}
-            setFieldError={setFieldError}
-            values={values}
+            stopLossError={errors.sl}
+            takeProfitError={errors.tp}
+            stopLossType={values.slType}
+            stopLossValue={values.sl}
+            takeProfitType={values.tpType}
+            takeProfitValue={values.tp}
+            validateForm={validateForm}
           ></AutoClosePopup>
         </FlexContainer>
 

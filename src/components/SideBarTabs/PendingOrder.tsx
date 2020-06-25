@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import moment from 'moment';
@@ -107,11 +107,6 @@ function PendingOrder(props: Props) {
               takeProfitValue={pendingOrder.tp}
               stopLossType={pendingOrder.slType}
               takeProfitType={pendingOrder.tpType}
-              operation={pendingOrder.operation}
-              investedAmount={pendingOrder.investmentAmount}
-              updateSLTP={() => {
-                return Promise.resolve();
-              }}
               isDisabled
             >
               <SvgIcon

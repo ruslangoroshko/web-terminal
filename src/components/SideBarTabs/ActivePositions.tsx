@@ -46,7 +46,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     instrumentsStore,
     SLTPStore,
   } = useStores();
-  // TODO: remove hardcode
+ 
   const initialValues = useCallback(
     () => ({
       accountId: mainAppStore.activeAccount?.id || '',
@@ -147,7 +147,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Take profit level should be higher than the current P/L',
-                value => value < PnL
+                value => Math.abs(value) < PnL
+              ).test(
+                Fields.STOP_LOSS,
+                'Stop loss level can not be lower than the Invest amount',
+                value => Math.abs(value) < position.investmentAmount
               ),
           }),
         tpType: yup.number().nullable(),
@@ -187,7 +191,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   };
 
   const {
-    values,
     setFieldValue,
     errors,
     submitForm,
@@ -197,8 +200,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     initialValues: initialValues(),
     onSubmit: updateSLTP,
     validationSchema: validationSchema(),
-    validateOnBlur: false,
-    validateOnChange: false,
+    validateOnBlur: true,
+    validateOnChange: true,
   });
 
   const setInstrumentActive = (e: any) => {
@@ -213,25 +216,27 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       instrumentsStore.switchInstrument(position.instrument);
     }
   };
-  const validateFormCallback = () => {
-    return validateForm().then(errors => {
-      if (!Object.keys(errors).length) {
-        submitForm();
-      }
-    });
-  };
+
   const handleApply = useCallback(async () => {
-    // await setFieldValue(
-    //   Fields.TAKE_PROFIT_TYPE,
-    //   SLTPStore.takeProfitValue ? SLTPStore.autoCloseTPType : null
-    // );
+    await setFieldValue(
+      Fields.TAKE_PROFIT_TYPE,
+      SLTPStore.takeProfitValue ? SLTPStore.autoCloseTPType : null
+    );
     await setFieldValue(
       Fields.STOP_LOSS_TYPE,
       SLTPStore.stopLossValue ? SLTPStore.autoCloseSLType : null
     );
-    // await setFieldValue(Fields.TAKE_PROFIT, +SLTPStore.takeProfitValue || null);
+    await setFieldValue(Fields.TAKE_PROFIT, +SLTPStore.takeProfitValue || null);
     await setFieldValue(Fields.STOP_LOSS, +SLTPStore.stopLossValue || null);
-    validateFormCallback();
+    return new Promise<void>(async (resolve, reject) => {
+      const errors = await validateForm();
+      if (!Object.keys(errors).length) {
+        submitForm();
+        resolve();
+      } else {
+        reject();
+      }
+    });
   }, [SLTPStore.takeProfitValue, SLTPStore.stopLossValue]);
 
   return (
@@ -420,36 +425,36 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               </ErropPopup>
             )}
 
-            <AutoClosePopupSideBar
-              ref={instrumentRef}
-              stopLossValue={position.sl}
-              takeProfitValue={position.tp}
-              stopLossType={position.slType}
-              takeProfitType={position.tpType}
-              operation={position.operation}
-              investedAmount={position.investmentAmount}
-              updateSLTP={handleApply}
-              stopLossError={errors.sl}
-              takeProfitError={errors.tp}
-            >
-              <SetSLTPButton>
-                <PrimaryTextSpan
-                  fontSize="12px"
-                  lineHeight="14px"
-                  color={position.tp ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
-                >
-                  TP
-                </PrimaryTextSpan>
-                &nbsp;
-                <PrimaryTextSpan
-                  fontSize="12px"
-                  lineHeight="14px"
-                  color={position.sl ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
-                >
-                  SL
-                </PrimaryTextSpan>
-              </SetSLTPButton>
-            </AutoClosePopupSideBar>
+            <CustomForm>
+              <AutoClosePopupSideBar
+                ref={instrumentRef}
+                stopLossValue={position.sl}
+                takeProfitValue={position.tp}
+                stopLossType={position.slType}
+                takeProfitType={position.tpType}
+                updateSLTP={handleApply}
+                stopLossError={errors.sl}
+                takeProfitError={errors.tp}
+              >
+                <SetSLTPButton>
+                  <PrimaryTextSpan
+                    fontSize="12px"
+                    lineHeight="14px"
+                    color={position.tp ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
+                  >
+                    TP
+                  </PrimaryTextSpan>
+                  &nbsp;
+                  <PrimaryTextSpan
+                    fontSize="12px"
+                    lineHeight="14px"
+                    color={position.sl ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
+                  >
+                    SL
+                  </PrimaryTextSpan>
+                </SetSLTPButton>
+              </AutoClosePopupSideBar>
+            </CustomForm>
 
             <ClosePositionPopup
               applyHandler={closePosition}
@@ -504,3 +509,8 @@ const SetSLTPButton = styled(FlexContainer)`
     }
   }
 `;
+
+
+const CustomForm = styled.form`
+    margin: 0;
+`

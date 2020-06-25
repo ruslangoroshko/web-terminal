@@ -2,19 +2,16 @@ import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import { AskBidEnum } from '../../enums/AskBid';
 import { PositionModelWSDTO } from '../../types/Positions';
 
 interface Props {
-  updateSLTP: () => Promise<void>;
+  updateSLTP?: () => Promise<void>;
   stopLossValue: PositionModelWSDTO['sl'];
   stopLossType: PositionModelWSDTO['slType'];
   takeProfitValue: PositionModelWSDTO['tp'];
   takeProfitType: PositionModelWSDTO['tpType'];
   stopLossError?: string;
   takeProfitError?: string;
-  investedAmount: number;
-  operation: AskBidEnum;
   isDisabled?: boolean;
   children: React.ReactNode;
 }
@@ -27,12 +24,10 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       stopLossType,
       takeProfitValue,
       takeProfitType,
-      investedAmount,
       isDisabled,
       children,
-      operation,
       stopLossError,
-      takeProfitError
+      takeProfitError,
     } = props;
 
     const [on, toggle] = useState(false);
@@ -71,7 +66,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         toggle(false);
       }
     };
-    
+
     useEffect(() => {
       document.addEventListener('mousedown', handleClickOutside);
 
@@ -105,11 +100,9 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               takeProfitType={takeProfitType}
               stopLossValue={stopLossValue}
               takeProfitValue={takeProfitValue}
-              stopLossError={stopLossError}
-              takeProfitError={takeProfitError}
-              operation={operation}
+              slError={stopLossError}
+              tpError={takeProfitError}
               toggle={toggle}
-              investedAmount={investedAmount}
               isDisabled={isDisabled}
             />
           </FlexContainer>

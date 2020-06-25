@@ -54,6 +54,7 @@ function MultiplierDropdown(props: Props) {
           width="140px"
         >
           {multipliers
+            .slice()
             .sort((a, b) => b - a)
             .map(multiplier => (
               <DropDownItem
