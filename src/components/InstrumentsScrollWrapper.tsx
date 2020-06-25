@@ -50,7 +50,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
       }
     }
 
-    if (mainAppStore.activeAccount) {
+    if (mainAppStore.activeAccount && instrumentsStore.instruments.length) {
       fetchFavoriteInstruments(
         mainAppStore.activeAccount.id,
         // sh@t from backend
@@ -60,7 +60,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
       );
     }
     // TODO: research conditional dependencies
-  }, [mainAppStore.activeAccount?.isLive]);
+  }, [instrumentsStore.instruments, mainAppStore.activeAccount?.isLive]);
 
   return (
     <InstrumentsWrapper>
