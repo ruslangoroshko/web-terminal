@@ -12,6 +12,7 @@ import { SortingStore } from './SortingStore';
 import { BadRequestPopupStore } from "./BadRequestPopupStore";
 import { DepositFundsStore } from './DepositFundsStore';
 import { DataRangeStoreNoCustomDates } from './DataRangeStoreNoCustomDates';
+import { WithdrawalStore } from './WithdrawalStore';
 
 export class RootStore {
   quotesStore: QuotesStore;
@@ -28,6 +29,7 @@ export class RootStore {
   sortingStore: SortingStore;
   badRequestPopupStore: BadRequestPopupStore;
   depositFundsStore: DepositFundsStore;
+  withdrawalStore: WithdrawalStore;
 
   constructor() {
     this.quotesStore = new QuotesStore(this);
@@ -44,5 +46,6 @@ export class RootStore {
     this.sortingStore = new SortingStore(this);
     this.badRequestPopupStore = new BadRequestPopupStore();
     this.depositFundsStore = new DepositFundsStore();
+    this.withdrawalStore = new WithdrawalStore();
   }
 }

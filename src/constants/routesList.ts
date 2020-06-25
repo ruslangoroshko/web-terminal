@@ -10,6 +10,8 @@ import PhoneVerification from '../pages/PhoneVerification';
 import ProofOfIdentity from '../pages/ProofOfIdentity';
 import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
+import Withdraw from "../pages/Withdraw";
+
 
 export enum RouteLayoutType {
   Authorized,
@@ -72,6 +74,13 @@ const routesList = [
   {
     component: AccountSecurity,
     path: Page.ACCOUNT_SEQURITY,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.Authorized
+  },
+  {
+    component: Withdraw,
+    path: Page.ACCOUNT_WITHDRAW,
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.Authorized
