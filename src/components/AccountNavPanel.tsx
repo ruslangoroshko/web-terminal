@@ -19,19 +19,7 @@ const AccountNavPanel = () => {
       >
         Account
       </PrimaryTextParagraph>
-      {/* <FlexContainer flexDirection="column">
-        <CustomNavLink to={Page.ACCOUNT_PROFILE} activeClassName="active">
-          <AccountLinkSpan color="#fffccc">Profile</AccountLinkSpan>
-        </CustomNavLink>
-      </FlexContainer>
-      <FlexContainer flexDirection="column">
-        <CustomNavLink to={Page.ACCOUNT_DEPOSIT} activeClassName="active">
-          <AccountLinkSpan color="#fffccc">Deposit</AccountLinkSpan>
-        </CustomNavLink>
-        <CustomNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="active">
-          <AccountLinkSpan color="#fffccc">Withdraw</AccountLinkSpan>
-        </CustomNavLink>
-      </FlexContainer> */}
+      
       <FlexContainer flexDirection="column">
         <CustomNavLink to={Page.ACCOUNT_SEQURITY} activeClassName="active">
           <AccountLinkSpan color="#fffccc">Security</AccountLinkSpan>
@@ -43,15 +31,14 @@ const AccountNavPanel = () => {
         >
           <AccountLinkSpan color="#fffccc">Balance history</AccountLinkSpan>
         </CustomNavLink>
-        {/* <CustomNavLink to={Page.ACCOUNT_SETTINGS} activeClassName="active">
-          <AccountLinkSpan color="#fffccc">Settings</AccountLinkSpan>
-        </CustomNavLink>
+
         <CustomNavLink
-          to={Page.ACCOUNT_HISTORY_QUOTES}
+          to={Page.ACCOUNT_WITHDRAW}
           activeClassName="active"
         >
-          <AccountLinkSpan color="#fffccc">Historical quotes</AccountLinkSpan>
-        </CustomNavLink> */}
+          <AccountLinkSpan color="#fffccc">Withdraw</AccountLinkSpan>
+        </CustomNavLink>
+
       </FlexContainer>
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={mainAppStore.signOut}>

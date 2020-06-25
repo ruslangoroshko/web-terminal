@@ -102,7 +102,7 @@ const WithdrawFormBitcoin = () => {
 
   const handleBlurAmount = () => {
     let amount = values.amount.toString().replace(/,/g, '');
-    amount = parseFloat(amount)
+    amount = parseFloat(amount || '0')
       .toLocaleString('en-US', {
         style: 'decimal',
         maximumFractionDigits: 2,
