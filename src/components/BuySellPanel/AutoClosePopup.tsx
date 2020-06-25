@@ -69,11 +69,12 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
       }
     };
 
-    const clearSLTP = () => {
-      setFieldValue(Fields.TAKE_PROFIT, null);
-      setFieldValue(Fields.STOP_LOSS, null);
-      setFieldValue(Fields.TAKE_PROFIT_TYPE, null);
-      setFieldValue(Fields.STOP_LOSS_TYPE, null);
+    const clearSLTP = async () => {
+      await setFieldValue(Fields.TAKE_PROFIT, null);
+      await setFieldValue(Fields.STOP_LOSS, null);
+      await setFieldValue(Fields.TAKE_PROFIT_TYPE, null);
+      await setFieldValue(Fields.STOP_LOSS_TYPE, null);
+      await validateForm();
     };
 
     useEffect(() => {
