@@ -183,7 +183,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
       }),
-    [instrument]
+    [instrument, currentPriceBid, currentPriceAsk]
   );
 
   const onSubmit = async (
@@ -569,6 +569,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             takeProfitType={values.tpType}
             takeProfitValue={values.tp}
             validateForm={validateForm}
+            setFieldError={setFieldError}
           ></AutoClosePopup>
         </FlexContainer>
 

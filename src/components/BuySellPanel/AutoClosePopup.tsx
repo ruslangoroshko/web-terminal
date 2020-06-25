@@ -41,6 +41,7 @@ interface Props {
   validateForm: (
     values?: OpenPositionModelFormik | undefined
   ) => Promise<FormikErrors<OpenPositionModelFormik>>;
+  setFieldError: (field: string, value: string | undefined) => void;
 }
 
 const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
@@ -54,12 +55,17 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
       stopLossError,
       takeProfitError,
       validateForm,
+      setFieldError,
     } = props;
     const { mainAppStore, SLTPStore } = useStores();
     const [on, toggle] = useState(false);
 
     const wrapperRef = useRef<HTMLDivElement>(null);
     const handleToggle = () => {
+      if (!on) {
+        setFieldError(Fields.TAKE_PROFIT, '');
+        setFieldError(Fields.STOP_LOSS, '');
+      }
       toggle(!on);
     };
 
