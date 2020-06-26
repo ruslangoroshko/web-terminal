@@ -19,9 +19,14 @@ import { Th, TableGrid } from '../../styles/TableElements';
 import InfinityScrollList from '../InfinityScrollList';
 
 const TradingHistoryExpanded: FC = () => {
-  const { tabsStore, mainAppStore, historyStore } = useStores();
+  const {
+    tabsStore,
+    mainAppStore,
+    historyStore,
+    dataRangeStoreNoCustomDates,
+  } = useStores();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const closeExpanded = () => {
     tabsStore.isTabExpanded = false;
   };
@@ -29,17 +34,19 @@ const TradingHistoryExpanded: FC = () => {
   const fetchPositionsHistory = async (isScrolling = false) => {
     const response = await API.getPositionsHistory({
       accountId: mainAppStore.activeAccount!.id,
-      startDate: historyStore.positionsStartDate.valueOf(),
-      endDate: historyStore.positionsEndDate.valueOf(),
+      startDate: dataRangeStoreNoCustomDates.startDate.valueOf(),
+      endDate: dataRangeStoreNoCustomDates.endDate.valueOf(),
       page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
       pageSize: 20,
     });
     historyStore.positionsHistoryReport = {
       ...response,
-      positionsHistory: isScrolling? [
-        ...historyStore.positionsHistoryReport.positionsHistory,
-        ...response.positionsHistory,
-      ] : response.positionsHistory,
+      positionsHistory: isScrolling
+        ? [
+            ...historyStore.positionsHistoryReport.positionsHistory,
+            ...response.positionsHistory,
+          ]
+        : response.positionsHistory,
     };
   };
 
@@ -48,10 +55,10 @@ const TradingHistoryExpanded: FC = () => {
       historyStore.positionsHistoryReport = {
         ...historyStore.positionsHistoryReport,
         page: 1,
-        positionsHistory: []
-      }
-    }
-  }, [])
+        positionsHistory: [],
+      };
+    };
+  }, []);
 
   return (
     <TradingHistoryExpandedWrapper
@@ -161,15 +168,18 @@ const TradingHistoryExpanded: FC = () => {
               <Observer>
                 {() => (
                   <InfinityScrollList
-                  getData={fetchPositionsHistory}
-                  listData={historyStore.positionsHistoryReport.positionsHistory}
-                  isFetching={isLoading}
-                  // WATCH CLOSELY
-                  noMoreData={
-                    historyStore.positionsHistoryReport.totalItems <
-                    historyStore.positionsHistoryReport.page *
-                      historyStore.positionsHistoryReport.pageSize
-                  }>
+                    getData={fetchPositionsHistory}
+                    listData={
+                      historyStore.positionsHistoryReport.positionsHistory
+                    }
+                    isFetching={isLoading}
+                    // WATCH CLOSELY
+                    noMoreData={
+                      historyStore.positionsHistoryReport.totalItems <
+                      historyStore.positionsHistoryReport.page *
+                        historyStore.positionsHistoryReport.pageSize
+                    }
+                  >
                     {historyStore.positionsHistoryReport.positionsHistory.map(
                       item => (
                         <TradingHistoryExpandedItem
