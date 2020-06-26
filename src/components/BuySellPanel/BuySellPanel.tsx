@@ -5,7 +5,6 @@ import React, {
   FC,
   useState,
   useCallback,
-  useMemo,
 } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
@@ -57,7 +56,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     notificationStore,
     mainAppStore,
     badRequestPopupStore,
-    SLTPStore,
   } = useStores();
 
   const setAutoCloseWrapperRef = useRef<HTMLDivElement>(null);
@@ -78,11 +76,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     [instrument, mainAppStore.activeAccount?.id]
   );
 
-  const currentPriceAsk = useMemo(
+  const currentPriceAsk = useCallback(
     () => quotesStore.quotes[instrument.id].ask.c,
     [quotesStore.quotes[instrument.id].ask.c]
   );
-  const currentPriceBid = useMemo(
+  const currentPriceBid = useCallback(
     () => quotesStore.quotes[instrument.id].bid.c,
     [quotesStore.quotes[instrument.id].bid.c]
   );
@@ -124,7 +122,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .test(
                 Fields.TAKE_PROFIT,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value > currentPriceAsk
+                value => value > currentPriceAsk()
               ),
           })
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
@@ -136,7 +134,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .test(
                 Fields.TAKE_PROFIT,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value < currentPriceBid
+                value => value < currentPriceBid()
               ),
           }),
         sl: yup
@@ -151,7 +149,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value < currentPriceAsk
+                value => value < currentPriceAsk()
               ),
           })
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
@@ -163,7 +161,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value > currentPriceBid
+                value => value > currentPriceBid()
               ),
           })
           .when([Fields.STOP_LOSS_TYPE], {
@@ -183,7 +181,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
       }),
-    [instrument, currentPriceBid, currentPriceAsk]
+    [instrument, currentPriceBid(), currentPriceAsk()]
   );
 
   const onSubmit = async (
@@ -273,7 +271,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     validationSchema,
     validateOnBlur: false,
     validateOnChange: false,
-   // enableReinitialize: true,
+    // enableReinitialize: true,
   });
 
   useEffect(() => {

@@ -1,12 +1,9 @@
 import { observable } from 'mobx';
 import { PositionsHistoryReportDTO } from '../types/HistoryReportTypes';
-import moment, { Moment } from 'moment';
 import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 
 interface ContextProps {
   positionsHistoryReport: PositionsHistoryReportDTO;
-  positionsStartDate: Moment;
-  positionsEndDate: Moment;
   positionsDatesRangeType: ShowDatesDropdownEnum;
   balancesDatesRangeType: ShowDatesDropdownEnum;
 }
@@ -22,8 +19,6 @@ export class HistoryStore implements ContextProps {
     totalProfit: 0,
     totalProfitPercent: 0,
   };
-  @observable positionsStartDate: Moment = moment().subtract(1, 'w');
-  @observable positionsEndDate: Moment = moment();
   @observable positionsDatesRangeType: ShowDatesDropdownEnum =
     ShowDatesDropdownEnum.Week;
   @observable balancesDatesRangeType: ShowDatesDropdownEnum =

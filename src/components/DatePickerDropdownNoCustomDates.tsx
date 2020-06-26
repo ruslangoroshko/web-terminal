@@ -38,7 +38,7 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
           break;
 
         case ShowDatesDropdownEnum.Week:
-          dataRangeStoreNoCustomDates.startDate = moment().subtract(1, 'w');
+          dataRangeStoreNoCustomDates.startDate = moment().subtract(1, 'weeks');
           dataRangeStoreNoCustomDates.endDate = moment();
           break;
 
@@ -48,7 +48,7 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
           break;
 
         case ShowDatesDropdownEnum.Year:
-          dataRangeStoreNoCustomDates.startDate = moment().subtract(1, 'y');
+          dataRangeStoreNoCustomDates.startDate = moment().subtract(1, 'years');
           dataRangeStoreNoCustomDates.endDate = moment();
           break;
 

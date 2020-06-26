@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
@@ -13,26 +13,41 @@ import LoaderForComponents from '../LoaderForComponents';
 import InfinityScrollList from '../InfinityScrollList';
 
 const TradingHistory: FC = () => {
-  const { tabsStore, mainAppStore, historyStore } = useStores();
+  const {
+    tabsStore,
+    mainAppStore,
+    historyStore,
+    dataRangeStoreNoCustomDates,
+  } = useStores();
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchPositionsHistory = async (isScrolling = false) => {
-    const response = await API.getPositionsHistory({
-      accountId: mainAppStore.activeAccount!.id,
-      startDate: historyStore.positionsStartDate.valueOf(),
-      endDate: historyStore.positionsEndDate.valueOf(),
-      page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
-      pageSize: 20,
-    });
-    historyStore.positionsHistoryReport = {
-      ...response,
-      positionsHistory: isScrolling? [
-        ...historyStore.positionsHistoryReport.positionsHistory,
-        ...response.positionsHistory,
-      ] : response.positionsHistory,
-    };
-  };
+  const fetchPositionsHistory = useCallback(
+    async (isScrolling = false) => {
+      const response = await API.getPositionsHistory({
+        accountId: mainAppStore.activeAccount!.id,
+        startDate: dataRangeStoreNoCustomDates.startDate.valueOf(),
+        endDate: dataRangeStoreNoCustomDates.endDate.valueOf(),
+        page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
+        pageSize: 20,
+      });
+      historyStore.positionsHistoryReport = {
+        ...response,
+        positionsHistory: isScrolling
+          ? [
+              ...historyStore.positionsHistoryReport.positionsHistory,
+              ...response.positionsHistory,
+            ]
+          : response.positionsHistory,
+      };
+    },
+    [
+      mainAppStore.activeAccount?.id,
+      dataRangeStoreNoCustomDates.startDate,
+      dataRangeStoreNoCustomDates.endDate,
+      historyStore.positionsHistoryReport,
+    ]
+  );
 
   useEffect(() => {
     fetchPositionsHistory().finally(() => {
@@ -42,9 +57,9 @@ const TradingHistory: FC = () => {
       historyStore.positionsHistoryReport = {
         ...historyStore.positionsHistoryReport,
         page: 1,
-        positionsHistory: []
-      }
-    }
+        positionsHistory: [],
+      };
+    };
   }, []);
 
   return (

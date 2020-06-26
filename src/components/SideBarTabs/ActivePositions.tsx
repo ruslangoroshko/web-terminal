@@ -1,4 +1,4 @@
-import React, { FC, useRef, useMemo, useCallback, useEffect } from 'react';
+import React, { FC, useRef, useCallback, useMemo } from 'react';
 import * as yup from 'yup';
 import { Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
@@ -46,7 +46,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     instrumentsStore,
     SLTPStore,
   } = useStores();
- 
+
   const initialValues = useCallback(
     () => ({
       accountId: mainAppStore.activeAccount?.id || '',
@@ -62,14 +62,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     [position]
   );
 
-  const currentPriceAsk = useMemo(
+  const currentPriceAsk = useCallback(
     () => quotesStore.quotes[position.instrument].ask.c,
-    [quotesStore.quotes[position.instrument].ask.c]
+    [quotesStore.quotes[position.instrument].ask.c, position.instrument]
   );
 
-  const currentPriceBid = useMemo(
+  const currentPriceBid = useCallback(
     () => quotesStore.quotes[position.instrument].bid.c,
-    [quotesStore.quotes[position.instrument].bid.c]
+    [quotesStore.quotes[position.instrument].bid.c, position.instrument]
   );
 
   const validationSchema = useCallback(
@@ -87,7 +87,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.TAKE_PROFIT,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value > currentPriceBid
+                value => value > currentPriceBid()
               ),
           })
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
@@ -99,7 +99,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.TAKE_PROFIT,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value < currentPriceAsk
+                value => value < currentPriceAsk()
               ),
           })
           .when([Fields.TAKE_PROFIT_TYPE], {
@@ -110,7 +110,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.TAKE_PROFIT,
                 'Take profit level should be higher than the current P/L',
-                value => value > PnL
+                value => value > PnL()
               ),
           }),
         sl: yup
@@ -125,7 +125,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value < currentPriceBid
+                value => value < currentPriceBid()
               ),
           })
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
@@ -137,7 +137,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Error message: This level is higher or lower than the one currently allowed',
-                value => value > currentPriceAsk
+                value => value > currentPriceAsk()
               ),
           })
           .when([Fields.STOP_LOSS_TYPE], {
@@ -148,8 +148,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Stop loss level should be lower than the current P/L',
-                value => Math.abs(value) < PnL + position.investmentAmount 
-              ).test(
+                value => Math.abs(value) <= PnL() + position.investmentAmount
+              )
+              .test(
                 Fields.STOP_LOSS,
                 'Stop loss level can not be higher than the Invest amount',
                 value => Math.abs(value) < position.investmentAmount
@@ -158,20 +159,20 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
       }),
-    [position]
+    [position, currentPriceBid, currentPriceAsk]
   );
 
-  const PnL = useMemo(
+  const PnL = useCallback(
     () =>
       calculateFloatingProfitAndLoss({
         investment: position.investmentAmount,
         multiplier: position.multiplier,
         costs: position.swap + position.commission,
         side: isBuy ? 1 : -1,
-        currentPrice: isBuy ? currentPriceBid : currentPriceAsk,
+        currentPrice: isBuy ? currentPriceBid() : currentPriceAsk(),
         openPrice: position.openPrice,
       }),
-    [currentPriceBid, currentPriceAsk]
+    [currentPriceBid, currentPriceAsk, position]
   );
 
   const closePosition = () => {
@@ -184,7 +185,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
 
   const updateSLTP = async (values: UpdateSLTP) => {
     try {
-      const response = await API.updateSLTP(values);
+      await API.updateSLTP(values);
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
@@ -353,9 +354,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                   <Observer>
                     {() => (
                       <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                        {getNumberSign(PnL + position.investmentAmount)}
+                        {getNumberSign(PnL() + position.investmentAmount)}
                         {mainAppStore.activeAccount?.symbol}
-                        {Math.abs(PnL + position.investmentAmount).toFixed(2)}
+                        {Math.abs(PnL() + position.investmentAmount).toFixed(2)}
                       </PrimaryTextSpan>
                     )}
                   </Observer>
@@ -400,26 +401,28 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             >
               <Observer>
                 {() => (
-                  <>
-                    <QuoteText
-                      isGrowth={PnL >= 0}
-                      marginBottom="4px"
-                      fontSize="12px"
-                      lineHeight="14px"
-                    >
-                      {PnL >= 0 ? '+' : '-'}
-                      {mainAppStore.activeAccount?.symbol}
-                      {Math.abs(PnL).toFixed(2)}
-                    </QuoteText>
-                    <PrimaryTextSpan
-                      fontSize="10px"
-                      lineHeight="12px"
-                      color="rgba(255, 255, 255, 0.5)"
-                    >
-                      {PnL >= 0 ? '+' : ''}
-                      {calculateInPercent(position.investmentAmount, PnL)}%
-                    </PrimaryTextSpan>
-                  </>
+                  <QuoteText
+                    isGrowth={PnL() >= 0}
+                    marginBottom="4px"
+                    fontSize="12px"
+                    lineHeight="14px"
+                  >
+                    {PnL() >= 0 ? '+' : '-'}
+                    {mainAppStore.activeAccount?.symbol}
+                    {Math.abs(PnL()).toFixed(2)}
+                  </QuoteText>
+                )}
+              </Observer>
+              <Observer>
+                {() => (
+                  <PrimaryTextSpan
+                    fontSize="10px"
+                    lineHeight="12px"
+                    color="rgba(255, 255, 255, 0.5)"
+                  >
+                    {PnL() >= 0 ? '+' : ''}
+                    {calculateInPercent(position.investmentAmount, PnL())}%
+                  </PrimaryTextSpan>
                 )}
               </Observer>
             </FlexContainer>
@@ -523,7 +526,6 @@ const SetSLTPButton = styled(FlexContainer)`
   }
 `;
 
-
 const CustomForm = styled.form`
-    margin: 0;
-`
+  margin: 0;
+`;

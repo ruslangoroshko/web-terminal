@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
@@ -21,6 +21,7 @@ interface Props {
 
 const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
   const { dateRangeStore } = useStores();
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const toggle = (flag: boolean) => () => {
     dateRangeStore.openedDropdown = flag;
@@ -31,27 +32,23 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
 
     switch (dateRange) {
       case ShowDatesDropdownEnum.Today:
-        dateRangeStore.startDate = moment().startOf('d');
+        dateRangeStore.startDate = moment().subtract(1, 'days');
         dateRangeStore.endDate = moment();
-
         break;
 
       case ShowDatesDropdownEnum.Week:
-        dateRangeStore.startDate = moment().subtract(1, 'w');
+        dateRangeStore.startDate = moment().subtract(1, 'weeks');
         dateRangeStore.endDate = moment();
-
         break;
 
       case ShowDatesDropdownEnum.Month:
         dateRangeStore.startDate = moment().subtract(1, 'months');
         dateRangeStore.endDate = moment();
-
         break;
 
       case ShowDatesDropdownEnum.Year:
-        dateRangeStore.startDate = moment().subtract(1, 'y');
+        dateRangeStore.startDate = moment().subtract(1, 'years');
         dateRangeStore.endDate = moment();
-
         break;
 
       default:
@@ -61,8 +58,21 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
     datesChangeCallback();
   };
 
+  const handleClickOutside = (e: any) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      toggle(false)();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <FlexContainer position="relative" width="190px">
+    <FlexContainer position="relative" width="190px" ref={wrapperRef}>
       <InputLabelWrapper
         width="100%"
         alignItems="center"

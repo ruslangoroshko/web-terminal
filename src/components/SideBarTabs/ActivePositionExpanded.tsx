@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PositionModelWSDTO } from '../../types/Positions';
 import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
@@ -53,7 +53,7 @@ function ActivePositionExpanded(props: Props) {
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 
-  const PnL = useMemo(
+  const PnL = useCallback(
     () =>
       calculateFloatingProfitAndLoss({
         investment: investmentAmount,
@@ -156,18 +156,18 @@ function ActivePositionExpanded(props: Props) {
                   fontSize="14px"
                   lineHeight="20px"
                   marginBottom="2px"
-                  isGrowth={PnL >= 0}
+                  isGrowth={PnL() >= 0}
                 >
-                  {PnL >= 0 ? '+' : '-'}
+                  {PnL() >= 0 ? '+' : '-'}
                   {currencySymbol}
-                  {Math.abs(PnL)}
+                  {Math.abs(PnL())}
                 </QuoteText>
                 <PrimaryTextSpan
                   fontSize="11px"
                   color="rgba(255, 255, 255, 0.4)"
                 >
-                  {PnL >= 0 ? '+' : ''}
-                  {calculateInPercent(investmentAmount, PnL)}%
+                  {PnL() >= 0 ? '+' : ''}
+                  {calculateInPercent(investmentAmount, PnL())}%
                 </PrimaryTextSpan>
               </>
             )}
@@ -178,9 +178,9 @@ function ActivePositionExpanded(props: Props) {
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <Observer>
             {() => (
-              <QuoteText isGrowth={PnL + investmentAmount > 0} fontSize="14px">
+              <QuoteText isGrowth={PnL() + investmentAmount > 0} fontSize="14px">
                 {mainAppStore.activeAccount?.symbol}
-                {(PnL + investmentAmount).toFixed(2)}
+                {(PnL() + investmentAmount).toFixed(2)}
               </QuoteText>
             )}
           </Observer>
@@ -273,9 +273,9 @@ function ActivePositionExpanded(props: Props) {
                 <Observer>
                   {() => (
                     <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                      {getNumberSign(PnL + investmentAmount)}
+                      {getNumberSign(PnL() + investmentAmount)}
                       {mainAppStore.activeAccount?.symbol}
-                      {Math.abs(PnL + investmentAmount).toFixed(2)}
+                      {Math.abs(PnL() + investmentAmount).toFixed(2)}
                     </PrimaryTextSpan>
                   )}
                 </Observer>
