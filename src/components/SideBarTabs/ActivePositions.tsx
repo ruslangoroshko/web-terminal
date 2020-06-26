@@ -1,4 +1,4 @@
-import React, { FC, useRef, useMemo, useCallback, useEffect } from 'react';
+import React, { FC, useRef, useCallback, useMemo } from 'react';
 import * as yup from 'yup';
 import { Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
@@ -64,7 +64,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
 
   const currentPriceAsk = useCallback(
     () => quotesStore.quotes[position.instrument].ask.c,
-    [quotesStore.quotes[position.instrument].ask.c,, position.instrument]
+    [quotesStore.quotes[position.instrument].ask.c, position.instrument]
   );
 
   const currentPriceBid = useCallback(
@@ -185,7 +185,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
 
   const updateSLTP = async (values: UpdateSLTP) => {
     try {
-      const response = await API.updateSLTP(values);
+      await API.updateSLTP(values);
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);

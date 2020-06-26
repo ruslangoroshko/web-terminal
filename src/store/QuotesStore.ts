@@ -54,16 +54,6 @@ export class QuotesStore implements IQuotesStore {
     );
   }
 
-  @action
-  getQuotePriceByInstrumentAsk(instrumentId: string) {
-    return this.quotes[instrumentId].ask.c;
-  }
-
-  @action
-  getQuotePriceByInstrumentBid(instrumentId: string) {
-    return this.quotes[instrumentId].bid.c;
-  }
-
   @computed
   get invest() {
     return this.activePositions.reduce(
