@@ -138,7 +138,16 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
           : 'Non Set'
       }`;
     };
-
+    const removeSL = () => {
+      SLTPStore.stopLossValue = '';
+      setFieldValue(Fields.STOP_LOSS, null);
+    };
+  
+    const removeTP = () => {
+      SLTPStore.takeProfitValue = '';
+      setFieldValue(Fields.TAKE_PROFIT, null);
+    };
+  
     return (
       <FlexContainer position="relative" ref={wrapperRef}>
         <FlexContainer width="100%" position="relative">
@@ -195,6 +204,8 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
               slError={stopLossError}
               tpError={takeProfitError}
               toggle={toggle}
+              removeSL={removeSL}
+              removeTP={removeTP}
             />
           </FlexContainer>
         )}
