@@ -107,6 +107,8 @@ function PendingOrder(props: Props) {
               takeProfitValue={pendingOrder.tp}
               stopLossType={pendingOrder.slType}
               takeProfitType={pendingOrder.tpType}
+              removeTP={() => {}}
+              removeSl={() => {}}
               isDisabled
             >
               <SvgIcon

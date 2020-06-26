@@ -28,6 +28,8 @@ interface Props {
   toggle: (arg0: boolean) => void;
   handleApply?: () => Promise<void>;
   isDisabled?: boolean;
+  removeSL: () => void;
+  removeTP: () => void;
 }
 
 const SetAutoclose = observer((props: Props) => {
@@ -41,6 +43,8 @@ const SetAutoclose = observer((props: Props) => {
     isDisabled,
     slError,
     tpError,
+    removeSL,
+    removeTP,
   } = props;
 
   const { SLTPStore, instrumentsStore } = useStores();
@@ -137,14 +141,6 @@ const SetAutoclose = observer((props: Props) => {
     SLTPStore.stopLossValue =
       stopLossValue !== null ? Math.abs(stopLossValue).toString() : '';
   }, []);
-
-  const removeSL = () => {
-    SLTPStore.stopLossValue = '';
-  };
-
-  const removeTP = () => {
-    SLTPStore.takeProfitValue = '';
-  };
 
   return (
     <Wrapper

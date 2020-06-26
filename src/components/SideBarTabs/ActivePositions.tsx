@@ -66,6 +66,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     () => quotesStore.quotes[position.instrument].ask.c,
     [quotesStore.quotes[position.instrument].ask.c]
   );
+
   const currentPriceBid = useMemo(
     () => quotesStore.quotes[position.instrument].bid.c,
     [quotesStore.quotes[position.instrument].bid.c]
@@ -146,11 +147,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .nullable()
               .test(
                 Fields.STOP_LOSS,
-                'Take profit level should be higher than the current P/L',
-                value => Math.abs(value) < PnL
+                'Stop loss level should be lower than the current P/L',
+                value => Math.abs(value) < PnL + position.investmentAmount 
               ).test(
                 Fields.STOP_LOSS,
-                'Stop loss level can not be lower than the Invest amount',
+                'Stop loss level can not be higher than the Invest amount',
                 value => Math.abs(value) < position.investmentAmount
               ),
           }),
@@ -238,6 +239,16 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       }
     });
   }, [SLTPStore.takeProfitValue, SLTPStore.stopLossValue]);
+
+  const removeSL = () => {
+    SLTPStore.stopLossValue = '';
+    setFieldValue(Fields.STOP_LOSS, null);
+  };
+
+  const removeTP = () => {
+    SLTPStore.takeProfitValue = '';
+    setFieldValue(Fields.TAKE_PROFIT, null);
+  };
 
   return (
     <InstrumentInfoWrapper
@@ -435,6 +446,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 updateSLTP={handleApply}
                 stopLossError={errors.sl}
                 takeProfitError={errors.tp}
+                removeSl={removeSL}
+                removeTP={removeTP}
               >
                 <SetSLTPButton>
                   <PrimaryTextSpan

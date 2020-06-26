@@ -14,6 +14,8 @@ interface Props {
   takeProfitError?: string;
   isDisabled?: boolean;
   children: React.ReactNode;
+  removeSl: () => void;
+  removeTP: () => void;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -28,6 +30,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       children,
       stopLossError,
       takeProfitError,
+      removeSl,
+      removeTP,
     } = props;
 
     const [on, toggle] = useState(false);
@@ -104,6 +108,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               tpError={takeProfitError}
               toggle={toggle}
               isDisabled={isDisabled}
+              removeSL={removeSl}
+              removeTP={removeTP}
             />
           </FlexContainer>
         )}
