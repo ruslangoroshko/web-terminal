@@ -32,27 +32,23 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
 
     switch (dateRange) {
       case ShowDatesDropdownEnum.Today:
-        dateRangeStore.startDate = moment().startOf('d');
+        dateRangeStore.startDate = moment().subtract(1, 'days');
         dateRangeStore.endDate = moment();
-
         break;
 
       case ShowDatesDropdownEnum.Week:
-        dateRangeStore.startDate = moment().subtract(1, 'w');
+        dateRangeStore.startDate = moment().subtract(1, 'weeks');
         dateRangeStore.endDate = moment();
-
         break;
 
       case ShowDatesDropdownEnum.Month:
         dateRangeStore.startDate = moment().subtract(1, 'months');
         dateRangeStore.endDate = moment();
-
         break;
 
       case ShowDatesDropdownEnum.Year:
-        dateRangeStore.startDate = moment().subtract(1, 'y');
+        dateRangeStore.startDate = moment().subtract(1, 'years');
         dateRangeStore.endDate = moment();
-
         break;
 
       default:
