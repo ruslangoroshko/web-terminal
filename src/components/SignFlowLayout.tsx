@@ -67,7 +67,7 @@ const SignFlowLayout: FC<Props> = props => {
               <PrimaryTextSpan textTransform="capitalize" fontSize="10px" color="rgba(255, 255, 255, 0.4)">
                 {mainAppStore.initModel.brandName}
               </PrimaryTextSpan>
-              . All rights reserved. v 1.0.13
+              . All rights reserved. v 1.0.14
             </PrimaryTextSpan>
           </FlexContainer>
 

@@ -65,7 +65,7 @@ const VisaMasterCardForm = () => {
     try {
       const response = await API.createDeposit(params);
       if (response.status === DepositApiResponseCodes.Success) {
-        window.location.href = response.redirectUrl;
+        window.location.href = encodeURIComponent(response.redirectUrl);
       } else {
         badRequestPopupStore.setMessage('Technical error');
         badRequestPopupStore.openModal();
