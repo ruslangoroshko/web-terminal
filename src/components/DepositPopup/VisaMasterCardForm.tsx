@@ -27,12 +27,9 @@ const VisaMasterCardForm = () => {
   const validationSchema = yup.object().shape({
     amount: yup
       .number()
-      .required('min: $50')
-      .transform(value => (isNaN(value) ? undefined : value))
       .min(50, 'min: $50')
       .max(1000, 'max: $1000')
-      .integer('min: $50')
-      .positive('min: $50'),
+      .required('min: $50'),
   });
   const initialValues = {
     amount: 500,
@@ -41,11 +38,17 @@ const VisaMasterCardForm = () => {
   const { mainAppStore, notificationStore, badRequestPopupStore } = useStores();
 
   const investOnBeforeInputHandler = (e: any) => {
+    const currTargetValue = e.currentTarget.value;
     if ([',', '.'].includes(e.data)) {
       e.preventDefault();
       return;
     }
     if (!e.data.match(/^\d|\.|\,/)) {
+      e.preventDefault();
+      return;
+    }
+    const regex = /^[0-9]{1,15}/;
+    if (e.data.length > 1 && !currTargetValue.match(regex)) {
       e.preventDefault();
       return;
     }
@@ -87,7 +90,7 @@ const VisaMasterCardForm = () => {
     initialValues,
     onSubmit: handleSubmitForm,
     validationSchema,
-    validateOnBlur: false,
+    validateOnBlur: true,
     validateOnChange: true,
   });
 
