@@ -16,7 +16,9 @@ interface RequestValues {
   amount: number;
   bitcoinAdress: string;
 }
-const VALIDATE_BITCOIN = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/;
+
+const PRECISION_USD = 2;
+const VALIDATE_BITCOIN = /^([13])[a-km-zA-HJ-NP-Z1-9]{25,34}$/;
 
 const WithdrawFormBitcoin = () => {
   const initialValues: RequestValues = {

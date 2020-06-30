@@ -39,6 +39,7 @@ const WithdrawHistoryTab = () => {
   useEffect(() => {
     initHistoryList();
   }, []);
+  
   return (
     <FlexContainer
       flexDirection="column"
