@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import * as yup from 'yup';
 import styled from '@emotion/styled';
 import { PrimaryButton } from '../../../styles/Buttons';
@@ -17,6 +17,8 @@ interface RequestValues {
   amount: number;
 }
 
+const PRECISION_USD = 2;
+
 const WithdrawFormBankTransfer = () => {
   const initialValues: RequestValues = {
     amount: 0,
@@ -32,7 +34,9 @@ const WithdrawFormBankTransfer = () => {
           .min(10, 'min: $10')
           .max(
             mainAppStore.accounts.find(item => item.isLive)?.balance || 0,
-            `max: ${mainAppStore.accounts.find(item => item.isLive)?.balance.toFixed(2)}`
+            `max: ${mainAppStore.accounts
+              .find(item => item.isLive)
+              ?.balance.toFixed(2)}`
           ),
       }),
     [mainAppStore.accounts]
@@ -72,17 +76,18 @@ const WithdrawFormBankTransfer = () => {
     values,
     setFieldError,
     setFieldValue,
+    setSubmitting,
     validateForm,
     handleChange,
     handleSubmit,
     errors,
     touched,
-    isSubmitting,
+    isSubmitting = false,
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
     validationSchema,
-    validateOnBlur: false,
+    validateOnBlur: true,
     validateOnChange: true,
   });
 
@@ -104,7 +109,41 @@ const WithdrawFormBankTransfer = () => {
   };
   const amountOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
+
     if (!e.data.match(/^[0-9.,]*$/g)) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!currTargetValue && [',', '.'].includes(e.data)) {
+      e.preventDefault();
+      return;
+    }
+
+    if ([',', '.'].includes(e.data)) {
+      if (
+        !currTargetValue ||
+        (currTargetValue && currTargetValue.includes('.'))
+      ) {
+        e.preventDefault();
+        return;
+      }
+    }
+    // see another regex
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION_USD}})?$`;
+    const splittedValue =
+      currTargetValue.substring(0, e.currentTarget.selectionStart) +
+      e.data +
+      currTargetValue.substring(e.currentTarget.selectionStart);
+    if (
+      currTargetValue &&
+      ![',', '.'].includes(e.data) &&
+      !splittedValue.match(regex)
+    ) {
+      e.preventDefault();
+      return;
+    }
+    if (e.data.length > 1 && !splittedValue.match(regex)) {
       e.preventDefault();
       return;
     }
@@ -118,6 +157,11 @@ const WithdrawFormBankTransfer = () => {
       if (el) el.focus();
     }
   };
+
+  useEffect(() => {
+    const submitting = values.amount.toString().length > 0;
+    setSubmitting(submitting);
+  }, [values.amount]);
 
   return (
     <CustomForm noValidate onSubmit={handleSubmit}>
@@ -164,6 +208,7 @@ const WithdrawFormBankTransfer = () => {
           padding="12px"
           type="submit"
           onClick={handlerClickSubmit}
+          disabled={!isSubmitting}
         >
           <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
             Withdraw

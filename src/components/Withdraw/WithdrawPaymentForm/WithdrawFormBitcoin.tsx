@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import styled from '@emotion/styled';
@@ -16,7 +16,9 @@ interface RequestValues {
   amount: number;
   bitcoinAdress: string;
 }
-const VALIDATE_BITCOIN = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/;
+
+const PRECISION_USD = 2;
+const VALIDATE_BITCOIN = /^([13])[a-km-zA-HJ-NP-Z1-9]{25,34}$/;
 
 const WithdrawFormBitcoin = () => {
   const initialValues: RequestValues = {
@@ -47,6 +49,7 @@ const WithdrawFormBitcoin = () => {
       }),
     [mainAppStore.accounts]
   );
+
 
   const handleSubmitForm = async () => {
     const accountInfo = mainAppStore.accounts.find(item => item.isLive);
@@ -87,11 +90,12 @@ const WithdrawFormBitcoin = () => {
     errors,
     touched,
     isSubmitting,
+    setSubmitting,
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
     validationSchema,
-    validateOnBlur: false,
+    validateOnBlur: true,
     validateOnChange: true,
   });
 
@@ -113,7 +117,41 @@ const WithdrawFormBitcoin = () => {
   };
   const amountOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
+
     if (!e.data.match(/^[0-9.,]*$/g)) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!currTargetValue && [',', '.'].includes(e.data)) {
+      e.preventDefault();
+      return;
+    }
+
+    if ([',', '.'].includes(e.data)) {
+      if (
+        !currTargetValue ||
+        (currTargetValue && currTargetValue.includes('.'))
+      ) {
+        e.preventDefault();
+        return;
+      }
+    }
+    // see another regex
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION_USD}})?$`;
+    const splittedValue =
+      currTargetValue.substring(0, e.currentTarget.selectionStart) +
+      e.data +
+      currTargetValue.substring(e.currentTarget.selectionStart);
+    if (
+      currTargetValue &&
+      ![',', '.'].includes(e.data) &&
+      !splittedValue.match(regex)
+    ) {
+      e.preventDefault();
+      return;
+    }
+    if (e.data.length > 1 && !splittedValue.match(regex)) {
       e.preventDefault();
       return;
     }
@@ -127,6 +165,13 @@ const WithdrawFormBitcoin = () => {
       if (el) el.focus();
     }
   };
+
+  useEffect(() => {
+    const submitting = values.amount.toString().length > 0 && values.bitcoinAdress.length > 0
+    setSubmitting(submitting);
+  }, [values.amount, values.bitcoinAdress]);
+
+
   return (
     <CustomForm noValidate onSubmit={handleSubmit}>
       <FlexContainer flexDirection="column" width="340px">
@@ -206,6 +251,7 @@ const WithdrawFormBitcoin = () => {
           padding="12px"
           type="submit"
           onClick={handlerClickSubmit}
+          disabled={!isSubmitting}
         >
           <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
             Withdraw

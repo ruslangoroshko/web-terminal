@@ -29,7 +29,6 @@ import WithdrawFormBitcoin from './WithdrawPaymentForm/WithdrawFormBitcoin';
 import { Observer } from 'mobx-react-lite';
 import WithdrawPendingPopup from './WithdrawPendingPopup';
 
-
 const PRECISION_USD = 2;
 
 const WithdrawRequestTab = () => {
@@ -38,22 +37,17 @@ const WithdrawRequestTab = () => {
     WithdrawalTypesEnum.BankTransfer
   );
 
-    
   return (
-    <FlexContainer
+    <RequestTabWrap
       flexDirection="column"
       minHeight="calc(100vh - 234px)"
       justifyContent="space-between"
       position="relative"
     >
       <Observer>
-        {() => (
-          <>
-            {withdrawalStore.pendingPopup && <WithdrawPendingPopup />}
-          </>
-        )}
+        {() => <>{withdrawalStore.pendingPopup && <WithdrawPendingPopup />}</>}
       </Observer>
-      <FlexContainer flexDirection="column">
+      <FlexContainer flexDirection="column" marginBottom="16px">
         <FlexContainer marginBottom="48px">
           <FlexContainer flexDirection="column" width="180px">
             <PrimaryTextSpan
@@ -101,9 +95,8 @@ const WithdrawRequestTab = () => {
         </FlexContainer>
 
         <FlexContainer flexDirection="column">
-          {Number(
-            mainAppStore.accounts.find(item => item.isLive)?.balance
-          ) > 0 && (
+          {Number(mainAppStore.accounts.find(item => item.isLive)?.balance) >
+            0 && (
             <FlexContainer flexDirection="column">
               {mainAppStore.profileStatus ===
                 PersonalDataKYCEnum.NotVerified && <WithdrawPagePopup />}
@@ -174,11 +167,13 @@ const WithdrawRequestTab = () => {
                 </WithdrawPaymenMethodtItem>
               </FlexContainer>
 
-
               <FlexContainer>
-                
-                {paymentMeyhod === WithdrawalTypesEnum.BankTransfer && <WithdrawFormBankTransfer />}
-                {paymentMeyhod === WithdrawalTypesEnum.Bitcoin && <WithdrawFormBitcoin />}
+                {paymentMeyhod === WithdrawalTypesEnum.BankTransfer && (
+                  <WithdrawFormBankTransfer />
+                )}
+                {paymentMeyhod === WithdrawalTypesEnum.Bitcoin && (
+                  <WithdrawFormBitcoin />
+                )}
               </FlexContainer>
             </FlexContainer>
           )}
@@ -271,7 +266,7 @@ const WithdrawRequestTab = () => {
             </FlexContainer>
           </FlexContainer>
           <FlexContainer>
-            <ButtonOpenFaq>
+            <ButtonOpenFaq href={mainAppStore.initModel.faqUrl} target="blank">
               <PrimaryTextSpan
                 color="#fffccc"
                 fontSize="14px"
@@ -283,12 +278,15 @@ const WithdrawRequestTab = () => {
           </FlexContainer>
         </FaqOpenBlock>
       </FlexContainer>
-    </FlexContainer>
+    </RequestTabWrap>
   );
 };
 
 export default WithdrawRequestTab;
 
+const RequestTabWrap = styled(FlexContainer)`
+  overflow-y: auto;
+`;
 
 const WithdrawCardItem = styled(FlexContainer)`
   border-radius: 4px;
@@ -328,10 +326,29 @@ const FaqOpenBlock = styled(FlexContainer)`
   padding: 16px;
 `;
 
-const ButtonOpenFaq = styled(SecondaryButton)`
+const ButtonOpenFaq = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.24);
+  }
+
+  &:focus {
+    background-color: rgba(0, 0, 0, 0.24);
+  }
+
+  &:disabled {
+    background-color: rgba(255, 255, 255, 0.04);
+    & span {
+      color: rgba(255, 255, 255, 0.4);
+    }
+  }
   width: 132px;
   height: 40px;
 `;
-
-
-
