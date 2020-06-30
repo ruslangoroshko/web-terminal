@@ -53,6 +53,7 @@ function DemoRealPopup() {
         });
         mainAppStore.setActiveAccount(acc);
         mainAppStore.isDemoRealPopup = false;
+        push(`/${HashLocation.Deposit}`);
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
@@ -62,7 +63,6 @@ function DemoRealPopup() {
 
   const handleInvestReal = () => {
     selectRealAccount();
-    push(`/${HashLocation.Deposit}`)
   }
 
   return (
