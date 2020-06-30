@@ -25,9 +25,8 @@ const WithdrawHistoryTab = () => {
           (a: any , b: any) => moment(b.creationDate).valueOf() - moment(a.creationDate).valueOf()) : result.history;
 
         withdrawalStore.setHistory(sortedList);
-        withdrawalStore.endLoad();
       }
-      console.log(result);
+      withdrawalStore.endLoad();
     } catch (error) {
       console.log(error);
     }

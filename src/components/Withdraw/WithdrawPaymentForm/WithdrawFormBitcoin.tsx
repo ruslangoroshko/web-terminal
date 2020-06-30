@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import styled from '@emotion/styled';
@@ -48,6 +48,7 @@ const WithdrawFormBitcoin = () => {
     [mainAppStore.accounts]
   );
 
+
   const handleSubmitForm = async () => {
     const accountInfo = mainAppStore.accounts.find(item => item.isLive);
     try {
@@ -87,6 +88,7 @@ const WithdrawFormBitcoin = () => {
     errors,
     touched,
     isSubmitting,
+    setSubmitting,
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
@@ -127,6 +129,13 @@ const WithdrawFormBitcoin = () => {
       if (el) el.focus();
     }
   };
+
+  useEffect(() => {
+    const submitting = values.amount.toString().length > 0 && values.bitcoinAdress.length > 0
+    setSubmitting(submitting);
+  }, [values.amount, values.bitcoinAdress]);
+
+
   return (
     <CustomForm noValidate onSubmit={handleSubmit}>
       <FlexContainer flexDirection="column" width="340px">
@@ -206,6 +215,7 @@ const WithdrawFormBitcoin = () => {
           padding="12px"
           type="submit"
           onClick={handlerClickSubmit}
+          disabled={!isSubmitting}
         >
           <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
             Withdraw

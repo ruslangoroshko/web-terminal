@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import * as yup from 'yup';
 import styled from '@emotion/styled';
 import { PrimaryButton } from '../../../styles/Buttons';
@@ -72,12 +72,13 @@ const WithdrawFormBankTransfer = () => {
     values,
     setFieldError,
     setFieldValue,
+    setSubmitting,
     validateForm,
     handleChange,
     handleSubmit,
     errors,
     touched,
-    isSubmitting,
+    isSubmitting = false,
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
@@ -118,6 +119,11 @@ const WithdrawFormBankTransfer = () => {
       if (el) el.focus();
     }
   };
+
+  useEffect(() => {
+    const submitting = values.amount.toString().length > 0
+    setSubmitting(submitting);
+  }, [values.amount]);
 
   return (
     <CustomForm noValidate onSubmit={handleSubmit}>
@@ -164,6 +170,7 @@ const WithdrawFormBankTransfer = () => {
           padding="12px"
           type="submit"
           onClick={handlerClickSubmit}
+          disabled={!isSubmitting}
         >
           <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
             Withdraw
