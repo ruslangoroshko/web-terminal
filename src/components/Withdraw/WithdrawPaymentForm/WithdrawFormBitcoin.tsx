@@ -93,7 +93,7 @@ const WithdrawFormBitcoin = () => {
     initialValues,
     onSubmit: handleSubmitForm,
     validationSchema,
-    validateOnBlur: false,
+    validateOnBlur: true,
     validateOnChange: true,
   });
 
@@ -115,7 +115,41 @@ const WithdrawFormBitcoin = () => {
   };
   const amountOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
+
     if (!e.data.match(/^[0-9.,]*$/g)) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!currTargetValue && [',', '.'].includes(e.data)) {
+      e.preventDefault();
+      return;
+    }
+
+    if ([',', '.'].includes(e.data)) {
+      if (
+        !currTargetValue ||
+        (currTargetValue && currTargetValue.includes('.'))
+      ) {
+        e.preventDefault();
+        return;
+      }
+    }
+    // see another regex
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${PRECISION_USD}})?$`;
+    const splittedValue =
+      currTargetValue.substring(0, e.currentTarget.selectionStart) +
+      e.data +
+      currTargetValue.substring(e.currentTarget.selectionStart);
+    if (
+      currTargetValue &&
+      ![',', '.'].includes(e.data) &&
+      !splittedValue.match(regex)
+    ) {
+      e.preventDefault();
+      return;
+    }
+    if (e.data.length > 1 && !splittedValue.match(regex)) {
       e.preventDefault();
       return;
     }
