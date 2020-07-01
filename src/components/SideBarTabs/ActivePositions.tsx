@@ -78,6 +78,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         tp: yup
           .number()
           .nullable()
+          .test(
+            Fields.TAKE_PROFIT,
+            'Tale profit level can not be zero',
+            value => Math.abs(value) !== 0
+          )
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
             is: (operation, tpType) =>
               operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
@@ -116,6 +121,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         sl: yup
           .number()
           .nullable()
+          .test(
+            Fields.STOP_LOSS,
+            'Stop loss level can not be zero',
+            value => Math.abs(value) !== 0
+          )
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
             is: (operation, slType) =>
               operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
@@ -184,8 +194,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   };
 
   const updateSLTP = async (values: UpdateSLTP) => {
+    const valuesToSubmit = {
+      ...values,
+      slType: values.sl ? values.slType : null,
+      tpType: values.tp ? values.tpType : null,
+    };
     try {
-      await API.updateSLTP(values);
+      await API.updateSLTP(valuesToSubmit);
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
