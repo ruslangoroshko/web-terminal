@@ -36,3 +36,7 @@ export interface UserAuthenticateResponse {
     refreshToken: string;
   };
 }
+
+export interface LpLoginParams {
+  token: string;
+}

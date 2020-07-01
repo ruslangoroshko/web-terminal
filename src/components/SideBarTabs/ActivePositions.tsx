@@ -78,11 +78,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         tp: yup
           .number()
           .nullable()
-          .test(
-            Fields.TAKE_PROFIT,
-            'Tale profit level can not be zero',
-            value => value !== 0
-          )
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
             is: (operation, tpType) =>
               operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
@@ -116,16 +111,19 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 Fields.TAKE_PROFIT,
                 'Take profit level should be higher than the current P/L',
                 value => value > PnL()
-              ),
+              )
+              // .test(
+              //   Fields.TAKE_PROFIT,
+              //   'Take profit level can not be zero',
+              //   value => {
+              //     console.log(value)
+              //     return value !== 0;
+              //   }
+              // ),
           }),
         sl: yup
           .number()
           .nullable()
-          .test(
-            Fields.STOP_LOSS,
-            'Stop loss level can not be zero',
-            value => value !== 0
-          )
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
             is: (operation, slType) =>
               operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
@@ -164,7 +162,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 Fields.STOP_LOSS,
                 'Stop loss level can not be higher than the Invest amount',
                 value => Math.abs(value) <= position.investmentAmount
-              ),
+              )
+              // .test(
+              //   Fields.STOP_LOSS,
+              //   'Stop loss level can not be zero',
+              //   value => value !== 0
+              // ),
           }),
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
