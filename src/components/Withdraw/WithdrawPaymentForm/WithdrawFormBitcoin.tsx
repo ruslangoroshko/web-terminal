@@ -223,7 +223,7 @@ const WithdrawFormBitcoin = () => {
             color="rgba(255, 255, 255, 0.3)"
             textTransform="uppercase"
           >
-            Bitcoin adress
+            Bitcoin Address
           </PrimaryTextSpan>
         </FlexContainer>
 
