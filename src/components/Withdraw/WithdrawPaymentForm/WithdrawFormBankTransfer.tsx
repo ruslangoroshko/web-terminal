@@ -42,6 +42,8 @@ const WithdrawFormBankTransfer = () => {
     [mainAppStore.accounts]
   );
 
+  const [dissabled, setDissabled] = useState(true);
+
   const handleSubmitForm = async () => {
     try {
       const dataParam = {
@@ -82,7 +84,7 @@ const WithdrawFormBankTransfer = () => {
     handleSubmit,
     errors,
     touched,
-    isSubmitting = false,
+    isSubmitting,
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
@@ -159,8 +161,7 @@ const WithdrawFormBankTransfer = () => {
   };
 
   useEffect(() => {
-    const submitting = values.amount.toString().length > 0;
-    setSubmitting(submitting);
+    setDissabled(!values.amount);
   }, [values.amount]);
 
   return (
@@ -193,7 +194,7 @@ const WithdrawFormBankTransfer = () => {
             id="amount"
             onBeforeInput={amountOnBeforeInputHandler}
             onChange={handleChangeAmount}
-            onBlur={handleBlurAmount}
+            //onBlur={handleBlurAmount}
             value={values.amount || ''}
             type="text"
           />
@@ -208,7 +209,7 @@ const WithdrawFormBankTransfer = () => {
           padding="12px"
           type="submit"
           onClick={handlerClickSubmit}
-          disabled={!isSubmitting}
+          disabled={dissabled}
         >
           <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
             Withdraw
