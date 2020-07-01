@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
@@ -17,7 +17,6 @@ import BuySellPanel from '../components/BuySellPanel/BuySellPanel';
 import ChartIntervalTimeScale from '../components/Chart/ChartTimeScale';
 import ChartSettingsButtons from '../components/Chart/ChartSettingsButtons';
 import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
-import { AskBidEnum } from '../enums/AskBid';
 import { useStores } from '../hooks/useStores';
 import Toggle from '../components/Toggle';
 import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
@@ -26,6 +25,8 @@ import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import NotificationPopup from '../components/NotificationPopup';
 import DemoRealPopup from '../components/DemoRealPopup';
 import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
+import { useLocation } from 'react-router-dom';
+import StatusPaymentPopup from '../components/DepositPopup/StatusPaymentPopup';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -36,6 +37,9 @@ const Dashboard = observer(() => {
     instrumentsStore,
     notificationStore,
   } = useStores();
+
+  const [paymentStatus, setPaymentStatus] = useState('');
+  const location = useLocation();
 
   useEffect(() => {
     if (mainAppStore.activeAccount) {
@@ -102,6 +106,13 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     document.title = `${mainAppStore.initModel.brandName} trading platform`;
+    if (location.search) {
+      const params = new URLSearchParams(location.search);
+      const status = params.get('status');
+      if (status) {
+        setPaymentStatus(status);
+      }
+    }
   }, []);
 
   return (
@@ -116,6 +127,9 @@ const Dashboard = observer(() => {
           <>{mainAppStore.isDemoRealPopup && <DemoRealPopup></DemoRealPopup>}</>
         )}
       </Observer>
+      {!!paymentStatus && (
+        <StatusPaymentPopup status={paymentStatus}></StatusPaymentPopup>
+      )}
       <FlexContainer
         position="absolute"
         bottom="100px"
