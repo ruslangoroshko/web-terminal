@@ -59,7 +59,7 @@ publish:
 
 publish-dev:
   stage: publish-dev
-  tag: [monfex]
+  tags: [monfex]
   services:
     - docker:dind
   variables:
