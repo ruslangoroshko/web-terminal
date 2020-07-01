@@ -16,6 +16,7 @@ interface Props {
   children: React.ReactNode;
   removeSl: () => void;
   removeTP: () => void;
+  resetForm?: () => void;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -32,6 +33,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       takeProfitError,
       removeSl,
       removeTP,
+      resetForm,
     } = props;
 
     const [on, toggle] = useState(false);
@@ -70,6 +72,12 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         toggle(false);
       }
     };
+
+    useEffect(() => {
+      if (!on && resetForm && (stopLossError || takeProfitError)) {
+        resetForm();
+      }
+    }, [on])
 
     useEffect(() => {
       document.addEventListener('mousedown', handleClickOutside);
