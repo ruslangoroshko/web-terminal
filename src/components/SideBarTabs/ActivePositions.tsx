@@ -81,7 +81,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           .test(
             Fields.TAKE_PROFIT,
             'Tale profit level can not be zero',
-            value => Math.abs(value) !== 0
+            value => value !== 0
           )
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
             is: (operation, tpType) =>
@@ -124,7 +124,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           .test(
             Fields.STOP_LOSS,
             'Stop loss level can not be zero',
-            value => Math.abs(value) !== 0
+            value => value !== 0
           )
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
             is: (operation, slType) =>
@@ -194,6 +194,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   };
 
   const updateSLTP = async (values: UpdateSLTP) => {
+    if (!values.sl && !values.tp) {
+      return;
+    }
     const valuesToSubmit = {
       ...values,
       slType: values.sl ? values.slType : null,
@@ -212,6 +215,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     errors,
     submitForm,
     validateForm,
+    resetForm,
     touched,
   } = useFormik<UpdateSLTP>({
     initialValues: initialValues(),
@@ -466,6 +470,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 takeProfitError={errors.tp}
                 removeSl={removeSL}
                 removeTP={removeTP}
+                resetForm={resetForm}
               >
                 <SetSLTPButton>
                   <PrimaryTextSpan
