@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import styled from '@emotion/styled';
@@ -49,6 +49,8 @@ const WithdrawFormBitcoin = () => {
       }),
     [mainAppStore.accounts]
   );
+
+  const [dissabled, setDissabled] = useState(true);
 
 
   const handleSubmitForm = async () => {
@@ -167,8 +169,8 @@ const WithdrawFormBitcoin = () => {
   };
 
   useEffect(() => {
-    const submitting = values.amount.toString().length > 0 && values.bitcoinAdress.length > 0
-    setSubmitting(submitting);
+    const submitting = !!values.amount && values.bitcoinAdress.length > 0
+    setDissabled(!submitting);
   }, [values.amount, values.bitcoinAdress]);
 
 
@@ -202,7 +204,7 @@ const WithdrawFormBitcoin = () => {
             id="amount"
             onBeforeInput={amountOnBeforeInputHandler}
             onChange={handleChangeAmount}
-            onBlur={handleBlurAmount}
+            //onBlur={handleBlurAmount}
             value={values.amount || ''}
             type="text"
           />
@@ -223,7 +225,7 @@ const WithdrawFormBitcoin = () => {
             color="rgba(255, 255, 255, 0.3)"
             textTransform="uppercase"
           >
-            Bitcoin adress
+            Bitcoin Address
           </PrimaryTextSpan>
         </FlexContainer>
 
@@ -251,7 +253,7 @@ const WithdrawFormBitcoin = () => {
           padding="12px"
           type="submit"
           onClick={handlerClickSubmit}
-          disabled={!isSubmitting}
+          disabled={dissabled}
         >
           <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
             Withdraw
