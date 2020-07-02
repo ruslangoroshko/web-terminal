@@ -12,7 +12,6 @@ import Topics from '../constants/websocketTopics';
 import Fields from '../constants/fields';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from './BadRequestPopup';
-import { push } from 'mixpanel-browser';
 import HashLocation from '../constants/hashLocation';
 import { useHistory } from 'react-router-dom';
 
