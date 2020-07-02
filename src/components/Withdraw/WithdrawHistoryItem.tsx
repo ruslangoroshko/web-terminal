@@ -20,7 +20,7 @@ interface Props {
 const WithdrawHistoryItem = (props: Props) => {
   const { data, updateHistory } = props;
 	const instrumentRef = useRef(null);
-	const { mainAppStore } = useStores();
+	const { mainAppStore, withdrawalStore } = useStores();
 	
 	const handleCancel = async (withdrawalId: string) => {
 		try {
@@ -30,6 +30,7 @@ const WithdrawHistoryItem = (props: Props) => {
       });
       if (result.status === WithdrawalHistoryResponseStatus.Successful) {
         updateHistory();
+        withdrawalStore.closePendingPopup();
       }
 		} catch (error) {
 			
