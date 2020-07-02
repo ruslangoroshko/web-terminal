@@ -4,6 +4,7 @@ export interface InitModel {
   policyUrl: string;
   termsUrl: string;
   faqUrl: string;
+  withdrawFaqUrl: string;
   aboutUrl: string;
   supportUrl: string;
   androidAppLink: string;
