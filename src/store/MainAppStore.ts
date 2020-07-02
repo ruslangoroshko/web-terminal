@@ -187,6 +187,8 @@ export class MainAppStore implements MainAppStoreProps {
     connection.on(
       Topics.SERVER_ERROR,
       (response: ResponseFromWebsocket<ServerError>) => {
+        this.isInitLoading = false;
+        this.isLoading = false;
         this.rootStore.badRequestPopupStore.openModal();
         this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
       }
