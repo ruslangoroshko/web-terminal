@@ -105,14 +105,19 @@ const Dashboard = observer(() => {
   }, [mainAppStore.activeAccount]);
 
   useEffect(() => {
-    document.title = `${mainAppStore.initModel.brandName} trading platform`;
     if (location.search) {
       const params = new URLSearchParams(location.search);
       const status = params.get('status');
       if (status) {
         setPaymentStatus(status);
       }
+    } else {
+      setPaymentStatus('');
     }
+  }, [location.search]);
+
+  useEffect(() => {
+    document.title = `${mainAppStore.initModel.brandName} trading platform`;
   }, []);
 
   return (
