@@ -360,6 +360,7 @@ class API {
             brandName: '',
             brandProperty: '',
             faqUrl: '',
+            withdrawFaqUrl: '',
             favicon: '',
             gaAsAccount: '',
             iosAppLink: '',

@@ -58,6 +58,7 @@ export class MainAppStore implements MainAppStoreProps {
     brandName: '',
     brandProperty: '',
     faqUrl: '',
+    withdrawFaqUrl: '',
     favicon: '',
     gaAsAccount: '',
     iosAppLink: '',
