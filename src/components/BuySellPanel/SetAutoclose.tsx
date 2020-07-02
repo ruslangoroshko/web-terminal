@@ -178,7 +178,11 @@ const SetAutoclose = observer((props: Props) => {
           width="200px"
           direction="left"
         >
-          Some text here
+          <PrimaryTextSpan color="#fffccc" fontSize="12px">
+            Determine the Take profit based on the amount of capital you are
+            willing to take at the peak of the deal or based on the price level
+            of your asset
+          </PrimaryTextSpan>
         </InformationPopup>
       </FlexContainer>
       <InputWrapper
@@ -252,7 +256,10 @@ const SetAutoclose = observer((props: Props) => {
           width="200px"
           direction="left"
         >
-          Some text here
+          <PrimaryTextSpan color="#fffccc" fontSize="12px">
+            Determine the Stop loss based on the amount of capital you are
+            willing to risk or based on the price level of your asset
+          </PrimaryTextSpan>
         </InformationPopup>
       </FlexContainer>
       <InputWrapper

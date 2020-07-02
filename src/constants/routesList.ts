@@ -11,6 +11,7 @@ import ProofOfIdentity from '../pages/ProofOfIdentity';
 import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 import Withdraw from "../pages/Withdraw";
+import LpLogin from '../pages/LpLogin';
 
 
 export enum RouteLayoutType {
@@ -28,6 +29,13 @@ const routesList = [
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.SignFlow,
+  },
+  {
+    component: LpLogin,
+    path: Page.LP_LOGIN,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.Public,
   },
   {
     component: SignUp,

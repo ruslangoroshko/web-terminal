@@ -16,6 +16,7 @@ import {
   UserAuthenticateResponse,
   UserRegistration,
   ChangePasswordRespone,
+  LpLoginParams,
 } from '../types/UserInfo';
 import { HistoryCandlesType, CandleDTO } from '../types/HistoryTypes';
 import {
@@ -45,8 +46,11 @@ import {
   DepositCreateDTO,
 } from '../types/DepositTypes';
 import { InitModel } from '../types/InitAppTypes';
-import { CreateWithdrawalParams, WithdrawalHistoryDTO, cancelWithdrawalParams } from '../types/WithdrawalTypes';
-
+import {
+  CreateWithdrawalParams,
+  WithdrawalHistoryDTO,
+  cancelWithdrawalParams,
+} from '../types/WithdrawalTypes';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -370,10 +374,9 @@ class API {
     return response.data;
   };
   createWithdrawal = async (params: CreateWithdrawalParams) => {
-    const response = await axios.post<{status: WithdrawalHistoryResponseStatus}>(
-      `${API_WITHDRAWAL_STRING}${API_LIST.WITHWRAWAL.CREATE}`,
-      params
-    );
+    const response = await axios.post<{
+      status: WithdrawalHistoryResponseStatus;
+    }>(`${API_WITHDRAWAL_STRING}${API_LIST.WITHWRAWAL.CREATE}`, params);
     return response.data;
   };
 
@@ -385,9 +388,7 @@ class API {
     return response.data;
   };
 
-  getWithdrawalHistory = async (params: {
-    AuthToken: string | null;
-  }) => {
+  getWithdrawalHistory = async (params: { AuthToken: string | null }) => {
     const response = await axios.get<WithdrawalHistoryDTO>(
       `${API_WITHDRAWAL_STRING}${API_LIST.WITHWRAWAL.HISTORY}`,
       {
@@ -397,6 +398,13 @@ class API {
     return response.data;
   };
 
+  postLpLoginToken = async (params: LpLoginParams) => {
+    const response = await axios.post<UserAuthenticateResponse>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.LP_LOGIN}`,
+      params
+    );
+    return response.data;
+  };
 }
 
 export default new API();

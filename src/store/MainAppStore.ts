@@ -2,7 +2,7 @@ import {
   LOCAL_STORAGE_TOKEN_KEY,
   LOCAL_STORAGE_REFRESH_TOKEN_KEY,
 } from './../constants/global';
-import { UserAuthenticate, UserRegistration } from '../types/UserInfo';
+import { UserAuthenticate, UserRegistration, LpLoginParams } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
 import { AccountModelWebSocketDTO } from '../types/AccountsTypes';
 import { action, observable, computed } from 'mobx';
@@ -268,6 +268,29 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   signIn = async (credentials: UserAuthenticate) => {
     const response = await API.authenticate(credentials);
+
+    if (response.result === OperationApiResponseCodes.Ok) {
+      this.isAuthorized = true;
+      this.signalRReconnectTimeOut = response.data.signalRReconnectTimeOut;
+      this.setTokenHandler(response.data.token);
+      this.fetchTradingUrl(response.data.token);
+      this.setRefreshToken(response.data.refreshToken);
+      mixpanel.track(mixpanelEvents.LOGIN);
+    }
+
+    if (
+      response.result === OperationApiResponseCodes.InvalidUserNameOrPassword
+    ) {
+      this.isAuthorized = false;
+    }
+
+    return response.result;
+  };
+
+
+  @action
+  signInLpLogin = async (params: LpLoginParams) => {
+    const response = await API.postLpLoginToken(params);
 
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;

@@ -2,6 +2,7 @@ const Page = {
   DASHBOARD: '/',
   SIGN_IN: '/sign-in',
   SIGN_UP: '/sign-up',
+  LP_LOGIN: '/lpLogin/:token',
   EMAIL_CONFIRMATION: '/confirm/:id',
   FORGOT_PASSWORD: '/reset-password',
   RESET_PASSWORD: '/recovery/:token',
@@ -15,6 +16,7 @@ const Page = {
   ACCOUNT_SETTINGS: '/account-settings',
   ACCOUNT_SEQURITY: '/account-security',
   ACCOUNT_HISTORY_QUOTES: '/account-history-quotes',
+  PAYMENTS: '/payments/:status',
 
   ABOUT_US: 'https://www.monfex.com/why-us',
   FAQ: '#',

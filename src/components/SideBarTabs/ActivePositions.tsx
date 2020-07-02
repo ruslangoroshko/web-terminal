@@ -78,11 +78,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         tp: yup
           .number()
           .nullable()
-          .test(
-            Fields.TAKE_PROFIT,
-            'Tale profit level can not be zero',
-            value => value !== 0
-          )
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
             is: (operation, tpType) =>
               operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
@@ -116,22 +111,24 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 Fields.TAKE_PROFIT,
                 'Take profit level should be higher than the current P/L',
                 value => value > PnL()
-              ),
+              )
+              // .test(
+              //   Fields.TAKE_PROFIT,
+              //   'Take profit level can not be zero',
+              //   value => {
+              //     console.log(value)
+              //     return value !== 0;
+              //   }
+              // ),
           }),
         sl: yup
           .number()
           .nullable()
-          .test(
-            Fields.STOP_LOSS,
-            'Stop loss level can not be zero',
-            value => value !== 0
-          )
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
             is: (operation, slType) =>
               operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
             then: yup
               .number()
-              .nullable()
               .test(
                 Fields.STOP_LOSS,
                 'Error message: This level is higher or lower than the one currently allowed',
@@ -143,7 +140,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               operation === AskBidEnum.Sell && slType === TpSlTypeEnum.Price,
             then: yup
               .number()
-              .nullable()
               .test(
                 Fields.STOP_LOSS,
                 'Error message: This level is higher or lower than the one currently allowed',
@@ -154,7 +150,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             is: slType => slType === TpSlTypeEnum.Currency,
             then: yup
               .number()
-              .nullable()
               .test(
                 Fields.STOP_LOSS,
                 'Stop loss level should be lower than the current P/L',
@@ -164,7 +159,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 Fields.STOP_LOSS,
                 'Stop loss level can not be higher than the Invest amount',
                 value => Math.abs(value) <= position.investmentAmount
-              ),
+              )
           }),
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
@@ -201,6 +196,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       ...values,
       slType: values.sl ? values.slType : null,
       tpType: values.tp ? values.tpType : null,
+      sl: values.sl || null,
+      tp: values.tp || null,
     };
     try {
       await API.updateSLTP(valuesToSubmit);
@@ -241,14 +238,20 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   const handleApply = useCallback(async () => {
     await setFieldValue(
       Fields.TAKE_PROFIT_TYPE,
-      SLTPStore.takeProfitValue ? SLTPStore.autoCloseTPType : null
+      SLTPStore.takeProfitValue !== '' ? SLTPStore.autoCloseTPType : null
     );
     await setFieldValue(
       Fields.STOP_LOSS_TYPE,
-      SLTPStore.stopLossValue ? SLTPStore.autoCloseSLType : null
+      SLTPStore.stopLossValue !== '' ? SLTPStore.autoCloseSLType : null
     );
-    await setFieldValue(Fields.TAKE_PROFIT, +SLTPStore.takeProfitValue || null);
-    await setFieldValue(Fields.STOP_LOSS, +SLTPStore.stopLossValue || null);
+    await setFieldValue(
+      Fields.TAKE_PROFIT,
+      SLTPStore.takeProfitValue !== '' ? +SLTPStore.takeProfitValue : null
+    );
+    await setFieldValue(
+      Fields.STOP_LOSS,
+      SLTPStore.stopLossValue !== '' ? +SLTPStore.stopLossValue : null
+    );
     return new Promise<void>(async (resolve, reject) => {
       const errors = await validateForm();
       if (!Object.keys(errors).length) {
