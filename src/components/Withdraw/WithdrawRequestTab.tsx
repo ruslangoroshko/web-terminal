@@ -266,7 +266,7 @@ const WithdrawRequestTab = () => {
             </FlexContainer>
           </FlexContainer>
           <FlexContainer>
-            <ButtonOpenFaq href={mainAppStore.initModel.faqUrl} target="blank">
+            <ButtonOpenFaq href={mainAppStore.initModel.withdrawFaqUrl} target="blank">
               <PrimaryTextSpan
                 color="#fffccc"
                 fontSize="14px"
