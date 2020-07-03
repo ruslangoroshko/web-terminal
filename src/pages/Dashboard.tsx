@@ -118,6 +118,8 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     document.title = `${mainAppStore.initModel.brandName} trading platform`;
+    // 272
+    window.scrollTo(0, 0);
   }, []);
 
   return (
