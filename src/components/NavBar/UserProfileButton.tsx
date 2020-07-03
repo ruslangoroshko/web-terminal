@@ -10,7 +10,7 @@ import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
 import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import { Observer } from 'mobx-react-lite';
-import { identify, people, Dict } from 'mixpanel-browser';
+import mixpanel from 'mixpanel-browser';
 import KYCStatus from '../../constants/KYCStatus';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 
@@ -34,8 +34,7 @@ function UserProfileButton() {
     async function fetchPersonalData() {
       try {
         const response = await API.getPersonalData(getProcessId());
-        identify(response.data.id);
-        people.set({
+        mixpanel.people.set({
           [mixpanelEvents.FIRST_NAME]: response.data.firstName || '',
           [mixpanelEvents.LAST_NAME]: response.data.lastName || '',
           [mixpanelEvents.BRAND_NAME]: mainAppStore.initModel.brandName || '',
@@ -45,6 +44,8 @@ function UserProfileButton() {
           [mixpanelEvents.PHONE]: response.data.phone || '',
           [mixpanelEvents.LAST_LOGIN]: new Date().toISOString(),
         });
+        mixpanel.identify(response.data.id);
+
         mainAppStore.profileStatus = response.data.kyc;
       } catch (error) {}
     }
