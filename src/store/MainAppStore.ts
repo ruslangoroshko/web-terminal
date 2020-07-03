@@ -17,7 +17,7 @@ import { RootStore } from './RootStore';
 import Fields from '../constants/fields';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
-import mixpanel, { init } from 'mixpanel-browser';
+import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import injectInerceptors from '../http/interceptors';
 import { InstrumentModelWSDTO } from '../types/InstrumentsTypes';
@@ -86,7 +86,6 @@ export class MainAppStore implements MainAppStoreProps {
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
-    init(MIXPANEL_TOKEN);
     this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
     this.refreshToken =
       localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY) || '';
@@ -188,6 +187,8 @@ export class MainAppStore implements MainAppStoreProps {
     connection.on(
       Topics.SERVER_ERROR,
       (response: ResponseFromWebsocket<ServerError>) => {
+        this.isInitLoading = false;
+        this.isLoading = false;
         this.rootStore.badRequestPopupStore.openModal();
         this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
       }

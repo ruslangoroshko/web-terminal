@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MainApp from './MainApp';
 import { useStores } from './hooks/useStores';
+import { init } from 'mixpanel-browser';
 
 const AppWithProviders = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -9,6 +10,8 @@ const AppWithProviders = () => {
     async function fetchInit() {
       try {
         await mainAppStore.initApp();
+        init(MIXPANEL_TOKEN, { debug: true });
+
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);

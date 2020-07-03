@@ -36,13 +36,13 @@ function UserProfileButton() {
         const response = await API.getPersonalData(getProcessId());
         identify(response.data.id);
         people.set({
-          [mixpanelEvents.FIRST_NAME]: response.data.firstName,
-          [mixpanelEvents.LAST_NAME]: response.data.lastName,
-          [mixpanelEvents.BRAND_NAME]: mainAppStore.initModel.brandName,
-          [mixpanelEvents.EMAIL]: response.data.email,
-          [mixpanelEvents.AVATAR]: response.data.avatar,
+          [mixpanelEvents.FIRST_NAME]: response.data.firstName || '',
+          [mixpanelEvents.LAST_NAME]: response.data.lastName || '',
+          [mixpanelEvents.BRAND_NAME]: mainAppStore.initModel.brandName || '',
+          [mixpanelEvents.EMAIL]: response.data.email || '',
+          [mixpanelEvents.AVATAR]: response.data.avatar || '',
           [mixpanelEvents.USER_KYC_STATUS]: KYCStatus[response.data.kyc],
-          [mixpanelEvents.PHONE]: response.data.phone,
+          [mixpanelEvents.PHONE]: response.data.phone || '',
           [mixpanelEvents.LAST_LOGIN]: new Date().toISOString(),
         });
         mainAppStore.profileStatus = response.data.kyc;

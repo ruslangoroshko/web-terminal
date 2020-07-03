@@ -111,15 +111,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 Fields.TAKE_PROFIT,
                 'Take profit level should be higher than the current P/L',
                 value => value > PnL()
-              )
-              // .test(
-              //   Fields.TAKE_PROFIT,
-              //   'Take profit level can not be zero',
-              //   value => {
-              //     console.log(value)
-              //     return value !== 0;
-              //   }
-              // ),
+              ),
+            // .test(
+            //   Fields.TAKE_PROFIT,
+            //   'Take profit level can not be zero',
+            //   value => {
+            //     console.log(value)
+            //     return value !== 0;
+            //   }
+            // ),
           }),
         sl: yup
           .number()
@@ -153,13 +153,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Stop loss level should be lower than the current P/L',
-                value => Math.abs(value) <= PnL() + position.investmentAmount
+                value => -1 * Math.abs(value) <= PnL()
               )
               .test(
                 Fields.STOP_LOSS,
                 'Stop loss level can not be higher than the Invest amount',
-                value => Math.abs(value) <= position.investmentAmount
-              )
+                value => Math.abs(value) < position.investmentAmount
+              ),
           }),
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
