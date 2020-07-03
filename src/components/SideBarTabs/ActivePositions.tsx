@@ -153,12 +153,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.STOP_LOSS,
                 'Stop loss level should be lower than the current P/L',
-                value => -1 * Math.abs(value) <= PnL()
+                value => -1 * Math.abs(value) < PnL()
               )
               .test(
                 Fields.STOP_LOSS,
                 'Stop loss level can not be higher than the Invest amount',
-                value => Math.abs(value) < position.investmentAmount
+                value => Math.abs(value) <= position.investmentAmount
               ),
           }),
         tpType: yup.number().nullable(),
