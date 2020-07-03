@@ -10,7 +10,7 @@ const AppWithProviders = () => {
     async function fetchInit() {
       try {
         await mainAppStore.initApp();
-        init(MIXPANEL_TOKEN);
+        init(MIXPANEL_TOKEN, { debug: true });
 
         setIsLoading(false);
       } catch (error) {
