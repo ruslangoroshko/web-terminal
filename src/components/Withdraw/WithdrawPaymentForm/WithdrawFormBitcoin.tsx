@@ -57,8 +57,7 @@ const WithdrawFormBitcoin = () => {
     const accountInfo = mainAppStore.accounts.find(item => item.isLive);
     try {
       const dataParam = {
-        amount: +values.amount,
-        bitcoinAdress: values.bitcoinAdress,
+        address: values.bitcoinAdress,
       };
       const data: CreateWithdrawalParams = {
         authToken: mainAppStore.token,

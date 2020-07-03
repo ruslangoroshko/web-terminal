@@ -15,6 +15,11 @@ export class WithdrawalStore {
   }
 
   @action
+  closePendingPopup = () => {
+    this.pendingPopup = false;
+  }
+
+  @action
   setLoad = () => {
     this.loading = true;
   }

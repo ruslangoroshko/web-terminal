@@ -15,6 +15,7 @@ import { WithdrawalTabsEnum } from '../../../enums/WithdrawalTabsEnum';
 
 interface RequestValues {
   amount: number;
+  details: string;
 }
 
 const PRECISION_USD = 2;
@@ -22,6 +23,7 @@ const PRECISION_USD = 2;
 const WithdrawFormBankTransfer = () => {
   const initialValues: RequestValues = {
     amount: 0,
+    details: '',
   };
 
   const { mainAppStore, withdrawalStore } = useStores();
@@ -38,6 +40,9 @@ const WithdrawFormBankTransfer = () => {
               .find(item => item.isLive)
               ?.balance.toFixed(2)}`
           ),
+        details: yup 
+          .string()
+          .max(2000, 'The field should be less or equal to 2000 characters'),
       }),
     [mainAppStore.accounts]
   );
@@ -47,7 +52,7 @@ const WithdrawFormBankTransfer = () => {
   const handleSubmitForm = async () => {
     try {
       const dataParam = {
-        amount: +values.amount,
+        details: values.details,
       };
 
       const accountInfo = mainAppStore.accounts.find(item => item.isLive);
@@ -151,6 +156,8 @@ const WithdrawFormBankTransfer = () => {
     }
   };
 
+  const textOnBeforeInputHandler = () => {}
+
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
     const curErrorsKeys = Object.keys(curErrors);
@@ -204,6 +211,40 @@ const WithdrawFormBankTransfer = () => {
           )}
         </InputWrapper>
 
+        <FlexContainer
+          margin="0 0 6px 0"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <PrimaryTextSpan
+            fontSize="11px"
+            lineHeight="12px"
+            color="rgba(255, 255, 255, 0.3)"
+            textTransform="uppercase"
+          >
+            Details
+          </PrimaryTextSpan>
+        </FlexContainer>
+
+        <InputWrapper
+          margin="0 0 16px 0"
+          width="100%"
+          position="relative"
+          justifyContent="space-between"
+        >
+          <InputFieldText
+            name="details"
+            id="details"
+            onBeforeInput={textOnBeforeInputHandler}
+            onChange={handleChange}
+            value={values.details}
+          />
+
+        </InputWrapper>
+        {touched.details && errors.details && (
+          <ErrorLineText>{errors.details}</ErrorLineText>
+        )}
+
         <WithdrawButton
           width="160px"
           padding="12px"
@@ -222,6 +263,7 @@ const WithdrawFormBankTransfer = () => {
 
 export default WithdrawFormBankTransfer;
 
+
 const CustomForm = styled.form`
   margin-bottom: 0;
 `;
@@ -231,6 +273,43 @@ const WithdrawButton = styled(PrimaryButton)`
 `;
 
 const InputField = styled.input`
+  background-color: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 16px;
+  color: #fffccc;
+  padding: 8px 0 8px 8px;
+  appearance: none;
+  -moz-appearance: textfield;
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+
+  &:-webkit-input-placeholder {
+    color: #fff;
+    opacity: 0.3;
+    font-weight: normal;
+  }
+
+  &:-ms-input-placeholder {
+    color: #fff;
+    opacity: 0.3;
+    font-weight: normal;
+  }
+
+  &::placeholder {
+    color: #fff;
+    opacity: 0.3;
+    font-weight: normal;
+  }
+`;
+
+const InputFieldText = styled.textarea`
   background-color: transparent;
   border: none;
   outline: none;
@@ -284,4 +363,11 @@ const ErrorText = styled.span`
   top: 50%;
   right: 8px;
   transform: translateY(-50%);
+`;
+
+const ErrorLineText = styled.span`
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 16px;
+  color: #ff557e;
 `;
