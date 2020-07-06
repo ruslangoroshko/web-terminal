@@ -9,7 +9,7 @@ import {
   useFormik,
 } from 'formik';
 import LabelInput from '../components/LabelInput';
-import { ResetPassword } from '../types/UserInfo';
+import { IResetPassword } from '../types/UserInfo';
 import * as yup from 'yup';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import { FlexContainer } from '../styles/FlexContainer';
@@ -35,7 +35,7 @@ interface Props {}
 function ResetPassword(props: Props) {
   const { token } = useParams();
 
-  const validationSchema = yup.object().shape<ResetPassword>({
+  const validationSchema = yup.object().shape<IResetPassword>({
     password: yup
       .string()
       .required(validationInputTexts.REQUIRED_FIELD)
@@ -51,7 +51,7 @@ function ResetPassword(props: Props) {
       ),
   });
 
-  const initialValues: ResetPassword = {
+  const initialValues: IResetPassword = {
     password: '',
     repeatPassword: '',
   };
@@ -62,19 +62,19 @@ function ResetPassword(props: Props) {
   const [isSuccessful, setIsSuccessfull] = useState(false);
   const [isNotSuccessful, setNotIsSuccessfull] = useState(false);
 
-  const { notificationStore, badRequestPopupStore } = useStores();
+  const { badRequestPopupStore } = useStores();
 
-  const handleSubmitForm = async ({ password }: ResetPassword) => {
+  const handleSubmitForm = async ({ password }: IResetPassword) => {
     setIsLoading(true);
     try {
       const result = await API.recoveryPassword({
         token: token || '',
         password,
       });
-      if (result !== OperationApiResponseCodes.Ok) {
-        setIsSuccessfull(true);
+      if (result) {
+        setIsSuccessfull(result);
       } else {
-        setNotIsSuccessfull(true);
+        setNotIsSuccessfull(result);
       }
       setIsLoading(false);
     } catch (error) {

@@ -17,9 +17,14 @@ export interface UserForgotPassword {
   email: string;
 }
 
-export interface ResetPassword {
+export interface IResetPassword {
   password: string;
   repeatPassword?: string;
+}
+
+export interface RecoveryPasswordParams {
+  password: string;
+  token: string;
 }
 
 export interface ChangePasswordRespone {
