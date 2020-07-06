@@ -45,8 +45,8 @@ function UserProfileButton() {
           [mixpanelEvents.LAST_LOGIN]: new Date().toISOString(),
         });
         mixpanel.identify(response.data.id);
-
         mainAppStore.profileStatus = response.data.kyc;
+        mainAppStore.profilePhone = response.data.phone || '';
       } catch (error) {}
     }
     fetchPersonalData();
