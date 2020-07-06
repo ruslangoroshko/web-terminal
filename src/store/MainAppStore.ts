@@ -79,6 +79,7 @@ export class MainAppStore implements MainAppStoreProps {
     PersonalDataKYCEnum.NotVerified;
   @observable tradingUrl = '';
   @observable isInterceptorsInjected = false;
+  @observable profilePhone = '';
   token = '';
   refreshToken = '';
   rootStore: RootStore;

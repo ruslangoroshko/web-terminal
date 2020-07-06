@@ -4,6 +4,7 @@ import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import { Formik, Field, FieldProps, Form, useFormik } from 'formik';
 import Fields from '../constants/fields';
 import LabelInput from '../components/LabelInput';
+import LabelInputMasked from '../components/LabelInputMasked';
 import AutoCompleteDropdown from '../components/KYC/AutoCompleteDropdown';
 import { PrimaryButton } from '../styles/Buttons';
 import styled from '@emotion/styled';
@@ -29,6 +30,7 @@ interface Props {}
 const PhoneVerification: FC<Props> = props => {
   const {} = props;
   const [countries, setCountries] = useState<Country[]>([]);
+  const [dialMask, setDialMask] = useState('');
   const countriesNames = countries.map(item => item.name);
 
   const validationSchema = yup.object().shape<PhoneVerificationFormParams>({
@@ -37,11 +39,14 @@ const PhoneVerification: FC<Props> = props => {
       .min(11, 'Min 11 symbols')
       .max(20, 'Max 20 symbols')
       .required(),
-    customCountryCode: yup.mixed().oneOf(countriesNames, 'No matches').required(validationInputTexts.REQUIRED_FIELD),
+    customCountryCode: yup
+      .mixed()
+      .oneOf(countriesNames, 'No matches')
+      .required(validationInputTexts.REQUIRED_FIELD),
   });
-  const { push } = useHistory();
 
-  const { kycStore } = useStores();
+  const { push } = useHistory();
+  const { kycStore, mainAppStore } = useStores();
 
   const [initialValues, setInitialValuesForm] = useState<
     PhoneVerificationFormParams
@@ -69,6 +74,7 @@ const PhoneVerification: FC<Props> = props => {
 
   const handleChangeCountry = (setFieldValue: any) => (country: Country) => {
     setFieldValue(Fields.PHONE, country.dial);
+    setDialMask(country.dial);
   };
 
   const handleSubmitForm = ({ phone }: PhoneVerificationFormParams) => {
@@ -103,15 +109,19 @@ const PhoneVerification: FC<Props> = props => {
           if (parsed instanceof Object) {
             setValuesPeronalData(parsed);
             const { phone, countryOfCitizenship } = parsed;
-
             setInitialValuesForm({
               phone:
+                mainAppStore.profilePhone ||
                 phone ||
                 countries.find(item => item.name === countryOfCitizenship)
                   ?.dial ||
                 '',
               customCountryCode: countryOfCitizenship,
             });
+            setDialMask(
+              countries.find(item => item.name === countryOfCitizenship)
+                ?.dial || ''
+            );
             kycStore.filledStep = KYCstepsEnum.PhoneVerification;
           }
         }
@@ -123,11 +133,9 @@ const PhoneVerification: FC<Props> = props => {
   }, [countries]);
 
   const {
-    values,
     setFieldValue,
     validateForm,
     handleSubmit,
-    handleChange,
     errors,
     touched,
     getFieldProps,
@@ -143,7 +151,6 @@ const PhoneVerification: FC<Props> = props => {
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
     const curErrorsKeys = Object.keys(curErrors);
-    console.log(curErrorsKeys)
     if (curErrorsKeys.length) {
       const el = document.getElementById(curErrorsKeys[0]);
       if (el) el.focus();
@@ -195,7 +202,8 @@ const PhoneVerification: FC<Props> = props => {
             </FlexContainer>
             <FlexContainer width="320px" margin="0 0 28px 0">
               <FlexContainer width="100%" flexDirection="column">
-                <LabelInput
+                <LabelInputMasked
+                  mask={`${dialMask}99999999999999999999`}
                   labelText="Phone"
                   {...getFieldProps(Fields.PHONE)}
                   id={Fields.PHONE}
