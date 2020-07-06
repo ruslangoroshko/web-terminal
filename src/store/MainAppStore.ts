@@ -2,7 +2,11 @@ import {
   LOCAL_STORAGE_TOKEN_KEY,
   LOCAL_STORAGE_REFRESH_TOKEN_KEY,
 } from './../constants/global';
-import { UserAuthenticate, UserRegistration, LpLoginParams } from '../types/UserInfo';
+import {
+  UserAuthenticate,
+  UserRegistration,
+  LpLoginParams,
+} from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
 import { AccountModelWebSocketDTO } from '../types/AccountsTypes';
 import { action, observable, computed } from 'mobx';
@@ -111,27 +115,28 @@ export class MainAppStore implements MainAppStoreProps {
     const connectionString = IS_LIVE ? this.tradingUrl + wsConnectSub : WS_HOST;
     const connection = initConnection(connectionString);
 
-    const reconnectionInterval = setInterval(
-      async () => {
+    const connectToWebocket = async () => {
+      try {
+        await connection.start();
         try {
-          await connection.start();
-          clearInterval(reconnectionInterval);
-          try {
-            await connection.send(Topics.INIT, token);
-            this.isAuthorized = true;
-            this.activeSession = connection;
-          } catch (error) {
-            this.isAuthorized = false;
-            this.isInitLoading = false;
-          }
+          await connection.send(Topics.INIT, token);
+          this.isAuthorized = true;
+          this.activeSession = connection;
         } catch (error) {
+          this.isAuthorized = false;
           this.isInitLoading = false;
           this.isAuthorized = false;
         }
-      },
-      this.signalRReconnectTimeOut ? +this.signalRReconnectTimeOut : 10000
-    );
-
+      } catch (error) {
+        this.isInitLoading = false;
+        setTimeout(
+          connectToWebocket,
+          this.signalRReconnectTimeOut ? +this.signalRReconnectTimeOut : 10000
+        );
+      }
+    };
+    connectToWebocket();
+    
     connection.on(Topics.UNAUTHORIZED, () => {
       localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
       this.isInitLoading = false;
@@ -289,7 +294,6 @@ export class MainAppStore implements MainAppStoreProps {
 
     return response.result;
   };
-
 
   @action
   signInLpLogin = async (params: LpLoginParams) => {
