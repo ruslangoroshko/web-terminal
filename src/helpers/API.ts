@@ -17,6 +17,7 @@ import {
   UserRegistration,
   ChangePasswordRespone,
   LpLoginParams,
+  RecoveryPasswordParams,
 } from '../types/UserInfo';
 import { HistoryCandlesType, CandleDTO } from '../types/HistoryTypes';
 import {
@@ -209,10 +210,10 @@ class API {
     return response.data;
   };
 
-  recoveryPassword = async (data: object) => {
-    const response = await axios.post<OperationApiResponseCodes>(
+  recoveryPassword = async (params: RecoveryPasswordParams) => {
+    const response = await axios.post<boolean>(
       `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.PASSWORD_RECOVERY}`,
-      data
+      params
     );
     return response.data;
   };
