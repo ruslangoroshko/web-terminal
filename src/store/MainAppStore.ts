@@ -115,7 +115,7 @@ export class MainAppStore implements MainAppStoreProps {
     const connectionString = IS_LIVE ? this.tradingUrl + wsConnectSub : WS_HOST;
     const connection = initConnection(connectionString);
 
-    async function connectToWebsocket() {
+    const connectToWebocket = async () => {
       try {
         await connection.start();
         try {
@@ -129,14 +129,13 @@ export class MainAppStore implements MainAppStoreProps {
       } catch (error) {
         this.isInitLoading = false;
         setTimeout(
-          connectToWebsocket,
+          connectToWebocket,
           this.signalRReconnectTimeOut ? +this.signalRReconnectTimeOut : 10000
         );
       }
-    }
-
-    connectToWebsocket();
-
+    };
+    connectToWebocket();
+    
     connection.on(Topics.UNAUTHORIZED, () => {
       localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
       this.isInitLoading = false;
