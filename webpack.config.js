@@ -121,7 +121,7 @@ module.exports = (env, argv) => {
         API_WITHDRAWAL_STRING:
           argv.mode === 'production'
             ? JSON.stringify('/withdrawal')
-            : JSON.stringify('http://localhost:5681/withdrawal'),    
+            : JSON.stringify('http://localhost:5681/withdrawal'),
         AUTH_TOKEN: JSON.stringify('TraderID'),
         CHARTING_LIBRARY_PATH:
           argv.mode === 'production'
@@ -138,6 +138,7 @@ module.exports = (env, argv) => {
             ? JSON.stringify(process.env.RECAPTCHA_KEY_SECRET)
             : JSON.stringify(''),
         IS_LOCAL: argv.is_local === 'true',
+        BUILD_VERSION: JSON.stringify(process.env.BUILD_VERSION),
       }),
       new CopyPlugin([
         { from: './src/vendor/charting_library/', to: 'charting_library' },
