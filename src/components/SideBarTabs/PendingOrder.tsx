@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import moment from 'moment';
@@ -15,13 +15,14 @@ import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import ClosePositionPopup from './ClosePositionPopup';
 import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
+import { WithT } from 'i18next';
 
 interface Props {
   pendingOrder: PendingOrderWSDTO;
   currencySymbol: string;
 }
 
-function PendingOrder(props: Props) {
+const PendingOrder: FC<Props> = props => {
   const { pendingOrder, currencySymbol } = props;
   const isBuy = pendingOrder.operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
@@ -127,7 +128,7 @@ function PendingOrder(props: Props) {
       </OrderWrapperWithBorder>
     </OrderWrapper>
   );
-}
+};
 
 export default PendingOrder;
 

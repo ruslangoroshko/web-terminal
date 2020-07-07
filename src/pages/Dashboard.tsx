@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
@@ -30,7 +30,7 @@ import StatusPaymentPopup from '../components/DepositPopup/StatusPaymentPopup';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
-const Dashboard = observer(() => {
+const Dashboard: FC = observer(() => {
   const {
     mainAppStore,
     quotesStore,
@@ -235,8 +235,6 @@ const Dashboard = observer(() => {
 });
 
 export default Dashboard;
-
-const DashboardWrapper = styled(FlexContainer)``;
 
 const AddIntrumentButton = styled(ButtonWithoutStyles)`
   width: 24px;

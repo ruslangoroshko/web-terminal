@@ -3,6 +3,7 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { PositionModelWSDTO } from '../../types/Positions';
+import { TFunction } from 'i18next';
 
 interface Props {
   updateSLTP?: () => Promise<void>;
@@ -77,7 +78,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       if (!on && resetForm && (stopLossError || takeProfitError)) {
         resetForm();
       }
-    }, [on])
+    }, [on]);
 
     useEffect(() => {
       document.addEventListener('mousedown', handleClickOutside);

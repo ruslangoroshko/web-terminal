@@ -34,8 +34,6 @@ const Orders: FC = () => {
     toggle(false);
   };
 
-
-  
   return (
     <PortfolioWrapper flexDirection="column">
       <FlexContainer flexDirection="column" padding="0 8px">

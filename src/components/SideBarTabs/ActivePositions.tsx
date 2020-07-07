@@ -25,6 +25,7 @@ import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useFormik } from 'formik';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
+import { WithT } from 'i18next';
 
 interface Props {
   position: PositionModelWSDTO;

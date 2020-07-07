@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, Props } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
@@ -20,7 +20,7 @@ import BitcoinForm from './BitcoinForm';
 import BadRequestPopup from '../BadRequestPopup';
 import HashLocation from '../../constants/hashLocation';
 
-const DepositPopupWrapper = () => {
+const DepositPopupWrapper: FC = () => {
   const location = useLocation();
 
   useEffect(() => {
@@ -83,7 +83,8 @@ const DepositPopupInner: FC = ({ children }) => {
           <Observer>
             {() => (
               <>
-                {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified && (
+                {mainAppStore.profileStatus ===
+                  PersonalDataKYCEnum.NotVerified && (
                   <FlexContainer
                     backgroundColor="rgba(0,0,0,0.2)"
                     padding="20px 12px"
