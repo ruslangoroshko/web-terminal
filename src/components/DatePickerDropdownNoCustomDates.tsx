@@ -14,6 +14,7 @@ import { observer, Observer } from 'mobx-react-lite';
 import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 import moment from 'moment';
 import { DayPickerRangeController } from 'react-dates';
+import { useTranslation } from 'react-i18next';
 
  interface Props {
   datesChangeCallback: () => void;
@@ -23,7 +24,7 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
   ({ datesChangeCallback }) => {
     const { dataRangeStoreNoCustomDates } = useStores();
     const wrapperRef = useRef<HTMLDivElement>(null);
-
+const {t} = useTranslation()
     const toggle = (flag: boolean) => () => {
       dataRangeStoreNoCustomDates.openedDropdown = flag;
     };
@@ -135,28 +136,28 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Today)}
               >
                 <PrimaryTextSpan fontSize="14px" color="#fffccc">
-                  Today
+                  {t('Today')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
               <DateRangeItemButton
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Week)}
               >
                 <PrimaryTextSpan fontSize="14px" color="#fffccc">
-                  Week
+                  {t('Week')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
               <DateRangeItemButton
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Month)}
               >
                 <PrimaryTextSpan fontSize="14px" color="#fffccc">
-                  Month
+                  {t('Month')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
               <DateRangeItemButton
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Year)}
               >
                 <PrimaryTextSpan fontSize="14px" color="#fffccc">
-                  Year
+                  {t('Year')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
             </DefinedDaterangeWrapper>

@@ -7,12 +7,14 @@ import ButtonAppleStoreImage from '../assets/images/button-apple-store.png';
 import ButtonGoogleStoreImage from '../assets/images/button-google-store.png';
 import Logo from './Logo';
 import { useStores } from '../hooks/useStores';
+import { useTranslation } from 'react-i18next';
 
 interface Props {}
 
 const SignFlowLayout: FC<Props> = props => {
   const { children } = props;
   const { mainAppStore } = useStores();
+  const { t } = useTranslation();
 
   return (
     <FlexContainer
@@ -40,7 +42,7 @@ const SignFlowLayout: FC<Props> = props => {
           color="#fffccc"
           marginBottom="20px"
         >
-          Download App
+          {t('Download App')}
         </PrimaryTextParagraph>
         <FlexContainer margin="0 0 30px 0" padding="0 0 0 14px">
           <ButtonAppleStore
@@ -64,25 +66,29 @@ const SignFlowLayout: FC<Props> = props => {
           <FlexContainer>
             <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
               ©2017–{new Date().getFullYear()}{' '}
-              <PrimaryTextSpan textTransform="capitalize" fontSize="10px" color="rgba(255, 255, 255, 0.4)">
+              <PrimaryTextSpan
+                textTransform="capitalize"
+                fontSize="10px"
+                color="rgba(255, 255, 255, 0.4)"
+              >
                 {mainAppStore.initModel.brandName}
               </PrimaryTextSpan>
-              . All rights reserved. v {BUILD_VERSION}
+              . {t('All rights reserved')}. v{BUILD_VERSION}
             </PrimaryTextSpan>
           </FlexContainer>
 
           <FlexContainer>
             <LinkItem href={mainAppStore.initModel.supportUrl} target="_blank">
-              Support
+              {t('Support')}
             </LinkItem>
             <LinkItem
               href={mainAppStore.initModel.faqUrl}
               color="rgba(255, 255, 255, 0.4)"
             >
-              FAQ
+              {t('FAQ')}
             </LinkItem>
             <LinkItem href={mainAppStore.initModel.aboutUrl} target="_blank">
-              About us
+              {t('About us')}
             </LinkItem>
           </FlexContainer>
         </FlexContainer>

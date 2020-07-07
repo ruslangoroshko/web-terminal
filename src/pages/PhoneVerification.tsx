@@ -193,7 +193,6 @@ const PhoneVerification: FC<Props> = props => {
                   hasError={
                     !!(touched.customCountryCode && errors.customCountryCode)
                   }
-                  errorText={errors.customCountryCode}
                   dropdownItemsList={countries}
                   setFieldValue={setFieldValue}
                   handleChange={handleChangeCountry(setFieldValue)}

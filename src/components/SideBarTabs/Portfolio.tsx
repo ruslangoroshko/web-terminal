@@ -17,6 +17,7 @@ import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data
 import SvgIcon from '../SvgIcon';
 import { sortByDropdownProfitLabels } from '../../constants/sortByDropdownValues';
 import { SortByProfitEnum } from '../../enums/SortByProfitEnum';
+import { useTranslation } from 'react-i18next';
 
 interface Props {}
 
@@ -40,6 +41,8 @@ const Portfolio: FC<Props> = () => {
 
   const profit = useCallback(() => quotesStore.profit, [quotesStore.profit]);
 
+  const {t} = useTranslation()
+
   return (
     <PortfolioWrapper flexDirection="column" height="100%">
       <FlexContainer flexDirection="column" padding="0 8px">
@@ -53,13 +56,13 @@ const Portfolio: FC<Props> = () => {
                   }
                   onClick={handleChangePortfolioTab(PortfolioTabEnum.Portfolio)}
                 >
-                  Portfolio
+                  {t('Portfolio')}
                 </TabPortfolitButton>
                 <TabPortfolitButton
                   isActive={tabsStore.portfolioTab === PortfolioTabEnum.Orders}
                   onClick={handleChangePortfolioTab(PortfolioTabEnum.Orders)}
                 >
-                  Orders
+                  {t('Orders')}
                 </TabPortfolitButton>
               </>
             )}
@@ -72,7 +75,7 @@ const Portfolio: FC<Props> = () => {
             fontSize="10px"
             marginBottom="6px"
           >
-            Total Profit
+            {t('Total Profit')}
           </PrimaryTextParagraph>
           <Observer>
             {() => (
@@ -97,7 +100,7 @@ const Portfolio: FC<Props> = () => {
                 fontSize="10px"
                 marginBottom="6px"
               >
-                Total Investments
+                {t('Total Investments')}
               </PrimaryTextParagraph>
               <Observer>
                 {() => (
@@ -119,7 +122,7 @@ const Portfolio: FC<Props> = () => {
                 fontSize="10px"
                 marginBottom="6px"
               >
-                Total Equity
+                {t('Total Equity')}
               </PrimaryTextParagraph>
               <Observer>
                 {() => (
@@ -128,7 +131,6 @@ const Portfolio: FC<Props> = () => {
                     lineHeight="16px"
                     fontWeight="bold"
                   >
-                    {/* {getNumberSign(quotesStore.totalEquity)} */}
                     {mainAppStore.activeAccount?.symbol}
                     {Math.abs(quotesStore.totalEquity).toFixed(2)}
                   </PrimaryTextSpan>
@@ -148,7 +150,7 @@ const Portfolio: FC<Props> = () => {
           fontSize="10px"
           textTransform="uppercase"
         >
-          Sort by:
+          {t('Sort by')}:
         </PrimaryTextSpan>
         <SortByDropdown
           selectedLabel={
@@ -194,7 +196,7 @@ const Portfolio: FC<Props> = () => {
                   fontSize="14px"
                   color="rgba(255,255,255, 0.4)"
                 >
-                  You haven't opened any positions yet
+                  {t("You haven't opened any positions yet")}
                 </PrimaryTextParagraph>
               </FlexContainer>
             )}

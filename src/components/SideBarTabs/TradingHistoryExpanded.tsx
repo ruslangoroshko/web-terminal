@@ -17,6 +17,7 @@ import API from '../../helpers/API';
 import TradingHistoryExpandedItem from './TradingHistoryExpandedItem';
 import { Th, TableGrid } from '../../styles/TableElements';
 import InfinityScrollList from '../InfinityScrollList';
+import { useTranslation } from 'react-i18next';
 
 const TradingHistoryExpanded: FC = () => {
   const {
@@ -26,7 +27,7 @@ const TradingHistoryExpanded: FC = () => {
     dataRangeStoreNoCustomDates,
   } = useStores();
   const [isLoading, setIsLoading] = useState(false);
-
+  const { t } = useTranslation();
   const closeExpanded = () => {
     tabsStore.isTabExpanded = false;
   };
@@ -91,7 +92,7 @@ const TradingHistoryExpanded: FC = () => {
                 fontSize="11px"
                 textTransform="uppercase"
               >
-                Period:
+                {t('Period')}:
               </PrimaryTextParagraph>
               <Observer>
                 {() => (
@@ -115,7 +116,7 @@ const TradingHistoryExpanded: FC = () => {
                     fontSize="11px"
                     textTransform="uppercase"
                   >
-                    Asset Name
+                    {t('Asset Name')}
                   </PrimaryTextSpan>
                 </FlexContainer>
               </Th>
@@ -125,7 +126,7 @@ const TradingHistoryExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Price open &mdash; close
+                  {t('Price open — close')}
                 </PrimaryTextSpan>
               </Th>
               <Th>
@@ -134,7 +135,7 @@ const TradingHistoryExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  open &mdash; close
+                  {t('open — close')}
                 </PrimaryTextSpan>
               </Th>
               <Th justifyContent="flex-end">
@@ -143,7 +144,7 @@ const TradingHistoryExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Investment
+                  {t('Investment')}
                 </PrimaryTextSpan>
               </Th>
               <Th justifyContent="flex-end">
@@ -152,7 +153,7 @@ const TradingHistoryExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Profit/loss
+                  {t('Profit/loss')}
                 </PrimaryTextSpan>
               </Th>
               <Th justifyContent="flex-end">
@@ -161,7 +162,7 @@ const TradingHistoryExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Equity
+                  {t('Equity')}
                 </PrimaryTextSpan>
               </Th>
               <Th></Th>
@@ -217,7 +218,7 @@ const TradingHistoryExpanded: FC = () => {
                         color="rgba(255,255,255,0.17)"
                         fontWeight="bold"
                       >
-                        There is no trading history
+                        {t('There is no trading history')}
                       </PrimaryTextSpan>
                     </FlexContainer>
                   )}

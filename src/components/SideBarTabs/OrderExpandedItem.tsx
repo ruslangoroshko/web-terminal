@@ -85,14 +85,14 @@ function OrderExpandedItem(props: Props) {
               textTransform="uppercase"
               marginBottom="2px"
             >
-              {isBuy ? 'Buy' : 'Sell'}
+              {isBuy ? t('Buy') : t('Sell')}
             </PrimaryTextSpan>
             <PrimaryTextSpan
               fontSize="11px"
               color="rgba(255, 255, 255, 0.4)"
               whiteSpace="nowrap"
             >
-              at {openPrice.toFixed(2)}
+              {t('at')} {openPrice.toFixed(2)}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
@@ -164,17 +164,16 @@ function OrderExpandedItem(props: Props) {
           position="relative"
         >
           <ClosePositionPopup
-            buttonLabel="Cancel order"
+            buttonLabel={t('Cancel order')}
             applyHandler={closePosition}
             ref={instrumentRef}
-            confirmText="Cancel Order?"
+            confirmText={`${t('Cancel order')}?`}
             isButton
             alignPopup="right"
           />
         </FlexContainer>
         <FlexContainer flexDirection="column" alignItems="center">
           <InformationPopup
-          
             classNameTooltip={`position_expaned_${id}`}
             bgColor="#000"
             width="200px"
@@ -186,10 +185,10 @@ function OrderExpandedItem(props: Props) {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Price opened
+                  {t('Price opened')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  at {openPrice.toFixed(2)}
+                  {t('at')} {openPrice.toFixed(2)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
@@ -197,7 +196,7 @@ function OrderExpandedItem(props: Props) {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Created
+                  {t('Created')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {moment(created).format('DD MMM, HH:mm:ss')}
@@ -208,7 +207,7 @@ function OrderExpandedItem(props: Props) {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Position ID
+                  {t('Position ID')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {id}

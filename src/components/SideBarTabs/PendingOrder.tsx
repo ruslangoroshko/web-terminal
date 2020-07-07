@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, FC } from 'react';
+import React, { useRef, FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import moment from 'moment';
@@ -15,7 +15,7 @@ import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import ClosePositionPopup from './ClosePositionPopup';
 import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
-import { WithT } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   pendingOrder: PendingOrderWSDTO;
@@ -26,6 +26,8 @@ const PendingOrder: FC<Props> = props => {
   const { pendingOrder, currencySymbol } = props;
   const isBuy = pendingOrder.operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
+
+  const { t } = useTranslation();
 
   const { mainAppStore, instrumentsStore } = useStores();
   const clickableWrapperRef = useRef<HTMLDivElement>(null);
@@ -80,11 +82,11 @@ const PendingOrder: FC<Props> = props => {
               fontSize="12px"
               color={isBuy ? '#00FFDD' : '#ED145B'}
             >
-              {isBuy ? 'Buy' : 'Sell'}
+              {isBuy ? t('Buy') : t('Sell')}
             </PrimaryTextSpan>
           </FlexContainer>
           <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
-            at {pendingOrder.openPrice.toFixed(2)}
+            {t('at')} {pendingOrder.openPrice.toFixed(2)}
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer
@@ -122,7 +124,7 @@ const PendingOrder: FC<Props> = props => {
           <ClosePositionPopup
             applyHandler={handleCloseOrder}
             ref={instrumentRef}
-            confirmText="Cancel Order?"
+            confirmText={`${t('Cancel order')}?`}
           ></ClosePositionPopup>
         </FlexContainer>
       </OrderWrapperWithBorder>

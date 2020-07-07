@@ -232,7 +232,7 @@ function ActivePositionExpanded(props: Props) {
           <ClosePositionPopup
             applyHandler={closePosition}
             ref={instrumentRef}
-            confirmText="Close position?"
+            confirmText={`${t('Close position')}?`}
             isButton
             alignPopup="right"
           />

@@ -1,29 +1,27 @@
 import React, { useRef } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 
-import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
+import { PrimaryTextParagraph } from '../styles/TextsElements';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import Modal from './Modal';
 import { useStores } from '../hooks/useStores';
-import API from '../helpers/API';
-import KeysInApi from '../constants/keysInApi';
-import Topics from '../constants/websocketTopics';
-import Fields from '../constants/fields';
 
 import IconCopy from '../assets/svg_no_compress/icon-copy.svg';
 import SvgIcon from './SvgIcon';
+import { useTranslation } from 'react-i18next';
 
 function BadRequestPopup() {
   const copyText = useRef<HTMLInputElement>(null);
   const [copied, setCopied] = React.useState(false);
   const { badRequestPopupStore } = useStores();
+  const { t } = useTranslation();
 
   const handleCopyText = () => {
-    if (copyText && copyText.current){
+    if (copyText && copyText.current) {
       copyText.current.select();
       document.execCommand('copy');
-      setCopied(true)
+      setCopied(true);
     }
   };
 
@@ -55,14 +53,14 @@ function BadRequestPopup() {
             marginBottom="10px"
             color="#fffccc"
           >
-            Something went wrong
+            {t('Something went wrong')}
           </PrimaryTextParagraph>
           <PrimaryTextParagraph
             fontSize="11px"
             color="#fffccc"
             marginBottom="42px"
           >
-            Please try again later or reload the page
+            {t('Please try again later or reload the page')}
           </PrimaryTextParagraph>
 
           <CustomButton
@@ -72,7 +70,7 @@ function BadRequestPopup() {
               window.location.reload();
             }}
           >
-            Reload
+            {t('Reload')}
           </CustomButton>
 
           <FlexContainer position="relative">

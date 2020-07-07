@@ -15,6 +15,7 @@ import SvgIcon from '../SvgIcon';
 import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
 import { sortByPendingOrdersLabels } from '../../constants/sortByDropdownValues';
 import { SortByPendingOrdersEnum } from '../../enums/SortByPendingOrdersEnum';
+import { useTranslation } from 'react-i18next';
 
 const Orders: FC = () => {
   const { sortingStore, tabsStore, mainAppStore, quotesStore } = useStores();
@@ -33,6 +34,7 @@ const Orders: FC = () => {
     sortingStore.pendingOrdersSortBy = sortType;
     toggle(false);
   };
+  const { t } = useTranslation();
 
   return (
     <PortfolioWrapper flexDirection="column">
@@ -47,13 +49,13 @@ const Orders: FC = () => {
                   }
                   onClick={handleChangePortfolioTab(PortfolioTabEnum.Portfolio)}
                 >
-                  Portfolio
+                  {t('Portfolio')}
                 </TabPortfolitButton>
                 <TabPortfolitButton
                   isActive={tabsStore.portfolioTab === PortfolioTabEnum.Orders}
                   onClick={handleChangePortfolioTab(PortfolioTabEnum.Orders)}
                 >
-                  Orders
+                  {t('Orders')}
                 </TabPortfolitButton>
               </>
             )}
@@ -70,7 +72,7 @@ const Orders: FC = () => {
           fontSize="10px"
           textTransform="uppercase"
         >
-          Sort by:
+          {t('Sort by')}:
         </PrimaryTextSpan>
         <SortByDropdown
           opened={on}
@@ -121,7 +123,7 @@ const Orders: FC = () => {
                   fontSize="14px"
                   color="rgba(255,255,255, 0.4)"
                 >
-                  You haven't made any order yet
+                  {t("You haven't made any order yet")}
                 </PrimaryTextParagraph>
               </FlexContainer>
             )}

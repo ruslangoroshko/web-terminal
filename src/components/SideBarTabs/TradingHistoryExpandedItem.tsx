@@ -13,6 +13,7 @@ import { calculateInPercent } from '../../helpers/calculateInPercent';
 import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
 import { DisplayContents, Td } from '../../styles/TableElements';
 import ImageContainer from '../ImageContainer';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -39,7 +40,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
   } = props;
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
-
+  const { t } = useTranslation();
   return (
     <DisplayContents>
       <Td>
@@ -68,7 +69,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
               textTransform="uppercase"
               marginBottom="2px"
             >
-              {isBuy ? 'Buy' : 'Sell'}
+              {isBuy ? t('Buy') : t('Sell')}
             </PrimaryTextSpan>
             <PrimaryTextSpan
               fontSize="11px"
@@ -183,10 +184,10 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Price opened
+                  {t('Price opened')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  at {openPrice}
+                  {t('at')} {openPrice}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
@@ -194,7 +195,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Price closed
+                  {t('Price closed')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {closePrice}
@@ -205,7 +206,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Opened
+                  {t('Opened')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {moment(openPrice).format('DD MMM, HH:mm:ss')}
@@ -216,7 +217,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Equity
+                  {t('Equity')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {currencySymbol}
@@ -228,7 +229,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Overnight fee
+                  {t('Overnight fee')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {getNumberSign(swaps)}
@@ -241,7 +242,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Position ID
+                  {t('Position ID')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {id}

@@ -14,11 +14,12 @@ import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from './BadRequestPopup';
 import HashLocation from '../constants/hashLocation';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 function DemoRealPopup() {
-  const {push} = useHistory();
+  const { push } = useHistory();
   const { mainAppStore, badRequestPopupStore, depositFundsStore } = useStores();
-
+  const { t } = useTranslation();
   const selectDemoAccount = async () => {
     const acc = mainAppStore.accounts.find(item => !item.isLive);
     if (acc) {
@@ -62,7 +63,7 @@ function DemoRealPopup() {
 
   const handleInvestReal = () => {
     selectRealAccount();
-  }
+  };
 
   return (
     <>
@@ -100,24 +101,24 @@ function DemoRealPopup() {
               marginBottom="10px"
               color="#fffccc"
             >
-              Congratulations!
+              {t('Congratulations!')}
             </PrimaryTextParagraph>
             <PrimaryTextParagraph
               fontSize="11px"
               color="#fffccc"
               marginBottom="42px"
             >
-              You Have Been Successfully Registered
+              {t('You Have Been Successfully Registered')}
             </PrimaryTextParagraph>
             <FlexContainer justifyContent="space-between">
               <DemoButton onClick={selectDemoAccount}>
                 <PrimaryTextSpan fontSize="14px" fontWeight="bold" color="#fff">
-                  Practice on Demo
+                  {t('Practice on Demo')}
                 </PrimaryTextSpan>
               </DemoButton>
               <RealButton onClick={handleInvestReal}>
                 <PrimaryTextSpan fontSize="14px" fontWeight="bold" color="#000">
-                  Invest Real funds
+                  {t('Invest Real funds')}
                 </PrimaryTextSpan>
               </RealButton>
             </FlexContainer>

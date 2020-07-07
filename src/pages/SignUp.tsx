@@ -22,8 +22,10 @@ import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import NotificationPopup from '../components/NotificationPopup';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
+import { useTranslation } from 'react-i18next';
 
 function SignUp() {
+  const { t } = useTranslation();
   const validationSchema = yup.object().shape<UserRegistration>({
     email: yup
       .string()
@@ -82,8 +84,9 @@ function SignUp() {
                 captcha,
               });
               if (result !== OperationApiResponseCodes.Ok) {
-                notificationStore.notificationMessage =
-                  apiResponseCodeMessages[result];
+                notificationStore.notificationMessage = t(
+                  apiResponseCodeMessages[result]
+                );
                 notificationStore.isSuccessfull = false;
                 notificationStore.openNotification();
                 mainAppStore.isInitLoading = false;
@@ -101,10 +104,18 @@ function SignUp() {
           () => {
             badRequestPopupStore.openModal();
             badRequestPopupStore.setMessage(
-              apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
+              t(
+                apiResponseCodeMessages[
+                  OperationApiResponseCodes.TechnicalError
+                ]
+              )
             );
             setStatus(
-              apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
+              t(
+                apiResponseCodeMessages[
+                  OperationApiResponseCodes.TechnicalError
+                ]
+              )
             );
             setSubmitting(false);
             mainAppStore.isInitLoading = false;

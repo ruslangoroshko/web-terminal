@@ -497,11 +497,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 </SetSLTPButton>
               </AutoClosePopupSideBar>
             </CustomForm>
-
             <ClosePositionPopup
               applyHandler={closePosition}
               ref={instrumentRef}
-              confirmText={t('Close position?')}
+              confirmText={`${t('Close position')}?`}
               isButton
             ></ClosePositionPopup>
           </FlexContainer>

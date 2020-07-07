@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Formik, Field, Form, FieldProps, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { UserAuthenticate } from '../types/UserInfo';
@@ -21,8 +21,10 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import Pages from '../constants/Pages';
 import validationInputTexts from '../constants/validationInputTexts';
 import BadRequestPopup from '../components/BadRequestPopup';
+import { useTranslation } from 'react-i18next';
 
 const SingIn = observer(() => {
+  const { t } = useTranslation();
   const validationSchema = yup.object().shape<UserAuthenticate>({
     email: yup
       .string()
@@ -47,7 +49,9 @@ const SingIn = observer(() => {
     try {
       const result = await mainAppStore.signIn(credentials);
       if (result !== OperationApiResponseCodes.Ok) {
-        notificationStore.notificationMessage = apiResponseCodeMessages[result];
+        notificationStore.notificationMessage = t(
+          apiResponseCodeMessages[result]
+        );
         notificationStore.isSuccessfull = false;
         notificationStore.openNotification();
         mainAppStore.isInitLoading = false;

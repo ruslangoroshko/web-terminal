@@ -11,6 +11,7 @@ import TradingHistoryItem from './TradingHistoryItem';
 import DatePickerDropdownNoCustomDates from '../DatePickerDropdownNoCustomDates';
 import LoaderForComponents from '../LoaderForComponents';
 import InfinityScrollList from '../InfinityScrollList';
+import { useTranslation } from 'react-i18next';
 
 const TradingHistory: FC = () => {
   const {
@@ -19,6 +20,8 @@ const TradingHistory: FC = () => {
     historyStore,
     dataRangeStoreNoCustomDates,
   } = useStores();
+
+  const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -70,7 +73,7 @@ const TradingHistory: FC = () => {
           color="#fffccc"
           textTransform="uppercase"
         >
-          Trading History
+          {t('Trading History')}
         </PrimaryTextSpan>
       </FlexContainer>
       <SortByWrapper
@@ -84,7 +87,7 @@ const TradingHistory: FC = () => {
           fontSize="10px"
           textTransform="uppercase"
         >
-          Show:
+          {t('Show')}:
         </PrimaryTextSpan>
         <Observer>
           {() => (
@@ -141,7 +144,7 @@ const TradingHistory: FC = () => {
                   color="rgba(255,255,255,0.17)"
                   fontWeight="bold"
                 >
-                  There is no trading history
+                  {t('There is no trading history')}
                 </PrimaryTextSpan>
               </FlexContainer>
             )}
