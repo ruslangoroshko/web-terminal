@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import {
   PrimaryTextParagraph,
@@ -12,17 +12,19 @@ import { useStores } from '../../hooks/useStores';
 import AmountPlaceholder from './AmountPlaceholder';
 import CurrencyDropdown from './CurrencyDropdown';
 import { paymentCurrencies } from '../../constants/paymentCurrencies';
-import Checkbox from '../Checkbox';
 import { Link } from 'react-router-dom';
 import { PrimaryButton } from '../../styles/Buttons';
 import API from '../../helpers/API';
 import { DepositApiResponseCodes } from '../../enums/DepositApiResponseCodes';
 import * as yup from 'yup';
-import { useFormik, Form } from 'formik';
+import { useFormik } from 'formik';
+import { useTranslation } from 'react-i18next';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
   const placeholderValues = [250, 500, 1000];
+
+  const { t } = useTranslation();
 
   const validationSchema = yup.object().shape({
     amount: yup
@@ -35,7 +37,7 @@ const VisaMasterCardForm = () => {
     amount: 500,
   };
 
-  const { mainAppStore, notificationStore, badRequestPopupStore } = useStores();
+  const { mainAppStore, badRequestPopupStore } = useStores();
 
   const investOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
@@ -60,14 +62,14 @@ const VisaMasterCardForm = () => {
       depositSum: +values.amount,
       currency: 'USD',
       authToken: mainAppStore.token || '',
-      accountId: mainAppStore.accounts.find(item => item.isLive)?.id || ''
+      accountId: mainAppStore.accounts.find(item => item.isLive)?.id || '',
     };
     try {
       const response = await API.createDeposit(params);
       if (response.status === DepositApiResponseCodes.Success) {
         window.open(response.redirectUrl, '_blank');
       } else {
-        badRequestPopupStore.setMessage('Technical error');
+        badRequestPopupStore.setMessage(t('Technical error'));
         badRequestPopupStore.openModal();
       }
     } catch (error) {
@@ -78,13 +80,11 @@ const VisaMasterCardForm = () => {
 
   const {
     values,
-    setFieldError,
     setFieldValue,
     validateForm,
     handleChange,
     handleSubmit,
     errors,
-    touched,
     isSubmitting,
   } = useFormik({
     initialValues,
@@ -99,7 +99,7 @@ const VisaMasterCardForm = () => {
       return;
     }
     handleChange(e);
-  }
+  };
 
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
@@ -119,7 +119,7 @@ const VisaMasterCardForm = () => {
           color="rgba(255,255,255,0.3)"
           marginBottom="6px"
         >
-          Amount
+          {t('Amount')}
         </PrimaryTextParagraph>
 
         <FlexContainer
@@ -138,9 +138,7 @@ const VisaMasterCardForm = () => {
             name="amount"
             id="amount"
           />
-          {errors.amount && (
-            <ErrorText>{errors.amount}</ErrorText>
-          )}
+          {errors.amount && <ErrorText>{errors.amount}</ErrorText>}
           <CurrencyDropdown
             disabled={true}
             width="80px"
@@ -181,7 +179,7 @@ const VisaMasterCardForm = () => {
             disabled={isSubmitting}
           >
             <PrimaryTextSpan color="#003A38" fontSize="14px" fontWeight="bold">
-              Deposit {mainAppStore.activeAccount?.symbol}
+              {t('Deposit')} {mainAppStore.activeAccount?.symbol}
               {values.amount}
             </PrimaryTextSpan>
           </PrimaryButton>
@@ -207,14 +205,6 @@ const Input = styled.input`
   padding-right: 100px;
   background-color: transparent;
   border-right: 1px solid rgba(255, 255, 255, 0.19);
-`;
-
-const LearnMoreLink = styled(Link)`
-  color: #fffccc;
-  line-height: 120%;
-  &:hover {
-    color: #fffccc;
-  }
 `;
 
 const ErrorText = styled.span`

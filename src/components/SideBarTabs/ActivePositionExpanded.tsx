@@ -11,16 +11,15 @@ import { getNumberSign } from '../../helpers/getNumberSign';
 import { useStores } from '../../hooks/useStores';
 import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
 import { Observer } from 'mobx-react-lite';
-import styled from '@emotion/styled';
 import InformationPopup from '../InformationPopup';
 import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
-import { SecondaryButton } from '../../styles/Buttons';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
 import { DisplayContents, Td } from '../../styles/TableElements';
 import ImageContainer from '../ImageContainer';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import ClosePositionPopup from './ClosePositionPopup';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -39,15 +38,15 @@ function ActivePositionExpanded(props: Props) {
       openPrice,
       operation,
       swap,
-      tp, 
+      tp,
       sl,
       tpType,
-      slType
+      slType,
     },
     currencySymbol,
   } = props;
   const { quotesStore, mainAppStore } = useStores();
-
+  const { t } = useTranslation();
   const instrumentRef = useRef<HTMLDivElement>(null);
 
   const isBuy = operation === AskBidEnum.Buy;
@@ -103,14 +102,14 @@ function ActivePositionExpanded(props: Props) {
               textTransform="uppercase"
               marginBottom="2px"
             >
-              {isBuy ? 'Buy' : 'Sell'}
+              {isBuy ? t('Buy') : t('Sell')}
             </PrimaryTextSpan>
             <PrimaryTextSpan
               fontSize="11px"
               color="rgba(255, 255, 255, 0.4)"
               whiteSpace="nowrap"
             >
-              at {openPrice}
+              {t('at')} {openPrice}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
@@ -178,7 +177,10 @@ function ActivePositionExpanded(props: Props) {
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <Observer>
             {() => (
-              <QuoteText isGrowth={PnL() + investmentAmount > 0} fontSize="14px">
+              <QuoteText
+                isGrowth={PnL() + investmentAmount > 0}
+                fontSize="14px"
+              >
                 {mainAppStore.activeAccount?.symbol}
                 {(PnL() + investmentAmount).toFixed(2)}
               </QuoteText>
@@ -193,8 +195,9 @@ function ActivePositionExpanded(props: Props) {
               <>
                 {tpType !== TpSlTypeEnum.Price && tp < 0 && '-'}
                 {tpType !== TpSlTypeEnum.Price && currencySymbol}
-                {tpType === TpSlTypeEnum.Price ? Math.abs(tp) : Math.abs(tp).toFixed(2)}
-                
+                {tpType === TpSlTypeEnum.Price
+                  ? Math.abs(tp)
+                  : Math.abs(tp).toFixed(2)}
               </>
             ) : (
               '-'
@@ -209,7 +212,9 @@ function ActivePositionExpanded(props: Props) {
               <>
                 {slType !== TpSlTypeEnum.Price && sl < 0 && '-'}
                 {slType !== TpSlTypeEnum.Price && currencySymbol}
-                {slType === TpSlTypeEnum.Price ? Math.abs(sl) : Math.abs(sl).toFixed(2)}
+                {slType === TpSlTypeEnum.Price
+                  ? Math.abs(sl)
+                  : Math.abs(sl).toFixed(2)}
               </>
             ) : (
               '-'
@@ -224,7 +229,6 @@ function ActivePositionExpanded(props: Props) {
           margin="0 16px 0 0"
           position="relative"
         >
-          
           <ClosePositionPopup
             applyHandler={closePosition}
             ref={instrumentRef}
@@ -246,10 +250,10 @@ function ActivePositionExpanded(props: Props) {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Price opened
+                  {t('Price opened')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  at {openPrice}
+                  {t('at')} {openPrice}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
@@ -257,7 +261,7 @@ function ActivePositionExpanded(props: Props) {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Opened
+                  {t('Opened')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {moment(openDate).format('DD MMM, HH:mm')}
@@ -268,7 +272,7 @@ function ActivePositionExpanded(props: Props) {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Equity
+                  {t('Equity')}
                 </PrimaryTextSpan>
                 <Observer>
                   {() => (
@@ -285,7 +289,7 @@ function ActivePositionExpanded(props: Props) {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Overnight fee
+                  {t('Overnight fee')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {getNumberSign(swap)}
@@ -298,7 +302,7 @@ function ActivePositionExpanded(props: Props) {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  Position ID
+                  {t('Position ID')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {id}
@@ -313,7 +317,3 @@ function ActivePositionExpanded(props: Props) {
 }
 
 export default ActivePositionExpanded;
-
-const ButtonClose = styled(SecondaryButton)`
-  width: 48px;
-`;

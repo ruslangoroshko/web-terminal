@@ -17,6 +17,7 @@ import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import ClosePositionPopup from './ClosePositionPopup';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   position: PendingOrderWSDTO;
@@ -53,6 +54,8 @@ function OrderExpandedItem(props: Props) {
       processId: getProcessId(),
     });
   };
+
+  const { t } = useTranslation();
 
   return (
     <DisplayContents>

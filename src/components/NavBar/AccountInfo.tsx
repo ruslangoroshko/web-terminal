@@ -18,6 +18,7 @@ import Topics from '../../constants/websocketTopics';
 import Fields from '../../constants/fields';
 import { useHistory } from 'react-router-dom';
 import Page from '../../constants/Pages';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   account: AccountModelWebSocketDTO;
@@ -36,6 +37,8 @@ const AccountInfo: FC<Props> = observer(props => {
   } = useStores();
   const { push } = useHistory();
 
+  const { t } = useTranslation();
+
   const isActiveAccount = mainAppStore.activeAccount?.id === account.id;
 
   const handleSwitch = () => {
@@ -45,9 +48,9 @@ const AccountInfo: FC<Props> = observer(props => {
     tabsStore.sideBarTabType = null;
     mainAppStore.setActiveAccount(account);
     toggle();
-    notificationStore.notificationMessage = `Your account has been switched on ${
-      account.isLive ? 'Real' : 'Demo'
-    }`;
+    notificationStore.notificationMessage = `${t(
+      'Your account has been switched on'
+    )} ${account.isLive ? t('Real') : t('Demo')}`;
     notificationStore.isSuccessfull = true;
     notificationStore.openNotification();
     push(Page.DASHBOARD);
@@ -77,7 +80,7 @@ const AccountInfo: FC<Props> = observer(props => {
       <FlexContainer justifyContent="space-between">
         <FlexContainer>
           <FlexContainer width="32px" height="32px" margin="0 12px 0 0">
-            Image
+            {t('Image')}
           </FlexContainer>
           <FlexContainer flexDirection="column">
             <FlexContainer margin="0 0 4px 0">
@@ -103,7 +106,7 @@ const AccountInfo: FC<Props> = observer(props => {
                     account.isLive ? 'rgba(255, 255, 255, 0.4)' : '#EEFF00'
                   }
                 >
-                  {account.isLive ? 'Real' : 'Demo'}
+                  {account.isLive ? t('Real') : t('Demo')}
                 </PrimaryTextSpan>
               </FlexContainer>
             </FlexContainer>
@@ -119,13 +122,13 @@ const AccountInfo: FC<Props> = observer(props => {
             onClick={depositFundsStore.togglePopup}
           >
             <PrimaryTextSpan fontSize="12px" color="#003A38" fontWeight="bold">
-              Deposit
+              {t('Deposit')}
             </PrimaryTextSpan>
           </PrimaryButton>
         ) : (
           <SwitchButton onClick={handleSwitch}>
             <PrimaryTextSpan color="#fffccc" fontSize="14px">
-              Switch
+              {t('Switch')}
             </PrimaryTextSpan>
           </SwitchButton>
         )}
@@ -142,7 +145,7 @@ const AccountInfo: FC<Props> = observer(props => {
               marginBottom="4px"
               color="rgba(255, 255, 255, 0.5)"
             >
-              Invest:
+              {t('Invest')}
             </PrimaryTextParagraph>
             <PrimaryTextSpan fontSize="12px" color="#fffccc">
               {account.symbol}
@@ -159,7 +162,7 @@ const AccountInfo: FC<Props> = observer(props => {
               marginBottom="4px"
               color="rgba(255, 255, 255, 0.5)"
             >
-              Profit:
+              {t('Profit')}:
             </PrimaryTextParagraph>
 
             <QuoteText fontSize="12px" isGrowth={profit >= 0}>
@@ -174,7 +177,7 @@ const AccountInfo: FC<Props> = observer(props => {
               marginBottom="4px"
               color="rgba(255, 255, 255, 0.5)"
             >
-              Total:
+              {t('Total')}:
             </PrimaryTextParagraph>
             <PrimaryTextSpan fontSize="12px" color="#fffccc">
               {account.symbol}

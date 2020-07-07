@@ -54,7 +54,7 @@ const BitcoinForm: FC = () => {
           setBitcoinWalletString(response.walletAddress);
           setLoading(false);
         } else {
-          badRequestPopupStore.setMessage('Technical error');
+          badRequestPopupStore.setMessage(t('Technical error'));
           badRequestPopupStore.openModal();
           setLoading(false);
         }
@@ -84,10 +84,10 @@ const BitcoinForm: FC = () => {
         fontWeight="bold"
         marginBottom="12px"
       >
-        Bitcoin
+        {t('Bitcoin')}
       </PrimaryTextParagraph>
       <PrimaryTextParagraph fontSize="13px" color="#fff" marginBottom="38px">
-        Send funds to the address provided below
+        {t('Send funds to the address provided below')}
       </PrimaryTextParagraph>
       <FlexContainer>
         <PrimaryTextSpan
@@ -96,11 +96,8 @@ const BitcoinForm: FC = () => {
           color="rgba(255, 255, 255, 0.4)"
           marginRight="4px"
         >
-          Deposit Address (BTC)
+          {t('Deposit Address (BTC)')}
         </PrimaryTextSpan>
-        {/* <InformationPopup>
-
-      </InformationPopup> */}
       </FlexContainer>
       <BitcoinWalletStringWrapper
         justifyContent="space-between"
@@ -126,14 +123,15 @@ const BitcoinForm: FC = () => {
         </FlexContainer>
         <FlexContainer flexDirection="column">
           <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.4)">
-            Important:
+            {t('Important')}:
             <br />
             <br />
-            Send only amount in BTC to this deposit address. Sending any other
-            currency to this address may result in the loss of your deposit.
+            {t(
+              'Send only amount in BTC to this deposit address. Sending any other currency to this address may result in the loss of your deposit.'
+            )}
             <br />
             <br />
-            Time to fund: Depending on the Blockchain (approx 20-60 min)
+            {t('Time to fund: Depending on the Blockchain (approx 20-60 min)')}
           </PrimaryTextSpan>
         </FlexContainer>
       </FlexContainer>
