@@ -102,6 +102,11 @@ function ProofOfIdentity() {
 
   return (
     <FlexContainer
+      flexDirection="column"
+      height="100%"
+      overflow="auto"
+    >
+      <FlexContainer
       width="100%"
       flexDirection="column"
       alignItems="center"
@@ -230,6 +235,7 @@ function ProofOfIdentity() {
           </ButtonWithoutStyles>
         </FlexContainer>
       </FlexContainer>
+    </FlexContainer>
     </FlexContainer>
   );
 }
