@@ -29,24 +29,27 @@ function SignUp() {
   const validationSchema = yup.object().shape<UserRegistration>({
     email: yup
       .string()
-      .required(validationInputTexts.EMAIL)
-      .email(validationInputTexts.EMAIL),
+      .required(t(validationInputTexts.EMAIL))
+      .email(t(validationInputTexts.EMAIL)),
     password: yup
       .string()
-      .required(validationInputTexts.REQUIRED_FIELD)
-      .min(8, validationInputTexts.PASSWORD_MIN_CHARACTERS)
-      .max(40, validationInputTexts.PASSWORD_MAX_CHARACTERS)
-      .matches(/^(?=.*\d)(?=.*[a-zA-Z])/, validationInputTexts.PASSWORD_MATCH),
+      .required(t(validationInputTexts.REQUIRED_FIELD))
+      .min(8, t(validationInputTexts.PASSWORD_MIN_CHARACTERS))
+      .max(40, t(validationInputTexts.PASSWORD_MAX_CHARACTERS))
+      .matches(
+        /^(?=.*\d)(?=.*[a-zA-Z])/,
+        t(validationInputTexts.PASSWORD_MATCH)
+      ),
     repeatPassword: yup
       .string()
-      .required(validationInputTexts.REPEAT_PASSWORD)
+      .required(t(validationInputTexts.REPEAT_PASSWORD))
       .oneOf(
         [yup.ref(Fields.PASSWORD), null],
-        validationInputTexts.REPEAT_PASSWORD_MATCH
+        t(validationInputTexts.REPEAT_PASSWORD_MATCH)
       ),
     userAgreement: yup
       .bool()
-      .oneOf([true], validationInputTexts.USER_AGREEMENT),
+      .oneOf([true], t(validationInputTexts.USER_AGREEMENT)),
     captcha: yup.string(),
   });
 
@@ -150,7 +153,7 @@ function SignUp() {
       ? setFieldError(Fields.USER_AGREEMENT, '')
       : setFieldError(
           Fields.USER_AGREEMENT,
-          validationInputTexts.USER_AGREEMENT
+          t(validationInputTexts.USER_AGREEMENT)
         );
   };
 
@@ -173,7 +176,7 @@ function SignUp() {
   useEffect(() => {
     mixpanel.track(mixpanelEvents.SIGN_UP_VIEW);
     // TODO: add react-helmet for dynamic title
-    document.title = 'Sign Up';
+    document.title = t('Sign up');
   }, []);
 
   return (
@@ -207,7 +210,7 @@ function SignUp() {
               <LabelInput
                 onChange={handleChange}
                 name={Fields.EMAIL}
-                labelText="Email"
+                labelText={t('Email')}
                 value={values.email || ''}
                 id={Fields.EMAIL}
                 hasError={!!(touched.email && errors.email)}
@@ -222,7 +225,7 @@ function SignUp() {
               <LabelInput
                 onChange={handleChange}
                 name={Fields.PASSWORD}
-                labelText="Password"
+                labelText={t('Password')}
                 value={values.password || ''}
                 id={Fields.PASSWORD}
                 autoComplete="new-password"
@@ -238,7 +241,7 @@ function SignUp() {
             >
               <LabelInput
                 onChange={handleChange}
-                labelText="Repeat Password"
+                labelText={t('Repeat Password')}
                 value={values.repeatPassword || ''}
                 id={Fields.REPEAT_PASSWORD}
                 name={Fields.REPEAT_PASSWORD}
@@ -257,19 +260,19 @@ function SignUp() {
                 errorText={errors.userAgreement}
               >
                 <PrimaryTextSpan color="rgba(255,255,255,0.6)" fontSize="12px">
-                  I’m 18 years old, and agree to&nbsp;
+                  {t('I’m 18 years old, and agree to')}&nbsp;
                   <CustomCheckboxLinkExternal
                     href={mainAppStore.initModel.termsUrl}
                     target="_blank"
                   >
-                    Terms &amp; Conditions
+                    {t('Terms & Conditions')}
                   </CustomCheckboxLinkExternal>
-                  &nbsp; and&nbsp;
+                  &nbsp; {t('and')}&nbsp;
                   <CustomCheckboxLinkExternal
                     href={mainAppStore.initModel.policyUrl}
                     target="_blank"
                   >
-                    Privacy Policy
+                    {t('Privacy Policy')}
                   </CustomCheckboxLinkExternal>
                 </PrimaryTextSpan>
               </Checkbox>
@@ -286,7 +289,7 @@ function SignUp() {
                 fontSize="14px"
                 textTransform="uppercase"
               >
-                Sign up
+                {t('Sign up')}
               </PrimaryTextSpan>
             </PrimaryButton>
           </FlexContainer>

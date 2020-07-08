@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import SignFlowLayout from '../components/SignFlowLayout';
-import {
-  Formik,
-  Field,
-  Form,
-  FieldProps,
-  FormikHelpers,
-  useFormik,
-} from 'formik';
+import { FormikHelpers, useFormik } from 'formik';
 import LabelInput from '../components/LabelInput';
 import { UserForgotPassword } from '../types/UserInfo';
 import * as yup from 'yup';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryButton } from '../styles/Buttons';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import API from '../helpers/API';
 import styled from '@emotion/styled';
 import Pages from '../constants/Pages';
@@ -30,28 +23,24 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
+import { useTranslation } from 'react-i18next';
 
-interface Props {}
-
-function ForgotPassword(props: Props) {
+function ForgotPassword() {
+  const { t } = useTranslation();
   const validationSchema = yup.object().shape<UserForgotPassword>({
     email: yup
       .string()
-      .required(validationInputTexts.EMAIL)
-      .email(validationInputTexts.EMAIL),
+      .required(t(validationInputTexts.EMAIL))
+      .email(t(validationInputTexts.EMAIL)),
   });
-
-  
 
   const initialValues: UserForgotPassword = {
     email: '',
   };
 
-  const {} = props;
-
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccessful, setIsSuccessfull] = useState(false);
-  const { notificationStore, badRequestPopupStore } = useStores();
+  const { badRequestPopupStore } = useStores();
 
   const handleSubmitForm = async (
     { email }: UserForgotPassword,
@@ -77,13 +66,12 @@ function ForgotPassword(props: Props) {
   };
 
   useEffect(() => {
-    document.title = "Reset password";
+    document.title = t('Reset password');
     mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_VIEW);
   }, []);
 
   const {
     values,
-    setFieldValue,
     validateForm,
     handleSubmit,
     handleChange,
@@ -112,13 +100,9 @@ function ForgotPassword(props: Props) {
       {isLoading && <LoaderFullscreen isLoading={isLoading} />}
 
       <Observer>
-        {() => (
-          <>
-            {badRequestPopupStore.isActive && <BadRequestPopup />}
-          </>
-        )}
+        {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
-      
+
       <FlexContainer width="320px" maxWidth="100%" flexDirection="column">
         {isSuccessful ? (
           <>
@@ -128,7 +112,7 @@ function ForgotPassword(props: Props) {
               fontWeight="bold"
               marginBottom="20px"
             >
-              Check your email
+              {t('Check your email')}
             </PrimaryTextParagraph>
 
             <FlexContainer alignItems="center" padding="20px 0">
@@ -136,7 +120,7 @@ function ForgotPassword(props: Props) {
                 <SvgIcon {...CheckDone} fillColor="#005E5E" />
               </FlexContainer>
               <PrimaryTextParagraph color="#7b7b85" fontSize="12px">
-                We have sent you a link to create a new password.
+                {t('We have sent you a link to create a new password.')}
               </PrimaryTextParagraph>
             </FlexContainer>
 
@@ -146,7 +130,7 @@ function ForgotPassword(props: Props) {
               padding="12px 0 20px"
             >
               <LinkForgotSuccess to={Pages.SIGN_IN}>
-                Back to Log in
+                {t('Back to Login')}
               </LinkForgotSuccess>
             </FlexContainer>
           </>
@@ -158,14 +142,14 @@ function ForgotPassword(props: Props) {
               fontWeight="bold"
               marginBottom="20px"
             >
-              Reset password
+              {t('Reset password')}
             </PrimaryTextParagraph>
             <PrimaryTextParagraph
               color="#7b7b85"
               fontSize="12px"
               marginBottom="24px"
             >
-              To begin changing your password, please enter your e-mail
+              {t('To begin changing your password, please enter your e-mail')}
             </PrimaryTextParagraph>
 
             <CustomForm noValidate onSubmit={handleSubmit}>
@@ -177,7 +161,7 @@ function ForgotPassword(props: Props) {
                 >
                   <LabelInput
                     name={Fields.EMAIL}
-                    labelText="Email"
+                    labelText={t('Email')}
                     value={values.email || ''}
                     onChange={handleChange}
                     id={Fields.EMAIL}
@@ -198,7 +182,7 @@ function ForgotPassword(props: Props) {
                     fontSize="14px"
                     textTransform="uppercase"
                   >
-                    Confirm
+                    {t('Confirm')}
                   </PrimaryTextSpan>
                 </PrimaryButton>
               </FlexContainer>
@@ -209,7 +193,7 @@ function ForgotPassword(props: Props) {
               justifyContent="center"
               padding="12px 0"
             >
-              <LinkForgot to={Pages.SIGN_IN}>Back to Log in</LinkForgot>
+              <LinkForgot to={Pages.SIGN_IN}>{t('Back to Login')}</LinkForgot>
             </FlexContainer>
           </>
         )}

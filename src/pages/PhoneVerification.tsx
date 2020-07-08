@@ -1,9 +1,8 @@
 import React, { useState, useEffect, FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
-import { Formik, Field, FieldProps, Form, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import Fields from '../constants/fields';
-import LabelInput from '../components/LabelInput';
 import LabelInputMasked from '../components/LabelInputMasked';
 import AutoCompleteDropdown from '../components/KYC/AutoCompleteDropdown';
 import { PrimaryButton } from '../styles/Buttons';
@@ -24,25 +23,24 @@ import { useHistory } from 'react-router-dom';
 import { getProcessId } from '../helpers/getProcessId';
 import { SexEnum } from '../enums/Sex';
 import validationInputTexts from '../constants/validationInputTexts';
+import { useTranslation } from 'react-i18next';
 
-interface Props {}
-
-const PhoneVerification: FC<Props> = props => {
-  const {} = props;
+const PhoneVerification: FC = () => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [dialMask, setDialMask] = useState('');
   const countriesNames = countries.map(item => item.name);
+  const { t } = useTranslation();
 
   const validationSchema = yup.object().shape<PhoneVerificationFormParams>({
     phone: yup
       .string()
-      .min(11, 'Min 11 symbols')
-      .max(20, 'Max 20 symbols')
+      .min(11, t('Min 11 symbols'))
+      .max(20, t('Max 20 symbols'))
       .required(),
     customCountryCode: yup
       .mixed()
-      .oneOf(countriesNames, 'No matches')
-      .required(validationInputTexts.REQUIRED_FIELD),
+      .oneOf(countriesNames, t('No matches'))
+      .required(t(validationInputTexts.REQUIRED_FIELD)),
   });
 
   const { push } = useHistory();
@@ -172,7 +170,7 @@ const PhoneVerification: FC<Props> = props => {
           color="#fffccc"
           marginBottom="8px"
         >
-          Phone verification
+          {t('Phone verification')}
         </PrimaryTextParagraph>
         <PrimaryTextSpan
           marginBottom="40px"
@@ -180,14 +178,14 @@ const PhoneVerification: FC<Props> = props => {
           lineHeight="20px"
           color="rgba(255, 255, 255, 0.4)"
         >
-          Improve your account protection by linking your phone number.
+          {t('Improve your account protection by linking your phone number.')}
         </PrimaryTextSpan>
         <FlexContainer flexDirection="column">
           <CustomForm onSubmit={handleSubmit} noValidate>
             <FlexContainer width="320px" margin="0 0 28px 0">
               <FlexContainer flexDirection="column" width="100%">
                 <AutoCompleteDropdown
-                  labelText="Country"
+                  labelText={t('Country')}
                   {...getFieldProps(Fields.CUSTOM_COUNTRY)}
                   id={Fields.CUSTOM_COUNTRY}
                   hasError={
@@ -203,7 +201,7 @@ const PhoneVerification: FC<Props> = props => {
               <FlexContainer width="100%" flexDirection="column">
                 <LabelInputMasked
                   mask={`${dialMask}99999999999999999999`}
-                  labelText="Phone"
+                  labelText={t('Phone')}
                   {...getFieldProps(Fields.PHONE)}
                   id={Fields.PHONE}
                   hasError={!!(touched.phone && errors.phone)}
@@ -222,7 +220,7 @@ const PhoneVerification: FC<Props> = props => {
                   fontWeight="bold"
                   fontSize="14px"
                 >
-                  Save and continue
+                  {t('Save and continue')}
                 </PrimaryTextSpan>
               </PrimaryButton>
             </FlexContainer>

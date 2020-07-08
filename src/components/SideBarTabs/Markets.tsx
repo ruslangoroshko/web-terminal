@@ -84,7 +84,7 @@ function Markets() {
           {t('Sort by')}:
         </PrimaryTextSpan>
         <SortByDropdown
-          selectedLabel={sortByMarketsLabels[sortingStore.marketsSortBy]}
+          selectedLabel={t(sortByMarketsLabels[sortingStore.marketsSortBy])}
           opened={on}
           toggle={handleToggle}
         >

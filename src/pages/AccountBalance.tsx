@@ -19,6 +19,7 @@ import IconClose from '../assets/svg/icon-popup-close.svg';
 import { useHistory } from 'react-router-dom';
 import LoaderForComponents from '../components/LoaderForComponents';
 import Page from '../constants/Pages';
+import { useTranslation } from 'react-i18next';
 
 function AccountBalance() {
   const { mainAppStore, badRequestPopupStore, dateRangeStore } = useStores();
@@ -32,6 +33,8 @@ function AccountBalance() {
     pageSize: 20,
     totalItems: 0,
   });
+
+  const { t } = useTranslation();
 
   const fetchBalanceHistory = useCallback(
     async (isScrolling = false) => {
@@ -80,7 +83,7 @@ function AccountBalance() {
   }, [mainAppStore.activeAccount]);
 
   useEffect(() => {
-    document.title = 'Balance history';
+    document.title = t('Balance history');
   }, []);
 
   return (
@@ -117,7 +120,7 @@ function AccountBalance() {
               fontSize="11px"
               textTransform="uppercase"
             >
-              Period:
+              {t('Period')}:
             </PrimaryTextParagraph>
             <FlexContainer height="32px">
               <DatePickerDropdown datesChangeCallback={fetchBalanceHistory} />
@@ -133,7 +136,7 @@ function AccountBalance() {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Date
+                  {t('Date')}
                 </PrimaryTextSpan>
               </FlexContainer>
             </Th>
@@ -143,7 +146,7 @@ function AccountBalance() {
                 fontSize="11px"
                 textTransform="uppercase"
               >
-                Amount
+                {t('Amount')}
               </PrimaryTextSpan>
             </Th>
             <Th>
@@ -152,7 +155,7 @@ function AccountBalance() {
                 fontSize="11px"
                 textTransform="uppercase"
               >
-                Balance
+                {t('Balance')}
               </PrimaryTextSpan>
             </Th>
             <Th>
@@ -161,7 +164,7 @@ function AccountBalance() {
                 fontSize="11px"
                 textTransform="uppercase"
               >
-                Description
+                {t('Description')}
               </PrimaryTextSpan>
             </Th>
             <InfinityScrollList
@@ -197,7 +200,7 @@ function AccountBalance() {
                 />
               </FlexContainer>
               <PrimaryTextSpan color="rgba(255,255,255,0.17)" fontWeight="bold">
-                There is no trading history
+                {t('There is no balance history')}
               </PrimaryTextSpan>
             </FlexContainer>
           )}

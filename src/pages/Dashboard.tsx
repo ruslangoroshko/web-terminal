@@ -27,6 +27,7 @@ import DemoRealPopup from '../components/DemoRealPopup';
 import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { useLocation } from 'react-router-dom';
 import StatusPaymentPopup from '../components/DepositPopup/StatusPaymentPopup';
+import { useTranslation } from 'react-i18next';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -37,6 +38,8 @@ const Dashboard: FC = observer(() => {
     instrumentsStore,
     notificationStore,
   } = useStores();
+
+  const { t } = useTranslation();
 
   const [paymentStatus, setPaymentStatus] = useState('');
   const location = useLocation();
@@ -117,8 +120,10 @@ const Dashboard: FC = observer(() => {
   }, [location.search]);
 
   useEffect(() => {
-    document.title = `${mainAppStore.initModel.brandName} trading platform`;
-    // 272
+    document.title = `${mainAppStore.initModel.brandName} ${t(
+      'trading platform'
+    )}`;
+    // webt-272 is this works?
     window.scrollTo(0, 0);
   }, []);
 

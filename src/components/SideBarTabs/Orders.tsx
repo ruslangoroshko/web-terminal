@@ -76,9 +76,9 @@ const Orders: FC = () => {
         </PrimaryTextSpan>
         <SortByDropdown
           opened={on}
-          selectedLabel={
+          selectedLabel={t(
             sortByPendingOrdersLabels[sortingStore.pendingOrdersSortBy]
-          }
+          )}
           toggle={handleToggle}
         >
           {Object.entries(sortByPendingOrdersLabels).map(([key, value]) => (

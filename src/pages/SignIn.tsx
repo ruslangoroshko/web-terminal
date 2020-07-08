@@ -28,13 +28,13 @@ const SingIn = observer(() => {
   const validationSchema = yup.object().shape<UserAuthenticate>({
     email: yup
       .string()
-      .required(validationInputTexts.EMAIL)
-      .email(validationInputTexts.EMAIL),
+      .required(t(validationInputTexts.EMAIL))
+      .email(t(validationInputTexts.EMAIL)),
     password: yup
       .string()
-      .required(validationInputTexts.REQUIRED_FIELD)
-      .min(8, validationInputTexts.PASSWORD_MIN_CHARACTERS)
-      .max(40, validationInputTexts.PASSWORD_MAX_CHARACTERS),
+      .required(t(validationInputTexts.REQUIRED_FIELD))
+      .min(8, t(validationInputTexts.PASSWORD_MIN_CHARACTERS))
+      .max(40, t(validationInputTexts.PASSWORD_MAX_CHARACTERS)),
   });
 
   const initialValues: UserAuthenticate = {
@@ -66,14 +66,11 @@ const SingIn = observer(() => {
 
   const {
     values,
-    setFieldError,
-    setFieldValue,
     validateForm,
     handleChange,
     handleSubmit,
     errors,
     touched,
-    isSubmitting,
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
@@ -94,7 +91,7 @@ const SingIn = observer(() => {
   useEffect(() => {
     mixpanel.track(mixpanelEvents.LOGIN_VIEW);
 
-    document.title = 'Log In';
+    document.title = t('Login');
   }, []);
 
   return (
@@ -128,7 +125,7 @@ const SingIn = observer(() => {
               <LabelInput
                 name={Fields.EMAIL}
                 onChange={handleChange}
-                labelText="Email"
+                labelText={t('Email')}
                 value={values.email || ''}
                 id={Fields.EMAIL}
                 hasError={!!(touched.email && errors.email)}
@@ -143,7 +140,7 @@ const SingIn = observer(() => {
               <LabelInput
                 name={Fields.PASSWORD}
                 onChange={handleChange}
-                labelText="Password"
+                labelText={t('Password')}
                 value={values.password || ''}
                 id={Fields.PASSWORD}
                 type="password"
@@ -164,7 +161,7 @@ const SingIn = observer(() => {
                 fontSize="14px"
                 textTransform="uppercase"
               >
-                Log in
+                {t('Log in')}
               </PrimaryTextSpan>
             </PrimaryButton>
 
@@ -174,7 +171,7 @@ const SingIn = observer(() => {
               padding="12px 0"
             >
               <LinkForgot to={Pages.FORGOT_PASSWORD}>
-                Forgot password?
+                {t('Forgot password?')}
               </LinkForgot>
             </FlexContainer>
           </FlexContainer>
@@ -188,12 +185,6 @@ export default SingIn;
 
 const CustomForm = styled.form`
   margin: 0;
-`;
-
-const ErrorMessage = styled.span`
-  color: red;
-  position: absolute;
-  bottom: 0;
 `;
 
 const LinkForgot = styled(Link)`

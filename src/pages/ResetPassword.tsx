@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SignFlowLayout from '../components/SignFlowLayout';
-import {
-  Formik,
-  Field,
-  Form,
-  FieldProps,
-  FormikHelpers,
-  useFormik,
-} from 'formik';
+import { useFormik } from 'formik';
 import LabelInput from '../components/LabelInput';
 import { IResetPassword } from '../types/UserInfo';
 import * as yup from 'yup';
@@ -23,31 +16,33 @@ import Fields from '../constants/fields';
 import CheckDone from '../assets/svg/icon-check-done.svg';
 import SvgIcon from '../components/SvgIcon';
 import validationInputTexts from '../constants/validationInputTexts';
-import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
-import mixpanel from 'mixpanel-browser';
-import mixpanelEvents from '../constants/mixpanelEvents';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
+import { useTranslation } from 'react-i18next';
 
 interface Props {}
 
 function ResetPassword(props: Props) {
   const { token } = useParams();
+  const { t } = useTranslation();
 
   const validationSchema = yup.object().shape<IResetPassword>({
     password: yup
       .string()
-      .required(validationInputTexts.REQUIRED_FIELD)
-      .min(8, validationInputTexts.PASSWORD_MIN_CHARACTERS)
-      .max(40, validationInputTexts.PASSWORD_MAX_CHARACTERS)
-      .matches(/^(?=.*\d)(?=.*[a-zA-Z])/, validationInputTexts.PASSWORD_MATCH),
+      .required(t(validationInputTexts.REQUIRED_FIELD))
+      .min(8, t(validationInputTexts.PASSWORD_MIN_CHARACTERS))
+      .max(40, t(validationInputTexts.PASSWORD_MAX_CHARACTERS))
+      .matches(
+        /^(?=.*\d)(?=.*[a-zA-Z])/,
+        t(validationInputTexts.PASSWORD_MATCH)
+      ),
     repeatPassword: yup
       .string()
-      .required(validationInputTexts.REPEAT_PASSWORD)
+      .required(t(validationInputTexts.REPEAT_PASSWORD))
       .oneOf(
         [yup.ref(Fields.PASSWORD), null],
-        validationInputTexts.REPEAT_PASSWORD_MATCH
+        t(validationInputTexts.REPEAT_PASSWORD_MATCH)
       ),
   });
 
@@ -88,7 +83,6 @@ function ResetPassword(props: Props) {
 
   const {
     values,
-    setFieldValue,
     validateForm,
     handleSubmit,
     handleChange,
@@ -113,7 +107,7 @@ function ResetPassword(props: Props) {
   };
 
   useEffect(() => {
-    document.title = 'Reset password';
+    document.title = t('Reset password');
   }, []);
 
   return (
@@ -122,8 +116,6 @@ function ResetPassword(props: Props) {
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
-      
-
       <FlexContainer width="320px" maxWidth="100%" flexDirection="column">
         {isSuccessful && (
           <>
@@ -133,7 +125,7 @@ function ResetPassword(props: Props) {
               fontWeight="bold"
               marginBottom="20px"
             >
-              Congratulation
+              {t('Congratulation')}
             </PrimaryTextParagraph>
 
             <FlexContainer alignItems="center" padding="20px 0">
@@ -141,7 +133,7 @@ function ResetPassword(props: Props) {
                 <SvgIcon {...CheckDone} fillColor="#005E5E" />
               </FlexContainer>
               <PrimaryTextParagraph color="#7b7b85" fontSize="12px">
-                Your password has been successfully changed
+                {t('Your password has been successfully changed')}
               </PrimaryTextParagraph>
             </FlexContainer>
 
@@ -151,7 +143,7 @@ function ResetPassword(props: Props) {
               padding="12px 0 20px"
             >
               <LinkForgotSuccess to={Pages.SIGN_IN}>
-                Back to Log in
+                {t('Back to Login')}
               </LinkForgotSuccess>
             </FlexContainer>
           </>
@@ -164,7 +156,7 @@ function ResetPassword(props: Props) {
               fontWeight="bold"
               marginBottom="20px"
             >
-              The link has expired
+              {t('The link has expired')}
             </PrimaryTextParagraph>
 
             <FlexContainer alignItems="center" padding="20px 0">
@@ -172,7 +164,7 @@ function ResetPassword(props: Props) {
                 <FallDownIco />
               </FlexContainer>
               <PrimaryTextParagraph color="#7b7b85" fontSize="12px">
-                The link you followed has expired. Please try again.
+                {t('The link you followed has expired. Please try again.')}
               </PrimaryTextParagraph>
             </FlexContainer>
 
@@ -182,7 +174,7 @@ function ResetPassword(props: Props) {
               padding="12px 0 20px"
             >
               <LinkForgotSuccess to={Pages.SIGN_IN}>
-                Back to Log in
+                {t('Back to Login')}
               </LinkForgotSuccess>
             </FlexContainer>
           </>
@@ -195,7 +187,7 @@ function ResetPassword(props: Props) {
               fontWeight="bold"
               marginBottom="20px"
             >
-              Set a new password
+              {t('Set a new password')}
             </PrimaryTextParagraph>
 
             <CustomForm onSubmit={handleSubmit} noValidate>
@@ -208,7 +200,7 @@ function ResetPassword(props: Props) {
                   <LabelInput
                     name={Fields.PASSWORD}
                     id={Fields.PASSWORD}
-                    labelText="Password"
+                    labelText={t('Password')}
                     value={values.password || ''}
                     onChange={handleChange}
                     autoComplete="new-password"
@@ -226,7 +218,7 @@ function ResetPassword(props: Props) {
                     name={Fields.REPEAT_PASSWORD}
                     id={Fields.REPEAT_PASSWORD}
                     onChange={handleChange}
-                    labelText="Repeat Password"
+                    labelText={t('Repeat Password')}
                     value={values.repeatPassword || ''}
                     autoComplete="new-password"
                     type="password"
@@ -249,7 +241,7 @@ function ResetPassword(props: Props) {
                     fontSize="14px"
                     textTransform="uppercase"
                   >
-                    Confirm
+                    {t('Confirm')}
                   </PrimaryTextSpan>
                 </PrimaryButton>
               </FlexContainer>
@@ -260,7 +252,7 @@ function ResetPassword(props: Props) {
               justifyContent="center"
               padding="12px 0"
             >
-              <LinkForgot to={Pages.SIGN_IN}>Back to Log in</LinkForgot>
+              <LinkForgot to={Pages.SIGN_IN}>{t('Back to Login')}</LinkForgot>
             </FlexContainer>
           </>
         )}
@@ -270,7 +262,7 @@ function ResetPassword(props: Props) {
 }
 
 export default ResetPassword;
-
+// TODO: whats this? :D
 const FallDownIco = () => {
   return (
     <svg
