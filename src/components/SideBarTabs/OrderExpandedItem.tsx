@@ -89,7 +89,7 @@ function OrderExpandedItem(props: Props) {
               color="rgba(255, 255, 255, 0.4)"
               whiteSpace="nowrap"
             >
-              at {openPrice.toFixed(2)}
+              at {openPrice}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
@@ -186,7 +186,7 @@ function OrderExpandedItem(props: Props) {
                   Price opened
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  at {openPrice.toFixed(2)}
+                  at {openPrice}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

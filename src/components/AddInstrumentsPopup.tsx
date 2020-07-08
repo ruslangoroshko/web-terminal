@@ -26,7 +26,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
         item =>
           !searchValue ||
           item.instrumentItem.id.toLowerCase().includes(searchValue) ||
-          item.instrumentItem.base.toLowerCase().includes(searchValue) || 
+          item.instrumentItem.base.toLowerCase().includes(searchValue) ||
           item.instrumentItem.name.toLowerCase().includes(searchValue) ||
           item.instrumentItem.quote.toLowerCase().includes(searchValue)
       )
@@ -34,9 +34,9 @@ const AddInstrumentsPopup: FC<Props> = props => {
   };
 
   useEffect(() => {
-    instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments.map(
-      item => item.instrumentItem
-    );
+    instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments
+      .sort((a, b) => a.instrumentItem.weight - b.instrumentItem.weight)
+      .map(item => item.instrumentItem);
 
     const rect = wrapperRef.current?.getBoundingClientRect();
     // TODO: improve calclulation logic, make more universal method
