@@ -74,7 +74,7 @@ function ResetPassword(props: Props) {
       if (result) {
         setIsSuccessfull(result);
       } else {
-        setNotIsSuccessfull(result);
+        setNotIsSuccessfull(true);
       }
       setIsLoading(false);
     } catch (error) {
