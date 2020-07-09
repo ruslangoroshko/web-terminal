@@ -13,6 +13,7 @@ import { calculateInPercent } from '../../helpers/calculateInPercent';
 import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
 import { DisplayContents, Td } from '../../styles/TableElements';
 import ImageContainer from '../ImageContainer';
+import useInstrument from '../../hooks/useInstrument';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -40,6 +41,8 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 
+  const { precision } = useInstrument(instrument);
+  
   return (
     <DisplayContents>
       <Td>
@@ -186,7 +189,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   Price opened
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  at {openPrice}
+                  at {openPrice.toFixed(+precision)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
