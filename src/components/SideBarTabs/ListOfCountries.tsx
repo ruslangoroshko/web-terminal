@@ -11,8 +11,9 @@ import { ObjectKeys } from '../../helpers/objectKeys';
 import styled from '@emotion/styled';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import { observer } from 'mobx-react-lite';
 
-const ListOfCountries = () => {
+const ListOfCountries = observer(() => {
   const { mainAppStore } = useStores();
   const [list, setList] = useState(ListForEN);
 
@@ -45,16 +46,20 @@ const ListOfCountries = () => {
     >
       {ObjectKeys(list).map(key => (
         <CountryListItemWrapper key={key}>
-          <ButtonWithoutStyles onClick={changeCountry(key)}>
+          <ButtonItem
+            onClick={changeCountry(key)}
+            disabled={key === mainAppStore.lang}
+            isActive={key === mainAppStore.lang}
+          >
             <CountryListItem>
               {list[key].name} ({list[key].originName})
             </CountryListItem>
-          </ButtonWithoutStyles>
+          </ButtonItem>
         </CountryListItemWrapper>
       ))}
     </FlexContainer>
   );
-};
+});
 
 export default ListOfCountries;
 
@@ -72,5 +77,11 @@ const CountryListItem = styled(PrimaryTextSpan)`
 
   &:hover {
     color: #fffccc;
+  }
+`;
+
+const ButtonItem = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
+  > span {
+    color: ${props => props.isActive && '#fffccc'};
   }
 `;
