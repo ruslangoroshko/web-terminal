@@ -16,6 +16,7 @@ import ClosePositionPopup from './ClosePositionPopup';
 import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
 import { useTranslation } from 'react-i18next';
+import useInstrument from '../../hooks/useInstrument';
 
 interface Props {
   pendingOrder: PendingOrderWSDTO;
@@ -33,7 +34,7 @@ const PendingOrder: FC<Props> = props => {
   const clickableWrapperRef = useRef<HTMLDivElement>(null);
 
   const instrumentRef = useRef<HTMLDivElement>(null);
-
+  const { precision } = useInstrument(pendingOrder.instrument);
   const handleCloseOrder = () => {
     API.removePendingOrder({
       accountId: mainAppStore.activeAccount!.id,
@@ -86,7 +87,7 @@ const PendingOrder: FC<Props> = props => {
             </PrimaryTextSpan>
           </FlexContainer>
           <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
-            {t('at')} {pendingOrder.openPrice.toFixed(2)}
+            {t('at')} {pendingOrder.openPrice.toFixed(+precision)}
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer

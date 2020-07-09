@@ -7,13 +7,14 @@ import IconShevronUp from '../../assets/svg/icon-shevron-logo-up.svg';
 import { AskBidEnum } from '../../enums/AskBid';
 import moment from 'moment';
 import { getNumberSign } from '../../helpers/getNumberSign';
-import { Observer, observer } from 'mobx-react-lite';
+import { Observer } from 'mobx-react-lite';
 import InformationPopup from '../InformationPopup';
 import { calculateInPercent } from '../../helpers/calculateInPercent';
 import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
 import { DisplayContents, Td } from '../../styles/TableElements';
 import ImageContainer from '../ImageContainer';
 import { useTranslation } from 'react-i18next';
+import useInstrument from '../../hooks/useInstrument';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -41,6 +42,9 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
   const { t } = useTranslation();
+
+  const { precision } = useInstrument(instrument);
+
   return (
     <DisplayContents>
       <Td>
@@ -187,7 +191,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   {t('Price opened')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {t('at')} {openPrice}
+                  {t('at')} {openPrice.toFixed(+precision)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

@@ -8,6 +8,7 @@ import ButtonGoogleStoreImage from '../assets/images/button-google-store.png';
 import Logo from './Logo';
 import { useStores } from '../hooks/useStores';
 import { useTranslation } from 'react-i18next';
+import { Observer } from 'mobx-react-lite';
 
 interface Props {}
 
@@ -30,7 +31,9 @@ const SignFlowLayout: FC<Props> = props => {
       <FlexContainer>
         <FlexContainer alignItems="center">
           <FlexContainer margin="0 6px 0 0" width="154px">
-            <Logo src={mainAppStore.initModel.logo} />
+            <Observer>
+              {() => <Logo src={mainAppStore.initModel.logo} />}
+            </Observer>
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
@@ -44,53 +47,68 @@ const SignFlowLayout: FC<Props> = props => {
         >
           {t('Download App')}
         </PrimaryTextParagraph>
-        <FlexContainer margin="0 0 30px 0" padding="0 0 0 14px">
-          <ButtonAppleStore
-            to={{
-              pathname: mainAppStore.initModel.iosAppLink,
-            }}
-            target="_blank"
-          >
-            <ButtonImage src={ButtonAppleStoreImage} />
-          </ButtonAppleStore>
-          <ButtonGoogleStore
-            to={{
-              pathname: mainAppStore.initModel.androidAppLink,
-            }}
-            target="_blank"
-          >
-            <ButtonImage src={ButtonGoogleStoreImage} />
-          </ButtonGoogleStore>
-        </FlexContainer>
+        <Observer>
+          {() => (
+            <FlexContainer margin="0 0 30px 0" padding="0 0 0 14px">
+              <ButtonAppleStore
+                to={{
+                  pathname: mainAppStore.initModel.iosAppLink,
+                }}
+                target="_blank"
+              >
+                <ButtonImage src={ButtonAppleStoreImage} />
+              </ButtonAppleStore>
+              <ButtonGoogleStore
+                to={{
+                  pathname: mainAppStore.initModel.androidAppLink,
+                }}
+                target="_blank"
+              >
+                <ButtonImage src={ButtonGoogleStoreImage} />
+              </ButtonGoogleStore>
+            </FlexContainer>
+          )}
+        </Observer>
         <FlexContainer justifyContent="space-between" width="100%">
           <FlexContainer>
             <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
               ©2017–{new Date().getFullYear()}{' '}
-              <PrimaryTextSpan
-                textTransform="capitalize"
-                fontSize="10px"
-                color="rgba(255, 255, 255, 0.4)"
-              >
-                {mainAppStore.initModel.brandName}
-              </PrimaryTextSpan>
-              . {t('All rights reserved')}. v{BUILD_VERSION}
+              <Observer>
+                {() => (
+                  <PrimaryTextSpan
+                    textTransform="capitalize"
+                    fontSize="10px"
+                    color="rgba(255, 255, 255, 0.4)"
+                  >
+                    {mainAppStore.initModel.brandName}
+                  </PrimaryTextSpan>
+                )}
+              </Observer>
+              . {t('All rights reserved')}. v {BUILD_VERSION}
             </PrimaryTextSpan>
           </FlexContainer>
 
-          <FlexContainer>
-            <LinkItem href={mainAppStore.initModel.supportUrl} target="_blank">
-              {t('Support')}
-            </LinkItem>
-            <LinkItem
-              href={mainAppStore.initModel.faqUrl}
-              color="rgba(255, 255, 255, 0.4)"
-            >
-              {t('FAQ')}
-            </LinkItem>
-            <LinkItem href={mainAppStore.initModel.aboutUrl} target="_blank">
-              {t('About us')}
-            </LinkItem>
-          </FlexContainer>
+          <Observer>
+            {() => (
+              <FlexContainer>
+                <LinkItem
+                  href={mainAppStore.initModel.supportUrl}
+                  target="_blank"
+                >
+                  {t('Support')}
+                </LinkItem>
+                <LinkItem href={mainAppStore.initModel.faqUrl} target="_blank">
+                  {t('FAQ')}
+                </LinkItem>
+                <LinkItem
+                  href={mainAppStore.initModel.aboutUrl}
+                  target="_blank"
+                >
+                  {t('About us')}
+                </LinkItem>
+              </FlexContainer>
+            )}
+          </Observer>
         </FlexContainer>
       </FlexContainer>
     </FlexContainer>

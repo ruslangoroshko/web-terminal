@@ -1,6 +1,8 @@
 import {
   LOCAL_STORAGE_TOKEN_KEY,
   LOCAL_STORAGE_REFRESH_TOKEN_KEY,
+  LOCAL_STORAGE_TRADING_URL,
+  LOCAL_STORAGE_LANGUAGE,
 } from './../constants/global';
 import {
   UserAuthenticate,
@@ -29,6 +31,7 @@ import { AskBidEnum } from '../enums/AskBid';
 import { ServerError } from '../types/ServerErrorType';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { InitModel } from '../types/InitAppTypes';
+import { CountriesEnum } from '../enums/CountriesEnum';
 
 interface MainAppStoreProps {
   token: string;
@@ -48,6 +51,7 @@ interface MainAppStoreProps {
   isDemoRealPopup: boolean;
   signalRReconnectTimeOut: string;
   initModel: InitModel;
+  lang: CountriesEnum;
 }
 
 // TODO: think about application initialization
@@ -84,6 +88,7 @@ export class MainAppStore implements MainAppStoreProps {
   @observable tradingUrl = '';
   @observable isInterceptorsInjected = false;
   @observable profilePhone = '';
+  @observable lang = CountriesEnum.EN;
   token = '';
   refreshToken = '';
   rootStore: RootStore;
@@ -95,6 +100,12 @@ export class MainAppStore implements MainAppStoreProps {
     this.refreshToken =
       localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
+    const langValue = localStorage.getItem(LOCAL_STORAGE_LANGUAGE);
+    this.lang = langValue
+      ? // TODO: research
+        //@ts-ignore
+        CountriesEnum[langValue]
+      : CountriesEnum.EN;
   }
 
   initApp = async () => {
@@ -135,7 +146,7 @@ export class MainAppStore implements MainAppStoreProps {
       }
     };
     connectToWebocket();
-    
+
     connection.on(Topics.UNAUTHORIZED, () => {
       localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
       this.isInitLoading = false;
@@ -362,6 +373,12 @@ export class MainAppStore implements MainAppStoreProps {
   setRefreshToken = (refreshToken: string) => {
     localStorage.setItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY, refreshToken);
     this.refreshToken = refreshToken;
+  };
+
+  @action
+  setLanguage = (newLang: CountriesEnum) => {
+    localStorage.setItem(LOCAL_STORAGE_LANGUAGE, newLang);
+    this.lang = newLang;
   };
 
   @computed

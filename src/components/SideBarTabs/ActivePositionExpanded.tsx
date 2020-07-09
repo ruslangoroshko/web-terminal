@@ -20,6 +20,7 @@ import ImageContainer from '../ImageContainer';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import ClosePositionPopup from './ClosePositionPopup';
 import { useTranslation } from 'react-i18next';
+import useInstrument from '../../hooks/useInstrument';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -45,8 +46,12 @@ function ActivePositionExpanded(props: Props) {
     },
     currencySymbol,
   } = props;
+
   const { quotesStore, mainAppStore } = useStores();
   const { t } = useTranslation();
+
+  const { precision } = useInstrument(instrument);
+
   const instrumentRef = useRef<HTMLDivElement>(null);
 
   const isBuy = operation === AskBidEnum.Buy;
@@ -109,7 +114,7 @@ function ActivePositionExpanded(props: Props) {
               color="rgba(255, 255, 255, 0.4)"
               whiteSpace="nowrap"
             >
-              {t('at')} {openPrice}
+              {t('at')} {openPrice.toFixed(+precision)}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
@@ -253,7 +258,7 @@ function ActivePositionExpanded(props: Props) {
                   {t('Price opened')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {t('at')} {openPrice}
+                  {t('at')} {openPrice.toFixed(+precision)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

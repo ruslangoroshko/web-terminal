@@ -26,6 +26,7 @@ import { useFormik } from 'formik';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import { useTranslation } from 'react-i18next';
+import useInstrument from '../../hooks/useInstrument';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -49,6 +50,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   } = useStores();
 
   const { t } = useTranslation();
+  const { precision } = useInstrument(position.instrument);
 
   const initialValues = useCallback(
     () => ({
@@ -349,7 +351,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                     {t('Price opened')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {t('at')} {position.openPrice}
+                    {t('at')} {position.openPrice.toFixed(+precision)}
                   </PrimaryTextSpan>
                 </FlexContainer>
                 <FlexContainer
