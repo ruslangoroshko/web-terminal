@@ -24,6 +24,10 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
     },
 
     function(error: AxiosError) {
+      if (!error.response?.status) {
+        console.log('error connection');
+        axios.request(error.config);
+      }
       if (error.response?.status === 500) {
         mainAppStore.rootStore.badRequestPopupStore.setMessage(
           error.response?.statusText

@@ -194,8 +194,8 @@ export class MainAppStore implements MainAppStoreProps {
       (response: ResponseFromWebsocket<ServerError>) => {
         this.isInitLoading = false;
         this.isLoading = false;
-        this.rootStore.badRequestPopupStore.openModal();
-        this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
+        //this.rootStore.badRequestPopupStore.openModal();
+        //this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
       }
     );
 
@@ -256,8 +256,8 @@ export class MainAppStore implements MainAppStoreProps {
       this.isLoading = false;
     } catch (error) {
       this.isLoading = false;
-      this.rootStore.badRequestPopupStore.setMessage(error);
-      this.rootStore.badRequestPopupStore.openModal();
+      // this.rootStore.badRequestPopupStore.setMessage(error);
+      // this.rootStore.badRequestPopupStore.openModal();
     }
   };
 
