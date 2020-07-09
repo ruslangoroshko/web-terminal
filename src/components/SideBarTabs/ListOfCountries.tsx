@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { useStores } from '../../hooks/useStores';
 import { CountriesEnum } from '../../enums/CountriesEnum';
@@ -15,24 +15,26 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 const ListOfCountries = () => {
   const { mainAppStore } = useStores();
   const [list, setList] = useState(ListForEN);
-  switch (mainAppStore.lang) {
-    case CountriesEnum.EN:
-      setList(ListForEN);
-      break;
-    case CountriesEnum.PL:
-      setList(ListForPL);
-      break;
-    case CountriesEnum.ES:
-      setList(ListForES);
-      break;
-    default:
-      break;
-  }
 
   const changeCountry = (newLang: CountriesEnum) => () => {
     mainAppStore.setLanguage(newLang);
   };
 
+  useEffect(() => {
+    switch (mainAppStore.lang) {
+      case CountriesEnum.EN:
+        setList(ListForEN);
+        break;
+      case CountriesEnum.PL:
+        setList(ListForPL);
+        break;
+      case CountriesEnum.ES:
+        setList(ListForES);
+        break;
+      default:
+        break;
+    }
+  }, []);
   return (
     <FlexContainer
       backgroundColor="#1C1F26"
@@ -45,7 +47,7 @@ const ListOfCountries = () => {
         <CountryListItemWrapper key={key}>
           <ButtonWithoutStyles onClick={changeCountry(key)}>
             <CountryListItem>
-              {list[key].name} {list[key].originName}
+              {list[key].name} ({list[key].originName})
             </CountryListItem>
           </ButtonWithoutStyles>
         </CountryListItemWrapper>
@@ -66,7 +68,9 @@ const CountryListItemWrapper = styled(FlexContainer)`
 const CountryListItem = styled(PrimaryTextSpan)`
   transition: all 0.2s ease;
   color: rgba(255, 255, 255, 0.5);
-  &:hover > span {
+  font-size: 13px;
+
+  &:hover {
     color: #fffccc;
   }
 `;
