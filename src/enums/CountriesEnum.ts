@@ -5,4 +5,5 @@ export enum CountriesEnum {
   FR = 'FR',
   ES = 'ES',
   RU = 'RU',
+  PL = 'PL',
 }
