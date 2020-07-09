@@ -21,6 +21,7 @@ import { DisplayContents, Td } from '../../styles/TableElements';
 import ImageContainer from '../ImageContainer';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import ClosePositionPopup from './ClosePositionPopup';
+import useInstrument from '../../hooks/useInstrument';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -46,7 +47,10 @@ function ActivePositionExpanded(props: Props) {
     },
     currencySymbol,
   } = props;
+
   const { quotesStore, mainAppStore } = useStores();
+
+  const { precision } = useInstrument(instrument);
 
   const instrumentRef = useRef<HTMLDivElement>(null);
 
@@ -110,7 +114,7 @@ function ActivePositionExpanded(props: Props) {
               color="rgba(255, 255, 255, 0.4)"
               whiteSpace="nowrap"
             >
-              at {openPrice}
+              at {openPrice.toFixed(+precision)}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
@@ -249,7 +253,7 @@ function ActivePositionExpanded(props: Props) {
                   Price opened
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  at {openPrice}
+                  at {openPrice.toFixed(+precision)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
