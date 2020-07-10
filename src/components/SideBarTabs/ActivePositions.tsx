@@ -26,6 +26,8 @@ import { useFormik } from 'formik';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import useInstrument from '../../hooks/useInstrument';
+import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
+import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -46,6 +48,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     badRequestPopupStore,
     instrumentsStore,
     SLTPStore,
+    notificationStore,
   } = useStores();
 
   const { precision } = useInstrument(position.instrument);
@@ -183,12 +186,20 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     [currentPriceBid, currentPriceAsk, position]
   );
 
-  const closePosition = () => {
-    API.closePosition({
-      accountId: mainAppStore.activeAccount!.id,
-      positionId: position.id,
-      processId: getProcessId(),
-    });
+  const closePosition = async () => {
+    try {
+      const response = await API.closePosition({
+        accountId: mainAppStore.activeAccount!.id,
+        positionId: position.id,
+        processId: getProcessId(),
+      });
+
+      notificationStore.notificationMessage =
+        apiResponseCodeMessages[response.result];
+      notificationStore.isSuccessfull =
+        response.result === OperationApiResponseCodes.Ok;
+      notificationStore.openNotification();
+    } catch (error) {}
   };
 
   const updateSLTP = async (values: UpdateSLTP) => {

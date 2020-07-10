@@ -13,12 +13,7 @@ import LoaderForComponents from '../LoaderForComponents';
 import InfinityScrollList from '../InfinityScrollList';
 
 const TradingHistory: FC = () => {
-  const {
-    tabsStore,
-    mainAppStore,
-    historyStore,
-    dataRangeStoreNoCustomDates,
-  } = useStores();
+  const { tabsStore, mainAppStore, historyStore, dateRangeStore } = useStores();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -26,8 +21,8 @@ const TradingHistory: FC = () => {
     async (isScrolling = false) => {
       const response = await API.getPositionsHistory({
         accountId: mainAppStore.activeAccount!.id,
-        startDate: dataRangeStoreNoCustomDates.startDate.valueOf(),
-        endDate: dataRangeStoreNoCustomDates.endDate.valueOf(),
+        startDate: dateRangeStore.startDate.valueOf(),
+        endDate: dateRangeStore.endDate.valueOf(),
         page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
         pageSize: 20,
       });
@@ -43,8 +38,8 @@ const TradingHistory: FC = () => {
     },
     [
       mainAppStore.activeAccount?.id,
-      dataRangeStoreNoCustomDates.startDate,
-      dataRangeStoreNoCustomDates.endDate,
+      dateRangeStore.startDate,
+      dateRangeStore.endDate,
       historyStore.positionsHistoryReport,
     ]
   );
