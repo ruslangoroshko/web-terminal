@@ -11,6 +11,7 @@ import LoaderFullscreen from './components/LoaderFullscreen';
 import { useStores } from './hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import injectInerceptors from './http/interceptors';
+import NetworkErrorPopup from './components/NetworkErrorPopup';
 
 const MainApp = () => {
   const { mainAppStore } = useStores();
@@ -31,6 +32,7 @@ const MainApp = () => {
 
   return (
     <>
+      <NetworkErrorPopup />
       <Observer>
         {() => <LoaderFullscreen isLoading={!mainAppStore.tradingUrl} />}
       </Observer>
