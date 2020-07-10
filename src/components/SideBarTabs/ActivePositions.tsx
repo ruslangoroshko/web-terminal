@@ -195,7 +195,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       });
 
       notificationStore.notificationMessage =
-        apiResponseCodeMessages[response.result];
+        response.result === OperationApiResponseCodes.Ok
+          ? 'The order has been closed successfully'
+          : apiResponseCodeMessages[response.result];
       notificationStore.isSuccessfull =
         response.result === OperationApiResponseCodes.Ok;
       notificationStore.openNotification();
