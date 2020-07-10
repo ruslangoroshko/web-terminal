@@ -186,7 +186,11 @@ const SetAutoclose = observer((props: Props) => {
         </InformationPopup>
       </FlexContainer>
       <InputWrapper
-        padding={isDisabled ? '0 0 0 8px' : '0 0 0 22px'}
+        padding={
+          SLTPStore.autoCloseTPType === TpSlTypeEnum.Price
+            ? '0 0 0 8px'
+            : '0 0 0 22px'
+        }
         margin="0 0 16px 0"
         height="32px"
         width="100%"
@@ -263,7 +267,11 @@ const SetAutoclose = observer((props: Props) => {
         </InformationPopup>
       </FlexContainer>
       <InputWrapper
-        padding={isDisabled ? '0 0 0 8px' : '0 0 0 22px'}
+        padding={
+          SLTPStore.autoCloseSLType === TpSlTypeEnum.Price
+            ? '0 0 0 8px'
+            : '0 0 0 22px'
+        }
         margin={isDisabled ? '0' : '0 0 16px 0'}
         height="32px"
         width="100%"

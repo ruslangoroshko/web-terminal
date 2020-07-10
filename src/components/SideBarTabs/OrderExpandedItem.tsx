@@ -17,6 +17,7 @@ import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import ClosePositionPopup from './ClosePositionPopup';
+import useInstrument from '../../hooks/useInstrument';
 
 interface Props {
   position: PendingOrderWSDTO;
@@ -43,6 +44,7 @@ function OrderExpandedItem(props: Props) {
   const { mainAppStore } = useStores();
   const instrumentRef = useRef<HTMLDivElement>(null);
 
+  const { precision } = useInstrument(instrument);
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 
@@ -89,7 +91,7 @@ function OrderExpandedItem(props: Props) {
               color="rgba(255, 255, 255, 0.4)"
               whiteSpace="nowrap"
             >
-              at {openPrice}
+              at {openPrice.toFixed(+precision)}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
@@ -186,7 +188,7 @@ function OrderExpandedItem(props: Props) {
                   Price opened
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  at {openPrice}
+                  at {openPrice.toFixed(+precision)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

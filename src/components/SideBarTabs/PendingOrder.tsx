@@ -15,6 +15,7 @@ import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import ClosePositionPopup from './ClosePositionPopup';
 import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
+import useInstrument from '../../hooks/useInstrument';
 
 interface Props {
   pendingOrder: PendingOrderWSDTO;
@@ -26,11 +27,12 @@ function PendingOrder(props: Props) {
   const isBuy = pendingOrder.operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 
+  
   const { mainAppStore, instrumentsStore } = useStores();
   const clickableWrapperRef = useRef<HTMLDivElement>(null);
 
   const instrumentRef = useRef<HTMLDivElement>(null);
-
+  const { precision } = useInstrument(pendingOrder.instrument);
   const handleCloseOrder = () => {
     API.removePendingOrder({
       accountId: mainAppStore.activeAccount!.id,
@@ -83,7 +85,7 @@ function PendingOrder(props: Props) {
             </PrimaryTextSpan>
           </FlexContainer>
           <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
-            at {pendingOrder.openPrice}
+            at {pendingOrder.openPrice.toFixed(+precision)}
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer

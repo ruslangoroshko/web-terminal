@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
@@ -23,7 +23,7 @@ const TradingHistoryExpanded: FC = () => {
     tabsStore,
     mainAppStore,
     historyStore,
-    dataRangeStoreNoCustomDates,
+    dateRangeStore,
   } = useStores();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,24 +31,32 @@ const TradingHistoryExpanded: FC = () => {
     tabsStore.isTabExpanded = false;
   };
 
-  const fetchPositionsHistory = async (isScrolling = false) => {
-    const response = await API.getPositionsHistory({
-      accountId: mainAppStore.activeAccount!.id,
-      startDate: dataRangeStoreNoCustomDates.startDate.valueOf(),
-      endDate: dataRangeStoreNoCustomDates.endDate.valueOf(),
-      page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
-      pageSize: 20,
-    });
-    historyStore.positionsHistoryReport = {
-      ...response,
-      positionsHistory: isScrolling
-        ? [
-            ...historyStore.positionsHistoryReport.positionsHistory,
-            ...response.positionsHistory,
-          ]
-        : response.positionsHistory,
-    };
-  };
+  const fetchPositionsHistory = useCallback(
+    async (isScrolling = false) => {
+      const response = await API.getPositionsHistory({
+        accountId: mainAppStore.activeAccount!.id,
+        startDate: dateRangeStore.startDate.valueOf(),
+        endDate: dateRangeStore.endDate.valueOf(),
+        page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
+        pageSize: 20,
+      });
+      historyStore.positionsHistoryReport = {
+        ...response,
+        positionsHistory: isScrolling
+          ? [
+              ...historyStore.positionsHistoryReport.positionsHistory,
+              ...response.positionsHistory,
+            ]
+          : response.positionsHistory,
+      };
+    },
+    [
+      mainAppStore.activeAccount?.id,
+      dateRangeStore.startDate,
+      dateRangeStore.endDate,
+      historyStore.positionsHistoryReport,
+    ]
+  );
 
   useEffect(() => {
     return () => {

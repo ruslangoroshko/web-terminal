@@ -25,6 +25,7 @@ import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useFormik } from 'formik';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
+import useInstrument from '../../hooks/useInstrument';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -46,6 +47,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     instrumentsStore,
     SLTPStore,
   } = useStores();
+
+  const { precision } = useInstrument(position.instrument);
 
   const initialValues = useCallback(
     () => ({
@@ -346,7 +349,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                     Price opened
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    at {position.openPrice}
+                    at {position.openPrice.toFixed(+precision)}
                   </PrimaryTextSpan>
                 </FlexContainer>
                 <FlexContainer

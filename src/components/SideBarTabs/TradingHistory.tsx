@@ -125,26 +125,27 @@ const TradingHistory: FC = () => {
               )}
             </InfinityScrollList>
 
-            {!historyStore.positionsHistoryReport.positionsHistory.length && (
-              <FlexContainer
-                padding="16px"
-                flexDirection="column"
-                alignItems="center"
-              >
-                <FlexContainer margin="0 0 20px">
-                  <SvgIcon
-                    {...IconNoTradingHistory}
-                    fillColor="rgba(255, 255, 255, 0.5)"
-                  />
-                </FlexContainer>
-                <PrimaryTextSpan
-                  color="rgba(255,255,255,0.17)"
-                  fontWeight="bold"
+            {!historyStore.positionsHistoryReport.positionsHistory.length &&
+              !isLoading && (
+                <FlexContainer
+                  padding="16px"
+                  flexDirection="column"
+                  alignItems="center"
                 >
-                  There is no trading history
-                </PrimaryTextSpan>
-              </FlexContainer>
-            )}
+                  <FlexContainer margin="0 0 20px">
+                    <SvgIcon
+                      {...IconNoTradingHistory}
+                      fillColor="rgba(255, 255, 255, 0.5)"
+                    />
+                  </FlexContainer>
+                  <PrimaryTextSpan
+                    color="rgba(255,255,255,0.17)"
+                    fontWeight="bold"
+                  >
+                    There is no trading history
+                  </PrimaryTextSpan>
+                </FlexContainer>
+              )}
           </TradingHistoryWrapper>
         )}
       </Observer>
