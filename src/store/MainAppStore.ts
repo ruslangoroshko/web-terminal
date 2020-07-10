@@ -194,8 +194,8 @@ export class MainAppStore implements MainAppStoreProps {
       (response: ResponseFromWebsocket<ServerError>) => {
         this.isInitLoading = false;
         this.isLoading = false;
-        //this.rootStore.badRequestPopupStore.openModal();
-        //this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
+        this.rootStore.badRequestPopupStore.openModal();
+        this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
       }
     );
 
@@ -256,8 +256,8 @@ export class MainAppStore implements MainAppStoreProps {
       this.isLoading = false;
     } catch (error) {
       this.isLoading = false;
-      // this.rootStore.badRequestPopupStore.setMessage(error);
-      // this.rootStore.badRequestPopupStore.openModal();
+      this.rootStore.badRequestPopupStore.setMessage(error);
+      this.rootStore.badRequestPopupStore.openModal();
     }
   };
 
@@ -275,7 +275,7 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   signIn = async (credentials: UserAuthenticate) => {
     const response = await API.authenticate(credentials);
-
+    console.log(response)
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
       this.signalRReconnectTimeOut = response.data.signalRReconnectTimeOut;

@@ -27,7 +27,6 @@ import DemoRealPopup from '../components/DemoRealPopup';
 import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { useLocation } from 'react-router-dom';
 import StatusPaymentPopup from '../components/DepositPopup/StatusPaymentPopup';
-import NetworkErrorPopup from '../components/NetworkErrorPopup';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -138,7 +137,6 @@ const Dashboard = observer(() => {
       {!!paymentStatus && (
         <StatusPaymentPopup status={paymentStatus}></StatusPaymentPopup>
       )}
-      <NetworkErrorPopup />
       <FlexContainer
         position="absolute"
         bottom="100px"

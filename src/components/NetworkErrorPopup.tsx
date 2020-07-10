@@ -1,48 +1,76 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from './Modal';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/core';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
+import { useStores } from '../hooks/useStores';
+import { Observer } from 'mobx-react-lite';
 
-interface Props {
-  show?: boolean;
-}
+const NetworkErrorPopup = () => {
+  const { badRequestPopupStore } = useStores();
+  const [show, setShow] = useState(false);
+  const [shouldRender, setRender] = useState(false);
 
-const NetworkErrorPopup = (props: Props) => {
-  const {show = true} = props;
+  const handleLostConnection = () => {
+    badRequestPopupStore.setNetwork(true);
+    setShow(true);
+  };
+
+  const handleSetConnection = () => {
+    badRequestPopupStore.setNetwork(false);
+    setShow(false);
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setRender(show);
+    }, 500);
+  }, [show]);
+
+  useEffect(() => {
+    window.addEventListener('offline', handleLostConnection);
+    window.addEventListener('online', handleSetConnection);
+
+    return () => {
+      window.removeEventListener('offline', handleLostConnection);
+      window.removeEventListener('online', handleSetConnection);
+    }
+  }, []);
+
+  if (!shouldRender) {
+    return null;
+  }
 
   return (
     <Modal>
       <ModalWrap show={show}>
-        <PrimaryTextParagraph
-          color="#ffffff"
-          textAlign="center"
-        >
+        <PrimaryTextParagraph color="#ffffff" textAlign="center">
           There is no Internet connection.
         </PrimaryTextParagraph>
         <PrimaryTextParagraph
           fontSize="12px"
           textAlign="center"
           color="rgba(255, 255, 255, 0.4)"
-          marginBottom="20px"
         >
           Please make sure you are connected to the Internet.
         </PrimaryTextParagraph>
 
-        <PrimaryTextParagraph
-          fontSize="12px"
-          textAlign="center"
-          color="rgba(255, 255, 255, 0.4)"
-        >
-          Reconnecting&nbsp;
-
-          <PrimaryTextSpan
-            color="#00FFDD"
-          >
-            (0:15)
-          </PrimaryTextSpan>
-        </PrimaryTextParagraph>
+        <Observer>
+          {() => (
+            <>
+              {badRequestPopupStore.isRecconect && (
+                <PrimaryTextParagraph
+                  fontSize="12px"
+                  textAlign="center"
+                  color="rgba(255, 255, 255, 0.4)"
+                >
+                  <br/>Reconnecting...
+                </PrimaryTextParagraph>
+              )}
+            </>
+          )}
+        </Observer>
       </ModalWrap>
     </Modal>
   );
@@ -67,9 +95,7 @@ const translateAnimationOut = keyframes`
     }
 `;
 
-
-const ModalWrap = styled(FlexContainer)<{show: boolean;}>`
-
+const ModalWrap = styled(FlexContainer)<{ show: boolean }>`
   position: absolute;
   left: 100px;
   bottom: 40px;
@@ -89,7 +115,8 @@ const ModalWrap = styled(FlexContainer)<{show: boolean;}>`
     background-color: rgba(0, 0, 0, 0.34);
     backdrop-filter: blur(12px);
   }
-  box-shadow: 0px 12px 24px rgba(0,0,0,0.25), 0px 6px 12px rgba(0,0,0,0.25);
+  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.25),
+    0px 6px 12px rgba(0, 0, 0, 0.25);
   animation: ${props =>
       props.show ? translateAnimationIn : translateAnimationOut}
     0.5s ease;
