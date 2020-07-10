@@ -22,6 +22,8 @@ import ImageContainer from '../ImageContainer';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import ClosePositionPopup from './ClosePositionPopup';
 import useInstrument from '../../hooks/useInstrument';
+import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
+import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -48,7 +50,7 @@ function ActivePositionExpanded(props: Props) {
     currencySymbol,
   } = props;
 
-  const { quotesStore, mainAppStore } = useStores();
+  const { quotesStore, mainAppStore,notificationStore } = useStores();
 
   const { precision } = useInstrument(instrument);
 
@@ -72,12 +74,20 @@ function ActivePositionExpanded(props: Props) {
     [quotesStore.quotes[instrument].bid.c, quotesStore.quotes[instrument].bid.c]
   );
 
-  const closePosition = () => {
-    API.closePosition({
-      accountId: mainAppStore.activeAccount!.id,
-      positionId: id,
-      processId: getProcessId(),
-    });
+  const closePosition = async () => {
+    try {
+      const response = await API.closePosition({
+        accountId: mainAppStore.activeAccount!.id,
+        positionId: id,
+        processId: getProcessId(),
+      });
+
+      notificationStore.notificationMessage =
+        apiResponseCodeMessages[response.result];
+      notificationStore.isSuccessfull =
+        response.result === OperationApiResponseCodes.Ok;
+      notificationStore.openNotification();
+    } catch (error) {}
   };
   return (
     <DisplayContents>
