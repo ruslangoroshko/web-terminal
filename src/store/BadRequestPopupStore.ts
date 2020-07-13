@@ -24,10 +24,8 @@ export class BadRequestPopupStore implements ContextProps {
 
   @action
   initConectionReload = () => {
-    console.log('set reload timer')
     setTimeout(() => {
       this.isNetwork && this.setReload();
-      console.log('перезагрузить страницу после восстановления')
     }, 30000);
   }
 
