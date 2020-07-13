@@ -39,7 +39,7 @@ const Dashboard: FC = observer(() => {
     notificationStore,
   } = useStores();
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [paymentStatus, setPaymentStatus] = useState('');
   const location = useLocation();
@@ -126,6 +126,10 @@ const Dashboard: FC = observer(() => {
     // webt-272 is this works?
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    i18n.changeLanguage(mainAppStore.lang);
+  }, [mainAppStore.lang]);
 
   return (
     <FlexContainer
