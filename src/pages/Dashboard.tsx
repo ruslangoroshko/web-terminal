@@ -128,6 +128,7 @@ const Dashboard = observer(() => {
       height="100%"
       flexDirection="column"
       position="relative"
+      overflow="hidden"
     >
       <Observer>
         {() => (

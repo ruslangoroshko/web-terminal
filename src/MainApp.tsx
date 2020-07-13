@@ -65,11 +65,6 @@ const MainApp = () => {
 
           body {
             background-color: #1c2026;
-            overflow-y: hidden;
-
-            @media (max-height: 700px) {
-              overflow-y: auto;
-            }
           }
 
           .grecaptcha-badge {
