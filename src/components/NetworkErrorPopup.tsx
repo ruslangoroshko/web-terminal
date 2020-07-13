@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Modal from './Modal';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/core';
@@ -14,13 +14,17 @@ const NetworkErrorPopup = () => {
 
   const handleLostConnection = () => {
     badRequestPopupStore.setNetwork(true);
+    badRequestPopupStore.initConectionReload();
     setShow(true);
   };
 
-  const handleSetConnection = () => {
-    badRequestPopupStore.setNetwork(false);
-    setShow(false);
-  };
+  const handleSetConnection = useCallback(
+    () => {
+      badRequestPopupStore.setNetwork(false);
+      setShow(false);
+      badRequestPopupStore.isReload && window.location.reload();
+    }, [badRequestPopupStore.isReload]
+  );
 
   useEffect(() => {
     setTimeout(() => {
