@@ -104,7 +104,7 @@ const TradingHistory: FC = () => {
               isFetching={isLoading}
               // WATCH CLOSELY
               noMoreData={
-                historyStore.positionsHistoryReport.totalItems <
+                historyStore.positionsHistoryReport.totalItems <=
                 historyStore.positionsHistoryReport.page *
                   historyStore.positionsHistoryReport.pageSize
               }

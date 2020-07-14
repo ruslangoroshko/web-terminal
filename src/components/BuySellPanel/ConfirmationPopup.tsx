@@ -125,7 +125,7 @@ function ConfirmationPopup(props: Props) {
           </PrimaryButton>
         ) : (
           <ButtonSell type="submit" disabled={disabled}>
-            <PrimaryTextSpan fontSize="14px" color="#1c2026" fontWeight="bold">
+            <PrimaryTextSpan fontSize="14px" color="#ffffff" fontWeight="bold">
               Confirm Selling
             </PrimaryTextSpan>
           </ButtonSell>
