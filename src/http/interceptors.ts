@@ -8,7 +8,7 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
   // TODO: research init flow
   mainAppStore.isInterceptorsInjected = true;
   axios.interceptors.response.use(
-    function(config: AxiosResponse) {
+    function (config: AxiosResponse) {
       if (config.data.result === OperationApiResponseCodes.TechnicalError) {
         return Promise.reject(
           apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
@@ -23,7 +23,7 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
       return config;
     },
 
-    async function(error: AxiosError) {
+    async function (error: AxiosError) {
       if (!error.response?.status) {
         mainAppStore.rootStore.badRequestPopupStore.setRecconect();
         setTimeout(() => {
@@ -55,7 +55,7 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
       return Promise.reject(error);
     }
   );
-  axios.interceptors.request.use(function(config: AxiosRequestConfig) {
+  axios.interceptors.request.use(function (config: AxiosRequestConfig) {
     // TODO: sink about eat
     if (IS_LIVE && tradingUrl && config.url && !config.url.includes('auth/')) {
       if (config.url.includes('://')) {

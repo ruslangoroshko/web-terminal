@@ -10,15 +10,30 @@ export class BadRequestPopupStore implements ContextProps {
   @observable isActive: boolean = false;
   @observable isNetwork: boolean = false;
   @observable isRecconect: boolean = false;
+  @observable isReload: boolean = false;
 
   @action
   setNetwork = (status: boolean) => {
     this.isNetwork = status;
   }
+
+  @action
+  setReload = () => {
+    this.isReload = true;
+  };
+
+  @action
+  initConectionReload = () => {
+    setTimeout(() => {
+      this.isNetwork && this.setReload();
+    }, 30000);
+  }
+
   @action
   setRecconect = () => {
     this.isRecconect = true;
   };
+
   @action
   stopRecconect = () => {
     this.isRecconect = false;

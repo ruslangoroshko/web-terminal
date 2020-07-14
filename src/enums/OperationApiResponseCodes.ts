@@ -25,4 +25,5 @@ export enum OperationApiResponseCodes {
   MultiplierNotFound,
   MaximumAmountOfDemoAccount,
   TradingDisabled,
+  MaxOpenPositionsAmount,
 }

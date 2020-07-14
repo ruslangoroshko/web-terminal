@@ -51,7 +51,8 @@ export class InstrumentsStore implements ContextProps {
   @computed get activeInstruments() {
     const filteredActiveInstruments = this.instruments.filter(item =>
       this.activeInstrumentsIds.includes(item.instrumentItem.id)
-    ).sort((a, b) => a.instrumentItem.weight - b.instrumentItem.weight)
+    ).sort((a, b) => this.activeInstrumentsIds.indexOf(a.instrumentItem.id) -
+      this.activeInstrumentsIds.indexOf(b.instrumentItem.id))
     return filteredActiveInstruments;
   }
 

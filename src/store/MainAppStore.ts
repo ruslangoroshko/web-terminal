@@ -287,7 +287,6 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   signIn = async (credentials: UserAuthenticate) => {
     const response = await API.authenticate(credentials);
-    console.log(response)
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
       this.signalRReconnectTimeOut = response.data.signalRReconnectTimeOut;
