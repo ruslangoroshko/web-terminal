@@ -67,13 +67,14 @@ function ResetPassword(props: Props) {
   const handleSubmitForm = async ({ password }: IResetPassword) => {
     setIsLoading(true);
     try {
-      const result = await API.recoveryPassword({
+      const response = await API.recoveryPassword({
         token: token || '',
         password,
       });
-      if (result) {
-        setIsSuccessfull(result);
-      } else {
+      if (response.result === OperationApiResponseCodes.Ok) {
+        setIsSuccessfull(true);
+      }
+      if (response.result === OperationApiResponseCodes.Expired) {
         setNotIsSuccessfull(true);
       }
       setIsLoading(false);

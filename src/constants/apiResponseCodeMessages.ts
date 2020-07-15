@@ -1,6 +1,7 @@
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 
 const apiResponseCodeMessages = {
+  [OperationApiResponseCodes.Expired]: 'Access token is expired',
   [OperationApiResponseCodes.FileNotFound]: 'File not found',
   [OperationApiResponseCodes.FileWrongExtension]:
     'Only files with the following extensions are allowed: jpg, png, pdf',
