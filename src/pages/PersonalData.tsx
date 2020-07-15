@@ -77,6 +77,7 @@ function PersonalData() {
   const [birthday, setBirthday] = useState<moment.Moment>(moment().subtract(18, 'years'));
 
   const [focused, setFocused] = useState(false);
+  const [submitForm, setSubitedForm] = useState(false);
 
   const { push } = useHistory();
 
@@ -89,7 +90,7 @@ function PersonalData() {
     lastName: '',
     postalCode: '',
     processId: getProcessId(),
-    //sex: SexEnum.Unknown,
+    // sex: -1,
     address: '',
     uSCitizen: false,
     phone: '',
@@ -171,6 +172,7 @@ function PersonalData() {
   });
 
   const handlerClickSubmit = async () => {
+    setSubitedForm(true);
     const curErrors = await validateForm();
     const curErrorsKeys = Object.keys(curErrors);
     if (curErrorsKeys.length) {
@@ -266,7 +268,7 @@ function PersonalData() {
               </FlexContainer>
               <FlexContainer width="50%" flexDirection="column">
                 <GenderDropdown
-                  hasError={!!errors.sex}
+                  hasError={!!(submitForm && errors.sex)}
                   errorText={errors.sex}
                   selectHandler={handleChangeGender(setFieldValue)}
                   selected={values.sex}
