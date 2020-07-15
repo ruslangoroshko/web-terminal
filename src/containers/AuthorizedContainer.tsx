@@ -15,7 +15,6 @@ import { keyframes } from '@emotion/core';
 import TradingHistory from '../components/SideBarTabs/TradingHistory';
 import { HistoryTabEnum } from '../enums/HistoryTabEnum';
 import TradingHistoryExpanded from '../components/SideBarTabs/TradingHistoryExpanded';
-import LoaderFullscreen from '../components/LoaderFullscreen';
 import OrdersExpanded from '../components/SideBarTabs/OrdersExpanded';
 import Markets from '../components/SideBarTabs/Markets';
 import DepositPopupWrapper from '../components/DepositPopup/DepositPopupWrapper';
@@ -23,7 +22,7 @@ import DepositPaymentResultPopup from '../components/DepositPopup/DepositPayment
 
 interface Props {}
 
-const RenderTabByType = observer(() => {
+const RenderTabByType: FC = observer(() => {
   const { tabsStore } = useStores();
   if (tabsStore.sideBarTabType === null) {
     return null;
@@ -93,7 +92,7 @@ const RenderExpandedTabByType = observer(() => {
 
 const AuthorizedContainer: FC<Props> = props => {
   const { children } = props;
-  const { tabsStore, depositFundsStore, mainAppStore } = useStores();
+  const { tabsStore, mainAppStore } = useStores();
 
   return (
     <FlexContainer

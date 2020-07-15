@@ -11,6 +11,7 @@ import InstrumentMarkets from './InstrumentMarkets';
 import { SortByMarketsEnum } from '../../enums/SortByMarketsEnum';
 import { sortByMarketsLabels } from '../../constants/sortByDropdownValues';
 import SortByDropdown from '../SortByDropdown';
+import { useTranslation } from 'react-i18next';
 
 function Markets() {
   const { instrumentsStore, sortingStore } = useStores();
@@ -29,6 +30,8 @@ function Markets() {
     toggle(false);
   };
 
+  const { t } = useTranslation();
+
   return (
     <FlexContainer flexDirection="column" height="100%">
       <FlexContainer padding="12px 16px" margin="0 0 8px 0">
@@ -37,7 +40,7 @@ function Markets() {
           color="#fffccc"
           textTransform="uppercase"
         >
-          Markets
+          {t('Markets')}
         </PrimaryTextSpan>
       </FlexContainer>
       <MarketButtonsWrapper padding="0 16px">
@@ -78,10 +81,10 @@ function Markets() {
           fontSize="10px"
           textTransform="uppercase"
         >
-          Sort by:
+          {t('Sort by')}:
         </PrimaryTextSpan>
         <SortByDropdown
-          selectedLabel={sortByMarketsLabels[sortingStore.marketsSortBy]}
+          selectedLabel={t(sortByMarketsLabels[sortingStore.marketsSortBy])}
           opened={on}
           toggle={handleToggle}
         >
@@ -117,7 +120,7 @@ function Markets() {
                 textTransform="uppercase"
                 color="rgba(255, 255, 255, 0.4)"
               >
-                market name
+                {t('market name')}
               </PrimaryTextSpan>
             </ButtonWithoutStyles>
           </FlexContainer>
@@ -135,7 +138,7 @@ function Markets() {
                 fontSize="10px"
                 textTransform="uppercase"
               >
-                quote
+                {t('quote')}
               </PrimaryTextSpan>
             </ButtonWithoutStyles>
           </FlexContainer>
@@ -146,7 +149,7 @@ function Markets() {
                 fontSize="10px"
                 textTransform="uppercase"
               >
-                24H
+                {t('24H')}
               </PrimaryTextSpan>
             </ButtonWithoutStyles>
           </FlexContainer>
@@ -154,7 +157,7 @@ function Markets() {
       </SortingWrapper>
       <Observer>
         {() => (
-          <MarketsWrapper flexDirection="column" >
+          <MarketsWrapper flexDirection="column">
             {instrumentsStore.sortedInstruments.map(item => (
               <InstrumentMarkets
                 instrument={item}

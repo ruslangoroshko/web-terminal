@@ -14,6 +14,7 @@ import IconLeftArrow from '../assets/svg/icon-arrow-to-left.svg';
 import { observer } from 'mobx-react-lite';
 import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   datesChangeCallback: () => void;
@@ -22,7 +23,7 @@ interface Props {
 const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
   const { dateRangeStore } = useStores();
   const wrapperRef = useRef<HTMLDivElement>(null);
-
+  const { t } = useTranslation();
   const toggle = (flag: boolean) => () => {
     dateRangeStore.openedDropdown = flag;
   };
@@ -96,7 +97,7 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
                     ? dateRangeStore.endDate.format('DD/MM/YYYY')
                     : ''
                 }`
-              : 'Select dates'}
+              : t('Select dates')}
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer>
@@ -116,28 +117,28 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
               onClick={handleSelectRange(ShowDatesDropdownEnum.Today)}
             >
               <PrimaryTextSpan fontSize="14px" color="#fffccc">
-                Today
+                {t('Today')}
               </PrimaryTextSpan>
             </DateRangeItemButton>
             <DateRangeItemButton
               onClick={handleSelectRange(ShowDatesDropdownEnum.Week)}
             >
               <PrimaryTextSpan fontSize="14px" color="#fffccc">
-                Week
+                {t('Week')}
               </PrimaryTextSpan>
             </DateRangeItemButton>
             <DateRangeItemButton
               onClick={handleSelectRange(ShowDatesDropdownEnum.Month)}
             >
               <PrimaryTextSpan fontSize="14px" color="#fffccc">
-                Month
+                {t('Month')}
               </PrimaryTextSpan>
             </DateRangeItemButton>
             <DateRangeItemButton
               onClick={handleSelectRange(ShowDatesDropdownEnum.Year)}
             >
               <PrimaryTextSpan fontSize="14px" color="#fffccc">
-                Year
+                {t('Year')}
               </PrimaryTextSpan>
             </DateRangeItemButton>
           </DefinedDaterangeWrapper>
@@ -221,7 +222,7 @@ const DateRangeItemButton = styled(ButtonWithoutStyles)`
   margin-bottom: 16px;
   width: 100%;
   text-align: left;
-  
+
   &:last-of-type {
     margin-bottom: 0;
   }

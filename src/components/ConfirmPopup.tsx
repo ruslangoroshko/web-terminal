@@ -6,6 +6,7 @@ import { PrimaryButton } from '../styles/Buttons';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
 import IconClose from '../assets/svg/icon-close.svg';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   toggle: (arg: boolean) => void;
@@ -13,12 +14,12 @@ interface Props {
   confirmText: string;
 }
 
-const ConfirmPopup: FC<Props> = ({ toggle, applyHandler,confirmText }) => {
+const ConfirmPopup: FC<Props> = ({ toggle, applyHandler, confirmText }) => {
   const handleApply = () => {
     applyHandler();
     toggle(false);
   };
-
+  const { t } = useTranslation();
   const handleClose = () => {
     toggle(false);
   };
@@ -50,7 +51,7 @@ const ConfirmPopup: FC<Props> = ({ toggle, applyHandler,confirmText }) => {
       </PrimaryTextParagraph>
       <ConfirmButton onClick={handleApply}>
         <PrimaryTextSpan fontWeight="bold" fontSize="14px" color="#003A38">
-          Confirm
+          {t('Confirm')}
         </PrimaryTextSpan>
       </ConfirmButton>
     </FlexContainer>

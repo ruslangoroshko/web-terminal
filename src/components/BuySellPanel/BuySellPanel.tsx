@@ -39,6 +39,7 @@ import mixpanelEvents from '../../constants/mixpanelEvents';
 import { MixpanelMarketOrder } from '../../types/MixpanelTypes';
 import BadRequestPopup from '../BadRequestPopup';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
+import { useTranslation } from 'react-i18next';
 
 // TODO: too much code, refactor
 
@@ -57,6 +58,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     mainAppStore,
     badRequestPopupStore,
   } = useStores();
+
+  const { t } = useTranslation();
 
   const setAutoCloseWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -92,15 +95,21 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           .number()
           .min(
             instrument.minOperationVolume / initialValues().multiplier,
-            `Minimum trade volume $${instrument.minOperationVolume}. Please increase your trade amount or multiplier.`
+            `${t('Minimum trade volume')} $${
+              instrument.minOperationVolume
+            }. ${t('Please increase your trade amount or multiplier')}.`
           )
           .max(
             instrument.maxOperationVolume / initialValues().multiplier,
-            `Maximum trade volume $${instrument.maxOperationVolume}. Please decrease your trade amount or multiplier.`
+            `${t('Maximum trade volume')} $${
+              instrument.maxOperationVolume
+            }. ${t('Please decrease your trade amount or multiplier')}.`
           )
           .test(
             Fields.AMOUNT,
-            `Insufficient funds to open a position. You have only $${mainAppStore.activeAccount?.balance}`,
+            `${t('Insufficient funds to open a position. You have only')} $${
+              mainAppStore.activeAccount?.balance
+            }`,
             value => {
               if (value) {
                 return value < (mainAppStore.activeAccount?.balance || 0);
@@ -108,8 +117,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               return true;
             }
           )
-          .required('Please fill Invest amount'),
-        multiplier: yup.number().required('Required amount'),
+          .required(t('Please fill Invest amount')),
+        multiplier: yup.number().required(t('Required amount')),
         tp: yup
           .number()
           .nullable()
@@ -121,7 +130,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .nullable()
               .test(
                 Fields.TAKE_PROFIT,
-                'Error message: This level is higher or lower than the one currently allowed',
+                t(
+                  'Error message: This level is higher or lower than the one currently allowed'
+                ),
                 value => value > currentPriceAsk()
               ),
           })
@@ -133,7 +144,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .nullable()
               .test(
                 Fields.TAKE_PROFIT,
-                'Error message: This level is higher or lower than the one currently allowed',
+                t(
+                  'Error message: This level is higher or lower than the one currently allowed'
+                ),
                 value => value < currentPriceBid()
               ),
           }),
@@ -148,7 +161,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .nullable()
               .test(
                 Fields.STOP_LOSS,
-                'Error message: This level is higher or lower than the one currently allowed',
+                t(
+                  'Error message: This level is higher or lower than the one currently allowed'
+                ),
                 value => value < currentPriceAsk()
               ),
           })
@@ -160,7 +175,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .nullable()
               .test(
                 Fields.STOP_LOSS,
-                'Error message: This level is higher or lower than the one currently allowed',
+                t(
+                  'Error message: This level is higher or lower than the one currently allowed'
+                ),
                 value => value > currentPriceBid()
               ),
           })
@@ -171,7 +188,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .nullable()
               .test(
                 Fields.STOP_LOSS,
-                'Stop loss level can not be lower than the Invest amount',
+                t('Stop loss level can not be lower than the Invest amount'),
                 function(value) {
                   return value < this.parent[Fields.AMOUNT];
                 }
@@ -201,8 +218,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       try {
         const response = await API.openPendingOrder(modelToSubmit);
 
-        notificationStore.notificationMessage =
-          apiResponseCodeMessages[response.result];
+        notificationStore.notificationMessage = t(
+          apiResponseCodeMessages[response.result]
+        );
         notificationStore.isSuccessfull =
           response.result === OperationApiResponseCodes.Ok;
         notificationStore.openNotification();
@@ -230,8 +248,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       };
       try {
         const response = await API.openPosition(modelToSubmit);
-        notificationStore.notificationMessage =
-          apiResponseCodeMessages[response.result];
+        notificationStore.notificationMessage = t(
+          apiResponseCodeMessages[response.result]
+        );
         notificationStore.isSuccessfull =
           response.result === OperationApiResponseCodes.Ok;
         notificationStore.openNotification();
@@ -422,7 +441,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             textTransform="uppercase"
             color="rgba(255, 255, 255, 0.3)"
           >
-            Invest
+            {t('Invest')}
           </PrimaryTextSpan>
           <InformationPopup
             bgColor="#000000"
@@ -431,7 +450,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              The amount you’d like to invest
+              {t('The amount you’d like to invest')}
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -496,7 +515,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             textTransform="uppercase"
             color="rgba(255, 255, 255, 0.3)"
           >
-            Multiplier
+            {t('Multiplier')}
           </PrimaryTextSpan>
           <InformationPopup
             bgColor="#000000"
@@ -505,8 +524,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              The coefficient that multiplies the potential profit and level of
-              risk accordingly the value of Multiplier.
+              {t(
+                'The coefficient that multiplies the potential profit and level of risk accordingly the value of Multiplier.'
+              )}
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -531,7 +551,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             textTransform="uppercase"
             color="rgba(255, 255, 255, 0.3)"
           >
-            Autoclose
+            {t('Autoclose')}
           </PrimaryTextSpan>
           <InformationPopup
             bgColor="#000000"
@@ -540,8 +560,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              When the position reached the specified take profit or stop loss
-              level, the position will be closed automatically.
+              {t(
+                'When the position reached the specified take profit or stop loss level, the position will be closed automatically.'
+              )}
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
@@ -578,7 +599,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             textTransform="uppercase"
             color="rgba(255, 255, 255, 0.3)"
           >
-            VOLUME
+            {t('Volume')}
           </PrimaryTextSpan>
           <Observer>
             {() => (
@@ -598,7 +619,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             textTransform="uppercase"
             color="rgba(255, 255, 255, 0.3)"
           >
-            Spread
+            {t('Spread')}
           </PrimaryTextSpan>
           <Observer>
             {() => (
@@ -634,7 +655,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             <FlexContainer margin="0 8px 0 0">
               <SvgIcon {...IconShevronBuy} fillColor="#003A38"></SvgIcon>
             </FlexContainer>
-            Buy
+            {t('Buy')}
           </ButtonBuy>
           <ButtonSell
             type="button"
@@ -643,7 +664,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             <FlexContainer margin="0 8px 0 0">
               <SvgIcon {...IconShevronSell} fillColor="#fff"></SvgIcon>
             </FlexContainer>
-            Sell
+            {t('Sell')}
           </ButtonSell>
         </FlexContainer>
         <FlexContainer
@@ -657,7 +678,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             textTransform="uppercase"
             color="rgba(255, 255, 255, 0.3)"
           >
-            Purchase at
+            {t('Purchase at')}
           </PrimaryTextSpan>
           <InformationPopup
             bgColor="#000000"
@@ -666,8 +687,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              Position will be opened automatically when the price reaches this
-              level.
+              {t(
+                'Position will be opened automatically when the price reaches this level.'
+              )}
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>

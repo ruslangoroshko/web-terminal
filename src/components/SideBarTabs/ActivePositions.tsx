@@ -25,6 +25,7 @@ import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useFormik } from 'formik';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
+import { useTranslation } from 'react-i18next';
 import useInstrument from '../../hooks/useInstrument';
 import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
@@ -51,6 +52,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     notificationStore,
   } = useStores();
 
+  const { t } = useTranslation();
   const { precision } = useInstrument(position.instrument);
 
   const initialValues = useCallback(
@@ -92,7 +94,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .nullable()
               .test(
                 Fields.TAKE_PROFIT,
-                'Error message: This level is higher or lower than the one currently allowed',
+                t(
+                  'Error message: This level is higher or lower than the one currently allowed'
+                ),
                 value => value > currentPriceBid()
               ),
           })
@@ -104,7 +108,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .nullable()
               .test(
                 Fields.TAKE_PROFIT,
-                'Error message: This level is higher or lower than the one currently allowed',
+                t(
+                  'Error message: This level is higher or lower than the one currently allowed'
+                ),
                 value => value < currentPriceAsk()
               ),
           })
@@ -115,17 +121,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .nullable()
               .test(
                 Fields.TAKE_PROFIT,
-                'Take profit level should be higher than the current P/L',
+                t('Take profit level should be higher than the current P/L'),
                 value => value > PnL()
               ),
-            // .test(
-            //   Fields.TAKE_PROFIT,
-            //   'Take profit level can not be zero',
-            //   value => {
-            //     console.log(value)
-            //     return value !== 0;
-            //   }
-            // ),
           }),
         sl: yup
           .number()
@@ -137,7 +135,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .number()
               .test(
                 Fields.STOP_LOSS,
-                'Error message: This level is higher or lower than the one currently allowed',
+                t(
+                  'Error message: This level is higher or lower than the one currently allowed'
+                ),
                 value => value < currentPriceBid()
               ),
           })
@@ -148,7 +148,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .number()
               .test(
                 Fields.STOP_LOSS,
-                'Error message: This level is higher or lower than the one currently allowed',
+                t(
+                  'Error message: This level is higher or lower than the one currently allowed'
+                ),
                 value => value > currentPriceAsk()
               ),
           })
@@ -158,12 +160,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .number()
               .test(
                 Fields.STOP_LOSS,
-                'Stop loss level should be lower than the current P/L',
+                t('Stop loss level should be lower than the current P/L'),
                 value => -1 * Math.abs(value) < PnL()
               )
               .test(
                 Fields.STOP_LOSS,
-                'Stop loss level can not be higher than the Invest amount',
+                t('Stop loss level can not be higher than the Invest amount'),
                 value => Math.abs(value) <= position.investmentAmount
               ),
           }),
@@ -318,7 +320,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               textTransform="uppercase"
               fontWeight="bold"
             >
-              {isBuy ? 'Buy' : 'Sell'}
+              {isBuy ? t('Buy') : t('Sell')}
             </PrimaryTextSpan>
           </FlexContainer>
           <PrimaryTextSpan
@@ -359,10 +361,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Price opened
+                    {t('Price opened')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    at {position.openPrice.toFixed(+precision)}
+                    {t('at')} {position.openPrice.toFixed(+precision)}
                   </PrimaryTextSpan>
                 </FlexContainer>
                 <FlexContainer
@@ -373,7 +375,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Opened
+                    {t('Opened')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {moment(position.openDate).format('DD MMM, HH:mm:ss')}
@@ -387,7 +389,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Equity
+                    {t('Equity')}
                   </PrimaryTextSpan>
                   <Observer>
                     {() => (
@@ -407,7 +409,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Overnight fee
+                    {t('Overnight fee')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {getNumberSign(position.swap)}
@@ -420,7 +422,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Position ID
+                    {t('Position ID')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {position.id}
@@ -497,7 +499,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                     lineHeight="14px"
                     color={position.tp ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
                   >
-                    TP
+                    {t('TP')}
                   </PrimaryTextSpan>
                   &nbsp;
                   <PrimaryTextSpan
@@ -505,16 +507,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                     lineHeight="14px"
                     color={position.sl ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
                   >
-                    SL
+                    {t('SL')}
                   </PrimaryTextSpan>
                 </SetSLTPButton>
               </AutoClosePopupSideBar>
             </CustomForm>
-
             <ClosePositionPopup
               applyHandler={closePosition}
               ref={instrumentRef}
-              confirmText="Close position?"
+              confirmText={`${t('Close position')}?`}
               isButton
             ></ClosePositionPopup>
           </FlexContainer>

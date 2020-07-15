@@ -16,6 +16,7 @@ import Page from '../../constants/Pages';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
 import CloseIcon from '../../assets/svg/icon-close.svg';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   status: string;
@@ -33,6 +34,8 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
   const backToDashboard = () => {
     push(Page.DASHBOARD);
   };
+
+  const { t } = useTranslation();
 
   const renderSuccessFail = () => {
     switch (status) {
@@ -53,10 +56,10 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 color="#fff"
                 marginBottom="8px"
               >
-                Success
+                {t('Success')}
               </PrimaryTextParagraph>
               <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.4)">
-                The operation was succesful.
+                {t('The operation was succesful.')}
               </PrimaryTextSpan>
             </FlexContainer>
             <PrimaryButton
@@ -69,7 +72,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 fontSize="16px"
                 color="#252636"
               >
-                Trade now
+                {t('Trade now')}
               </PrimaryTextSpan>
             </PrimaryButton>
           </FlexContainer>
@@ -92,16 +95,16 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 color="#fff"
                 marginBottom="8px"
               >
-                Failed
+                {t('Failed')}
               </PrimaryTextParagraph>
               <PrimaryTextSpan
                 fontSize="13px"
                 color="rgba(255, 255, 255, 0.4)"
                 textAlign="center"
               >
-                Something went wrong.
+                {t('Something went wrong.')}
                 <br />
-                Try again or use another payment method.
+                {t('Try again or use another payment method.')}
               </PrimaryTextSpan>
             </FlexContainer>
             <PrimaryButton onClick={backToDeposit} width="100%" padding="20px">
@@ -110,7 +113,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 fontSize="16px"
                 color="#252636"
               >
-                Back to Deposit
+                {t('Back to Deposit')}
               </PrimaryTextSpan>
             </PrimaryButton>
           </FlexContainer>

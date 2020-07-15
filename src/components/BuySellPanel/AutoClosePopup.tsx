@@ -142,12 +142,12 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
       SLTPStore.stopLossValue = '';
       setFieldValue(Fields.STOP_LOSS, null);
     };
-  
+
     const removeTP = () => {
       SLTPStore.takeProfitValue = '';
       setFieldValue(Fields.TAKE_PROFIT, null);
     };
-  
+
     return (
       <FlexContainer position="relative" ref={wrapperRef}>
         <FlexContainer width="100%" position="relative">

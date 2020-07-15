@@ -8,6 +8,7 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import Fields from '../../constants/fields';
 import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   setFieldValue: any;
@@ -18,13 +19,14 @@ const currencies = [2000, 1000, 500, 250, 100];
 
 const InvestAmountDropdown: FC<Props> = observer(props => {
   const { setFieldValue, toggle } = props;
+  const { t } = useTranslation();
 
   const handleChangeAmount = (value: number) => () => {
     setFieldValue(Fields.AMOUNT, value);
     toggle();
   };
 
-  const { quotesStore, mainAppStore } = useStores();
+  const { mainAppStore } = useStores();
 
   return (
     <MultiplierDropdownWrapper
@@ -57,7 +59,7 @@ const InvestAmountDropdown: FC<Props> = observer(props => {
           fontSize="11px"
           lineHeight="12px"
         >
-          Available Balance
+          {t('Available Balance')}
         </PrimaryTextParagraph>
         <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="#fffccc">
           {mainAppStore.activeAccount?.symbol}

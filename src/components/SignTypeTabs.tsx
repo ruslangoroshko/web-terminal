@@ -4,8 +4,10 @@ import styled from '@emotion/styled';
 import { NavLink } from 'react-router-dom';
 import Page from '../constants/Pages';
 import { PrimaryTextSpan } from '../styles/TextsElements';
+import { useTranslation } from 'react-i18next';
 
 function SignTypeTabs() {
+  const { t } = useTranslation();
   return (
     <FlexContainer
       borderRadius="4px"
@@ -19,7 +21,7 @@ function SignTypeTabs() {
           fontSize="14px"
           fontWeight="bold"
         >
-          Login
+          {t('Login')}
         </PrimaryTextSpan>
       </CustomNavLink>
       <CustomNavLink to={Page.SIGN_UP} activeClassName="selected">
@@ -28,7 +30,7 @@ function SignTypeTabs() {
           fontSize="14px"
           fontWeight="bold"
         >
-          Sign up
+          {t('Sign up')}
         </PrimaryTextSpan>
       </CustomNavLink>
     </FlexContainer>

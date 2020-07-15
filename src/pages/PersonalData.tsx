@@ -3,7 +3,7 @@ import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import LabelInput from '../components/LabelInput';
 import styled from '@emotion/styled';
-import { Formik, Field, FieldProps, Form, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { PersonalDataParams } from '../types/PersonalDataTypes';
 import moment from 'moment';
@@ -26,55 +26,59 @@ import Page from '../constants/Pages';
 import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
+import { useTranslation } from 'react-i18next';
 
 function PersonalData() {
   const [countries, setCountries] = useState<Country[]>([]);
   const countriesNames = countries.map(item => item.name);
+  const { t } = useTranslation();
 
   const validationSchema = yup.object().shape<PersonalDataParams>({
     firstName: yup
       .string()
-      .min(2, 'Min 2 symbols')
-      .max(100, 'Max 100 symbols')
-      .required('Required field'),
+      .min(2, t('Min 2 symbols'))
+      .max(100, t('Max 100 symbols'))
+      .required(t('Required field')),
 
     lastName: yup
       .string()
-      .min(2, 'Min 2 symbols')
-      .max(100, 'Max 100 symbols'),
+      .min(2, t('Min 2 symbols'))
+      .max(100, t('Max 100 symbols')),
     dateOfBirth: yup.number().required(),
     sex: yup.number().required(),
     countryOfResidence: yup
       .mixed()
-      .oneOf(countriesNames, 'No matches')
-      .required('Required field'),
+      .oneOf(countriesNames, t('No matches'))
+      .required(t('Required field')),
     city: yup
       .string()
-      .min(2, 'Min 2 symbols')
-      .max(20, 'Max 20 symbols')
-      .required('Required field'),
+      .min(2, t('Min 2 symbols'))
+      .max(20, t('Max 20 symbols'))
+      .required(t('Required field')),
     countryOfCitizenship: yup
       .mixed()
-      .oneOf(countriesNames, 'No matches')
+      .oneOf(countriesNames, t('No matches'))
       .required(),
 
     postalCode: yup
       .string()
-      .min(2, 'Min 2 symbols')
-      .max(15, 'Max 15 symbols')
-      .required('Required field'),
+      .min(2, t('Min 2 symbols'))
+      .max(20, t('Max 15 symbols'))
+      .required(t('Required field')),
     processId: yup.string(),
 
     address: yup
       .string()
-      .min(2, 'Min 2 symbols')
-      .max(100, 'Max 100 symbols')
-      .required('Required field'),
+      .min(2, t('Min 2 symbols'))
+      .max(100, t('Max 100 symbols'))
+      .required(t('Required field')),
     uSCitizen: yup.boolean().required(),
     phone: yup.string(),
   });
 
-  const [birthday, setBirthday] = useState<moment.Moment>(moment().subtract(18, 'years'));
+  const [birthday, setBirthday] = useState<moment.Moment>(
+    moment().subtract(18, 'years')
+  );
 
   const [focused, setFocused] = useState(false);
   const [submitForm, setSubitedForm] = useState(false);
@@ -126,7 +130,7 @@ function PersonalData() {
         setCountries(response);
       } catch (error) {
         badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
+        badRequestPopupStore.setMessage(error);
       }
     }
 
@@ -191,13 +195,9 @@ function PersonalData() {
       padding="40px"
     >
       <Observer>
-        {() => (
-          <>
-            {badRequestPopupStore.isActive && <BadRequestPopup />}
-          </>
-        )}
+        {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
-      
+
       <FlexContainer width="568px" flexDirection="column">
         <PrimaryTextParagraph
           fontSize="30px"
@@ -205,7 +205,7 @@ function PersonalData() {
           color="#fffccc"
           marginBottom="8px"
         >
-          Personal data
+          {t('Personal data')}
         </PrimaryTextParagraph>
         <PrimaryTextSpan
           marginBottom="40px"
@@ -213,8 +213,9 @@ function PersonalData() {
           lineHeight="20px"
           color="rgba(255, 255, 255, 0.4)"
         >
-          Your pesonal data will be kept in strict confidence. We will not
-          disclose your data to third parties.
+          {t(
+            'Your pesonal data will be kept in strict confidence. We will not disclose your data to third parties.'
+          )}
         </PrimaryTextSpan>
         <FlexContainer flexDirection="column">
           <CustomForm noValidate onSubmit={handleSubmit}>
@@ -227,7 +228,7 @@ function PersonalData() {
                 <LabelInput
                   {...getFieldProps(Fields.FIRST_NAME)}
                   id={Fields.FIRST_NAME}
-                  labelText="First name"
+                  labelText={t('First name')}
                   hasError={!!(touched.firstName && errors.firstName)}
                   errorText={errors.firstName}
                 />
@@ -235,7 +236,7 @@ function PersonalData() {
 
               <FlexContainer width="50%" flexDirection="column">
                 <LabelInput
-                  labelText="Last name"
+                  labelText={t('Last name')}
                   id={Fields.LAST_NAME}
                   {...getFieldProps(Fields.LAST_NAME)}
                   hasError={!!(touched.lastName && errors.lastName)}
@@ -256,7 +257,7 @@ function PersonalData() {
                   textTransform="uppercase"
                   marginBottom="8px"
                 >
-                  date of birth
+                  {t('date of birth')}
                 </PrimaryTextParagraph>
                 <BirthDayPicker
                   id={Fields.DATE_OF_BIRTH}
@@ -282,7 +283,7 @@ function PersonalData() {
                 width="50%"
               >
                 <AutoCompleteDropdown
-                  labelText="Country of residence"
+                  labelText={t('Country of residence')}
                   {...getFieldProps(Fields.COUNTRY_OF_RESIDENCE)}
                   id={Fields.COUNTRY_OF_RESIDENCE}
                   hasError={
@@ -294,7 +295,7 @@ function PersonalData() {
               </FlexContainer>
               <FlexContainer width="50%" flexDirection="column">
                 <LabelInput
-                  labelText="City"
+                  labelText={t('City')}
                   {...getFieldProps(Fields.CITY)}
                   id={Fields.CITY}
                   hasError={!!(touched.city && errors.city)}
@@ -309,7 +310,7 @@ function PersonalData() {
                 width="50%"
               >
                 <AutoCompleteDropdown
-                  labelText="Сitizenship"
+                  labelText={t('Сitizenship')}
                   {...getFieldProps(Fields.COUNTRY_OF_CITIENZENSHIP)}
                   id={Fields.COUNTRY_OF_CITIENZENSHIP}
                   hasError={
@@ -324,7 +325,7 @@ function PersonalData() {
               </FlexContainer>
               <FlexContainer width="50%" flexDirection="column">
                 <LabelInput
-                  labelText="Postal code"
+                  labelText={t('Postal code')}
                   {...getFieldProps(Fields.POSTAL_CODE)}
                   id={Fields.POSTAL_CODE}
                   hasError={!!(touched.postalCode && errors.postalCode)}
@@ -335,7 +336,7 @@ function PersonalData() {
             <FlexContainer width="100%" margin="0 0 28px 0">
               <FlexContainer flexDirection="column" width="100%">
                 <LabelInput
-                  labelText="Address of residence"
+                  labelText={t('Address of residence')}
                   {...getFieldProps(Fields.ADDRESS)}
                   id={Fields.ADDRESS}
                   hasError={!!(touched.address && errors.address)}
@@ -356,7 +357,7 @@ function PersonalData() {
                     fontSize="14px"
                     marginRight="16px"
                   >
-                    I’am a US reportable person
+                    {t('I’am a US reportable person')}
                   </PrimaryTextSpan>
                   <InformationPopup
                     bgColor="rgba(0, 0, 0, 0.6)"
@@ -365,11 +366,9 @@ function PersonalData() {
                     width="334px"
                   >
                     <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                      A US reportable person is classified as anyone who holds
-                      one of the following: US citizenship, residency, tax
-                      identification number or mailing/residential adress,
-                      telephone number, as well as anyone who has instructions
-                      to transfer funds to an account maintained in the US.
+                      {t(
+                        'A US reportable person is classified as anyone who holds one of the following: US citizenship, residency, tax identification number or mailing/residential adress, telephone number, as well as anyone who has instructions to transfer funds to an account maintained in the US.'
+                      )}
                     </PrimaryTextSpan>
                   </InformationPopup>
                 </FlexContainer>
@@ -386,7 +385,7 @@ function PersonalData() {
                   fontWeight="bold"
                   fontSize="14px"
                 >
-                  Save and continue
+                  {t('Save and continue')}
                 </PrimaryTextSpan>
               </PrimaryButton>
             </FlexContainer>

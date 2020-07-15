@@ -12,6 +12,7 @@ import { useStores } from '../../hooks/useStores';
 import autoCloseTypes from '../../constants/autoCloseTypes';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { Observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
@@ -20,7 +21,7 @@ interface Props {
 
 const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
   const { SLTPStore } = useStores();
-
+  const { t } = useTranslation();
   const handleAutoClose = (
     autoClose: TpSlTypeEnum,
     toggle: () => void
@@ -104,7 +105,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
                     lineHeight="14px"
                     color="rgba(255, 255, 255, 0.5)"
                   >
-                    {autoCloseTypes[key].name}
+                    {t(autoCloseTypes[key].name)}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan fontSize="12px" lineHeight="14px">
                     {autoCloseTypes[key].symbol}

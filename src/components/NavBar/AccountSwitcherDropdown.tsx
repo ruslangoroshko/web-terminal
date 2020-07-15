@@ -8,9 +8,11 @@ import { useStores } from '../../hooks/useStores';
 import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import AccountInfo from './AccountInfo';
 import { Observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 function AccountSwitcherDropdown() {
   const { quotesStore, mainAppStore } = useStores();
+  const { t } = useTranslation();
   return (
     <Toggle>
       {({ on, toggle }) => (
@@ -64,7 +66,7 @@ function AccountSwitcherDropdown() {
                     color="rgba(255, 255, 255, 0.4)"
                     marginRight="2px"
                   >
-                    Total:
+                    {t('Total')}:
                   </PrimaryTextSpan>
                   <Observer>
                     {() => (

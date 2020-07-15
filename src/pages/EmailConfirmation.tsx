@@ -11,16 +11,17 @@ import { Observer } from 'mobx-react-lite';
 import { useStores } from '../hooks/useStores';
 import BadRequestPopup from '../components/BadRequestPopup';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import { useTranslation } from 'react-i18next';
 
-interface Props {}
-
-function EmailConfirmation(props: Props) {
+function EmailConfirmation() {
   const { id } = useParams();
 
   const { badRequestPopupStore, mainAppStore } = useStores();
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccessful, setIsSuccessfull] = useState(false);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     API.confirmEmail(id || '')
@@ -31,7 +32,6 @@ function EmailConfirmation(props: Props) {
         if (response.result === OperationApiResponseCodes.Expired) {
           setIsSuccessfull(false);
         }
-        mainAppStore.fetchTradingUrl();
       })
       .catch(error => {
         setIsSuccessfull(false);
@@ -58,10 +58,10 @@ function EmailConfirmation(props: Props) {
               fontWeight="bold"
               marginBottom="24px"
             >
-              Thank you!
+              {t('Thank you!')}
             </PrimaryTextParagraph>
             <PrimaryTextParagraph color="#fffccc" marginBottom="24px">
-              You have successfully verified your email.
+              {t('You have successfully verified your email.')}
             </PrimaryTextParagraph>
           </>
         ) : (
@@ -72,17 +72,18 @@ function EmailConfirmation(props: Props) {
               fontWeight="bold"
               marginBottom="24px"
             >
-              Email verification failed
+              {t('Email verification failed')}
             </PrimaryTextParagraph>
             <PrimaryTextParagraph color="#fffccc" marginBottom="12px">
-              This link has been expired. Please login to request a new
-              verification email.
+              {t(
+                'This link has been expired. Please log in to request a new verification email.'
+              )}
             </PrimaryTextParagraph>
           </>
         )}
         <LinkToDashboard to={Page.DASHBOARD}>
           <PrimaryTextSpan color="#003a38" fontWeight="bold">
-            Go to Platform
+            {t('Go to Platform')}
           </PrimaryTextSpan>
         </LinkToDashboard>
       </FlexContainer>

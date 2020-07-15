@@ -3,12 +3,13 @@ import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { PrimaryButton } from '../../styles/Buttons';
-import { push } from 'mixpanel-browser';
 import { useHistory } from 'react-router-dom';
 import Page from '../../constants/Pages';
+import { useTranslation } from 'react-i18next';
 
 const WithdrawPagePopup = () => {
   const { push } = useHistory();
+  const { t } = useTranslation();
   return (
     <WithdrawPagePopupWrap alignItems="flex-start">
       <WithdrawPopup
@@ -19,9 +20,11 @@ const WithdrawPagePopup = () => {
       >
         <FlexContainer>
           <PrimaryTextSpan fontSize="14px" color="#ffffff" lineHeight="20px">
-            Withdrawal request can only be submitted when all of KYC
+            {t('Withdrawal request can only be submitted when all of KYC')}
             <br />
-            documents have been approved and the account is Fully Verified
+            {t(
+              'documents have been approved and the account is Fully Verified'
+            )}
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer>
@@ -33,7 +36,7 @@ const WithdrawPagePopup = () => {
             //disabled={!formikBag.isValid || formikBag.isSubmitting}
           >
             <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
-              Proceed to Verification
+              {t('Proceed to Verification')}
             </PrimaryTextSpan>
           </PrimaryButton>
         </FlexContainer>

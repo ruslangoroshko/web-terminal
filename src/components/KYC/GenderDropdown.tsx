@@ -6,6 +6,7 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
 import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import styled from '@emotion/styled';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   hasError?: boolean;
@@ -35,6 +36,8 @@ function GenderDropdown(props: Props) {
     toggle(false);
   };
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
 
@@ -55,10 +58,7 @@ function GenderDropdown(props: Props) {
         onClick={handleToggle}
         hasError={props.hasError || false}
       >
-        <Label
-          isSelect={!isNaN(Number(selected))}
-
-        >Gender</Label>
+        <Label isSelect={!isNaN(Number(selected))}>{t('Gender')}</Label>
         <FlexContainer
           justifyContent="space-between"
           alignItems="center"
@@ -110,7 +110,10 @@ function GenderDropdown(props: Props) {
 
 export default GenderDropdown;
 
-const GenderContainer = styled(FlexContainer)<{ isActive: boolean, hasError: boolean }>`
+const GenderContainer = styled(FlexContainer)<{
+  isActive: boolean;
+  hasError: boolean;
+}>`
   padding-top: 23px;
   border-bottom: 1px solid
     ${props => (props.isActive ? '#21B3A4' : 'rgba(255, 255, 255, 0.2)')};
@@ -147,11 +150,10 @@ const GenderItem = styled(ButtonWithoutStyles)`
 const Label = styled(PrimaryTextSpan)<{ isSelect: boolean }>`
   position: absolute;
   bottom: 0px;
-  transform: ${({isSelect}) => isSelect ? 'translateY(-30px)' : 'translateY(-4px)' };
+  transform: ${({ isSelect }) =>
+    isSelect ? 'translateY(-30px)' : 'translateY(-4px)'};
   transition: transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
-  font-size: ${({isSelect}) => isSelect ? '11px' : '14px' };
+  font-size: ${({ isSelect }) => (isSelect ? '11px' : '14px')};
   color: rgba(255, 255, 255, 0.4);
-  text-transform: ${({isSelect}) => isSelect ? 'uppercase' : 'none' };
-
-  
+  text-transform: ${({ isSelect }) => (isSelect ? 'uppercase' : 'none')};
 `;

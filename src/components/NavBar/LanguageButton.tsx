@@ -1,22 +1,71 @@
-import React from 'react';
-import IconLangEn from '../../assets/images/lang-en.png';
-import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import React, { useState, useRef, useEffect } from 'react';
+import { FlexContainer } from '../../styles/FlexContainer';
+import { useStores } from '../../hooks/useStores';
+import { PrimaryTextSpan } from '../../styles/TextsElements';
+import { Observer } from 'mobx-react-lite';
+import ListOfCountries from '../SideBarTabs/ListOfCountries';
 import styled from '@emotion/styled';
 
-interface Props {}
+function LanguageButton() {
+  const { mainAppStore } = useStores();
+  const [on, toggle] = useState(false);
 
-function LanguageButton(props: Props) {
-  const {} = props;
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleToggle = () => {
+    toggle(!on);
+  };
+
+  const handleClickOutside = (e: any) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      toggle(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
-    <ButtonWithoutStyles>
-      <Img src={IconLangEn} />
-    </ButtonWithoutStyles>
+    <LagnButton
+      width="32px"
+      height="32px"
+      borderRadius="50%"
+      backgroundColor="#FFFCCC"
+      justifyContent="center"
+      alignItems="center"
+      position="relative"
+      onClick={handleToggle}
+      ref={wrapperRef}
+    >
+      <Observer>
+        {() => (
+          <PrimaryTextSpan
+            fontSize="10px"
+            fontWeight="bold"
+            color="#1C1F26"
+            textTransform="uppercase"
+          >
+            {mainAppStore.lang}
+          </PrimaryTextSpan>
+        )}
+      </Observer>
+      {on && (
+        <FlexContainer position="absolute" right="0" top="100%">
+          <ListOfCountries></ListOfCountries>
+        </FlexContainer>
+      )}
+    </LagnButton>
   );
 }
 
 export default LanguageButton;
 
-const Img = styled.img`
-  border-radius: 50%;
+const LagnButton = styled(FlexContainer)`
+  &:hover {
+    cursor: pointer;
+  }
 `;

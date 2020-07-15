@@ -5,16 +5,18 @@ import SuccessImage from '../../../assets/images/success.png';
 import { ButtonWithoutStyles } from '../../../styles/ButtonWithoutStyles';
 import { FlexContainer } from '../../../styles/FlexContainer';
 import { useHistory } from 'react-router-dom';
-import Pages from "../../../constants/Pages";
+import Pages from '../../../constants/Pages';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   amount: number;
   currencySymbol?: string;
 }
 
-const DepositPaymentSuccess = (props: Props) => {
+const DepositPaymentSuccess: FC<Props> = props => {
   const { amount, currencySymbol } = props;
   const { push } = useHistory();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -22,22 +24,28 @@ const DepositPaymentSuccess = (props: Props) => {
         <FlexContainer marginBottom="40px">
           <img src={SuccessImage} width={138} />
         </FlexContainer>
-        <SuccessText>Success</SuccessText>
+        <SuccessText>{t('Success')}</SuccessText>
         <SuccessDescription>
-          The operation was succesful.
+          {t('The operation was succesful.')}
           <br />
-          The amount of{' '}
+          {t('The amount of')}{' '}
           <AmountText>
             {currencySymbol}
             {amount?.toFixed(2)}
           </AmountText>{' '}
-          has been added to
+          {t('has been added to')}
           <br />
-          your account
+          {t('your account')}
         </SuccessDescription>
       </FlexContainer>
       <FlexContainer padding="0 16px" width="100%">
-        <TradeButton onClick={() => {push(Pages.DASHBOARD)}}>Trade</TradeButton>
+        <TradeButton
+          onClick={() => {
+            push(Pages.DASHBOARD);
+          }}
+        >
+          {t('Trade')}
+        </TradeButton>
       </FlexContainer>
     </>
   );

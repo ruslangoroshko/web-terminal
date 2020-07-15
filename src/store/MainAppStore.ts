@@ -100,12 +100,9 @@ export class MainAppStore implements MainAppStoreProps {
     this.refreshToken =
       localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
-    const langValue = localStorage.getItem(LOCAL_STORAGE_LANGUAGE);
-    this.lang = langValue
-      ? // TODO: research
-        //@ts-ignore
-        CountriesEnum[langValue]
-      : CountriesEnum.EN;
+    // @ts-ignore
+    this.lang =
+      localStorage.getItem(LOCAL_STORAGE_LANGUAGE) || CountriesEnum.EN;
   }
 
   initApp = async () => {

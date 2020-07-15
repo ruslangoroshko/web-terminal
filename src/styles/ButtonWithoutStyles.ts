@@ -12,4 +12,8 @@ export const ButtonWithoutStyles = styled.button`
     outline: none;
     cursor: pointer;
   }
+
+  &:disabled {
+    pointer-events: none;
+  }
 `;

@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { TableGrid } from '../../styles/TableElements';
 import WithdrawHistoryItem from './WithdrawHistoryItem';
 import API from '../../helpers/API';
-import { WithdrawalHistoryModel } from '../../types/WithdrawalTypes';
-import LoaderForComponents from '../LoaderForComponents';
 import { useStores } from '../../hooks/useStores';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { Observer } from 'mobx-react-lite';
 import { WithdrawalHistoryResponseStatus } from '../../enums/WithdrawalHistoryResponseStatus';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 const WithdrawHistoryTab = () => {
   const { withdrawalStore, mainAppStore } = useStores();
-
+  const { t } = useTranslation();
   const initHistoryList = async () => {
     withdrawalStore.setLoad();
     try {
@@ -21,8 +20,13 @@ const WithdrawHistoryTab = () => {
         AuthToken: mainAppStore.token,
       });
       if (result.status === WithdrawalHistoryResponseStatus.Successful) {
-        const sortedList = result.history ? result.history.sort(
-          (a: any , b: any) => moment(b.creationDate).valueOf() - moment(a.creationDate).valueOf()) : result.history;
+        const sortedList = result.history
+          ? result.history.sort(
+              (a: any, b: any) =>
+                moment(b.creationDate).valueOf() -
+                moment(a.creationDate).valueOf()
+            )
+          : result.history;
 
         withdrawalStore.setHistory(sortedList);
       }
@@ -39,7 +43,7 @@ const WithdrawHistoryTab = () => {
   useEffect(() => {
     initHistoryList();
   }, []);
-  
+
   return (
     <FlexContainer
       flexDirection="column"
@@ -57,7 +61,7 @@ const WithdrawHistoryTab = () => {
                     fontSize="13px"
                     color="rgba(255,255,255,0.4)"
                   >
-                    You haven't made any withdrawal requests yet
+                    {t("You haven't made any withdrawal requests yet")}
                   </PrimaryTextSpan>
                 )}
                 {withdrawalStore.history && (
