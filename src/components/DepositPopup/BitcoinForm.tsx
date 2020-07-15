@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import {
   PrimaryTextParagraph,
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
-import InformationPopup from '../InformationPopup';
 import styled from '@emotion/styled';
 import CopyIcon from '../../assets/svg/icon-copy.svg';
 import SvgIcon from '../SvgIcon';
 import QRCode from 'react-qr-code';
 import API from '../../helpers/API';
 import { useStores } from '../../hooks/useStores';
-import { GetCryptoWalletStatuses } from '../../enums/GetCryptoWalletStatuses';
-import {
-  GetCryptoWalletDTO,
-  GetCryptoWalletParams,
-} from '../../types/DepositTypes';
 import { DepositCurrency } from '../../enums/DepositCurrency';
 import { DepositApiResponseCodes } from '../../enums/DepositApiResponseCodes';
 import LoaderForComponents from '../LoaderForComponents';
 import { Observer } from 'mobx-react-lite';
 import NotificationPopup from '../NotificationPopup';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import { useTranslation } from 'react-i18next';
 
-const BitcoinForm = () => {
+const BitcoinForm: FC = () => {
   const [bitcoinWalletString, setBitcoinWalletString] = useState('');
   const [isLoading, setLoading] = useState(true);
+
+  const { t } = useTranslation();
 
   const { mainAppStore, notificationStore, badRequestPopupStore } = useStores();
 
@@ -39,7 +36,7 @@ const BitcoinForm = () => {
       document.execCommand('copy');
       document.body.removeChild(el);
 
-      notificationStore.notificationMessage = 'Copied to clipboard';
+      notificationStore.notificationMessage = t('Copied to clipboard');
       notificationStore.isSuccessfull = true;
       notificationStore.openNotification();
     }
@@ -51,13 +48,13 @@ const BitcoinForm = () => {
         const response = await API.getCryptoWallet({
           authToken: mainAppStore.token || '',
           currency: DepositCurrency.BTC,
-          accountId: mainAppStore.accounts.find(item => item.isLive)?.id || ''
+          accountId: mainAppStore.accounts.find(item => item.isLive)?.id || '',
         });
         if (response.status === DepositApiResponseCodes.Success) {
           setBitcoinWalletString(response.walletAddress);
           setLoading(false);
         } else {
-          badRequestPopupStore.setMessage('Technical error');
+          badRequestPopupStore.setMessage(t('Technical error'));
           badRequestPopupStore.openModal();
           setLoading(false);
         }
@@ -87,10 +84,10 @@ const BitcoinForm = () => {
         fontWeight="bold"
         marginBottom="12px"
       >
-        Bitcoin
+        {t('Bitcoin')}
       </PrimaryTextParagraph>
       <PrimaryTextParagraph fontSize="13px" color="#fff" marginBottom="38px">
-        Send funds to the address provided below
+        {t('Send funds to the address provided below')}
       </PrimaryTextParagraph>
       <FlexContainer>
         <PrimaryTextSpan
@@ -99,21 +96,14 @@ const BitcoinForm = () => {
           color="rgba(255, 255, 255, 0.4)"
           marginRight="4px"
         >
-          Deposit Address (BTC)
+          {t('Deposit Address (BTC)')}
         </PrimaryTextSpan>
-        {/* <InformationPopup>
-
-      </InformationPopup> */}
       </FlexContainer>
       <BitcoinWalletStringWrapper
         justifyContent="space-between"
         marginBottom="20px"
       >
-        <PrimaryTextSpan
-          fontWeight="bold"
-          fontSize="14px"
-          color="#fffccc"
-        >
+        <PrimaryTextSpan fontWeight="bold" fontSize="14px" color="#fffccc">
           {bitcoinWalletString}
         </PrimaryTextSpan>
         <ButtonWithoutStyles onClick={handleCopyText}>
@@ -133,14 +123,15 @@ const BitcoinForm = () => {
         </FlexContainer>
         <FlexContainer flexDirection="column">
           <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.4)">
-            Important:
+            {t('Important')}:
             <br />
             <br />
-            Send only amount in BTC to this deposit address. Sending any other
-            currency to this address may result in the loss of your deposit.
+            {t(
+              'Send only amount in BTC to this deposit address. Sending any other currency to this address may result in the loss of your deposit.'
+            )}
             <br />
             <br />
-            Time to fund: Depending on the Blockchain (approx 20-60 min)
+            {t('Time to fund: Depending on the Blockchain (approx 20-60 min)')}
           </PrimaryTextSpan>
         </FlexContainer>
       </FlexContainer>

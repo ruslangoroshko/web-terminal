@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useRef, useEffect } from 'react';
+import React, { ChangeEvent, useState, useRef, useEffect, FC } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
@@ -12,6 +12,7 @@ import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import Fields from '../../constants/fields';
 import { SecondaryButton } from '../../styles/Buttons';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
@@ -20,9 +21,12 @@ interface Props {
   digits: number;
 }
 
-function PurchaseAtPopup(props: Props) {
-  const { setFieldValue, purchaseAtValue, instrumentId, digits } = props;
-
+const PurchaseAtPopup: FC<Props> = ({
+  setFieldValue,
+  purchaseAtValue,
+  instrumentId,
+  digits,
+}) => {
   const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
     SLTPStore.purchaseAtValue = e.target.value.replace(',', '.');
   };
@@ -30,6 +34,8 @@ function PurchaseAtPopup(props: Props) {
   const [on, toggle] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const { t } = useTranslation();
 
   const {
     quotesStore,
@@ -141,7 +147,7 @@ function PurchaseAtPopup(props: Props) {
           hasPrice={!!purchaseAtValue}
         >
           <PrimaryTextSpan color="#fffccc" fontSize="14px">
-            Set Price
+            {t('Set Price')}
           </PrimaryTextSpan>
         </ButtonAutoClosePurchase>
       )}
@@ -161,7 +167,7 @@ function PurchaseAtPopup(props: Props) {
               ></SvgIcon>
             </ButtonClose>
             <PrimaryTextParagraph marginBottom="16px">
-              Purchase At
+              {t('Purchase At')}
             </PrimaryTextParagraph>
             <FlexContainer
               margin="0 0 6px 0"
@@ -174,7 +180,7 @@ function PurchaseAtPopup(props: Props) {
                 color="rgba(255, 255, 255, 0.3)"
                 textTransform="uppercase"
               >
-                When Price is
+                {t('When Price is')}
               </PrimaryTextSpan>
               <InfoIcon
                 width="14px"
@@ -212,7 +218,7 @@ function PurchaseAtPopup(props: Props) {
                 fontSize="11px"
                 lineHeight="12px"
               >
-                Current price
+                {t('Current price')}
               </PrimaryTextSpan>
               <Observer>
                 {() => (
@@ -235,14 +241,14 @@ function PurchaseAtPopup(props: Props) {
               </Observer>
             </FlexContainer>
             <ButtonApply type="button" onClick={applyPurchaseAt}>
-              Apply
+              {t('Apply')}
             </ButtonApply>
           </Wrapper>
         </SetPriceWrapper>
       )}
     </FlexContainer>
   );
-}
+};
 
 export default PurchaseAtPopup;
 

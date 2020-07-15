@@ -4,11 +4,11 @@ import StepIndicator from './StepIndicator';
 import { useStores } from '../../hooks/useStores';
 import { KYCstepsEnum } from '../../enums/KYCsteps';
 import { observer } from 'mobx-react-lite';
-
+import { useTranslation } from 'react-i18next';
 
 const StepsContainter = observer(() => {
   const { kycStore } = useStores();
-
+  const { t } = useTranslation();
   return (
     <FlexContainer
       padding="30px 30px 40px"
@@ -25,7 +25,7 @@ const StepsContainter = observer(() => {
             KYCstepsEnum.ProofOfIdentity,
           ].includes(kycStore.filledStep)}
           stepNumber={KYCstepsEnum.PersonalData}
-          stepTitle="Personal data"
+          stepTitle={t('Personal data')}
         ></StepIndicator>
         <StepIndicator
           currentStep={kycStore.currentStep}
@@ -34,7 +34,7 @@ const StepsContainter = observer(() => {
             KYCstepsEnum.ProofOfIdentity,
           ].includes(kycStore.filledStep)}
           stepNumber={KYCstepsEnum.PhoneVerification}
-          stepTitle="Phone verification"
+          stepTitle={t('Phone verification')}
         ></StepIndicator>
         <StepIndicator
           currentStep={kycStore.currentStep}
@@ -42,7 +42,7 @@ const StepsContainter = observer(() => {
             kycStore.filledStep
           )}
           stepNumber={KYCstepsEnum.ProofOfIdentity}
-          stepTitle="Proof of indentity"
+          stepTitle={t('Proof of indentity')}
         ></StepIndicator>
       </FlexContainer>
     </FlexContainer>

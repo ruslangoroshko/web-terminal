@@ -13,6 +13,7 @@ import InformationPopup from '../InformationPopup';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { useStores } from '../../hooks/useStores';
 import ImageContainer from '../ImageContainer';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -56,6 +57,8 @@ function TradingHistoryItem(props: Props) {
     }
   };
 
+  const { t } = useTranslation();
+
   return (
     <TradingHistoryItemWrapper
       flexDirection="column"
@@ -91,7 +94,7 @@ function TradingHistoryItem(props: Props) {
                 fontSize="12px"
                 color={isBuy ? '#00FFDD' : '#ED145B'}
               >
-                {isBuy ? 'Buy' : 'Sell'}
+                {isBuy ? t('Buy') : t('Sell')}
               </PrimaryTextSpan>
             </FlexContainer>
           </FlexContainer>
@@ -141,10 +144,10 @@ function TradingHistoryItem(props: Props) {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Price opened
+                    {t('Price opened')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    at {currencySymbol}
+                    {t('at')} {currencySymbol}
                     {openPrice}
                   </PrimaryTextSpan>
                 </FlexContainer>
@@ -156,10 +159,10 @@ function TradingHistoryItem(props: Props) {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Price closed
+                    {t('Price closed')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    at {currencySymbol}
+                    {t('at')} {currencySymbol}
                     {closePrice}
                   </PrimaryTextSpan>
                 </FlexContainer>
@@ -171,7 +174,7 @@ function TradingHistoryItem(props: Props) {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Opened
+                    {t('Opened')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {moment(openDate).format('DD MMM, HH:mm:ss')}
@@ -185,7 +188,7 @@ function TradingHistoryItem(props: Props) {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Closed
+                    {t('Closed')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {moment(closeDate).format('DD MMM, HH:mm:ss')}
@@ -199,7 +202,7 @@ function TradingHistoryItem(props: Props) {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Equity
+                    {t('Equity')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {currencySymbol}
@@ -214,7 +217,7 @@ function TradingHistoryItem(props: Props) {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Overnight fee
+                    {t('Overnight fee')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {getNumberSign(swaps)}
@@ -227,7 +230,7 @@ function TradingHistoryItem(props: Props) {
                     color="rgba(255, 255, 255, 0.4)"
                     fontSize="12px"
                   >
-                    Position ID
+                    {t('Position ID')}
                   </PrimaryTextSpan>
                   <PrimaryTextSpan color="#fffccc" fontSize="12px">
                     {id}

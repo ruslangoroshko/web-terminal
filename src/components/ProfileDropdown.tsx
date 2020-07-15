@@ -12,9 +12,11 @@ import { NavLink, Link } from 'react-router-dom';
 import Page from '../constants/Pages';
 import IconInfo from '../assets/svg/icon-info.svg';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
+import { useTranslation } from 'react-i18next';
 
 function ProfileDropdown() {
   const { mainAppStore, depositFundsStore } = useStores();
+  const { t } = useTranslation();
   const renderStatusLabel = () => {
     switch (mainAppStore.profileStatus) {
       case PersonalDataKYCEnum.NotVerified:
@@ -38,7 +40,7 @@ function ProfileDropdown() {
                     fontWeight="bold"
                     whiteSpace="nowrap"
                   >
-                    Verify your profile
+                    {t('Verify your profile')}
                   </PrimaryTextSpan>
                 </FlexContainer>
               </FlexContainer>
@@ -72,12 +74,12 @@ function ProfileDropdown() {
         flexDirection="column"
       >
         <PrimaryTextSpan fontSize="12px" color="#fffccc" marginBottom="16px">
-          Profile
+          {t('Profile')}
         </PrimaryTextSpan>
 
         <CustomeNavLink to={Page.ACCOUNT_SEQURITY} activeClassName="is-active">
           <PrimaryTextSpan fontSize="12px" color="#fffccc">
-            Security
+            {t('Security')}
           </PrimaryTextSpan>
         </CustomeNavLink>
       </FlexWithBottomBorder>
@@ -87,22 +89,23 @@ function ProfileDropdown() {
         flexDirection="column"
       >
         <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
-          <ButtonWithoutStyles
-            onClick={depositFundsStore.togglePopup}
-          >
+          <ButtonWithoutStyles onClick={depositFundsStore.togglePopup}>
             <PrimaryTextSpan fontSize="12px" color="#fffccc">
-              Deposit
+              {t('Deposit')}
             </PrimaryTextSpan>
           </ButtonWithoutStyles>
           <SvgIcon {...IconDeposit} fillColor="rgba(255, 255, 255, 0.6)" />
         </FlexContainer>
         <FlexContainer justifyContent="space-between">
-        <CustomeNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="is-active">
-        <PrimaryTextSpan fontSize="12px" color="#fffccc">
-            Withdraw
-          </PrimaryTextSpan>
-        </CustomeNavLink>
-          
+          <CustomeNavLink
+            to={Page.ACCOUNT_WITHDRAW}
+            activeClassName="is-active"
+          >
+            <PrimaryTextSpan fontSize="12px" color="#fffccc">
+              {t('Withdraw')}
+            </PrimaryTextSpan>
+          </CustomeNavLink>
+
           <SvgIcon {...IconWithdraw} fillColor="rgba(255, 255, 255, 0.6)" />
         </FlexContainer>
       </FlexWithBottomBorder>
@@ -114,7 +117,7 @@ function ProfileDropdown() {
         <FlexContainer margin="0 0 16px">
           <NavLink to={Page.ACCOUNT_BALANCE_HISTORY}>
             <PrimaryTextSpan fontSize="12px" color="#fffccc">
-              Balance history
+              {t('Balance history')}
             </PrimaryTextSpan>
           </NavLink>
         </FlexContainer>
@@ -132,7 +135,7 @@ function ProfileDropdown() {
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={mainAppStore.signOut}>
           <PrimaryTextSpan fontSize="12px" color="#fffccc">
-            Logout
+            {t('Logout')}
           </PrimaryTextSpan>
           <SvgIcon {...IconLogout} fillColor="rgba(255, 255, 255, 0.6)" />
         </LogoutButton>

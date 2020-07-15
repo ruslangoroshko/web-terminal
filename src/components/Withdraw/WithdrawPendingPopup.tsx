@@ -3,16 +3,16 @@ import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { PrimaryButton } from '../../styles/Buttons';
-import { push } from 'mixpanel-browser';
 import { useHistory } from 'react-router-dom';
 import Page from '../../constants/Pages';
-import { useStores } from '../../hooks/useStores';
 import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
+import { useTranslation } from 'react-i18next';
 
 const WithdrawPendingPopup = () => {
   const { push } = useHistory();
-  const { mainAppStore } = useStores();
+
+  const { t } = useTranslation();
 
   const [userEmail, setEmail] = useState('');
 
@@ -26,7 +26,6 @@ const WithdrawPendingPopup = () => {
     fetchPersonalData();
   }, []);
 
-
   return (
     <WithdrawPagePopupWrap alignItems="flex-start">
       <WithdrawPopup
@@ -37,12 +36,15 @@ const WithdrawPendingPopup = () => {
       >
         <FlexContainer>
           <PrimaryTextSpan fontSize="14px" color="#ffffff" lineHeight="20px">
-            Our Customer support will contact you via &nbsp;
-            <PrimaryTextSpan color="#FFFCCC">{userEmail || 'your@email.com'}</PrimaryTextSpan>
+            {t('Our Customer support will contact you via')} &nbsp;
+            <PrimaryTextSpan color="#FFFCCC">
+              {userEmail || 'your@email.com'}
+            </PrimaryTextSpan>
             <br />
-            to confirm and proceed with your withdrawal request. Please be{' '}
-            <br /> note, that you can submit only one withdrawal request at a
-            time
+            {t('to confirm and proceed with your withdrawal request.')}{' '}
+            {t(
+              'Please be note, that you can submit only one withdrawal request at a time'
+            )}
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer>
@@ -53,7 +55,7 @@ const WithdrawPendingPopup = () => {
             onClick={() => push(Page.DASHBOARD)}
           >
             <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
-              Back to Trading
+              {t('Back to Trading')}
             </PrimaryTextSpan>
           </PrimaryButton>
         </FlexContainer>

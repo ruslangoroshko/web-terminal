@@ -10,7 +10,8 @@ import SvgIcon from '../../SvgIcon';
 import IconClose from '../../../assets/svg/icon-close.svg';
 import DepositPaymentFail from './DepositPaymentFail';
 import { useStores } from '../../../hooks/useStores';
-import Pages from "../../../constants/Pages";
+import Pages from '../../../constants/Pages';
+import { WithT } from 'i18next';
 //
 // ?status=success&amount=500#payment
 // ?status=fail#payment
@@ -21,10 +22,10 @@ interface Params {
   amount?: number;
 }
 
-const DepositPaymentResultPopup = () => {
+const DepositPaymentResultPopup: FC = () => {
   const { mainAppStore } = useStores();
 
-  const { push } = useHistory(); 
+  const { push } = useHistory();
   const location = useLocation();
   const [queryParams, setParams] = React.useState<Params>({
     hash: '',
@@ -42,16 +43,20 @@ const DepositPaymentResultPopup = () => {
   }, [location]);
 
   const switchView = () => {
-    
     switch (queryParams.status) {
       case 'success':
-        return <DepositPaymentSuccess amount={queryParams.amount || 0} currencySymbol={mainAppStore.activeAccount?.symbol} />
+        return (
+          <DepositPaymentSuccess
+            amount={queryParams.amount || 0}
+            currencySymbol={mainAppStore.activeAccount?.symbol}
+          />
+        );
       case 'fail':
-        return <DepositPaymentFail />
+        return <DepositPaymentFail />;
       default:
         break;
     }
-  }
+  };
 
   const handleClosePopup = () => {
     push(Pages.DASHBOARD);

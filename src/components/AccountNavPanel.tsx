@@ -6,9 +6,11 @@ import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
 import Page from '../constants/Pages';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { useStores } from '../hooks/useStores';
+import { useTranslation } from 'react-i18next';
 
 const AccountNavPanel = () => {
   const { mainAppStore } = useStores();
+  const { t } = useTranslation();
   return (
     <FlexContainer flexDirection="column" margin="0 40px 0 0" width="140px">
       <PrimaryTextParagraph
@@ -17,32 +19,30 @@ const AccountNavPanel = () => {
         fontWeight="bold"
         marginBottom="34px"
       >
-        Account
+        {t('Account')}
       </PrimaryTextParagraph>
-      
+
       <FlexContainer flexDirection="column">
         <CustomNavLink to={Page.ACCOUNT_SEQURITY} activeClassName="active">
-          <AccountLinkSpan color="#fffccc">Security</AccountLinkSpan>
+          <AccountLinkSpan color="#fffccc">{t('Security')}</AccountLinkSpan>
         </CustomNavLink>
 
         <CustomNavLink
           to={Page.ACCOUNT_BALANCE_HISTORY}
           activeClassName="active"
         >
-          <AccountLinkSpan color="#fffccc">Balance history</AccountLinkSpan>
+          <AccountLinkSpan color="#fffccc">
+            {t('Balance history')}
+          </AccountLinkSpan>
         </CustomNavLink>
 
-        <CustomNavLink
-          to={Page.ACCOUNT_WITHDRAW}
-          activeClassName="active"
-        >
-          <AccountLinkSpan color="#fffccc">Withdraw</AccountLinkSpan>
+        <CustomNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="active">
+          <AccountLinkSpan color="#fffccc">{t('Withdraw')}</AccountLinkSpan>
         </CustomNavLink>
-
       </FlexContainer>
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={mainAppStore.signOut}>
-          <AccountLinkSpan color="#fffccc">Logout</AccountLinkSpan>
+          <AccountLinkSpan color="#fffccc">{t('Logout')}</AccountLinkSpan>
         </LogoutButton>
       </FlexContainer>
     </FlexContainer>
@@ -58,7 +58,7 @@ const CustomNavLink = styled(NavLink)`
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     padding-bottom: 16px;
   }
-  
+
   &.active {
     pointer-events: none;
   }

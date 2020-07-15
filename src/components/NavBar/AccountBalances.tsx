@@ -1,9 +1,9 @@
 import React from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
-import ColorsPallete from '../../styles/colorPallete';
 import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
 import { getNumberSign } from '../../helpers/getNumberSign';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   available: number;
@@ -15,7 +15,7 @@ interface Props {
 
 function AccountBalances(props: Props) {
   const { available, total, invest, profit, symbol } = props;
-
+  const { t } = useTranslation();
   return (
     <>
       <AmountWrapper>
@@ -24,7 +24,7 @@ function AccountBalances(props: Props) {
           color="rgba(255, 255, 255, 0.4)"
           fontSize="12px"
         >
-          Available:
+          {t('Available')}:
         </PrimaryTextSpan>
         <PrimaryTextSpan fontSize="12px">
           {symbol}
@@ -37,7 +37,7 @@ function AccountBalances(props: Props) {
           color="rgba(255, 255, 255, 0.4)"
           fontSize="12px"
         >
-          Invest:
+          {t('Invest')}:
         </PrimaryTextSpan>
         <PrimaryTextSpan fontSize="12px">
           {symbol}
@@ -50,7 +50,7 @@ function AccountBalances(props: Props) {
           color="rgba(255, 255, 255, 0.4)"
           fontSize="12px"
         >
-          Profit:
+          {t('Profit')}:
         </PrimaryTextSpan>
         <QuoteText isGrowth={+profit >= 0} fontSize="12px">
           {getNumberSign(profit)}
@@ -64,7 +64,7 @@ function AccountBalances(props: Props) {
           color="rgba(255, 255, 255, 0.4)"
           fontSize="12px"
         >
-          Total:
+          {t('Total')}:
         </PrimaryTextSpan>
         <PrimaryTextSpan fontSize="12px">
           {symbol}

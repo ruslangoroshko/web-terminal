@@ -23,6 +23,10 @@ declare module '*.woff2' {
   export default value;
 }
 
+declare module '*.json' {
+  const value: any;
+  export default value;
+}
 
 declare const WS_HOST: string;
 declare const API_STRING: string;

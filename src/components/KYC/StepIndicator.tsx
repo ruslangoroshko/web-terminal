@@ -5,6 +5,7 @@ import { KYCstepsEnum } from '../../enums/KYCsteps';
 import { observer } from 'mobx-react-lite';
 import SvgIcon from '../SvgIcon';
 import IconDone from '../../assets/svg/icon-kyc-done.svg';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   stepNumber: number;
@@ -16,9 +17,14 @@ interface Props {
 const StepIndicator: FC<Props> = observer(props => {
   const { stepNumber, stepTitle, isFilled, currentStep } = props;
   const isMoreThanOrCurrentStep = currentStep >= stepNumber;
+  const { t } = useTranslation();
 
   return (
-    <FlexContainer flexDirection="column" alignItems="center" zIndex={`${100 - stepNumber}`}>
+    <FlexContainer
+      flexDirection="column"
+      alignItems="center"
+      zIndex={`${100 - stepNumber}`}
+    >
       <FlexContainer
         borderRadius="50%"
         width="48px"
@@ -67,7 +73,7 @@ const StepIndicator: FC<Props> = observer(props => {
       <PrimaryTextSpan
         color={isFilled ? '#008284' : 'rgba(255, 255, 255, 0.4)'}
       >
-        {isFilled ? 'Done' : 'Not filled'}
+        {isFilled ? t('Done') : t('Not filled')}
       </PrimaryTextSpan>
     </FlexContainer>
   );

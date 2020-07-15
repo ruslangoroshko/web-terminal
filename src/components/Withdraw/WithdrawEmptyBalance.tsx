@@ -4,9 +4,11 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { SecondaryButton } from '../../styles/Buttons';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
+import { useTranslation } from 'react-i18next';
 
 const WithdrawEmptyBalance = () => {
   const { depositFundsStore } = useStores();
+  const { t } = useTranslation();
   return (
     <FlexContainer
       width="100%"
@@ -16,14 +18,15 @@ const WithdrawEmptyBalance = () => {
     >
       <FlexContainer width="calc(100% - 220px)">
         <PrimaryTextSpan fontSize="14px" color="#FFFCCC" lineHeight="20px">
-          Withdrawals are processed by the same payment systems used to deposit
-          money into the system.
+          {t(
+            'Withdrawals are processed by the same payment systems used to deposit money into the system.'
+          )}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer width="160px">
         <DeposteButton onClick={depositFundsStore.togglePopup}>
           <PrimaryTextSpan color="#fffccc" fontSize="14px">
-            Make a deposit
+            {t('Make a deposit')}
           </PrimaryTextSpan>
         </DeposteButton>
       </FlexContainer>

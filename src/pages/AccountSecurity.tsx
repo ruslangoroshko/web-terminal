@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import AccountSettingsContainer from '../containers/AccountSettingsContainer';
-import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
+import { PrimaryTextSpan } from '../styles/TextsElements';
 import * as yup from 'yup';
 import API from '../helpers/API';
 import { useStores } from '../hooks/useStores';
@@ -21,26 +21,31 @@ import ErropPopup from '../components/ErropPopup';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import NotificationPopup from '../components/NotificationPopup';
 import Page from '../constants/Pages';
+import { useTranslation } from 'react-i18next';
 
 function AccountSecurity() {
+  const { t } = useTranslation();
   const validationSchema = yup.object().shape({
     oldPassword: yup
       .string()
-      .required('Password must be at least 8 characters long')
-      .min(8, validationInputTexts.PASSWORD_MIN_CHARACTERS)
-      .max(40, validationInputTexts.PASSWORD_MAX_CHARACTERS),
+      .required(t('Password must be at least 8 characters long'))
+      .min(8, t(validationInputTexts.PASSWORD_MIN_CHARACTERS))
+      .max(40, t(validationInputTexts.PASSWORD_MAX_CHARACTERS)),
     password: yup
       .string()
-      .required('Password must be at least 8 characters long')
-      .min(8, validationInputTexts.PASSWORD_MIN_CHARACTERS)
-      .max(40, validationInputTexts.PASSWORD_MAX_CHARACTERS)
-      .matches(/^(?=.*\d)(?=.*[a-zA-Z])/, validationInputTexts.PASSWORD_MATCH),
+      .required(t('Password must be at least 8 characters long'))
+      .min(8, t(validationInputTexts.PASSWORD_MIN_CHARACTERS))
+      .max(40, t(validationInputTexts.PASSWORD_MAX_CHARACTERS))
+      .matches(
+        /^(?=.*\d)(?=.*[a-zA-Z])/,
+        t(validationInputTexts.PASSWORD_MATCH)
+      ),
     repeatPassword: yup
       .string()
-      .required('Password must be at least 8 characters long')
+      .required(t('Password must be at least 8 characters long'))
       .oneOf(
         [yup.ref(Fields.PASSWORD), null],
-        "New password and confirmation don't match"
+        t("New password and confirmation don't match")
       ),
   });
   //
@@ -50,32 +55,36 @@ function AccountSecurity() {
     repeatPassword: '',
   };
 
-  const { mainAppStore, badRequestPopupStore, notificationStore } = useStores();
+  const { badRequestPopupStore, notificationStore } = useStores();
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    document.title = 'Change password';
+    document.title = t('Change password');
   }, []);
 
   const handleSubmitForm = async () => {
     setIsLoading(true);
-    
+
     try {
       const response = await API.changePassword({
         oldPassword: values.oldPassword,
-        newPassword: values.password
+        newPassword: values.password,
       });
       if (response.result === OperationApiResponseCodes.Ok) {
         resetForm();
         setIsLoading(false);
-        notificationStore.notificationMessage = "Your password has been changed";
+        notificationStore.notificationMessage = t(
+          'Your password has been changed'
+        );
         notificationStore.isSuccessfull = true;
         notificationStore.openNotification();
       } else {
         resetForm();
         setIsLoading(false);
-        notificationStore.notificationMessage = "You entered the wrong current password";
+        notificationStore.notificationMessage = t(
+          'You entered the wrong current password'
+        );
         notificationStore.isSuccessfull = false;
         notificationStore.openNotification();
       }
@@ -86,10 +95,8 @@ function AccountSecurity() {
     }
   };
 
-
   const {
     values,
-    setFieldValue,
     resetForm,
     validateForm,
     handleSubmit,
@@ -157,7 +164,7 @@ function AccountSecurity() {
           fontWeight="bold"
           marginBottom="40px"
         >
-          Change password
+          {t('Change password')}
         </PrimaryTextSpan>
 
         <CustomForm onSubmit={handleSubmit} noValidate>
@@ -174,7 +181,7 @@ function AccountSecurity() {
                   color="rgba(255, 255, 255, 0.3)"
                   textTransform="uppercase"
                 >
-                  Current password
+                  {t('Current password')}
                 </PrimaryTextSpan>
               </FlexContainer>
 
@@ -219,7 +226,7 @@ function AccountSecurity() {
                   color="rgba(255, 255, 255, 0.3)"
                   textTransform="uppercase"
                 >
-                  New password
+                  {t('New password')}
                 </PrimaryTextSpan>
               </FlexContainer>
 
@@ -263,7 +270,7 @@ function AccountSecurity() {
                   color="rgba(255, 255, 255, 0.3)"
                   textTransform="uppercase"
                 >
-                  Repeat password
+                  {t('Repeat password')}
                 </PrimaryTextSpan>
               </FlexContainer>
 
@@ -309,7 +316,7 @@ function AccountSecurity() {
                 fontSize="14px"
                 textTransform="uppercase"
               >
-                Change password
+                {t('Change password')}
               </PrimaryTextSpan>
             </PrimaryButton>
           </FlexContainer>
@@ -369,7 +376,8 @@ const InputField = styled.input`
 
 const InputWrapper = styled(FlexContainer)`
   border-radius: 4px;
-  border: 1px solid ${props => props.hasError ? "#ED145B" : "rgba(255, 255, 255, 0.1)"};
+  border: 1px solid
+    ${props => (props.hasError ? '#ED145B' : 'rgba(255, 255, 255, 0.1)')};
   color: #fff;
   background-color: rgba(255, 255, 255, 0.06);
 `;

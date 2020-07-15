@@ -77,7 +77,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       if (!on && resetForm && (stopLossError || takeProfitError)) {
         resetForm();
       }
-    }, [on])
+    }, [on]);
 
     useEffect(() => {
       document.addEventListener('mousedown', handleClickOutside);

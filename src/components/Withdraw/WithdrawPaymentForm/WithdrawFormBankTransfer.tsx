@@ -8,10 +8,10 @@ import { useFormik } from 'formik';
 import { useStores } from '../../../hooks/useStores';
 import { WithdrawalTypesEnum } from '../../../enums/WithdrawalTypesEnum';
 import { CreateWithdrawalParams } from '../../../types/WithdrawalTypes';
-import { AccountModelWebSocketDTO } from '../../../types/AccountsTypes';
 import API from '../../../helpers/API';
 import { WithdrawalHistoryResponseStatus } from '../../../enums/WithdrawalHistoryResponseStatus';
 import { WithdrawalTabsEnum } from '../../../enums/WithdrawalTabsEnum';
+import { useTranslation } from 'react-i18next';
 
 interface RequestValues {
   amount: number;
@@ -25,6 +25,7 @@ const WithdrawFormBankTransfer = () => {
     amount: 0,
     details: '',
   };
+  const { t } = useTranslation();
 
   const { mainAppStore, withdrawalStore } = useStores();
 
@@ -33,16 +34,16 @@ const WithdrawFormBankTransfer = () => {
       yup.object().shape<RequestValues>({
         amount: yup
           .number()
-          .min(10, 'min: $10')
+          .min(10, `${t('min')}: $10`)
           .max(
             mainAppStore.accounts.find(item => item.isLive)?.balance || 0,
-            `max: ${mainAppStore.accounts
+            `${t('max')}: ${mainAppStore.accounts
               .find(item => item.isLive)
               ?.balance.toFixed(2)}`
           ),
-        details: yup 
+        details: yup
           .string()
-          .max(2000, 'The field should be less or equal to 2000 characters'),
+          .max(2000, t('The field should be less or equal to 2000 characters')),
       }),
     [mainAppStore.accounts]
   );
@@ -156,7 +157,7 @@ const WithdrawFormBankTransfer = () => {
     }
   };
 
-  const textOnBeforeInputHandler = () => {}
+  const textOnBeforeInputHandler = () => {};
 
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
@@ -185,7 +186,7 @@ const WithdrawFormBankTransfer = () => {
             color="rgba(255, 255, 255, 0.3)"
             textTransform="uppercase"
           >
-            Amount
+            {t('Amount')}
           </PrimaryTextSpan>
         </FlexContainer>
 
@@ -222,7 +223,7 @@ const WithdrawFormBankTransfer = () => {
             color="rgba(255, 255, 255, 0.3)"
             textTransform="uppercase"
           >
-            Details
+            {t('Details')}
           </PrimaryTextSpan>
         </FlexContainer>
 
@@ -239,7 +240,6 @@ const WithdrawFormBankTransfer = () => {
             onChange={handleChange}
             value={values.details}
           />
-
         </InputWrapper>
         {touched.details && errors.details && (
           <ErrorLineText>{errors.details}</ErrorLineText>
@@ -253,7 +253,7 @@ const WithdrawFormBankTransfer = () => {
           disabled={dissabled}
         >
           <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
-            Withdraw
+            {t('Withdraw')}
           </PrimaryTextSpan>
         </WithdrawButton>
       </FlexContainer>
@@ -262,7 +262,6 @@ const WithdrawFormBankTransfer = () => {
 };
 
 export default WithdrawFormBankTransfer;
-
 
 const CustomForm = styled.form`
   margin-bottom: 0;

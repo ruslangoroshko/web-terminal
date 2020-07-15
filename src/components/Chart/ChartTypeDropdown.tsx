@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
-import { PrimaryTextParagraph, PrimaryTextSpan } from '../../styles/TextsElements';
+import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
@@ -12,12 +12,13 @@ import {
   getChartIconByType,
   availableChartTypes,
 } from '../../constants/chartValues';
+import { useTranslation } from 'react-i18next';
 
 interface Props {}
 
 const ChartTypeDropdown: FC<Props> = props => {
   const { tradingViewStore, instrumentsStore } = useStores();
-
+  const { t } = useTranslation();
   const [on, toggle] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -94,7 +95,7 @@ const ChartTypeDropdown: FC<Props> = props => {
                       color="#fffccc"
                       whiteSpace="nowrap"
                     >
-                      {getChartLabelByType(chartType)}
+                      {t(getChartLabelByType(chartType))}
                     </PrimaryTextSpan>
                   </ButtonSelectType>
                 ))}

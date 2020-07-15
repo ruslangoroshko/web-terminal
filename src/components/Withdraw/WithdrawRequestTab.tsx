@@ -1,13 +1,9 @@
-import React, { useState, useCallback } from 'react';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
+import React, { useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import { SecondaryButton, PrimaryButton } from '../../styles/Buttons';
 
-import CardIcon from '../../assets/images/master-card.png';
 import BankTransferIcon from '../../assets/svg/icon-bank-transfer.svg';
 import BitcoinIcon from '../../assets/svg/icon-bitcoin.svg';
 
@@ -20,22 +16,21 @@ import WithdrawPagePopup from '../../components/Withdraw/WithdrawPagePopup';
 import SvgIcon from '../SvgIcon';
 import { useStores } from '../../hooks/useStores';
 import { WithdrawalTypesEnum } from '../../enums/WithdrawalTypesEnum';
-import API from '../../helpers/API';
-import { CreateWithdrawalParams } from '../../types/WithdrawalTypes';
 import WithdrawEmptyBalance from './WithdrawEmptyBalance';
 import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import WithdrawFormBankTransfer from './WithdrawPaymentForm/WithdrawFormBankTransfer';
 import WithdrawFormBitcoin from './WithdrawPaymentForm/WithdrawFormBitcoin';
 import { Observer } from 'mobx-react-lite';
 import WithdrawPendingPopup from './WithdrawPendingPopup';
-
-const PRECISION_USD = 2;
+import { useTranslation } from 'react-i18next';
 
 const WithdrawRequestTab = () => {
   const { mainAppStore, withdrawalStore } = useStores();
   const [paymentMeyhod, setPaymentMethod] = useState(
     WithdrawalTypesEnum.BankTransfer
   );
+
+  const { t } = useTranslation();
 
   return (
     <RequestTabWrap
@@ -56,7 +51,7 @@ const WithdrawRequestTab = () => {
               color="rgba(255,255,255,0.4)"
               marginBottom="8px"
             >
-              Total
+              {t('Total')}
             </PrimaryTextSpan>
             <PrimaryTextSpan
               textTransform="uppercase"
@@ -78,7 +73,7 @@ const WithdrawRequestTab = () => {
               color="rgba(255,255,255,0.4)"
               marginBottom="12px"
             >
-              Available
+              {t('Available')}
             </PrimaryTextSpan>
             <PrimaryTextSpan
               textTransform="uppercase"
@@ -106,7 +101,7 @@ const WithdrawRequestTab = () => {
                 color="rgba(255,255,255,0.4)"
                 marginBottom="12px"
               >
-                Payment methods
+                {t('Payment methods')}
               </PrimaryTextSpan>
               <FlexContainer width="100%" marginBottom="16px">
                 <WithdrawPaymenMethodtItem
@@ -126,14 +121,14 @@ const WithdrawRequestTab = () => {
                       color="#FFFCCC"
                       textAlign="left"
                     >
-                      Bank transfer
+                      {t('Bank transfer')}
                     </PrimaryTextSpan>
                     <PrimaryTextSpan
                       fontSize="12px"
                       color="rgba(255,255,255,0.4)"
                       textAlign="left"
                     >
-                      Other methods will be available
+                      {t('Other methods will be available')}
                     </PrimaryTextSpan>
                   </FlexContainer>
                 </WithdrawPaymenMethodtItem>
@@ -154,14 +149,14 @@ const WithdrawRequestTab = () => {
                       color="#FFFCCC"
                       textAlign="left"
                     >
-                      Bitcoin
+                      {t('Bitcoin')}
                     </PrimaryTextSpan>
                     <PrimaryTextSpan
                       fontSize="12px"
                       color="rgba(255,255,255,0.4)"
                       textAlign="left"
                     >
-                      Other methods will be available
+                      {t('Other methods will be available')}
                     </PrimaryTextSpan>
                   </FlexContainer>
                 </WithdrawPaymenMethodtItem>
@@ -195,11 +190,11 @@ const WithdrawRequestTab = () => {
                 fontSize="12px"
                 color="#FFFCCC"
               >
-                Fast
+                {t('Fast')}
               </PrimaryTextSpan>
               <PrimaryTextSpan fontSize="12px" color="rgba(255,255,255,0.4)">
-                A request is processed
-                <br /> within 24 hours
+                {t('A request is processed')}
+                <br /> {t('within 24 hours')}
               </PrimaryTextSpan>
             </FlexContainer>
           </WithdrawCardItem>
@@ -214,11 +209,10 @@ const WithdrawRequestTab = () => {
                 fontSize="12px"
                 color="#FFFCCC"
               >
-                No commission
+                {t('No commission')}
               </PrimaryTextSpan>
               <PrimaryTextSpan fontSize="12px" color="rgba(255,255,255,0.4)">
-                The commission for
-                <br /> withdrawing is 0%
+                {t('The commission for withdrawing is 0%')}
               </PrimaryTextSpan>
             </FlexContainer>
           </WithdrawCardItem>
@@ -233,11 +227,10 @@ const WithdrawRequestTab = () => {
                 fontSize="12px"
                 color="#FFFCCC"
               >
-                No limits
+                {t('No limits')}
               </PrimaryTextSpan>
               <PrimaryTextSpan fontSize="12px" color="rgba(255,255,255,0.4)">
-                Unlimited maximum
-                <br /> withdrawal amount
+                {t('Unlimited maximum withdrawal amount')}
               </PrimaryTextSpan>
             </FlexContainer>
           </WithdrawCardItem>
@@ -254,25 +247,28 @@ const WithdrawRequestTab = () => {
                 fontSize="14px"
                 lineHeight="16px"
               >
-                Faq
+                {t('FAQ')}
               </PrimaryTextSpan>
               <PrimaryTextSpan
                 color="#FFFFFF"
                 fontSize="14px"
                 lineHeight="16px"
               >
-                Frequently Asked Questions
+                {t('Frequently Asked Questions')}
               </PrimaryTextSpan>
             </FlexContainer>
           </FlexContainer>
           <FlexContainer>
-            <ButtonOpenFaq href={mainAppStore.initModel.withdrawFaqUrl} target="blank">
+            <ButtonOpenFaq
+              href={mainAppStore.initModel.withdrawFaqUrl}
+              target="blank"
+            >
               <PrimaryTextSpan
                 color="#fffccc"
                 fontSize="14px"
                 fontWeight="normal"
               >
-                Open
+                {t('Open')}
               </PrimaryTextSpan>
             </ButtonOpenFaq>
           </FlexContainer>

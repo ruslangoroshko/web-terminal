@@ -7,6 +7,7 @@ import SvgIcon from '../SvgIcon';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import IconClose from '../../assets/svg/icon-close.svg';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   onFileReceive: (file: Blob) => void;
@@ -46,6 +47,8 @@ function DragNDropArea(props: Props) {
     onDrop,
   });
 
+  const { t } = useTranslation();
+
   return file.size === 0 ? (
     <DnDWrapper
       {...getRootProps()}
@@ -64,7 +67,7 @@ function DragNDropArea(props: Props) {
       />
       {isDragActive ? (
         <PrimaryTextSpan color="#fffccc" fontSize="14px">
-          Drop the files here ...
+          {t('Drop the files here')} ...
         </PrimaryTextSpan>
       ) : (
         <FlexContainer flexDirection="column" alignItems="center">
@@ -72,16 +75,16 @@ function DragNDropArea(props: Props) {
             <SvgIcon {...IconFileUpload} fillColor="#fffccc" />
           </FlexContainer>
           <PrimaryTextSpan color="#777A7A" fontSize="14px" marginBottom="4px">
-            Drop file here to upload or{' '}
+            {t('Drop file here to upload or')}{' '}
             <PrimaryTextSpan color="#00FFDD" textDecoration="underline">
-              choose file
+              {t('choose file')}
             </PrimaryTextSpan>
           </PrimaryTextSpan>
           <PrimaryTextSpan fontSize="10px" color="rgba(255,255,255,0.4)">
-            Maximum upload file size: 5MB
+            {t('Maximum upload file size: 5MB')}
           </PrimaryTextSpan>
           <PrimaryTextSpan fontSize="10px" color="rgba(255,255,255,0.4)">
-            Allowed file types: png, jpg
+            {t('Allowed file types: png, jpg')}
           </PrimaryTextSpan>
         </FlexContainer>
       )}
@@ -116,7 +119,7 @@ function DragNDropArea(props: Props) {
             color="rgba(255,255,255,0.4)"
             marginBottom="8px"
           >
-            Front side photo of your document
+            {t('Front side photo of your document')}
           </PrimaryTextSpan>
           <FileNameText color="#fffccc" fontSize="14px">
             {file.name} -{' '}

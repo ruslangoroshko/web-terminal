@@ -15,9 +15,11 @@ import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
 import { getProcessId } from '../helpers/getProcessId';
+import { useTranslation } from 'react-i18next';
 
 function ProofOfIdentity() {
   const [isSubmiting, setSubmit] = useState(true);
+  const { t } = useTranslation();
 
   const { kycStore, badRequestPopupStore } = useStores();
 
@@ -117,8 +119,6 @@ function ProofOfIdentity() {
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
-
-      {/* <LoaderFullscreen isLoading={isLoading} /> */}
       <FlexContainer width="568px" flexDirection="column" padding="20px 0 0 0">
         <FlexContainer flexDirection="column">
           <PrimaryTextParagraph
@@ -127,7 +127,7 @@ function ProofOfIdentity() {
             color="#fffccc"
             marginBottom="8px"
           >
-            Proof of indentity
+            {t('Proof of indentity')}
           </PrimaryTextParagraph>
           <PrimaryTextSpan
             marginBottom="40px"
@@ -135,10 +135,9 @@ function ProofOfIdentity() {
             lineHeight="20px"
             color="rgba(255, 255, 255, 0.4)"
           >
-            The documents you sent must be clearly visible. This step is
-            necessary in accordance
-            <br />
-            with the regulatory requirements.
+            {t(
+              'The documents you sent must be clearly visible. This step is necessary in accordance with the regulatory requirements.'
+            )}
           </PrimaryTextSpan>
           <PrimaryTextParagraph
             fontSize="20px"
@@ -146,14 +145,14 @@ function ProofOfIdentity() {
             color="#fffccc"
             marginBottom="6px"
           >
-            Passport or ID Card
+            {t('Passport or ID Card')}
           </PrimaryTextParagraph>
           <PrimaryTextParagraph
             fontSize="14px"
             color="#fffccc"
             marginBottom="16px"
           >
-            The document should clearly show:
+            {t('The document should clearly show')}:
           </PrimaryTextParagraph>
           <PrimaryTextSpan
             marginBottom="32px"
@@ -161,8 +160,8 @@ function ProofOfIdentity() {
             lineHeight="20px"
             color="rgba(255, 255, 255, 0.4)"
           >
-            Your full name / Your photo / Date of birth / Expiry date / Document
-            number / Your signature
+            {t('Your full name')} / {t('Your photo')} / {t('Date of birth')} /{' '}
+            {t('Expiry date')} / {t('Document number')} / {t('Your signature')}
           </PrimaryTextSpan>
         </FlexContainer>
 
@@ -186,15 +185,17 @@ function ProofOfIdentity() {
             color="#fffccc"
             marginBottom="6px"
           >
-            Housing and communal services receipt
+            {t('Housing and communal services receipt')}
           </PrimaryTextParagraph>
           <PrimaryTextParagraph
             fontSize="14px"
             color="#fffccc"
             marginBottom="16px"
           >
-            The Document that should contain the address of your current
-            residence:
+            {t(
+              'The Document that should contain the address of your current residence'
+            )}
+            :
           </PrimaryTextParagraph>
           <PrimaryTextSpan
             marginBottom="32px"
@@ -202,7 +203,8 @@ function ProofOfIdentity() {
             lineHeight="20px"
             color="rgba(255, 255, 255, 0.4)"
           >
-            Street address / City / Province / State / Country
+            {t('Street address')} / {t('City')} / {t('Province')} / {t('State')}{' '}
+            / {t('Country')}
           </PrimaryTextSpan>
         </FlexContainer>
 
@@ -224,13 +226,13 @@ function ProofOfIdentity() {
             padding="8px 32px"
             disabled={!isSubmiting}
           >
-            Save and continue
+            {t('Save and continue')}
           </PrimaryButton>
         </FlexContainer>
         <FlexContainer justifyContent="center">
           <ButtonWithoutStyles onClick={attachLater}>
             <PrimaryTextSpan color="#07FAFF" fontSize="14px">
-              Attach documents later
+              {t('Attach documents later')}
             </PrimaryTextSpan>
           </ButtonWithoutStyles>
         </FlexContainer>

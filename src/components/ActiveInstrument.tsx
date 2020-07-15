@@ -7,6 +7,7 @@ import { Observer } from 'mobx-react-lite';
 import { PrimaryTextSpan, QuoteText } from '../styles/TextsElements';
 import { getNumberSign } from '../helpers/getNumberSign';
 import ImageContainer from './ImageContainer';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -14,6 +15,8 @@ interface Props {
 
 const ActiveInstrument: FC<Props> = props => {
   const { instrument } = props;
+
+  const { t } = useTranslation();
 
   const { quotesStore, instrumentsStore } = useStores();
 
@@ -77,7 +80,7 @@ const ActiveInstrument: FC<Props> = props => {
           <FlexContainer margin="0 0 4px 0" width="100%">
             <LabelWrapper>
               <PrimaryTextSpan fontSize="12px" color="rgba(255, 255, 255, 0.4)">
-                Bid
+                {t('Bid')}
               </PrimaryTextSpan>
             </LabelWrapper>
             <LabelWrapper>
@@ -97,7 +100,7 @@ const ActiveInstrument: FC<Props> = props => {
           <FlexContainer>
             <LabelWrapper>
               <PrimaryTextSpan fontSize="12px" color="rgba(255, 255, 255, 0.4)">
-                Ask
+                {t('Ask')}
               </PrimaryTextSpan>
             </LabelWrapper>
             <LabelWrapper>
@@ -121,34 +124,6 @@ const ActiveInstrument: FC<Props> = props => {
 };
 
 export default ActiveInstrument;
-
-const BaseImgWrapper = styled(FlexContainer)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #fff;
-  justify-content: center;
-  align-items: center;
-  z-index: 12;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
-`;
-
-const QuoteImgWrapper = styled(FlexContainer)`
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #fff;
-  justify-content: center;
-  align-items: center;
-  bottom: 0;
-  right: 0;
-  z-index: 11;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
-`;
 
 const LabelWrapper = styled.div`
   width: 22px;

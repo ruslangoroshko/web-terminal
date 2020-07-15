@@ -1,9 +1,9 @@
 export enum CountriesEnum {
-  EN = 'EN',
-  AR = 'AR',
-  CN = 'CN',
-  FR = 'FR',
-  ES = 'ES',
-  RU = 'RU',
-  PL = 'PL',
+  EN = 'en',
+  AR = 'ar',
+  CN = 'cn',
+  FR = 'fr',
+  ES = 'es',
+  RU = 'ru',
+  PL = 'pl',
 }

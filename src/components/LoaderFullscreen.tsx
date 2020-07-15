@@ -6,6 +6,7 @@ import Modal from './Modal';
 import LoaderComponent from './LoaderComponent';
 import Logo from './Logo';
 import { useStores } from '../hooks/useStores';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   isLoading: boolean;
@@ -13,6 +14,7 @@ interface Props {
 
 const LoaderFullscreen: FC<Props> = ({ isLoading }) => {
   const { mainAppStore } = useStores();
+  const { t } = useTranslation();
   return (
     <Modal>
       <FixedContainerWrapper isLoading={isLoading}>
@@ -39,7 +41,7 @@ const LoaderFullscreen: FC<Props> = ({ isLoading }) => {
           </FlexContainer>
           <FlexContainer alignItems="center">
             <LoaderComponent />
-            <TextLoader>Loading</TextLoader>
+            <TextLoader>{t('Loading')}</TextLoader>
           </FlexContainer>
         </FlexContainer>
       </FixedContainerWrapper>
