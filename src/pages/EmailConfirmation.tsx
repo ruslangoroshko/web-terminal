@@ -10,6 +10,7 @@ import LoaderFullscreen from '../components/LoaderFullscreen';
 import { Observer } from 'mobx-react-lite';
 import { useStores } from '../hooks/useStores';
 import BadRequestPopup from '../components/BadRequestPopup';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 
 interface Props {}
 
@@ -24,7 +25,12 @@ function EmailConfirmation(props: Props) {
   useEffect(() => {
     API.confirmEmail(id || '')
       .then((response) => {
-        setIsSuccessfull(!!response.result);
+        if (response.result === OperationApiResponseCodes.Ok) {
+          setIsSuccessfull(true);
+        }
+        if (response.result === OperationApiResponseCodes.Expired) {
+          setIsSuccessfull(false);
+        }
         mainAppStore.fetchTradingUrl();
       })
       .catch(error => {
