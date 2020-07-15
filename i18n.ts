@@ -1,35 +1,9 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import en from './src/locales/en/translations.json';
-import pl from './src/locales/pl/translations.json';
+import en from './src/locales/en/Web_English.json';
+import pl from './src/locales/pl/Web_app_Polish.json';
 import { initReactI18next } from 'react-i18next';
 import { CountriesEnum } from './src/enums/CountriesEnum';
-// i18n
-//   .use(LanguageDetector)
-//   .use(initReactI18next)
-//   .init({
-//     // we init with resources
-//     resources: {
-//       en: JSON.stringify(en),
-//     },
-//     fallbackLng: 'en',
-//     debug: true,
-
-//     // have a common namespace used around the full app
-//     ns: ['translations'],
-//     defaultNS: 'translations',
-
-//     keySeparator: false, // we use content as keys
-
-//     interpolation: {
-//       escapeValue: false, // not needed for react!!
-//       formatSeparator: ',',
-//     },
-
-//     react: {
-//       wait: true,
-//     },
-//   });
 
 const resources = {
   [CountriesEnum.EN]: {
