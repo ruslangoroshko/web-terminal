@@ -10,6 +10,7 @@ import LoaderFullscreen from '../components/LoaderFullscreen';
 import { Observer } from 'mobx-react-lite';
 import { useStores } from '../hooks/useStores';
 import BadRequestPopup from '../components/BadRequestPopup';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import { useTranslation } from 'react-i18next';
 
 function EmailConfirmation() {
@@ -24,9 +25,13 @@ function EmailConfirmation() {
 
   useEffect(() => {
     API.confirmEmail(id || '')
-      .then(response => {
-        setIsSuccessfull(!!response.result);
-        mainAppStore.fetchTradingUrl();
+      .then((response) => {
+        if (response.result === OperationApiResponseCodes.Ok) {
+          setIsSuccessfull(true);
+        }
+        if (response.result === OperationApiResponseCodes.Expired) {
+          setIsSuccessfull(false);
+        }
       })
       .catch(error => {
         setIsSuccessfull(false);
