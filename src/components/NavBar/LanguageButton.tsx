@@ -43,7 +43,12 @@ function LanguageButton() {
     >
       <Observer>
         {() => (
-          <PrimaryTextSpan fontSize="10px" fontWeight="bold" color="#1C1F26">
+          <PrimaryTextSpan
+            fontSize="10px"
+            fontWeight="bold"
+            color="#1C1F26"
+            textTransform="uppercase"
+          >
             {mainAppStore.lang}
           </PrimaryTextSpan>
         )}

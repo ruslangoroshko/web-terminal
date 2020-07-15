@@ -128,7 +128,9 @@ const Dashboard: FC = observer(() => {
   }, []);
 
   useEffect(() => {
-    i18n.changeLanguage(mainAppStore.lang);
+    if (mainAppStore.lang) {
+      i18n.changeLanguage(mainAppStore.lang);
+    }
   }, [mainAppStore.lang]);
 
   return (

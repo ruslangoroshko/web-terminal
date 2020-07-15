@@ -11,7 +11,7 @@
     "Invest": "Invest",
     "The amount you’d like to invest": "The amount you’d like to invest",
     "Multiplier": "Multiplier",
-    "The coefficient that multiplies the potential profit and level of risk accordingly the value of Multiplier.'": "The coefficient that multiplies the potential profit and level of risk accordingly the value of Multiplier.'",
+    "The coefficient that multiplies the potential profit and level of risk accordingly the value of Multiplier.": "The coefficient that multiplies the potential profit and level of risk accordingly the value of Multiplier.",
     "When the position reached the specified take profit or stop loss level, the position will be closed automatically.": "When the position reached the specified take profit or stop loss level, the position will be closed automatically.",
     "Volume": "Volume",
     "Spread": "Spread",

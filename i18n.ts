@@ -1,8 +1,9 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import * as en from './src/locales/en/translations.json';
+import en from './src/locales/en/translations.json';
+import pl from './src/locales/pl/translations.json';
 import { initReactI18next } from 'react-i18next';
-
+import { CountriesEnum } from './src/enums/CountriesEnum';
 // i18n
 //   .use(LanguageDetector)
 //   .use(initReactI18next)
@@ -31,8 +32,11 @@ import { initReactI18next } from 'react-i18next';
 //   });
 
 const resources = {
-  en: {
+  [CountriesEnum.EN]: {
     translation: en,
+  },
+  [CountriesEnum.PL]: {
+    translation: pl,
   },
 };
 
@@ -41,10 +45,11 @@ i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources,
-    lng: 'en',
-
+    lng: CountriesEnum.EN,
+    fallbackLng: CountriesEnum.EN,
+    debug: true,
     keySeparator: false, // we do not use keys in form messages.welcome
-
+    supportedLngs: [CountriesEnum.EN, CountriesEnum.PL],
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
