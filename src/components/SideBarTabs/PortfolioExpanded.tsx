@@ -17,6 +17,7 @@ import SvgIcon from '../SvgIcon';
 import IconClose from '../../assets/svg/icon-close.svg';
 import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
 import { Th, TableGrid } from '../../styles/TableElements';
+import { useTranslation } from 'react-i18next';
 
 interface Props {}
 
@@ -29,6 +30,8 @@ const PortfolioExpanded: FC<Props> = () => {
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     tabsStore.portfolioTab = portfolioTab;
   };
+
+  const { t } = useTranslation();
 
   const profit = useMemo(() => quotesStore.profit, [quotesStore.profit]);
 
@@ -49,13 +52,13 @@ const PortfolioExpanded: FC<Props> = () => {
                 isActive={tabsStore.portfolioTab === PortfolioTabEnum.Portfolio}
                 onClick={handleChangePortfolioTab(PortfolioTabEnum.Portfolio)}
               >
-                Portfolio
+                {t('Portfolio')}
               </TabPortfolitButton>
               <TabPortfolitButton
                 isActive={tabsStore.portfolioTab === PortfolioTabEnum.Orders}
                 onClick={handleChangePortfolioTab(PortfolioTabEnum.Orders)}
               >
-                Orders
+                {t('Orders')}
               </TabPortfolitButton>
             </>
           )}
@@ -81,7 +84,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   marginBottom="8px"
                   textTransform="uppercase"
                 >
-                  Total Profit
+                  {t('Total Profit')}
                 </PrimaryTextParagraph>
                 <Observer>
                   {() => (
@@ -109,7 +112,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   marginBottom="14px"
                   textTransform="uppercase"
                 >
-                  Total Investments
+                  {t('Total Investments')}
                 </PrimaryTextParagraph>
                 <Observer>
                   {() => (
@@ -136,7 +139,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   marginBottom="14px"
                   textTransform="uppercase"
                 >
-                  Total Equity
+                  {t('Total Equity')}
                 </PrimaryTextParagraph>
                 <Observer>
                   {() => (
@@ -154,11 +157,6 @@ const PortfolioExpanded: FC<Props> = () => {
                 </Observer>
               </FlexContainer>
             </FlexContainer>
-            {/* <ButtonCloseAll>
-              <PrimaryTextSpan color="#fff" fontSize="12px">
-                Close All
-              </PrimaryTextSpan>
-            </ButtonCloseAll> */}
           </FlexContainer>
           <FlexContainer flexDirection="column" justifyContent="center">
             <TableGrid columnsCount={9} maxHeight="calc(100vh - 235px)">
@@ -168,7 +166,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Asset Name
+                  {t('Asset Name')}
                 </PrimaryTextSpan>
               </Th>
               <Th>
@@ -177,7 +175,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Open price
+                  {t('Open price')}
                 </PrimaryTextSpan>
               </Th>
               <Th>
@@ -186,7 +184,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Time Opened
+                  {t('Time Opened')}
                 </PrimaryTextSpan>
               </Th>
               <Th justifyContent="flex-end">
@@ -195,7 +193,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Investment
+                  {t('Investment')}
                 </PrimaryTextSpan>
               </Th>
               <Th justifyContent="flex-end">
@@ -204,7 +202,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Profit/loss
+                  {t('Profit/loss')}
                 </PrimaryTextSpan>
               </Th>
               <Th justifyContent="flex-end">
@@ -213,7 +211,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Equity
+                  {t('Equity')}
                 </PrimaryTextSpan>
               </Th>
               <Th justifyContent="center">
@@ -222,7 +220,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Take Profit
+                  {t('Take Profit')}
                 </PrimaryTextSpan>
               </Th>
               <Th justifyContent="center">
@@ -231,7 +229,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Stop Loss
+                  {t('Stop Loss')}
                 </PrimaryTextSpan>
               </Th>
               <Th></Th>
@@ -267,7 +265,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   fontSize="16px"
                   color="rgba(255,255,255, 0.4)"
                 >
-                  You haven't opened any positions yet
+                  {t("You haven't opened any positions yet")}
                 </PrimaryTextParagraph>
               </FlexContainer>
             )}

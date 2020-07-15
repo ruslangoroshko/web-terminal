@@ -5,26 +5,38 @@ import FailImage from '../../../assets/images/fail.png';
 import { FlexContainer } from '../../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../../styles/ButtonWithoutStyles';
 import { useHistory } from 'react-router-dom';
-import Pages from "../../../constants/Pages";
+import Pages from '../../../constants/Pages';
 import HashLocation from '../../../constants/hashLocation';
+import { useTranslation } from 'react-i18next';
 
 const DepositPaymentFail: FC = () => {
   const { push } = useHistory();
+  const { t } = useTranslation();
   return (
     <>
-      <FlexContainer flexDirection="column" alignItems="center" marginBottom="112px">
+      <FlexContainer
+        flexDirection="column"
+        alignItems="center"
+        marginBottom="112px"
+      >
         <FlexContainer marginBottom="40px">
           <img src={FailImage} width={138} />
         </FlexContainer>
-        <FailText>Insufficient funds</FailText>
+        <FailText>{t('Insufficient funds')}</FailText>
         <FailDescription>
-          Please, use another payment method or
+          {t('Please, use another payment method or')}
           <br />
-          change deposit amount
+          {t('change deposit amount')}
         </FailDescription>
       </FlexContainer>
       <FlexContainer padding="0 16px" width="100%">
-        <OtherMethodsButton onClick={() => {push(`${Pages.DASHBOARD}${HashLocation.Deposit}`)}}>Back to Deposit</OtherMethodsButton>
+        <OtherMethodsButton
+          onClick={() => {
+            push(`${Pages.DASHBOARD}${HashLocation.Deposit}`);
+          }}
+        >
+          Back to Deposit
+        </OtherMethodsButton>
       </FlexContainer>
     </>
   );

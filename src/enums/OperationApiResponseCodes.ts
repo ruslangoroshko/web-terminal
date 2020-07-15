@@ -1,4 +1,5 @@
 export enum OperationApiResponseCodes {
+  Expired = -9,
   FileNotFound = -6,
   FileWrongExtension,
   OldPasswordNotMatch,

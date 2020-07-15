@@ -19,8 +19,9 @@ import { Observer } from 'mobx-react-lite';
 import BitcoinForm from './BitcoinForm';
 import BadRequestPopup from '../BadRequestPopup';
 import HashLocation from '../../constants/hashLocation';
+import { useTranslation } from 'react-i18next';
 
-const DepositPopupWrapper = () => {
+const DepositPopupWrapper: FC = () => {
   const location = useLocation();
 
   useEffect(() => {
@@ -37,11 +38,12 @@ const DepositPopupWrapper = () => {
   );
 };
 
-const DepositPopupInner: FC = ({ children }) => {
+const DepositPopupInner: FC = () => {
   const { mainAppStore, depositFundsStore, badRequestPopupStore } = useStores();
   const setActiveDepositType = (depositType: DepositTypeEnum) => () => {
     depositFundsStore.setActiveDepositType(depositType);
   };
+  const { t } = useTranslation();
 
   const renderDepositType = () => {
     switch (depositFundsStore.activeDepositType) {
@@ -83,7 +85,8 @@ const DepositPopupInner: FC = ({ children }) => {
           <Observer>
             {() => (
               <>
-                {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified && (
+                {mainAppStore.profileStatus ===
+                  PersonalDataKYCEnum.NotVerified && (
                   <FlexContainer
                     backgroundColor="rgba(0,0,0,0.2)"
                     padding="20px 12px"
@@ -93,10 +96,13 @@ const DepositPopupInner: FC = ({ children }) => {
                       color="rgba(255,255,255, 0.4)"
                       fontSize="12px"
                     >
-                      Plese be aware that you need to verify your account within
-                      15 days after deposit.
+                      {t(
+                        'Please be aware that you need to verify your account within 15 days after deposit.'
+                      )}
                     </PrimaryTextSpan>
-                    <CustomLink to={Page.PERSONAL_DATA}>Upload now</CustomLink>
+                    <CustomLink to={Page.PERSONAL_DATA}>
+                      {t('Upload now')}
+                    </CustomLink>
                   </FlexContainer>
                 )}
               </>
@@ -125,7 +131,7 @@ const DepositPopupInner: FC = ({ children }) => {
                   fontWeight="bold"
                   color="#fffccc"
                 >
-                  Deposit Funds
+                  {t('Deposit Funds')}
                 </PrimaryTextSpan>
               </FlexContainer>
             </HeaderDepositPopup>
@@ -154,13 +160,13 @@ const DepositPopupInner: FC = ({ children }) => {
                           </FlexContainer>
                           <FlexContainer flexDirection="column">
                             <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                              Visa / Mastercard
+                              {t('Visa / Mastercard')}
                             </PrimaryTextSpan>
                             <PrimaryTextSpan
                               fontSize="12px"
                               color="rgba(255,255,255,0.4)"
                             >
-                              Instantly
+                              {t('Instantly')}
                             </PrimaryTextSpan>
                           </FlexContainer>
                         </PaymentMethodItem>
@@ -178,13 +184,13 @@ const DepositPopupInner: FC = ({ children }) => {
                           </FlexContainer>
                           <FlexContainer flexDirection="column">
                             <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                              Bitcoin
+                              {t('Bitcoin')}
                             </PrimaryTextSpan>
                             <PrimaryTextSpan
                               fontSize="12px"
                               color="rgba(255,255,255,0.4)"
                             >
-                              Instantly
+                              {t('Instantly')}
                             </PrimaryTextSpan>
                           </FlexContainer>
                         </PaymentMethodItem>

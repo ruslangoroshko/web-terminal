@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FC } from 'react';
 import { Global, css } from '@emotion/core';
 import { reboot } from './styles/reboot';
 import Helmet from 'react-helmet';
@@ -13,7 +13,7 @@ import { Observer } from 'mobx-react-lite';
 import injectInerceptors from './http/interceptors';
 import NetworkErrorPopup from './components/NetworkErrorPopup';
 
-const MainApp = () => {
+const MainApp: FC = () => {
   const { mainAppStore } = useStores();
 
   useEffect(() => {

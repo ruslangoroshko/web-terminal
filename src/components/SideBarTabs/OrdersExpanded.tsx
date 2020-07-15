@@ -15,6 +15,7 @@ import IconClose from '../../assets/svg/icon-close.svg';
 import IconPortfolioNoData from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
 import { Th, TableGrid } from '../../styles/TableElements';
 import OrderExpandedItem from './OrderExpandedItem';
+import { useTranslation } from 'react-i18next';
 
 const OrdersExpanded: FC = () => {
   const { tabsStore, mainAppStore, quotesStore } = useStores();
@@ -25,6 +26,8 @@ const OrdersExpanded: FC = () => {
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     tabsStore.portfolioTab = portfolioTab;
   };
+
+  const { t } = useTranslation();
 
   return (
     <PortfolioWrapper flexDirection="column" width="100%" position="relative">
@@ -43,13 +46,13 @@ const OrdersExpanded: FC = () => {
                 isActive={tabsStore.portfolioTab === PortfolioTabEnum.Portfolio}
                 onClick={handleChangePortfolioTab(PortfolioTabEnum.Portfolio)}
               >
-                Portfolio
+                {t('Portfolio')}
               </TabPortfolitButton>
               <TabPortfolitButton
                 isActive={tabsStore.portfolioTab === PortfolioTabEnum.Orders}
                 onClick={handleChangePortfolioTab(PortfolioTabEnum.Orders)}
               >
-                Orders
+                {t('Orders')}
               </TabPortfolitButton>
             </>
           )}
@@ -65,7 +68,7 @@ const OrdersExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Asset Name
+                  {t('Asset Name')}
                 </PrimaryTextSpan>
               </Th>
               <Th>
@@ -74,7 +77,7 @@ const OrdersExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Open price
+                  {t('Open price')}
                 </PrimaryTextSpan>
               </Th>
               <Th>
@@ -83,7 +86,7 @@ const OrdersExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Created
+                  {t('Created')}
                 </PrimaryTextSpan>
               </Th>
               <Th justifyContent="center">
@@ -92,7 +95,7 @@ const OrdersExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Investment
+                  {t('Investment')}
                 </PrimaryTextSpan>
               </Th>
               <Th justifyContent="center">
@@ -101,7 +104,7 @@ const OrdersExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Take Profit
+                  {t('Take Profit')}
                 </PrimaryTextSpan>
               </Th>
               <Th justifyContent="center">
@@ -110,7 +113,7 @@ const OrdersExpanded: FC = () => {
                   fontSize="11px"
                   textTransform="uppercase"
                 >
-                  Stop Loss
+                  {t('Stop Loss')}
                 </PrimaryTextSpan>
               </Th>
               <Th></Th>
@@ -146,7 +149,7 @@ const OrdersExpanded: FC = () => {
                   fontSize="16px"
                   color="rgba(255,255,255, 0.4)"
                 >
-                  You haven't made any order yet
+                  {t("You haven't made any order yet")}
                 </PrimaryTextParagraph>
               </FlexContainer>
             )}
@@ -170,12 +173,6 @@ const PortfolioWrapper = styled(FlexContainer)`
   border-radius: 8px 0px 0px 0px;
 `;
 
-const ButtonCloseAll = styled(ButtonWithoutStyles)`
-  padding: 8px 16px;
-  width: 80px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
-`;
 
 const ButtonClose = styled(ButtonWithoutStyles)`
   position: absolute;

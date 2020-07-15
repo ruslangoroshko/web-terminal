@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import IconClose from '../../assets/svg/icon-close.svg';
@@ -13,6 +13,7 @@ import { AskBidEnum } from '../../enums/AskBid';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   closePopup: () => void;
@@ -22,11 +23,18 @@ interface Props {
   disabled: boolean;
 }
 
-function ConfirmationPopup(props: Props) {
-  const { closePopup, values, instrumentId, digits, disabled } = props;
+const ConfirmationPopup: FC<Props> = ({
+  closePopup,
+  values,
+  instrumentId,
+  digits,
+  disabled,
+}) => {
   const { quotesStore, mainAppStore } = useStores();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const { t } = useTranslation();
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -66,11 +74,11 @@ function ConfirmationPopup(props: Props) {
         marginBottom="16px"
         fontWeight="bold"
       >
-        Confirmation
+        {t('Confirmation')}
       </PrimaryTextParagraph>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
-          Price opened
+          {t('Price opened')}
         </PrimaryTextSpan>
         <Observer>
           {() => (
@@ -84,7 +92,7 @@ function ConfirmationPopup(props: Props) {
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
-          Type
+          {t('Type')}
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
           {values.operation !== null ? AskBidEnum[values.operation] : ''}
@@ -92,7 +100,7 @@ function ConfirmationPopup(props: Props) {
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
-          Investment
+          {t('Investment')}
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
           {mainAppStore.activeAccount?.symbol}
@@ -101,7 +109,7 @@ function ConfirmationPopup(props: Props) {
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
-          Multiplier
+          {t('Multiplier')}
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
           &times;{values.multiplier}
@@ -109,7 +117,7 @@ function ConfirmationPopup(props: Props) {
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
-          Volume
+          {t('Volume')}
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
           {mainAppStore.activeAccount?.symbol}
@@ -120,20 +128,20 @@ function ConfirmationPopup(props: Props) {
         {values.operation === AskBidEnum.Buy ? (
           <PrimaryButton type="submit" padding="8px 16px" disabled={disabled}>
             <PrimaryTextSpan fontSize="14px" color="#1c2026" fontWeight="bold">
-              Confirm Buying
+              {t('Confirm Buying')}
             </PrimaryTextSpan>
           </PrimaryButton>
         ) : (
           <ButtonSell type="submit" disabled={disabled}>
             <PrimaryTextSpan fontSize="14px" color="#ffffff" fontWeight="bold">
-              Confirm Selling
+              {t('Confirm Selling')}
             </PrimaryTextSpan>
           </ButtonSell>
         )}
       </FlexContainer>
     </FlexContainer>
   );
-}
+};
 
 export default ConfirmationPopup;
 

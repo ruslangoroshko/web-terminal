@@ -7,6 +7,7 @@ import ButtonAppleStoreImage from '../assets/images/button-apple-store.png';
 import ButtonGoogleStoreImage from '../assets/images/button-google-store.png';
 import Logo from './Logo';
 import { useStores } from '../hooks/useStores';
+import { useTranslation } from 'react-i18next';
 import { Observer } from 'mobx-react-lite';
 
 interface Props {}
@@ -14,6 +15,7 @@ interface Props {}
 const SignFlowLayout: FC<Props> = props => {
   const { children } = props;
   const { mainAppStore } = useStores();
+  const { t } = useTranslation();
 
   return (
     <FlexContainer
@@ -43,7 +45,7 @@ const SignFlowLayout: FC<Props> = props => {
           color="#fffccc"
           marginBottom="20px"
         >
-          Download App
+          {t('Download App')}
         </PrimaryTextParagraph>
         <Observer>
           {() => (
@@ -82,7 +84,7 @@ const SignFlowLayout: FC<Props> = props => {
                   </PrimaryTextSpan>
                 )}
               </Observer>
-              . All rights reserved. v {BUILD_VERSION}
+              . {t('All rights reserved')}. v {BUILD_VERSION}
             </PrimaryTextSpan>
           </FlexContainer>
 
@@ -93,16 +95,16 @@ const SignFlowLayout: FC<Props> = props => {
                   href={mainAppStore.initModel.supportUrl}
                   target="_blank"
                 >
-                  Support
+                  {t('Support')}
                 </LinkItem>
                 <LinkItem href={mainAppStore.initModel.faqUrl} target="_blank">
-                  FAQ
+                  {t('FAQ')}
                 </LinkItem>
                 <LinkItem
                   href={mainAppStore.initModel.aboutUrl}
                   target="_blank"
                 >
-                  About us
+                  {t('About us')}
                 </LinkItem>
               </FlexContainer>
             )}

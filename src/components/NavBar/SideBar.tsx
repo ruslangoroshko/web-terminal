@@ -9,9 +9,11 @@ import { useStores } from '../../hooks/useStores';
 import { SideBarTabType } from '../../enums/SideBarTabType';
 import { observer, Observer } from 'mobx-react-lite';
 import Badge from '../../styles/Badge';
+import { useTranslation } from 'react-i18next';
 
 const SideBar = observer(() => {
   const { tabsStore, dateRangeStore, quotesStore, historyStore } = useStores();
+  const { t } = useTranslation();
   const setSideBarActive = (tabType: SideBarTabType) => () => {
     tabsStore.isTabExpanded = false;
 
@@ -29,7 +31,7 @@ const SideBar = observer(() => {
 
   const pendingOrdersCount = quotesStore.pendingOrders.length;
   const activeOrdersCount = quotesStore.activePositions.length;
-  
+
   return (
     <BottonNavBarWrapper
       flexDirection="column"
@@ -41,13 +43,13 @@ const SideBar = observer(() => {
     >
       <SideBarButton
         iconProps={MarketsIcon}
-        title="Markets"
+        title={t('Markets')}
         isActive={tabsStore.sideBarTabType === SideBarTabType.Markets}
         setSideBarActive={setSideBarActive(SideBarTabType.Markets)}
       />
       <SideBarButton
         iconProps={PortfolioIcon}
-        title="Portfolio"
+        title={t('Portfolio')}
         isActive={tabsStore.sideBarTabType === SideBarTabType.Portfolio}
         setSideBarActive={setSideBarActive(SideBarTabType.Portfolio)}
       >
@@ -67,7 +69,7 @@ const SideBar = observer(() => {
       </SideBarButton>
       <SideBarButton
         iconProps={IconHistory}
-        title="History"
+        title={t('History')}
         isActive={tabsStore.sideBarTabType === SideBarTabType.History}
         setSideBarActive={setSideBarActive(SideBarTabType.History)}
       />

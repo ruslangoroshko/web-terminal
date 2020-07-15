@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import AccountSettingsContainer from '../containers/AccountSettingsContainer';
-import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
-import API from '../helpers/API';
+import { PrimaryTextSpan } from '../styles/TextsElements';
 import { useStores } from '../hooks/useStores';
 import styled from '@emotion/styled';
 import SvgIcon from '../components/SvgIcon';
@@ -16,28 +15,25 @@ import NotificationPopup from '../components/NotificationPopup';
 import Page from '../constants/Pages';
 import WithdrawRequestTab from '../components/Withdraw/WithdrawRequestTab';
 import WithdrawHistoryTab from '../components/Withdraw/WithdrawHistoryTab';
-import { WithdrawalHistoryModel } from '../types/WithdrawalTypes';
-import { WithdrawalStatusesEnum } from '../enums/WithdrawalStatusesEnum';
-import { WithdrawalHistoryResponseStatus } from '../enums/WithdrawalHistoryResponseStatus';
-import { WithdrawalTypesEnum } from '../enums/WithdrawalTypesEnum';
 import { WithdrawalTabsEnum } from '../enums/WithdrawalTabsEnum';
+import { useTranslation } from 'react-i18next';
 
 function AccountSecurity() {
   const {
-    mainAppStore,
     badRequestPopupStore,
     notificationStore,
     withdrawalStore,
   } = useStores();
 
   const { push } = useHistory();
+  const { t } = useTranslation();
 
   const openTab = (tab: number) => {
     withdrawalStore.opentTab(tab);
   };
 
   useEffect(() => {
-    document.title = 'Account withdraw';
+    document.title = t('Account withdraw');
   }, []);
 
   return (
@@ -85,7 +81,7 @@ function AccountSecurity() {
           fontWeight="bold"
           marginBottom="40px"
         >
-          Withdraw
+          {t('Withdraw')}
         </PrimaryTextSpan>
 
         <Observer>
@@ -98,19 +94,23 @@ function AccountSecurity() {
                 >
                   <TabControllItem
                     onClick={() => openTab(WithdrawalTabsEnum.Request)}
-                    active={withdrawalStore.activeTab === WithdrawalTabsEnum.Request}
+                    active={
+                      withdrawalStore.activeTab === WithdrawalTabsEnum.Request
+                    }
                   >
-                    Request
+                    {t('Request')}
                   </TabControllItem>
                   <TabControllItem
                     onClick={() => openTab(WithdrawalTabsEnum.History)}
-                    active={withdrawalStore.activeTab === WithdrawalTabsEnum.History}
+                    active={
+                      withdrawalStore.activeTab === WithdrawalTabsEnum.History
+                    }
                   >
-                    History
+                    {t('History')}
                   </TabControllItem>
                 </TabControllsWraper>
               </FlexContainer>
-
+              {/* TODO: refactor to switch */}
               {withdrawalStore.activeTab === WithdrawalTabsEnum.Request && (
                 <WithdrawRequestTab />
               )}

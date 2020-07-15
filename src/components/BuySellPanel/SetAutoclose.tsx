@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from 'react';
+import React, { ChangeEvent, useEffect, FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -17,6 +17,7 @@ import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { PositionModelWSDTO } from '../../types/Positions';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   takeProfitValue: PositionModelWSDTO['tp'];
@@ -32,7 +33,7 @@ interface Props {
   removeTP: () => void;
 }
 
-const SetAutoclose = observer((props: Props) => {
+const SetAutoclose: FC<Props> = observer(props => {
   const {
     takeProfitValue,
     stopLossValue,
@@ -46,6 +47,8 @@ const SetAutoclose = observer((props: Props) => {
     removeSL,
     removeTP,
   } = props;
+
+  const { t } = useTranslation();
 
   const { SLTPStore, instrumentsStore } = useStores();
 
@@ -170,7 +173,7 @@ const SetAutoclose = observer((props: Props) => {
           color="rgba(255, 255, 255, 0.3)"
           textTransform="uppercase"
         >
-          When Profit is
+          {t('When Profit is')}
         </PrimaryTextSpan>
         <InformationPopup
           classNameTooltip="autoclose-profit"
@@ -179,9 +182,9 @@ const SetAutoclose = observer((props: Props) => {
           direction="left"
         >
           <PrimaryTextSpan color="#fffccc" fontSize="12px">
-            Determine the Take profit based on the amount of capital you are
-            willing to take at the peak of the deal or based on the price level
-            of your asset
+            {t(
+              'Determine the Take profit based on the amount of capital you are willing to take at the peak of the deal or based on the price level of your asset'
+            )}
           </PrimaryTextSpan>
         </InformationPopup>
       </FlexContainer>
@@ -252,7 +255,7 @@ const SetAutoclose = observer((props: Props) => {
           color="rgba(255, 255, 255, 0.3)"
           textTransform="uppercase"
         >
-          When Loss is
+          {t('When Loss is')}
         </PrimaryTextSpan>
         <InformationPopup
           classNameTooltip="autoclose-loss"
@@ -261,8 +264,9 @@ const SetAutoclose = observer((props: Props) => {
           direction="left"
         >
           <PrimaryTextSpan color="#fffccc" fontSize="12px">
-            Determine the Stop loss based on the amount of capital you are
-            willing to risk or based on the price level of your asset
+            {t(
+              'Determine the Stop loss based on the amount of capital you are willing to risk or based on the price level of your asset'
+            )}
           </PrimaryTextSpan>
         </InformationPopup>
       </FlexContainer>
@@ -334,7 +338,7 @@ const SetAutoclose = observer((props: Props) => {
                   SLTPStore.stopLossValue === null
                 }
               >
-                Apply
+                {t('Apply')}
               </ButtonApply>
             )}
           </>

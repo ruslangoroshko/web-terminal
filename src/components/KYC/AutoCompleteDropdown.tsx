@@ -1,8 +1,12 @@
 import React, { FC, ChangeEvent, useState, useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { PrimaryTextSpan, PrimaryTextParagraph } from '../../styles/TextsElements';
+import {
+  PrimaryTextSpan,
+  PrimaryTextParagraph,
+} from '../../styles/TextsElements';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { Country } from '../../types/CountriesTypes';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   labelText: string;
@@ -10,10 +14,8 @@ interface Props {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   name: string;
   id: string;
-  type?: string;
   hasError?: boolean;
   autoComplete?: string;
-  errorText?: string;
   dropdownItemsList: Country[];
   setFieldValue: (arg0: string, arg1: string) => void;
   handleChange?: (arg0: Country) => void;
@@ -26,19 +28,19 @@ const AutoCompleteDropdown: FC<Props> = props => {
     name,
     onChange,
     value,
-    type,
     hasError,
     autoComplete,
-    errorText,
     dropdownItemsList,
     setFieldValue,
-    handleChange
+    handleChange,
   } = props;
   const [on, toggle] = useState(false);
 
   const wrapperRef = useRef<HTMLLabelElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { t } = useTranslation();
 
   const toggleFocus = (e: any) => {
     if (!dropdownRef.current || !dropdownRef.current.contains(e.target)) {
@@ -71,7 +73,7 @@ const AutoCompleteDropdown: FC<Props> = props => {
   useEffect(() => {
     inputRef.current?.addEventListener('focus', toggleFocus);
     return () => inputRef.current?.removeEventListener('focus', toggleFocus);
-  }, [])
+  }, []);
 
   const renderItems = () => {
     const filteredList = dropdownItemsList.filter(
@@ -87,7 +89,7 @@ const AutoCompleteDropdown: FC<Props> = props => {
       ))
     ) : (
       <PrimaryTextSpan fontSize="11px" color="rgba(255,255,255,0.4)">
-        No matches
+        {t('No matches')}
       </PrimaryTextSpan>
     );
   };

@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import moment from 'moment';
@@ -15,6 +15,7 @@ import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import ClosePositionPopup from './ClosePositionPopup';
 import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
+import { useTranslation } from 'react-i18next';
 import useInstrument from '../../hooks/useInstrument';
 
 interface Props {
@@ -22,12 +23,13 @@ interface Props {
   currencySymbol: string;
 }
 
-function PendingOrder(props: Props) {
+const PendingOrder: FC<Props> = props => {
   const { pendingOrder, currencySymbol } = props;
   const isBuy = pendingOrder.operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 
-  
+  const { t } = useTranslation();
+
   const { mainAppStore, instrumentsStore } = useStores();
   const clickableWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -81,11 +83,11 @@ function PendingOrder(props: Props) {
               fontSize="12px"
               color={isBuy ? '#00FFDD' : '#ED145B'}
             >
-              {isBuy ? 'Buy' : 'Sell'}
+              {isBuy ? t('Buy') : t('Sell')}
             </PrimaryTextSpan>
           </FlexContainer>
           <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
-            at {pendingOrder.openPrice.toFixed(+precision)}
+            {t('at')} {pendingOrder.openPrice.toFixed(+precision)}
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer
@@ -123,13 +125,13 @@ function PendingOrder(props: Props) {
           <ClosePositionPopup
             applyHandler={handleCloseOrder}
             ref={instrumentRef}
-            confirmText="Cancel Order?"
+            confirmText={`${t('Cancel order')}?`}
           ></ClosePositionPopup>
         </FlexContainer>
       </OrderWrapperWithBorder>
     </OrderWrapper>
   );
-}
+};
 
 export default PendingOrder;
 

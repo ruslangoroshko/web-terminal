@@ -11,6 +11,7 @@ import { PaymentNameEnum } from '../../enums/PaymentNameEnum';
 import API from '../../helpers/API';
 import { useStores } from '../../hooks/useStores';
 import { WithdrawalHistoryResponseStatus } from '../../enums/WithdrawalHistoryResponseStatus';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   data?: WithdrawalHistoryModel;
@@ -19,24 +20,21 @@ interface Props {
 
 const WithdrawHistoryItem = (props: Props) => {
   const { data, updateHistory } = props;
-	const instrumentRef = useRef(null);
-	const { mainAppStore, withdrawalStore } = useStores();
-	
-	const handleCancel = async (withdrawalId: string) => {
-		try {
-			const result = await API.cancelWithdrawal({
-				authToken: mainAppStore.token,
-				withdrawalId
+  const instrumentRef = useRef(null);
+  const { mainAppStore, withdrawalStore } = useStores();
+  const { t } = useTranslation();
+  const handleCancel = async (withdrawalId: string) => {
+    try {
+      const result = await API.cancelWithdrawal({
+        authToken: mainAppStore.token,
+        withdrawalId,
       });
       if (result.status === WithdrawalHistoryResponseStatus.Successful) {
         updateHistory();
         withdrawalStore.closePendingPopup();
       }
-		} catch (error) {
-			
-		}
-  }
-  
+    } catch (error) {}
+  };
 
   const selectStatusColor = (status: WithdrawalStatusesEnum | null) => {
     switch (status) {
@@ -52,8 +50,6 @@ const WithdrawHistoryItem = (props: Props) => {
         return 'rgba(255, 255, 255, 0.4)';
     }
   };
-
-  
 
   return (
     <DisplayContents>
@@ -86,7 +82,11 @@ const WithdrawHistoryItem = (props: Props) => {
           justifyContent="flex-end"
           width="100%"
         >
-          <PrimaryTextSpan fontSize="12px" color={selectStatusColor(data?.status || null)} whiteSpace="nowrap">
+          <PrimaryTextSpan
+            fontSize="12px"
+            color={selectStatusColor(data?.status || null)}
+            whiteSpace="nowrap"
+          >
             ${data?.amount.toFixed(2)}
           </PrimaryTextSpan>
         </FlexContainer>
@@ -97,7 +97,11 @@ const WithdrawHistoryItem = (props: Props) => {
           justifyContent="flex-end"
           width="100%"
         >
-          <PrimaryTextSpan fontSize="12px" color={selectStatusColor(data?.status || null)} whiteSpace="nowrap">
+          <PrimaryTextSpan
+            fontSize="12px"
+            color={selectStatusColor(data?.status || null)}
+            whiteSpace="nowrap"
+          >
             {WithdrawHistoryStatusName[data?.status || 0]}
           </PrimaryTextSpan>
         </FlexContainer>
@@ -113,7 +117,7 @@ const WithdrawHistoryItem = (props: Props) => {
             <ClosePositionPopup
               applyHandler={() => handleCancel(data.id)}
               ref={instrumentRef}
-							confirmText="Cancel the withdrawal request?"
+              confirmText={t('Cancel the withdrawal request?')}
               isButton
               alignPopup="right"
             />

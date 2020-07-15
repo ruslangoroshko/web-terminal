@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
@@ -27,16 +27,19 @@ import DemoRealPopup from '../components/DemoRealPopup';
 import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { useLocation } from 'react-router-dom';
 import StatusPaymentPopup from '../components/DepositPopup/StatusPaymentPopup';
+import { useTranslation } from 'react-i18next';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
-const Dashboard = observer(() => {
+const Dashboard: FC = observer(() => {
   const {
     mainAppStore,
     quotesStore,
     instrumentsStore,
     notificationStore,
   } = useStores();
+
+  const { t, i18n } = useTranslation();
 
   const [paymentStatus, setPaymentStatus] = useState('');
   const location = useLocation();
@@ -117,10 +120,18 @@ const Dashboard = observer(() => {
   }, [location.search]);
 
   useEffect(() => {
-    document.title = `${mainAppStore.initModel.brandName} trading platform`;
-    // 272
+    document.title = `${mainAppStore.initModel.brandName} ${t(
+      'trading platform'
+    )}`;
+    // webt-272 is this works?
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    if (mainAppStore.lang) {
+      i18n.changeLanguage(mainAppStore.lang);
+    }
+  }, [mainAppStore.lang]);
 
   return (
     <FlexContainer
@@ -236,8 +247,6 @@ const Dashboard = observer(() => {
 });
 
 export default Dashboard;
-
-const DashboardWrapper = styled(FlexContainer)``;
 
 const AddIntrumentButton = styled(ButtonWithoutStyles)`
   width: 24px;

@@ -11,6 +11,7 @@ import API from '../../../helpers/API';
 import { PrimaryButton } from '../../../styles/Buttons';
 import { WithdrawalHistoryResponseStatus } from '../../../enums/WithdrawalHistoryResponseStatus';
 import { WithdrawalTabsEnum } from '../../../enums/WithdrawalTabsEnum';
+import { useTranslation } from 'react-i18next';
 
 interface RequestValues {
   amount: number;
@@ -26,6 +27,8 @@ const WithdrawFormBitcoin = () => {
     bitcoinAdress: '',
   };
 
+  const { t } = useTranslation();
+
   const { mainAppStore, withdrawalStore } = useStores();
 
   const validationSchema = useCallback(
@@ -33,25 +36,24 @@ const WithdrawFormBitcoin = () => {
       yup.object().shape<RequestValues>({
         amount: yup
           .number()
-          .min(10, 'min: $10')
+          .min(10, `${t('min')}: $10`)
           .max(
             mainAppStore.accounts.find(item => item.isLive)?.balance || 0,
-            `max: ${mainAppStore.accounts.find(item => item.isLive)?.balance ||
-              0}`
+            `${t('max')}: ${mainAppStore.accounts.find(item => item.isLive)
+              ?.balance || 0}`
           ),
 
         bitcoinAdress: yup
           .string()
-          .min(26, 'Incorrect Bitcoin address')
-          .max(35, 'Incorrect Bitcoin address')
-          .matches(VALIDATE_BITCOIN, 'Incorrect Bitcoin address')
-          .required('Incorrect Bitcoin address'),
+          .min(26, t('Incorrect Bitcoin address'))
+          .max(35, t('Incorrect Bitcoin address'))
+          .matches(VALIDATE_BITCOIN, t('Incorrect Bitcoin address'))
+          .required(t('Incorrect Bitcoin address')),
       }),
     [mainAppStore.accounts]
   );
 
   const [dissabled, setDissabled] = useState(true);
-
 
   const handleSubmitForm = async () => {
     const accountInfo = mainAppStore.accounts.find(item => item.isLive);
@@ -168,10 +170,9 @@ const WithdrawFormBitcoin = () => {
   };
 
   useEffect(() => {
-    const submitting = !!values.amount && values.bitcoinAdress.length > 0
+    const submitting = !!values.amount && values.bitcoinAdress.length > 0;
     setDissabled(!submitting);
   }, [values.amount, values.bitcoinAdress]);
-
 
   return (
     <CustomForm noValidate onSubmit={handleSubmit}>
@@ -187,7 +188,7 @@ const WithdrawFormBitcoin = () => {
             color="rgba(255, 255, 255, 0.3)"
             textTransform="uppercase"
           >
-            Amount
+            {t('Amount')}
           </PrimaryTextSpan>
         </FlexContainer>
 
@@ -224,7 +225,7 @@ const WithdrawFormBitcoin = () => {
             color="rgba(255, 255, 255, 0.3)"
             textTransform="uppercase"
           >
-            Bitcoin Address
+            {t('Bitcoin Address')}
           </PrimaryTextSpan>
         </FlexContainer>
 
@@ -255,7 +256,7 @@ const WithdrawFormBitcoin = () => {
           disabled={dissabled}
         >
           <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
-            Withdraw
+            {t('Withdraw')}
           </PrimaryTextSpan>
         </WithdrawButton>
       </FlexContainer>
