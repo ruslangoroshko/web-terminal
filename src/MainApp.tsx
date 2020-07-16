@@ -12,9 +12,11 @@ import { useStores } from './hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import injectInerceptors from './http/interceptors';
 import NetworkErrorPopup from './components/NetworkErrorPopup';
+import { useTranslation } from 'react-i18next';
 
 const MainApp: FC = () => {
   const { mainAppStore } = useStores();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (IS_LIVE) {
@@ -26,10 +28,6 @@ const MainApp: FC = () => {
     }
   }, [mainAppStore.isAuthorized]);
 
-  useEffect(() => {
-    document.title = `${mainAppStore.initModel.brandName} trading platform`;
-  }, []);
-
   return (
     <>
       <NetworkErrorPopup />
@@ -37,6 +35,9 @@ const MainApp: FC = () => {
         {() => <LoaderFullscreen isLoading={!mainAppStore.tradingUrl} />}
       </Observer>
       <Helmet>
+        <title>{`${mainAppStore.initModel.brandName} ${t(
+          'trading platform'
+        )}`}</title>
         <link rel="shortcut icon" href={mainAppStore.initModel.favicon} />
       </Helmet>
       <Observer>
