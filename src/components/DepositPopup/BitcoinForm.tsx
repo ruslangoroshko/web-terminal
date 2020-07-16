@@ -17,6 +17,10 @@ import { Observer } from 'mobx-react-lite';
 import NotificationPopup from '../NotificationPopup';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { useTranslation } from 'react-i18next';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../../constants/mixpanelEvents';
+import mixapanelProps from '../../constants/mixpanelProps';
+import depositMethod from '../../constants/depositMethod';
 
 const BitcoinForm: FC = () => {
   const [bitcoinWalletString, setBitcoinWalletString] = useState('');
@@ -64,6 +68,12 @@ const BitcoinForm: FC = () => {
       }
     }
     fetchBitcoinString();
+  }, []);
+
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.DEPOSIT_METHOD_VIEW, {
+      [mixapanelProps.DEPOSIT_METHOD]: depositMethod.BITCOIN,
+    });
   }, []);
 
   return (

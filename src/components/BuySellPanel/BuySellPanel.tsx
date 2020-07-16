@@ -36,10 +36,10 @@ import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
 import { Observer } from 'mobx-react-lite';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
-import { MixpanelMarketOrder } from '../../types/MixpanelTypes';
 import BadRequestPopup from '../BadRequestPopup';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
+import mixapanelProps from '../../constants/mixpanelProps';
 
 // TODO: too much code, refactor
 
@@ -208,6 +208,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     formikHelpers.setSubmitting(true);
     const { operation, ...otherValues } = values;
 
+    let availableBalance = mainAppStore.activeAccount?.balance || 0;
+
     if (otherValues.openPrice) {
       const modelToSubmit = {
         ...otherValues,
@@ -227,13 +229,38 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
         if (response.result === OperationApiResponseCodes.Ok) {
           mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
-            value: values.investmentAmount,
-            multiplier: `x${values.multiplier}`,
-            sltp: 'no',
-            trend: values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            label: values.instrumentId,
-            event_ref: 'instrument page',
-          } as MixpanelMarketOrder);
+            [mixapanelProps.AMOUNT]: values.investmentAmount,
+            [mixapanelProps.ACCOUNT_CURRENCY]:
+              mainAppStore.activeAccount?.currency || '',
+            [mixapanelProps.INSTRUMENT_ID]: values.instrumentId,
+            [mixapanelProps.MULTIPLIER]: values.multiplier,
+            [mixapanelProps.TREND]:
+              values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
+            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+              ? 'real'
+              : 'demo',
+          });
+        } else {
+          mixpanel.track(mixpanelEvents.LIMIT_ORDER_FAILED, {
+            [mixapanelProps.AMOUNT]: values.investmentAmount,
+            [mixapanelProps.ACCOUNT_CURRENCY]:
+              mainAppStore.activeAccount?.currency || '',
+            [mixapanelProps.INSTRUMENT_ID]: values.instrumentId,
+            [mixapanelProps.MULTIPLIER]: values.multiplier,
+            [mixapanelProps.TREND]:
+              values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
+            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+              ? 'real'
+              : 'demo',
+            [mixapanelProps.ERROR_TEXT]:
+              apiResponseCodeMessages[response.result],
+          });
         }
         resetForm();
       } catch (error) {
@@ -257,13 +284,38 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
         if (response.result === OperationApiResponseCodes.Ok) {
           mixpanel.track(mixpanelEvents.MARKET_ORDER, {
-            value: values.investmentAmount,
-            multiplier: `x${values.multiplier}`,
-            sltp: values.sl || values.tp ? 'yes' : 'no',
-            trend: values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            label: values.instrumentId,
-            event_ref: 'instrument page',
-          } as MixpanelMarketOrder);
+            [mixapanelProps.AMOUNT]: values.investmentAmount,
+            [mixapanelProps.ACCOUNT_CURRENCY]:
+              mainAppStore.activeAccount?.currency || '',
+            [mixapanelProps.INSTRUMENT_ID]: values.instrumentId,
+            [mixapanelProps.MULTIPLIER]: values.multiplier,
+            [mixapanelProps.TREND]:
+              values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
+            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+              ? 'real'
+              : 'demo',
+          });
+        } else {
+          mixpanel.track(mixpanelEvents.MARKET_ORDER_FAILED, {
+            [mixapanelProps.AMOUNT]: values.investmentAmount,
+            [mixapanelProps.ACCOUNT_CURRENCY]:
+              mainAppStore.activeAccount?.currency || '',
+            [mixapanelProps.INSTRUMENT_ID]: values.instrumentId,
+            [mixapanelProps.MULTIPLIER]: values.multiplier,
+            [mixapanelProps.TREND]:
+              values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
+            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+              ? 'real'
+              : 'demo',
+            [mixapanelProps.ERROR_TEXT]:
+              apiResponseCodeMessages[response.result],
+          });
         }
         resetForm();
       } catch (error) {

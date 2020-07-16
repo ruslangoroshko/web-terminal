@@ -24,9 +24,12 @@ import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
 import { useTranslation } from 'react-i18next';
+import Helmet from 'react-helmet';
+import mixapanelProps from '../constants/mixpanelProps';
 
 function ForgotPassword() {
   const { t } = useTranslation();
+  const { mainAppStore } = useStores();
   const validationSchema = yup.object().shape<UserForgotPassword>({
     email: yup
       .string()
@@ -48,26 +51,33 @@ function ForgotPassword() {
   ) => {
     try {
       setIsLoading(true);
+      setSubmitting(true);
+
       const result = await API.forgotEmail(email);
-      if (result !== OperationApiResponseCodes.Ok) {
+
+      if (result === OperationApiResponseCodes.Ok) {
         setIsSuccessfull(true);
-        mixpanel.track(mixpanelEvents.FORGOT_PASSWORD);
+        mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_SUBMIT, {
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+        });
       } else {
-        setSubmitting(true);
+        setSubmitting(false);
         setIsSuccessfull(false);
       }
+
       setIsLoading(false);
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
-      setSubmitting(true);
+      setSubmitting(false);
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    document.title = t('Reset password');
-    mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_VIEW);
+    mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_VIEW, {
+      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+    });
   }, []);
 
   const {
@@ -97,6 +107,7 @@ function ForgotPassword() {
 
   return (
     <SignFlowLayout>
+      <Helmet>{t('Reset password')}</Helmet>
       {isLoading && <LoaderFullscreen isLoading={isLoading} />}
 
       <Observer>
