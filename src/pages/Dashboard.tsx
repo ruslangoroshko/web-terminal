@@ -127,11 +127,7 @@ const Dashboard: FC = observer(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    if (mainAppStore.lang) {
-      i18n.changeLanguage(mainAppStore.lang);
-    }
-  }, [mainAppStore.lang]);
+
 
   return (
     <FlexContainer

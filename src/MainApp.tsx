@@ -13,10 +13,11 @@ import { Observer } from 'mobx-react-lite';
 import injectInerceptors from './http/interceptors';
 import NetworkErrorPopup from './components/NetworkErrorPopup';
 import { useTranslation } from 'react-i18next';
+import { autorun } from 'mobx';
 
 const MainApp: FC = () => {
   const { mainAppStore } = useStores();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     if (IS_LIVE) {
@@ -27,6 +28,15 @@ const MainApp: FC = () => {
       mainAppStore.handleInitConnection();
     }
   }, [mainAppStore.isAuthorized]);
+
+
+  useEffect(() => {
+    autorun(() => {
+      if (mainAppStore.lang) {
+        i18n.changeLanguage(mainAppStore.lang);
+      }
+    })
+  }, []);
 
   return (
     <>

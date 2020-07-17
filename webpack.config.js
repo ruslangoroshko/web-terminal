@@ -128,7 +128,10 @@ module.exports = (env, argv) => {
             ? JSON.stringify('./charting_library/')
             : JSON.stringify('./src/vendor/charting_library/'),
         IS_LIVE: argv.mode === 'production',
-        MIXPANEL_TOKEN: JSON.stringify(process.env.MIXPANEL_TOKEN),
+        MIXPANEL_TOKEN:
+          argv.is_local === 'true'
+            ? JSON.stringify('582507549d28c813188211a0d15ec940')
+            : JSON.stringify(process.env.MIXPANEL_TOKEN),
         RECAPTCHA_KEY:
           argv.mode === 'production'
             ? JSON.stringify(process.env.RECAPTCHA_KEY)
