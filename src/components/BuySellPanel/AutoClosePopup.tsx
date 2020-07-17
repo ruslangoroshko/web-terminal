@@ -24,6 +24,7 @@ import { SecondaryButton } from '../../styles/Buttons';
 import SvgIcon from '../SvgIcon';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { FormikErrors } from 'formik';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   stopLossValue: PositionModelWSDTO['sl'];
@@ -59,6 +60,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
     } = props;
     const { mainAppStore, SLTPStore } = useStores();
     const [on, toggle] = useState(false);
+    const { t } = useTranslation();
 
     const wrapperRef = useRef<HTMLDivElement>(null);
     const handleToggle = () => {
@@ -123,7 +125,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
                 ? mainAppStore.activeAccount?.symbol
                 : ''
             }${takeProfitValue}`
-          : 'Non Set'
+          : t('Non Set')
       }`;
     };
 
@@ -135,7 +137,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
                 ? mainAppStore.activeAccount?.symbol
                 : ''
             }${stopLossValue}`
-          : 'Non Set'
+          : t('Non Set')
       }`;
     };
     const removeSL = () => {
@@ -173,7 +175,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
                 </FlexContainer>
               ) : (
                 <PrimaryTextParagraph color="#fffccc" fontSize="14px">
-                  Set
+                  {t('Set')}
                 </PrimaryTextParagraph>
               )}
             </FlexContainer>

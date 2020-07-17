@@ -124,6 +124,7 @@ const PendingOrder: FC<Props> = props => {
           </FlexContainer>
           <ClosePositionPopup
             applyHandler={handleCloseOrder}
+            buttonLabel={`${t('Close')}`}
             ref={instrumentRef}
             confirmText={`${t('Cancel order')}?`}
           ></ClosePositionPopup>

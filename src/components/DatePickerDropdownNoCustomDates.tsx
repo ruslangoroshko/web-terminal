@@ -78,16 +78,10 @@ const {t} = useTranslation()
       <FlexContainer position="relative" width="190px" ref={wrapperRef}>
         <Observer>
           {() => (
-            <ButtonDropdown
-              onClick={toggle(!dateRangeStore.openedDropdown)}
-            >
+            <ButtonDropdown onClick={toggle(!dateRangeStore.openedDropdown)}>
               <PrimaryTextSpan
                 fontSize="10px"
-                color={
-                  dateRangeStore.openedDropdown
-                    ? '#00FFDD'
-                    : '#fffccc'
-                }
+                color={dateRangeStore.openedDropdown ? '#00FFDD' : '#fffccc'}
                 textTransform="uppercase"
                 marginRight="4px"
               >
@@ -95,32 +89,22 @@ const {t} = useTranslation()
                 ShowDatesDropdownEnum.Custom
                   ? `${
                       dateRangeStore.startDate
-                        ? dateRangeStore.startDate.format(
-                            'DD/MM/YYYY'
-                          )
+                        ? dateRangeStore.startDate.format('DD/MM/YYYY')
                         : ''
                     } - ${
                       dateRangeStore.endDate
-                        ? dateRangeStore.endDate.format(
-                            'DD/MM/YYYY'
-                          )
+                        ? dateRangeStore.endDate.format('DD/MM/YYYY')
                         : ''
                     }`
-                  : ShowDatesDropdownEnum[
-                      dateRangeStore.dropdownValueType
-                    ]}
+                  : t(ShowDatesDropdownEnum[dateRangeStore.dropdownValueType])}
               </PrimaryTextSpan>
               <SvgIcon
                 {...IconDroplistShevron}
                 fillColor={
-                  dateRangeStore.openedDropdown
-                    ? '#00FFDD'
-                    : '#fffccc'
+                  dateRangeStore.openedDropdown ? '#00FFDD' : '#fffccc'
                 }
                 transformProp={
-                  dateRangeStore.openedDropdown
-                    ? 'rotate(0)'
-                    : 'rotate(180deg)'
+                  dateRangeStore.openedDropdown ? 'rotate(0)' : 'rotate(180deg)'
                 }
               />
             </ButtonDropdown>

@@ -9,10 +9,10 @@ export const ListForEN = {
     name: 'Polish',
     originName: 'Polskie',
   },
-  [CountriesEnum.ES]: {
-    name: 'Spanish',
-    originName: 'Español',
-  },
+  // [CountriesEnum.ES]: {
+  //   name: 'Spanish',
+  //   originName: 'Español',
+  // },
 };
 
 export const ListForPL = {
@@ -24,10 +24,10 @@ export const ListForPL = {
     name: 'Polskie',
     originName: 'Polskie',
   },
-  [CountriesEnum.ES]: {
-    name: 'Hiszpański',
-    originName: 'Español',
-  },
+  // [CountriesEnum.ES]: {
+  //   name: 'Hiszpański',
+  //   originName: 'Español',
+  // },
 };
 
 export const ListForES = {

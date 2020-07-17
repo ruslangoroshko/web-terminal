@@ -22,7 +22,7 @@ build:
   image: node:latest
   script:
     - npm i
-    - npm run build -- --RECAPTCHA_KEY=$RECAPTCHA_KEY_DEV --RECAPTCHA_KEY_SECRET=$RECAPTCHA_KEY_SECRET_DEV --BUILD_VERSION=${BUILD_VERSION}
+    - npm run build -- --RECAPTCHA_KEY=$RECAPTCHA_KEY_DEV --RECAPTCHA_KEY_SECRET=$RECAPTCHA_KEY_SECRET_DEV
   artifacts:
     paths:
       - ${BUILD_FOLDER}
@@ -34,7 +34,7 @@ build-test:
   image: node:latest
   script:
     - npm i
-    - npm run build -- --RECAPTCHA_KEY=$RECAPTCHA_KEY --RECAPTCHA_KEY_SECRET=$RECAPTCHA_KEY_SECRET --BUILD_VERSION=${BUILD_VERSION}
+    - npm run build -- --RECAPTCHA_KEY=$RECAPTCHA_KEY --RECAPTCHA_KEY_SECRET=$RECAPTCHA_KEY_SECRET
   artifacts:
     paths:
       - ${BUILD_FOLDER}

@@ -93,6 +93,7 @@ export class MainAppStore implements MainAppStoreProps {
   refreshToken = '';
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
+  connectTimeOut = '';
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -103,6 +104,8 @@ export class MainAppStore implements MainAppStoreProps {
     // @ts-ignore
     this.lang =
       localStorage.getItem(LOCAL_STORAGE_LANGUAGE) || CountriesEnum.EN;
+
+
   }
 
   initApp = async () => {
@@ -286,7 +289,8 @@ export class MainAppStore implements MainAppStoreProps {
     const response = await API.authenticate(credentials);
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
-      this.signalRReconnectTimeOut = response.data.signalRReconnectTimeOut;
+      this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
+      this.connectTimeOut = response.data.connectionTimeOut;
       this.setTokenHandler(response.data.token);
       this.fetchTradingUrl(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
@@ -308,7 +312,7 @@ export class MainAppStore implements MainAppStoreProps {
 
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
-      this.signalRReconnectTimeOut = response.data.signalRReconnectTimeOut;
+      this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.setTokenHandler(response.data.token);
       this.fetchTradingUrl(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
@@ -328,7 +332,7 @@ export class MainAppStore implements MainAppStoreProps {
   signUp = async (credentials: UserRegistration) => {
     const response = await API.signUpNewTrader(credentials);
     if (response.result === OperationApiResponseCodes.Ok) {
-      this.signalRReconnectTimeOut = response.data.signalRReconnectTimeOut;
+      this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
       this.setRefreshToken(response.data.refreshToken);

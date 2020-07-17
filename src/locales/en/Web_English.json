@@ -110,7 +110,7 @@
     "Take Profit": "Take Profit",
     "Stop Loss": "Stop Loss",
     "Total Profit": "Total Profit",
-    "Total In`vestments": "Total Investments",
+    "Total Investments": "Total Investments",
     "Total Equity": "Total Equity",
     "You haven't opened any positions yet": "You haven't opened any positions yet",
     "Time Opened": "Time Opened",
@@ -309,5 +309,13 @@
     "Account withdraw": "Account withdraw",
     "Request": "Request",
     "History": "History",
-    "Autoclose": "Autoclose"
+    "Autoclose": "Autoclose",
+    "Close": "Close",
+    "Search": "Search",
+    "Non Set": "Non Set",
+    "Set": "Set",
+    "Set Autoclose": "Set Autoclose",
+    "The order has been closed successfully": "The order has been closed successfully",
+    "You exceed the maximum amount for orders": "You exceed the maximum amount for orders",
+    "Access token is expired": "Access token is expired"
 }

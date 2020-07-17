@@ -167,7 +167,7 @@ const PurchaseAtPopup: FC<Props> = ({
               ></SvgIcon>
             </ButtonClose>
             <PrimaryTextParagraph marginBottom="16px">
-              {t('Purchase At')}
+              {t('Purchase at')}
             </PrimaryTextParagraph>
             <FlexContainer
               margin="0 0 6px 0"
@@ -203,7 +203,7 @@ const PurchaseAtPopup: FC<Props> = ({
                     onBeforeInput={handleBeforeInput}
                     onChange={handleChangePurchaseAt}
                     value={SLTPStore.purchaseAtValue}
-                    placeholder="Non Set"
+                    placeholder={t('Non Set')}
                   ></InputPnL>
                 )}
               </Observer>

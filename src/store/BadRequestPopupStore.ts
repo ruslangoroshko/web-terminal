@@ -25,7 +25,9 @@ export class BadRequestPopupStore implements ContextProps {
   @action
   initConectionReload = () => {
     setTimeout(() => {
-      this.isNetwork && this.setReload();
+      if (this.isNetwork) {
+        this.setReload();
+      }
     }, 15000);
   };
 
@@ -46,7 +48,7 @@ export class BadRequestPopupStore implements ContextProps {
 
   @action
   openModal = () => {
-    this.isActive = this.isNetwork ? false : true;
+    this.isActive = !this.isNetwork;
   };
 
   // TODO: rewrite to actions

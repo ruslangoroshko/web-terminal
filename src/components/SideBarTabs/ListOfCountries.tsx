@@ -52,7 +52,7 @@ const ListOfCountries = observer(() => {
             isActive={key === mainAppStore.lang}
           >
             <CountryListItem>
-              {list[key].name} ({list[key].originName})
+              {list[key].originName} ({list[key].name})
             </CountryListItem>
           </ButtonItem>
         </CountryListItemWrapper>

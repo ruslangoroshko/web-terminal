@@ -22,22 +22,25 @@ const TradingHistory: FC = () => {
 
   const fetchPositionsHistory = useCallback(
     async (isScrolling = false) => {
-      const response = await API.getPositionsHistory({
-        accountId: mainAppStore.activeAccount!.id,
-        startDate: dateRangeStore.startDate.valueOf(),
-        endDate: dateRangeStore.endDate.valueOf(),
-        page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
-        pageSize: 20,
-      });
-      historyStore.positionsHistoryReport = {
-        ...response,
-        positionsHistory: isScrolling
-          ? [
-              ...historyStore.positionsHistoryReport.positionsHistory,
-              ...response.positionsHistory,
-            ]
-          : response.positionsHistory,
-      };
+      try {
+        const response = await API.getPositionsHistory({
+          accountId: mainAppStore.activeAccount!.id,
+          startDate: dateRangeStore.startDate.valueOf(),
+          endDate: dateRangeStore.endDate.valueOf(),
+          page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
+          pageSize: 20,
+        });
+
+        historyStore.positionsHistoryReport = {
+          ...response,
+          positionsHistory: isScrolling
+            ? [
+                ...historyStore.positionsHistoryReport.positionsHistory,
+                ...response.positionsHistory,
+              ]
+            : response.positionsHistory,
+        };
+      } catch (error) {}
     },
     [
       mainAppStore.activeAccount?.id,
@@ -113,7 +116,7 @@ const TradingHistory: FC = () => {
               }
             >
               {historyStore.positionsHistoryReport.positionsHistory.map(
-                item => (
+                (item) => (
                   <TradingHistoryItem
                     key={item.id}
                     tradingHistoryItem={item}
