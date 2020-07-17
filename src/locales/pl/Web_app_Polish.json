@@ -309,5 +309,13 @@
     "Account withdraw": "Wypłata z konta",
     "Request": "Wniosek",
     "History": "Historia",
-    "Autoclose": "Autozamykanie"
+    "Autoclose": "Autozamykanie",
+    "Close": "Zamknij",
+    "Search": "Szukaj",
+    "Non Set": "Nie ustawiono",
+    "Set": "Ustawić",
+    "Set Autoclose": "Ustaw autozamykanie",
+    "The order has been closed successfully": "Zamówienie zostało pomyślnie zamknięte",
+    "You exceed the maximum amount for orders": "Przekraczasz maksymalną kwotę dla zamówień",
+    "Access token is expired": "Token dostępu wygasł"
 }

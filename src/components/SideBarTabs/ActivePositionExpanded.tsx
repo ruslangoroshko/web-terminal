@@ -83,7 +83,7 @@ function ActivePositionExpanded(props: Props) {
       });
 
       notificationStore.notificationMessage =
-        apiResponseCodeMessages[response.result];
+        t(apiResponseCodeMessages[response.result]);
       notificationStore.isSuccessfull =
         response.result === OperationApiResponseCodes.Ok;
       notificationStore.openNotification();
