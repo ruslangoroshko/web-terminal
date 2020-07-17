@@ -29,7 +29,7 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
         setTimeout(() => {
           axios.request(error.config);
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
-        }, 5000);
+        }, +mainAppStore.connectTimeOut);
       }
       if (error.response?.status === 500) {
         mainAppStore.rootStore.badRequestPopupStore.setMessage(
