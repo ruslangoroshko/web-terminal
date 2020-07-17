@@ -20,12 +20,7 @@ import InfinityScrollList from '../InfinityScrollList';
 import { useTranslation } from 'react-i18next';
 
 const TradingHistoryExpanded: FC = () => {
-  const {
-    tabsStore,
-    mainAppStore,
-    historyStore,
-    dateRangeStore,
-  } = useStores();
+  const { tabsStore, mainAppStore, historyStore, dateRangeStore } = useStores();
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
   const closeExpanded = () => {
@@ -83,7 +78,7 @@ const TradingHistoryExpanded: FC = () => {
         />
       </ButtonClose>
       <FlexContainer margin="0 0 40px 0" padding="0 0 0 8px">
-        <TabPortfolitButton isActive>Trading History</TabPortfolitButton>
+        <TabPortfolitButton isActive>{t('Trading History')}</TabPortfolitButton>
       </FlexContainer>
       <FlexContainer width="100%" justifyContent="center">
         <FlexContainer flexDirection="column" width="1020px">

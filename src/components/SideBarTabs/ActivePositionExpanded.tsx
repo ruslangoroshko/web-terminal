@@ -83,7 +83,7 @@ function ActivePositionExpanded(props: Props) {
       });
 
       notificationStore.notificationMessage =
-        apiResponseCodeMessages[response.result];
+        t(apiResponseCodeMessages[response.result]);
       notificationStore.isSuccessfull =
         response.result === OperationApiResponseCodes.Ok;
       notificationStore.openNotification();
@@ -247,6 +247,7 @@ function ActivePositionExpanded(props: Props) {
           <ClosePositionPopup
             applyHandler={closePosition}
             ref={instrumentRef}
+            buttonLabel={`${t('Close')}`}
             confirmText={`${t('Close position')}?`}
             isButton
             alignPopup="right"
