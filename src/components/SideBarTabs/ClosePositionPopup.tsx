@@ -14,11 +14,17 @@ interface Props {
   // TODO: refactor crutch
   isButton?: boolean;
   alignPopup?: 'left' | 'right';
-  buttonLabel?: string;
+  buttonLabel: string;
 }
 
 const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { applyHandler, isButton, confirmText, alignPopup = 'left', buttonLabel = 'Close' } = props;
+  const {
+    applyHandler,
+    isButton,
+    confirmText,
+    alignPopup = 'left',
+    buttonLabel,
+  } = props;
 
   const [on, toggle] = useState(false);
 
@@ -82,8 +88,16 @@ const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
           position="absolute"
           top={isTop ? `${Math.round(popupPosition.top + 26)}px` : 'auto'}
           bottom={isTop ? 'auto' : '20px'}
-          left={alignPopup === 'left' ? `${Math.round(popupPosition.width * 0.75)}px` : 'auto'}
-          right={alignPopup === 'right' ? `${Math.round(popupPosition.width * 0.75)}px` : 'auto'}
+          left={
+            alignPopup === 'left'
+              ? `${Math.round(popupPosition.width * 0.75)}px`
+              : 'auto'
+          }
+          right={
+            alignPopup === 'right'
+              ? `${Math.round(popupPosition.width * 0.75)}px`
+              : 'auto'
+          }
           zIndex="101"
         >
           <ConfirmPopup

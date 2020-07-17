@@ -8,12 +8,14 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import InstrumentMarkets from './SideBarTabs/InstrumentMarkets';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   toggle: () => void;
 }
 
 const AddInstrumentsPopup: FC<Props> = props => {
+  const { t } = useTranslation();
   const { toggle } = props;
   const { instrumentsStore } = useStores();
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -82,7 +84,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
             fillColor="rgba(255, 255, 255, 0.5)"
           ></SvgIcon>
         </FlexContainer>
-        <SearchInput onChange={handleChangeSearch} placeholder="Search" />
+        <SearchInput onChange={handleChangeSearch} placeholder={t('Search')} />
         <FlexContainer>
           <ButtonWithoutStyles onClick={toggle}>
             <SvgIcon

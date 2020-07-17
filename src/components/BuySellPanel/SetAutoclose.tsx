@@ -160,7 +160,7 @@ const SetAutoclose: FC<Props> = observer(props => {
         ></SvgIcon>
       </ButtonClose>
       <PrimaryTextParagraph marginBottom="16px">
-        {isDisabled ? 'Autoclose' : 'Set Autoclose'}
+        {isDisabled ? t('Autoclose') : t('Set Autoclose')}
       </PrimaryTextParagraph>
       <FlexContainer
         margin="0 0 6px 0"
@@ -217,7 +217,7 @@ const SetAutoclose: FC<Props> = observer(props => {
             <>
               <InputPnL
                 onBeforeInput={handleBeforeInput(SLTPStore.autoCloseTPType)}
-                placeholder="Non Set"
+                placeholder={t('Non Set')}
                 onChange={handleChangeProfit}
                 value={SLTPStore.takeProfitValue}
                 disabled={isDisabled}
@@ -299,7 +299,7 @@ const SetAutoclose: FC<Props> = observer(props => {
             <>
               <InputPnL
                 onBeforeInput={handleBeforeInput(SLTPStore.autoCloseSLType)}
-                placeholder="Non Set"
+                placeholder={t('Non Set')}
                 onChange={handleChangeLoss}
                 value={SLTPStore.stopLossValue}
                 disabled={isDisabled}

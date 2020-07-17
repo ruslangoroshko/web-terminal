@@ -198,7 +198,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
 
       notificationStore.notificationMessage =
         response.result === OperationApiResponseCodes.Ok
-          ? 'The order has been closed successfully'
+          ? t('The order has been closed successfully')
           : apiResponseCodeMessages[response.result];
       notificationStore.isSuccessfull =
         response.result === OperationApiResponseCodes.Ok;
@@ -514,6 +514,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             </CustomForm>
             <ClosePositionPopup
               applyHandler={closePosition}
+              buttonLabel={`${t('Close')}`}
               ref={instrumentRef}
               confirmText={`${t('Close position')}?`}
               isButton

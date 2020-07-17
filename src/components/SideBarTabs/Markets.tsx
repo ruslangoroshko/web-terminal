@@ -96,7 +96,7 @@ function Markets() {
               onClick={handleChangeSorting(+key)}
               whiteSpace="nowrap"
             >
-              {value}
+              {t(value)}
             </DropdownItemText>
           ))}
         </SortByDropdown>

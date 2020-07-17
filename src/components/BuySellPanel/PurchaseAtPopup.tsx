@@ -203,7 +203,7 @@ const PurchaseAtPopup: FC<Props> = ({
                     onBeforeInput={handleBeforeInput}
                     onChange={handleChangePurchaseAt}
                     value={SLTPStore.purchaseAtValue}
-                    placeholder="Non Set"
+                    placeholder={t('Non Set')}
                   ></InputPnL>
                 )}
               </Observer>

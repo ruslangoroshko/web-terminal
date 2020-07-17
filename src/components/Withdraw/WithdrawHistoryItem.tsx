@@ -117,6 +117,7 @@ const WithdrawHistoryItem = (props: Props) => {
             <ClosePositionPopup
               applyHandler={() => handleCancel(data.id)}
               ref={instrumentRef}
+              buttonLabel={`${t('Close')}`}
               confirmText={t('Cancel the withdrawal request?')}
               isButton
               alignPopup="right"
