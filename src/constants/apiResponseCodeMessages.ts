@@ -6,7 +6,7 @@ const apiResponseCodeMessages = {
   [OperationApiResponseCodes.FileWrongExtension]:
     'Only files with the following extensions are allowed: jpg, png, pdf.',
   [OperationApiResponseCodes.OldPasswordNotMatch]: 'Old password not match.',
-  [OperationApiResponseCodes.UserNotExist]: 'User not exist.',
+  [OperationApiResponseCodes.UserNotExist]: 'User not found.',
   [OperationApiResponseCodes.UserExists]: 'This email is already in use.',
   [OperationApiResponseCodes.InvalidUserNameOrPassword]:
     'Invalid login or password.',
@@ -28,7 +28,7 @@ const apiResponseCodeMessages = {
     'Take profit level is too close to the current price.',
   [OperationApiResponseCodes.SlIsTooClose]:
     'Stop loss level is too close to the current price.',
-  [OperationApiResponseCodes.PendingOrderNotFound]: 'Pending order is not found.',
+  [OperationApiResponseCodes.PendingOrderNotFound]: 'The position is not found.',
   [OperationApiResponseCodes.AccountNotFound]: 'Account is not found.',
   [OperationApiResponseCodes.InstrumentNotFound]: 'Asset is not found.',
   [OperationApiResponseCodes.InstrumentCanNotBeUsed]:

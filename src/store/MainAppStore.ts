@@ -103,6 +103,8 @@ export class MainAppStore implements MainAppStoreProps {
     // @ts-ignore
     this.lang =
       localStorage.getItem(LOCAL_STORAGE_LANGUAGE) || CountriesEnum.EN;
+
+
   }
 
   initApp = async () => {
