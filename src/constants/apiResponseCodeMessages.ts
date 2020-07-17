@@ -6,7 +6,7 @@ const apiResponseCodeMessages = {
   [OperationApiResponseCodes.FileWrongExtension]:
     'Only files with the following extensions are allowed: jpg, png, pdf.',
   [OperationApiResponseCodes.OldPasswordNotMatch]: 'Old password not match.',
-  [OperationApiResponseCodes.UserNotExist]: 'User not exist.',
+  [OperationApiResponseCodes.UserNotExist]: 'User not found.',
   [OperationApiResponseCodes.UserExists]: 'This email is already in use.',
   [OperationApiResponseCodes.InvalidUserNameOrPassword]:
     'Invalid login or password.',
