@@ -28,7 +28,7 @@ const apiResponseCodeMessages = {
     'Take profit level is too close to the current price.',
   [OperationApiResponseCodes.SlIsTooClose]:
     'Stop loss level is too close to the current price.',
-  [OperationApiResponseCodes.PendingOrderNotFound]: 'Pending order is not found.',
+  [OperationApiResponseCodes.PendingOrderNotFound]: 'The position is not found.',
   [OperationApiResponseCodes.AccountNotFound]: 'Account is not found.',
   [OperationApiResponseCodes.InstrumentNotFound]: 'Asset is not found.',
   [OperationApiResponseCodes.InstrumentCanNotBeUsed]:
