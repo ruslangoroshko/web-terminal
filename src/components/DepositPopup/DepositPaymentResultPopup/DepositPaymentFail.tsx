@@ -35,7 +35,7 @@ const DepositPaymentFail: FC = () => {
             push(`${Pages.DASHBOARD}${HashLocation.Deposit}`);
           }}
         >
-          Back to Deposit
+          {t('Back to Deposit')}
         </OtherMethodsButton>
       </FlexContainer>
     </>
