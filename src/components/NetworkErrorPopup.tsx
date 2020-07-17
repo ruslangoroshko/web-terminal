@@ -7,7 +7,7 @@ import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 
-const NetworkErrorPopup = () => {
+const NetworkErrorPopup = () => {  
   const { badRequestPopupStore } = useStores();
   const [show, setShow] = useState(false);
   const [shouldRender, setRender] = useState(false);
@@ -18,13 +18,10 @@ const NetworkErrorPopup = () => {
     setShow(true);
   };
 
-  const handleSetConnection = useCallback(
-    () => {
-      badRequestPopupStore.setNetwork(false);
-      setShow(false);
-      badRequestPopupStore.isReload && window.location.reload();
-    }, [badRequestPopupStore.isReload]
-  );
+  const handleSetConnection = () => {
+    // TODO: Find out how to make reload using React-Router
+    window.location.reload();
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -39,7 +36,7 @@ const NetworkErrorPopup = () => {
     return () => {
       window.removeEventListener('offline', handleLostConnection);
       window.removeEventListener('online', handleSetConnection);
-    }
+    };
   }, []);
 
   if (!shouldRender) {
@@ -69,7 +66,8 @@ const NetworkErrorPopup = () => {
                   textAlign="center"
                   color="rgba(255, 255, 255, 0.4)"
                 >
-                  <br/>Reconnecting...
+                  <br />
+                  Reconnecting...
                 </PrimaryTextParagraph>
               )}
             </>
@@ -121,7 +119,7 @@ const ModalWrap = styled(FlexContainer)<{ show: boolean }>`
   }
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.25),
     0px 6px 12px rgba(0, 0, 0, 0.25);
-  animation: ${props =>
+  animation: ${(props) =>
       props.show ? translateAnimationIn : translateAnimationOut}
     0.5s ease;
 `;
