@@ -29,7 +29,6 @@ const TradingHistory: FC = () => {
         page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
         pageSize: 20,
       });
-      console.log(response)
       historyStore.positionsHistoryReport = {
         ...response,
         positionsHistory: isScrolling
