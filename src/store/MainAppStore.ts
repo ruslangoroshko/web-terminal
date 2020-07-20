@@ -95,6 +95,7 @@ export class MainAppStore implements MainAppStoreProps {
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
   connectTimeOut = '';
+  @observable socketError = false;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -215,7 +216,10 @@ export class MainAppStore implements MainAppStoreProps {
         error?.message ||
           apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
       );
+      this.socketError = true;
+      //@ts-ignore
       console.log('websocket error: ', error);
+      console.log('=====/=====')
     });
   };
 
