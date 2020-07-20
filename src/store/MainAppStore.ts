@@ -216,6 +216,7 @@ export class MainAppStore implements MainAppStoreProps {
         error?.message ||
           apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
       );
+      console.log('websocket error: ', error);
     });
   };
 
