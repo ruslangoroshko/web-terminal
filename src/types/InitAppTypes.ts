@@ -14,4 +14,5 @@ export interface InitModel {
   brandProperty: string;
   gaAsAccount: string;
   favicon: string;
+  mixpanelToken: string;
 }
