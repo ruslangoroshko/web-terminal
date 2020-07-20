@@ -5,9 +5,6 @@ const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = (env, argv) => {
-  console.log(process.env);
-  console.log('-----------------------------------')
-  console.log(env);
   return {
     mode: argv.mode,
     entry: {
@@ -134,7 +131,7 @@ module.exports = (env, argv) => {
         MIXPANEL_TOKEN:
           argv.is_local === 'true'
             ? JSON.stringify('582507549d28c813188211a0d15ec940')
-            : JSON.stringify(argv.MIXPANEL_TOKEN),
+            : JSON.stringify(process.env.MIXPANEL_TOKEN),
         RECAPTCHA_KEY:
           argv.mode === 'production'
             ? JSON.stringify(process.env.RECAPTCHA_KEY)
