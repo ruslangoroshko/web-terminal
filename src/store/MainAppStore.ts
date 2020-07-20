@@ -75,6 +75,7 @@ export class MainAppStore implements MainAppStoreProps {
     supportUrl: '',
     termsUrl: '',
     tradingUrl: '',
+    mixpanelToken: '582507549d28c813188211a0d15ec940',
   };
   @observable isLoading = true;
   @observable isInitLoading = true;
@@ -104,8 +105,6 @@ export class MainAppStore implements MainAppStoreProps {
     // @ts-ignore
     this.lang =
       localStorage.getItem(LOCAL_STORAGE_LANGUAGE) || CountriesEnum.EN;
-
-
   }
 
   initApp = async () => {
