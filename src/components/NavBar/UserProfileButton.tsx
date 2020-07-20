@@ -13,6 +13,7 @@ import { Observer } from 'mobx-react-lite';
 import mixpanel from 'mixpanel-browser';
 import KYCStatus from '../../constants/KYCStatus';
 import mixpanelEvents from '../../constants/mixpanelEvents';
+import mixapanelProps from '../../constants/mixpanelProps';
 
 function UserProfileButton() {
   const { mainAppStore } = useStores();
@@ -35,15 +36,17 @@ function UserProfileButton() {
       try {
         const response = await API.getPersonalData(getProcessId());
         mixpanel.people.set({
-          [mixpanelEvents.FIRST_NAME]: response.data.firstName || '',
-          [mixpanelEvents.LAST_NAME]: response.data.lastName || '',
-          [mixpanelEvents.BRAND_NAME]: mainAppStore.initModel.brandName || '',
-          [mixpanelEvents.EMAIL]: response.data.email || '',
-          [mixpanelEvents.AVATAR]: response.data.avatar || '',
-          [mixpanelEvents.USER_KYC_STATUS]: KYCStatus[response.data.kyc],
-          [mixpanelEvents.PHONE]: response.data.phone || '',
-          [mixpanelEvents.LAST_LOGIN]: new Date().toISOString(),
+          [mixapanelProps.PHONE]: response.data.phone || '',
+          [mixapanelProps.TRADER_ID]: response.data.phone || '',
+          [mixapanelProps.FIRST_NAME]: response.data.firstName || '',
+          [mixapanelProps.KYC_STATUS]: KYCStatus[response.data.kyc],
+          [mixapanelProps.LAST_NAME]: response.data.lastName || '',
         });
+
+        mixpanel.people.union({
+          [mixapanelProps.PLATFORMS_USED]: 'web',
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
+        })
         mixpanel.identify(response.data.id);
         mainAppStore.profileStatus = response.data.kyc;
         mainAppStore.profilePhone = response.data.phone || '';

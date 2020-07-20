@@ -32,6 +32,7 @@ import { ServerError } from '../types/ServerErrorType';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { InitModel } from '../types/InitAppTypes';
 import { CountriesEnum } from '../enums/CountriesEnum';
+import mixapanelProps from '../constants/mixpanelProps';
 
 interface MainAppStoreProps {
   token: string;
@@ -158,6 +159,13 @@ export class MainAppStore implements MainAppStoreProps {
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
         this.accounts = response.data;
         this.getActiveAccount();
+
+        mixpanel.people.set({
+          [mixapanelProps.ACCOUNTS]: response.data.map(item => item.id),
+          [mixapanelProps.FUNDED_TRADER]: `${response.data.some(
+            item => item.isLive && item.balance > 0
+          )}`,
+        });
       }
     );
 

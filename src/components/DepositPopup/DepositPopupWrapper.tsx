@@ -20,6 +20,8 @@ import BitcoinForm from './BitcoinForm';
 import BadRequestPopup from '../BadRequestPopup';
 import HashLocation from '../../constants/hashLocation';
 import { useTranslation } from 'react-i18next';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../../constants/mixpanelEvents';
 
 const DepositPopupWrapper: FC = () => {
   const location = useLocation();
@@ -60,6 +62,10 @@ const DepositPopupInner: FC = () => {
         return null;
     }
   };
+
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.DEPOSIT_LIST_VIEW);
+  }, []);
 
   return (
     <Modal>
