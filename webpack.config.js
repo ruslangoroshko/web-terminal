@@ -131,7 +131,7 @@ module.exports = (env, argv) => {
         MIXPANEL_TOKEN:
           argv.is_local === 'true'
             ? JSON.stringify('582507549d28c813188211a0d15ec940')
-            : JSON.stringify(argv.MIXPANEL_TOKEN),
+            : JSON.stringify(process.env.MIXPANEL_TOKEN),
         RECAPTCHA_KEY:
           argv.mode === 'production'
             ? JSON.stringify(process.env.RECAPTCHA_KEY)
