@@ -15,12 +15,3 @@ export interface MixpanelTypes {
     total_account_trades_number: number;
     'brand name': string;
 }
-
-export interface MixpanelMarketOrder {
-    label: string;
-    value: number;
-    multiplier: string;
-    trend: 'buy' | 'sell';
-    sltp: 'yes' | 'no';
-    event_ref: "markets" | 'instrument page';
-}

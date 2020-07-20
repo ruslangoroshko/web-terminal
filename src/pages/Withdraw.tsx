@@ -17,6 +17,10 @@ import WithdrawRequestTab from '../components/Withdraw/WithdrawRequestTab';
 import WithdrawHistoryTab from '../components/Withdraw/WithdrawHistoryTab';
 import { WithdrawalTabsEnum } from '../enums/WithdrawalTabsEnum';
 import { useTranslation } from 'react-i18next';
+import Helmet from 'react-helmet';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
+import mixapanelProps from '../constants/mixpanelProps';
 
 function AccountSecurity() {
   const {
@@ -24,6 +28,8 @@ function AccountSecurity() {
     notificationStore,
     withdrawalStore,
   } = useStores();
+
+  const { mainAppStore} = useStores();
 
   const { push } = useHistory();
   const { t } = useTranslation();
@@ -33,11 +39,15 @@ function AccountSecurity() {
   };
 
   useEffect(() => {
-    document.title = t('Account withdraw');
-  }, []);
+    mixpanel.track(mixpanelEvents.WITHDRAW_VIEW, {
+      [mixapanelProps.AVAILABLE_BALANCE]:
+        mainAppStore.accounts.find(item => item.isLive)?.balance || 0,
+    });
+  },[])
 
   return (
     <AccountSettingsContainer>
+      <Helmet>{t('Account withdraw')}</Helmet>
       <Observer>
         {() => (
           <>

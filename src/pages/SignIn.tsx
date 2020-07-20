@@ -22,6 +22,8 @@ import Pages from '../constants/Pages';
 import validationInputTexts from '../constants/validationInputTexts';
 import BadRequestPopup from '../components/BadRequestPopup';
 import { useTranslation } from 'react-i18next';
+import mixapanelProps from '../constants/mixpanelProps';
+import Helmet from 'react-helmet';
 
 const SingIn = observer(() => {
   const { t } = useTranslation();
@@ -55,6 +57,21 @@ const SingIn = observer(() => {
         notificationStore.isSuccessfull = false;
         notificationStore.openNotification();
         mainAppStore.isInitLoading = false;
+
+        mixpanel.track(mixpanelEvents.LOGIN_FAILED, {
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+          [mixapanelProps.ERROR_TEXT]: t(apiResponseCodeMessages[result]),
+          [mixapanelProps.EMAIL]: credentials.email,
+        });
+      }
+      if (result === OperationApiResponseCodes.Ok) {
+        mixpanel.people.union({
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+          [mixapanelProps.PLATFORMS_USED]: 'web',
+        });
+        mixpanel.track(mixpanelEvents.LOGIN_VIEW, {
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+        });
       }
     } catch (error) {
       mainAppStore.isInitLoading = false;
@@ -89,13 +106,14 @@ const SingIn = observer(() => {
   };
 
   useEffect(() => {
-    mixpanel.track(mixpanelEvents.LOGIN_VIEW);
-
-    document.title = t('Login');
+    mixpanel.track(mixpanelEvents.LOGIN_VIEW, {
+      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+    });
   }, []);
 
   return (
     <SignFlowLayout>
+      <Helmet>{t('Login')}</Helmet>
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
