@@ -370,6 +370,7 @@ class API {
             supportUrl: '',
             termsUrl: '',
             tradingUrl: '',
+            mixpanelToken: '582507549d28c813188211a0d15ec940'
           },
         }
       : await axios.get<InitModel>(`${API_LIST.INIT.GET}`);
