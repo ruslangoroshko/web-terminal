@@ -27,6 +27,8 @@ import { useHistory } from 'react-router-dom';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
 import { useTranslation } from 'react-i18next';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
 
 function PersonalData() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -109,6 +111,7 @@ function PersonalData() {
         value: JSON.stringify(values),
       });
       kycStore.filledStep = KYCstepsEnum.PersonalData;
+      mixpanel.track(mixpanelEvents.KYC_STEP_1);
       push(Page.PHONE_VERIFICATION);
     } catch (error) {}
   };

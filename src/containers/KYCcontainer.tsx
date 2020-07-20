@@ -19,7 +19,7 @@ const KYCcontainer: FC = props => {
         height="100%"
         flexDirection="column"
       >
-        <StepsContainter></StepsContainter>
+        {/* <StepsContainter></StepsContainter> */}
         {children}
       </FlexContainer>
     </FlexContainer>

@@ -29,6 +29,9 @@ import { useTranslation } from 'react-i18next';
 import useInstrument from '../../hooks/useInstrument';
 import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../../constants/mixpanelEvents';
+import mixapanelProps from '../../constants/mixpanelProps';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -195,6 +198,39 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         positionId: position.id,
         processId: getProcessId(),
       });
+
+      if (response.result === OperationApiResponseCodes.Ok) {
+        mixpanel.track(mixpanelEvents.CLOSE_ORDER, {
+          [mixapanelProps.AMOUNT]: position.investmentAmount,
+          [mixapanelProps.ACCOUNT_CURRENCY]:
+            mainAppStore.activeAccount?.currency || '',
+          [mixapanelProps.INSTRUMENT_ID]: position.instrument,
+          [mixapanelProps.MULTIPLIER]: position.multiplier,
+          [mixapanelProps.TREND]:
+            position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+          [mixapanelProps.SLTP]: position.sl || position.tp ? 'yes' : 'no',
+          [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+          [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+            ? 'real'
+            : 'demo',
+        });
+      } else {
+        mixpanel.track(mixpanelEvents.CLOSE_ORDER_FAILED, {
+          [mixapanelProps.AMOUNT]: position.investmentAmount,
+          [mixapanelProps.ACCOUNT_CURRENCY]:
+            mainAppStore.activeAccount?.currency || '',
+          [mixapanelProps.INSTRUMENT_ID]: position.instrument,
+          [mixapanelProps.MULTIPLIER]: position.multiplier,
+          [mixapanelProps.TREND]:
+            position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+          [mixapanelProps.SLTP]: position.sl || position.tp ? 'yes' : 'no',
+          [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+          [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+            ? 'real'
+            : 'demo',
+          [mixapanelProps.ERROR_TEXT]: apiResponseCodeMessages[response.result],
+        });
+      }
 
       notificationStore.notificationMessage =
         response.result === OperationApiResponseCodes.Ok

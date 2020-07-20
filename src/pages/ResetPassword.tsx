@@ -21,12 +21,16 @@ import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
 import { useTranslation } from 'react-i18next';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
+import mixapanelProps from '../constants/mixpanelProps';
 
 interface Props {}
 
 function ResetPassword(props: Props) {
   const { token } = useParams();
   const { t } = useTranslation();
+  const { mainAppStore } = useStores();
 
   const validationSchema = yup.object().shape<IResetPassword>({
     password: yup
@@ -68,6 +72,9 @@ function ResetPassword(props: Props) {
         password,
       });
       if (response.result === OperationApiResponseCodes.Ok) {
+        mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_SET_NEW, {
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+        });
         setIsSuccessfull(true);
       }
       if (response.result === OperationApiResponseCodes.Expired) {

@@ -9,6 +9,9 @@ import { Observer } from 'mobx-react-lite';
 import { WithdrawalHistoryResponseStatus } from '../../enums/WithdrawalHistoryResponseStatus';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../../constants/mixpanelEvents';
+import mixapanelProps from '../../constants/mixpanelProps';
 
 const WithdrawHistoryTab = () => {
   const { withdrawalStore, mainAppStore } = useStores();
@@ -42,6 +45,13 @@ const WithdrawHistoryTab = () => {
 
   useEffect(() => {
     initHistoryList();
+  }, []);
+
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.WITHDRAW_HISTORY_VIEW, {
+      [mixapanelProps.AVAILABLE_BALANCE]:
+        mainAppStore.accounts.find(item => item.isLive)?.balance || 0,
+    });
   }, []);
 
   return (

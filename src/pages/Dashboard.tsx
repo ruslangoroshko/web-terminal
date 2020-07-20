@@ -29,6 +29,8 @@ import { useLocation } from 'react-router-dom';
 import StatusPaymentPopup from '../components/DepositPopup/StatusPaymentPopup';
 import { useTranslation } from 'react-i18next';
 import Helmet from 'react-helmet';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -114,6 +116,9 @@ const Dashboard: FC = observer(() => {
       const status = params.get('status');
       if (status) {
         setPaymentStatus(status);
+        if (status === 'failed') {
+          mixpanel.track(mixpanelEvents.DEPOSIT_FAILED);
+        }
       }
     } else {
       setPaymentStatus('');
@@ -134,9 +139,9 @@ const Dashboard: FC = observer(() => {
       overflow="hidden"
     >
       <Helmet>
-        <title>{`${mainAppStore.initModel.brandName} ${t(
-          'trading platform'
-        )}`}</title>
+        <title>
+          {`${mainAppStore.initModel.brandName} ${t('trading platform')}`}
+        </title>
       </Helmet>
       <Observer>
         {() => (

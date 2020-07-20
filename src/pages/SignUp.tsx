@@ -23,6 +23,8 @@ import NotificationPopup from '../components/NotificationPopup';
 import { Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
 import { useTranslation } from 'react-i18next';
+import mixapanelProps from '../constants/mixpanelProps';
+import Helmet from 'react-helmet';
 
 function SignUp() {
   const { t } = useTranslation();
@@ -93,7 +95,21 @@ function SignUp() {
                 notificationStore.isSuccessfull = false;
                 notificationStore.openNotification();
                 mainAppStore.isInitLoading = false;
+                mixpanel.track(mixpanelEvents.SIGN_UP_FAILED, {
+                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+                  [mixapanelProps.ERROR_TEXT]: t(
+                    apiResponseCodeMessages[result]
+                  ),
+                  [mixapanelProps.EMAIL]: email,
+                });
               } else {
+                mixpanel.people.set({
+                  [mixapanelProps.EMAIL]: email,
+                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+                });
+                mixpanel.track(mixpanelEvents.SIGN_UP, {
+                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+                });
                 push(Page.DASHBOARD);
               }
             } catch (error) {
@@ -174,13 +190,16 @@ function SignUp() {
   };
 
   useEffect(() => {
-    mixpanel.track(mixpanelEvents.SIGN_UP_VIEW);
-    // TODO: add react-helmet for dynamic title
-    document.title = t('Sign up');
+    mixpanel.track(mixpanelEvents.SIGN_UP_VIEW, {
+      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+    });
   }, []);
 
   return (
     <SignFlowLayout>
+      <Helmet>
+        <title>{t('Sign up')}</title>
+      </Helmet>
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>

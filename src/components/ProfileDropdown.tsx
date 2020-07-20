@@ -22,7 +22,7 @@ function ProfileDropdown() {
       case PersonalDataKYCEnum.NotVerified:
         return (
           <FlexContainer margin="0 0 20px 0" flexDirection="column">
-            <Link to={Page.PERSONAL_DATA}>
+            <Link to={Page.PROOF_OF_IDENTITY}>
               <FlexContainer
                 borderRadius="12px"
                 backgroundColor="#3B2B3D"

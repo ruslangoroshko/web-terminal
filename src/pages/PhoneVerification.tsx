@@ -24,6 +24,8 @@ import { getProcessId } from '../helpers/getProcessId';
 import { SexEnum } from '../enums/Sex';
 import validationInputTexts from '../constants/validationInputTexts';
 import { useTranslation } from 'react-i18next';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
 
 const PhoneVerification: FC = () => {
   const [countries, setCountries] = useState<Country[]>([]);

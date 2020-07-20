@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import {
   PrimaryTextParagraph,
@@ -12,13 +12,16 @@ import { useStores } from '../../hooks/useStores';
 import AmountPlaceholder from './AmountPlaceholder';
 import CurrencyDropdown from './CurrencyDropdown';
 import { paymentCurrencies } from '../../constants/paymentCurrencies';
-import { Link } from 'react-router-dom';
 import { PrimaryButton } from '../../styles/Buttons';
 import API from '../../helpers/API';
 import { DepositApiResponseCodes } from '../../enums/DepositApiResponseCodes';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../../constants/mixpanelEvents';
+import mixapanelProps from '../../constants/mixpanelProps';
+import depositMethod from '../../constants/depositMethod';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -67,6 +70,13 @@ const VisaMasterCardForm = () => {
     try {
       const response = await API.createDeposit(params);
       if (response.status === DepositApiResponseCodes.Success) {
+        mixpanel.track(mixpanelEvents.DEPOSIT, {
+          [mixapanelProps.AMOUNT]: +values.amount,
+          [mixapanelProps.DEPOSIT_METHOD]: depositMethod.BANK_CARD,
+          [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.isLive
+            ? mainAppStore.activeAccount.id
+            : mainAppStore.accounts.find(item => item.isLive)?.id || '',
+        });
         window.location.href = response.redirectUrl;
       } else {
         badRequestPopupStore.setMessage(t('Technical error'));
@@ -109,6 +119,12 @@ const VisaMasterCardForm = () => {
       if (el) el.focus();
     }
   };
+
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.DEPOSIT_METHOD_VIEW, {
+      [mixapanelProps.DEPOSIT_METHOD]: depositMethod.BANK_CARD,
+    });
+  }, []);
 
   return (
     <FlexContainer flexDirection="column" padding="32px 0 0 68px">
