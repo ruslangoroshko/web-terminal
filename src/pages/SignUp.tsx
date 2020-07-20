@@ -95,12 +95,21 @@ function SignUp() {
                 notificationStore.isSuccessfull = false;
                 notificationStore.openNotification();
                 mainAppStore.isInitLoading = false;
+                mixpanel.track(mixpanelEvents.SIGN_UP_FAILED, {
+                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+                  [mixapanelProps.ERROR_TEXT]: t(
+                    apiResponseCodeMessages[result]
+                  ),
+                  [mixapanelProps.EMAIL]: email,
+                });
               } else {
                 mixpanel.people.set({
                   [mixapanelProps.EMAIL]: email,
                   [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
                 });
-                mixpanel.track(mixpanelEvents.SIGN_UP);
+                mixpanel.track(mixpanelEvents.SIGN_UP, {
+                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+                });
                 push(Page.DASHBOARD);
               }
             } catch (error) {

@@ -57,13 +57,19 @@ const SingIn = observer(() => {
         notificationStore.isSuccessfull = false;
         notificationStore.openNotification();
         mainAppStore.isInitLoading = false;
+
+        mixpanel.track(mixpanelEvents.LOGIN_FAILED, {
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+          [mixapanelProps.ERROR_TEXT]: t(apiResponseCodeMessages[result]),
+          [mixapanelProps.EMAIL]: credentials.email,
+        });
       }
       if (result === OperationApiResponseCodes.Ok) {
         mixpanel.people.union({
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
           [mixapanelProps.PLATFORMS_USED]: 'web',
         });
-        mixpanel.track(mixpanelEvents.SIGN_UP_VIEW, {
+        mixpanel.track(mixpanelEvents.LOGIN_VIEW, {
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
         });
       }
