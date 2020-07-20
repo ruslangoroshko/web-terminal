@@ -106,7 +106,7 @@ const DepositPopupInner: FC = () => {
                         'Please be aware that you need to verify your account within 15 days after deposit.'
                       )}
                     </PrimaryTextSpan>
-                    <CustomLink to={Page.PERSONAL_DATA}>
+                    <CustomLink to={Page.PROOF_OF_IDENTITY}>
                       {t('Upload now')}
                     </CustomLink>
                   </FlexContainer>

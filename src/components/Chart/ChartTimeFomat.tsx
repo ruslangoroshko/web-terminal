@@ -48,14 +48,18 @@ function ChartTimeFomat() {
         break;
     }
     tradingViewStore.tradingWidget?.onChartReady(async () => {
-      tradingViewStore.tradingWidget?.applyOverrides(newProps);
-      setAxisProps(newProps);
+      if (newProps) {
+        tradingViewStore.tradingWidget?.applyOverrides(newProps);
+        setAxisProps(newProps);
+      }
     });
   };
 
   useEffect(() => {
     tradingViewStore.tradingWidget?.onChartReady(async () => {
-      tradingViewStore.tradingWidget?.applyOverrides(axisProps);
+      if (axisProps) {
+        tradingViewStore.tradingWidget?.applyOverrides(axisProps);
+      }
     });
   }, []);
   return (

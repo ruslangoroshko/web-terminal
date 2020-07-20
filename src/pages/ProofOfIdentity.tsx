@@ -60,9 +60,9 @@ function ProofOfIdentity() {
 
   const postPersonalData = async () => {
     try {
-      const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
-      await API.postPersonalData(JSON.parse(response));
-      mixpanel.track(mixpanelEvents.KYC_STEP_2);
+      // const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
+      // await API.postPersonalData(JSON.parse(response));
+      // mixpanel.track(mixpanelEvents.KYC_STEP_2);
 
       await API.verifyUser({ processId: getProcessId() });
       mixpanel.track(mixpanelEvents.KYC_STEP_3);

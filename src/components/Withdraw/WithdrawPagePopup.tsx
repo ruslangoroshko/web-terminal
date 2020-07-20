@@ -32,7 +32,7 @@ const WithdrawPagePopup = () => {
             width="186px"
             padding="12px"
             type="submit"
-            onClick={() => push(Page.PERSONAL_DATA)}
+            onClick={() => push(Page.PROOF_OF_IDENTITY)}
             //disabled={!formikBag.isValid || formikBag.isSubmitting}
           >
             <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
