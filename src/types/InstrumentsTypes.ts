@@ -25,9 +25,9 @@ export interface InstrumentModelWSDTO {
 }
 
 interface DayOff {
-  dowFrom: string;
+  dowFrom: number;
   timeFrom: string;
-  dowTo: string;
+  dowTo: number;
   timeTo: string;
 }
 
