@@ -141,7 +141,8 @@ const BitcoinForm: FC = () => {
             )}
             <br />
             <br />
-            {t('Time to fund: Depending on the Blockchain (approx 20-60 min)')}
+            {t('Time to fund: Depending on the Blockchain')} (
+            {t('approx 20-60 min')})
           </PrimaryTextSpan>
         </FlexContainer>
       </FlexContainer>
