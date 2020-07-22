@@ -34,9 +34,7 @@ const WithdrawHistoryTab = () => {
         withdrawalStore.setHistory(sortedList);
       }
       withdrawalStore.endLoad();
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const updateHistoryList = () => {
@@ -50,7 +48,7 @@ const WithdrawHistoryTab = () => {
   useEffect(() => {
     mixpanel.track(mixpanelEvents.WITHDRAW_HISTORY_VIEW, {
       [mixapanelProps.AVAILABLE_BALANCE]:
-        mainAppStore.accounts.find(item => item.isLive)?.balance || 0,
+        mainAppStore.accounts.find((item) => item.isLive)?.balance || 0,
     });
   }, []);
 
@@ -76,7 +74,7 @@ const WithdrawHistoryTab = () => {
                 )}
                 {withdrawalStore.history && (
                   <TableGrid columnsCount={5} maxHeight="calc(100vh - 235px)">
-                    {withdrawalStore.history.map(item => (
+                    {withdrawalStore.history.map((item) => (
                       <WithdrawHistoryItem
                         key={item.id}
                         data={item}

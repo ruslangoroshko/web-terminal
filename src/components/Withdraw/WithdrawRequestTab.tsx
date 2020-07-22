@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
@@ -23,12 +23,30 @@ import WithdrawFormBitcoin from './WithdrawPaymentForm/WithdrawFormBitcoin';
 import { Observer } from 'mobx-react-lite';
 import WithdrawPendingPopup from './WithdrawPendingPopup';
 import { useTranslation } from 'react-i18next';
+import { WithdrawalHistoryResponseStatus } from '../../enums/WithdrawalHistoryResponseStatus';
+import API from '../../helpers/API';
+import { WithdrawalStatusesEnum } from '../../enums/WithdrawalStatusesEnum';
 
 const WithdrawRequestTab = () => {
   const { mainAppStore, withdrawalStore } = useStores();
   const [paymentMeyhod, setPaymentMethod] = useState(
     WithdrawalTypesEnum.BankTransfer
   );
+
+  useEffect(() => {
+    const initHistoryList = async () => {
+      try {
+        const result = await API.getWithdrawalHistory({
+          AuthToken: mainAppStore.token,
+        });
+        if (result.status === WithdrawalHistoryResponseStatus.Successful) {
+          const isPending = !!result.history?.find(item => item.status === WithdrawalStatusesEnum.Pending);
+          isPending && withdrawalStore.setPendingPopup();
+        }
+      } catch (error) {}
+    };
+    initHistoryList();
+  }, []);
 
   const { t } = useTranslation();
 
@@ -59,9 +77,9 @@ const WithdrawRequestTab = () => {
               fontWeight="bold"
               color="#FFFCCC"
             >
-              {mainAppStore.accounts.find(item => item.isLive)?.symbol}
+              {mainAppStore.accounts.find((item) => item.isLive)?.symbol}
               {mainAppStore.accounts
-                .find(item => item.isLive === true)
+                .find((item) => item.isLive === true)
                 ?.balance.toFixed(2)}
             </PrimaryTextSpan>
           </FlexContainer>
@@ -81,16 +99,16 @@ const WithdrawRequestTab = () => {
               fontWeight="bold"
               color="#FFFCCC"
             >
-              {mainAppStore.accounts.find(item => item.isLive)?.symbol}
+              {mainAppStore.accounts.find((item) => item.isLive)?.symbol}
               {mainAppStore.accounts
-                .find(item => item.isLive)
+                .find((item) => item.isLive)
                 ?.balance.toFixed(2)}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
 
         <FlexContainer flexDirection="column">
-          {Number(mainAppStore.accounts.find(item => item.isLive)?.balance) >
+          {Number(mainAppStore.accounts.find((item) => item.isLive)?.balance) >
             0 && (
             <FlexContainer flexDirection="column">
               {mainAppStore.profileStatus ===
@@ -173,7 +191,7 @@ const WithdrawRequestTab = () => {
             </FlexContainer>
           )}
           {Number(
-            mainAppStore.accounts.find(item => item.isLive === true)?.balance
+            mainAppStore.accounts.find((item) => item.isLive === true)?.balance
           ) === 0 && <WithdrawEmptyBalance />}
         </FlexContainer>
       </FlexContainer>
@@ -299,8 +317,8 @@ const WithdrawPaymenMethodtItem = styled(ButtonWithoutStyles)<{
   active: boolean;
 }>`
   display: flex;
-  border: 2px solid ${props => (props.active ? '#FFFCCC' : 'transparent')};
-  background: ${props =>
+  border: 2px solid ${(props) => (props.active ? '#FFFCCC' : 'transparent')};
+  background: ${(props) =>
     props.active ? '#373737' : 'rgba(255, 255, 255, 0.06)'};
   border-radius: 4px;
   padding: 16px 12px;

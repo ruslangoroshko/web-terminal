@@ -12,6 +12,7 @@ import { PrimaryButton } from '../../../styles/Buttons';
 import { WithdrawalHistoryResponseStatus } from '../../../enums/WithdrawalHistoryResponseStatus';
 import { WithdrawalTabsEnum } from '../../../enums/WithdrawalTabsEnum';
 import { useTranslation } from 'react-i18next';
+import withdrawalResponseMessages from '../../../constants/withdrawalResponseMessages';
 
 interface RequestValues {
   amount: number;
@@ -29,7 +30,7 @@ const WithdrawFormBitcoin = () => {
 
   const { t } = useTranslation();
 
-  const { mainAppStore, withdrawalStore } = useStores();
+  const { mainAppStore, withdrawalStore, notificationStore } = useStores();
 
   const validationSchema = useCallback(
     () =>
@@ -73,6 +74,9 @@ const WithdrawFormBitcoin = () => {
       const result = await API.createWithdrawal(data);
       if (result.status === WithdrawalHistoryResponseStatus.Successful) {
         withdrawalStore.opentTab(WithdrawalTabsEnum.History);
+        notificationStore.isSuccessfull = true;
+      } else {
+        notificationStore.isSuccessfull = false;
       }
       if (
         result.status ===
@@ -80,6 +84,11 @@ const WithdrawFormBitcoin = () => {
       ) {
         withdrawalStore.setPendingPopup();
       }
+
+      notificationStore.notificationMessage = t(
+        withdrawalResponseMessages[result.status]
+      );
+      notificationStore.openNotification();
     } catch (error) {}
   };
 

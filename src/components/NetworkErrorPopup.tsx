@@ -7,8 +7,8 @@ import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 
-const NetworkErrorPopup = () => {  
-  const { badRequestPopupStore } = useStores();
+const NetworkErrorPopup = () => {
+  const { badRequestPopupStore, mainAppStore } = useStores();
   const [show, setShow] = useState(false);
   const [shouldRender, setRender] = useState(false);
 
@@ -23,6 +23,12 @@ const NetworkErrorPopup = () => {
     window.location.reload();
   };
 
+  const handleVisibilityChange = () => {
+    if (!document.hidden && mainAppStore.socketError) {
+      window.location.reload();
+    }
+  };
+
   useEffect(() => {
     setTimeout(() => {
       setRender(show);
@@ -32,10 +38,16 @@ const NetworkErrorPopup = () => {
   useEffect(() => {
     window.addEventListener('offline', handleLostConnection);
     window.addEventListener('online', handleSetConnection);
+    document.addEventListener(
+      'visibilitychange',
+      handleVisibilityChange,
+      false
+    );
 
     return () => {
       window.removeEventListener('offline', handleLostConnection);
       window.removeEventListener('online', handleSetConnection);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
