@@ -84,7 +84,7 @@ const WithdrawHistoryItem = (props: Props) => {
         >
           <PrimaryTextSpan
             fontSize="12px"
-            color={selectStatusColor(data?.status || null)}
+            color={selectStatusColor(data?.status || 0)}
             whiteSpace="nowrap"
           >
             ${data?.amount.toFixed(2)}
@@ -99,7 +99,7 @@ const WithdrawHistoryItem = (props: Props) => {
         >
           <PrimaryTextSpan
             fontSize="12px"
-            color={selectStatusColor(data?.status || null)}
+            color={selectStatusColor(data?.status || 0)}
             whiteSpace="nowrap"
           >
             {WithdrawHistoryStatusName[data?.status || 0]}
