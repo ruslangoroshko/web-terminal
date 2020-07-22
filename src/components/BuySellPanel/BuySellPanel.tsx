@@ -130,9 +130,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .nullable()
               .test(
                 Fields.TAKE_PROFIT,
-                t(
-                  'Error message: This level is higher or lower than the one currently allowed'
-                ),
+                `${t('Error message')}: ${t(
+                  'This level is higher or lower than the one currently allowed'
+                )}`,
                 value => value > currentPriceAsk()
               ),
           })
@@ -144,9 +144,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .nullable()
               .test(
                 Fields.TAKE_PROFIT,
-                t(
-                  'Error message: This level is higher or lower than the one currently allowed'
-                ),
+                `${t('Error message')}: ${t(
+                  'This level is higher or lower than the one currently allowed'
+                )}`,
                 value => value < currentPriceBid()
               ),
           }),
@@ -161,9 +161,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .nullable()
               .test(
                 Fields.STOP_LOSS,
-                t(
-                  'Error message: This level is higher or lower than the one currently allowed'
-                ),
+                `${t('Error message')}: ${t(
+                  'This level is higher or lower than the one currently allowed'
+                )}`,
                 value => value < currentPriceAsk()
               ),
           })
@@ -175,9 +175,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               .nullable()
               .test(
                 Fields.STOP_LOSS,
-                t(
-                  'Error message: This level is higher or lower than the one currently allowed'
-                ),
+                `${t('Error message')}: ${t(
+                  'This level is higher or lower than the one currently allowed'
+                )}`,
                 value => value > currentPriceBid()
               ),
           })
