@@ -89,7 +89,7 @@ const Orders: FC = () => {
               onClick={handleChangeSorting(+key)}
               whiteSpace="nowrap"
             >
-              {value}
+              {t(value)}
             </DropdownItemText>
           ))}
         </SortByDropdown>

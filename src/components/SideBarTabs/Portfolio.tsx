@@ -167,7 +167,7 @@ const Portfolio: FC<Props> = () => {
               onClick={handleChangeSorting(+key)}
               whiteSpace="nowrap"
             >
-              {value}
+              {t(value)}
             </DropdownItemText>
           ))}
         </SortByDropdown>

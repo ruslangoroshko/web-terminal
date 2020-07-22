@@ -97,9 +97,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .nullable()
               .test(
                 Fields.TAKE_PROFIT,
-                t(
-                  'Error message: This level is higher or lower than the one currently allowed'
-                ),
+                `${t('Error message')}: ${t(
+                  'This level is higher or lower than the one currently allowed'
+                )}`,
                 value => value > currentPriceBid()
               ),
           })
@@ -111,9 +111,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .nullable()
               .test(
                 Fields.TAKE_PROFIT,
-                t(
-                  'Error message: This level is higher or lower than the one currently allowed'
-                ),
+                `${t('Error message')}: ${t(
+                  'This level is higher or lower than the one currently allowed'
+                )}`,
                 value => value < currentPriceAsk()
               ),
           })
@@ -138,9 +138,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .number()
               .test(
                 Fields.STOP_LOSS,
-                t(
-                  'Error message: This level is higher or lower than the one currently allowed'
-                ),
+                `${t('Error message')}: ${t(
+                  'This level is higher or lower than the one currently allowed'
+                )}`,
                 value => value < currentPriceBid()
               ),
           })
@@ -151,9 +151,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .number()
               .test(
                 Fields.STOP_LOSS,
-                t(
-                  'Error message: This level is higher or lower than the one currently allowed'
-                ),
+                `${t('Error message')}: ${t(
+                  'This level is higher or lower than the one currently allowed'
+                )}`,
                 value => value > currentPriceAsk()
               ),
           })
