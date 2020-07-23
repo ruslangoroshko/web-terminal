@@ -24,6 +24,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
         instruments: newInstruments,
       });
       instrumentsStore.setActiveInstrumentsIds(response);
+      instrumentsStore.switchInstrument(response[response.length - 1]);
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);

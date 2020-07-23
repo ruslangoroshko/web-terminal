@@ -23,7 +23,6 @@ const TradingHistory: FC = () => {
 
   const fetchPositionsHistory = useCallback(
     async (isScrolling = false) => {
-      console.log(moment())
       try {
         const response = await API.getPositionsHistory({
           accountId: mainAppStore.activeAccount!.id,
