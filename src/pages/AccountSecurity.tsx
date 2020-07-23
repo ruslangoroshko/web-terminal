@@ -30,12 +30,12 @@ function AccountSecurity() {
       .string()
       .required(t('Password must be at least 8 characters long'))
       .min(8, t(validationInputTexts.PASSWORD_MIN_CHARACTERS))
-      .max(40, t(validationInputTexts.PASSWORD_MAX_CHARACTERS)),
+      .max(31, t(validationInputTexts.PASSWORD_MAX_CHARACTERS)),
     password: yup
       .string()
       .required(t('Password must be at least 8 characters long'))
       .min(8, t(validationInputTexts.PASSWORD_MIN_CHARACTERS))
-      .max(40, t(validationInputTexts.PASSWORD_MAX_CHARACTERS))
+      .max(31, t(validationInputTexts.PASSWORD_MAX_CHARACTERS))
       .matches(
         /^(?=.*\d)(?=.*[a-zA-Z])/,
         t(validationInputTexts.PASSWORD_MATCH)

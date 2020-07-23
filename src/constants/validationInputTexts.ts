@@ -5,7 +5,7 @@ const validationInputTexts = {
     REQUIRED_FIELD: 'Required any value',
     USER_AGREEMENT: 'Please accept the Terms of service and Privacy Policy to continue',
     PASSWORD_MIN_CHARACTERS: 'Min 8 characters',
-    PASSWORD_MAX_CHARACTERS: 'Max 40 symbols',
+    PASSWORD_MAX_CHARACTERS: 'Max 31 symbols',
     PASSWORD_MATCH: 'Min one number and one letter'
 }
 
