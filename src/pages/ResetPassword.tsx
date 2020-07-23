@@ -37,7 +37,7 @@ function ResetPassword(props: Props) {
       .string()
       .required(t(validationInputTexts.REQUIRED_FIELD))
       .min(8, t(validationInputTexts.PASSWORD_MIN_CHARACTERS))
-      .max(40, t(validationInputTexts.PASSWORD_MAX_CHARACTERS))
+      .max(31, t(validationInputTexts.PASSWORD_MAX_CHARACTERS))
       .matches(
         /^(?=.*\d)(?=.*[a-zA-Z])/,
         t(validationInputTexts.PASSWORD_MATCH)
