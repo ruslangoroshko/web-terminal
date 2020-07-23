@@ -12,6 +12,7 @@ import DatePickerDropdownNoCustomDates from '../DatePickerDropdownNoCustomDates'
 import LoaderForComponents from '../LoaderForComponents';
 import InfinityScrollList from '../InfinityScrollList';
 import { useTranslation } from 'react-i18next';
+import moment from 'moment';
 
 const TradingHistory: FC = () => {
   const { tabsStore, mainAppStore, historyStore, dateRangeStore } = useStores();
@@ -26,7 +27,7 @@ const TradingHistory: FC = () => {
         const response = await API.getPositionsHistory({
           accountId: mainAppStore.activeAccount!.id,
           startDate: dateRangeStore.startDate.valueOf(),
-          endDate: dateRangeStore.endDate.valueOf(),
+          endDate: moment().valueOf(),
           page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
           pageSize: 20,
         });
