@@ -14,7 +14,6 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
   const handleRemoveInstrument = (itemId: string) => async () => {
     let indexEl = instrumentsStore.activeInstrumentsIds.findIndex(id => id === itemId);
     indexEl = indexEl ? indexEl - 1 : 0;
-    console.log(indexEl)
     const newInstruments = instrumentsStore.activeInstrumentsIds.filter(
       id => id !== itemId
     );
