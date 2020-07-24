@@ -12,6 +12,8 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
   const { instrumentsStore, mainAppStore, badRequestPopupStore } = useStores();
 
   const handleRemoveInstrument = (itemId: string) => async () => {
+    let indexEl = instrumentsStore.activeInstrumentsIds.findIndex(id => id === itemId);
+    indexEl = indexEl ? indexEl - 1 : 0;
     const newInstruments = instrumentsStore.activeInstrumentsIds.filter(
       id => id !== itemId
     );
@@ -24,7 +26,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
         instruments: newInstruments,
       });
       instrumentsStore.setActiveInstrumentsIds(response);
-      instrumentsStore.switchInstrument(response[response.length - 1]);
+      instrumentsStore.switchInstrument(response[indexEl]);
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
