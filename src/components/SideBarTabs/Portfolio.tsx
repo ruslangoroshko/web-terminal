@@ -41,7 +41,7 @@ const Portfolio: FC<Props> = () => {
 
   const profit = useCallback(() => quotesStore.profit, [quotesStore.profit]);
 
-  const {t} = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <PortfolioWrapper flexDirection="column" height="100%">
