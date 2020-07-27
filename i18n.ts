@@ -22,6 +22,8 @@ i18n
     lng: CountriesEnum.EN,
     fallbackLng: CountriesEnum.EN,
     keySeparator: false, // we do not use keys in form messages.welcome
+    nsSeparator: false,
+    appendNamespaceToMissingKey: false,
     supportedLngs: [CountriesEnum.EN, CountriesEnum.PL],
     interpolation: {
       escapeValue: false, // react already safes from xss
