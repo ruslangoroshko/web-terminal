@@ -9,6 +9,7 @@ import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import AccountInfo from './AccountInfo';
 import { Observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
+import AccountTotal from './AccountTotal';
 
 function AccountSwitcherDropdown() {
   const { quotesStore, mainAppStore } = useStores();
@@ -68,14 +69,7 @@ function AccountSwitcherDropdown() {
                   >
                     {t('Total')}:
                   </PrimaryTextSpan>
-                  <Observer>
-                    {() => (
-                      <PrimaryTextSpan fontSize="11px" color="#fffccc">
-                        {mainAppStore.activeAccount?.symbol}
-                        {quotesStore.total.toFixed(2)}
-                      </PrimaryTextSpan>
-                    )}
-                  </Observer>
+                  <AccountTotal />
                 </FlexContainer>
               </FlexContainer>
               <FlexContainer
@@ -103,7 +97,7 @@ function AccountSwitcherDropdown() {
               borderRadius="0 0 8px 8px"
               overflow="hidden"
             >
-              {mainAppStore.sortedAccounts.map(acc => (
+              {mainAppStore.sortedAccounts.map((acc) => (
                 <AccountInfo
                   key={acc.id}
                   account={acc}

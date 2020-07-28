@@ -1,9 +1,8 @@
-import React, { FC, useRef, useCallback, useMemo } from 'react';
+import React, { FC, useRef, useCallback, useEffect } from 'react';
 import * as yup from 'yup';
-import { Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
-import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
+import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { AskBidEnum } from '../../enums/AskBid';
 import SvgIcon from '../SvgIcon';
 import IconShevronDown from '../../assets/svg/icon-shevron-logo-down.svg';
@@ -17,7 +16,6 @@ import moment from 'moment';
 import InformationPopup from '../InformationPopup';
 import AutoClosePopupSideBar from './AutoClosePopupSideBar';
 import { getNumberSign } from '../../helpers/getNumberSign';
-import { calculateInPercent } from '../../helpers/calculateInPercent';
 import ClosePositionPopup from './ClosePositionPopup';
 import ImageContainer from '../ImageContainer';
 import Fields from '../../constants/fields';
@@ -32,7 +30,9 @@ import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
-
+import EquityPnL from './EquityPnl';
+import ActivePositionPnL from './ActivePositionPnL';
+import ActivePositionPnLPercent from './ActivePositionPnLPercent';
 interface Props {
   position: PositionModelWSDTO;
 }
@@ -83,6 +83,16 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     [quotesStore.quotes[position.instrument].bid.c, position.instrument]
   );
 
+  // const throttledCurrentPriceAsk = useRef(throttle(currentPriceAsk, 2000));
+
+  // useEffect(
+  //   () =>
+  //     throttledCurrentPriceAsk.current(
+  //       quotesStore.quotes[position.instrument].bid.c
+  //     ),
+  //   [quotesStore.quotes[position.instrument].bid.c]
+  // );
+
   const validationSchema = useCallback(
     () =>
       yup.object().shape({
@@ -100,7 +110,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                value => value > currentPriceBid()
+                (value) => value > currentPriceBid()
               ),
           })
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
@@ -114,18 +124,18 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                value => value < currentPriceAsk()
+                (value) => value < currentPriceAsk()
               ),
           })
           .when([Fields.TAKE_PROFIT_TYPE], {
-            is: tpType => tpType === TpSlTypeEnum.Currency,
+            is: (tpType) => tpType === TpSlTypeEnum.Currency,
             then: yup
               .number()
               .nullable()
               .test(
                 Fields.TAKE_PROFIT,
                 t('Take profit level should be higher than the current P/L'),
-                value => value > PnL()
+                (value) => value > PnL()
               ),
           }),
         sl: yup
@@ -141,7 +151,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                value => value < currentPriceBid()
+                (value) => value < currentPriceBid()
               ),
           })
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
@@ -154,22 +164,22 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                value => value > currentPriceAsk()
+                (value) => value > currentPriceAsk()
               ),
           })
           .when([Fields.STOP_LOSS_TYPE], {
-            is: slType => slType === TpSlTypeEnum.Currency,
+            is: (slType) => slType === TpSlTypeEnum.Currency,
             then: yup
               .number()
               .test(
                 Fields.STOP_LOSS,
                 t('Stop loss level should be lower than the current P/L'),
-                value => -1 * Math.abs(value) < PnL()
+                (value) => -1 * Math.abs(value) < PnL()
               )
               .test(
                 Fields.STOP_LOSS,
                 t('Stop loss level can not be higher than the Invest amount'),
-                value => Math.abs(value) <= position.investmentAmount
+                (value) => Math.abs(value) <= position.investmentAmount
               ),
           }),
         tpType: yup.number().nullable(),
@@ -427,15 +437,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                   >
                     {t('Equity')}
                   </PrimaryTextSpan>
-                  <Observer>
-                    {() => (
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                        {getNumberSign(PnL() + position.investmentAmount)}
-                        {mainAppStore.activeAccount?.symbol}
-                        {Math.abs(PnL() + position.investmentAmount).toFixed(2)}
-                      </PrimaryTextSpan>
-                    )}
-                  </Observer>
+                  <EquityPnL position={position} />
                 </FlexContainer>
                 <FlexContainer
                   justifyContent="space-between"
@@ -475,32 +477,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               alignItems="flex-end"
               margin="0 8px 0 0"
             >
-              <Observer>
-                {() => (
-                  <QuoteText
-                    isGrowth={PnL() >= 0}
-                    marginBottom="4px"
-                    fontSize="12px"
-                    lineHeight="14px"
-                  >
-                    {PnL() >= 0 ? '+' : '-'}
-                    {mainAppStore.activeAccount?.symbol}
-                    {Math.abs(PnL()).toFixed(2)}
-                  </QuoteText>
-                )}
-              </Observer>
-              <Observer>
-                {() => (
-                  <PrimaryTextSpan
-                    fontSize="10px"
-                    lineHeight="12px"
-                    color="rgba(255, 255, 255, 0.5)"
-                  >
-                    {PnL() >= 0 ? '+' : ''}
-                    {calculateInPercent(position.investmentAmount, PnL())}%
-                  </PrimaryTextSpan>
-                )}
-              </Observer>
+              <ActivePositionPnL position={position} />
+              <ActivePositionPnLPercent position={position} />
             </FlexContainer>
           </FlexContainer>
           <FlexContainer ref={clickableWrapper}>
