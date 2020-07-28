@@ -22,7 +22,9 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
 import depositMethod from '../../constants/depositMethod';
+import InputMask from 'react-input-mask';
 
+import VisaMaster from "../../assets/svg/payments/VisaMaster.png"
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
   const placeholderValues = [250, 500, 1000];
@@ -38,6 +40,10 @@ const VisaMasterCardForm = () => {
   });
   const initialValues = {
     amount: 500,
+    fullName: '',
+    cardNumber: '',
+    expirationDate: '',
+    cvv: '',
   };
 
   const { mainAppStore, badRequestPopupStore } = useStores();
@@ -65,7 +71,7 @@ const VisaMasterCardForm = () => {
       depositSum: +values.amount,
       currency: 'USD',
       authToken: mainAppStore.token || '',
-      accountId: mainAppStore.accounts.find(item => item.isLive)?.id || '',
+      accountId: mainAppStore.accounts.find((item) => item.isLive)?.id || '',
     };
     try {
       const response = await API.createDeposit(params);
@@ -75,7 +81,7 @@ const VisaMasterCardForm = () => {
           [mixapanelProps.DEPOSIT_METHOD]: depositMethod.BANK_CARD,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.isLive
             ? mainAppStore.activeAccount.id
-            : mainAppStore.accounts.find(item => item.isLive)?.id || '',
+            : mainAppStore.accounts.find((item) => item.isLive)?.id || '',
         });
         window.location.href = response.redirectUrl;
       } else {
@@ -129,42 +135,44 @@ const VisaMasterCardForm = () => {
   return (
     <FlexContainer flexDirection="column" padding="32px 0 0 68px">
       <form noValidate onSubmit={handleSubmit}>
-        <PrimaryTextParagraph
-          textTransform="uppercase"
-          fontSize="11px"
-          color="rgba(255,255,255,0.3)"
-          marginBottom="6px"
-        >
-          {t('Amount')}
-        </PrimaryTextParagraph>
+        <FlexContainer flexDirection="column">
+          <PrimaryTextParagraph
+            textTransform="uppercase"
+            fontSize="11px"
+            color="rgba(255,255,255,0.3)"
+            marginBottom="6px"
+          >
+            {t('Amount')}
+          </PrimaryTextParagraph>
 
-        <FlexContainer
-          borderRadius="4px"
-          border="1px solid #FFFCCC"
-          backgroundColor="#292C33"
-          marginBottom="10px"
-          maxHeight="48px"
-          alignItems="center"
-          position="relative"
-        >
-          <Input
-            value={values.amount}
-            onChange={handleChangeAmount}
-            onBeforeInput={investOnBeforeInputHandler}
-            name="amount"
-            id="amount"
-          />
-          {errors.amount && <ErrorText>{errors.amount}</ErrorText>}
-          <CurrencyDropdown
-            disabled={true}
-            width="80px"
-            handleSelectCurrency={setCurrency}
-            selectedCurrency={currency}
-          ></CurrencyDropdown>
+          <FlexContainer
+            borderRadius="4px"
+            border="1px solid #FFFCCC"
+            backgroundColor="#292C33"
+            marginBottom="10px"
+            maxHeight="48px"
+            alignItems="center"
+            position="relative"
+          >
+            <Input
+              value={values.amount}
+              onChange={handleChangeAmount}
+              onBeforeInput={investOnBeforeInputHandler}
+              name="amount"
+              id="amount"
+            />
+            {errors.amount && <ErrorText>{errors.amount}</ErrorText>}
+            <CurrencyDropdown
+              disabled={true}
+              width="80px"
+              handleSelectCurrency={setCurrency}
+              selectedCurrency={currency}
+            ></CurrencyDropdown>
+          </FlexContainer>
         </FlexContainer>
 
         <FlexContainer marginBottom="92px">
-          {placeholderValues.map(item => (
+          {placeholderValues.map((item) => (
             <AmountPlaceholder
               key={item}
               isActive={item === values.amount}
@@ -177,15 +185,132 @@ const VisaMasterCardForm = () => {
           ))}
         </FlexContainer>
 
-        <FlexContainer
-          alignItems="center"
-          justifyContent="space-around"
-          marginBottom="20px"
-        >
-          <ImageBadge src={SslCertifiedImage} width={120}></ImageBadge>
-          <ImageBadge src={MastercardIdCheckImage} width={110}></ImageBadge>
-          <ImageBadge src={VisaSecureImage} width={28}></ImageBadge>
+        <FlexContainer marginBottom="20px">
+          <img src={VisaMaster} alt="" width="81px"/>
         </FlexContainer>
+
+        <FlexContainer flexDirection="column" marginBottom="20px">
+          <PrimaryTextParagraph
+            textTransform="uppercase"
+            fontSize="11px"
+            color="rgba(255,255,255,0.3)"
+            marginBottom="6px"
+          >
+            {t('Card holder')}
+          </PrimaryTextParagraph>
+
+          <FlexContainer
+            borderRadius="4px"
+            backgroundColor="#292C33"
+            marginBottom="10px"
+            maxHeight="48px"
+            alignItems="center"
+            position="relative"
+          >
+            <CustomInput
+              placeholder="Your name"
+              value={values.fullName}
+              onChange={handleChange}
+              name="fullName"
+              id="fullName"
+            />
+            {errors.fullName && <ErrorText>{errors.fullName}</ErrorText>}
+          </FlexContainer>
+        </FlexContainer>
+
+        <FlexContainer flexDirection="column" marginBottom="20px">
+          <PrimaryTextParagraph
+            textTransform="uppercase"
+            fontSize="11px"
+            color="rgba(255,255,255,0.3)"
+            marginBottom="6px"
+          >
+            {t('Card number')}
+          </PrimaryTextParagraph>
+
+          <FlexContainer
+            borderRadius="4px"
+            backgroundColor="#292C33"
+            marginBottom="10px"
+            maxHeight="48px"
+            alignItems="center"
+            position="relative"
+          >
+            <CustomInputMask
+              maskPlaceholder={''}
+              placeholder="1234 5678 9012 3456"
+              mask="9999 9999 9999 9999"
+              value={values.cardNumber}
+              onChange={handleChange}
+              name="cardNumber"
+              id="cardNumber"
+            />
+            {errors.cardNumber && <ErrorText>{errors.cardNumber}</ErrorText>}
+          </FlexContainer>
+        </FlexContainer>
+
+        <CustomFlex>
+        <FlexContainer flexDirection="column" marginBottom="20px">
+          <PrimaryTextParagraph
+            textTransform="uppercase"
+            fontSize="11px"
+            color="rgba(255,255,255,0.3)"
+            marginBottom="6px"
+          >
+            {t('Expire date')}
+          </PrimaryTextParagraph>
+
+          <FlexContainer
+            borderRadius="4px"
+            backgroundColor="#292C33"
+            marginBottom="10px"
+            maxHeight="48px"
+            alignItems="center"
+            position="relative"
+          >
+            <CustomInputMask
+              maskPlaceholder={''}
+              placeholder="12 / 24"
+              mask="99 / 99"
+              value={values.expirationDate}
+              onChange={handleChange}
+              name="expirationDate"
+              id="expirationDate"
+            />
+            {errors.expirationDate && <ErrorText>{errors.expirationDate}</ErrorText>}
+          </FlexContainer>
+        </FlexContainer>
+        <FlexContainer flexDirection="column" marginBottom="20px">
+          <PrimaryTextParagraph
+            textTransform="uppercase"
+            fontSize="11px"
+            color="rgba(255,255,255,0.3)"
+            marginBottom="6px"
+          >
+            {t('Cvv')}
+          </PrimaryTextParagraph>
+
+          <FlexContainer
+            borderRadius="4px"
+            backgroundColor="#292C33"
+            marginBottom="10px"
+            maxHeight="48px"
+            alignItems="center"
+            position="relative"
+          >
+            <CustomInputMask
+              maskPlaceholder={''}
+              placeholder="***"
+              mask="999"
+              value={values.cvv}
+              onChange={handleChange}
+              name="cvv"
+              id="cvv"
+            />
+            {errors.cvv && <ErrorText>{errors.cvv}</ErrorText>}
+          </FlexContainer>
+        </FlexContainer>
+        </CustomFlex>
 
         <FlexContainer marginBottom="40px">
           <PrimaryButton
@@ -207,6 +332,14 @@ const VisaMasterCardForm = () => {
 
 export default VisaMasterCardForm;
 
+const CustomFlex = styled(FlexContainer)`
+  justify-content: space-between;
+  & > div {
+    flex-basis: calc(50% - 8px);
+  }
+`;
+
+
 const ImageBadge = styled.img``;
 
 const Input = styled.input`
@@ -221,6 +354,60 @@ const Input = styled.input`
   padding-right: 100px;
   background-color: transparent;
   border-right: 1px solid rgba(255, 255, 255, 0.19);
+`;
+
+const CustomInput = styled.input`
+  border: none;
+  outline: none;
+  height: 48px;
+  color: #fffccc;
+  font-size: 14px;
+  font-weight: bold;
+  width: 100%;
+  padding: 24px 16px;
+  background-color: transparent;
+  border: 1px solid #494b50;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  &::placeholder {
+    color: rgba(196, 196, 196, 0.5);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+  }
+  &:focus {
+    border-color: #fffccc;
+    &::placeholder {
+      opacity: 0;
+    }
+  }
+`;
+
+const CustomInputMask = styled(InputMask)<{ maskPlaceholder?: string | null }>`
+  border: none;
+  outline: none;
+  height: 48px;
+  color: #fffccc;
+  font-size: 14px;
+  font-weight: bold;
+  width: 100%;
+  padding: 24px 16px;
+  background-color: transparent;
+  border: 1px solid #494b50;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  &::placeholder {
+    color: rgba(196, 196, 196, 0.5);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+  }
+  &:focus {
+    border-color: #fffccc;
+    &::placeholder {
+      opacity: 0;
+    }
+  }
 `;
 
 const ErrorText = styled.span`
