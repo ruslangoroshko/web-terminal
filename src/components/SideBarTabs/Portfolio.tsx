@@ -1,15 +1,13 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, { FC, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
   PrimaryTextSpan,
   PrimaryTextParagraph,
-  QuoteText,
 } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
 import ActivePositionsPortfolioTab from './ActivePositions';
-import { getNumberSign } from '../../helpers/getNumberSign';
 import { Observer } from 'mobx-react-lite';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import SortByDropdown from '../SortByDropdown';
@@ -18,6 +16,8 @@ import SvgIcon from '../SvgIcon';
 import { sortByDropdownProfitLabels } from '../../constants/sortByDropdownValues';
 import { SortByProfitEnum } from '../../enums/SortByProfitEnum';
 import { useTranslation } from 'react-i18next';
+import PortfolioTotalProfit from './PortfolioTotalProfit';
+import PortfolioTotalEquity from './PortfolioTotalEquity';
 
 interface Props {}
 
@@ -38,8 +38,6 @@ const Portfolio: FC<Props> = () => {
     sortingStore.activePositionsSortBy = sortType;
     toggle(false);
   };
-
-  const profit = useCallback(() => quotesStore.profit, [quotesStore.profit]);
 
   const { t } = useTranslation();
 
@@ -77,21 +75,7 @@ const Portfolio: FC<Props> = () => {
           >
             {t('Total Profit')}
           </PrimaryTextParagraph>
-          <Observer>
-            {() => (
-              <QuoteText
-                isGrowth={profit() >= 0}
-                fontSize="24px"
-                lineHeight="28px"
-                fontWeight="bold"
-                marginBottom="20px"
-              >
-                {getNumberSign(profit())}
-                {mainAppStore.activeAccount?.symbol}
-                {Math.abs(profit()).toFixed(2)}
-              </QuoteText>
-            )}
-          </Observer>
+          <PortfolioTotalProfit></PortfolioTotalProfit>
           <FlexContainer>
             <FlexContainer flexDirection="column" margin="0 38px 20px 0">
               <PrimaryTextParagraph
@@ -124,18 +108,7 @@ const Portfolio: FC<Props> = () => {
               >
                 {t('Total Equity')}
               </PrimaryTextParagraph>
-              <Observer>
-                {() => (
-                  <PrimaryTextSpan
-                    fontSize="14px"
-                    lineHeight="16px"
-                    fontWeight="bold"
-                  >
-                    {mainAppStore.activeAccount?.symbol}
-                    {Math.abs(quotesStore.totalEquity).toFixed(2)}
-                  </PrimaryTextSpan>
-                )}
-              </Observer>
+              <PortfolioTotalEquity></PortfolioTotalEquity>
             </FlexContainer>
           </FlexContainer>
         </FlexContainer>
@@ -175,7 +148,7 @@ const Portfolio: FC<Props> = () => {
       <Observer>
         {() => (
           <ActivePositionsWrapper flexDirection="column">
-            {quotesStore.sortedActivePositions.map(item => (
+            {quotesStore.sortedActivePositions.map((item) => (
               <ActivePositionsPortfolioTab key={item.id} position={item} />
             ))}
             {!quotesStore.sortedActivePositions.length && (
@@ -216,9 +189,9 @@ export const TabPortfolitButton = styled(ButtonWithoutStyles)<{
   flex-direction: column;
   padding: 12px 8px;
   font-size: 12px;
-  color: ${props => (props.isActive ? '#fffcbd' : 'rgba(255,255,255,0.4)')};
+  color: ${(props) => (props.isActive ? '#fffcbd' : 'rgba(255,255,255,0.4)')};
   text-transform: uppercase;
-  background: ${props =>
+  background: ${(props) =>
     props.isActive
       ? `radial-gradient(
       50.41% 50% at 50% 0%,
@@ -227,7 +200,7 @@ export const TabPortfolitButton = styled(ButtonWithoutStyles)<{
     ),
     rgba(255, 255, 255, 0.08)`
       : 'none'};
-  box-shadow: ${props =>
+  box-shadow: ${(props) =>
     props.isActive ? 'inset 0px 1px 0px #00ffdd' : 'none'};
   border-radius: 0px 0px 4px 4px;
   transition: all 0.2s ease;

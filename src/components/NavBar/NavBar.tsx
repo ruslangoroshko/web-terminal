@@ -39,7 +39,6 @@ const NavBar = observer(() => {
           <DepositButton />
         </FlexContainer>
         <UserProfileButton></UserProfileButton>
-
         <NavBarButtonsWrapper>
           <LanguageButton></LanguageButton>
         </NavBarButtonsWrapper>

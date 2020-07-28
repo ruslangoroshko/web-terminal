@@ -18,6 +18,8 @@ import IconClose from '../../assets/svg/icon-close.svg';
 import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
 import { Th, TableGrid } from '../../styles/TableElements';
 import { useTranslation } from 'react-i18next';
+import PortfolioTotalProfit from './PortfolioTotalProfit';
+import PortfolioTotalEquity from './PortfolioTotalEquity';
 
 interface Props {}
 
@@ -86,20 +88,7 @@ const PortfolioExpanded: FC<Props> = () => {
                 >
                   {t('Total Profit')}
                 </PrimaryTextParagraph>
-                <Observer>
-                  {() => (
-                    <QuoteText
-                      isGrowth={profit >= 0}
-                      fontSize="24px"
-                      lineHeight="28px"
-                      fontWeight="bold"
-                    >
-                      {getNumberSign(profit)}
-                      {mainAppStore.activeAccount?.symbol}
-                      {Math.abs(profit).toFixed(2)}
-                    </QuoteText>
-                  )}
-                </Observer>
+                <PortfolioTotalProfit></PortfolioTotalProfit>
               </FlexContainer>
               <FlexContainer
                 flexDirection="column"
@@ -141,20 +130,7 @@ const PortfolioExpanded: FC<Props> = () => {
                 >
                   {t('Total Equity')}
                 </PrimaryTextParagraph>
-                <Observer>
-                  {() => (
-                    <PrimaryTextSpan
-                      fontSize="14px"
-                      lineHeight="16px"
-                      fontWeight="bold"
-                      color="#fffccc"
-                    >
-                      {getNumberSign(quotesStore.totalEquity)}
-                      {mainAppStore.activeAccount?.symbol}
-                      {Math.abs(quotesStore.totalEquity).toFixed(2)}
-                    </PrimaryTextSpan>
-                  )}
-                </Observer>
+                <PortfolioTotalEquity />
               </FlexContainer>
             </FlexContainer>
           </FlexContainer>
@@ -236,7 +212,7 @@ const PortfolioExpanded: FC<Props> = () => {
               <Observer>
                 {() => (
                   <>
-                    {quotesStore.sortedActivePositions.map(item => (
+                    {quotesStore.sortedActivePositions.map((item) => (
                       <ActivePositionExpanded
                         key={item.id}
                         currencySymbol={
