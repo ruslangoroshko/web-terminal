@@ -33,7 +33,6 @@ import mixapanelProps from '../../constants/mixpanelProps';
 import EquityPnL from './EquityPnl';
 import ActivePositionPnL from './ActivePositionPnL';
 import ActivePositionPnLPercent from './ActivePositionPnLPercent';
-import throttle from 'react-throttle-render'
 interface Props {
   position: PositionModelWSDTO;
 }
