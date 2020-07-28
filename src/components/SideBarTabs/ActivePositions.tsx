@@ -30,7 +30,7 @@ import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
-import EquityPnL from './EquityPnl';
+import EquityPnL from './EquityPnL';
 import ActivePositionPnL from './ActivePositionPnL';
 import ActivePositionPnLPercent from './ActivePositionPnLPercent';
 interface Props {
