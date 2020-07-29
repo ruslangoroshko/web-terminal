@@ -114,12 +114,15 @@ const VisaMasterCardForm = () => {
   };
 
   const handleSubmitForm = async (values: any) => {
+
+    let parts = values.expirationDate.split(' / ');
+
     const params: CreateDepositInvoiceParams = {
       ...values,
       cvv: +values.cvv,
       authToken: mainAppStore.token,
       accountId: mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
-      expirationDate: moment(values.expirationDate, 'MM / YY').toISOString(),
+      expirationDate: moment(`${+parts[0]+1}${parts[1]}`, 'MMYY').toISOString(),
     };
 
     try {
