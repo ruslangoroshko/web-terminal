@@ -14,14 +14,44 @@ import SvgIcon from '../SvgIcon';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { DepositTypeEnum } from '../../enums/DepositTypeEnum';
 import Modal from '../Modal';
-import VisaMasterCardForm from './VisaMasterCardForm';
+
 import { Observer } from 'mobx-react-lite';
-import BitcoinForm from './BitcoinForm';
+
 import BadRequestPopup from '../BadRequestPopup';
 import HashLocation from '../../constants/hashLocation';
 import { useTranslation } from 'react-i18next';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
+
+import BitcoinForm from './BitcoinForm';
+import VisaMasterCardForm from './VisaMasterCardForm';
+import BankTransferForm from './BankTransferForm';
+
+import CardIcon from '../../assets/svg/payments/icon-card.svg';
+import BitcoinIcon from '../../assets/svg/payments/icon-bitcoin.svg';
+import BankTransferIcon from '../../assets/svg/payments/icon-banktransfer.svg';
+
+import MastercardIdCheckImage from '../../assets/images/mastercard-id-check.png';
+import SslCertifiedImage from '../../assets/images/ssl-certified.png';
+import VisaSecureImage from '../../assets/images/visa-secure.png';
+
+const depositList = [
+  {
+    id: DepositTypeEnum.VisaMaster,
+    name: 'Visa / Mastercard',
+    icon: CardIcon,
+  },
+  // {
+  //   id: DepositTypeEnum.BankTransfer,
+  //   name: 'Bank Transfer',
+  //   icon: BankTransferIcon,
+  // },
+  {
+    id: DepositTypeEnum.Bitcoin,
+    name: 'Bitcoin',
+    icon: BitcoinIcon,
+  },
+];
 
 const DepositPopupWrapper: FC = () => {
   const location = useLocation();
@@ -42,6 +72,7 @@ const DepositPopupWrapper: FC = () => {
 
 const DepositPopupInner: FC = () => {
   const { mainAppStore, depositFundsStore, badRequestPopupStore } = useStores();
+
   const setActiveDepositType = (depositType: DepositTypeEnum) => () => {
     depositFundsStore.setActiveDepositType(depositType);
   };
@@ -53,7 +84,7 @@ const DepositPopupInner: FC = () => {
         return <VisaMasterCardForm />;
 
       case DepositTypeEnum.BankTransfer:
-        return <VisaMasterCardForm />;
+        return <BankTransferForm />;
 
       case DepositTypeEnum.Bitcoin:
         return <BitcoinForm />;
@@ -82,12 +113,7 @@ const DepositPopupInner: FC = () => {
         justifyContent="center"
         zIndex="1001"
       >
-        <FlexContainer
-          flexDirection="column"
-          width="752px"
-          backgroundColor="rgba(0, 0, 0, 0.32)"
-          boxShadow="box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.24), 0px 8px 16px rgba(37, 38, 54, 0.6)"
-        >
+        <DepositModalWrap flexDirection="column" width="752px">
           <Observer>
             {() => (
               <>
@@ -115,7 +141,7 @@ const DepositPopupInner: FC = () => {
             )}
           </Observer>
 
-          <FlexContainer position="relative" flexDirection="column">
+          <FlexContainer position="relative" flexDirection="column" flex="auto">
             <HeaderDepositPopup position="relative">
               <FlexContainer
                 position="absolute"
@@ -142,86 +168,99 @@ const DepositPopupInner: FC = () => {
               </FlexContainer>
             </HeaderDepositPopup>
 
-            <FlexContainer>
+            <FlexContainer flex="auto">
               <FlexContainer
                 padding="32px"
                 flexDirection="column"
-                width="292px"
+                width="322px"
+                justifyContent="space-between"
+                flex="auto"
               >
                 <FlexContainer flexDirection="column">
                   <Observer>
                     {() => (
                       <>
-                        <PaymentMethodItem
-                          isActive={
-                            depositFundsStore.activeDepositType ===
-                            DepositTypeEnum.VisaMaster
-                          }
-                          onClick={setActiveDepositType(
-                            DepositTypeEnum.VisaMaster
-                          )}
-                        >
-                          <FlexContainer marginRight="8px">
-                            <img src={VisaMasterImage} width={32} height={28} />
-                          </FlexContainer>
-                          <FlexContainer flexDirection="column">
-                            <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                              {t('Visa / Mastercard')}
-                            </PrimaryTextSpan>
-                            <PrimaryTextSpan
-                              fontSize="12px"
-                              color="rgba(255,255,255,0.4)"
-                            >
-                              {t('Instantly')}
-                            </PrimaryTextSpan>
-                          </FlexContainer>
-                        </PaymentMethodItem>
-                        <PaymentMethodItem
-                          isActive={
-                            depositFundsStore.activeDepositType ===
-                            DepositTypeEnum.Bitcoin
-                          }
-                          onClick={setActiveDepositType(
-                            DepositTypeEnum.Bitcoin
-                          )}
-                        >
-                          <FlexContainer marginRight="8px">
-                            <img src={BitcoinImage} width={26} height={26} />
-                          </FlexContainer>
-                          <FlexContainer flexDirection="column">
-                            <PrimaryTextSpan fontSize="12px" color="#fffccc">
-                              {t('Bitcoin')}
-                            </PrimaryTextSpan>
-                            <PrimaryTextSpan
-                              fontSize="12px"
-                              color="rgba(255,255,255,0.4)"
-                            >
-                              {t('Instantly')}
-                            </PrimaryTextSpan>
-                          </FlexContainer>
-                        </PaymentMethodItem>
+                        {depositList.map((item) => (
+                          <PaymentMethodItem
+                            key={item.id}
+                            isActive={
+                              depositFundsStore.activeDepositType === item.id
+                            }
+                            onClick={setActiveDepositType(item.id)}
+                          >
+                            <FlexContainer marginRight="8px">
+                              <SvgIcon
+                                {...item.icon}
+                                fillColor={
+                                  depositFundsStore.activeDepositType ===
+                                  item.id
+                                    ? '#fffccc'
+                                    : 'rgba(196, 196, 196, 0.5)'
+                                }
+                              ></SvgIcon>
+                            </FlexContainer>
+                            <FlexContainer flexDirection="column">
+                              <PrimaryTextSpan
+                                fontSize="12px"
+                                color={
+                                  depositFundsStore.activeDepositType ===
+                                  item.id
+                                    ? '#fffccc'
+                                    : 'rgba(196, 196, 196, 0.5)'
+                                }
+                              >
+                                {t(`${item.name}`)}
+                              </PrimaryTextSpan>
+                              <PrimaryTextSpan
+                                fontSize="12px"
+                                color="rgba(255,255,255,0.4)"
+                              >
+                                {t('Instantly')}
+                              </PrimaryTextSpan>
+                            </FlexContainer>
+                          </PaymentMethodItem>
+                        ))}
                       </>
                     )}
                   </Observer>
                 </FlexContainer>
+
+                <FlexContainer
+          alignItems="center"
+          justifyContent="space-around"
+          marginBottom="20px"
+        >
+          <ImageBadge src={SslCertifiedImage} width={120}></ImageBadge>
+          <ImageBadge src={MastercardIdCheckImage} width={110}></ImageBadge>
+          <ImageBadge src={VisaSecureImage} width={28}></ImageBadge>
+        </FlexContainer>
               </FlexContainer>
               <FlexContainer
                 flexDirection="column"
                 padding="0 40px 20px 0"
                 width="calc(100% - 292px)"
                 position="relative"
+                minHeight="688px"
               >
                 <Observer>{() => <>{renderDepositType()}</>}</Observer>
               </FlexContainer>
             </FlexContainer>
           </FlexContainer>
-        </FlexContainer>
+        </DepositModalWrap>
       </ModalBackground>
     </Modal>
   );
 };
 
 export default DepositPopupWrapper;
+
+const DepositModalWrap = styled(FlexContainer)`
+  background: #1c1f26;
+  border: 1px solid rgba(169, 171, 173, 0.1);
+  box-shadow: 0px 34px 44px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  min-height: 688px;
+`;
 
 const HeaderDepositPopup = styled(FlexContainer)`
   border-bottom: 1px solid rgba(112, 113, 117, 0.5);
@@ -238,30 +277,13 @@ const CustomLink = styled(Link)`
 `;
 
 const PaymentMethodItem = styled(FlexContainer)<{ isActive: boolean }>`
-  background: ${props =>
-    props.isActive
-      ? `radial-gradient(
-      13.51% 50% at 0% 50%,
-      rgba(0, 255, 221, 0.08) 0%,
-      rgba(0, 255, 221, 0) 100%
-    ),
-    rgba(255, 255, 255, 0.08)`
-      : 'transparent'};
-  /* box-shadow: ${props =>
-    props.isActive ? 'inset 2px 0px 0px #00ffdd' : 'none'}; */
+  background: ${(props) => (props.isActive ? '#292C33' : 'transparent')};
   border-radius: 4px;
-
   transition: all 0.2s ease;
   padding: 16px;
 
   &:hover {
-    background: radial-gradient(
-        13.51% 50% at 0% 50%,
-        rgba(0, 255, 221, 0.08) 0%,
-        rgba(0, 255, 221, 0) 100%
-      ),
-      rgba(255, 255, 255, 0.08);
-    /* box-shadow: inset 2px 0px 0px #00ffdd; */
+    background: #292c33;
     cursor: pointer;
   }
 `;
@@ -276,7 +298,7 @@ const ImageBadge = styled.img`
 const ModalBackground = styled(FlexContainer)`
   background-color: rgba(37, 38, 54, 0.8);
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-    background-color: rgba(37, 38, 54, 0.6);
+    background-color: rgba(37, 38, 54, 0.8);
     backdrop-filter: blur(12px);
   }
 `;

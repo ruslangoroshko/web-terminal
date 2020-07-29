@@ -27,10 +27,12 @@ export interface FlexContainerProps {
   marginRight?: string;
   marginBottom?: string;
   hasError?: boolean;
+  flex?: string;
 }
 
 export const FlexContainer = styled.div<FlexContainerProps>`
   display: flex;
+  flex: ${props => props.flex};
   position: ${props => props.position};
   justify-content: ${props => props.justifyContent};
   align-items: ${props => props.alignItems};
