@@ -82,6 +82,13 @@ const MainApp: FC = () => {
             visibility: hidden;
           }
 
+          .input-border {
+            border: 1px solid #494b50;
+            &.error {
+              border-color: #ED145B !important;
+            }
+          }
+
           ${reactDatePickerOverrides};
         `}
       />

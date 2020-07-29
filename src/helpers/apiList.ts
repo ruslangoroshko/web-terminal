@@ -35,6 +35,7 @@ const API_LIST = {
   DEPOSIT: {
     CREATE: '/Create',
     GET_CRYPTO_WALLET: '/GetCryptoWallet',
+    CREATE_INVOICE: '/CreatePciDssInvoice',
   },
   INIT: {
     GET: '/init/',

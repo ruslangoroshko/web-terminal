@@ -37,15 +37,15 @@ import VisaSecureImage from '../../assets/images/visa-secure.png';
 
 const depositList = [
   {
-    id: DepositTypeEnum.VisaMaster,
+    id: DepositTypeEnum.BankTransfer,
     name: 'Visa / Mastercard',
     icon: CardIcon,
   },
-  // {
-  //   id: DepositTypeEnum.BankTransfer,
-  //   name: 'Bank Transfer',
-  //   icon: BankTransferIcon,
-  // },
+  {
+    id: DepositTypeEnum.VisaMaster,
+    name: 'Mastercard',
+    icon: CardIcon,
+  },
   {
     id: DepositTypeEnum.Bitcoin,
     name: 'Bitcoin',
@@ -226,14 +226,17 @@ const DepositPopupInner: FC = () => {
                 </FlexContainer>
 
                 <FlexContainer
-          alignItems="center"
-          justifyContent="space-around"
-          marginBottom="20px"
-        >
-          <ImageBadge src={SslCertifiedImage} width={120}></ImageBadge>
-          <ImageBadge src={MastercardIdCheckImage} width={110}></ImageBadge>
-          <ImageBadge src={VisaSecureImage} width={28}></ImageBadge>
-        </FlexContainer>
+                  alignItems="center"
+                  justifyContent="space-around"
+                  marginBottom="20px"
+                >
+                  <ImageBadge src={SslCertifiedImage} width={120}></ImageBadge>
+                  <ImageBadge
+                    src={MastercardIdCheckImage}
+                    width={110}
+                  ></ImageBadge>
+                  <ImageBadge src={VisaSecureImage} width={28}></ImageBadge>
+                </FlexContainer>
               </FlexContainer>
               <FlexContainer
                 flexDirection="column"
