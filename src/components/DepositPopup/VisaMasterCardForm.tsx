@@ -116,7 +116,7 @@ const VisaMasterCardForm = () => {
   const handleSubmitForm = async (values: any) => {
     const params: CreateDepositInvoiceParams = {
       ...values,
-      cvv: +values.svv,
+      cvv: +values.cvv,
       authToken: mainAppStore.token,
       accountId: mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
       expirationDate: moment(values.expirationDate, 'MM / YY').toISOString(),
