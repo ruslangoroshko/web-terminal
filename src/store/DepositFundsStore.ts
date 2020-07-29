@@ -7,7 +7,7 @@ interface Props {
 }
 
 export class DepositFundsStore implements Props {
-  @observable activeDepositType: DepositTypeEnum = DepositTypeEnum.VisaMaster;
+  @observable activeDepositType: DepositTypeEnum = DepositTypeEnum.BankTransfer;
   @observable isActivePopup = false;
 
   @action

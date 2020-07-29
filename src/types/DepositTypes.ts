@@ -22,3 +22,22 @@ export interface GetCryptoWalletDTO {
 	status: DepositApiResponseCodes;
 	walletAddress: string;
 }
+
+export interface CreateDepositInvoiceParams {
+	cardNumber: string;
+	authToken: string;
+	cvv: number;
+	expirationDate: string;
+	fullName: string;
+	amount: number;
+	postalCode?: string;
+	country?: string;
+	city?: string;
+	address?: string;
+	accountId: string;
+}
+
+export interface CreateDepositInvoiceDTO {
+	walletAddress: string;
+	status: DepositApiResponseCodes;
+}

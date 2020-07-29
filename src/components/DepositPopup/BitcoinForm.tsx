@@ -120,13 +120,13 @@ const BitcoinForm: FC = () => {
           <SvgIcon {...CopyIcon} fillColor="rgba(255, 255, 255, 0.6)" />
         </ButtonWithoutStyles>
       </BitcoinWalletStringWrapper>
-      <FlexContainer>
+      <FlexContainer flexDirection="column" width="250px">
         <FlexContainer
           backgroundColor="#23262F"
           borderRadius="4px"
           width="224px"
           height="224px"
-          marginRight="30px"
+          marginBottom="30px"
           padding="10px"
         >
           <QRCode value={bitcoinWalletString} size={204}></QRCode>
