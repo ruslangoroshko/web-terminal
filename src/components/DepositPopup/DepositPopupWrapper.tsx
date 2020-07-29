@@ -41,11 +41,11 @@ const depositList = [
     name: 'Visa / Mastercard',
     icon: CardIcon,
   },
-  {
-    id: DepositTypeEnum.BankTransfer,
-    name: 'Bank Transfer',
-    icon: BankTransferIcon,
-  },
+  // {
+  //   id: DepositTypeEnum.BankTransfer,
+  //   name: 'Bank Transfer',
+  //   icon: BankTransferIcon,
+  // },
   {
     id: DepositTypeEnum.Bitcoin,
     name: 'Bitcoin',

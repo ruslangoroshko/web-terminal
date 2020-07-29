@@ -299,6 +299,7 @@ const VisaMasterCardForm = () => {
             position="relative"
           >
             <CustomInputMask
+              type="password"
               maskPlaceholder={''}
               placeholder="***"
               mask="999"
