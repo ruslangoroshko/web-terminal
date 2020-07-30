@@ -45,6 +45,8 @@ import {
   GetCryptoWalletParams,
   CreateDepositParams,
   DepositCreateDTO,
+  CreateDepositInvoiceParams,
+  CreateDepositInvoiceDTO,
 } from '../types/DepositTypes';
 import { InitModel } from '../types/InitAppTypes';
 import {
@@ -319,6 +321,15 @@ class API {
     );
     return response.data;
   };
+
+  createDepositInvoice = async (params: CreateDepositInvoiceParams) => {
+    const response = await axios.post<CreateDepositInvoiceDTO>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE}`,
+      params
+    );
+    return response.data;
+  };
+  
 
   getCryptoWallet = async (params: GetCryptoWalletParams) => {
     const response = await axios.post<GetCryptoWalletDTO>(
