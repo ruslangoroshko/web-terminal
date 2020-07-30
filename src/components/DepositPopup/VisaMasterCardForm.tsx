@@ -132,6 +132,7 @@ const VisaMasterCardForm = () => {
 
     const params: CreateDepositInvoiceParams = {
       ...values,
+      amount: +values.amount,
       fullName: values.fullName.trim(),
       cardNumber: values.cardNumber.split(' ').join(''),
       cvv: +values.cvv,
