@@ -37,14 +37,14 @@ import VisaSecureImage from '../../assets/images/visa-secure.png';
 import NotificationPopup from '../NotificationPopup';
 
 const depositList = [
-  {
-    id: DepositTypeEnum.BankTransfer,
-    name: 'Visa / Mastercard',
-    icon: CardIcon,
-  },
+  // {
+  //   id: DepositTypeEnum.BankTransfer,
+  //   name: 'Visa / Mastercard',
+  //   icon: CardIcon,
+  // },
   {
     id: DepositTypeEnum.VisaMaster,
-    name: 'Mastercard',
+    name: 'Visa / Mastercard',
     icon: CardIcon,
   },
   {
@@ -89,8 +89,8 @@ const DepositPopupInner: FC = () => {
       case DepositTypeEnum.VisaMaster:
         return <VisaMasterCardForm />;
 
-      case DepositTypeEnum.BankTransfer:
-        return <BankTransferForm />;
+      // case DepositTypeEnum.BankTransfer:
+      //   return <BankTransferForm />;
 
       case DepositTypeEnum.Bitcoin:
         return <BitcoinForm />;
