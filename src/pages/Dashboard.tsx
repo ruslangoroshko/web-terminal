@@ -155,7 +155,7 @@ const Dashboard: FC = observer(() => {
         position="absolute"
         bottom="100px"
         left="14px"
-        zIndex="100"
+        zIndex="1005"
       >
         <Observer>
           {() => (

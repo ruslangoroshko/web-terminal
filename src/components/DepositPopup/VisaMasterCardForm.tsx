@@ -29,6 +29,8 @@ import SvgIcon from '../SvgIcon';
 import { CreateDepositInvoiceParams } from '../../types/DepositTypes';
 import moment from 'moment';
 import depositResponseMessages from '../../constants/depositResponseMessages';
+import { useHistory } from 'react-router-dom';
+import { DepositRequestStatusEnum } from '../../enums/DepositRequestStatusEnum';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -43,7 +45,15 @@ const VisaMasterCardForm = () => {
       .max(10000, t('max: $10 000'))
       .required(t('Required field')),
 
-    fullName: yup.string().required(t('Required field')),
+    fullName: yup
+      .string()
+      .required(t('Required field'))
+      .trim()
+      .test('fullName', t('Only latin symbols'), (value) => {
+        return /[a-zA-Z]/g.test(value);
+      })
+      .test('fullName', t('Max 40 symbols'), (val) => val?.length <= 40),
+
     cardNumber: yup
       .string()
       .required(t('Required field'))
@@ -52,7 +62,8 @@ const VisaMasterCardForm = () => {
           value &&
           /^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/g.test(
             value.split(' ').join('')
-          )
+          ) &&
+          checkCardNumLuhn(value)
         );
       }),
 
@@ -82,6 +93,7 @@ const VisaMasterCardForm = () => {
   };
 
   const { mainAppStore, notificationStore, depositFundsStore } = useStores();
+  const { push } = useHistory();
 
   const checkCardNumLuhn = (card: string) => {
     let value = card.replace(/\D/g, '');
@@ -120,31 +132,33 @@ const VisaMasterCardForm = () => {
 
     const params: CreateDepositInvoiceParams = {
       ...values,
+      fullName: values.fullName.trim(),
       cardNumber: values.cardNumber.split(' ').join(''),
       cvv: +values.cvv,
       authToken: mainAppStore.token,
       accountId: mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
-      expirationDate: moment(
-        `${+parts[0] + 1}${parts[1]}`,
-        'MMYY'
-      ).toISOString(),
+      expirationDate: moment(`${parts[0]}20${parts[1]}`, 'MMYYYY').valueOf(),
     };
 
     try {
       const result = await API.createDepositInvoice(params);
 
-      if (result.status === DepositApiResponseCodes.Success) {
-        notificationStore.isSuccessfull = true;
-        depositFundsStore.togglePopup();
+      if (result.status === DepositRequestStatusEnum.Success) {
+        Object.assign(document.createElement('a'), {
+          target: '_blank',
+          href: result.secureLink,
+        }).click();
+      }
+      if (result.status === DepositRequestStatusEnum.PaymentDeclined) {
+        // TODO: Refactor
+        push('/?status=failed');
       } else {
         notificationStore.isSuccessfull = false;
+        notificationStore.notificationMessage = t(
+          depositResponseMessages[result.status]
+        );
+        notificationStore.openNotification();
       }
-
-      notificationStore.notificationMessage = t(
-        depositResponseMessages[result.status]
-      );
-
-      notificationStore.openNotification();
     } catch (error) {}
   };
 

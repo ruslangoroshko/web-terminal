@@ -1,4 +1,5 @@
 import { DepositApiResponseCodes } from './../enums/DepositApiResponseCodes';
+import { DepositRequestStatusEnum } from '../enums/DepositRequestStatusEnum';
 
 export interface CreateDepositParams {
 	paymentMethod: string;
@@ -27,7 +28,7 @@ export interface CreateDepositInvoiceParams {
 	cardNumber: string;
 	authToken: string;
 	cvv: number;
-	expirationDate: string;
+	expirationDate: number;
 	fullName: string;
 	amount: number;
 	postalCode?: string;
@@ -38,6 +39,6 @@ export interface CreateDepositInvoiceParams {
 }
 
 export interface CreateDepositInvoiceDTO {
-	walletAddress: string;
-	status: DepositApiResponseCodes;
+	secureLink: string;
+	status: DepositRequestStatusEnum;
 }
