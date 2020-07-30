@@ -12,7 +12,6 @@ import CurrencyDropdown from './CurrencyDropdown';
 import { paymentCurrencies } from '../../constants/paymentCurrencies';
 import { PrimaryButton } from '../../styles/Buttons';
 import API from '../../helpers/API';
-import { DepositApiResponseCodes } from '../../enums/DepositApiResponseCodes';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +23,7 @@ import InputMask from 'react-input-mask';
 
 import LabelBgIcon from '../../assets/svg/icon-triangle-error.svg';
 
-import MasterCard from '../../assets/images/master-card.png';
+import VisaMasterCardImage from '../../assets/images/visa-master.png';
 import SvgIcon from '../SvgIcon';
 import { CreateDepositInvoiceParams } from '../../types/DepositTypes';
 import moment from 'moment';
@@ -60,10 +59,11 @@ const VisaMasterCardForm = () => {
       .test('cardNumber', t('Wrong card number'), (value) => {
         return (
           value &&
-          /^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/g.test(
+          checkCardNumLuhn(value) &&
+          (/^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/g.test(
             value.split(' ').join('')
-          ) &&
-          checkCardNumLuhn(value)
+          ) ||
+            /^(?:4[0-9]{12}(?:[0-9]{3})?)$/.test(value))
         );
       }),
 
@@ -92,7 +92,7 @@ const VisaMasterCardForm = () => {
     cvv: '',
   };
 
-  const { mainAppStore, notificationStore, depositFundsStore } = useStores();
+  const { mainAppStore, notificationStore } = useStores();
   const { push } = useHistory();
 
   const checkCardNumLuhn = (card: string) => {
@@ -240,7 +240,7 @@ const VisaMasterCardForm = () => {
           </FlexContainer>
         </FlexContainer>
 
-        <FlexContainer marginBottom="92px">
+        <FlexContainer marginBottom="60px">
           {placeholderValues.map((item) => (
             <AmountPlaceholder
               key={item}
@@ -255,7 +255,7 @@ const VisaMasterCardForm = () => {
         </FlexContainer>
 
         <FlexContainer marginBottom="20px">
-          <img src={MasterCard} alt="" width="40px" />
+          <img src={VisaMasterCardImage} alt="" width="40px" />
         </FlexContainer>
 
         <FlexContainer flexDirection="column" marginBottom="20px">
