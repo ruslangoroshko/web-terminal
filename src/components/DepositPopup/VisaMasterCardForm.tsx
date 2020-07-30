@@ -97,7 +97,7 @@ const VisaMasterCardForm = () => {
     cvv: '',
   };
 
-  const { mainAppStore, notificationStore } = useStores();
+  const { mainAppStore, notificationStore, depositFundsStore } = useStores();
   const { push } = useHistory();
 
   const checkCardNumLuhn = (card: string) => {
@@ -156,6 +156,7 @@ const VisaMasterCardForm = () => {
       }
       if (result.status === DepositRequestStatusEnum.PaymentDeclined) {
         // TODO: Refactor
+        depositFundsStore.togglePopup();
         push('/?status=failed');
       } else {
         notificationStore.isSuccessfull = false;
