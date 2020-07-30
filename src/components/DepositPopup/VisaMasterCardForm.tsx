@@ -59,11 +59,11 @@ const VisaMasterCardForm = () => {
       .test('cardNumber', t('Wrong card number'), (value) => {
         return (
           value &&
-          checkCardNumLuhn(value) &&
-          (/^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/g.test(
+          checkCardNumLuhn(value.split(' ').join('')) &&
+          (/^5[1-5][0-9]{14}$|^2(?:2(?:2[1-9]|[3-9][0-9])|[3-6][0-9][0-9]|7(?:[01][0-9]|20))[0-9]{12}$/g.test(
             value.split(' ').join('')
           ) ||
-            /^(?:4[0-9]{12}(?:[0-9]{3})?)$/.test(value))
+            /^4[0-9]{12}(?:[0-9]{3})?$/.test(value.split(' ').join('')))
         );
       }),
 
@@ -78,7 +78,6 @@ const VisaMasterCardForm = () => {
         const date = moment(`${parts[0]}20${parts[1]}`, 'MMYYYY').endOf(
           'month'
         );
-        console.log(moment().startOf('month'));
         return (
           !!date.toISOString() &&
           date.valueOf() > moment().startOf('month').valueOf()
