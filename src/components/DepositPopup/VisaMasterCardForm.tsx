@@ -75,8 +75,14 @@ const VisaMasterCardForm = () => {
           return false;
         }
         const parts = val.split(' / ');
-        const date = moment(`${parts[0]}20${parts[1]}`, 'MMYYYY');
-        return !!date.toISOString() && date.valueOf() > Date.now();
+        const date = moment(`${parts[0]}20${parts[1]}`, 'MMYYYY').endOf(
+          'month'
+        );
+        console.log(moment().startOf('month'));
+        return (
+          !!date.toISOString() &&
+          date.valueOf() > moment().startOf('month').valueOf()
+        );
       }),
 
     cvv: yup
