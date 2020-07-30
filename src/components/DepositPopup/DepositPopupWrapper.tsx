@@ -34,6 +34,7 @@ import BankTransferIcon from '../../assets/svg/payments/icon-banktransfer.svg';
 import MastercardIdCheckImage from '../../assets/images/mastercard-id-check.png';
 import SslCertifiedImage from '../../assets/images/ssl-certified.png';
 import VisaSecureImage from '../../assets/images/visa-secure.png';
+import NotificationPopup from '../NotificationPopup';
 
 const depositList = [
   {
@@ -71,7 +72,12 @@ const DepositPopupWrapper: FC = () => {
 };
 
 const DepositPopupInner: FC = () => {
-  const { mainAppStore, depositFundsStore, badRequestPopupStore } = useStores();
+  const {
+    mainAppStore,
+    depositFundsStore,
+    badRequestPopupStore,
+    notificationStore,
+  } = useStores();
 
   const setActiveDepositType = (depositType: DepositTypeEnum) => () => {
     depositFundsStore.setActiveDepositType(depositType);
@@ -103,6 +109,20 @@ const DepositPopupInner: FC = () => {
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
+      <FlexContainer
+        position="absolute"
+        bottom="100px"
+        left="14px"
+        zIndex="1005"
+      >
+        <Observer>
+          {() => (
+            <NotificationPopup
+              show={notificationStore.isActiveNotification}
+            ></NotificationPopup>
+          )}
+        </Observer>
+      </FlexContainer>
       <ModalBackground
         position="fixed"
         top="0"

@@ -1,12 +1,14 @@
-import { DepositApiResponseCodes } from '../enums/DepositApiResponseCodes';
+import { DepositRequestStatusEnum } from '../enums/DepositRequestStatusEnum';
 
 
 const depositResponseMessages = {
-  [DepositApiResponseCodes.Success]: 'Success',
-  [DepositApiResponseCodes.ClientNotFound]: 'Client not found',
-  [DepositApiResponseCodes.CurrencyNotFound]: 'Currency not found',
-  [DepositApiResponseCodes.Unauthorized]: 'Unauthorized',
-  [DepositApiResponseCodes.Error]: 'Technical Error',
+  [DepositRequestStatusEnum.Success]: 'Success',
+  [DepositRequestStatusEnum.InvalidCardNumber]: 'Invalid card number',
+  [DepositRequestStatusEnum.InvalidCredentials]: 'Invalid credentials',
+  [DepositRequestStatusEnum.MaxDepositAmountExceeded]: 'Max deposit amount exceeded',
+  [DepositRequestStatusEnum.MinDepositAmountExceeded]: 'Min deposit amount exceeded',
+  [DepositRequestStatusEnum.ServerError]: 'Server error',
+  [DepositRequestStatusEnum.UnsupportedCardType]: 'Unsupported card type',
 }
 
 Object.freeze(depositResponseMessages);
