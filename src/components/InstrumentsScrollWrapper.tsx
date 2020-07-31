@@ -12,10 +12,12 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
   const { instrumentsStore, mainAppStore, badRequestPopupStore } = useStores();
 
   const handleRemoveInstrument = (itemId: string) => async () => {
-    let indexEl = instrumentsStore.activeInstrumentsIds.findIndex(id => id === itemId);
-    
+    let indexEl = instrumentsStore.activeInstrumentsIds.findIndex(
+      (id) => id === itemId
+    );
+
     const newInstruments = instrumentsStore.activeInstrumentsIds.filter(
-      id => id !== itemId
+      (id) => id !== itemId
     );
     try {
       const response = await API.postFavoriteInstrumets({
@@ -31,7 +33,6 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
         indexEl = indexEl ? indexEl - 1 : 0;
         instrumentsStore.switchInstrument(response[indexEl]);
       }
-      
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
@@ -58,11 +59,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
       }
     }
 
-    if (
-      !instrumentsStore.activeInstrument &&
-      mainAppStore.activeAccount &&
-      instrumentsStore.instruments.length
-    ) {
+    if (mainAppStore.activeAccount && instrumentsStore.instruments.length) {
       fetchFavoriteInstruments(
         mainAppStore.activeAccount.id,
         // sh@t from backend
@@ -72,15 +69,11 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
       );
     }
     // TODO: research conditional dependencies
-  }, [
-    instrumentsStore.instruments,
-    mainAppStore.activeAccount,
-    instrumentsStore.activeInstrument,
-  ]);
+  }, [instrumentsStore.instruments, mainAppStore.activeAccount?.id]);
 
   return (
     <InstrumentsWrapper>
-      {instrumentsStore.activeInstruments.map(item => (
+      {instrumentsStore.activeInstruments.map((item) => (
         <Instrument
           instrument={item.instrumentItem}
           key={item.instrumentItem.id}
