@@ -20,6 +20,8 @@ import { useHistory } from 'react-router-dom';
 import LoaderForComponents from '../components/LoaderForComponents';
 import Page from '../constants/Pages';
 import { useTranslation } from 'react-i18next';
+import Helmet from 'react-helmet';
+import DatePickerAccountBalanceDropdown from '../components/DatePickerAccountBalanceDropdown';
 
 function AccountBalance() {
   const { mainAppStore, badRequestPopupStore, dateRangeStore } = useStores();
@@ -82,12 +84,9 @@ function AccountBalance() {
     }
   }, [mainAppStore.activeAccount]);
 
-  useEffect(() => {
-    document.title = t('Balance history');
-  }, []);
-
   return (
     <AccountSettingsContainer>
+      <Helmet>{t('Balance history')}</Helmet>
       <IconButton onClick={() => push(Page.DASHBOARD)}>
         <SvgIcon
           {...IconClose}
@@ -123,7 +122,9 @@ function AccountBalance() {
               {t('Period')}:
             </PrimaryTextParagraph>
             <FlexContainer height="32px">
-              <DatePickerDropdown datesChangeCallback={fetchBalanceHistory} />
+              <DatePickerAccountBalanceDropdown
+                datesChangeCallback={fetchBalanceHistory}
+              />
             </FlexContainer>
           </FlexContainer>
         </FlexContainer>
@@ -177,7 +178,7 @@ function AccountBalance() {
                 balanceHistoryReport.page * balanceHistoryReport.pageSize
               }
             >
-              {balanceHistoryReport.balanceHistory.map(item => (
+              {balanceHistoryReport.balanceHistory.map((item) => (
                 <BalanceHistoryItem
                   key={item.createdAt}
                   balanceHistoryItem={item}

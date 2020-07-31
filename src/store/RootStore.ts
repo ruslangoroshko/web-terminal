@@ -9,10 +9,11 @@ import { HistoryStore } from './HistoryStore';
 import { KYCstore } from './KYCstore';
 import { NotificationStore } from './NotificationStore';
 import { SortingStore } from './SortingStore';
-import { BadRequestPopupStore } from "./BadRequestPopupStore";
+import { BadRequestPopupStore } from './BadRequestPopupStore';
 import { DepositFundsStore } from './DepositFundsStore';
 import { DataRangeStoreNoCustomDates } from './DataRangeStoreNoCustomDates';
 import { WithdrawalStore } from './WithdrawalStore';
+import { DateRangeAccountBalanceStore } from './DateRangeAccountBalanceStore';
 
 export class RootStore {
   quotesStore: QuotesStore;
@@ -22,6 +23,7 @@ export class RootStore {
   tradingViewStore: TradingViewStore;
   instrumentsStore: InstrumentsStore;
   dateRangeStore: DateRangeStore;
+  dateRangeAccountBalanceStore: DateRangeAccountBalanceStore;
   dataRangeStoreNoCustomDates: DataRangeStoreNoCustomDates;
   historyStore: HistoryStore;
   kycStore: KYCstore;
@@ -39,6 +41,7 @@ export class RootStore {
     this.tradingViewStore = new TradingViewStore();
     this.instrumentsStore = new InstrumentsStore(this);
     this.dateRangeStore = new DateRangeStore();
+    this.dateRangeAccountBalanceStore = new DateRangeAccountBalanceStore();
     this.dataRangeStoreNoCustomDates = new DataRangeStoreNoCustomDates();
     this.historyStore = new HistoryStore();
     this.kycStore = new KYCstore();
