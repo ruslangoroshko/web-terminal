@@ -319,5 +319,22 @@
     "Set Autoclose": "Set Autoclose",
     "The order has been closed successfully": "The order has been closed successfully",
     "You exceed the maximum amount for orders": "You exceed the maximum amount for orders",
-    "Access token is expired": "Access token is expired"
+    "Access token is expired": "Access token is expired",
+    "Only latin symbols": "Only latin symbols",
+    "Max 40 symbols": "Max 40 symbols",
+    "Wrong card number": "Wrong card number",
+    "Expiry date is invalid": "Expiry date is invalid",
+    "CVV is invalid": "CVV is invalid",
+    "Card holder": "Card holder",
+    "Your name": "Your name",
+    "Card number": "Card number",
+    "Expire date": "Expire date",
+    "CVV": "CVV",
+    "Invalid card number": "Invalid card number",
+    "Invalid credentials": "Invalid credentials",
+    "Max deposit amount exceeded": "Max deposit amount exceeded",
+    "Min deposit amount exceeded": "Min deposit amount exceeded",
+    "Payment failed": "Payment failed",
+    "Server error": "Server error",
+    "Unsupported card type": "Unsupported card type"
 }
