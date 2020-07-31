@@ -21,7 +21,7 @@ interface Props {
   currencySymbol: string;
 }
 
-const TradingHistoryExpandedItem: FC<Props> = props => {
+const TradingHistoryExpandedItem: FC<Props> = (props) => {
   const {
     tradingHistoryItem: {
       closeDate,
@@ -213,7 +213,7 @@ const TradingHistoryExpandedItem: FC<Props> = props => {
                   {t('Opened')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {moment(openPrice).format('DD MMM, HH:mm:ss')}
+                  {moment(openDate).format('DD MMM, HH:mm:ss')}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
