@@ -60,7 +60,6 @@ const WithdrawFormBankTransfer = () => {
       const accountInfo = mainAppStore.accounts.find(item => item.isLive);
 
       const data: CreateWithdrawalParams = {
-        authToken: mainAppStore.token,
         accountId: accountInfo?.id || '',
         currency: accountInfo?.currency || '',
         amount: +values.amount,

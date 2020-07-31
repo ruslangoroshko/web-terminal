@@ -36,9 +36,7 @@ const WithdrawRequestTab = () => {
   useEffect(() => {
     const initHistoryList = async () => {
       try {
-        const result = await API.getWithdrawalHistory({
-          AuthToken: mainAppStore.token,
-        });
+        const result = await API.getWithdrawalHistory();
         if (result.status === WithdrawalHistoryResponseStatus.Successful) {
           const isPending = !!result.history?.find(item => item.status === WithdrawalStatusesEnum.Pending);
           isPending && withdrawalStore.setPendingPopup();

@@ -5,7 +5,6 @@ export interface DepositCreateRequest {
   paymentMethod: string;
   depositSum: number;
   currency: string;
-  authToken: string;
 }
 
 export interface DepositCreateResponse {
@@ -14,7 +13,6 @@ export interface DepositCreateResponse {
 }
 
 export interface GetCryptoWalletRequest {
-  authToken: string;
   currency: string;
 }
 

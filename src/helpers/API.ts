@@ -134,7 +134,7 @@ class API {
         params,
       }
     );
-    const bars = response.data.map(item => ({
+    const bars = response.data.map((item) => ({
       time: item.d,
       low: item.l,
       high: item.h,
@@ -213,7 +213,7 @@ class API {
   };
 
   recoveryPassword = async (params: RecoveryPasswordParams) => {
-    const response = await axios.post<{result: OperationApiResponseCodes}>(
+    const response = await axios.post<{ result: OperationApiResponseCodes }>(
       `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.PASSWORD_RECOVERY}`,
       params
     );
@@ -329,7 +329,6 @@ class API {
     );
     return response.data;
   };
-  
 
   getCryptoWallet = async (params: GetCryptoWalletParams) => {
     const response = await axios.post<GetCryptoWalletDTO>(
@@ -381,7 +380,7 @@ class API {
             supportUrl: '',
             termsUrl: '',
             tradingUrl: '',
-            mixpanelToken: '582507549d28c813188211a0d15ec940'
+            mixpanelToken: '582507549d28c813188211a0d15ec940',
           },
         }
       : await axios.get<InitModel>(`${API_LIST.INIT.GET}`);
@@ -402,12 +401,9 @@ class API {
     return response.data;
   };
 
-  getWithdrawalHistory = async (params: { AuthToken: string | null }) => {
+  getWithdrawalHistory = async () => {
     const response = await axios.get<WithdrawalHistoryDTO>(
-      `${API_WITHDRAWAL_STRING}${API_LIST.WITHWRAWAL.HISTORY}`,
-      {
-        params,
-      }
+      `${API_WITHDRAWAL_STRING}${API_LIST.WITHWRAWAL.HISTORY}`
     );
     return response.data;
   };
