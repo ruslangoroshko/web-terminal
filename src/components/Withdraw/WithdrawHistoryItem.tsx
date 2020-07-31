@@ -26,7 +26,6 @@ const WithdrawHistoryItem = (props: Props) => {
   const handleCancel = async (withdrawalId: string) => {
     try {
       const result = await API.cancelWithdrawal({
-        authToken: mainAppStore.token,
         withdrawalId,
       });
       if (result.status === WithdrawalHistoryResponseStatus.Successful) {

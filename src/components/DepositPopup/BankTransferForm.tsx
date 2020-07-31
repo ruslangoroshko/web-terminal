@@ -62,7 +62,6 @@ const BankTransferForm = () => {
       paymentMethod: 'BANK_CARDS',
       depositSum: +values.amount,
       currency: 'USD',
-      authToken: mainAppStore.token || '',
       accountId: mainAppStore.accounts.find(item => item.isLive)?.id || '',
     };
     try {

@@ -19,9 +19,7 @@ const WithdrawHistoryTab = () => {
   const initHistoryList = async () => {
     withdrawalStore.setLoad();
     try {
-      const result = await API.getWithdrawalHistory({
-        AuthToken: mainAppStore.token,
-      });
+      const result = await API.getWithdrawalHistory();
       if (result.status === WithdrawalHistoryResponseStatus.Successful) {
         const sortedList = result.history
           ? result.history.sort(

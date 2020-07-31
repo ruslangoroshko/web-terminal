@@ -2,43 +2,40 @@ import { DepositApiResponseCodes } from './../enums/DepositApiResponseCodes';
 import { DepositRequestStatusEnum } from '../enums/DepositRequestStatusEnum';
 
 export interface CreateDepositParams {
-	paymentMethod: string;
-	depositSum: number;
-	currency: string;
-	authToken: string;
+  paymentMethod: string;
+  depositSum: number;
+  currency: string;
 }
 
 export interface GetCryptoWalletParams {
-	authToken: string;
-	currency: string;
-	accountId: string;
+  currency: string;
+  accountId: string;
 }
 
 export interface DepositCreateDTO {
-	status: DepositApiResponseCodes;
-	redirectUrl: string;
+  status: DepositApiResponseCodes;
+  redirectUrl: string;
 }
 
 export interface GetCryptoWalletDTO {
-	status: DepositApiResponseCodes;
-	walletAddress: string;
+  status: DepositApiResponseCodes;
+  walletAddress: string;
 }
 
 export interface CreateDepositInvoiceParams {
-	cardNumber: string;
-	authToken: string;
-	cvv: number;
-	expirationDate: number;
-	fullName: string;
-	amount: number;
-	postalCode?: string;
-	country?: string;
-	city?: string;
-	address?: string;
-	accountId: string;
+  cardNumber: string;
+  cvv: number;
+  expirationDate: number;
+  fullName: string;
+  amount: number;
+  postalCode?: string;
+  country?: string;
+  city?: string;
+  address?: string;
+  accountId: string;
 }
 
 export interface CreateDepositInvoiceDTO {
-	secureLink: string;
-	status: DepositRequestStatusEnum;
+  secureLink: string;
+  status: DepositRequestStatusEnum;
 }

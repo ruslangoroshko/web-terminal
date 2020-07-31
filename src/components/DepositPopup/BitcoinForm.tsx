@@ -50,7 +50,6 @@ const BitcoinForm: FC = () => {
     async function fetchBitcoinString() {
       try {
         const response = await API.getCryptoWallet({
-          authToken: mainAppStore.token || '',
           currency: DepositCurrency.BTC,
           accountId: mainAppStore.accounts.find(item => item.isLive)?.id || '',
         });

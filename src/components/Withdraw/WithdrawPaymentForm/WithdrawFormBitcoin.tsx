@@ -63,7 +63,6 @@ const WithdrawFormBitcoin = () => {
         address: values.bitcoinAdress,
       };
       const data: CreateWithdrawalParams = {
-        authToken: mainAppStore.token,
         accountId: accountInfo?.id || '',
         currency: accountInfo?.currency || '',
         amount: +values.amount,
