@@ -203,7 +203,7 @@ class API {
   };
 
   forgotEmail = async (email: string) => {
-    const response = await axios.post<OperationApiResponseCodes>(
+    const response = await axios.post<{result: OperationApiResponseCodes}>(
       `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.FORGOT_PASSWORD}`,
       {
         email,
