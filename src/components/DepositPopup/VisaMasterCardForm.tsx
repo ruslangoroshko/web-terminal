@@ -137,7 +137,7 @@ const VisaMasterCardForm = () => {
 
     const params: CreateDepositInvoiceParams = {
       ...values,
-      
+
       amount: +values.amount,
       fullName: values.fullName.trim(),
       cardNumber: values.cardNumber.split(' ').join(''),
@@ -150,22 +150,26 @@ const VisaMasterCardForm = () => {
     try {
       const result = await API.createDepositInvoice(params);
 
-      if (result.status === DepositRequestStatusEnum.Success) {
-        Object.assign(document.createElement('a'), {
-          target: '_blank',
-          href: result.secureLink,
-        }).click();
-      }
-      if (result.status === DepositRequestStatusEnum.PaymentDeclined) {
-        // TODO: Refactor
-        depositFundsStore.togglePopup();
-        push('/?status=failed');
-      } else {
-        notificationStore.isSuccessfull = false;
-        notificationStore.notificationMessage = t(
-          depositResponseMessages[result.status]
-        );
-        notificationStore.openNotification();
+      switch (result.status) {
+        case DepositRequestStatusEnum.Success:
+          Object.assign(document.createElement('a'), {
+            target: '_blank',
+            href: result.secureLink,
+          }).click();
+          break;
+        case DepositRequestStatusEnum.PaymentDeclined:
+          // TODO: Refactor
+          depositFundsStore.togglePopup();
+          push('/?status=failed');
+          break;
+
+        default:
+          notificationStore.isSuccessfull = false;
+          notificationStore.notificationMessage = t(
+            depositResponseMessages[result.status]
+          );
+          notificationStore.openNotification();
+          break;
       }
     } catch (error) {}
   };
