@@ -55,7 +55,7 @@ function ForgotPassword() {
 
       const result = await API.forgotEmail(email);
 
-      if (result === OperationApiResponseCodes.Ok) {
+      if (result.result === OperationApiResponseCodes.Ok) {
         setIsSuccessfull(true);
         mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_SUBMIT, {
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,

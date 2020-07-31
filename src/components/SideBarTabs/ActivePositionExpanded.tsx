@@ -24,6 +24,7 @@ import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes
 import ActivePositionPnL from './ActivePositionPnL';
 import ActivePositionPnLPercent from './ActivePositionPnLPercent';
 import ActivePositionEquity from './ActivePositionEquity';
+import EquityPnL from './EquityPnL';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -234,9 +235,7 @@ function ActivePositionExpanded(props: Props) {
                 >
                   {t('Equity')}
                 </PrimaryTextSpan>
-                <ActivePositionPnLPercent
-                  position={position}
-                ></ActivePositionPnLPercent>
+                <EquityPnL position={position} />
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
                 <PrimaryTextSpan
