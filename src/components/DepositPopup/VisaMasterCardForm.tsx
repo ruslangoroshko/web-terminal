@@ -283,7 +283,7 @@ const VisaMasterCardForm = () => {
             position="relative"
           >
             <CustomInput
-              placeholder="Your name"
+              placeholder={t('Your name')}
               value={values.fullName}
               onChange={handleChange}
               name="fullName"
@@ -392,7 +392,7 @@ const VisaMasterCardForm = () => {
               color="rgba(255,255,255,0.3)"
               marginBottom="6px"
             >
-              {t('Cvv')}
+              {t('CVV')}
             </PrimaryTextParagraph>
 
             <FlexContainer
