@@ -84,8 +84,7 @@ const topDirection = css`
 const TooltipWrapper = styled(FlexContainer)<
   FlexContainerProps & { direction: Props['direction'] }
 >`
-  visibility: hidden;
-  opacity: 0;
+  display: none;
   box-shadow: 0px 12px 24px ${props => props.backgroundColor}40,
     0px 6px 12px ${props => props.backgroundColor}40;
   -webkit-backdrop-filter: blur(12px);
@@ -128,8 +127,7 @@ const TooltipWrapper = styled(FlexContainer)<
   }}
 
   &:hover {
-    visibility: visible;
-    opacity: 1;
+    display: flex;
   }
 `;
 
@@ -141,8 +139,7 @@ const InfoIcon = styled(FlexContainer)<
     fill: #00fff2;
   }
   &:hover + .${props => props.classNameTooltip} {
-    visibility: visible;
-    opacity: 1;
+    display: block;
     cursor: default;
   }
 `;

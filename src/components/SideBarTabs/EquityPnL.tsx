@@ -15,9 +15,6 @@ const EquityPnL: FC<Props> = ({ position }) => {
   const { quotesStore, mainAppStore } = useStores();
   const isBuy = position.operation === AskBidEnum.Buy;
 
-  const textElementRef = useRef<HTMLSpanElement>(null);
-  const [canRenderFlag, setCanRenderFlag] = useState(false);
-
   const [statePnL, setStatePnL] = useState(
     calculateFloatingProfitAndLoss({
       investment: position.investmentAmount,
@@ -32,62 +29,32 @@ const EquityPnL: FC<Props> = ({ position }) => {
   );
 
   const workCallback = useCallback(
-    (quote, canRenderFlag) => {
-      if (canRenderFlag) {
-        setStatePnL(
-          calculateFloatingProfitAndLoss({
-            investment: position.investmentAmount,
-            multiplier: position.multiplier,
-            costs: position.swap + position.commission,
-            side: isBuy ? 1 : -1,
-            currentPrice: isBuy ? quote.bid.c : quote.ask.c,
-            openPrice: position.openPrice,
-          })
-        );
-      }
+    (quote) => {
+      setStatePnL(
+        calculateFloatingProfitAndLoss({
+          investment: position.investmentAmount,
+          multiplier: position.multiplier,
+          costs: position.swap + position.commission,
+          side: isBuy ? 1 : -1,
+          currentPrice: isBuy ? quote.bid.c : quote.ask.c,
+          openPrice: position.openPrice,
+        })
+      );
     },
     [position]
   );
 
-  const autorunCallback = useCallback(
-    () =>
-      autorun(
-        () => {
-          workCallback(quotesStore.quotes[position.instrument], canRenderFlag);
-        },
-        { delay: 2000 }
-      ),
-    [canRenderFlag]
-  );
-
   useEffect(() => {
-    const disposer = autorunCallback();
-    if (!canRenderFlag) {
-      disposer();
-    }
+    const disposer = autorun(
+      () => {
+        workCallback(quotesStore.quotes[position.instrument]);
+      },
+      { delay: 2000 }
+    );
     return () => {
       disposer();
     };
-  }, [canRenderFlag]);
-
-  useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: '5px',
-      threshold: 1,
-    };
-
-    const callback: IntersectionObserverCallback = function (entries) {
-      entries.forEach((item) => {
-        setCanRenderFlag(item.intersectionRatio === 1);
-      });
-    };
-
-    const observer = new IntersectionObserver(callback, options);
-    if (textElementRef.current) {
-      observer.observe(textElementRef.current);
-    }
-  }, [textElementRef.current]);
+  }, []);
 
   return (
     <PrimaryTextSpan color="#fffccc" fontSize="12px">
