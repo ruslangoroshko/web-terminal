@@ -4,14 +4,13 @@ import { useStores } from '../../hooks/useStores';
 import { AskBidEnum } from '../../enums/AskBid';
 import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
 import { QuoteText } from '../../styles/TextsElements';
-import { observer } from 'mobx-react-lite';
 import { autorun } from 'mobx';
 
 interface Props {
   position: PositionModelWSDTO;
 }
 
-const ActivePositionPnL: FC<Props> = observer(({ position }) => {
+const ActivePositionPnL: FC<Props> = ({ position }) => {
   const { quotesStore, mainAppStore } = useStores();
   const isBuy = position.operation === AskBidEnum.Buy;
   const textElementRef = useRef<HTMLSpanElement>(null);
@@ -101,6 +100,5 @@ const ActivePositionPnL: FC<Props> = observer(({ position }) => {
       {Math.abs(statePnL).toFixed(2)}
     </QuoteText>
   );
-});
-
+};
 export default ActivePositionPnL;

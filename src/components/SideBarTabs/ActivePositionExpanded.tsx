@@ -1,7 +1,7 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PositionModelWSDTO } from '../../types/Positions';
-import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
+import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SvgIcon from '../SvgIcon';
 import IconShevronDown from '../../assets/svg/icon-shevron-logo-down.svg';
 import IconShevronUp from '../../assets/svg/icon-shevron-logo-up.svg';
@@ -9,7 +9,6 @@ import { AskBidEnum } from '../../enums/AskBid';
 import moment from 'moment';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { useStores } from '../../hooks/useStores';
-import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
 import InformationPopup from '../InformationPopup';
 import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
