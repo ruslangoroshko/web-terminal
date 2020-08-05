@@ -24,7 +24,7 @@ export interface GetCryptoWalletDTO {
 
 export interface CreateDepositInvoiceParams {
   cardNumber: string;
-  cvv: number;
+  cvv: string;
   expirationDate: number;
   fullName: string;
   amount: number;
