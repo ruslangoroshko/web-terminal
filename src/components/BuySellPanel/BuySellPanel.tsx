@@ -236,7 +236,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -252,7 +252,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -291,7 +291,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -307,7 +307,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
