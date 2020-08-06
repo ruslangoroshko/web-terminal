@@ -53,6 +53,7 @@ interface MainAppStoreProps {
   signalRReconnectTimeOut: string;
   initModel: InitModel;
   lang: CountriesEnum;
+  activeAccountId: string;
 }
 
 // TODO: think about application initialization
@@ -97,6 +98,7 @@ export class MainAppStore implements MainAppStoreProps {
   signalRReconnectTimeOut = '';
   connectTimeOut = '';
   @observable socketError = false;
+  @observable activeAccountId: string = '';
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -288,6 +290,7 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setActiveAccount = (account: AccountModelWebSocketDTO) => {
     this.activeAccount = account;
+    this.activeAccountId = account.id;
     // TODO: think how remove crutch
     this.rootStore.historyStore.positionsHistoryReport.positionsHistory = [];
     API.setKeyValue({
