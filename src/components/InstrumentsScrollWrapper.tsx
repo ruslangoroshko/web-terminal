@@ -68,7 +68,6 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
           : AccountTypeEnum.Demo
       );
     }
-    // TODO: research conditional dependencies
   }, [instrumentsStore.instruments, mainAppStore.activeAccountId]);
 
   return (
