@@ -21,6 +21,8 @@ build:
   stage: build
   image: node:latest
   script:
+    - npm -v
+    - node -v
     - npm i
     - npm run build
   artifacts:
