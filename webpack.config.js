@@ -25,12 +25,7 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.(png|jpe?g|gif|ico|woff|woff2)$/i,
-          use: [
-            'file-loader',
-            {
-              loader: 'image-webpack-loader',
-            },
-          ],
+          use: ['file-loader'],
         },
         {
           test: /\.svg$/,
