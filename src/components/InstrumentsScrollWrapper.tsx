@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useCallback } from 'react';
 import Instrument from './Instrument';
 import { useStores } from '../hooks/useStores';
 import styled from '@emotion/styled';
@@ -39,11 +39,8 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
     }
   };
 
-  useEffect(() => {
-    async function fetchFavoriteInstruments(
-      accountId: string,
-      type: AccountTypeEnum
-    ) {
+  const fetchFavoriteInstruments = useCallback(
+    async (accountId: string, type: AccountTypeEnum) => {
       try {
         const response = await API.getFavoriteInstrumets({
           type,
@@ -57,19 +54,22 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
       }
-    }
+    },
+    []
+  );
 
-    if (mainAppStore.activeAccount && instrumentsStore.instruments.length) {
+  useEffect(() => {
+    if (mainAppStore.activeAccountId && instrumentsStore.instruments.length) {
       fetchFavoriteInstruments(
-        mainAppStore.activeAccount.id,
+        mainAppStore.activeAccountId,
         // sh@t from backend
-        mainAppStore.activeAccount.isLive
+        mainAppStore.activeAccount?.isLive
           ? AccountTypeEnum.Live
           : AccountTypeEnum.Demo
       );
     }
     // TODO: research conditional dependencies
-  }, [instrumentsStore.instruments, mainAppStore.activeAccount?.id]);
+  }, [instrumentsStore.instruments, mainAppStore.activeAccountId]);
 
   return (
     <InstrumentsWrapper>
