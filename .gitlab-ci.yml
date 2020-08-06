@@ -21,6 +21,8 @@ build:
   stage: build
   image: node:14.6.0
   script:
+    - pwd
+    - ls -la
     - npm -v
     - node -v
     - npm i
