@@ -274,6 +274,7 @@ export class MainAppStore implements MainAppStoreProps {
           [Fields.ACCOUNT_ID]: activeAccount.id,
         });
         this.activeAccount = activeAccount;
+        this.activeAccountId = activeAccount.id;
       } else {
         this.isDemoRealPopup = true;
       }
@@ -372,6 +373,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.quotesStore.pendingOrders = [];
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
     this.activeAccount = undefined;
+    this.activeAccountId = '';
   };
 
   @action

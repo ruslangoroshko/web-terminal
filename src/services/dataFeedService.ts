@@ -21,6 +21,7 @@ import StreamingService from './streamingService';
 import { HubConnection } from '@aspnet/signalr';
 import { supportedResolutions } from '../constants/supportedTimeScales';
 import { IActiveInstrument } from '../types/InstrumentsTypes';
+import moment from 'moment';
 
 class DataFeedService implements IBasicDataFeed {
   static config = {
@@ -34,6 +35,7 @@ class DataFeedService implements IBasicDataFeed {
   activeSession: HubConnection;
   stream: StreamingService;
   instruments: IActiveInstrument[];
+  nextTimeTries: number;
 
   constructor(
     activeSession: HubConnection,
@@ -43,6 +45,7 @@ class DataFeedService implements IBasicDataFeed {
     this.activeSession = activeSession;
     this.stream = new StreamingService(this.activeSession, instrumentId);
     this.instruments = instruments;
+    this.nextTimeTries = 0;
   }
 
   onReady = (callback: OnReadyCallback) => {
@@ -61,7 +64,6 @@ class DataFeedService implements IBasicDataFeed {
     onResolve: ResolveCallback,
     onError: ErrorCallback
   ) => {
-    
     const symbol_stub: LibrarySymbolInfo = {
       full_name: symbolName,
       listed_exchange: '',
@@ -75,7 +77,7 @@ class DataFeedService implements IBasicDataFeed {
       minmov: 1,
       pricescale:
         10 **
-        (this.instruments.find(item => item.instrumentItem.id === symbolName)
+        (this.instruments.find((item) => item.instrumentItem.id === symbolName)
           ?.instrumentItem.digits || 2),
       has_intraday: true,
       intraday_multipliers: [
@@ -90,7 +92,7 @@ class DataFeedService implements IBasicDataFeed {
       format: 'price',
     };
 
-    setTimeout(function() {
+    setTimeout(function () {
       onResolve(symbol_stub);
       console.log('Resolving that symbol....', symbolName);
     }, 0);
@@ -116,8 +118,28 @@ class DataFeedService implements IBasicDataFeed {
           lastBar: bars[bars.length - 1],
         };
         onResult(bars, { noData: false });
+        this.nextTimeTries = 0;
       } else {
-        onResult(bars, { noData: true });
+        switch (resolution) {
+          case supportedResolutions['1 minute']:
+          case supportedResolutions['5 minutes']:
+            this.nextTimeTries = this.nextTimeTries + 1;
+            console.log(this.nextTimeTries);
+            onResult(bars, {
+              noData: true,
+              nextTime: moment(rangeStartDate * 1000)
+                .subtract(this.nextTimeTries, 'hour')
+                .valueOf(),
+            });
+
+            break;
+
+          default:
+            onResult(bars, {
+              noData: true,
+            });
+            break;
+        }
       }
     } catch (err) {
       onError(err);
@@ -165,6 +187,12 @@ class DataFeedService implements IBasicDataFeed {
       //   return {
       //     resolutionBack: 'D' as ResolutionBackValues,
       //     intervalBack: 2,
+      //   };
+      // case supportedResolutions['1 minute']:
+      //   debugger
+      //   return {
+      //     resolutionBack: 'D' as ResolutionBackValues,
+      //     intervalBack: 1,
       //   };
 
       case supportedResolutions['1 month']:
