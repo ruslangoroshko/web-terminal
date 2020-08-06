@@ -96,19 +96,19 @@ function SignUp() {
                 notificationStore.openNotification();
                 mainAppStore.isInitLoading = false;
                 mixpanel.track(mixpanelEvents.SIGN_UP_FAILED, {
-                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
                   [mixapanelProps.ERROR_TEXT]: t(
                     apiResponseCodeMessages[result]
                   ),
-                  [mixapanelProps.EMAIL]: email,
+                  [mixapanelProps.EMAIL]: values.email,
                 });
               } else {
                 mixpanel.people.set({
                   [mixapanelProps.EMAIL]: email,
-                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
                 });
                 mixpanel.track(mixpanelEvents.SIGN_UP, {
-                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
                 });
                 push(Page.DASHBOARD);
               }
@@ -191,7 +191,7 @@ function SignUp() {
 
   useEffect(() => {
     mixpanel.track(mixpanelEvents.SIGN_UP_VIEW, {
-      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
     });
   }, []);
 

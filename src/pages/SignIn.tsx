@@ -59,18 +59,18 @@ const SingIn = observer(() => {
         mainAppStore.isInitLoading = false;
 
         mixpanel.track(mixpanelEvents.LOGIN_FAILED, {
-          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
           [mixapanelProps.ERROR_TEXT]: t(apiResponseCodeMessages[result]),
           [mixapanelProps.EMAIL]: credentials.email,
         });
       }
       if (result === OperationApiResponseCodes.Ok) {
         mixpanel.people.union({
-          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
           [mixapanelProps.PLATFORMS_USED]: 'web',
         });
         mixpanel.track(mixpanelEvents.LOGIN_VIEW, {
-          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
         });
       }
     } catch (error) {
@@ -107,7 +107,7 @@ const SingIn = observer(() => {
 
   useEffect(() => {
     mixpanel.track(mixpanelEvents.LOGIN_VIEW, {
-      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
     });
   }, []);
 
