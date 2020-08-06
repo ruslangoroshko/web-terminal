@@ -4,9 +4,7 @@
   "scripts": {
     "dev": "webpack-dev-server --config webpack.config.js --mode=development --is_local=true",
     "devLocal": "webpack --config webpack.config.js --mode=development",
-    "build": "webpack --config webpack.config.js --mode=production --display-error-details",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "build": "webpack --config webpack.config.js --mode=production --display-error-details"
   },
   "devDependencies": {
     "@babel/core": "^7.7.0",
@@ -14,9 +12,6 @@
     "@babel/preset-react": "^7.7.0",
     "@babel/preset-typescript": "^7.7.2",
     "@emotion/babel-preset-css-prop": "^10.0.23",
-    "@testing-library/jest-dom": "^4.2.3",
-    "@testing-library/react": "^9.3.2",
-    "@types/jest": "^24.0.22",
     "@types/mixpanel-browser": "^2.35.0",
     "@types/moment": "^2.13.0",
     "@types/react": "^16.9.11",
@@ -28,7 +23,6 @@
     "@types/signalr": "^2.2.35",
     "@types/uuid": "^3.4.6",
     "@types/yup": "^0.26.24",
-    "babel-jest": "^25.1.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-emotion": "^10.0.27",
     "babel-preset-env": "^1.7.0",
@@ -36,10 +30,6 @@
     "css-loader": "^3.4.2",
     "file-loader": "^4.2.0",
     "html-webpack-plugin": "^3.2.0",
-    "image-webpack-loader": "^6.0.0",
-    "jest": "^25.1.0",
-    "json-loader": "^0.5.7",
-    "json5-loader": "^4.0.0",
     "prettier": "^2.0.5",
     "react-test-renderer": "^16.11.0",
     "source-map-loader": "^0.2.4",
@@ -48,7 +38,6 @@
     "svgo": "^1.3.2",
     "svgo-loader": "^2.2.1",
     "terser-webpack-plugin": "^3.0.2",
-    "ts-jest": "^24.1.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.8.3",
     "webpack": "^4.41.2",
@@ -58,7 +47,6 @@
   "private": true,
   "dependencies": {
     "@aspnet/signalr": "^1.1.4",
-    "@aspnet/signalr-protocol-msgpack": "^1.1.0",
     "@emotion/core": "^10.0.22",
     "@emotion/styled": "^10.0.23",
     "@types/react-input-mask": "^2.0.5",

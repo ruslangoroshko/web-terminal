@@ -137,9 +137,11 @@ const VisaMasterCardForm = () => {
 
     const params: CreateDepositInvoiceParams = {
       ...values,
+
       amount: +values.amount,
       fullName: values.fullName.trim(),
       cardNumber: values.cardNumber.split(' ').join(''),
+      cvv: +values.cvv,
       accountId: mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
       expirationDate: moment(`${parts[0]}20${parts[1]}`, 'MMYYYY').valueOf(),
     };
