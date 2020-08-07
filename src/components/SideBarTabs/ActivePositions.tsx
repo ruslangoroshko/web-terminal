@@ -218,7 +218,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           [mixapanelProps.MULTIPLIER]: position.multiplier,
           [mixapanelProps.TREND]:
             position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-          [mixapanelProps.SLTP]: position.sl || position.tp ? 'yes' : 'no',
+          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
@@ -233,7 +233,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           [mixapanelProps.MULTIPLIER]: position.multiplier,
           [mixapanelProps.TREND]:
             position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-          [mixapanelProps.SLTP]: position.sl || position.tp ? 'yes' : 'no',
+          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
