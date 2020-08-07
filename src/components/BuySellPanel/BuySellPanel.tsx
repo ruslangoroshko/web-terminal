@@ -94,13 +94,13 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         investmentAmount: yup
           .number()
           .min(
-            instrument.minOperationVolume / initialValues().multiplier,
+            instrument.minOperationVolume,
             `${t('Minimum trade volume')} $${
               instrument.minOperationVolume
             }. ${t('Please increase your trade amount or multiplier')}.`
           )
           .max(
-            instrument.maxOperationVolume / initialValues().multiplier,
+            instrument.maxOperationVolume,
             `${t('Maximum trade volume')} $${
               instrument.maxOperationVolume
             }. ${t('Please decrease your trade amount or multiplier')}.`
