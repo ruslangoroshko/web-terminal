@@ -58,7 +58,7 @@ function ForgotPassword() {
       if (result.result === OperationApiResponseCodes.Ok) {
         setIsSuccessfull(true);
         mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_SUBMIT, {
-          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
         });
       } else {
         setSubmitting(false);
@@ -76,7 +76,7 @@ function ForgotPassword() {
 
   useEffect(() => {
     mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_VIEW, {
-      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName,
+      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
     });
   }, []);
 

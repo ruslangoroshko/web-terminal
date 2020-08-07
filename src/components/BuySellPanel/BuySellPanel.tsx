@@ -110,7 +110,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             `${t('Insufficient funds to open a position. You have only')} $${
               mainAppStore.activeAccount?.balance
             }`,
-            value => {
+            (value) => {
               if (value) {
                 return value < (mainAppStore.activeAccount?.balance || 0);
               }
@@ -133,7 +133,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                value => value > currentPriceAsk()
+                (value) => value > currentPriceAsk()
               ),
           })
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
@@ -147,7 +147,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                value => value < currentPriceBid()
+                (value) => value < currentPriceBid()
               ),
           }),
         sl: yup
@@ -164,7 +164,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                value => value < currentPriceAsk()
+                (value) => value < currentPriceAsk()
               ),
           })
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
@@ -178,18 +178,18 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                value => value > currentPriceBid()
+                (value) => value > currentPriceBid()
               ),
           })
           .when([Fields.STOP_LOSS_TYPE], {
-            is: slType => slType === TpSlTypeEnum.Currency,
+            is: (slType) => slType === TpSlTypeEnum.Currency,
             then: yup
               .number()
               .nullable()
               .test(
                 Fields.STOP_LOSS,
                 t('Stop loss level can not be lower than the Invest amount'),
-                function(value) {
+                function (value) {
                   return value < this.parent[Fields.AMOUNT];
                 }
               ),
@@ -198,7 +198,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
       }),
-    [instrument, currentPriceBid(), currentPriceAsk()]
+    [instrument, currentPriceBid, currentPriceAsk, initialValues]
   );
 
   const onSubmit = async (
@@ -236,7 +236,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -252,7 +252,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -291,7 +291,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -307,7 +307,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? 'yes' : 'no',
+            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
