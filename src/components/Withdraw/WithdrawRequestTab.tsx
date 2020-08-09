@@ -77,7 +77,7 @@ const WithdrawRequestTab = () => {
             >
               {mainAppStore.accounts.find((item) => item.isLive)?.symbol}
               {mainAppStore.accounts
-                .find((item) => item.isLive === true)
+                .find((item) => item.isLive)
                 ?.balance.toFixed(2)}
             </PrimaryTextSpan>
           </FlexContainer>
