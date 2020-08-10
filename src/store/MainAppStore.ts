@@ -310,7 +310,9 @@ export class MainAppStore implements MainAppStoreProps {
       this.setTokenHandler(response.data.token);
       this.fetchTradingUrl(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
-      mixpanel.track(mixpanelEvents.LOGIN);
+      mixpanel.track(mixpanelEvents.LOGIN, {
+        [mixapanelProps.BRAND_NAME]: this.initModel.brandName.toLowerCase(),
+      });
     }
 
     if (
