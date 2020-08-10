@@ -78,11 +78,6 @@ export class InstrumentsStore implements ContextProps {
 
   @action
   editActiveInstrument = (activeInstrument: IActiveInstrument) => {
-    this.instruments = this.instruments.map(item =>
-      item.instrumentItem.id === activeInstrument.instrumentItem.id
-        ? activeInstrument
-        : item
-    );
     this.activeInstrument = activeInstrument;
   };
 

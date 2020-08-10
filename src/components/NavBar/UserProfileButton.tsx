@@ -35,19 +35,23 @@ function UserProfileButton() {
     async function fetchPersonalData() {
       try {
         const response = await API.getPersonalData(getProcessId());
+        mixpanel.alias(response.data.id);
+        mixpanel.identify(response.data.id);
         mixpanel.people.set({
           [mixapanelProps.PHONE]: response.data.phone || '',
+          [mixapanelProps.EMAIL]: response.data.email || '',
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
           [mixapanelProps.TRADER_ID]: response.data.phone || '',
           [mixapanelProps.FIRST_NAME]: response.data.firstName || '',
           [mixapanelProps.KYC_STATUS]: KYCStatus[response.data.kyc],
           [mixapanelProps.LAST_NAME]: response.data.lastName || '',
         });
-
         mixpanel.people.union({
           [mixapanelProps.PLATFORMS_USED]: 'web',
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
         })
-        mixpanel.identify(response.data.id);
+        
+
         mainAppStore.profileStatus = response.data.kyc;
         mainAppStore.profilePhone = response.data.phone || '';
       } catch (error) {}
