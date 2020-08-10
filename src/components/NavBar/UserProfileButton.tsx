@@ -41,7 +41,7 @@ function UserProfileButton() {
           [mixapanelProps.PHONE]: response.data.phone || '',
           [mixapanelProps.EMAIL]: response.data.email || '',
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
-          [mixapanelProps.TRADER_ID]: response.data.phone || '',
+          [mixapanelProps.TRADER_ID]: response.data.id || '',
           [mixapanelProps.FIRST_NAME]: response.data.firstName || '',
           [mixapanelProps.KYC_STATUS]: KYCStatus[response.data.kyc],
           [mixapanelProps.LAST_NAME]: response.data.lastName || '',
@@ -50,6 +50,7 @@ function UserProfileButton() {
           [mixapanelProps.PLATFORMS_USED]: 'web',
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
         })
+        mixpanel.identify(response.data.id);
         
 
         mainAppStore.profileStatus = response.data.kyc;
