@@ -35,7 +35,7 @@ function UserProfileButton() {
     async function fetchPersonalData() {
       try {
         const response = await API.getPersonalData(getProcessId());
-        mixpanel.alias(response.data.id);
+        mixpanel.alias(response.data.id, response.data.id);
         mixpanel.identify(response.data.id);
         mixpanel.people.set({
           [mixapanelProps.PHONE]: response.data.phone || '',
