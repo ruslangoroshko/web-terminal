@@ -35,6 +35,7 @@ function UserProfileButton() {
     async function fetchPersonalData() {
       try {
         const response = await API.getPersonalData(getProcessId());
+        mixpanel.alias(response.data.id);
         mixpanel.people.set({
           [mixapanelProps.PHONE]: response.data.phone || '',
           [mixapanelProps.EMAIL]: response.data.email || '',
@@ -48,10 +49,9 @@ function UserProfileButton() {
           [mixapanelProps.PLATFORMS_USED]: 'web',
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
         })
-        mixpanel.alias(response.data.id);
-        // mixpanel.identify(response.data.id);
         
-
+        // mixpanel.identify(response.data.id);
+      
         mainAppStore.profileStatus = response.data.kyc;
         mainAppStore.profilePhone = response.data.phone || '';
       } catch (error) {}
