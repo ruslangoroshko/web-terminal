@@ -88,21 +88,21 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     [quotesStore.quotes[instrument.id].bid.c]
   );
 
-  const validationSchema = useCallback(
+  const validationSchema: any = useCallback(
     () =>
       yup.object().shape({
         investmentAmount: yup
           .number()
           .min(
-            +instrument.minOperationVolume / +initialValues().multiplier,
+            +instrument.minOperationVolume / +values.multiplier,
             `${t('Minimum trade volume')} $${
-              +instrument.minOperationVolume / +initialValues().multiplier
+              +instrument.minOperationVolume
             }. ${t('Please increase your trade amount or multiplier')}.`
           )
           .max(
-            +instrument.maxOperationVolume / +initialValues().multiplier,
+            +instrument.maxOperationVolume / +values.multiplier,
             `${t('Maximum trade volume')} $${
-              +instrument.maxOperationVolume / +initialValues().multiplier
+              +instrument.maxOperationVolume
             }. ${t('Please decrease your trade amount or multiplier')}.`
           )
           .test(
