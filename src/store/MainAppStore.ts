@@ -99,6 +99,8 @@ export class MainAppStore implements MainAppStoreProps {
   connectTimeOut = '';
   @observable socketError = false;
   @observable activeAccountId: string = '';
+  @observable signUpFlag: boolean = false;
+
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -287,6 +289,11 @@ export class MainAppStore implements MainAppStoreProps {
       this.rootStore.badRequestPopupStore.openModal();
     }
   };
+
+  @action
+  setSignUpFlag = (value: boolean) => {
+    this.signUpFlag = value;
+  }
 
   @action
   setActiveAccount = (account: AccountModelWebSocketDTO) => {

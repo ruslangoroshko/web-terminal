@@ -103,6 +103,7 @@ function SignUp() {
                   [mixapanelProps.EMAIL]: values.email,
                 });
               } else {
+                mainAppStore.setSignUpFlag(true);
                 mixpanel.track(mixpanelEvents.SIGN_UP, {
                   [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
                 });
