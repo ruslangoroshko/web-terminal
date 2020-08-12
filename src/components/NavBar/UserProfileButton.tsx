@@ -52,7 +52,7 @@ function UserProfileButton() {
         })
         
         // mixpanel.identify(response.data.id);
-      
+        mainAppStore.setSignUpFlag(false);
         mainAppStore.profileStatus = response.data.kyc;
         mainAppStore.profilePhone = response.data.phone || '';
       } catch (error) {}
