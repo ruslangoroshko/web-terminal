@@ -141,7 +141,7 @@ const VisaMasterCardForm = () => {
       fullName: values.fullName.trim(),
       cardNumber: values.cardNumber.split(' ').join(''),
       accountId: mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
-      expirationDate: moment(`${parts[0]}20${parts[1]}`, 'MMYYYY').valueOf(),
+      expirationDate: new Date(`20${parts[1]}-${parts[0]}`).getTime(),
     };
 
     try {
