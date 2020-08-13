@@ -253,9 +253,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   };
 
   const updateSLTP = async (values: UpdateSLTP) => {
-    if (!values.sl && !values.tp) {
-      return;
-    }
     const valuesToSubmit = {
       ...values,
       slType: values.sl ? values.slType : null,
