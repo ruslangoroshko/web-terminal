@@ -261,7 +261,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       tp: values.tp || null,
     };
     try {
-      await API.updateSLTP(valuesToSubmit);
+      const response = await API.updateSLTP(valuesToSubmit);
+      if (response.result === OperationApiResponseCodes.DayOff) {
+        notificationStore.notificationMessage = t(
+          apiResponseCodeMessages[response.result]
+        );
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+      }
     } catch (error) {
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
