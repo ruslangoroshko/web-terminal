@@ -176,8 +176,8 @@ const VisaMasterCardForm = () => {
     touched,
     setFieldValue,
     validateForm,
-    handleChange,
     handleSubmit,
+    handleChange,
     errors,
     isSubmitting,
   } = useFormik({
@@ -194,6 +194,10 @@ const VisaMasterCardForm = () => {
     }
     handleChange(e);
   };
+
+  const handlerBeforeInputChange = (e: any) => {
+    console.log(e.data)
+  }
 
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
@@ -372,6 +376,7 @@ const VisaMasterCardForm = () => {
                 mask="99 / 99"
                 value={values.expirationDate}
                 onChange={handleChange}
+                onBeforeInput={handlerBeforeInputChange}
                 name="expirationDate"
                 id="expirationDate"
                 className={`input-border ${
