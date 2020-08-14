@@ -195,8 +195,15 @@ const VisaMasterCardForm = () => {
     handleChange(e);
   };
 
-  const handlerBeforeInputChange = (e: any) => {
-    console.log(e.data)
+  const handleBeforeInputChange = (e: any) => {
+    const regexp = '^(0[1-9]|1[0-2])\/?(([0-9]{4})$)'
+    if (e.data && e.data.match(regexp)) {
+      const parts = e.data.split("/");
+      const year = parts[1].split('');
+      const value = `${parts[0]} / ${year[2]}${year[3]}`;
+      setFieldValue(e.target.name, value)
+      return e.preventDefault();
+    }
   }
 
   const handlerClickSubmit = async () => {
@@ -374,9 +381,9 @@ const VisaMasterCardForm = () => {
                 maskPlaceholder={''}
                 placeholder="12 / 24"
                 mask="99 / 99"
+                onBeforeInput={handleBeforeInputChange}
                 value={values.expirationDate}
                 onChange={handleChange}
-                onBeforeInput={handlerBeforeInputChange}
                 name="expirationDate"
                 id="expirationDate"
                 className={`input-border ${
@@ -505,6 +512,16 @@ const CustomInput = styled.input<{ hasError: boolean }>`
       opacity: 0;
     }
   }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:valid,
+  &:-webkit-autofill:active {
+    transition: border 0.2s ease, background-color 50000s ease-in-out 0s;
+    -webkit-text-fill-color: #fffccc !important;
+    font-size: 14px;
+  }
 `;
 
 const CustomInputMask = styled(InputMask)`
@@ -529,6 +546,16 @@ const CustomInputMask = styled(InputMask)`
     &::placeholder {
       opacity: 0;
     }
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:valid,
+  &:-webkit-autofill:active {
+    transition: border 0.2s ease, background-color 50000s ease-in-out 0s;
+    -webkit-text-fill-color: #fffccc !important;
+    font-size: 14px;
   }
 `;
 
