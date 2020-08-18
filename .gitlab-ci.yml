@@ -26,7 +26,7 @@ build:
     - npm -v
     - node -v
     - npm i
-    - npm run build
+    - npm run buildDev
   artifacts:
     paths:
       - ${BUILD_FOLDER}
