@@ -388,12 +388,11 @@ const VisaMasterCardForm = () => {
                 // @ts-ignore
                 maskPlaceholder={''}
                 placeholder="12 / 24"
-                autoComplete="cc-exp"
                 mask="99 / 99"
                 onBeforeInput={handleBeforeInputChange}
                 value={values.expirationDate}
                 onChange={handleChangeExpireDate}
-                type="cc-exp"
+                maxLength={5}
                 name="expirationDate"
                 id="expirationDate"
                 className={`input-border ${
