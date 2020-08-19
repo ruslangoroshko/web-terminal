@@ -74,7 +74,7 @@ const VisaMasterCardForm = () => {
         if (!val) {
           return false;
         }
-        const parts = val.split(' / ');
+        const parts = val.split('/');
         const date = moment(`${parts[0]}20${parts[1]}`, 'MMYYYY').endOf(
           'month'
         );
@@ -133,7 +133,7 @@ const VisaMasterCardForm = () => {
   };
 
   const handleSubmitForm = async (values: any) => {
-    let parts = values.expirationDate.split(' / ');
+    let parts = values.expirationDate.split('/');
 
     const params: CreateDepositInvoiceParams = {
       ...values,
@@ -196,23 +196,23 @@ const VisaMasterCardForm = () => {
   };
 
   const handleBeforeInputChange = (e: any) => {
-    console.log(e.data)
-    const regexp = '^(0[1-9]|1[0-2])\/?(([0-9]{4})$)'
+    console.log(e.data);
+    const regexp = '^(0[1-9]|1[0-2])/?(([0-9]{4})$)';
     if (e.data && e.data.match(regexp)) {
-      const parts = e.data.split("/");
+      const parts = e.data.split('/');
       const year = parts[1].split('');
-      const value = `${parts[0]} / ${year[2]}${year[3]}`;
-      setFieldValue(e.target.name, value)
+      const value = `${parts[0]}/${year[2]}${year[3]}`;
+      setFieldValue(e.target.name, value);
       return e.preventDefault();
     }
-  }
+  };
 
   const handleChangeExpireDate = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value)
-    console.log(e.target.defaultValue)
-    console.log(e.target)
-    handleChange(e)
-  }
+    console.log(e.target.value);
+    console.log(e.target.defaultValue);
+    console.log(e.target);
+    handleChange(e);
+  };
 
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
@@ -387,8 +387,8 @@ const VisaMasterCardForm = () => {
               <CustomInputMask
                 // @ts-ignore
                 maskPlaceholder={''}
-                placeholder="12 / 24"
-                mask="99 / 99"
+                placeholder="12/24"
+                mask="99/99"
                 onBeforeInput={handleBeforeInputChange}
                 value={values.expirationDate}
                 onChange={handleChangeExpireDate}
@@ -479,8 +479,6 @@ const CustomFlex = styled(FlexContainer)`
     flex-basis: calc(50% - 8px);
   }
 `;
-
-const ImageBadge = styled.img``;
 
 const Input = styled.input`
   border: none;
