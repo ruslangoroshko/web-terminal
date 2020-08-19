@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import {
   PrimaryTextParagraph,
@@ -196,6 +196,7 @@ const VisaMasterCardForm = () => {
   };
 
   const handleBeforeInputChange = (e: any) => {
+    console.log(e.data)
     const regexp = '^(0[1-9]|1[0-2])\/?(([0-9]{4})$)'
     if (e.data && e.data.match(regexp)) {
       const parts = e.data.split("/");
@@ -204,6 +205,13 @@ const VisaMasterCardForm = () => {
       setFieldValue(e.target.name, value)
       return e.preventDefault();
     }
+  }
+
+  const handleChangeExpireDate = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value)
+    console.log(e.target.defaultValue)
+    console.log(e.target)
+    handleChange(e)
   }
 
   const handlerClickSubmit = async () => {
@@ -383,7 +391,8 @@ const VisaMasterCardForm = () => {
                 mask="99 / 99"
                 onBeforeInput={handleBeforeInputChange}
                 value={values.expirationDate}
-                onChange={handleChange}
+                onChange={handleChangeExpireDate}
+                maxLength={5}
                 name="expirationDate"
                 id="expirationDate"
                 className={`input-border ${
