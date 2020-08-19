@@ -23,6 +23,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value.trim().toLowerCase();
+    // TODO: put method inside store 
     instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments
       .filter(
         item =>
