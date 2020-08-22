@@ -196,7 +196,6 @@ const VisaMasterCardForm = () => {
   };
 
   const handleBeforeInputChange = (e: any) => {
-    console.log(e.data);
     const regexp = '^(0[1-9]|1[0-2])/?(([0-9]{4})$)';
     if (e.data && e.data.match(regexp)) {
       const parts = e.data.split('/');
@@ -208,9 +207,6 @@ const VisaMasterCardForm = () => {
   };
 
   const handleChangeExpireDate = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-    console.log(e.target.defaultValue);
-    console.log(e.target);
     handleChange(e);
   };
 
