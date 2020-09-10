@@ -76,7 +76,7 @@ function TradingHistoryItem(props: Props) {
               {moment(closeDate).format('DD MMM')}
             </PrimaryTextSpan>
             <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
-              {moment(closeDate).format('hh:mm:ss')}
+              {moment(closeDate).format('HH:mm:ss')}
             </PrimaryTextSpan>
           </FlexContainer>
           <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
