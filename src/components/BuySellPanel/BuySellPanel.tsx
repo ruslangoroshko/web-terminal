@@ -96,11 +96,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           .test(
             Fields.AMOUNT,
             `${t('Minimum trade volume')} $${
-              +instrument.minOperationVolume
+              instrument.minOperationVolume
             }. ${t('Please increase your trade amount or multiplier')}.`,
             function (value) {
               if (value) {
-                return value >= (+instrument.minOperationVolume / +this.parent[Fields.MULTIPLIER]);
+                return (
+                  value >=
+                  instrument.minOperationVolume /
+                    +this.parent[Fields.MULTIPLIER]
+                );
               }
               return true;
             }
@@ -108,11 +112,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           .test(
             Fields.AMOUNT,
             `${t('Maximum trade volume')} $${
-              +instrument.maxOperationVolume
+              instrument.maxOperationVolume
             }. ${t('Please decrease your trade amount or multiplier')}.`,
             function (value) {
               if (value) {
-                return value <= (+instrument.maxOperationVolume / +this.parent[Fields.MULTIPLIER]);
+                return (
+                  value <=
+                  instrument.maxOperationVolume /
+                    +this.parent[Fields.MULTIPLIER]
+                );
               }
               return true;
             }
@@ -124,7 +132,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             }`,
             (value) => {
               if (value) {
-                return value < (mainAppStore.activeAccount?.balance || 0);
+                return value <= (mainAppStore.activeAccount?.balance || 0);
               }
               return true;
             }
@@ -210,7 +218,13 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
       }),
-    [instrument, currentPriceBid, currentPriceAsk, initialValues]
+    [
+      instrument,
+      currentPriceBid,
+      currentPriceAsk,
+      initialValues,
+      mainAppStore.activeAccount,
+    ]
   );
 
   const onSubmit = async (
