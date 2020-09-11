@@ -12,7 +12,6 @@ import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import { Observer } from 'mobx-react-lite';
 import mixpanel from 'mixpanel-browser';
 import KYCStatus from '../../constants/KYCStatus';
-import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
 
 function UserProfileButton() {
@@ -51,7 +50,6 @@ function UserProfileButton() {
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
         })
         
-        // mixpanel.identify(response.data.id);
         mainAppStore.setSignUpFlag(false);
         mainAppStore.profileStatus = response.data.kyc;
         mainAppStore.profilePhone = response.data.phone || '';

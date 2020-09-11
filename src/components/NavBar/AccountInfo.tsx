@@ -79,9 +79,9 @@ const AccountInfo: FC<Props> = observer(props => {
       )}
       <FlexContainer justifyContent="space-between">
         <FlexContainer>
-          <FlexContainer width="32px" height="32px" margin="0 12px 0 0">
+          {/* <FlexContainer width="32px" height="32px" margin="0 12px 0 0">
             {t('Image')}
-          </FlexContainer>
+          </FlexContainer> */}
           <FlexContainer flexDirection="column">
             <FlexContainer margin="0 0 4px 0">
               <PrimaryTextSpan
