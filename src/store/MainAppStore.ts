@@ -101,7 +101,6 @@ export class MainAppStore implements MainAppStoreProps {
   @observable activeAccountId: string = '';
   @observable signUpFlag: boolean = false;
 
-
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
@@ -166,9 +165,9 @@ export class MainAppStore implements MainAppStoreProps {
         this.getActiveAccount();
 
         mixpanel.people.set({
-          [mixapanelProps.ACCOUNTS]: response.data.map(item => item.id),
+          [mixapanelProps.ACCOUNTS]: response.data.map((item) => item.id),
           [mixapanelProps.FUNDED_TRADER]: `${response.data.some(
-            item => item.isLive && item.balance > 0
+            (item) => item.isLive && item.balance > 0
           )}`,
         });
       }
@@ -188,7 +187,7 @@ export class MainAppStore implements MainAppStoreProps {
           this.activeAccount &&
           response.accountId === this.activeAccount.id
         ) {
-          response.data.forEach(item => {
+          response.data.forEach((item) => {
             this.rootStore.quotesStore.setQuote({
               ask: {
                 c: item.ask || 0,
@@ -222,7 +221,7 @@ export class MainAppStore implements MainAppStoreProps {
       }
     );
 
-    connection.onclose(error => {
+    connection.onclose((error) => {
       this.rootStore.badRequestPopupStore.openModal();
       this.rootStore.badRequestPopupStore.setMessage(
         error?.message ||
@@ -231,7 +230,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.socketError = true;
       //@ts-ignore
       console.log('websocket error: ', error);
-      console.log('=====/=====')
+      console.log('=====/=====');
     });
   };
 
@@ -250,7 +249,9 @@ export class MainAppStore implements MainAppStoreProps {
     }
   };
 
-  postRefreshToken = async (refreshToken = this.refreshToken) => {
+  postRefreshToken = async () => {
+    const refreshToken = `${this.refreshToken}`;
+    this.refreshToken = '';
     try {
       const result = await API.refreshToken({ refreshToken });
       if (result.refreshToken) {
@@ -269,7 +270,7 @@ export class MainAppStore implements MainAppStoreProps {
         KeysInApi.ACTIVE_ACCOUNT_ID
       );
       const activeAccount = this.accounts.find(
-        item => item.id === activeAccountId
+        (item) => item.id === activeAccountId
       );
       if (activeAccount) {
         this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
@@ -292,7 +293,7 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setSignUpFlag = (value: boolean) => {
     this.signUpFlag = value;
-  }
+  };
 
   @action
   setActiveAccount = (account: AccountModelWebSocketDTO) => {
