@@ -60,49 +60,27 @@ const WithdrawRequestTab = () => {
       </Observer>
       <FlexContainer flexDirection="column" marginBottom="16px">
         <FlexContainer marginBottom="48px">
-          <FlexContainer flexDirection="column" width="180px">
-            <PrimaryTextSpan
+          <Observer>
+            {() => (<FlexContainer flexDirection="column" width="180px">
+              <PrimaryTextSpan
               textTransform="uppercase"
               fontSize="12px"
               color="rgba(255,255,255,0.4)"
               marginBottom="8px"
-            >
-              {t('Total')}
-            </PrimaryTextSpan>
-            <PrimaryTextSpan
+              >
+              {t('Available')}
+              </PrimaryTextSpan>
+              <PrimaryTextSpan
               textTransform="uppercase"
               fontSize="24px"
               fontWeight="bold"
               color="#FFFCCC"
-            >
+              >
               {mainAppStore.accounts.find((item) => item.isLive)?.symbol}
-              {mainAppStore.accounts
-                .find((item) => item.isLive)
-                ?.balance.toFixed(2)}
-            </PrimaryTextSpan>
-          </FlexContainer>
-
-          <FlexContainer flexDirection="column" width="180px">
-            <PrimaryTextSpan
-              textTransform="uppercase"
-              fontSize="12px"
-              color="rgba(255,255,255,0.4)"
-              marginBottom="12px"
-            >
-              {t('Available')}
-            </PrimaryTextSpan>
-            <PrimaryTextSpan
-              textTransform="uppercase"
-              fontSize="14px"
-              fontWeight="bold"
-              color="#FFFCCC"
-            >
-              {mainAppStore.accounts.find((item) => item.isLive)?.symbol}
-              {mainAppStore.accounts
-                .find((item) => item.isLive)
-                ?.balance.toFixed(2)}
-            </PrimaryTextSpan>
-          </FlexContainer>
+              {mainAppStore.activeAccountAvailableBalance.toFixed(2)}
+              </PrimaryTextSpan>
+              </FlexContainer>)}
+          </Observer>
         </FlexContainer>
 
         <FlexContainer flexDirection="column">
