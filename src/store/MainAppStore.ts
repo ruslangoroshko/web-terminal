@@ -99,6 +99,7 @@ export class MainAppStore implements MainAppStoreProps {
   connectTimeOut = '';
   @observable socketError = false;
   @observable activeAccountId: string = '';
+  @observable activeAccountAvailableBalance: number = 0;
   @observable signUpFlag: boolean = false;
 
   constructor(rootStore: RootStore) {
@@ -278,6 +279,7 @@ export class MainAppStore implements MainAppStoreProps {
         });
         this.activeAccount = activeAccount;
         this.activeAccountId = activeAccount.id;
+        this.activeAccountAvailableBalance = activeAccount.balance;
       } else {
         this.isDemoRealPopup = true;
       }
@@ -299,6 +301,7 @@ export class MainAppStore implements MainAppStoreProps {
   setActiveAccount = (account: AccountModelWebSocketDTO) => {
     this.activeAccount = account;
     this.activeAccountId = account.id;
+    this.activeAccountAvailableBalance = account.balance;
     // TODO: think how remove crutch
     this.rootStore.historyStore.positionsHistoryReport.positionsHistory = [];
     API.setKeyValue({
