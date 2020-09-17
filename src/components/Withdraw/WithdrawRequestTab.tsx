@@ -77,15 +77,15 @@ const WithdrawRequestTab = () => {
               color="#FFFCCC"
               >
               {mainAppStore.accounts.find((item) => item.isLive)?.symbol}
-              {mainAppStore.activeAccountAvailableBalance.toFixed(2)}
+              {mainAppStore.accounts.find((item) => item.isLive)?.balance.toFixed(2)}
               </PrimaryTextSpan>
               </FlexContainer>)}
           </Observer>
         </FlexContainer>
 
         <FlexContainer flexDirection="column">
-          {Number(mainAppStore.accounts.find((item) => item.isLive)?.balance) >
-            0 && (
+          {(Number(mainAppStore.accounts.find((item) => item.isLive)?.balance) >
+            0 && mainAppStore.activeAccount?.isLive) && (
             <FlexContainer flexDirection="column">
               {mainAppStore.profileStatus ===
                 PersonalDataKYCEnum.NotVerified && <WithdrawPagePopup />}
