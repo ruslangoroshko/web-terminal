@@ -112,7 +112,7 @@ const AccountInfo: FC<Props> = observer(props => {
             </FlexContainer>
             <PrimaryTextSpan>
               {account.symbol}
-              {account.balance}
+              {account.balance.toFixed(2)}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
