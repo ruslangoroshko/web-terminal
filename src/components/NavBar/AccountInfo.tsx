@@ -25,7 +25,7 @@ interface Props {
   toggle: () => void;
 }
 
-const AccountInfo: FC<Props> = observer(props => {
+const AccountInfo: FC<Props> = observer((props) => {
   const { account, toggle } = props;
 
   const {
@@ -79,9 +79,6 @@ const AccountInfo: FC<Props> = observer(props => {
       )}
       <FlexContainer justifyContent="space-between">
         <FlexContainer>
-          {/* <FlexContainer width="32px" height="32px" margin="0 12px 0 0">
-            {t('Image')}
-          </FlexContainer> */}
           <FlexContainer flexDirection="column">
             <FlexContainer margin="0 0 4px 0">
               <PrimaryTextSpan
@@ -193,12 +190,12 @@ const AccountInfo: FC<Props> = observer(props => {
 export default AccountInfo;
 
 const AccountWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
-  background: ${props =>
+  background: ${(props) =>
     props.isActive
       ? `radial-gradient(92.11% 100% at 0% 0%, rgba(255, 252, 204, 0.08) 0%, rgba(255, 252, 204, 0) 100%), rgba(255, 255, 255, 0.04)`
       : '#1C2026'};
 
-  border-bottom: ${props =>
+  border-bottom: ${(props) =>
     props.isActive ? 'none' : '1px solid rgba(255, 255, 255, 0.16)'};
 
   &:last-of-type {
