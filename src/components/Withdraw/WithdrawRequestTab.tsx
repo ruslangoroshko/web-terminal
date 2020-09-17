@@ -38,8 +38,13 @@ const WithdrawRequestTab = () => {
       try {
         const result = await API.getWithdrawalHistory();
         if (result.status === WithdrawalHistoryResponseStatus.Successful) {
-          const isPending = !!result.history?.find(item => item.status === WithdrawalStatusesEnum.Pending);
-          isPending && withdrawalStore.setPendingPopup();
+          const isPending = result.history?.some(
+            (item) => item.status === WithdrawalStatusesEnum.Pending
+          );
+
+          if (isPending) {
+            withdrawalStore.setPendingPopup();
+          }
         }
       } catch (error) {}
     };
@@ -61,113 +66,115 @@ const WithdrawRequestTab = () => {
       <FlexContainer flexDirection="column" marginBottom="16px">
         <FlexContainer marginBottom="48px">
           <Observer>
-            {() => (<FlexContainer flexDirection="column" width="180px">
-              <PrimaryTextSpan
-              textTransform="uppercase"
-              fontSize="12px"
-              color="rgba(255,255,255,0.4)"
-              marginBottom="8px"
-              >
-              {t('Available')}
-              </PrimaryTextSpan>
-              <PrimaryTextSpan
-              textTransform="uppercase"
-              fontSize="24px"
-              fontWeight="bold"
-              color="#FFFCCC"
-              >
-              {mainAppStore.accounts.find((item) => item.isLive)?.symbol}
-              {mainAppStore.activeAccountAvailableBalance.toFixed(2)}
-              </PrimaryTextSpan>
-              </FlexContainer>)}
+            {() => (
+              <FlexContainer flexDirection="column" width="180px">
+                <PrimaryTextSpan
+                  textTransform="uppercase"
+                  fontSize="12px"
+                  color="rgba(255,255,255,0.4)"
+                  marginBottom="8px"
+                >
+                  {t('Available')}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan
+                  textTransform="uppercase"
+                  fontSize="24px"
+                  fontWeight="bold"
+                  color="#FFFCCC"
+                >
+                  {mainAppStore.accounts.find((item) => item.isLive)?.symbol}
+                  {mainAppStore.accounts
+                    .find((item) => item.isLive)
+                    ?.balance.toFixed(2)}
+                </PrimaryTextSpan>
+              </FlexContainer>
+            )}
           </Observer>
         </FlexContainer>
 
         <FlexContainer flexDirection="column">
-          {Number(mainAppStore.accounts.find((item) => item.isLive)?.balance) >
-            0 && (
-            <FlexContainer flexDirection="column">
-              {mainAppStore.profileStatus ===
-                PersonalDataKYCEnum.NotVerified && <WithdrawPagePopup />}
-              <PrimaryTextSpan
-                textTransform="uppercase"
-                fontSize="12px"
-                color="rgba(255,255,255,0.4)"
-                marginBottom="12px"
+          <FlexContainer flexDirection="column">
+            {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified && (
+              <WithdrawPagePopup />
+            )}
+            <PrimaryTextSpan
+              textTransform="uppercase"
+              fontSize="12px"
+              color="rgba(255,255,255,0.4)"
+              marginBottom="12px"
+            >
+              {t('Payment methods')}
+            </PrimaryTextSpan>
+            <FlexContainer width="100%" marginBottom="16px">
+              <WithdrawPaymenMethodtItem
+                active={paymentMeyhod === WithdrawalTypesEnum.BankTransfer}
+                // TODO: reafactor
+                onClick={() => {
+                  setPaymentMethod(WithdrawalTypesEnum.BankTransfer);
+                }}
               >
-                {t('Payment methods')}
-              </PrimaryTextSpan>
-              <FlexContainer width="100%" marginBottom="16px">
-                <WithdrawPaymenMethodtItem
-                  active={paymentMeyhod === WithdrawalTypesEnum.BankTransfer}
-                  // TODO: reafactor
-                  onClick={() => {
-                    setPaymentMethod(WithdrawalTypesEnum.BankTransfer);
-                  }}
-                >
-                  <FlexContainer>
-                    <SvgIcon {...BankTransferIcon} fillColor="#FFFCCC" />
-                  </FlexContainer>
-                  <FlexContainer flexDirection="column">
-                    <PrimaryTextSpan
-                      fontWeight="bold"
-                      fontSize="12px"
-                      color="#FFFCCC"
-                      textAlign="left"
-                    >
-                      {t('Bank transfer')}
-                    </PrimaryTextSpan>
-                    <PrimaryTextSpan
-                      fontSize="12px"
-                      color="rgba(255,255,255,0.4)"
-                      textAlign="left"
-                    >
-                      {t('Other methods will be available')}
-                    </PrimaryTextSpan>
-                  </FlexContainer>
-                </WithdrawPaymenMethodtItem>
+                <FlexContainer>
+                  <SvgIcon {...BankTransferIcon} fillColor="#FFFCCC" />
+                </FlexContainer>
+                <FlexContainer flexDirection="column">
+                  <PrimaryTextSpan
+                    fontWeight="bold"
+                    fontSize="12px"
+                    color="#FFFCCC"
+                    textAlign="left"
+                  >
+                    {t('Bank transfer')}
+                  </PrimaryTextSpan>
+                  <PrimaryTextSpan
+                    fontSize="12px"
+                    color="rgba(255,255,255,0.4)"
+                    textAlign="left"
+                  >
+                    {t('Other methods will be available')}
+                  </PrimaryTextSpan>
+                </FlexContainer>
+              </WithdrawPaymenMethodtItem>
 
-                <WithdrawPaymenMethodtItem
-                  active={paymentMeyhod === WithdrawalTypesEnum.Bitcoin}
-                  onClick={() => {
-                    setPaymentMethod(WithdrawalTypesEnum.Bitcoin);
-                  }}
-                >
-                  <FlexContainer>
-                    <SvgIcon {...BitcoinIcon} fillColor="#FFFCCC" />
-                  </FlexContainer>
-                  <FlexContainer flexDirection="column">
-                    <PrimaryTextSpan
-                      fontWeight="bold"
-                      fontSize="12px"
-                      color="#FFFCCC"
-                      textAlign="left"
-                    >
-                      {t('Bitcoin')}
-                    </PrimaryTextSpan>
-                    <PrimaryTextSpan
-                      fontSize="12px"
-                      color="rgba(255,255,255,0.4)"
-                      textAlign="left"
-                    >
-                      {t('Other methods will be available')}
-                    </PrimaryTextSpan>
-                  </FlexContainer>
-                </WithdrawPaymenMethodtItem>
-              </FlexContainer>
-
-              <FlexContainer>
-                {paymentMeyhod === WithdrawalTypesEnum.BankTransfer && (
-                  <WithdrawFormBankTransfer />
-                )}
-                {paymentMeyhod === WithdrawalTypesEnum.Bitcoin && (
-                  <WithdrawFormBitcoin />
-                )}
-              </FlexContainer>
+              <WithdrawPaymenMethodtItem
+                active={paymentMeyhod === WithdrawalTypesEnum.Bitcoin}
+                onClick={() => {
+                  setPaymentMethod(WithdrawalTypesEnum.Bitcoin);
+                }}
+              >
+                <FlexContainer>
+                  <SvgIcon {...BitcoinIcon} fillColor="#FFFCCC" />
+                </FlexContainer>
+                <FlexContainer flexDirection="column">
+                  <PrimaryTextSpan
+                    fontWeight="bold"
+                    fontSize="12px"
+                    color="#FFFCCC"
+                    textAlign="left"
+                  >
+                    {t('Bitcoin')}
+                  </PrimaryTextSpan>
+                  <PrimaryTextSpan
+                    fontSize="12px"
+                    color="rgba(255,255,255,0.4)"
+                    textAlign="left"
+                  >
+                    {t('Other methods will be available')}
+                  </PrimaryTextSpan>
+                </FlexContainer>
+              </WithdrawPaymenMethodtItem>
             </FlexContainer>
-          )}
+
+            <FlexContainer>
+              {paymentMeyhod === WithdrawalTypesEnum.BankTransfer && (
+                <WithdrawFormBankTransfer />
+              )}
+              {paymentMeyhod === WithdrawalTypesEnum.Bitcoin && (
+                <WithdrawFormBitcoin />
+              )}
+            </FlexContainer>
+          </FlexContainer>
           {Number(
-            mainAppStore.accounts.find((item) => item.isLive === true)?.balance
+            mainAppStore.accounts.find((item) => item.isLive)?.balance
           ) === 0 && <WithdrawEmptyBalance />}
         </FlexContainer>
       </FlexContainer>
