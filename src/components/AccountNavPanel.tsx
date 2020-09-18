@@ -9,8 +9,12 @@ import { useStores } from '../hooks/useStores';
 import { useTranslation } from 'react-i18next';
 
 const AccountNavPanel = () => {
-  const { mainAppStore } = useStores();
+  const { mainAppStore, tabsStore } = useStores();
   const { t } = useTranslation();
+  const handleLogoutClick = () => {
+    tabsStore.closeAnyTab();
+    mainAppStore.signOut();
+  };
   return (
     <FlexContainer flexDirection="column" margin="0 40px 0 0" width="140px">
       <PrimaryTextParagraph
@@ -41,7 +45,7 @@ const AccountNavPanel = () => {
         </CustomNavLink>
       </FlexContainer>
       <FlexContainer flexDirection="column">
-        <LogoutButton onClick={mainAppStore.signOut}>
+        <LogoutButton onClick={handleLogoutClick}>
           <AccountLinkSpan color="#fffccc">{t('Logout')}</AccountLinkSpan>
         </LogoutButton>
       </FlexContainer>

@@ -15,7 +15,7 @@ import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import { useTranslation } from 'react-i18next';
 
 function ProfileDropdown() {
-  const { mainAppStore, depositFundsStore } = useStores();
+  const { mainAppStore, depositFundsStore, tabsStore } = useStores();
   const { t } = useTranslation();
   const renderStatusLabel = () => {
     switch (mainAppStore.profileStatus) {
@@ -55,6 +55,10 @@ function ProfileDropdown() {
       default:
         return null;
     }
+  };
+  const handleLogoutClick = () => {
+    tabsStore.closeAnyTab();
+    mainAppStore.signOut();
   };
 
   return (
@@ -133,7 +137,7 @@ function ProfileDropdown() {
         </FlexContainer> */}
       </FlexWithBottomBorder>
       <FlexContainer flexDirection="column">
-        <LogoutButton onClick={mainAppStore.signOut}>
+        <LogoutButton onClick={handleLogoutClick}>
           <PrimaryTextSpan fontSize="12px" color="#fffccc">
             {t('Logout')}
           </PrimaryTextSpan>
