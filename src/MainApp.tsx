@@ -29,13 +29,12 @@ const MainApp: FC = () => {
     }
   }, [mainAppStore.isAuthorized]);
 
-
   useEffect(() => {
     autorun(() => {
       if (mainAppStore.lang) {
         i18n.changeLanguage(mainAppStore.lang);
       }
-    })
+    });
   }, []);
 
   return (
@@ -49,6 +48,17 @@ const MainApp: FC = () => {
           'trading platform'
         )}`}</title>
         <link rel="shortcut icon" href={mainAppStore.initModel.favicon} />
+        <Observer>
+          {() => (
+            <>
+              {mainAppStore.initModel.recaptchaToken && (
+                <script
+                  src={`https://www.google.com/recaptcha/api.js?render=${mainAppStore.initModel.recaptchaToken}`}
+                ></script>
+              )}
+            </>
+          )}
+        </Observer>
       </Helmet>
       <Observer>
         {() => (
@@ -85,7 +95,7 @@ const MainApp: FC = () => {
           .input-border {
             border: 1px solid #494b50;
             &.error {
-              border-color: #ED145B !important;
+              border-color: #ed145b !important;
             }
           }
 
