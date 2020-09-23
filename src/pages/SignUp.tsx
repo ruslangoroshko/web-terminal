@@ -25,6 +25,7 @@ import BadRequestPopup from '../components/BadRequestPopup';
 import { useTranslation } from 'react-i18next';
 import mixapanelProps from '../constants/mixpanelProps';
 import Helmet from 'react-helmet';
+import API from '../helpers/API';
 
 function SignUp() {
   const { t } = useTranslation();
@@ -191,6 +192,19 @@ function SignUp() {
       [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
     });
   }, []);
+
+  useEffect(() => {
+      const fetchAdditionalFields = async () => {
+        try {
+          const response = await API.getAdditionalSignUpFields();
+          if (response.length && response.find(item => item === Fields.PHONE)) {
+            
+          }
+        } catch (error) {
+          
+        }
+      }
+  }, []) 
 
   return (
     <SignFlowLayout>

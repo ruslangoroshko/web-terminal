@@ -416,6 +416,13 @@ class API {
     );
     return response.data;
   };
+
+  getAdditionalSignUpFields = async () => {
+    const response = await axios.get<string[]>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.ADDITIONAL_FIELDS}`
+    );
+    return response.data;
+  };
 }
 
 export default new API();
