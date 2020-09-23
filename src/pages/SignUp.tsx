@@ -75,13 +75,13 @@ function SignUp() {
     setSubmitting(true);
     mainAppStore.isInitLoading = true;
 
-    grecaptcha.ready(function() {
+    grecaptcha.ready(function () {
       grecaptcha
-        .execute(RECAPTCHA_KEY, {
+        .execute(mainAppStore.initModel.recaptchaToken, {
           action: 'submit',
         })
         .then(
-          async function(captcha: any) {
+          async function (captcha: any) {
             try {
               const result = await mainAppStore.signUp({
                 email,

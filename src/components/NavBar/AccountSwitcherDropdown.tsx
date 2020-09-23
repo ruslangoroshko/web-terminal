@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import AccountTotal from './AccountTotal';
 
 function AccountSwitcherDropdown() {
-  const { quotesStore, mainAppStore } = useStores();
+  const { mainAppStore } = useStores();
   const { t } = useTranslation();
   return (
     <Toggle>
@@ -87,24 +87,28 @@ function AccountSwitcherDropdown() {
             </FlexContainer>
           </ButtonWithoutStyles>
           {on && (
-            <FlexContainer
-              position="absolute"
-              top="-8px"
-              left="-100%"
-              flexDirection="column"
-              zIndex="200"
-              backgroundColor="#1C2026"
-              borderRadius="0 0 8px 8px"
-              overflow="hidden"
-            >
-              {mainAppStore.sortedAccounts.map((acc) => (
-                <AccountInfo
-                  key={acc.id}
-                  account={acc}
-                  toggle={toggle}
-                ></AccountInfo>
-              ))}
-            </FlexContainer>
+            <Observer>
+              {() => (
+                <FlexContainer
+                  position="absolute"
+                  top="-8px"
+                  left="-100%"
+                  flexDirection="column"
+                  zIndex="200"
+                  backgroundColor="#1C2026"
+                  borderRadius="0 0 8px 8px"
+                  overflow="hidden"
+                >
+                  {mainAppStore.sortedAccounts.map((acc) => (
+                    <AccountInfo
+                      key={acc.id}
+                      account={acc}
+                      toggle={toggle}
+                    ></AccountInfo>
+                  ))}
+                </FlexContainer>
+              )}
+            </Observer>
           )}
         </FlexContainer>
       )}
