@@ -78,6 +78,7 @@ export class MainAppStore implements MainAppStoreProps {
     termsUrl: '',
     tradingUrl: '',
     mixpanelToken: '582507549d28c813188211a0d15ec940',
+    recaptchaToken: '',
   };
   @observable isLoading = true;
   @observable isInitLoading = true;
@@ -177,7 +178,9 @@ export class MainAppStore implements MainAppStoreProps {
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
         this.activeAccount = response.data;
-        this.accounts = this.accounts.map(account => (account.id === response.data.id ? response.data : account))
+        this.accounts = this.accounts.map((account) =>
+          account.id === response.data.id ? response.data : account
+        );
       }
     );
 
