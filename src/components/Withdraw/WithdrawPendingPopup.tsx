@@ -72,6 +72,7 @@ const WithdrawPagePopupWrap = styled(FlexContainer)`
   top: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   height: 100%;
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
     backdrop-filter: blur(3px);

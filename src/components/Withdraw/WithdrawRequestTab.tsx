@@ -20,14 +20,14 @@ import WithdrawEmptyBalance from './WithdrawEmptyBalance';
 import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import WithdrawFormBankTransfer from './WithdrawPaymentForm/WithdrawFormBankTransfer';
 import WithdrawFormBitcoin from './WithdrawPaymentForm/WithdrawFormBitcoin';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import WithdrawPendingPopup from './WithdrawPendingPopup';
 import { useTranslation } from 'react-i18next';
 import { WithdrawalHistoryResponseStatus } from '../../enums/WithdrawalHistoryResponseStatus';
 import API from '../../helpers/API';
 import { WithdrawalStatusesEnum } from '../../enums/WithdrawalStatusesEnum';
 
-const WithdrawRequestTab = () => {
+const WithdrawRequestTab = observer(() => {
   const { mainAppStore, withdrawalStore } = useStores();
   const [paymentMeyhod, setPaymentMethod] = useState(
     WithdrawalTypesEnum.BankTransfer
@@ -59,37 +59,32 @@ const WithdrawRequestTab = () => {
       minHeight="calc(100vh - 234px)"
       justifyContent="space-between"
       position="relative"
+      isSlab={withdrawalStore.pendingPopup}
     >
-      <Observer>
-        {() => <>{withdrawalStore.pendingPopup && <WithdrawPendingPopup />}</>}
-      </Observer>
+      {withdrawalStore.pendingPopup && <WithdrawPendingPopup />}
       <FlexContainer flexDirection="column" marginBottom="16px">
         <FlexContainer marginBottom="48px">
-          <Observer>
-            {() => (
-              <FlexContainer flexDirection="column" width="180px">
-                <PrimaryTextSpan
-                  textTransform="uppercase"
-                  fontSize="12px"
-                  color="rgba(255,255,255,0.4)"
-                  marginBottom="8px"
-                >
-                  {t('Available')}
-                </PrimaryTextSpan>
-                <PrimaryTextSpan
-                  textTransform="uppercase"
-                  fontSize="24px"
-                  fontWeight="bold"
-                  color="#FFFCCC"
-                >
-                  {mainAppStore.accounts.find((item) => item.isLive)?.symbol}
-                  {mainAppStore.accounts
-                    .find((item) => item.isLive)
-                    ?.balance.toFixed(2)}
-                </PrimaryTextSpan>
-              </FlexContainer>
-            )}
-          </Observer>
+          <FlexContainer flexDirection="column" width="180px">
+            <PrimaryTextSpan
+              textTransform="uppercase"
+              fontSize="12px"
+              color="rgba(255,255,255,0.4)"
+              marginBottom="8px"
+            >
+              {t('Available')}
+            </PrimaryTextSpan>
+            <PrimaryTextSpan
+              textTransform="uppercase"
+              fontSize="24px"
+              fontWeight="bold"
+              color="#FFFCCC"
+            >
+              {mainAppStore.accounts.find((item) => item.isLive)?.symbol}
+              {mainAppStore.accounts
+                .find((item) => item.isLive)
+                ?.balance.toFixed(2)}
+            </PrimaryTextSpan>
+          </FlexContainer>
         </FlexContainer>
 
         <FlexContainer flexDirection="column">
@@ -277,12 +272,12 @@ const WithdrawRequestTab = () => {
       </FlexContainer>
     </RequestTabWrap>
   );
-};
+});
 
 export default WithdrawRequestTab;
 
-const RequestTabWrap = styled(FlexContainer)`
-  overflow-y: auto;
+const RequestTabWrap = styled(FlexContainer)<{isSlab?: boolean;}>`
+  overflow-y: ${props => props.isSlab ? 'hidden' : 'auto'};
 `;
 
 const WithdrawCardItem = styled(FlexContainer)`
