@@ -42,7 +42,7 @@ const Dashboard: FC = observer(() => {
     notificationStore,
   } = useStores();
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [paymentStatus, setPaymentStatus] = useState('');
   const location = useLocation();
