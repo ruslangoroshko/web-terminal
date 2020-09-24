@@ -4,12 +4,18 @@ import { useStores } from '../hooks/useStores';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import Page from '../constants/Pages';
 import { useTranslation } from 'react-i18next';
+import { observer } from 'mobx-react-lite';
 
-const LpLogin = () => {
-  const { token } = useParams();
+interface QueryParams {
+  lang: string;
+  token: string;
+  page?: 'withdrawal' | 'deposit';
+}
+
+const LpLogin = observer(() => {
+  const { token, lang, page } = useParams<QueryParams>();
   const { push } = useHistory();
-  const { mainAppStore } = useStores();
-  const { lang } = useParams();
+  const { mainAppStore, depositFundsStore } = useStores();
   const { i18n } = useTranslation();
 
   useEffect(() => {
@@ -19,7 +25,20 @@ const LpLogin = () => {
           token: token || '',
         });
         if (response === OperationApiResponseCodes.Ok) {
-          push(Page.DASHBOARD);
+          switch (page) {
+            case 'deposit':
+              depositFundsStore.togglePopup();
+              push(Page.DASHBOARD);
+              break;
+
+            case 'withdrawal':
+              push(Page.ACCOUNT_WITHDRAW);
+              break;
+
+            default:
+              push(Page.DASHBOARD);
+              break;
+          }
         } else {
           push(Page.SIGN_IN);
         }
@@ -34,6 +53,6 @@ const LpLogin = () => {
   }, []);
 
   return <div></div>;
-};
+});
 
 export default LpLogin;
