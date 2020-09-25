@@ -13,10 +13,10 @@ const RoutingLayout: FC = () => {
   const location = useLocation();
   const { mainAppStore } = useStores();
 
-  const allRoutes = routesList.map(route => (
+  const allRoutes = routesList.map((route) => (
     <RouteWrapper key={route.path} {...route} />
   ));
-  const currentRoute = routesList.find(item => {
+  const currentRoute = routesList.find((item) => {
     const match = matchPath(location.pathname, item.path);
     return match && match.isExact;
   });
@@ -54,7 +54,9 @@ const RoutingLayout: FC = () => {
               <>
                 {!mainAppStore.isInitLoading && <Switch>{allRoutes}</Switch>}
                 <LoaderFullscreen
-                  isLoading={mainAppStore.isInitLoading}
+                  isLoading={
+                    mainAppStore.isInitLoading || mainAppStore.isLoading
+                  }
                 ></LoaderFullscreen>
               </>
             )}

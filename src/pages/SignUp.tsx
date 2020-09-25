@@ -29,6 +29,8 @@ import API from '../helpers/API';
 
 function SignUp() {
   const { t } = useTranslation();
+  const [hasAdditionalField, setHasAdditionalField] = useState(false);
+
   const validationSchema = yup.object().shape<UserRegistration>({
     email: yup
       .string()
@@ -194,17 +196,19 @@ function SignUp() {
   }, []);
 
   useEffect(() => {
-      const fetchAdditionalFields = async () => {
-        try {
-          const response = await API.getAdditionalSignUpFields();
-          if (response.length && response.find(item => item === Fields.PHONE)) {
-            
-          }
-        } catch (error) {
-          
+    const fetchAdditionalFields = async () => {
+      mainAppStore.isLoading = true;
+      try {
+        const response = await API.getAdditionalSignUpFields();
+        if (response.length && response.find((item) => item === Fields.PHONE)) {
+          setHasAdditionalField(true);
         }
+        mainAppStore.isLoading = false;
+      } catch (error) {
+        mainAppStore.isLoading = false;
       }
-  }, []) 
+    };
+  }, []);
 
   return (
     <SignFlowLayout>
