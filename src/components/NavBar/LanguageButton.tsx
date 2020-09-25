@@ -5,6 +5,7 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { Observer } from 'mobx-react-lite';
 import ListOfCountries from '../SideBarTabs/ListOfCountries';
 import styled from '@emotion/styled';
+import { ListForEN } from '../../constants/listOfLanguages';
 
 function LanguageButton() {
   const { mainAppStore } = useStores();
@@ -49,7 +50,7 @@ function LanguageButton() {
             color="#1C1F26"
             textTransform="uppercase"
           >
-            {mainAppStore.lang}
+            {ListForEN[mainAppStore.lang]}
           </PrimaryTextSpan>
         )}
       </Observer>
