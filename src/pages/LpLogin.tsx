@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { useStores } from '../hooks/useStores';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import Page from '../constants/Pages';
@@ -17,7 +17,7 @@ const LpLogin = observer(() => {
   const { push } = useHistory();
   const { mainAppStore, depositFundsStore } = useStores();
   const { i18n } = useTranslation();
-
+  const location = useLocation();
   useEffect(() => {
     async function fetchLpLogin() {
       try {
@@ -25,7 +25,8 @@ const LpLogin = observer(() => {
           token: token || '',
         });
         if (response === OperationApiResponseCodes.Ok) {
-          switch (page) {
+          const pageParam = new URLSearchParams(location.search).get('page');
+          switch (pageParam) {
             case 'deposit':
               depositFundsStore.togglePopup();
               push(Page.DASHBOARD);
