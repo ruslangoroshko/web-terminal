@@ -18,6 +18,8 @@ const LpLogin = observer(() => {
   const { mainAppStore, depositFundsStore } = useStores();
   const { i18n } = useTranslation();
   const location = useLocation();
+
+  const pageParams = new URLSearchParams(location.search);
   useEffect(() => {
     async function fetchLpLogin() {
       try {
@@ -25,7 +27,7 @@ const LpLogin = observer(() => {
           token: token || '',
         });
         if (response === OperationApiResponseCodes.Ok) {
-          const pageParam = new URLSearchParams(location.search).get('page');
+          const pageParam = pageParams.get('page');
           switch (pageParam) {
             case 'deposit':
               depositFundsStore.togglePopup();
@@ -48,8 +50,9 @@ const LpLogin = observer(() => {
       }
     }
     fetchLpLogin();
-    if (lang) {
-      i18n.changeLanguage(lang);
+    const pageLang = pageParams.get('lang');
+    if (pageLang) {
+      i18n.changeLanguage(pageLang);
     }
   }, []);
 
