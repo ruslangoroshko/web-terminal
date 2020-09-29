@@ -54,6 +54,7 @@ import {
   WithdrawalHistoryDTO,
   cancelWithdrawalParams,
 } from '../types/WithdrawalTypes';
+import { ListForEN } from '../constants/listOfLanguages';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -271,8 +272,9 @@ class API {
   };
 
   getCountries = async (lang = CountriesEnum.EN) => {
+    const languange = ListForEN[lang].shortName;
     const response = await axios.get<Country[]>(
-      `${API_AUTH_STRING}${AUTH_API_LIST.COMMON.COUNTRIES}/${lang}`
+      `${API_AUTH_STRING}${AUTH_API_LIST.COMMON.COUNTRIES}/${languange}`
     );
     return response.data;
   };
