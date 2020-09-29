@@ -17,11 +17,11 @@ interface Props {
   hasError?: boolean;
   autoComplete?: string;
   dropdownItemsList: Country[];
-  setFieldValue: (arg0: string, arg1: string) => void;
+  setFieldValue: (arg0: string, arg1: string, arg2?: boolean) => void;
   handleChange?: (arg0: Country) => void;
 }
 
-const AutoCompleteDropdown: FC<Props> = props => {
+const AutoCompleteDropdown: FC<Props> = (props) => {
   const {
     labelText,
     id,
@@ -50,6 +50,7 @@ const AutoCompleteDropdown: FC<Props> = props => {
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      console.log('handleClickOutside');
       toggle(false);
     }
   };
@@ -60,7 +61,10 @@ const AutoCompleteDropdown: FC<Props> = props => {
     if (handleChange) {
       handleChange(country);
     }
-    toggle(false);
+    setTimeout(() => {
+      console.log('handleSetValue');
+      toggle(false);
+    }, 100);
   };
 
   useEffect(() => {
@@ -77,10 +81,10 @@ const AutoCompleteDropdown: FC<Props> = props => {
 
   const renderItems = () => {
     const filteredList = dropdownItemsList.filter(
-      item => !value || item.name.toLowerCase().includes(value.toLowerCase())
+      (item) => !value || item.name.toLowerCase().includes(value.toLowerCase())
     );
     return filteredList.length ? (
-      filteredList.map(item => (
+      filteredList.map((item) => (
         <DropdownItem key={item.id} onClick={handleSetValue(item)}>
           <DropdownItemText color="#fffccc" fontSize="12px">
             {item.name}
@@ -139,7 +143,7 @@ const Input = styled.input<{ hasError?: boolean }>`
   border: none;
   outline: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  border-bottom: ${props => props.hasError && '1px solid #ED145B !important'};
+  border-bottom: ${(props) => props.hasError && '1px solid #ED145B !important'};
   background-color: transparent;
   width: 100%;
   caret-color: #fff;

@@ -338,6 +338,7 @@ const VisaMasterCardForm = () => {
             position="relative"
           >
             <CustomInputMask
+              // TODO: shouldForwardProp
               // @ts-ignore
               maskPlaceholder={''}
               placeholder="1234 5678 9012 3456"

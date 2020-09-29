@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import InputMask from 'react-input-mask';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import ErropPopup from './ErropPopup';
-
+import isPropValid from '@emotion/is-prop-valid';
 interface Props {
   labelText: string;
   value: string;
@@ -18,7 +18,7 @@ interface Props {
   maskPlaceholder?: string;
 }
 
-const LabelInputMasked: FC<Props> = props => {
+const LabelInputMasked: FC<Props> = (props) => {
   const {
     labelText,
     id,
@@ -45,8 +45,9 @@ const LabelInputMasked: FC<Props> = props => {
   return (
     <LabelWrapper htmlFor={id}>
       <Input
-        maskPlaceholder={maskPlaceholder || ''}
+        maskPlaceholder=" "
         mask={mask || ''}
+        maskChar=" "
         id={id}
         type={type || 'type'}
         name={name}
@@ -82,11 +83,17 @@ const LabelWrapper = styled.label`
   padding-top: 24px;
 `;
 
-const Input = styled(InputMask)<{ hasError?: boolean, maskPlaceholder?: string | null, }>`
+const Input = styled(InputMask, {
+  shouldForwardProp: (propName: string) =>
+    !['hasError', 'maskChar'].includes(propName),
+})<{
+  hasError?: boolean;
+  maskPlaceholder?: string | null;
+}>`
   border: none;
   outline: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  border-bottom: ${props => props.hasError && '1px solid #ED145B !important'};
+  border-bottom: ${(props) => props.hasError && '1px solid #ED145B !important'};
   background-color: transparent;
   width: 100%;
   caret-color: #fff;

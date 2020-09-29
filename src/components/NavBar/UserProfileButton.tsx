@@ -15,7 +15,7 @@ import KYCStatus from '../../constants/KYCStatus';
 import mixapanelProps from '../../constants/mixpanelProps';
 
 function UserProfileButton() {
-  const { mainAppStore } = useStores();
+  const { mainAppStore, phoneVerificationStore } = useStores();
   const [on, toggle] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const handleToggle = () => {
@@ -31,11 +31,24 @@ function UserProfileButton() {
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
 
+    async function fetchAdditionalFields() {
+      try {
+        const response = await API.getAdditionalSignUpFields();
+        debugger
+        //phoneVerificationStore.setShouldValidatePhone(!!response.length);
+        phoneVerificationStore.setShouldValidatePhone(true);
+      } catch (error) {}
+    }
+
     async function fetchPersonalData() {
       try {
         const response = await API.getPersonalData(getProcessId());
-
-        mainAppStore.signUpFlag ? mixpanel.alias(response.data.id) : mixpanel.identify(response.data.id);
+        if (!response.data.phone) {
+          fetchAdditionalFields();
+        }
+        mainAppStore.signUpFlag
+          ? mixpanel.alias(response.data.id)
+          : mixpanel.identify(response.data.id);
         mixpanel.people.set({
           [mixapanelProps.PHONE]: response.data.phone || '',
           [mixapanelProps.EMAIL]: response.data.email || '',
@@ -48,14 +61,15 @@ function UserProfileButton() {
         mixpanel.people.union({
           [mixapanelProps.PLATFORMS_USED]: 'web',
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
-        })
-        
+        });
+
         mainAppStore.setSignUpFlag(false);
         mainAppStore.profileStatus = response.data.kyc;
         mainAppStore.profilePhone = response.data.phone || '';
       } catch (error) {}
     }
     fetchPersonalData();
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
