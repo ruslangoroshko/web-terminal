@@ -19,11 +19,15 @@ import LabelInputMasked from './LabelInputMasked';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import { getProcessId } from '../helpers/getProcessId';
 import { useStores } from '../hooks/useStores';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 
 function ShouldValidatePhonePopup() {
   const [countries, setCountries] = useState<Country[]>([]);
   const [dialMask, setDialMask] = useState('');
-  const { phoneVerificationStore } = useStores();
+  const { phoneVerificationStore, badRequestPopupStore } = useStores();
 
   const { push } = useHistory();
   const { t } = useTranslation();
@@ -56,12 +60,27 @@ function ShouldValidatePhonePopup() {
     setDialMask(`+${country.dial}`);
   };
 
-  const handleSubmitForm = ({ phone }: PhoneVerificationFormParams) => {
+  const handleSubmitForm = async ({ phone }: PhoneVerificationFormParams) => {
     try {
-      API.postPersonalData({ phone: phone.trim(), processId: getProcessId() });
-      phoneVerificationStore.setShouldValidatePhone(false);
-      push(Page.DASHBOARD);
-    } catch (error) {}
+      const response = await API.postPersonalData({
+        phone: phone.trim(),
+        processId: getProcessId(),
+      });
+
+      if (response.result === OperationApiResponseCodes.Ok) {
+        mixpanel.track(mixpanelEvents.PHONE_FIELD_VIEW);
+        phoneVerificationStore.setShouldValidatePhone(false);
+        push(Page.DASHBOARD);
+      } else {
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(
+          t(apiResponseCodeMessages[response.result])
+        );
+      }
+    } catch (error) {
+      badRequestPopupStore.openModal();
+      badRequestPopupStore.setMessage(error);
+    }
   };
 
   useEffect(() => {
@@ -83,6 +102,8 @@ function ShouldValidatePhonePopup() {
     fetchGeoLocation().then(() => {
       fetchCountries();
     });
+
+    mixpanel.track(mixpanelEvents.PHONE_FIELD_VIEW);
   }, []);
 
   const {
