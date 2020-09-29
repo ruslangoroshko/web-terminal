@@ -50,7 +50,6 @@ const AutoCompleteDropdown: FC<Props> = (props) => {
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-      console.log('handleClickOutside');
       toggle(false);
     }
   };
@@ -62,7 +61,6 @@ const AutoCompleteDropdown: FC<Props> = (props) => {
       handleChange(country);
     }
     setTimeout(() => {
-      console.log('handleSetValue');
       toggle(false);
     }, 100);
   };

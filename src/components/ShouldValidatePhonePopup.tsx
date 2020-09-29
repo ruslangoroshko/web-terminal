@@ -17,10 +17,13 @@ import { PhoneVerificationFormParams } from '../types/PersonalDataTypes';
 import AutoCompleteDropdown from './KYC/AutoCompleteDropdown';
 import LabelInputMasked from './LabelInputMasked';
 import { parsePhoneNumber } from 'libphonenumber-js';
+import { getProcessId } from '../helpers/getProcessId';
+import { useStores } from '../hooks/useStores';
 
 function ShouldValidatePhonePopup() {
   const [countries, setCountries] = useState<Country[]>([]);
   const [dialMask, setDialMask] = useState('');
+  const { phoneVerificationStore } = useStores();
 
   const { push } = useHistory();
   const { t } = useTranslation();
@@ -50,12 +53,13 @@ function ShouldValidatePhonePopup() {
 
   const handleChangeCountry = (setFieldValue: any) => (country: Country) => {
     setFieldValue(Fields.PHONE, country.dial);
-    setDialMask(country.dial);
+    setDialMask(`+${country.dial}`);
   };
 
   const handleSubmitForm = ({ phone }: PhoneVerificationFormParams) => {
     try {
-      API.postPersonalData({ phone });
+      API.postPersonalData({ phone: phone.trim(), processId: getProcessId() });
+      phoneVerificationStore.setShouldValidatePhone(false);
       push(Page.DASHBOARD);
     } catch (error) {}
   };
@@ -65,7 +69,9 @@ function ShouldValidatePhonePopup() {
       try {
         const response = await API.getGeolocationInfo();
         setFieldValue(Fields.COUNTRY, response.country);
-        setDialMask(response.dial);
+        if (response.dial) {
+          setDialMask(`+${response.dial}`);
+        }
       } catch (error) {}
     }
     async function fetchCountries() {
@@ -77,10 +83,6 @@ function ShouldValidatePhonePopup() {
     fetchGeoLocation().then(() => {
       fetchCountries();
     });
-
-    return () => {
-      debugger;
-    };
   }, []);
 
   const {

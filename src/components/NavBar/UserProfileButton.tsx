@@ -34,9 +34,8 @@ function UserProfileButton() {
     async function fetchAdditionalFields() {
       try {
         const response = await API.getAdditionalSignUpFields();
-        debugger
-        //phoneVerificationStore.setShouldValidatePhone(!!response.length);
-        phoneVerificationStore.setShouldValidatePhone(true);
+        phoneVerificationStore.setShouldValidatePhone(!!response.length);
+
       } catch (error) {}
     }
 

@@ -145,7 +145,7 @@ const Dashboard: FC = observer(() => {
           {`${mainAppStore.initModel.brandName} ${t('trading platform')}`}
         </title>
       </Helmet>
-      {/* <Observer>
+      <Observer>
         {() => (
           <>
             {phoneVerificationStore.shouldValidatePhone && (
@@ -153,9 +153,7 @@ const Dashboard: FC = observer(() => {
             )}
           </>
         )}
-      </Observer> */}
-      <ShouldValidatePhonePopup></ShouldValidatePhonePopup>
-
+      </Observer>
       <Observer>
         {() => (
           <>{mainAppStore.isDemoRealPopup && <DemoRealPopup></DemoRealPopup>}</>
@@ -245,13 +243,11 @@ const Dashboard: FC = observer(() => {
                   </FlexContainer>
 
                   <FlexContainer flexDirection="column" width="175px">
-                    {!phoneVerificationStore.shouldValidatePhone && (
-                      <BuySellPanel
-                        instrument={
-                          instrumentsStore.activeInstrument.instrumentItem
-                        }
-                      ></BuySellPanel>
-                    )}
+                    <BuySellPanel
+                      instrument={
+                        instrumentsStore.activeInstrument.instrumentItem
+                      }
+                    ></BuySellPanel>
                   </FlexContainer>
                 </FlexContainer>
               </>
