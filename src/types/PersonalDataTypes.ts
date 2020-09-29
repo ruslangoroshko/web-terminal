@@ -55,7 +55,7 @@ export interface PersonalDataPostResponse {
 }
 
 export interface PhoneVerificationFormParams {
-  customCountryCode: string;
+  country: string;
   phone: string;
 }
 

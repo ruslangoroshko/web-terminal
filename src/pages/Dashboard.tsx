@@ -31,6 +31,7 @@ import { useTranslation } from 'react-i18next';
 import Helmet from 'react-helmet';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
+import ShouldValidatePhonePopup from '../components/ShouldValidatePhonePopup';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -40,6 +41,7 @@ const Dashboard: FC = observer(() => {
     quotesStore,
     instrumentsStore,
     notificationStore,
+    phoneVerificationStore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -91,7 +93,7 @@ const Dashboard: FC = observer(() => {
         (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
           if (response.accountId === mainAppStore.activeAccount?.id) {
             quotesStore.activePositions = quotesStore.activePositions.map(
-              item => (item.id === response.data.id ? response.data : item)
+              (item) => (item.id === response.data.id ? response.data : item)
             );
           }
         }
@@ -101,7 +103,7 @@ const Dashboard: FC = observer(() => {
         Topics.UPDATE_PENDING_ORDER,
         (response: ResponseFromWebsocket<PendingOrderWSDTO>) => {
           if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.pendingOrders = quotesStore.pendingOrders.map(item =>
+            quotesStore.pendingOrders = quotesStore.pendingOrders.map((item) =>
               item.id === response.data.id ? response.data : item
             );
           }
@@ -143,6 +145,15 @@ const Dashboard: FC = observer(() => {
           {`${mainAppStore.initModel.brandName} ${t('trading platform')}`}
         </title>
       </Helmet>
+      <Observer>
+        {() => (
+          <>
+            {phoneVerificationStore.shouldValidatePhone && (
+              <ShouldValidatePhonePopup></ShouldValidatePhonePopup>
+            )}
+          </>
+        )}
+      </Observer>
       <Observer>
         {() => (
           <>{mainAppStore.isDemoRealPopup && <DemoRealPopup></DemoRealPopup>}</>

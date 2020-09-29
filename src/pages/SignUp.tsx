@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FormikHelpers, useFormik } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
@@ -25,35 +25,67 @@ import BadRequestPopup from '../components/BadRequestPopup';
 import { useTranslation } from 'react-i18next';
 import mixapanelProps from '../constants/mixpanelProps';
 import Helmet from 'react-helmet';
+import API from '../helpers/API';
+import { CountriesEnum } from '../enums/CountriesEnum';
+import { Country } from '../types/CountriesTypes';
+import AutoCompleteDropdown from '../components/KYC/AutoCompleteDropdown';
+import LabelInputMasked from '../components/LabelInputMasked';
+import { parsePhoneNumber } from 'libphonenumber-js';
 
 function SignUp() {
   const { t } = useTranslation();
-  const validationSchema = yup.object().shape<UserRegistration>({
-    email: yup
-      .string()
-      .required(t(validationInputTexts.EMAIL))
-      .email(t(validationInputTexts.EMAIL)),
-    password: yup
-      .string()
-      .required(t(validationInputTexts.REQUIRED_FIELD))
-      .min(8, t(validationInputTexts.PASSWORD_MIN_CHARACTERS))
-      .max(31, t(validationInputTexts.PASSWORD_MAX_CHARACTERS))
-      .matches(
-        /^(?=.*\d)(?=.*[a-zA-Z])/,
-        t(validationInputTexts.PASSWORD_MATCH)
-      ),
-    repeatPassword: yup
-      .string()
-      .required(t(validationInputTexts.REPEAT_PASSWORD))
-      .oneOf(
-        [yup.ref(Fields.PASSWORD), null],
-        t(validationInputTexts.REPEAT_PASSWORD_MATCH)
-      ),
-    userAgreement: yup
-      .bool()
-      .oneOf([true], t(validationInputTexts.USER_AGREEMENT)),
-    captcha: yup.string(),
-  });
+  const [hasAdditionalField, setHasAdditionalField] = useState(false);
+
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [dialMask, setDialMask] = useState('');
+
+  const validationSchema = useCallback(
+    () =>
+      yup.object().shape<UserRegistration>({
+        email: yup
+          .string()
+          .required(t(validationInputTexts.EMAIL))
+          .email(t(validationInputTexts.EMAIL)),
+        password: yup
+          .string()
+          .required(t(validationInputTexts.REQUIRED_FIELD))
+          .min(8, t(validationInputTexts.PASSWORD_MIN_CHARACTERS))
+          .max(31, t(validationInputTexts.PASSWORD_MAX_CHARACTERS))
+          .matches(
+            /^(?=.*\d)(?=.*[a-zA-Z])/,
+            t(validationInputTexts.PASSWORD_MATCH)
+          ),
+        repeatPassword: yup
+          .string()
+          .required(t(validationInputTexts.REPEAT_PASSWORD))
+          .oneOf(
+            [yup.ref(Fields.PASSWORD), null],
+            t(validationInputTexts.REPEAT_PASSWORD_MATCH)
+          ),
+        userAgreement: yup
+          .bool()
+          .oneOf([true], t(validationInputTexts.USER_AGREEMENT)),
+        captcha: yup.string(),
+        phone: yup
+          .string()
+          .required()
+          .test(Fields.PHONE, `${t('Phone number is invalid')}`, function (
+            value
+          ) {
+            if (hasAdditionalField && value) {
+              try {
+                const checkPhone = parsePhoneNumber(value);
+                return !!checkPhone?.isValid();
+              } catch (error) {
+                return false;
+              }
+            }
+            return true;
+          }),
+        country: yup.string(),
+      }),
+    [hasAdditionalField]
+  );
 
   const initialValues: UserRegistration = {
     email: '',
@@ -61,6 +93,8 @@ function SignUp() {
     repeatPassword: '',
     userAgreement: false,
     captcha: '',
+    phone: '',
+    country: '',
   };
 
   const { push } = useHistory();
@@ -68,77 +102,81 @@ function SignUp() {
 
   const [validateAssigments, setValitdateAssigments] = useState(false);
 
-  const handleSubmitForm = async (
-    { email, password }: UserRegistration,
-    { setStatus, setSubmitting }: FormikHelpers<UserRegistration>
-  ) => {
-    setSubmitting(true);
-    mainAppStore.isInitLoading = true;
+  const handleSubmitForm = useCallback(
+    async (
+      { email, password, phone }: UserRegistration,
+      { setStatus, setSubmitting }: FormikHelpers<UserRegistration>
+    ) => {
+      setSubmitting(true);
+      mainAppStore.isInitLoading = true;
 
-    grecaptcha.ready(function () {
-      grecaptcha
-        .execute(mainAppStore.initModel.recaptchaToken, {
-          action: 'submit',
-        })
-        .then(
-          async function (captcha: any) {
-            try {
-              const result = await mainAppStore.signUp({
-                email,
-                password,
-                captcha,
-              });
-              if (result !== OperationApiResponseCodes.Ok) {
-                notificationStore.notificationMessage = t(
-                  apiResponseCodeMessages[result]
-                );
-                notificationStore.isSuccessfull = false;
-                notificationStore.openNotification();
-                mainAppStore.isInitLoading = false;
-                mixpanel.track(mixpanelEvents.SIGN_UP_FAILED, {
-                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
-                  [mixapanelProps.ERROR_TEXT]: t(
+      grecaptcha.ready(function () {
+        grecaptcha
+          .execute(mainAppStore.initModel.recaptchaToken, {
+            action: 'submit',
+          })
+          .then(
+            async function (captcha: any) {
+              try {
+                const result = await mainAppStore.signUp({
+                  email,
+                  password,
+                  captcha,
+                  phone,
+                });
+                if (result !== OperationApiResponseCodes.Ok) {
+                  notificationStore.notificationMessage = t(
                     apiResponseCodeMessages[result]
-                  ),
-                  [mixapanelProps.EMAIL]: values.email,
-                });
-              } else {
-                mainAppStore.setSignUpFlag(true);
-                mixpanel.track(mixpanelEvents.SIGN_UP, {
-                  [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
-                });
-                push(Page.DASHBOARD);
+                  );
+                  notificationStore.isSuccessfull = false;
+                  notificationStore.openNotification();
+                  mainAppStore.isInitLoading = false;
+                  mixpanel.track(mixpanelEvents.SIGN_UP_FAILED, {
+                    [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
+                    [mixapanelProps.ERROR_TEXT]: t(
+                      apiResponseCodeMessages[result]
+                    ),
+                    [mixapanelProps.EMAIL]: values.email,
+                  });
+                } else {
+                  mainAppStore.setSignUpFlag(true);
+                  mixpanel.track(mixpanelEvents.SIGN_UP, {
+                    [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
+                  });
+                  push(Page.DASHBOARD);
+                }
+              } catch (error) {
+                badRequestPopupStore.openModal();
+                badRequestPopupStore.setMessage(error);
+                setStatus(error);
+                setSubmitting(false);
+                mainAppStore.isInitLoading = false;
               }
-            } catch (error) {
+            },
+            () => {
               badRequestPopupStore.openModal();
-              badRequestPopupStore.setMessage(error);
-              setStatus(error);
+              badRequestPopupStore.setMessage(
+                t(
+                  apiResponseCodeMessages[
+                    OperationApiResponseCodes.TechnicalError
+                  ]
+                )
+              );
+              setStatus(
+                t(
+                  apiResponseCodeMessages[
+                    OperationApiResponseCodes.TechnicalError
+                  ]
+                )
+              );
               setSubmitting(false);
               mainAppStore.isInitLoading = false;
             }
-          },
-          () => {
-            badRequestPopupStore.openModal();
-            badRequestPopupStore.setMessage(
-              t(
-                apiResponseCodeMessages[
-                  OperationApiResponseCodes.TechnicalError
-                ]
-              )
-            );
-            setStatus(
-              t(
-                apiResponseCodeMessages[
-                  OperationApiResponseCodes.TechnicalError
-                ]
-              )
-            );
-            setSubmitting(false);
-            mainAppStore.isInitLoading = false;
-          }
-        );
-    });
-  };
+          );
+      });
+    },
+    [hasAdditionalField]
+  );
 
   const {
     values,
@@ -147,16 +185,23 @@ function SignUp() {
     validateForm,
     handleSubmit,
     handleChange,
+    getFieldProps,
     errors,
     touched,
     isSubmitting,
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
-    validationSchema,
+    validationSchema: validationSchema(),
     validateOnBlur: false,
+    enableReinitialize: true,
     validateOnChange: true,
   });
+
+  const handleChangeCountry = (setFieldValue: any) => (country: Country) => {
+    setFieldValue(Fields.PHONE, country.dial);
+    setDialMask(`+${country.dial}`);
+  };
 
   const handleChangeUserAgreements = (setFieldValue: any) => (
     e: React.ChangeEvent<HTMLInputElement>
@@ -191,6 +236,46 @@ function SignUp() {
       [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
     });
   }, []);
+
+  useEffect(() => {
+    const fetchAdditionalFields = async () => {
+      mainAppStore.isLoading = true;
+      try {
+        const response = await API.getAdditionalSignUpFields();
+        setHasAdditionalField(true);
+
+        if (response.length && response.find((item) => item === Fields.PHONE)) {
+          setHasAdditionalField(true);
+        }
+        mainAppStore.isLoading = false;
+      } catch (error) {
+        mainAppStore.isLoading = false;
+      }
+    };
+    fetchAdditionalFields();
+  }, []);
+
+  useEffect(() => {
+    async function fetchCountries() {
+      try {
+        const response = await API.getCountries(CountriesEnum.EN);
+        setCountries(response);
+      } catch (error) {}
+    }
+
+    const fetchGeoLocationInfo = async () => {
+      try {
+        const response = await API.getGeolocationInfo();
+        setDialMask(response.dial);
+      } catch (error) {}
+    };
+
+    if (hasAdditionalField) {
+      fetchCountries().then(() => {
+        fetchGeoLocationInfo();
+      });
+    }
+  }, [hasAdditionalField]);
 
   return (
     <SignFlowLayout>
@@ -233,6 +318,32 @@ function SignUp() {
                 errorText={errors.email}
               ></LabelInput>
             </FlexContainer>
+            {hasAdditionalField && (
+              <>
+                <FlexContainer flexDirection="column" margin="0 0 16px 0">
+                  <AutoCompleteDropdown
+                    labelText={t('Country')}
+                    {...getFieldProps(Fields.COUNTRY)}
+                    id={Fields.COUNTRY}
+                    hasError={!!(touched.country && errors.country)}
+                    dropdownItemsList={countries}
+                    setFieldValue={setFieldValue}
+                    handleChange={handleChangeCountry(setFieldValue)}
+                  ></AutoCompleteDropdown>
+                </FlexContainer>
+                <FlexContainer margin="0 0 16px 0" flexDirection="column">
+                  <LabelInputMasked
+                    mask={`${dialMask}99999999999999999999`}
+                    maskPlaceholder={' '}
+                    labelText={t('Phone')}
+                    {...getFieldProps(Fields.PHONE)}
+                    id={Fields.PHONE}
+                    hasError={!!(touched.phone && errors.phone)}
+                    errorText={errors.phone}
+                  />
+                </FlexContainer>
+              </>
+            )}
             <FlexContainer
               position="relative"
               flexDirection="column"
