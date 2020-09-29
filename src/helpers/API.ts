@@ -260,7 +260,7 @@ class API {
     return response.data;
   };
 
-  postPersonalData = async (params: PersonalDataParams) => {
+  postPersonalData = async (params: any) => {
     const formData = this.convertParamsToFormData(params);
 
     const response = await axios.post<PersonalDataPostResponse>(
@@ -414,6 +414,21 @@ class API {
       `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.LP_LOGIN}`,
       params
     );
+    return response.data;
+  };
+
+  getAdditionalSignUpFields = async () => {
+    const response = await axios.get<string[]>(
+      `${API_AUTH_STRING}${AUTH_API_LIST.TRADER.ADDITIONAL_FIELDS}`
+    );
+    return response.data;
+  };
+
+  getGeolocationInfo = async () => {
+    const response = await axios.get<{
+      country: string;
+      dial: string;
+    }>(`${API_AUTH_STRING}${AUTH_API_LIST.COMMON.GEOLOCATION_INFO}`);
     return response.data;
   };
 }

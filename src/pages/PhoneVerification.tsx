@@ -39,7 +39,7 @@ const PhoneVerification: FC = () => {
       .min(11, t('Min 11 symbols'))
       .max(20, t('Max 20 symbols'))
       .required(),
-    customCountryCode: yup
+    country: yup
       .mixed()
       .oneOf(countriesNames, t('No matches'))
       .required(t(validationInputTexts.REQUIRED_FIELD)),
@@ -51,7 +51,7 @@ const PhoneVerification: FC = () => {
   const [initialValues, setInitialValuesForm] = useState<
     PhoneVerificationFormParams
   >({
-    customCountryCode: '',
+    country: '',
     phone: '',
   });
 
@@ -116,7 +116,7 @@ const PhoneVerification: FC = () => {
                 countries.find(item => item.name === countryOfCitizenship)
                   ?.dial ||
                 '',
-              customCountryCode: countryOfCitizenship,
+              country: countryOfCitizenship,
             });
             setDialMask(
               countries.find(item => item.name === countryOfCitizenship)
@@ -191,7 +191,7 @@ const PhoneVerification: FC = () => {
                   {...getFieldProps(Fields.CUSTOM_COUNTRY)}
                   id={Fields.CUSTOM_COUNTRY}
                   hasError={
-                    !!(touched.customCountryCode && errors.customCountryCode)
+                    !!(touched.country && errors.country)
                   }
                   dropdownItemsList={countries}
                   setFieldValue={setFieldValue}
