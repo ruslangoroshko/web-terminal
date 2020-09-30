@@ -243,7 +243,9 @@ function SignUp() {
     const fetchAdditionalFields = async () => {
       mainAppStore.isLoading = true;
       try {
-        const response = await API.getAdditionalSignUpFields();
+        const response = await API.getAdditionalSignUpFields(
+          mainAppStore.initModel.authUrl
+        );
         if (response.length && response.find((item) => item === Fields.PHONE)) {
           setHasAdditionalField(true);
         }
@@ -258,14 +260,19 @@ function SignUp() {
   useEffect(() => {
     async function fetchCountries() {
       try {
-        const response = await API.getCountries(CountriesEnum.EN);
+        const response = await API.getCountries(
+          CountriesEnum.EN,
+          mainAppStore.initModel.authUrl
+        );
         setCountries(response);
       } catch (error) {}
     }
 
     const fetchGeoLocationInfo = async () => {
       try {
-        const response = await API.getGeolocationInfo();
+        const response = await API.getGeolocationInfo(
+          mainAppStore.initModel.authUrl
+        );
         setDialMask(response.dial);
       } catch (error) {}
     };

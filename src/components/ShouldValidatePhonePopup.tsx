@@ -27,7 +27,11 @@ import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 function ShouldValidatePhonePopup() {
   const [countries, setCountries] = useState<Country[]>([]);
   const [dialMask, setDialMask] = useState('');
-  const { phoneVerificationStore, badRequestPopupStore } = useStores();
+  const {
+    phoneVerificationStore,
+    badRequestPopupStore,
+    mainAppStore,
+  } = useStores();
 
   const { push } = useHistory();
   const { t } = useTranslation();
@@ -62,10 +66,13 @@ function ShouldValidatePhonePopup() {
 
   const handleSubmitForm = async ({ phone }: PhoneVerificationFormParams) => {
     try {
-      const response = await API.postPersonalData({
-        phone: phone.trim(),
-        processId: getProcessId(),
-      });
+      const response = await API.postPersonalData(
+        {
+          phone: phone.trim(),
+          processId: getProcessId(),
+        },
+        mainAppStore.initModel.authUrl
+      );
 
       if (response.result === OperationApiResponseCodes.Ok) {
         mixpanel.track(mixpanelEvents.PHONE_FIELD_VIEW);
@@ -86,7 +93,9 @@ function ShouldValidatePhonePopup() {
   useEffect(() => {
     async function fetchGeoLocation() {
       try {
-        const response = await API.getGeolocationInfo();
+        const response = await API.getGeolocationInfo(
+          mainAppStore.initModel.authUrl
+        );
         setFieldValue(Fields.COUNTRY, response.country);
         if (response.dial) {
           setDialMask(`+${response.dial}`);
@@ -95,7 +104,10 @@ function ShouldValidatePhonePopup() {
     }
     async function fetchCountries() {
       try {
-        const response = await API.getCountries(CountriesEnum.EN);
+        const response = await API.getCountries(
+          CountriesEnum.EN,
+          mainAppStore.initModel.authUrl
+        );
         setCountries(response);
       } catch (error) {}
     }

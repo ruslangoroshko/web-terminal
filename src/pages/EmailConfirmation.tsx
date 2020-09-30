@@ -14,7 +14,7 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import { useTranslation } from 'react-i18next';
 
 function EmailConfirmation() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
   const { badRequestPopupStore, mainAppStore } = useStores();
 
@@ -24,7 +24,7 @@ function EmailConfirmation() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    API.confirmEmail(id || '')
+    API.confirmEmail(id || '', mainAppStore.initModel.authUrl)
       .then((response) => {
         if (response.result === OperationApiResponseCodes.Ok) {
           setIsSuccessfull(true);
@@ -33,7 +33,7 @@ function EmailConfirmation() {
           setIsSuccessfull(false);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         setIsSuccessfull(false);
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);

@@ -32,7 +32,7 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 
 function PersonalData() {
   const [countries, setCountries] = useState<Country[]>([]);
-  const countriesNames = countries.map(item => item.name);
+  const countriesNames = countries.map((item) => item.name);
   const { t } = useTranslation();
 
   const validationSchema = yup.object().shape<PersonalDataParams>({
@@ -102,7 +102,7 @@ function PersonalData() {
     phone: '',
   });
 
-  const { kycStore, badRequestPopupStore } = useStores();
+  const { kycStore, badRequestPopupStore, mainAppStore } = useStores();
 
   const handleSubmitForm = async (values: PersonalDataParams) => {
     try {
@@ -129,7 +129,10 @@ function PersonalData() {
   useEffect(() => {
     async function fetchCountries() {
       try {
-        const response = await API.getCountries(CountriesEnum.EN);
+        const response = await API.getCountries(
+          CountriesEnum.EN,
+          mainAppStore.initModel.authUrl
+        );
         setCountries(response);
       } catch (error) {
         badRequestPopupStore.openModal();

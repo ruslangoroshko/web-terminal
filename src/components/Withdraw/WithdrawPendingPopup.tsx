@@ -8,18 +8,24 @@ import Page from '../../constants/Pages';
 import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
 import { useTranslation } from 'react-i18next';
+import { useStores } from '../../hooks/useStores';
 
 const WithdrawPendingPopup = () => {
   const { push } = useHistory();
 
   const { t } = useTranslation();
 
+  const { mainAppStore } = useStores();
+
   const [userEmail, setEmail] = useState('');
 
   useEffect(() => {
     async function fetchPersonalData() {
       try {
-        const response = await API.getPersonalData(getProcessId());
+        const response = await API.getPersonalData(
+          getProcessId(),
+          mainAppStore.initModel.authUrl
+        );
         setEmail(response.data.email);
       } catch (error) {}
     }
