@@ -96,7 +96,10 @@ function ShouldValidatePhonePopup() {
         const response = await API.getGeolocationInfo(
           mainAppStore.initModel.authUrl
         );
-        setFieldValue(Fields.COUNTRY, response.country);
+        const country = countries.find((item) => item.id === response.country);
+        if (country) {
+          setFieldValue(Fields.COUNTRY, country.name);
+        }
         if (response.dial) {
           setDialMask(`+${response.dial}`);
         }
