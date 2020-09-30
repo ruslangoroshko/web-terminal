@@ -124,7 +124,7 @@ function SignUp() {
                   email,
                   password,
                   captcha,
-                  phone,
+                  phone: phone?.trim(),
                 });
                 if (result !== OperationApiResponseCodes.Ok) {
                   notificationStore.notificationMessage = t(
