@@ -53,7 +53,10 @@ function ForgotPassword() {
       setIsLoading(true);
       setSubmitting(true);
 
-      const result = await API.forgotEmail(email);
+      const result = await API.forgotEmail(
+        email,
+        mainAppStore.initModel.authUrl
+      );
 
       if (result.result === OperationApiResponseCodes.Ok) {
         setIsSuccessfull(true);

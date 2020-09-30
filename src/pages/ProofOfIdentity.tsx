@@ -23,7 +23,7 @@ function ProofOfIdentity() {
   const [isSubmiting, setSubmit] = useState(true);
   const { t } = useTranslation();
 
-  const { kycStore, badRequestPopupStore } = useStores();
+  const { kycStore, badRequestPopupStore, mainAppStore } = useStores();
 
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +64,10 @@ function ProofOfIdentity() {
       // await API.postPersonalData(JSON.parse(response));
       // mixpanel.track(mixpanelEvents.KYC_STEP_2);
 
-      await API.verifyUser({ processId: getProcessId() });
+      await API.verifyUser(
+        { processId: getProcessId() },
+        mainAppStore.initModel.authUrl
+      );
       mixpanel.track(mixpanelEvents.KYC_STEP_3);
 
       push(Page.DASHBOARD);
@@ -85,10 +88,15 @@ function ProofOfIdentity() {
     // TODO: refactor
     try {
       await Axios.all([
-        API.postDocument(DocumentTypeEnum.Id, customPassportId.file),
+        API.postDocument(
+          DocumentTypeEnum.Id,
+          customPassportId.file,
+          mainAppStore.initModel.authUrl
+        ),
         API.postDocument(
           DocumentTypeEnum.ProofOfAddress,
-          customProofOfAddress.file
+          customProofOfAddress.file,
+          mainAppStore.initModel.authUrl
         ),
       ]);
       await postPersonalData();

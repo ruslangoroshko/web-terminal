@@ -33,15 +33,19 @@ function UserProfileButton() {
 
     async function fetchAdditionalFields() {
       try {
-        const response = await API.getAdditionalSignUpFields();
+        const response = await API.getAdditionalSignUpFields(
+          mainAppStore.initModel.authUrl
+        );
         phoneVerificationStore.setShouldValidatePhone(!!response.length);
-
       } catch (error) {}
     }
 
     async function fetchPersonalData() {
       try {
-        const response = await API.getPersonalData(getProcessId());
+        const response = await API.getPersonalData(
+          getProcessId(),
+          mainAppStore.initModel.authUrl
+        );
         if (!response.data.phone) {
           fetchAdditionalFields();
         }

@@ -55,7 +55,7 @@ function AccountSecurity() {
     repeatPassword: '',
   };
 
-  const { badRequestPopupStore, notificationStore } = useStores();
+  const { badRequestPopupStore, notificationStore, mainAppStore } = useStores();
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -67,10 +67,13 @@ function AccountSecurity() {
     setIsLoading(true);
 
     try {
-      const response = await API.changePassword({
-        oldPassword: values.oldPassword,
-        newPassword: values.password,
-      });
+      const response = await API.changePassword(
+        {
+          oldPassword: values.oldPassword,
+          newPassword: values.password,
+        },
+        mainAppStore.initModel.authUrl
+      );
       if (response.result === OperationApiResponseCodes.Ok) {
         resetForm();
         setIsLoading(false);
@@ -377,7 +380,7 @@ const InputField = styled.input`
 const InputWrapper = styled(FlexContainer)`
   border-radius: 4px;
   border: 1px solid
-    ${props => (props.hasError ? '#ED145B' : 'rgba(255, 255, 255, 0.1)')};
+    ${(props) => (props.hasError ? '#ED145B' : 'rgba(255, 255, 255, 0.1)')};
   color: #fff;
   background-color: rgba(255, 255, 255, 0.06);
 `;

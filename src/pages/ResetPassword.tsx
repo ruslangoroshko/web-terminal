@@ -28,7 +28,7 @@ import mixapanelProps from '../constants/mixpanelProps';
 interface Props {}
 
 function ResetPassword(props: Props) {
-  const { token } = useParams();
+  const { token } = useParams<{ token: string }>();
   const { t } = useTranslation();
   const { mainAppStore } = useStores();
 
@@ -67,10 +67,13 @@ function ResetPassword(props: Props) {
   const handleSubmitForm = async ({ password }: IResetPassword) => {
     setIsLoading(true);
     try {
-      const response = await API.recoveryPassword({
-        token: token || '',
-        password,
-      });
+      const response = await API.recoveryPassword(
+        {
+          token: token || '',
+          password,
+        },
+        mainAppStore.initModel.authUrl
+      );
       if (response.result === OperationApiResponseCodes.Ok) {
         mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_SET_NEW, {
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),

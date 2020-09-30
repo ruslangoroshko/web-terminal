@@ -1,7 +1,6 @@
 import {
   LOCAL_STORAGE_TOKEN_KEY,
   LOCAL_STORAGE_REFRESH_TOKEN_KEY,
-  LOCAL_STORAGE_TRADING_URL,
   LOCAL_STORAGE_LANGUAGE,
 } from './../constants/global';
 import {
@@ -77,6 +76,7 @@ export class MainAppStore implements MainAppStoreProps {
     supportUrl: '',
     termsUrl: '',
     tradingUrl: '',
+    authUrl: '',
     mixpanelToken: '582507549d28c813188211a0d15ec940',
     recaptchaToken: '',
   };
@@ -233,7 +233,6 @@ export class MainAppStore implements MainAppStoreProps {
           apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
       );
       this.socketError = true;
-      //@ts-ignore
       console.log('websocket error: ', error);
       console.log('=====/=====');
     });
@@ -241,7 +240,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   fetchTradingUrl = async (token = this.token) => {
     try {
-      const response = await API.getTradingUrl();
+      const response = await API.getTradingUrl(this.initModel.authUrl);
       this.setTradingUrl(response.tradingUrl);
       if (!this.isInterceptorsInjected) {
         injectInerceptors(response.tradingUrl, this);
@@ -258,7 +257,10 @@ export class MainAppStore implements MainAppStoreProps {
     const refreshToken = `${this.refreshToken}`;
     this.refreshToken = '';
     try {
-      const result = await API.refreshToken({ refreshToken });
+      const result = await API.refreshToken(
+        { refreshToken },
+        this.initModel.authUrl
+      );
       if (result.refreshToken) {
         this.setRefreshToken(result.refreshToken);
         this.setTokenHandler(result.token);
@@ -314,7 +316,10 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   signIn = async (credentials: UserAuthenticate) => {
-    const response = await API.authenticate(credentials);
+    const response = await API.authenticate(
+      credentials,
+      this.initModel.authUrl
+    );
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
@@ -338,7 +343,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   signInLpLogin = async (params: LpLoginParams) => {
-    const response = await API.postLpLoginToken(params);
+    const response = await API.postLpLoginToken(params, this.initModel.authUrl);
 
     if (response.result === OperationApiResponseCodes.Ok) {
       this.isAuthorized = true;
@@ -360,7 +365,10 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   signUp = async (credentials: UserRegistration) => {
-    const response = await API.signUpNewTrader(credentials);
+    const response = await API.signUpNewTrader(
+      credentials,
+      this.initModel.authUrl
+    );
     if (response.result === OperationApiResponseCodes.Ok) {
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.isAuthorized = true;

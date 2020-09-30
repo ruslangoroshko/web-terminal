@@ -30,7 +30,7 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 const PhoneVerification: FC = () => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [dialMask, setDialMask] = useState('');
-  const countriesNames = countries.map(item => item.name);
+  const countriesNames = countries.map((item) => item.name);
   const { t } = useTranslation();
 
   const validationSchema = yup.object().shape<PhoneVerificationFormParams>({
@@ -91,7 +91,10 @@ const PhoneVerification: FC = () => {
   useEffect(() => {
     async function fetchCountries() {
       try {
-        const response = await API.getCountries(CountriesEnum.EN);
+        const response = await API.getCountries(
+          CountriesEnum.EN,
+          mainAppStore.initModel.authUrl
+        );
         setCountries(response);
       } catch (error) {}
     }
@@ -113,13 +116,13 @@ const PhoneVerification: FC = () => {
               phone:
                 mainAppStore.profilePhone ||
                 phone ||
-                countries.find(item => item.name === countryOfCitizenship)
+                countries.find((item) => item.name === countryOfCitizenship)
                   ?.dial ||
                 '',
               country: countryOfCitizenship,
             });
             setDialMask(
-              countries.find(item => item.name === countryOfCitizenship)
+              countries.find((item) => item.name === countryOfCitizenship)
                 ?.dial || ''
             );
             kycStore.filledStep = KYCstepsEnum.PhoneVerification;
@@ -190,9 +193,7 @@ const PhoneVerification: FC = () => {
                   labelText={t('Country')}
                   {...getFieldProps(Fields.CUSTOM_COUNTRY)}
                   id={Fields.CUSTOM_COUNTRY}
-                  hasError={
-                    !!(touched.country && errors.country)
-                  }
+                  hasError={!!(touched.country && errors.country)}
                   dropdownItemsList={countries}
                   setFieldValue={setFieldValue}
                   handleChange={handleChangeCountry(setFieldValue)}
