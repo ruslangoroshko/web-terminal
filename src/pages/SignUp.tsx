@@ -274,6 +274,10 @@ function SignUp() {
           mainAppStore.initModel.authUrl
         );
         setDialMask(response.dial);
+        const country = countries.find((item) => item.id === response.country);
+        if (country) {
+          setFieldValue(Fields.COUNTRY, country.name);
+        }
       } catch (error) {}
     };
 
