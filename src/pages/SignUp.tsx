@@ -68,11 +68,13 @@ function SignUp() {
         captcha: yup.string(),
         phone: yup
           .string()
-          .required()
           .test(Fields.PHONE, `${t('Phone number is invalid')}`, function (
             value
           ) {
-            if (hasAdditionalField && value) {
+            if (hasAdditionalField) {
+              if (!value) {
+                return false;
+              }
               try {
                 const checkPhone = parsePhoneNumber(value);
                 return !!checkPhone?.isValid();
