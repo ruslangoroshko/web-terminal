@@ -268,6 +268,12 @@ function SignUp() {
       } catch (error) {}
     }
 
+    if (hasAdditionalField) {
+      fetchCountries();
+    }
+  }, [hasAdditionalField]);
+
+  useEffect(() => {
     const fetchGeoLocationInfo = async () => {
       try {
         const response = await API.getGeolocationInfo(
@@ -283,12 +289,10 @@ function SignUp() {
       } catch (error) {}
     };
 
-    if (hasAdditionalField) {
-      fetchCountries().then(() => {
-        fetchGeoLocationInfo();
-      });
+    if (countries.length) {
+      fetchGeoLocationInfo();
     }
-  }, [hasAdditionalField]);
+  }, [countries]);
 
   return (
     <SignFlowLayout>

@@ -91,6 +91,21 @@ function ShouldValidatePhonePopup() {
   };
 
   useEffect(() => {
+    async function fetchCountries() {
+      try {
+        const response = await API.getCountries(
+          CountriesEnum.EN,
+          mainAppStore.initModel.authUrl
+        );
+        setCountries(response);
+      } catch (error) {}
+    }
+    fetchCountries();
+
+    mixpanel.track(mixpanelEvents.PHONE_FIELD_VIEW);
+  }, []);
+
+  useEffect(() => {
     async function fetchGeoLocation() {
       try {
         const response = await API.getGeolocationInfo(
@@ -105,21 +120,10 @@ function ShouldValidatePhonePopup() {
         }
       } catch (error) {}
     }
-    async function fetchCountries() {
-      try {
-        const response = await API.getCountries(
-          CountriesEnum.EN,
-          mainAppStore.initModel.authUrl
-        );
-        setCountries(response);
-      } catch (error) {}
+    if (countries.length) {
+      fetchGeoLocation();
     }
-    fetchGeoLocation().then(() => {
-      fetchCountries();
-    });
-
-    mixpanel.track(mixpanelEvents.PHONE_FIELD_VIEW);
-  }, []);
+  }, [countries]);
 
   const {
     setFieldValue,
