@@ -273,10 +273,12 @@ function SignUp() {
         const response = await API.getGeolocationInfo(
           mainAppStore.initModel.authUrl
         );
-        setDialMask(response.dial);
         const country = countries.find((item) => item.id === response.country);
         if (country) {
           setFieldValue(Fields.COUNTRY, country.name);
+        }
+        if (response.dial) {
+          setDialMask(`+${response.dial}`);
         }
       } catch (error) {}
     };
