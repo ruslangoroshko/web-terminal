@@ -30,7 +30,9 @@ import { CountriesEnum } from '../enums/CountriesEnum';
 import { Country } from '../types/CountriesTypes';
 import AutoCompleteDropdown from '../components/KYC/AutoCompleteDropdown';
 import LabelInputMasked from '../components/LabelInputMasked';
-import { parsePhoneNumber } from 'libphonenumber-js';
+import { parsePhoneNumber, getExampleNumber } from 'libphonenumber-js/min';
+import examples from 'libphonenumber-js/examples.mobile.json';
+import { fromAlpha3ToAlpha2Code } from '../helpers/fromAlpha3ToAlpha2Code';
 
 function SignUp() {
   const { t } = useTranslation();
@@ -202,7 +204,16 @@ function SignUp() {
 
   const handleChangeCountry = (setFieldValue: any) => (country: Country) => {
     setFieldValue(Fields.PHONE, country.dial);
-    setDialMask(`+${country.dial}`);
+    const phoneNumber = getExampleNumber(
+      fromAlpha3ToAlpha2Code(country.id),
+      examples
+    );
+    const mask = phoneNumber?.nationalNumber.replace(/\d/g, '9');
+    if (mask) {
+      setDialMask(`+\\${country.dial.split('').join('\\')}${mask}`);
+    } else {
+      setDialMask(`+\\${country.dial.split('').join('\\')}99999999999999`);
+    }
   };
 
   const handleChangeUserAgreements = (setFieldValue: any) => (
@@ -246,6 +257,8 @@ function SignUp() {
         const response = await API.getAdditionalSignUpFields(
           mainAppStore.initModel.authUrl
         );
+        setHasAdditionalField(true);
+
         if (response.length && response.find((item) => item === Fields.PHONE)) {
           setHasAdditionalField(true);
         }
@@ -284,7 +297,18 @@ function SignUp() {
           setFieldValue(Fields.COUNTRY, country.name);
         }
         if (response.dial) {
-          setDialMask(`+${response.dial}`);
+          const phoneNumber = getExampleNumber(
+            fromAlpha3ToAlpha2Code(response.country),
+            examples
+          );
+          const mask = phoneNumber?.nationalNumber.replace(/\d/g, '9');
+          if (mask) {
+            setDialMask(`+\\${response.dial.split('').join('\\')}${mask}`);
+          } else {
+            setDialMask(
+              `+\\${response.dial.split('').join('\\')}99999999999999`
+            );
+          }
         }
       } catch (error) {}
     };
@@ -350,8 +374,7 @@ function SignUp() {
                 </FlexContainer>
                 <FlexContainer margin="0 0 16px 0" flexDirection="column">
                   <LabelInputMasked
-                    mask={`${dialMask}99999999999999999999`}
-                    maskPlaceholder={' '}
+                    mask={dialMask}
                     labelText={t('Phone')}
                     {...getFieldProps(Fields.PHONE)}
                     id={Fields.PHONE}
