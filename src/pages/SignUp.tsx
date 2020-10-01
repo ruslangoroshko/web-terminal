@@ -257,8 +257,6 @@ function SignUp() {
         const response = await API.getAdditionalSignUpFields(
           mainAppStore.initModel.authUrl
         );
-        setHasAdditionalField(true);
-
         if (response.length && response.find((item) => item === Fields.PHONE)) {
           setHasAdditionalField(true);
         }
