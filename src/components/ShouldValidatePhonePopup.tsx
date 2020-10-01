@@ -220,7 +220,7 @@ function ShouldValidatePhonePopup() {
               <FlexContainer width="320px" margin="0 0 28px 0">
                 <FlexContainer width="100%" flexDirection="column">
                   <LabelInputMasked
-                    mask={`${dialMask}99999999999999999999`}
+                    mask={dialMask}
                     labelText={t('Phone')}
                     {...getFieldProps(Fields.PHONE)}
                     id={Fields.PHONE}
