@@ -16,13 +16,15 @@ import { Country } from '../types/CountriesTypes';
 import { PhoneVerificationFormParams } from '../types/PersonalDataTypes';
 import AutoCompleteDropdown from './KYC/AutoCompleteDropdown';
 import LabelInputMasked from './LabelInputMasked';
-import { parsePhoneNumber } from 'libphonenumber-js';
+import { getExampleNumber, parsePhoneNumber } from 'libphonenumber-js';
 import { getProcessId } from '../helpers/getProcessId';
 import { useStores } from '../hooks/useStores';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
+import { fromAlpha3ToAlpha2Code } from '../helpers/fromAlpha3ToAlpha2Code';
+import examples from 'libphonenumber-js/examples.mobile.json';
 
 function ShouldValidatePhonePopup() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -61,7 +63,16 @@ function ShouldValidatePhonePopup() {
 
   const handleChangeCountry = (setFieldValue: any) => (country: Country) => {
     setFieldValue(Fields.PHONE, country.dial);
-    setDialMask(`+${country.dial}`);
+    const phoneNumber = getExampleNumber(
+      fromAlpha3ToAlpha2Code(country.id),
+      examples
+    );
+    const mask = phoneNumber?.nationalNumber.replace(/\d/g, '9');
+    if (mask) {
+      setDialMask(`+\\${country.dial.split('').join('\\')}${mask}`);
+    } else {
+      setDialMask(`+\\${country.dial.split('').join('\\')}99999999999999`);
+    }
   };
 
   const handleSubmitForm = async ({ phone }: PhoneVerificationFormParams) => {
@@ -106,7 +117,7 @@ function ShouldValidatePhonePopup() {
   }, []);
 
   useEffect(() => {
-    async function fetchGeoLocation() {
+    const fetchGeoLocationInfo = async () => {
       try {
         const response = await API.getGeolocationInfo(
           mainAppStore.initModel.authUrl
@@ -116,12 +127,24 @@ function ShouldValidatePhonePopup() {
           setFieldValue(Fields.COUNTRY, country.name);
         }
         if (response.dial) {
-          setDialMask(`+${response.dial}`);
+          const phoneNumber = getExampleNumber(
+            fromAlpha3ToAlpha2Code(response.country),
+            examples
+          );
+          const mask = phoneNumber?.nationalNumber.replace(/\d/g, '9');
+          if (mask) {
+            setDialMask(`+\\${response.dial.split('').join('\\')}${mask}`);
+          } else {
+            setDialMask(
+              `+\\${response.dial.split('').join('\\')}99999999999999`
+            );
+          }
         }
       } catch (error) {}
-    }
+    };
+
     if (countries.length) {
-      fetchGeoLocation();
+      fetchGeoLocationInfo();
     }
   }, [countries]);
 
