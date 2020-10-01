@@ -15,7 +15,6 @@ interface Props {
   autoComplete?: string;
   errorText?: string;
   mask?: string;
-  maskPlaceholder?: string;
 }
 
 const LabelInputMasked: FC<Props> = (props) => {
@@ -30,7 +29,6 @@ const LabelInputMasked: FC<Props> = (props) => {
     autoComplete,
     errorText,
     mask,
-    maskPlaceholder,
   } = props;
   const [focused, setFocused] = useState(false);
 
@@ -45,9 +43,10 @@ const LabelInputMasked: FC<Props> = (props) => {
   return (
     <LabelWrapper htmlFor={id}>
       <Input
-        maskPlaceholder=" "
+        maskPlaceholder={null}
         mask={mask || ''}
-        maskChar=" "
+        maskChar={null}
+        alwaysShowMask
         id={id}
         type={type || 'type'}
         name={name}
