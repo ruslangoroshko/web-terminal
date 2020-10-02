@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
@@ -29,6 +29,7 @@ import { WithdrawalStatusesEnum } from '../../enums/WithdrawalStatusesEnum';
 
 const WithdrawRequestTab = observer(() => {
   const { mainAppStore, withdrawalStore } = useStores();
+  const requestWrapper = useRef(document.createElement('div'));
   const [paymentMeyhod, setPaymentMethod] = useState(
     WithdrawalTypesEnum.BankTransfer
   );
@@ -51,6 +52,12 @@ const WithdrawRequestTab = observer(() => {
     initHistoryList();
   }, []);
 
+  useEffect(() => {
+    if (withdrawalStore.pendingPopup) {
+      requestWrapper.current.scrollTop = 0;
+    }
+  }, [withdrawalStore.pendingPopup])
+
   const { t } = useTranslation();
 
   return (
@@ -59,7 +66,8 @@ const WithdrawRequestTab = observer(() => {
       minHeight="calc(100vh - 234px)"
       justifyContent="space-between"
       position="relative"
-      isSlab={withdrawalStore.pendingPopup}
+      isSlab={withdrawalStore.pendingPopup || mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified}
+      ref={requestWrapper}
     >
       {withdrawalStore.pendingPopup && <WithdrawPendingPopup />}
       <FlexContainer flexDirection="column" marginBottom="16px">
