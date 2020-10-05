@@ -320,7 +320,6 @@ const InputFieldText = styled.textarea`
   border: none;
   outline: none;
   width: 100%;
-  height: 100%;
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
