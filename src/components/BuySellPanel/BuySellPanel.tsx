@@ -57,6 +57,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     notificationStore,
     mainAppStore,
     badRequestPopupStore,
+    markersOnChartStore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -98,7 +99,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             `${t('Minimum trade volume')} $${
               instrument.minOperationVolume
             }. ${t('Please increase your trade amount or multiplier')}.`,
-            function (value) {
+            function(value) {
               if (value) {
                 return (
                   value >=
@@ -114,7 +115,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             `${t('Maximum trade volume')} $${
               instrument.maxOperationVolume
             }. ${t('Please decrease your trade amount or multiplier')}.`,
-            function (value) {
+            function(value) {
               if (value) {
                 return (
                   value <=
@@ -130,7 +131,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             `${t('Insufficient funds to open a position. You have only')} $${
               mainAppStore.activeAccount?.balance
             }`,
-            (value) => {
+            value => {
               if (value) {
                 return value <= (mainAppStore.activeAccount?.balance || 0);
               }
@@ -153,7 +154,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                (value) => value > currentPriceAsk()
+                value => value > currentPriceAsk()
               ),
           })
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
@@ -167,7 +168,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                (value) => value < currentPriceBid()
+                value => value < currentPriceBid()
               ),
           }),
         sl: yup
@@ -184,7 +185,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                (value) => value < currentPriceAsk()
+                value => value < currentPriceAsk()
               ),
           })
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
@@ -198,18 +199,18 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                (value) => value > currentPriceBid()
+                value => value > currentPriceBid()
               ),
           })
           .when([Fields.STOP_LOSS_TYPE], {
-            is: (slType) => slType === TpSlTypeEnum.Currency,
+            is: slType => slType === TpSlTypeEnum.Currency,
             then: yup
               .number()
               .nullable()
               .test(
                 Fields.STOP_LOSS,
                 t('Stop loss level can not be lower than the Invest amount'),
-                function (value) {
+                function(value) {
                   return value < this.parent[Fields.AMOUNT];
                 }
               ),
@@ -301,6 +302,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       };
       try {
         const response = await API.openPosition(modelToSubmit);
+        markersOnChartStore.addNewMarker(response.position);
+        
         notificationStore.notificationMessage = t(
           apiResponseCodeMessages[response.result]
         );

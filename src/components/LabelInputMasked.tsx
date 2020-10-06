@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import InputMask from 'react-input-mask';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import ErropPopup from './ErropPopup';
-import isPropValid from '@emotion/is-prop-valid';
+
 interface Props {
   labelText: string;
   value: string;

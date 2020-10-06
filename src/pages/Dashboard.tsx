@@ -55,7 +55,7 @@ const Dashboard: FC = observer(() => {
         Topics.ACTIVE_POSITIONS,
         (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
           if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.activePositions = response.data;
+            quotesStore.setActivePositions(response.data);
           }
         }
       );
@@ -92,8 +92,10 @@ const Dashboard: FC = observer(() => {
         Topics.UPDATE_ACTIVE_POSITION,
         (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
           if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.activePositions = quotesStore.activePositions.map(
-              (item) => (item.id === response.data.id ? response.data : item)
+            quotesStore.setActivePositions(
+              quotesStore.activePositions.map(item =>
+                item.id === response.data.id ? response.data : item
+              )
             );
           }
         }
@@ -103,7 +105,7 @@ const Dashboard: FC = observer(() => {
         Topics.UPDATE_PENDING_ORDER,
         (response: ResponseFromWebsocket<PendingOrderWSDTO>) => {
           if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.pendingOrders = quotesStore.pendingOrders.map((item) =>
+            quotesStore.pendingOrders = quotesStore.pendingOrders.map(item =>
               item.id === response.data.id ? response.data : item
             );
           }

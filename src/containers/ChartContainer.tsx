@@ -31,7 +31,7 @@ interface IProps {
 }
 
 const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
-  const { mainAppStore, tradingViewStore } = useStores();
+  const { mainAppStore, tradingViewStore, markersOnChartStore } = useStores();
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: instrumentId,
@@ -109,6 +109,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
 
     tvWidget.onChartReady(async () => {
       tradingViewStore.tradingWidget = tvWidget;
+      markersOnChartStore.renderActivePositionsMarkersOnChart();
     });
     return () => {
       tvWidget.remove();
