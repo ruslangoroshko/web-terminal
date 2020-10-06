@@ -15,6 +15,7 @@ import { DataRangeStoreNoCustomDates } from './DataRangeStoreNoCustomDates';
 import { WithdrawalStore } from './WithdrawalStore';
 import { DateRangeAccountBalanceStore } from './DateRangeAccountBalanceStore';
 import { PhoneVerificationStore } from './PhoneVerificationStore';
+import { MarkersOnChartStore } from './MarkersOnChartStore';
 
 export class RootStore {
   quotesStore: QuotesStore;
@@ -34,6 +35,7 @@ export class RootStore {
   depositFundsStore: DepositFundsStore;
   withdrawalStore: WithdrawalStore;
   phoneVerificationStore: PhoneVerificationStore;
+  markersOnChartStore: MarkersOnChartStore;
 
   constructor() {
     this.quotesStore = new QuotesStore(this);
@@ -53,5 +55,6 @@ export class RootStore {
     this.depositFundsStore = new DepositFundsStore();
     this.withdrawalStore = new WithdrawalStore();
     this.phoneVerificationStore = new PhoneVerificationStore();
+    this.markersOnChartStore = new MarkersOnChartStore(this);
   }
 }

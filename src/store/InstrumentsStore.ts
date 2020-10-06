@@ -49,10 +49,15 @@ export class InstrumentsStore implements ContextProps {
   }
 
   @computed get activeInstruments() {
-    const filteredActiveInstruments = this.instruments.filter(item =>
-      this.activeInstrumentsIds.includes(item.instrumentItem.id)
-    ).sort((a, b) => this.activeInstrumentsIds.indexOf(a.instrumentItem.id) -
-      this.activeInstrumentsIds.indexOf(b.instrumentItem.id))
+    const filteredActiveInstruments = this.instruments
+      .filter(item =>
+        this.activeInstrumentsIds.includes(item.instrumentItem.id)
+      )
+      .sort(
+        (a, b) =>
+          this.activeInstrumentsIds.indexOf(a.instrumentItem.id) -
+          this.activeInstrumentsIds.indexOf(b.instrumentItem.id)
+      );
     return filteredActiveInstruments;
   }
 
@@ -71,9 +76,10 @@ export class InstrumentsStore implements ContextProps {
 
   @action
   setActiveInstrument = (activeInstrumentId: string) => {
-    this.activeInstrument = this.instruments.find(
-      item => item.instrumentItem.id === activeInstrumentId
-    ) || this.instruments[0];
+    this.activeInstrument =
+      this.instruments.find(
+        item => item.instrumentItem.id === activeInstrumentId
+      ) || this.instruments[0];
   };
 
   @action
@@ -96,7 +102,6 @@ export class InstrumentsStore implements ContextProps {
       this.activeInstrumentsIds[6] = activeInstrumentId;
     } else {
       this.activeInstrumentsIds.push(activeInstrumentId);
-
     }
     API.postFavoriteInstrumets({
       accountId: this.rootStore.mainAppStore.activeAccount!.id,
@@ -105,8 +110,7 @@ export class InstrumentsStore implements ContextProps {
         : AccountTypeEnum.Demo,
       instruments: this.activeInstrumentsIds,
     });
-
-  }
+  };
 
   @computed
   get sortedInstruments() {
@@ -147,9 +151,9 @@ export class InstrumentsStore implements ContextProps {
   // TODO: refactor, too heavy
   @action
   switchInstrument = async (instrumentId: string) => {
-    const newActiveInstrument = this.instruments.find(
-      item => item.instrumentItem.id === instrumentId
-    ) || this.instruments[0];
+    const newActiveInstrument =
+      this.instruments.find(item => item.instrumentItem.id === instrumentId) ||
+      this.instruments[0];
     if (newActiveInstrument) {
       this.addActiveInstrumentId(instrumentId);
       this.activeInstrument = newActiveInstrument;
@@ -170,6 +174,7 @@ export class InstrumentsStore implements ContextProps {
           );
           tvWidget.setChartType(newActiveInstrument.chartType);
         });
+        this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
       }
     }
   };
