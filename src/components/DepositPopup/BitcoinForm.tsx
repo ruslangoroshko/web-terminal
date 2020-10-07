@@ -77,15 +77,6 @@ const BitcoinForm: FC = () => {
 
   return (
     <FlexContainer flexDirection="column" padding="24px 0">
-      <Observer>
-        {() => (
-          <FixedNotify>
-            <NotificationPopup
-              show={notificationStore.isActiveNotification}
-            ></NotificationPopup>
-          </FixedNotify>
-        )}
-      </Observer>
       <LoaderForComponents backgroundColor="#1c2026" isLoading={isLoading} />
       <PrimaryTextParagraph
         fontSize="16px"
