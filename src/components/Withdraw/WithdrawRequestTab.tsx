@@ -75,7 +75,7 @@ const WithdrawRequestTab = observer(() => {
       ref={requestWrapper}
     >
       {withdrawalStore.pendingPopup && <WithdrawPendingPopup />}
-      <FlexContainer flexDirection="column" marginBottom="16px">
+      <PaymentButtonsWrapper flexDirection="column" marginBottom="16px">
         <FlexContainer marginBottom="48px">
           <FlexContainer flexDirection="column" width="180px">
             <PrimaryTextSpan
@@ -100,8 +100,8 @@ const WithdrawRequestTab = observer(() => {
           </FlexContainer>
         </FlexContainer>
 
-        <FlexContainer flexDirection="column">
-          <FlexContainer flexDirection="column">
+        <PaymentButtonsWrapper flexDirection="column">
+          <PaymentButtonsWrapper flexDirection="column">
             {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified && (
               <WithdrawPagePopup />
             )}
@@ -180,14 +180,14 @@ const WithdrawRequestTab = observer(() => {
                 <WithdrawFormBitcoin />
               )}
             </FlexContainer>
-          </FlexContainer>
+          </PaymentButtonsWrapper>
           {Number(
             mainAppStore.accounts.find((item) => item.isLive)?.balance
           ) === 0 && <WithdrawEmptyBalance />}
-        </FlexContainer>
-      </FlexContainer>
+        </PaymentButtonsWrapper>
+      </PaymentButtonsWrapper>
 
-      <FlexContainer flexDirection="column">
+      <PaymentButtonsWrapper flexDirection="column">
         <FlexContainer justifyContent="space-between">
           <WithdrawCardItem>
             <FlexContainer>
@@ -282,7 +282,7 @@ const WithdrawRequestTab = observer(() => {
             </ButtonOpenFaq>
           </FlexContainer>
         </FaqOpenBlock>
-      </FlexContainer>
+      </PaymentButtonsWrapper>
     </RequestTabWrap>
   );
 });
@@ -329,6 +329,10 @@ const FaqOpenBlock = styled(FlexContainer)`
   border: 1px solid rgba(112, 113, 117, 0.5);
   border-radius: 5px;
   padding: 16px;
+`;
+
+const PaymentButtonsWrapper = styled(FlexContainer)`
+  flex: 1 0 auto;
 `;
 
 const ButtonOpenFaq = styled.a`
