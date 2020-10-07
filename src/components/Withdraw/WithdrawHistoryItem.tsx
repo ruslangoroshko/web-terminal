@@ -39,10 +39,10 @@ const WithdrawHistoryItem = (props: Props) => {
     switch (status) {
       case WithdrawalStatusesEnum.Pending:
         return '#FFFCCC';
-      case WithdrawalStatusesEnum.Approved:
-        return '#3CFF8A';
       case WithdrawalStatusesEnum.Canceled:
         return '#FF557E';
+      case WithdrawalStatusesEnum.Approved:
+        return '#FFFCCC';
       case WithdrawalStatusesEnum.Declined:
         return '#FF557E';
       default:
