@@ -40,7 +40,9 @@ const WithdrawRequestTab = observer(() => {
         const result = await API.getWithdrawalHistory();
         if (result.status === WithdrawalHistoryResponseStatus.Successful) {
           const isPending = result.history?.some(
-            (item) => item.status === WithdrawalStatusesEnum.Pending
+            (item) =>
+              item.status === WithdrawalStatusesEnum.Pending ||
+              item.status === WithdrawalStatusesEnum.Approved
           );
 
           if (isPending) {
@@ -56,7 +58,7 @@ const WithdrawRequestTab = observer(() => {
     if (withdrawalStore.pendingPopup) {
       requestWrapper.current.scrollTop = 0;
     }
-  }, [withdrawalStore.pendingPopup])
+  }, [withdrawalStore.pendingPopup]);
 
   const { t } = useTranslation();
 
@@ -66,7 +68,10 @@ const WithdrawRequestTab = observer(() => {
       minHeight="calc(100vh - 234px)"
       justifyContent="space-between"
       position="relative"
-      isSlab={withdrawalStore.pendingPopup || mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified}
+      isSlab={
+        withdrawalStore.pendingPopup ||
+        mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified
+      }
       ref={requestWrapper}
     >
       {withdrawalStore.pendingPopup && <WithdrawPendingPopup />}
@@ -284,8 +289,8 @@ const WithdrawRequestTab = observer(() => {
 
 export default WithdrawRequestTab;
 
-const RequestTabWrap = styled(FlexContainer)<{isSlab?: boolean;}>`
-  overflow-y: ${props => props.isSlab ? 'hidden' : 'auto'};
+const RequestTabWrap = styled(FlexContainer)<{ isSlab?: boolean }>`
+  overflow-y: ${(props) => (props.isSlab ? 'hidden' : 'auto')};
 `;
 
 const WithdrawCardItem = styled(FlexContainer)`
