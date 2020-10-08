@@ -56,25 +56,27 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
 
   @action
   addNewMarker = (position: PositionModelWSDTO) => {
-    const marker = this.rootStore.tradingViewStore.tradingWidget
-      ?.chart()
-      .createExecutionShape({ disableUndo: false })
-      .setText(`$${position.investmentAmount}`)
-      .setTextColor(
-        position.operation === AskBidEnum.Buy ? '#00ffdd' : '#ed145b'
-      )
-      .setArrowColor(
-        position.operation === AskBidEnum.Buy ? '#00ffdd' : '#ed145b'
-      )
-      .setDirection(position.operation === AskBidEnum.Buy ? 'buy' : 'sell')
-      .setTime(position.openDate / 1000)
-      .setPrice(position.investmentAmount);
-    if (marker) {
-      this.activeMarkers.push({
-        id: this.lastMarkerId,
-        positionId: position.id,
-        marker,
-      });
+    if (position !== null) {
+      const marker = this.rootStore.tradingViewStore.tradingWidget
+        ?.chart()
+        .createExecutionShape({ disableUndo: false })
+        .setText(`$${position.investmentAmount}`)
+        .setTextColor(
+          position.operation === AskBidEnum.Buy ? '#00ffdd' : '#ed145b'
+        )
+        .setArrowColor(
+          position.operation === AskBidEnum.Buy ? '#00ffdd' : '#ed145b'
+        )
+        .setDirection(position.operation === AskBidEnum.Buy ? 'buy' : 'sell')
+        .setTime(position.openDate / 1000)
+        .setPrice(position.investmentAmount);
+      if (marker) {
+        this.activeMarkers.push({
+          id: this.lastMarkerId,
+          positionId: position.id,
+          marker,
+        });
+      }
     }
   };
 
