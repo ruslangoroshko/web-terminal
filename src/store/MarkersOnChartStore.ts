@@ -60,7 +60,7 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
       const marker = this.rootStore.tradingViewStore.tradingWidget
         ?.chart()
         .createExecutionShape({ disableUndo: false })
-        .setText(`$${position.investmentAmount}`)
+        .setText(`$${Math.floor(position.investmentAmount)}`)
         .setTextColor(
           position.operation === AskBidEnum.Buy ? '#00ffdd' : '#ed145b'
         )
