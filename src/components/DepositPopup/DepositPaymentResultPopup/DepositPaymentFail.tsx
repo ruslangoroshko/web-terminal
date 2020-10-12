@@ -19,7 +19,11 @@ const DepositPaymentFail: FC = () => {
         alignItems="center"
         marginBottom="112px"
       >
-        <FlexContainer marginBottom="40px">
+        <FlexContainer
+          marginBottom="40px"
+          alignItems="center"
+          justifyContent="center"
+        >
           <img src={FailImage} width={138} />
         </FlexContainer>
         <FailText>{t('Insufficient funds')}</FailText>
