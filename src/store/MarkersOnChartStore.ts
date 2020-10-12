@@ -56,7 +56,7 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
 
   @action
   addNewMarker = (position: PositionModelWSDTO) => {
-    if (position !== null) {
+    if (!!position) {
       const marker = this.rootStore.tradingViewStore.tradingWidget
         ?.chart()
         .createExecutionShape({ disableUndo: false })
