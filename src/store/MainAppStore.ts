@@ -397,6 +397,7 @@ export class MainAppStore implements MainAppStoreProps {
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
     this.activeAccount = undefined;
     this.activeAccountId = '';
+    mixpanel.reset();
   };
 
   @action

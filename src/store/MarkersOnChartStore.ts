@@ -25,6 +25,7 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
   @action
   renderActivePositionsMarkersOnChart = () => {
     this.clearMarkersOnChart();
+
     this.rootStore.quotesStore.activePositions.forEach(position => {
       if (
         this.rootStore.instrumentsStore.activeInstrument?.instrumentItem.id ===

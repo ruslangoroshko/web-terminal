@@ -304,14 +304,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         const response = await API.openPosition(modelToSubmit);
         markersOnChartStore.addNewMarker(response.position);
         
+        
         notificationStore.notificationMessage = t(
           apiResponseCodeMessages[response.result]
         );
         notificationStore.isSuccessfull =
           response.result === OperationApiResponseCodes.Ok;
         notificationStore.openNotification();
-
+        
         if (response.result === OperationApiResponseCodes.Ok) {
+          
           mixpanel.track(mixpanelEvents.MARKET_ORDER, {
             [mixapanelProps.AMOUNT]: values.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:

@@ -76,6 +76,9 @@ const BankTransferForm = () => {
         });
         window.location.href = response.redirectUrl;
       } else {
+        mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
+          [mixapanelProps.SERVER_ERROR]: response.status
+        });
         badRequestPopupStore.setMessage(t('Technical error'));
         badRequestPopupStore.openModal();
       }
