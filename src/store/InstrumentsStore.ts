@@ -80,6 +80,8 @@ export class InstrumentsStore implements ContextProps {
       this.instruments.find(
         item => item.instrumentItem.id === activeInstrumentId
       ) || this.instruments[0];
+
+      this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
   };
 
   @action

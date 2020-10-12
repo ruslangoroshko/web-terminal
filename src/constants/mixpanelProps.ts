@@ -21,6 +21,7 @@ const mixapanelProps = {
   ACCOUNT_TYPE: 'Account Type',
   EVENT_REF: 'Event ref',
   ERROR_TEXT: 'Error text',
+  SERVER_ERROR: 'Server error',
 };
 
 Object.freeze(mixapanelProps);
