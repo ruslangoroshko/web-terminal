@@ -48,7 +48,12 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
             height="100%"
           >
             <FlexContainer flexDirection="column" alignItems="center">
-              <FlexContainer width="138px" marginBottom="40px">
+              <FlexContainer
+                width="138px"
+                marginBottom="40px"
+                alignItems="center"
+                justifyContent="center"
+              >
                 <Image src={SuccessImage}></Image>
               </FlexContainer>
               <PrimaryTextParagraph
@@ -87,7 +92,12 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
             width="100%"
           >
             <FlexContainer flexDirection="column" alignItems="center">
-              <FlexContainer width="138px" marginBottom="40px">
+              <FlexContainer
+                width="138px"
+                marginBottom="40px"
+                alignItems="center"
+                justifyContent="center"
+              >
                 <Image src={FailedImage}></Image>
               </FlexContainer>
               <PrimaryTextParagraph
