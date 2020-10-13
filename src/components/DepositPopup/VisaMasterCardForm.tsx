@@ -227,7 +227,7 @@ const VisaMasterCardForm = () => {
 
   return (
     <FlexContainer flexDirection="column" padding="32px 0 0 68px">
-      <form noValidate onSubmit={handleSubmit}>
+      <form autoComplete="on" noValidate onSubmit={handleSubmit}>
         <FlexContainer flexDirection="column">
           <PrimaryTextParagraph
             textTransform="uppercase"
@@ -301,6 +301,7 @@ const VisaMasterCardForm = () => {
             position="relative"
           >
             <CustomInput
+              autoComplete="cc-name"
               placeholder={t('Your name')}
               value={values.fullName}
               onChange={handleChange}
@@ -343,6 +344,7 @@ const VisaMasterCardForm = () => {
               maskPlaceholder={''}
               placeholder="1234 5678 9012 3456"
               mask="9999 9999 9999 9999"
+              autoComplete="cc-number"
               value={values.cardNumber}
               onChange={handleChange}
               name="cardNumber"
@@ -428,6 +430,7 @@ const VisaMasterCardForm = () => {
                 type="password"
                 // @ts-ignore
                 maskPlaceholder={''}
+                autoComplete="cc-csc"
                 placeholder="***"
                 mask="999"
                 value={values.cvv}
