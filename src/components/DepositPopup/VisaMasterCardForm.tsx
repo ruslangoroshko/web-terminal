@@ -154,10 +154,14 @@ const VisaMasterCardForm = () => {
             href: result.secureLink,
           }).click();
           break;
+
         case DepositRequestStatusEnum.PaymentDeclined:
           // TODO: Refactor
           depositFundsStore.togglePopup();
           push('/?status=failed');
+          mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
+            [mixapanelProps.ERROR_TEXT]: result.status
+          });
           break;
 
         default:
@@ -166,6 +170,9 @@ const VisaMasterCardForm = () => {
             depositResponseMessages[result.status]
           );
           notificationStore.openNotification();
+          mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
+            [mixapanelProps.ERROR_TEXT]: result.status
+          });
           break;
       }
     } catch (error) {}
