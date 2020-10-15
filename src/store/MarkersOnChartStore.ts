@@ -26,7 +26,7 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
   renderActivePositionsMarkersOnChart = () => {
     this.clearMarkersOnChart();
 
-    this.rootStore.quotesStore.activePositions.forEach(position => {
+    this.rootStore.quotesStore.activePositions.forEach((position) => {
       if (
         this.rootStore.instrumentsStore.activeInstrument?.instrumentItem.id ===
         position.instrument
@@ -43,7 +43,8 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
           )
           .setDirection(position.operation === AskBidEnum.Buy ? 'buy' : 'sell')
           .setTime(position.openDate / 1000)
-          .setPrice(position.investmentAmount);
+          .setPrice(position.investmentAmount)
+          .setArrowSpacing(0);
         if (marker) {
           this.activeMarkers.push({
             id: this.lastMarkerId,
@@ -69,7 +70,7 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
           position.operation === AskBidEnum.Buy ? '#00ffdd' : '#ed145b'
         )
         .setDirection(position.operation === AskBidEnum.Buy ? 'buy' : 'sell')
-        .setTime(position.openDate / 1000)
+        .setTime((position.openDate - 100) / 1000)
         .setPrice(position.investmentAmount);
       if (marker) {
         this.activeMarkers.push({
@@ -90,7 +91,7 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
 
   @action
   clearMarkersOnChart = () => {
-    this.activeMarkers.forEach(item => {
+    this.activeMarkers.forEach((item) => {
       item.marker.remove();
     });
     this.activeMarkers = [];
