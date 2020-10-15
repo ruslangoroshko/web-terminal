@@ -352,6 +352,7 @@ const VisaMasterCardForm = () => {
               className={`input-border ${
                 !!(touched.cardNumber && errors.cardNumber) && 'error'
               }`}
+              maxLength={19}
             />
             {touched.cardNumber && errors.cardNumber && (
               <ErrorInputLabel>
