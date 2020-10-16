@@ -356,7 +356,7 @@ const VisaMasterCardForm = () => {
               // TODO: shouldForwardProp
               // @ts-ignore
               maskPlaceholder={''}
-              maskChar={null}
+              maskChar=""
               placeholder="1234 5678 9012 3456"
               mask={[
                 /\d/,
@@ -379,7 +379,8 @@ const VisaMasterCardForm = () => {
                 /\d/,
                 /\d/,
               ]}
-              onChange={handleChangeNumber}
+              onChange={e => e.preventDefault()}
+              onInput={handleChange}
               autoComplete="cc-number"
               value={values.cardNumber}
               name="cardNumber"
