@@ -1,4 +1,4 @@
-import React, { useRef, FC } from 'react';
+import React, { useRef, FC, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import moment from 'moment';
@@ -54,6 +54,10 @@ const PendingOrder: FC<Props> = props => {
     }
   };
 
+  const activeInstrument = useCallback(() => {
+    return instrumentsStore.instruments.find(item => item.instrumentItem.id === pendingOrder.instrument)?.instrumentItem;
+  }, [pendingOrder]);
+
   return (
     <OrderWrapper
       flexDirection="column"
@@ -68,7 +72,7 @@ const PendingOrder: FC<Props> = props => {
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 38px 0 0">
           <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
-            {pendingOrder.instrument}
+            {activeInstrument()?.name}
           </PrimaryTextSpan>
           <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="10px">
             {moment(pendingOrder.created).format('DD MMM, HH:mm:ss')}
