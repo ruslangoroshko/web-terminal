@@ -233,7 +233,7 @@ const VisaMasterCardForm = () => {
   }, []);
 
   const handleChangeNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFieldValue('cardNumber', e.target.value);
+    setFieldValue('cardNumber', e.target.value.split(' ').join(''));
   };
 
   return (
