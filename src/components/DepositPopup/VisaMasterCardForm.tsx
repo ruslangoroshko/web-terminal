@@ -232,6 +232,10 @@ const VisaMasterCardForm = () => {
     });
   }, []);
 
+  const handleChangeNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFieldValue('cardNumber', e.target.value);
+  };
+
   return (
     <FlexContainer flexDirection="column" padding="32px 0 0 68px">
       <form autoComplete="on" noValidate onSubmit={handleSubmit}>
@@ -372,7 +376,7 @@ const VisaMasterCardForm = () => {
                 /\d/,
                 /\d/,
               ]}
-              onChange={handleChange}
+              onChange={handleChangeNumber}
               autoComplete="cc-number"
               value={values.cardNumber}
               name="cardNumber"
