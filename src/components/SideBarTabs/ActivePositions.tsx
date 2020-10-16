@@ -53,6 +53,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     instrumentsStore,
     SLTPStore,
     notificationStore,
+    markersOnChartStore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -210,6 +211,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       });
 
       if (response.result === OperationApiResponseCodes.Ok) {
+        markersOnChartStore.removeMarkerByPositionId(position.id);
+
         mixpanel.track(mixpanelEvents.CLOSE_ORDER, {
           [mixapanelProps.AMOUNT]: position.investmentAmount,
           [mixapanelProps.ACCOUNT_CURRENCY]:

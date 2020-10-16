@@ -87,6 +87,11 @@ const ActivePositionPnLPercent: FC<Props> = ({ position }) => {
     if (textElementRef.current) {
       observer.observe(textElementRef.current);
     }
+    return () => {
+      if (textElementRef.current) {
+        observer.unobserve(textElementRef.current);
+      }
+    };
   }, []);
   return (
     <PrimaryTextSpan
