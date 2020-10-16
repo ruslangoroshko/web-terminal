@@ -24,6 +24,9 @@ import ActivePositionPnL from './ActivePositionPnL';
 import ActivePositionPnLPercent from './ActivePositionPnLPercent';
 import ActivePositionEquity from './ActivePositionEquity';
 import EquityPnL from './EquityPnL';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../../constants/mixpanelEvents';
+import mixapanelProps from '../../constants/mixpanelProps';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -33,7 +36,7 @@ interface Props {
 function ActivePositionExpanded(props: Props) {
   const { position, currencySymbol } = props;
 
-  const { mainAppStore, notificationStore } = useStores();
+  const { mainAppStore, notificationStore, markersOnChartStore } = useStores();
   const { t } = useTranslation();
 
   const { precision } = useInstrument(position.instrument);
@@ -50,6 +53,41 @@ function ActivePositionExpanded(props: Props) {
         positionId: position.id,
         processId: getProcessId(),
       });
+
+      if (response.result === OperationApiResponseCodes.Ok) {
+        markersOnChartStore.removeMarkerByPositionId(position.id);
+
+        mixpanel.track(mixpanelEvents.CLOSE_ORDER, {
+          [mixapanelProps.AMOUNT]: position.investmentAmount,
+          [mixapanelProps.ACCOUNT_CURRENCY]:
+            mainAppStore.activeAccount?.currency || '',
+          [mixapanelProps.INSTRUMENT_ID]: position.instrument,
+          [mixapanelProps.MULTIPLIER]: position.multiplier,
+          [mixapanelProps.TREND]:
+            position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
+          [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+          [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+            ? 'real'
+            : 'demo',
+        });
+      } else {
+        mixpanel.track(mixpanelEvents.CLOSE_ORDER_FAILED, {
+          [mixapanelProps.AMOUNT]: position.investmentAmount,
+          [mixapanelProps.ACCOUNT_CURRENCY]:
+            mainAppStore.activeAccount?.currency || '',
+          [mixapanelProps.INSTRUMENT_ID]: position.instrument,
+          [mixapanelProps.MULTIPLIER]: position.multiplier,
+          [mixapanelProps.TREND]:
+            position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
+          [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+          [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+            ? 'real'
+            : 'demo',
+          [mixapanelProps.ERROR_TEXT]: apiResponseCodeMessages[response.result],
+        });
+      }
 
       notificationStore.notificationMessage = t(
         apiResponseCodeMessages[response.result]

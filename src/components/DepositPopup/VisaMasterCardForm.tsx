@@ -19,7 +19,7 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
 import depositMethod from '../../constants/depositMethod';
-import InputMask from 'react-input-mask';
+import InputMask, { InputState, MaskOptions } from 'react-input-mask';
 
 import LabelBgIcon from '../../assets/svg/icon-triangle-error.svg';
 
@@ -154,10 +154,14 @@ const VisaMasterCardForm = () => {
             href: result.secureLink,
           }).click();
           break;
+
         case DepositRequestStatusEnum.PaymentDeclined:
           // TODO: Refactor
           depositFundsStore.togglePopup();
           push('/?status=failed');
+          mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
+            [mixapanelProps.ERROR_TEXT]: result.status,
+          });
           break;
 
         default:
@@ -166,6 +170,9 @@ const VisaMasterCardForm = () => {
             depositResponseMessages[result.status]
           );
           notificationStore.openNotification();
+          mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
+            [mixapanelProps.ERROR_TEXT]: result.status,
+          });
           break;
       }
     } catch (error) {}
@@ -224,6 +231,13 @@ const VisaMasterCardForm = () => {
       [mixapanelProps.DEPOSIT_METHOD]: depositMethod.BANK_CARD,
     });
   }, []);
+
+  const handleChangeNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.persist()
+    setTimeout(() => {
+      setFieldValue('cardNumber', e.target.value);
+    }, 0);
+  };
 
   return (
     <FlexContainer flexDirection="column" padding="32px 0 0 68px">
@@ -342,11 +356,33 @@ const VisaMasterCardForm = () => {
               // TODO: shouldForwardProp
               // @ts-ignore
               maskPlaceholder={''}
+              maskChar=""
               placeholder="1234 5678 9012 3456"
-              mask="9999 9999 9999 9999"
+              mask={[
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+                ' ',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+                ' ',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+                ' ',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+              ]}
+              onChange={e => e.preventDefault()}
+              onInput={handleChange}
               autoComplete="cc-number"
               value={values.cardNumber}
-              onChange={handleChange}
               name="cardNumber"
               id="cardNumber"
               className={`input-border ${
