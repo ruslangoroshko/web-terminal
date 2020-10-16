@@ -93,14 +93,15 @@ export class MainAppStore implements MainAppStoreProps {
   @observable isInterceptorsInjected = false;
   @observable profilePhone = '';
   @observable lang = CountriesEnum.EN;
-  token = '';
-  refreshToken = '';
-  rootStore: RootStore;
-  signalRReconnectTimeOut = '';
-  connectTimeOut = '';
+  @observable token = '';
+  @observable refreshToken = '';
   @observable socketError = false;
   @observable activeAccountId: string = '';
   @observable signUpFlag: boolean = false;
+
+  rootStore: RootStore;
+  signalRReconnectTimeOut = '';
+  connectTimeOut = '';
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
