@@ -94,4 +94,15 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
     });
     this.activeMarkers = [];
   };
+
+  @action
+  removeMarkerByPositionId = (positionId: Marker['positionId']) => {
+    this.activeMarkers
+      .find((item) => item.positionId === positionId)
+      ?.marker.remove();
+
+    this.activeMarkers = this.activeMarkers.filter(
+      (item) => item.positionId !== positionId
+    );
+  };
 }

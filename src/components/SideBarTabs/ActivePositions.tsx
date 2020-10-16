@@ -53,6 +53,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     instrumentsStore,
     SLTPStore,
     notificationStore,
+    markersOnChartStore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -210,6 +211,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       });
 
       if (response.result === OperationApiResponseCodes.Ok) {
+        markersOnChartStore.removeMarkerByPositionId(position.id);
+
         mixpanel.track(mixpanelEvents.CLOSE_ORDER, {
           [mixapanelProps.AMOUNT]: position.investmentAmount,
           [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -341,6 +344,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     setFieldValue(Fields.TAKE_PROFIT, null);
   };
 
+  const activeInstrument = useCallback(() => {
+    return instrumentsStore.instruments.find(item => item.instrumentItem.id === position.instrument)?.instrumentItem;
+  }, [position]);
+
   return (
     <InstrumentInfoWrapper
       padding="8px 8px 0 12px"
@@ -358,7 +365,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 6px 0 0">
           <PrimaryTextSpan fontSize="12px" lineHeight="14px" marginBottom="2px">
-            {position.instrument}
+            {activeInstrument()?.name}
           </PrimaryTextSpan>
           <FlexContainer margin="0 0 12px 0" alignItems="center">
             <FlexContainer margin="0 4px 0 0">
