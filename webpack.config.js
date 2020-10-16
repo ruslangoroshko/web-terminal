@@ -93,31 +93,31 @@ module.exports = (env, argv) => {
         title: 'Hello world - Shadi',
         captcha: JSON.stringify(
           'https://www.google.com/recaptcha/api.js?render=' +
-            (['production', 'test'].includes(argv.mode)
+            (['production', 'none'].includes(argv.mode)
               ? process.env.RECAPTCHA_KEY
               : '')
         ),
       }),
       new webpack.DefinePlugin({
-        WS_HOST: ['production', 'test'].includes(argv.mode)
+        WS_HOST: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('/signalr')
           : JSON.stringify('http://localhost:5678/signalr'),
-        API_STRING: ['production', 'test'].includes(argv.mode)
+        API_STRING: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('')
           : JSON.stringify('http://localhost:5678'),
-        API_AUTH_STRING: ['production', 'test'].includes(argv.mode)
+        API_AUTH_STRING: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('')
           : JSON.stringify('http://localhost:5679'),
-        API_DEPOSIT_STRING: ['production', 'test'].includes(argv.mode)
+        API_DEPOSIT_STRING: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('/deposit')
           : JSON.stringify('http://localhost:5680/deposit'),
-        API_WITHDRAWAL_STRING: ['production', 'test'].includes(argv.mode)
+        API_WITHDRAWAL_STRING: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('/withdrawal')
           : JSON.stringify('http://localhost:5681/withdrawal'),
-        CHARTING_LIBRARY_PATH: ['production', 'test'].includes(argv.mode)
+        CHARTING_LIBRARY_PATH: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('./charting_library/')
           : JSON.stringify('./src/vendor/charting_library/'),
-        IS_LIVE: ['production', 'test'].includes(argv.mode),
+        IS_LIVE: ['production', 'none'].includes(argv.mode),
         IS_LOCAL: argv.is_local === 'true',
         BUILD_VERSION: JSON.stringify(process.env.BUILD_VERSION),
       }),
