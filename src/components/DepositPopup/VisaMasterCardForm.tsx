@@ -19,7 +19,7 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
 import depositMethod from '../../constants/depositMethod';
-import InputMask from 'react-input-mask';
+import InputMask, { InputState, MaskOptions } from 'react-input-mask';
 
 import LabelBgIcon from '../../assets/svg/icon-triangle-error.svg';
 
@@ -160,7 +160,7 @@ const VisaMasterCardForm = () => {
           depositFundsStore.togglePopup();
           push('/?status=failed');
           mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
-            [mixapanelProps.ERROR_TEXT]: result.status
+            [mixapanelProps.ERROR_TEXT]: result.status,
           });
           break;
 
@@ -171,7 +171,7 @@ const VisaMasterCardForm = () => {
           );
           notificationStore.openNotification();
           mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
-            [mixapanelProps.ERROR_TEXT]: result.status
+            [mixapanelProps.ERROR_TEXT]: result.status,
           });
           break;
       }
@@ -349,17 +349,37 @@ const VisaMasterCardForm = () => {
               // TODO: shouldForwardProp
               // @ts-ignore
               maskPlaceholder={''}
+              maskChar={null}
               placeholder="1234 5678 9012 3456"
-              mask="9999 9999 9999 9999"
+              mask={[
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+                ' ',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+                ' ',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+                ' ',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+              ]}
+              onChange={handleChange}
               autoComplete="cc-number"
               value={values.cardNumber}
-              onChange={handleChange}
               name="cardNumber"
               id="cardNumber"
               className={`input-border ${
                 !!(touched.cardNumber && errors.cardNumber) && 'error'
               }`}
-              maxLength={19}
             />
             {touched.cardNumber && errors.cardNumber && (
               <ErrorInputLabel>
