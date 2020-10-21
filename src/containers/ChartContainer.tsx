@@ -51,7 +51,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
       locale: getLanguageFromURL() || 'en',
-      custom_css_url: '/custom_trading_view_styles.css',
+      custom_css_url: 'custom_trading_view_styles.css',
       disabled_features: [
         'header_widget',
         'timeframes_toolbar',
