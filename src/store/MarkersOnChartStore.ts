@@ -9,7 +9,6 @@ interface IMarkersOnChartStore {
 }
 
 interface Marker {
-  id: number;
   positionId: number;
   marker: IExecutionLineAdapter;
 }
@@ -47,7 +46,6 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
           .setArrowSpacing(0);
         if (marker) {
           this.activeMarkers.push({
-            id: this.lastMarkerId,
             positionId: position.id,
             marker,
           });
@@ -73,19 +71,11 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
       .setPrice(position.investmentAmount);
     if (marker) {
       this.activeMarkers.push({
-        id: this.lastMarkerId,
         positionId: position.id,
         marker,
       });
     }
   };
-
-  @computed
-  get lastMarkerId() {
-    return this.activeMarkers.length
-      ? this.activeMarkers[this.activeMarkers.length - 1].id + 1
-      : 0;
-  }
 
   @action
   clearMarkersOnChart = () => {

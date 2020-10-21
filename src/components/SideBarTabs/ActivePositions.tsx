@@ -211,7 +211,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       });
 
       if (response.result === OperationApiResponseCodes.Ok) {
-        markersOnChartStore.removeMarkerByPositionId(position.id);
+        if (
+          instrumentsStore.activeInstrument?.instrumentItem.id ===
+          position.instrument
+        ) {
+          markersOnChartStore.removeMarkerByPositionId(position.id);
+        }
 
         mixpanel.track(mixpanelEvents.CLOSE_ORDER, {
           [mixapanelProps.AMOUNT]: position.investmentAmount,
@@ -345,7 +350,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   };
 
   const activeInstrument = useCallback(() => {
-    return instrumentsStore.instruments.find(item => item.instrumentItem.id === position.instrument)?.instrumentItem;
+    return instrumentsStore.instruments.find(
+      (item) => item.instrumentItem.id === position.instrument
+    )?.instrumentItem;
   }, [position]);
 
   return (
