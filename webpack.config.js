@@ -74,6 +74,17 @@ module.exports = (env, argv) => {
       ],
       splitChunks: {
         chunks: 'all',
+        cacheGroups: {
+          defaultVendors: {
+            test: /[\\/]node_modules[\\/]|vendor[\\/]/,
+            priority: -10,
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
+          },
+        },
       },
     },
     devtool: 'source-map',
