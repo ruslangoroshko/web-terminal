@@ -118,6 +118,7 @@ publish-kubernetes-dev:
   before_script:
     - kubectl config use-context $KUBERNETES_DEV_CONTEXT
   script:
+    - kubectl set image deployments/${KUBERNETES_APP_DEV_SELECTOR_NAME} ${KUBERNETES_APP_DEV_SELECTOR_NAME}=$DOCKER_REGISTRY_HOST/${DOCKER_DEV_IMAGE_TAG} --namespace=$KUBERNETES_DEV_NAMESPACE
     - kubectl delete pods -l app=${KUBERNETES_APP_DEV_SELECTOR_NAME} --namespace=$KUBERNETES_DEV_NAMESPACE
   only:
     - development
