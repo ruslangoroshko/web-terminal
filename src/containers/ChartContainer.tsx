@@ -15,6 +15,7 @@ import { supportedResolutions } from '../constants/supportedTimeScales';
 import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 import { observer } from 'mobx-react-lite';
 import { IActiveInstrument } from '../types/InstrumentsTypes';
+import customTVCSS from '../styles/custom_trading_view_styles.css';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -44,13 +45,13 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
       theme: 'Dark',
       loading_screen: {
         backgroundColor: 'transparent',
-        foregroundColor: 'transparent'
+        foregroundColor: 'transparent',
       },
       interval: supportedResolutions[BASIC_RESOLUTION_KEY] as ResolutionString,
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
       locale: getLanguageFromURL() || 'en',
-      custom_css_url: '../custom_trading_view_styles.css',
+      custom_css_url: customTVCSS,
       disabled_features: [
         'header_widget',
         'timeframes_toolbar',
