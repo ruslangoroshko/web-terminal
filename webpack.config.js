@@ -136,11 +136,16 @@ module.exports = (env, argv) => {
         IS_LOCAL: argv.is_local === 'true',
         BUILD_VERSION: JSON.stringify(process.env.BUILD_VERSION),
       }),
-      new CopyPlugin([
-        { from: './src/vendor/charting_library/', to: 'charting_library' },
-        { from: './src/apple-app-site-association', to: '' },
-        { from: './src/robots.txt', to: '' },
-      ]),
+      new CopyPlugin({
+        patterns: [
+          { from: './src/vendor/charting_library/', to: 'charting_library' },
+          { from: './src/apple-app-site-association', to: '' },
+          { from: './src/robots.txt', to: '' },
+        ],
+        options: {
+          concurrency: 100,
+        },
+      }),
     ],
   };
 };
