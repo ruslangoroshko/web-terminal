@@ -54,7 +54,7 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
           quotesStore.quotes[instrument.id].bid.c.toFixed(instrument.digits)
         );
       },
-      { delay: 200 }
+      { delay: 1000 }
     );
     return () => {
       disposer();

@@ -29,3 +29,15 @@
   --tv-color-toolbar-toggle-button-background-active: red;
   --tv-color-toolbar-toggle-button-background-active-hover: magenta;
 }
+
+html.theme-dark .chart-page .chart-container-border {
+  background-color: transparent;
+}
+
+html.theme-dark ::selection {
+  background: none;
+}
+
+.chart-page.unselectable.on-widget {
+  background: none;
+}
