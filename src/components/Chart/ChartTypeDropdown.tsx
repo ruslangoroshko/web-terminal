@@ -6,7 +6,7 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import SvgIcon from '../SvgIcon';
-import { SeriesStyle } from '../../vendor/charting_library/charting_library.min';
+import { SeriesStyle } from '../../vendor/charting_library/charting_library';
 import {
   getChartLabelByType,
   getChartIconByType,

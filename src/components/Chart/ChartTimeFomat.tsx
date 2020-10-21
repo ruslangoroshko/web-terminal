@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { TimeScaleItem } from './ChartTimeScale';
-import { IChartingLibraryWidget } from '../../vendor/charting_library/charting_library.min';
+import { IChartingLibraryWidget } from '../../vendor/charting_library/charting_library';
 import { useStores } from '../../hooks/useStores';
 
 const AUTO_SCALE = 'mainSeriesProperties.priceAxisProperties.autoScale';

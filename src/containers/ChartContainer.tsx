@@ -4,7 +4,8 @@ import {
   LanguageCode,
   widget,
   SeriesStyle,
-} from '../vendor/charting_library/charting_library.min';
+  ResolutionString,
+} from '../vendor/charting_library/charting_library';
 import { FlexContainer } from '../styles/FlexContainer';
 import DataFeedService from '../services/dataFeedService';
 import { LineStyles } from '../enums/TradingViewStyles';
@@ -40,11 +41,16 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         instrumentId,
         instruments
       ),
-      interval: supportedResolutions[BASIC_RESOLUTION_KEY],
+      theme: 'Dark',
+      loading_screen: {
+        backgroundColor: 'transparent',
+        foregroundColor: 'transparent'
+      },
+      interval: supportedResolutions[BASIC_RESOLUTION_KEY] as ResolutionString,
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
       locale: getLanguageFromURL() || 'en',
-      custom_css_url: 'custom_trading_view_styles.css',
+      custom_css_url: '../custom_trading_view_styles.css',
       disabled_features: [
         'header_widget',
         'timeframes_toolbar',
@@ -63,13 +69,13 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         'mainSeriesProperties.style': SeriesStyle.Area,
         'mainSeriesProperties.lineStyle.color': ColorsPallete.MINT,
         'mainSeriesProperties.lineStyle.linestyle': LineStyles.LINESTYLE_SOLID,
-        'mainSeriesProperties.lineStyle.linewidth': 3,
+        'mainSeriesProperties.lineStyle.linewidth': 2,
         'mainSeriesProperties.lineStyle.priceSource': 'close',
         'mainSeriesProperties.areaStyle.color1': 'rgba(0, 255, 221, 0.08)',
         'mainSeriesProperties.areaStyle.color2': 'rgba(0, 255, 221, 0.08)',
         'mainSeriesProperties.areaStyle.linecolor': ColorsPallete.MINT,
         'mainSeriesProperties.areaStyle.linestyle': LineStyles.LINESTYLE_SOLID,
-        'mainSeriesProperties.areaStyle.linewidth': 3,
+        'mainSeriesProperties.areaStyle.linewidth': 2,
         'mainSeriesProperties.candleStyle.upColor': '#21B3A4',
         'mainSeriesProperties.candleStyle.downColor': '#ed145b',
         'mainSeriesProperties.candleStyle.drawWick': true,
@@ -93,11 +99,9 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         'paneProperties.legendProperties.showSeriesOHLC': true,
         'paneProperties.legendProperties.showLegend': false,
         'paneProperties.legendProperties.showBarChange': false,
-        'paneProperties.legendProperties.showOnlyPriceSource': false,
         'linetoolnote.backgroundColor': ColorsPallete.RAZZMATAZZ,
         'scalesProperties.lineColor': 'transparent',
         'scalesProperties.textColor': 'rgba(255, 255, 255, 0.2)',
-        'scalesProperties.backgroundColor': 'transparent',
         'paneProperties.background': 'rgba(0,0,0,0)',
         'mainSeriesProperties.priceLineColor': '#fff',
         'mainSeriesProperties.priceLineWidth': 2,

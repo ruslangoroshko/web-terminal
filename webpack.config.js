@@ -72,6 +72,9 @@ module.exports = (env, argv) => {
           sourceMap: argv.mode !== 'production', // Must be set to true if using source-maps in production
         }),
       ],
+      splitChunks: {
+        chunks: 'all',
+      },
     },
     devtool: 'source-map',
     target: 'web',
