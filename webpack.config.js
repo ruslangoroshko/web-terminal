@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
+// TODO: update webpack
 module.exports = (env, argv) => {
   console.log(process.env);
   return {
