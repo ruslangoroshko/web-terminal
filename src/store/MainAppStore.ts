@@ -401,6 +401,8 @@ export class MainAppStore implements MainAppStoreProps {
   signOut = () => {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
     localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY);
+    this.isInitLoading = false;
+    this.isLoading = false;
     this.token = '';
     this.refreshToken = '';
     this.isAuthorized = false;

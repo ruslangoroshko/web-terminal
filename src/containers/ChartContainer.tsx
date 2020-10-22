@@ -15,7 +15,6 @@ import { supportedResolutions } from '../constants/supportedTimeScales';
 import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
 import { observer } from 'mobx-react-lite';
 import { IActiveInstrument } from '../types/InstrumentsTypes';
-import customTVCSS from '../styles/custom_trading_view_styles.css';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
