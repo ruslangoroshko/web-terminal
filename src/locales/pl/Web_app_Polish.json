@@ -10,6 +10,8 @@
     "Error message": "Błąd",
     "Stop loss level can not be lower than the Invest amount": "Poziom Stop Loss nie może być niższy kwoty inwestycji",
     "Invest": "Zakup",
+    "Invested": "Zainwestowany",
+    "Top Up": "Uzupełniać",
     "The amount you’d like to invest": "Kwota, którą chciałbyś zainwestować",
     "Multiplier": "Mnożnik",
     "The coefficient that multiplies the potential profit and level of risk accordingly the value of Multiplier.": "Współczynnik, który zwielokrotnia potencjalny zysk i poziom ryzyka odpowiednio do wartości Mnożnika.",

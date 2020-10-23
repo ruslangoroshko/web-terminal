@@ -27,7 +27,6 @@ interface Props {
 
 const AccountInfo: FC<Props> = observer((props) => {
   const { account, toggle } = props;
-
   const {
     quotesStore,
     mainAppStore,
@@ -63,126 +62,145 @@ const AccountInfo: FC<Props> = observer((props) => {
       flexDirection="column"
       isActive={isActiveAccount}
       padding="16px 44px 16px 16px"
-      width="390px"
+      width="736px"
       position="relative"
+      onClick={isActiveAccount ? toggle : handleSwitch}
     >
-      {isActiveAccount && (
-        <FlexContainer position="absolute" right="16px" top="16px">
-          <ButtonWithoutStyles onClick={toggle}>
-            <SvgIcon
-              {...IconClose}
-              fillColor="rgba(255,255,255, 0.4)"
-              hoverFillColor="#00FFDD"
-            />
-          </ButtonWithoutStyles>
-        </FlexContainer>
-      )}
       <FlexContainer justifyContent="space-between">
-        <FlexContainer>
-          <FlexContainer flexDirection="column">
-            <FlexContainer margin="0 0 4px 0">
+        <FlexContainer
+          alignItems={'flex-start'}
+        >
+          <FlexContainer
+            backgroundColor={isActiveAccount ? '#fffccc' : '#C4C4C4'}
+            alignItems="center"
+            justifyContent="center"
+            width={'40px'}
+            height={'40px'}
+            borderRadius={'50%'}
+            marginRight={'10px'}
+          >
+            <FlexContainer
+              width={'16px'}
+              height={'16px'}
+              borderRadius={'50%'}
+              backgroundColor={'#2A2D38'}
+              alignItems="center"
+              justifyContent="center"
+            >
               <PrimaryTextSpan
-                marginRight="8px"
-                fontSize="12px"
-                fontWeight="bold"
+                fontSize="14px"
+                color={isActiveAccount ? '#fffccc' : '#C4C4C4'}
               >
-                {account.id}, {account.currency}
+                {account.symbol}
+              </PrimaryTextSpan>
+            </FlexContainer>
+          </FlexContainer>
+          <FlexContainer flexDirection="column" marginRight={'45px'} width={'125px'}>
+            <FlexContainer>
+              <PrimaryTextSpan
+                fontSize={'16px'}
+                color={'#fffccc'}
+                marginRight="6px"
+              >
+                {account.symbol}
+                {isActiveAccount
+                  ? quotesStore.total.toFixed(2)
+                  : account.balance.toFixed(2)
+                }
               </PrimaryTextSpan>
               <FlexContainer
                 borderRadius="3px"
-                border={
-                  account.isLive
-                    ? '1px solid rgba(255, 255, 255, 0.4)'
-                    : '1px solid #EEFF00'
-                }
-                padding="0 4px"
+                backgroundColor={isActiveAccount ? '#FFFCCC' : 'rgba(196, 196, 196, 0.5)'}
+                padding="3px 10px"
+                alignItems="center"
+                justifyContent="center"
               >
                 <PrimaryTextSpan
-                  fontSize="12px"
-                  color={
-                    account.isLive ? 'rgba(255, 255, 255, 0.4)' : '#EEFF00'
-                  }
+                  fontSize="8px"
+                  color="1C1F26"
+                  textTransform="uppercase"
                 >
                   {account.isLive ? t('Real') : t('Demo')}
                 </PrimaryTextSpan>
               </FlexContainer>
             </FlexContainer>
-            <PrimaryTextSpan>
-              {account.symbol}
-              {account.balance.toFixed(2)}
+            <PrimaryTextSpan
+              fontSize="10px"
+              color="rgba(255, 255, 255, 0.4)"
+            >
+              {account.currency}
             </PrimaryTextSpan>
           </FlexContainer>
+          {isActiveAccount && <>
+            <FlexContainer
+              width="75px"
+              margin="0 22px 0 0"
+              flexDirection="column"
+            >
+              <PrimaryTextSpan
+                fontSize="16px"
+                color="#fffccc"
+                marginBottom="4px"
+              >
+                {account.symbol}
+                {quotesStore.invest.toFixed(2)}
+              </PrimaryTextSpan>
+              <PrimaryTextParagraph
+                fontSize="10px"
+                color="rgba(255, 255, 255, 0.4)"
+              >
+                {t('Invested')}
+              </PrimaryTextParagraph>
+            </FlexContainer>
+            <FlexContainer
+              width="84px"
+              margin="0 24px 0 0"
+              flexDirection="column"
+            >
+              <QuoteText
+                fontSize="16px"
+                isGrowth={profit >= 0}
+                marginBottom="4px"
+              >
+                {getNumberSign(profit)}
+                {account.symbol}
+                {Math.abs(profit).toFixed(2)}
+              </QuoteText>
+              <PrimaryTextParagraph
+                fontSize="10px"
+                color="rgba(255, 255, 255, 0.4)"
+              >
+                {t('Profit')}:
+              </PrimaryTextParagraph>
+            </FlexContainer>
+            <FlexContainer width="84px" flexDirection="column">
+              <PrimaryTextSpan
+                fontSize="16px"
+                color="#fffccc"
+                marginBottom="4px"
+              >
+                {account.symbol}
+                {account.balance.toFixed(2)}
+              </PrimaryTextSpan>
+              <PrimaryTextParagraph
+                fontSize="10px"
+                color="rgba(255, 255, 255, 0.4)"
+              >
+                {t('Total')}:
+              </PrimaryTextParagraph>
+            </FlexContainer>
+          </>}
         </FlexContainer>
-        {isActiveAccount ? (
-          <PrimaryButton
-            padding="8px 16px"
+        {account.isLive && (
+          <DepositButton
             onClick={depositFundsStore.togglePopup}
           >
-            <PrimaryTextSpan fontSize="12px" color="#003A38" fontWeight="bold">
-              {t('Deposit')}
+            <PrimaryTextSpan fontSize="14px" color="#fffccc" fontWeight="bold">
+              {t('Top Up')}
             </PrimaryTextSpan>
-          </PrimaryButton>
-        ) : (
-          <SwitchButton onClick={handleSwitch}>
-            <PrimaryTextSpan color="#fffccc" fontSize="14px">
-              {t('Switch')}
-            </PrimaryTextSpan>
-          </SwitchButton>
+          </DepositButton>
         )}
       </FlexContainer>
-      {isActiveAccount && (
-        <FlexContainer padding="0 0 0 44px">
-          <FlexContainer
-            width="60px"
-            margin="0 24px 0 0"
-            flexDirection="column"
-          >
-            <PrimaryTextParagraph
-              fontSize="12px"
-              marginBottom="4px"
-              color="rgba(255, 255, 255, 0.5)"
-            >
-              {t('Invest')}
-            </PrimaryTextParagraph>
-            <PrimaryTextSpan fontSize="12px" color="#fffccc">
-              {account.symbol}
-              {quotesStore.invest.toFixed(2)}
-            </PrimaryTextSpan>
-          </FlexContainer>
-          <FlexContainer
-            width="60px"
-            margin="0 24px 0 0"
-            flexDirection="column"
-          >
-            <PrimaryTextParagraph
-              fontSize="12px"
-              marginBottom="4px"
-              color="rgba(255, 255, 255, 0.5)"
-            >
-              {t('Profit')}:
-            </PrimaryTextParagraph>
-
-            <QuoteText fontSize="12px" isGrowth={profit >= 0}>
-              {getNumberSign(profit)}
-              {account.symbol}
-              {Math.abs(profit).toFixed(2)}
-            </QuoteText>
-          </FlexContainer>
-          <FlexContainer width="60px" flexDirection="column">
-            <PrimaryTextParagraph
-              fontSize="12px"
-              marginBottom="4px"
-              color="rgba(255, 255, 255, 0.5)"
-            >
-              {t('Total')}:
-            </PrimaryTextParagraph>
-            <PrimaryTextSpan fontSize="12px" color="#fffccc">
-              {account.symbol}
-              {quotesStore.total.toFixed(2)}
-            </PrimaryTextSpan>
-          </FlexContainer>
-        </FlexContainer>
-      )}
     </AccountWrapper>
   );
 });
@@ -192,19 +210,33 @@ export default AccountInfo;
 const AccountWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
   background: ${(props) =>
     props.isActive
-      ? `radial-gradient(92.11% 100% at 0% 0%, rgba(255, 252, 204, 0.08) 0%, rgba(255, 252, 204, 0) 100%), rgba(255, 255, 255, 0.04)`
-      : '#1C2026'};
+      ? '#292C33'
+      : '#1C1F26'};
+  
+  height: 88px;
+  padding: 24px 16px 24px 34px;
+  cursor: pointer;
+  position: relative;
 
-  border-bottom: ${(props) =>
-    props.isActive ? 'none' : '1px solid rgba(255, 255, 255, 0.16)'};
-
-  &:last-of-type {
-    border-bottom: none;
+  &:before {
+    content: '';
+    background: ${(props) =>
+      props.isActive
+        ? '#00FFDD'
+        : '#1C1F26'};
+    position: absolute;
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    left: 12px;
+    top: 40px;
   }
 `;
 
-const DepositButton = styled(PrimaryButton)`
+const DepositButton = styled(SecondaryButton)`
   padding: 8px 16px;
+  width: 144px;
+  height: 40px;
 `;
 
 const SwitchButton = styled(SecondaryButton)`

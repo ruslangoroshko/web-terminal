@@ -10,6 +10,8 @@
     "Error message": "Error message",
     "Stop loss level can not be lower than the Invest amount": "Stop loss level can not be lower than the Invest amount",
     "Invest": "Invest",
+    "Invested": "Invested",
+    "Top Up": "Top Up",
     "The amount you’d like to invest": "The amount you’d like to invest",
     "Multiplier": "Multiplier",
     "The coefficient that multiplies the potential profit and level of risk accordingly the value of Multiplier.": "The coefficient that multiplies the potential profit and level of risk accordingly the value of Multiplier.",
