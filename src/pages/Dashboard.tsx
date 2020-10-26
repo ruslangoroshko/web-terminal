@@ -32,6 +32,7 @@ import Helmet from 'react-helmet';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import ShouldValidatePhonePopup from '../components/ShouldValidatePhonePopup';
+import ConfirmPopup from '../components/ConfirmPopup';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -93,7 +94,7 @@ const Dashboard: FC = observer(() => {
         (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
           if (response.accountId === mainAppStore.activeAccount?.id) {
             quotesStore.setActivePositions(
-              quotesStore.activePositions.map(item =>
+              quotesStore.activePositions.map((item) =>
                 item.id === response.data.id ? response.data : item
               )
             );
@@ -105,7 +106,7 @@ const Dashboard: FC = observer(() => {
         Topics.UPDATE_PENDING_ORDER,
         (response: ResponseFromWebsocket<PendingOrderWSDTO>) => {
           if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.pendingOrders = quotesStore.pendingOrders.map(item =>
+            quotesStore.pendingOrders = quotesStore.pendingOrders.map((item) =>
               item.id === response.data.id ? response.data : item
             );
           }
@@ -152,6 +153,21 @@ const Dashboard: FC = observer(() => {
           <>
             {phoneVerificationStore.shouldValidatePhone && (
               <ShouldValidatePhonePopup></ShouldValidatePhonePopup>
+            )}
+          </>
+        )}
+      </Observer>
+      <Observer>
+        {() => (
+          <>
+            {quotesStore.activePositionPopup && (
+              <ClosePopupWrapper>
+                <ConfirmPopup
+                  toggle={quotesStore.toggleActivePositionPopup}
+                  applyHandler={quotesStore.applyHandler}
+                  confirmText={t('Close position?')}
+                ></ConfirmPopup>
+              </ClosePopupWrapper>
             )}
           </>
         )}
@@ -271,18 +287,6 @@ const AddIntrumentButton = styled(ButtonWithoutStyles)`
   }
 `;
 
-const GridWrapper = styled.div`
-  display: grid;
-  border-collapse: collapse;
-  grid-template-columns: 1fr 172px;
-  grid-template-rows: 1fr 32px;
-  width: 100%;
-  height: 100%;
-  max-height: calc(100% - 131px);
-  grid-row-gap: 0;
-  grid-column-gap: 1px;
-`;
-
 const ChartWrapper = styled(FlexContainer)`
   grid-row: 1 / span 1;
   grid-column: 1 / span 1;
@@ -291,4 +295,11 @@ const ChartWrapper = styled(FlexContainer)`
 const ChartInstruments = styled(FlexContainer)`
   grid-row: 2 / span 1;
   grid-column: 1 / span 1;
+`;
+
+const ClosePopupWrapper = styled(FlexContainer)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
