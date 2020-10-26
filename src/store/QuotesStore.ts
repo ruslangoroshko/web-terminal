@@ -7,6 +7,7 @@ import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { RootStore } from './RootStore';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
+import { IPositionLineAdapter } from '../vendor/charting_library/charting_library';
 
 interface IQuotesStore {
   quotes: BidAskKeyValueList;
@@ -16,17 +17,36 @@ interface IQuotesStore {
   totalEquity: number;
   profit: number;
   pendingOrders: PendingOrderWSDTO[];
+  activePositionPopup: boolean;
 }
 
 export class QuotesStore implements IQuotesStore {
   @observable quotes: BidAskKeyValueList = {};
   @observable activePositions: PositionModelWSDTO[] = [];
+  @observable activePositionPopup: boolean = false;
   @observable pendingOrders: PendingOrderWSDTO[] = [];
+  @observable applyHandler: any;
   rootStore: RootStore;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
   }
+
+  @action
+  toggleActivePositionPopup = (flag: boolean) => {
+    this.activePositionPopup = flag;
+  };
+
+  @action
+  setApplyHandler = (
+    applyHandler: () => Promise<void>,
+    orderPosition: IPositionLineAdapter
+  ) => {
+    this.applyHandler = () =>
+      applyHandler().then(() => {
+        orderPosition.remove();
+      });
+  };
 
   @action
   setQuote = (quote: BidAskModelWSDTO) => {

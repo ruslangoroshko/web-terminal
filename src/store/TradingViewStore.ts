@@ -1,10 +1,15 @@
 import { observable } from 'mobx';
-import { IChartingLibraryWidget } from '../vendor/charting_library/charting_library';
+import {
+  IChartingLibraryWidget,
+  IPositionLineAdapter,
+} from '../vendor/charting_library/charting_library';
 
 interface ContextProps {
   tradingWidget?: IChartingLibraryWidget;
+  activeOrderLinePosition?: IPositionLineAdapter;
 }
 
 export class TradingViewStore implements ContextProps {
   @observable tradingWidget?: IChartingLibraryWidget;
+  @observable activeOrderLinePosition?: IPositionLineAdapter;
 }
