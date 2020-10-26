@@ -343,7 +343,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           .setLineLength(10);
       }
     },
-    [position, tradingViewStore.tradingWidget]
+    [position, tradingViewStore.tradingWidget, instrumentsStore.instruments]
   );
 
   const handleApply = useCallback(async () => {
