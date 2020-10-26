@@ -157,21 +157,7 @@ const Dashboard: FC = observer(() => {
           </>
         )}
       </Observer>
-      <Observer>
-        {() => (
-          <>
-            {quotesStore.activePositionPopup && (
-              <ClosePopupWrapper>
-                <ConfirmPopup
-                  toggle={quotesStore.toggleActivePositionPopup}
-                  applyHandler={quotesStore.applyHandler}
-                  confirmText={t('Close position?')}
-                ></ConfirmPopup>
-              </ClosePopupWrapper>
-            )}
-          </>
-        )}
-      </Observer>
+
       <Observer>
         {() => (
           <>{mainAppStore.isDemoRealPopup && <DemoRealPopup></DemoRealPopup>}</>
@@ -244,7 +230,17 @@ const Dashboard: FC = observer(() => {
                       height="100%"
                       maxHeight="calc(100vh - 200px)"
                       minHeight="445px"
+                      position="relative"
                     >
+                      {quotesStore.activePositionPopup && (
+                        <ClosePopupWrapper>
+                          <ConfirmPopup
+                            toggle={quotesStore.toggleActivePositionPopup}
+                            applyHandler={quotesStore.applyHandler}
+                            confirmText={t('Close position?')}
+                          ></ConfirmPopup>
+                        </ClosePopupWrapper>
+                      )}
                       <TVChartContainer
                         instrumentId={
                           instrumentsStore.activeInstrument.instrumentItem.id
