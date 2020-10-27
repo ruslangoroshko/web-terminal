@@ -321,5 +321,7 @@
     "Set Autoclose": "Ustaw autozamykanie",
     "The order has been closed successfully": "Zamówienie zostało pomyślnie zamknięte",
     "You exceed the maximum amount for orders": "Przekraczasz maksymalną kwotę dla zamówień",
-    "Access token is expired": "Token dostępu wygasł"
+    "Access token is expired": "Token dostępu wygasł",
+    "Not Verified": "Nie zweryfikowany",
+    "Account Settings": "Ustawienia konta"
 }

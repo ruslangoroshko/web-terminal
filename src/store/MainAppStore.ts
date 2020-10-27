@@ -92,6 +92,8 @@ export class MainAppStore implements MainAppStoreProps {
   @observable tradingUrl = '';
   @observable isInterceptorsInjected = false;
   @observable profilePhone = '';
+  @observable profileName = '';
+  @observable profileEmail = '';
   @observable lang = CountriesEnum.EN;
   @observable token = '';
   @observable refreshToken = '';

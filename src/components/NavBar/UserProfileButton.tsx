@@ -1,8 +1,10 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import SvgIcon from '../SvgIcon';
+import { PrimaryTextSpan } from '../../styles/TextsElements';
 import IconUser from '../../assets/svg/icon-navbar-user.svg';
+import IconStatus from '../../assets/svg/icon-profile-status.svg';
 import IconUserNotification from '../../assets/svg_no_compress/icon-profile-notifications.svg';
 import ProfileDropdown from '../ProfileDropdown';
 import { useStores } from '../../hooks/useStores';
@@ -13,6 +15,9 @@ import { Observer } from 'mobx-react-lite';
 import mixpanel from 'mixpanel-browser';
 import KYCStatus from '../../constants/KYCStatus';
 import mixapanelProps from '../../constants/mixpanelProps';
+import IconShevron from '../../assets/svg/icon-shevron-down.svg';
+import AchievementStatus from '../../constants/achievementStatus';
+import ColorsPallete from '../../styles/colorPallete';
 
 function UserProfileButton() {
   const { mainAppStore, phoneVerificationStore } = useStores();
@@ -27,6 +32,20 @@ function UserProfileButton() {
       toggle(false);
     }
   };
+
+  const getBackgroundColor = useCallback((type: string) => {
+    const key = mainAppStore.activeAccount?.achievementStatus;
+    switch (key) {
+      case AchievementStatus.SILVER:
+        return type === 'background' ? ColorsPallete.BACKGROUND_SILVER : ColorsPallete.STAR_OTHER;
+      case AchievementStatus.GOLD:
+        return type === 'background' ? ColorsPallete.BACKGROUND_GOLD : ColorsPallete.STAR_OTHER;
+      case AchievementStatus.PLATINUM:
+        return type === 'background' ? ColorsPallete.BACKGROUND_PLATINUM : ColorsPallete.STAR_OTHER;
+      default:
+        return type === 'background' ? ColorsPallete.BACKGROUND_BASIC : ColorsPallete.STAR_BASIC;
+    }
+  }, [mainAppStore.accounts]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -69,6 +88,9 @@ function UserProfileButton() {
         mainAppStore.setSignUpFlag(false);
         mainAppStore.profileStatus = response.data.kyc;
         mainAppStore.profilePhone = response.data.phone || '';
+        mainAppStore.profileName = (!!response.data.firstName && !!response.data.lastName)
+          ? `${response.data.firstName} ${response.data.firstName}` : '';
+        mainAppStore.profileEmail = response.data.email || '';
       } catch (error) {}
     }
     fetchPersonalData();
@@ -87,18 +109,66 @@ function UserProfileButton() {
     >
       <Observer>
         {() => (
-          <>
-            {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified ? (
-              <SvgIcon {...IconUserNotification} />
-            ) : (
-              <SvgIcon {...IconUser} fillColor="#FFFFFF" />
-            )}
-          </>
+          <FlexContainer
+            alignItems={'center'}
+          >
+            <FlexContainer
+              background={getBackgroundColor('background')}
+              width={'25px'}
+              height={'25px'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              marginRight={'8px'}
+              borderRadius={'50%'}
+              position={'relative'}
+            >
+              <SvgIcon
+                {...IconStatus}
+                fillColor={getBackgroundColor('star')}
+                width={13}
+                height={13}
+              />
+              {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified
+                && <FlexContainer
+                  backgroundColor={ColorsPallete.RAZZMATAZZ}
+                  height={'10px'}
+                  width={'10px'}
+                  position={'absolute'}
+                  top={'0'}
+                  right={'0'}
+                  borderRadius={'50%'}
+                  border={'2px solid #1C2026'}
+                >
+
+                </FlexContainer>
+              }
+            </FlexContainer>
+            <PrimaryTextSpan
+              fontSize={'12px'}
+              color={'#ffffff'}
+              marginRight={'10px'}
+            >
+              Profile
+            </PrimaryTextSpan>
+            <FlexContainer
+              justifyContent="center"
+              alignItems="center"
+              padding="6px"
+            >
+              <SvgIcon
+                {...IconShevron}
+                fillColor="rgba(255, 255, 255, 0.6)"
+                width={6}
+                height={4}
+                transformProp={on ? 'rotate(180deg)' : ''}
+              />
+            </FlexContainer>
+          </FlexContainer>
         )}
       </Observer>
 
       {on && (
-        <FlexContainer position="absolute" top="100%" right="100%" zIndex="201">
+        <FlexContainer position="absolute" top="160%" right="0" zIndex="201">
           <ProfileDropdown></ProfileDropdown>
         </FlexContainer>
       )}

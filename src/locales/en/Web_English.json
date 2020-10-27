@@ -338,5 +338,7 @@
     "Min deposit amount exceeded": "Min deposit amount exceeded",
     "Payment failed": "Payment failed",
     "Server error": "Server error",
-    "Unsupported card type": "Unsupported card type"
+    "Unsupported card type": "Unsupported card type",
+    "Not Verified": "Not Verified",
+    "Account Settings": "Account Settings"
 }
