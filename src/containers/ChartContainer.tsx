@@ -105,6 +105,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         'paneProperties.background': 'rgba(0,0,0,0)',
         'mainSeriesProperties.priceLineColor': '#fff',
         'mainSeriesProperties.priceLineWidth': 2,
+        'scalesProperties.showSeriesLastValue': true,
         'timeScale.rightOffset': 5,
       },
     };

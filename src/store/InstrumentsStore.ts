@@ -163,6 +163,10 @@ export class InstrumentsStore implements ContextProps {
   @action
   switchInstrument = async (instrumentId: string) =>
     new Promise((resolve, reject) => {
+      if (this.activeInstrument?.instrumentItem.id === instrumentId) {
+        resolve();
+        return;
+      }
       const newActiveInstrument =
         this.instruments.find(
           (item) => item.instrumentItem.id === instrumentId

@@ -43,6 +43,7 @@ const Dashboard: FC = observer(() => {
     instrumentsStore,
     notificationStore,
     phoneVerificationStore,
+    tradingViewStore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -232,11 +233,11 @@ const Dashboard: FC = observer(() => {
                       minHeight="445px"
                       position="relative"
                     >
-                      {quotesStore.activePositionPopup && (
+                      {tradingViewStore.activePositionPopup && (
                         <ClosePopupWrapper>
                           <ConfirmPopup
-                            toggle={quotesStore.toggleActivePositionPopup}
-                            applyHandler={quotesStore.applyHandler}
+                            toggle={tradingViewStore.toggleActivePositionPopup}
+                            applyHandler={tradingViewStore.applyHandler}
                             confirmText={t('Close position?')}
                           ></ConfirmPopup>
                         </ClosePopupWrapper>

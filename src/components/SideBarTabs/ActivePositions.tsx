@@ -312,7 +312,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       } else {
         try {
           await instrumentsStore.switchInstrument(position.instrument);
-          tradingViewStore.activeOrderLinePosition?.remove();
+          tradingViewStore.clearActivePositionLine();
           tradingViewStore.selectedPosition = position;
           tradingViewStore.activeOrderLinePosition = tradingViewStore.tradingWidget
             ?.chart()
@@ -320,9 +320,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               disableUndo: true,
             })
             .onClose(function (this: IPositionLineAdapter) {
-              quotesStore.setApplyHandler(closePosition, this);
-              quotesStore.toggleActivePositionPopup(true);
+              tradingViewStore.setApplyHandler(closePosition);
+              tradingViewStore.toggleActivePositionPopup(true);
             })
+            .setLineStyle(1)
+            .setLineWidth(2)
             .setText(`${PnL()}`)
             .setQuantity(`$${position.investmentAmount}`)
             .setPrice(+position.openPrice)
@@ -338,10 +340,18 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             .setQuantityTextColor('#2a2b36')
             .setLineColor(positionColor)
             .setLineLength(10);
-        } catch (error) {}
+        } catch (error) {
+          console.log(error);
+        }
       }
     },
-    [position, tradingViewStore.tradingWidget, instrumentsStore.instruments]
+    [
+      position,
+      tradingViewStore.tradingWidget,
+      instrumentsStore.instruments,
+      tradingViewStore.activeOrderLinePosition,
+      tradingViewStore.selectedPosition,
+    ]
   );
 
   const handleApply = useCallback(async () => {
@@ -387,6 +397,44 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       (item) => item.instrumentItem.id === position.instrument
     )?.instrumentItem;
   }, [position]);
+
+  useEffect(() => {
+    const disposer = autorun(
+      () => {
+        if (
+          tradingViewStore.activeOrderLinePosition &&
+          instrumentsStore.activeInstrument &&
+          tradingViewStore.selectedPosition &&
+          tradingViewStore.selectedPosition.id === position.id
+        ) {
+          tradingViewStore.tradingWidget?.applyOverrides({
+            'scalesProperties.showSeriesLastValue': false,
+            'mainSeriesProperties.showPriceLine': false,
+          });
+
+          tradingViewStore.activeOrderLinePosition
+            .setPrice(
+              quotesStore.quotes[
+                instrumentsStore.activeInstrument.instrumentItem.id
+              ].bid.c
+            )
+            .setText(`$${PnL()}`)
+            .setBodyTextColor(PnL() > 0 ? '#3BFF8A' : '#FF557E');
+        } 
+      },
+      { delay: 100 }
+    );
+    return () => {
+      disposer();
+      tradingViewStore.tradingWidget?.applyOverrides({
+        'scalesProperties.showSeriesLastValue': true,
+        'mainSeriesProperties.showPriceLine': true,
+      });
+      if (tradingViewStore.activeOrderLinePosition) {
+        tradingViewStore.clearActivePositionLine();
+      }
+    };
+  }, []);
 
   return (
     <InstrumentInfoWrapper
