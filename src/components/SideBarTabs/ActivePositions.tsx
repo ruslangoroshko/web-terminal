@@ -34,6 +34,7 @@ import EquityPnL from './EquityPnL';
 import ActivePositionPnL from './ActivePositionPnL';
 import ActivePositionPnLPercent from './ActivePositionPnLPercent';
 import { IPositionLineAdapter } from '../../vendor/charting_library/charting_library';
+import { autorun } from 'mobx';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -300,7 +301,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   });
 
   const setInstrumentActive = useCallback(
-    (e: any) => {
+    async (e: any) => {
       if (
         (clickableWrapper.current &&
           clickableWrapper.current.contains(e.target)) ||
@@ -309,38 +310,35 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       ) {
         e.preventDefault();
       } else {
-        instrumentsStore.switchInstrument(position.instrument);
-        tradingViewStore.activeOrderLinePosition?.remove();
-        tradingViewStore.activeOrderLinePosition = tradingViewStore.tradingWidget
-          ?.chart()
-          .createPositionLine({
-            disableUndo: true,
-          })
-          .onClose(function (this: IPositionLineAdapter) {
-            quotesStore.setApplyHandler(closePosition, this);
-            quotesStore.toggleActivePositionPopup(true);
-          })
-          .setText(`${PnL()}`)
-          .setQuantity(`$${position.investmentAmount}`)
-          .setPrice(
-            +position.openPrice.toFixed(
-              instrumentsStore.instruments.find(
-                (item) => item.instrumentItem.id === position.instrument
-              )?.instrumentItem.digits || 0
-            )
-          )
-          .setLineStyle(0)
-          .setBodyBorderColor(positionColor)
-          .setBodyTextColor(positionColor)
-          .setBodyBackgroundColor('rgb(41 42 54 / 0.8)')
-          .setCloseButtonBackgroundColor('rgb(41 42 54 / 0.8)')
-          .setCloseButtonBorderColor(positionColor)
-          .setCloseButtonIconColor(positionColor)
-          .setQuantityBorderColor(positionColor)
-          .setQuantityBackgroundColor(positionColor)
-          .setQuantityTextColor('#2a2b36')
-          .setLineColor(positionColor)
-          .setLineLength(10);
+        try {
+          await instrumentsStore.switchInstrument(position.instrument);
+          tradingViewStore.activeOrderLinePosition?.remove();
+          tradingViewStore.selectedPosition = position;
+          tradingViewStore.activeOrderLinePosition = tradingViewStore.tradingWidget
+            ?.chart()
+            .createPositionLine({
+              disableUndo: true,
+            })
+            .onClose(function (this: IPositionLineAdapter) {
+              quotesStore.setApplyHandler(closePosition, this);
+              quotesStore.toggleActivePositionPopup(true);
+            })
+            .setText(`${PnL()}`)
+            .setQuantity(`$${position.investmentAmount}`)
+            .setPrice(+position.openPrice)
+            .setLineStyle(0)
+            .setBodyBorderColor(positionColor)
+            .setBodyTextColor(PnL() > 0 ? '#3BFF8A' : '#FF557E')
+            .setBodyBackgroundColor('rgb(41 42 54 / 0.8)')
+            .setCloseButtonBackgroundColor('rgb(41 42 54 / 0.8)')
+            .setCloseButtonBorderColor(positionColor)
+            .setCloseButtonIconColor(positionColor)
+            .setQuantityBorderColor(positionColor)
+            .setQuantityBackgroundColor(positionColor)
+            .setQuantityTextColor('#2a2b36')
+            .setLineColor(positionColor)
+            .setLineLength(10);
+        } catch (error) {}
       }
     },
     [position, tradingViewStore.tradingWidget, instrumentsStore.instruments]

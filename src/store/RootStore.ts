@@ -42,7 +42,7 @@ export class RootStore {
     this.mainAppStore = new MainAppStore(this);
     this.SLTPStore = new SLTPStore();
     this.tabsStore = new TabsStore();
-    this.tradingViewStore = new TradingViewStore();
+    this.tradingViewStore = new TradingViewStore(this);
     this.instrumentsStore = new InstrumentsStore(this);
     this.dateRangeStore = new DateRangeStore();
     this.dateRangeAccountBalanceStore = new DateRangeAccountBalanceStore();

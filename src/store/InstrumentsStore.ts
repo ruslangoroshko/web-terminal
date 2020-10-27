@@ -161,37 +161,41 @@ export class InstrumentsStore implements ContextProps {
 
   // TODO: refactor, too heavy
   @action
-  switchInstrument = async (instrumentId: string) => {
-    const newActiveInstrument =
-      this.instruments.find(
-        (item) => item.instrumentItem.id === instrumentId
-      ) || this.instruments[0];
-    if (newActiveInstrument) {
-      this.addActiveInstrumentId(instrumentId);
-      this.activeInstrument = newActiveInstrument;
-      const tvWidget = this.rootStore.tradingViewStore.tradingWidget?.chart();
-      if (tvWidget) {
-        tvWidget.setSymbol(instrumentId, () => {
-          tvWidget.setResolution(
-            supportedResolutions[
-              newActiveInstrument.resolution
-            ] as ResolutionString,
-            () => {
-              if (newActiveInstrument.interval) {
-                const fromTo = {
-                  from: getIntervalByKey(newActiveInstrument.interval),
-                  to: moment().valueOf(),
-                };
-                tvWidget.setVisibleRange(fromTo);
+  switchInstrument = async (instrumentId: string) =>
+    new Promise((resolve, reject) => {
+      const newActiveInstrument =
+        this.instruments.find(
+          (item) => item.instrumentItem.id === instrumentId
+        ) || this.instruments[0];
+      if (newActiveInstrument) {
+        this.addActiveInstrumentId(instrumentId);
+        this.activeInstrument = newActiveInstrument;
+        const tvWidget = this.rootStore.tradingViewStore.tradingWidget?.chart();
+        if (tvWidget) {
+          tvWidget.setSymbol(instrumentId, () => {
+            tvWidget.setResolution(
+              supportedResolutions[
+                newActiveInstrument.resolution
+              ] as ResolutionString,
+              () => {
+                if (newActiveInstrument.interval) {
+                  const fromTo = {
+                    from: getIntervalByKey(newActiveInstrument.interval),
+                    to: moment().valueOf(),
+                  };
+                  tvWidget.setVisibleRange(fromTo);
+                }
               }
-            }
-          );
-          tvWidget.setChartType(newActiveInstrument.chartType);
-        });
-        this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
+            );
+            tvWidget.setChartType(newActiveInstrument.chartType);
+            resolve();
+          });
+          this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
+        } else {
+          reject();
+        }
       }
-    }
-  };
+    });
 
   @action
   setPricesChanges = (prices: PriceChangeWSDTO[]) => {
