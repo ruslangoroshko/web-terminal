@@ -13,7 +13,7 @@ const PortfolioTotalProfit = () => {
       () => quotesStore.profit,
       (newProfit) => setProfit(newProfit),
       {
-        delay: 2000,
+        delay: 1000,
       }
     );
     return dispose;

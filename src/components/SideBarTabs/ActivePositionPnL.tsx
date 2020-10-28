@@ -53,7 +53,7 @@ const ActivePositionPnL: FC<Props> = ({ position }) => {
         () => {
           workCallback(quotesStore.quotes[position.instrument], canRenderFlag);
         },
-        { delay: 2000 }
+        { delay: 1000 }
       ),
     [canRenderFlag]
   );

@@ -61,7 +61,7 @@ function ChartTimeFomat() {
         tradingViewStore.tradingWidget?.applyOverrides(axisProps);
       }
     });
-  }, []);
+  }, [tradingViewStore.tradingWidget]);
   return (
     <FlexContainer padding="2px" alignItems="center">
       <TimeScaleItem

@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import {
@@ -9,16 +9,14 @@ import {
 import { AccountModelWebSocketDTO } from '../../types/AccountsTypes';
 import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
-import { PrimaryButton, SecondaryButton } from '../../styles/Buttons';
+import { SecondaryButton } from '../../styles/Buttons';
 import { getNumberSign } from '../../helpers/getNumberSign';
-import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import SvgIcon from '../SvgIcon';
-import IconClose from '../../assets/svg/icon-close.svg';
 import Topics from '../../constants/websocketTopics';
 import Fields from '../../constants/fields';
 import { useHistory } from 'react-router-dom';
 import Page from '../../constants/Pages';
 import { useTranslation } from 'react-i18next';
+import { autorun } from 'mobx';
 
 interface Props {
   account: AccountModelWebSocketDTO;
@@ -35,6 +33,8 @@ const AccountInfo: FC<Props> = observer((props) => {
     depositFundsStore,
   } = useStores();
   const { push } = useHistory();
+
+  const [profit, setProfit] = useState(quotesStore.profit);
 
   const { t } = useTranslation();
 
@@ -55,7 +55,17 @@ const AccountInfo: FC<Props> = observer((props) => {
     push(Page.DASHBOARD);
   };
 
-  const profit = useMemo(() => quotesStore.profit, [quotesStore.profit]);
+  useEffect(() => {
+    const disposer = autorun(
+      () => {
+        setProfit(quotesStore.profit);
+      },
+      { delay: 1000 }
+    );
+    return () => {
+      disposer();
+    };
+  }, []);
 
   return (
     <AccountWrapper
@@ -67,9 +77,7 @@ const AccountInfo: FC<Props> = observer((props) => {
       onClick={isActiveAccount ? toggle : handleSwitch}
     >
       <FlexContainer justifyContent="space-between">
-        <FlexContainer
-          alignItems={'flex-start'}
-        >
+        <FlexContainer alignItems={'flex-start'}>
           <FlexContainer
             backgroundColor={isActiveAccount ? '#fffccc' : '#C4C4C4'}
             alignItems="center"
@@ -95,7 +103,11 @@ const AccountInfo: FC<Props> = observer((props) => {
               </PrimaryTextSpan>
             </FlexContainer>
           </FlexContainer>
-          <FlexContainer flexDirection="column" marginRight={'45px'} width={'125px'}>
+          <FlexContainer
+            flexDirection="column"
+            marginRight={'45px'}
+            width={'125px'}
+          >
             <FlexContainer>
               <PrimaryTextSpan
                 fontSize={'16px'}
@@ -105,12 +117,13 @@ const AccountInfo: FC<Props> = observer((props) => {
                 {account.symbol}
                 {isActiveAccount
                   ? quotesStore.total.toFixed(2)
-                  : account.balance.toFixed(2)
-                }
+                  : account.balance.toFixed(2)}
               </PrimaryTextSpan>
               <FlexContainer
                 borderRadius="3px"
-                backgroundColor={isActiveAccount ? '#FFFCCC' : 'rgba(196, 196, 196, 0.5)'}
+                backgroundColor={
+                  isActiveAccount ? '#FFFCCC' : 'rgba(196, 196, 196, 0.5)'
+                }
                 padding="3px 10px"
                 alignItems="center"
                 justifyContent="center"
@@ -124,77 +137,74 @@ const AccountInfo: FC<Props> = observer((props) => {
                 </PrimaryTextSpan>
               </FlexContainer>
             </FlexContainer>
-            <PrimaryTextSpan
-              fontSize="10px"
-              color="rgba(255, 255, 255, 0.4)"
-            >
+            <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
               {account.currency}
             </PrimaryTextSpan>
           </FlexContainer>
-          {isActiveAccount && <>
-            <FlexContainer
-              width="75px"
-              margin="0 22px 0 0"
-              flexDirection="column"
-            >
-              <PrimaryTextSpan
-                fontSize="16px"
-                color="#fffccc"
-                marginBottom="4px"
+          {isActiveAccount && (
+            <>
+              <FlexContainer
+                width="75px"
+                margin="0 22px 0 0"
+                flexDirection="column"
               >
-                {account.symbol}
-                {quotesStore.invest.toFixed(2)}
-              </PrimaryTextSpan>
-              <PrimaryTextParagraph
-                fontSize="10px"
-                color="rgba(255, 255, 255, 0.4)"
+                <PrimaryTextSpan
+                  fontSize="16px"
+                  color="#fffccc"
+                  marginBottom="4px"
+                >
+                  {account.symbol}
+                  {quotesStore.invest.toFixed(2)}
+                </PrimaryTextSpan>
+                <PrimaryTextParagraph
+                  fontSize="10px"
+                  color="rgba(255, 255, 255, 0.4)"
+                >
+                  {t('Invested')}
+                </PrimaryTextParagraph>
+              </FlexContainer>
+              <FlexContainer
+                width="84px"
+                margin="0 24px 0 0"
+                flexDirection="column"
               >
-                {t('Invested')}
-              </PrimaryTextParagraph>
-            </FlexContainer>
-            <FlexContainer
-              width="84px"
-              margin="0 24px 0 0"
-              flexDirection="column"
-            >
-              <QuoteText
-                fontSize="16px"
-                isGrowth={profit >= 0}
-                marginBottom="4px"
-              >
-                {getNumberSign(profit)}
-                {account.symbol}
-                {Math.abs(profit).toFixed(2)}
-              </QuoteText>
-              <PrimaryTextParagraph
-                fontSize="10px"
-                color="rgba(255, 255, 255, 0.4)"
-              >
-                {t('Profit')}:
-              </PrimaryTextParagraph>
-            </FlexContainer>
-            <FlexContainer width="84px" flexDirection="column">
-              <PrimaryTextSpan
-                fontSize="16px"
-                color="#fffccc"
-                marginBottom="4px"
-              >
-                {account.symbol}
-                {account.balance.toFixed(2)}
-              </PrimaryTextSpan>
-              <PrimaryTextParagraph
-                fontSize="10px"
-                color="rgba(255, 255, 255, 0.4)"
-              >
-                {t('Available')}:
-              </PrimaryTextParagraph>
-            </FlexContainer>
-          </>}
+                <QuoteText
+                  fontSize="16px"
+                  isGrowth={profit >= 0}
+                  marginBottom="4px"
+                >
+                  {getNumberSign(profit)}
+                  {account.symbol}
+                  {Math.abs(profit).toFixed(2)}
+                </QuoteText>
+                <PrimaryTextParagraph
+                  fontSize="10px"
+                  color="rgba(255, 255, 255, 0.4)"
+                >
+                  {t('Profit')}:
+                </PrimaryTextParagraph>
+              </FlexContainer>
+              <FlexContainer width="84px" flexDirection="column">
+                <PrimaryTextSpan
+                  fontSize="16px"
+                  color="#fffccc"
+                  marginBottom="4px"
+                >
+                  {account.symbol}
+                  {account.balance.toFixed(2)}
+                </PrimaryTextSpan>
+                <PrimaryTextParagraph
+                  fontSize="10px"
+                  color="rgba(255, 255, 255, 0.4)"
+                >
+                  {t('Available')}:
+                </PrimaryTextParagraph>
+              </FlexContainer>
+            </>
+          )}
         </FlexContainer>
         {account.isLive && (
-          <DepositButton
-            onClick={depositFundsStore.togglePopup}
-          >
+          <DepositButton onClick={depositFundsStore.togglePopup}>
             <PrimaryTextSpan fontSize="14px" color="#fffccc" fontWeight="bold">
               {t('Top Up')}
             </PrimaryTextSpan>
@@ -208,11 +218,8 @@ const AccountInfo: FC<Props> = observer((props) => {
 export default AccountInfo;
 
 const AccountWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
-  background: ${(props) =>
-    props.isActive
-      ? '#292C33'
-      : '#1C1F26'};
-  
+  background: ${(props) => (props.isActive ? '#292C33' : '#1C1F26')};
+
   height: 88px;
   padding: 24px 16px 24px 34px;
   cursor: pointer;
@@ -220,10 +227,7 @@ const AccountWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
 
   &:before {
     content: '';
-    background: ${(props) =>
-      props.isActive
-        ? '#00FFDD'
-        : '#1C1F26'};
+    background: ${(props) => (props.isActive ? '#00FFDD' : '#1C1F26')};
     position: absolute;
     border-radius: 50%;
     width: 8px;
@@ -237,8 +241,4 @@ const DepositButton = styled(SecondaryButton)`
   padding: 8px 16px;
   width: 144px;
   height: 40px;
-`;
-
-const SwitchButton = styled(SecondaryButton)`
-  padding: 6px 16px;
 `;
