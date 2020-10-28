@@ -186,7 +186,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                 fontSize="10px"
                 color="rgba(255, 255, 255, 0.4)"
               >
-                {t('Total')}:
+                {t('Available')}:
               </PrimaryTextParagraph>
             </FlexContainer>
           </>}
