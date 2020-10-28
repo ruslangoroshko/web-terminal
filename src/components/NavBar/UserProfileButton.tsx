@@ -45,7 +45,7 @@ function UserProfileButton() {
       default:
         return type === 'background' ? ColorsPallete.BACKGROUND_BASIC : ColorsPallete.STAR_BASIC;
     }
-  }, [mainAppStore.accounts]);
+  }, [mainAppStore.activeAccount]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -89,7 +89,7 @@ function UserProfileButton() {
         mainAppStore.profileStatus = response.data.kyc;
         mainAppStore.profilePhone = response.data.phone || '';
         mainAppStore.profileName = (!!response.data.firstName && !!response.data.lastName)
-          ? `${response.data.firstName} ${response.data.firstName}` : '';
+          ? `${response.data.firstName} ${response.data.lastName}` : '';
         mainAppStore.profileEmail = response.data.email || '';
       } catch (error) {}
     }

@@ -31,7 +31,7 @@ function ProfileDropdown() {
       default:
         return type === 'color' ? '#C5DDF1' : SilverBG;
     }
-  }, [mainAppStore.accounts]);
+  }, [mainAppStore.activeAccount]);
 
   const renderStatusLabel = () => {
     switch (mainAppStore.profileStatus) {
@@ -152,11 +152,11 @@ function ProfileDropdown() {
         </CustomeNavLink>
       </FlexContainer>
       <FlexContainer margin="0 0 12px">
-        <ButtonWithoutStyles onClick={depositFundsStore.togglePopup}>
+        <DepositButtonWrapper onClick={depositFundsStore.togglePopup}>
           <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
             {t('Deposit')}
           </PrimaryTextSpan>
-        </ButtonWithoutStyles>
+        </DepositButtonWrapper>
       </FlexContainer>
       <FlexContainer margin="0 0 12px">
         <CustomeNavLink
@@ -219,12 +219,39 @@ const StatusLabel = styled(FlexContainer)`
 const LogoutButton = styled(ButtonWithoutStyles)`
   display: flex;
   justify-content: space-between;
+  span{
+    transition: 0.4s;
+  }
+  &:hover {
+    span{
+      color: #fffccc;
+    }
+  }
 `;
 
 const CustomeNavLink = styled(NavLink)`
   display: block;
   width: 100%;
+  span{
+    transition: 0.4s;
+  }
+  &:hover {
+    span{
+      color: #fffccc;
+    }
+  }
   &:hover, &:active, &:focus, &:visited {
     text-decoration: none;
+  }
+`;
+
+const DepositButtonWrapper = styled(ButtonWithoutStyles)`
+  span{
+    transition: 0.4s;
+  }
+  &:hover {
+    span{
+      color: #fffccc;
+    }
   }
 `;
