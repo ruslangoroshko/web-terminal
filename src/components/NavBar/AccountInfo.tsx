@@ -113,8 +113,9 @@ const AccountInfo: FC<Props> = observer((props) => {
             <FlexContainer>
               <PrimaryTextSpan
                 fontSize={'16px'}
-                color={'#fffccc'}
+                color={isActiveAccount ? '#fffccc' : 'rgba(255, 255, 255, 0.4)'}
                 marginRight="6px"
+                className={isActiveAccount ? 'account_total_active' : 'account_total'}
               >
                 {account.symbol}
                 {isActiveAccount
@@ -139,7 +140,11 @@ const AccountInfo: FC<Props> = observer((props) => {
                 </PrimaryTextSpan>
               </FlexContainer>
             </FlexContainer>
-            <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
+            <PrimaryTextSpan
+              className={isActiveAccount ? 'account_total_active' : 'account_total'}
+              fontSize="10px"
+              color="rgba(255, 255, 255, 0.4)"
+            >
               {account.currency}
             </PrimaryTextSpan>
           </FlexContainer>
@@ -207,7 +212,7 @@ const AccountInfo: FC<Props> = observer((props) => {
         </FlexContainer>
         {account.isLive && (
           <DepositButton onClick={depositFundsStore.togglePopup}>
-            <PrimaryTextSpan fontSize="14px" color="#fffccc" fontWeight="bold">
+            <PrimaryTextSpan fontSize="14px" color={isActiveAccount ? '#fffccc' : 'rgba(196, 196, 196, 0.5)'} fontWeight="bold">
               {t('Top Up')}
             </PrimaryTextSpan>
           </DepositButton>
@@ -221,14 +226,27 @@ export default AccountInfo;
 
 const AccountWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
   background: ${(props) => (props.isActive ? '#292C33' : '#1C1F26')};
-
+  transition: 0.4s;
   height: 88px;
   padding: 24px 16px 24px 34px;
   cursor: pointer;
   position: relative;
+  .account_total {
+    transition: 0.4s;
+  }
+  &:hover {
+    background: ${(props) => (props.isActive ? '#292C33' : 'rgba(41, 44, 51, 0.35)')};
+    &:before {
+      background: ${(props) => (props.isActive ? '#00FFDD' : 'rgba(41, 44, 51, 0.35)')};
+    }
+    .account_total {
+      color: ${(props) => (props.isActive ? '#fffccc' : '#ffffff')};
+    }
+  }
 
   &:before {
     content: '';
+    transition: 0.4s;
     background: ${(props) => (props.isActive ? '#00FFDD' : '#1C1F26')};
     position: absolute;
     border-radius: 50%;

@@ -10,6 +10,7 @@ import AccountInfo from './AccountInfo';
 import { Observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import AccountTotal from './AccountTotal';
+import styled from '@emotion/styled';
 
 function AccountSwitcherDropdown() {
   const { mainAppStore } = useStores();
@@ -18,7 +19,7 @@ function AccountSwitcherDropdown() {
     <Toggle>
       {({ on, toggle }) => (
         <FlexContainer position="relative">
-          <ButtonWithoutStyles onClick={toggle}>
+          <ButtonSwitcher onClick={toggle}>
             <FlexContainer>
               <FlexContainer flexDirection="column">
                 <FlexContainer margin="0 0 2px 0">
@@ -85,7 +86,19 @@ function AccountSwitcherDropdown() {
                 />
               </FlexContainer>
             </FlexContainer>
-          </ButtonWithoutStyles>
+          </ButtonSwitcher>
+          {on && (
+            <FlexContainer
+              backgroundColor="rgba(21, 22, 25, 0.9)"
+              position="fixed"
+              top="0"
+              left="0"
+              width="100vw"
+              height="100vh"
+              zIndex="198"
+            >
+            </FlexContainer>
+          )}
           {on && (
             <Observer>
               {() => (
@@ -118,3 +131,8 @@ function AccountSwitcherDropdown() {
 }
 
 export default AccountSwitcherDropdown;
+
+const ButtonSwitcher = styled(ButtonWithoutStyles)`
+  position: relative;
+  z-index: 199;
+`;
