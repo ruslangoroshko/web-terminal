@@ -174,27 +174,37 @@ export class InstrumentsStore implements ContextProps {
       if (newActiveInstrument) {
         this.addActiveInstrumentId(instrumentId);
         this.activeInstrument = newActiveInstrument;
-        const tvWidget = this.rootStore.tradingViewStore.tradingWidget?.chart();
+        const tvWidget = this.rootStore.tradingViewStore.tradingWidget;
         if (tvWidget) {
-          tvWidget.setSymbol(instrumentId, () => {
-            tvWidget.setResolution(
-              supportedResolutions[
-                newActiveInstrument.resolution
-              ] as ResolutionString,
-              () => {
-                if (newActiveInstrument.interval) {
-                  const fromTo = {
-                    from: getIntervalByKey(newActiveInstrument.interval),
-                    to: moment().valueOf(),
-                  };
-                  tvWidget.setVisibleRange(fromTo);
+          if (this.rootStore.tradingViewStore.activeOrderLinePositionPnL) {
+            this.rootStore.tradingViewStore.clearActivePositionLine();
+          }
+          tvWidget.chart().setSymbol(instrumentId, () => {
+            tvWidget
+              .chart()
+              .setResolution(
+                supportedResolutions[
+                  newActiveInstrument.resolution
+                ] as ResolutionString,
+                () => {
+                  if (newActiveInstrument.interval) {
+                    const fromTo = {
+                      from: getIntervalByKey(newActiveInstrument.interval),
+                      to: moment().valueOf(),
+                    };
+                    tvWidget.chart().setVisibleRange(fromTo);
+                  }
                 }
-              }
-            );
-            tvWidget.setChartType(newActiveInstrument.chartType);
+              );
+            tvWidget.chart().setChartType(newActiveInstrument.chartType);
             resolve();
           });
+
           this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
+          tvWidget.applyOverrides({
+            'scalesProperties.showSeriesLastValue': true,
+            'mainSeriesProperties.showPriceLine': true,
+          });
         } else {
           reject();
         }

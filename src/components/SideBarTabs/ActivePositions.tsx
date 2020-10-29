@@ -33,7 +33,10 @@ import mixapanelProps from '../../constants/mixpanelProps';
 import EquityPnL from './EquityPnL';
 import ActivePositionPnL from './ActivePositionPnL';
 import ActivePositionPnLPercent from './ActivePositionPnLPercent';
-import { IPositionLineAdapter } from '../../vendor/charting_library/charting_library';
+import {
+  IOrderLineAdapter,
+  IPositionLineAdapter,
+} from '../../vendor/charting_library/charting_library';
 import { autorun } from 'mobx';
 
 interface Props {
@@ -314,31 +317,28 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           await instrumentsStore.switchInstrument(position.instrument);
           tradingViewStore.clearActivePositionLine();
           tradingViewStore.selectedPosition = position;
-          tradingViewStore.activeOrderLinePosition = tradingViewStore.tradingWidget
+          tradingViewStore.activeOrderLinePositionPnL = tradingViewStore.tradingWidget
             ?.chart()
-            .createPositionLine({
+            .createOrderLine({
               disableUndo: true,
             })
-            .onClose(function (this: IPositionLineAdapter) {
+            .onCancel(function (this: IOrderLineAdapter) {
               tradingViewStore.setApplyHandler(closePosition);
               tradingViewStore.toggleActivePositionPopup(true);
             })
             .setLineStyle(1)
             .setLineWidth(2)
-            .setText(`${PnL()}`)
-            .setQuantity(`$${position.investmentAmount}`)
+            .setText(`${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL())}`)
+            .setQuantity('')
             .setPrice(+position.openPrice)
             .setLineStyle(0)
-            .setBodyBorderColor(positionColor)
-            .setBodyTextColor(PnL() > 0 ? '#3BFF8A' : '#FF557E')
-            .setBodyBackgroundColor('rgb(41 42 54 / 0.8)')
-            .setCloseButtonBackgroundColor('rgb(41 42 54 / 0.8)')
-            .setCloseButtonBorderColor(positionColor)
-            .setCloseButtonIconColor(positionColor)
-            .setQuantityBorderColor(positionColor)
-            .setQuantityBackgroundColor(positionColor)
-            .setQuantityTextColor('#2a2b36')
-            .setLineColor(positionColor)
+            .setBodyBorderColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
+            .setBodyTextColor(PnL() > 0 ? '#252636' : '#ffffff')
+            .setCancelButtonBackgroundColor('#2A2C33')
+            .setCancelButtonBorderColor('#494C51')
+            .setCancelButtonIconColor('#ffffff')
+            .setBodyBackgroundColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
+            .setLineColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
             .setLineLength(10);
         } catch (error) {
           console.log(error);
@@ -349,7 +349,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       position,
       tradingViewStore.tradingWidget,
       instrumentsStore.instruments,
-      tradingViewStore.activeOrderLinePosition,
+      tradingViewStore.activeOrderLinePositionPnL,
       tradingViewStore.selectedPosition,
     ]
   );
@@ -402,7 +402,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     const disposer = autorun(
       () => {
         if (
-          tradingViewStore.activeOrderLinePosition &&
+          tradingViewStore.activeOrderLinePositionPnL &&
           instrumentsStore.activeInstrument &&
           tradingViewStore.selectedPosition &&
           tradingViewStore.selectedPosition.id === position.id
@@ -412,15 +412,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             'mainSeriesProperties.showPriceLine': false,
           });
 
-          tradingViewStore.activeOrderLinePosition
+          tradingViewStore.activeOrderLinePositionPnL
             .setPrice(
               quotesStore.quotes[
                 instrumentsStore.activeInstrument.instrumentItem.id
               ].bid.c
             )
-            .setText(`$${PnL()}`)
-            .setBodyTextColor(PnL() > 0 ? '#3BFF8A' : '#FF557E');
-        } 
+            .setBodyTextColor(PnL() > 0 ? '#252636' : '#ffffff')
+            .setText(`${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL())}`)
+        }
       },
       { delay: 100 }
     );
@@ -430,7 +430,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         'scalesProperties.showSeriesLastValue': true,
         'mainSeriesProperties.showPriceLine': true,
       });
-      if (tradingViewStore.activeOrderLinePosition) {
+      if (tradingViewStore.activeOrderLinePositionPnL) {
         tradingViewStore.clearActivePositionLine();
       }
     };

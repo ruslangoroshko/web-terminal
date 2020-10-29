@@ -2,18 +2,20 @@ import { action, observable } from 'mobx';
 import { PositionModelWSDTO } from '../types/Positions';
 import {
   IChartingLibraryWidget,
+  IOrderLineAdapter,
   IPositionLineAdapter,
 } from '../vendor/charting_library/charting_library';
 import { RootStore } from './RootStore';
 
 interface ContextProps {
   tradingWidget?: IChartingLibraryWidget;
-  activeOrderLinePosition?: IPositionLineAdapter;
+  activeOrderLinePositionPnL?: IOrderLineAdapter;
 }
 
 export class TradingViewStore implements ContextProps {
   @observable tradingWidget?: IChartingLibraryWidget;
-  @observable activeOrderLinePosition?: IPositionLineAdapter;
+  @observable activeOrderLinePositionPnL?: IOrderLineAdapter;
+  @observable activeOrderLinePosition?: IOrderLineAdapter;
   @observable selectedPosition?: PositionModelWSDTO;
   @observable activePositionPopup: boolean = false;
   @observable applyHandler: any;
@@ -39,8 +41,8 @@ export class TradingViewStore implements ContextProps {
 
   @action
   clearActivePositionLine = () => {
-    this.activeOrderLinePosition?.remove();
-    this.activeOrderLinePosition = undefined;
+    this.activeOrderLinePositionPnL?.remove();
+    this.activeOrderLinePositionPnL = undefined;
     this.tradingWidget?.applyOverrides({
       'scalesProperties.showSeriesLastValue': true,
       'mainSeriesProperties.showPriceLine': true,
