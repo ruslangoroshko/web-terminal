@@ -58,8 +58,11 @@ const ChartResolutionsDropdown: FC<Props> = (props) => {
     if (!resolutionKey) {
       return '';
     }
+    const bigLetter = ['1 day', '1 month'];
     const splittedBySpace = resolutionKey.split(' ');
-    return `${splittedBySpace[0]}${splittedBySpace[1][0]}`;
+    return bigLetter.includes(resolutionKey)
+      ? `${splittedBySpace[0]}${splittedBySpace[1][0]}`.toUpperCase()
+      : `${splittedBySpace[0]}${splittedBySpace[1][0]}`;
   };
 
   useEffect(() => {

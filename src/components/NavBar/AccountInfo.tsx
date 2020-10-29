@@ -35,6 +35,7 @@ const AccountInfo: FC<Props> = observer((props) => {
   const { push } = useHistory();
 
   const [profit, setProfit] = useState(quotesStore.profit);
+  const [total, setTotal] = useState(quotesStore.total);
 
   const { t } = useTranslation();
 
@@ -59,6 +60,7 @@ const AccountInfo: FC<Props> = observer((props) => {
     const disposer = autorun(
       () => {
         setProfit(quotesStore.profit);
+        setTotal(quotesStore.total);
       },
       { delay: 1000 }
     );
@@ -116,7 +118,7 @@ const AccountInfo: FC<Props> = observer((props) => {
               >
                 {account.symbol}
                 {isActiveAccount
-                  ? quotesStore.total.toFixed(2)
+                  ? total.toFixed(2)
                   : account.balance.toFixed(2)}
               </PrimaryTextSpan>
               <FlexContainer
