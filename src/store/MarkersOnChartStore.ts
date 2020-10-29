@@ -50,10 +50,6 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
             positionId: position.id,
             marker,
           });
-          this.rootStore.tradingViewStore.tradingWidget?.activeChart().sendBackward([
-            //@ts-ignore
-            marker._line._id,
-          ]);
         }
       }
     });
@@ -79,10 +75,6 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
         positionId: position.id,
         marker,
       });
-      this.rootStore.tradingViewStore.tradingWidget?.activeChart().sendBackward([
-        //@ts-ignore
-        marker._line._id,
-      ]);
     }
   };
 

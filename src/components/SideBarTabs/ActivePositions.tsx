@@ -358,12 +358,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             .setBodyBackgroundColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
             .setLineColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
             .setLineLength(10);
-          tradingViewStore.tradingWidget?.activeChart().bringToFront([
-            //@ts-ignore
-            tradingViewStore.activeOrderLinePositionPnL._line._id,
-            //@ts-ignore
-            tradingViewStore.activeOrderLinePosition._line._id,
-          ])
+          // tradingViewStore.tradingWidget?.activeChart().bringToFront([
+          //   //@ts-ignore
+          //   tradingViewStore.activeOrderLinePositionPnL._line._id,
+          //   //@ts-ignore
+          //   tradingViewStore.activeOrderLinePosition._line._id,
+          // ])
           
         } catch (error) {
           console.log(error);
