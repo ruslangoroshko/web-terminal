@@ -1,4 +1,4 @@
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, toJS } from 'mobx';
 import {
   InstrumentModelWSDTO,
   InstrumentGroupWSDTO,
@@ -7,7 +7,10 @@ import {
 } from '../types/InstrumentsTypes';
 import { RootStore } from './RootStore';
 import { SortByMarketsEnum } from '../enums/SortByMarketsEnum';
-import { SeriesStyle } from '../vendor/charting_library/charting_library.min';
+import {
+  ResolutionString,
+  SeriesStyle,
+} from '../vendor/charting_library/charting_library';
 import { supportedResolutions } from '../constants/supportedTimeScales';
 import { getIntervalByKey } from '../helpers/getIntervalByKey';
 import moment from 'moment';
@@ -50,7 +53,7 @@ export class InstrumentsStore implements ContextProps {
 
   @computed get activeInstruments() {
     const filteredActiveInstruments = this.instruments
-      .filter(item =>
+      .filter((item) =>
         this.activeInstrumentsIds.includes(item.instrumentItem.id)
       )
       .sort(
@@ -64,7 +67,7 @@ export class InstrumentsStore implements ContextProps {
   @action
   setInstruments = (instruments: InstrumentModelWSDTO[]) => {
     this.instruments = instruments.map(
-      item =>
+      (item) =>
         <IActiveInstrument>{
           chartType: SeriesStyle.Area,
           instrumentItem: item,
@@ -78,15 +81,21 @@ export class InstrumentsStore implements ContextProps {
   setActiveInstrument = (activeInstrumentId: string) => {
     this.activeInstrument =
       this.instruments.find(
-        item => item.instrumentItem.id === activeInstrumentId
+        (item) => item.instrumentItem.id === activeInstrumentId
       ) || this.instruments[0];
 
-      this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
+    this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
   };
 
   @action
   editActiveInstrument = (activeInstrument: IActiveInstrument) => {
     this.activeInstrument = activeInstrument;
+    const instrumentIndex = this.instruments.findIndex(
+      (item) => item.instrumentItem.id === activeInstrument.instrumentItem.id
+    );
+    if (instrumentIndex !== -1) {
+      this.instruments[instrumentIndex] = activeInstrument;
+    }
   };
 
   @action
@@ -140,46 +149,67 @@ export class InstrumentsStore implements ContextProps {
         break;
 
       default:
-        return this.instruments.map(item => item.instrumentItem);
+        return this.instruments.map((item) => item.instrumentItem);
     }
     return this.instruments
       .filter(
-        item => item.instrumentItem.groupId === this.activeInstrumentGroupId
+        (item) => item.instrumentItem.groupId === this.activeInstrumentGroupId
       )
       .sort(filterByFunc)
-      .map(item => item.instrumentItem);
+      .map((item) => item.instrumentItem);
   }
 
   // TODO: refactor, too heavy
   @action
-  switchInstrument = async (instrumentId: string) => {
-    const newActiveInstrument =
-      this.instruments.find(item => item.instrumentItem.id === instrumentId) ||
-      this.instruments[0];
-    if (newActiveInstrument) {
-      this.addActiveInstrumentId(instrumentId);
-      this.activeInstrument = newActiveInstrument;
-      const tvWidget = this.rootStore.tradingViewStore.tradingWidget?.chart();
-      if (tvWidget) {
-        tvWidget.setSymbol(instrumentId, () => {
-          tvWidget.setResolution(
-            supportedResolutions[newActiveInstrument.resolution],
-            () => {
-              if (newActiveInstrument.interval) {
-                const fromTo = {
-                  from: getIntervalByKey(newActiveInstrument.interval),
-                  to: moment().valueOf(),
-                };
-                tvWidget.setVisibleRange(fromTo);
-              }
-            }
-          );
-          tvWidget.setChartType(newActiveInstrument.chartType);
-        });
-        this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
+  switchInstrument = async (instrumentId: string) =>
+    new Promise((resolve, reject) => {
+      if (this.activeInstrument?.instrumentItem.id === instrumentId) {
+        resolve();
+        return;
       }
-    }
-  };
+      const newActiveInstrument =
+        this.instruments.find(
+          (item) => item.instrumentItem.id === instrumentId
+        ) || this.instruments[0];
+      if (newActiveInstrument) {
+        this.addActiveInstrumentId(instrumentId);
+        this.activeInstrument = newActiveInstrument;
+        const tvWidget = this.rootStore.tradingViewStore.tradingWidget;
+        if (tvWidget) {
+          if (this.rootStore.tradingViewStore.activeOrderLinePositionPnL) {
+            this.rootStore.tradingViewStore.clearActivePositionLine();
+          }
+          tvWidget.chart().setSymbol(instrumentId, () => {
+            tvWidget
+              .chart()
+              .setResolution(
+                supportedResolutions[
+                  newActiveInstrument.resolution
+                ] as ResolutionString,
+                () => {
+                  if (newActiveInstrument.interval) {
+                    const fromTo = {
+                      from: getIntervalByKey(newActiveInstrument.interval),
+                      to: moment().valueOf(),
+                    };
+                    tvWidget.chart().setVisibleRange(fromTo);
+                  }
+                }
+              );
+            tvWidget.chart().setChartType(newActiveInstrument.chartType);
+            resolve();
+          });
+
+          this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
+          tvWidget.applyOverrides({
+            'scalesProperties.showSeriesLastValue': true,
+            'mainSeriesProperties.showPriceLine': true,
+          });
+        } else {
+          reject();
+        }
+      }
+    });
 
   @action
   setPricesChanges = (prices: PriceChangeWSDTO[]) => {

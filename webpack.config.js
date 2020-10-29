@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
+// TODO: update webpack
 module.exports = (env, argv) => {
   console.log(process.env);
   return {
@@ -72,6 +73,20 @@ module.exports = (env, argv) => {
           sourceMap: argv.mode !== 'production', // Must be set to true if using source-maps in production
         }),
       ],
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          defaultVendors: {
+            test: /[\\/]node_modules[\\/]|vendor[\\/]/,
+            priority: -10,
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
+          },
+        },
+      },
     },
     devtool: 'source-map',
     target: 'web',
@@ -121,11 +136,16 @@ module.exports = (env, argv) => {
         IS_LOCAL: argv.is_local === 'true',
         BUILD_VERSION: JSON.stringify(process.env.BUILD_VERSION),
       }),
-      new CopyPlugin([
-        { from: './src/vendor/charting_library/', to: 'charting_library' },
-        { from: './src/apple-app-site-association', to: '' },
-        { from: './src/robots.txt', to: '' },
-      ]),
+      new CopyPlugin({
+        patterns: [
+          { from: './src/vendor/charting_library/', to: 'charting_library' },
+          { from: './src/apple-app-site-association', to: '' },
+          { from: './src/robots.txt', to: '' },
+        ],
+        options: {
+          concurrency: 100,
+        },
+      }),
     ],
   };
 };

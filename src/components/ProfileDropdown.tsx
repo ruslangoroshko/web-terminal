@@ -1,50 +1,63 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { useStores } from '../hooks/useStores';
 import styled from '@emotion/styled';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
-import IconDeposit from '../assets/svg/icon-deposit.svg';
-import IconWithdraw from '../assets/svg/icon-withdraw.svg';
-import IconLogout from '../assets/svg/icon-logout.svg';
 import { NavLink, Link } from 'react-router-dom';
 import Page from '../constants/Pages';
-import IconInfo from '../assets/svg/icon-info.svg';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import { useTranslation } from 'react-i18next';
+import IconUser from '../assets/svg/icon-user-logo.svg';
+import AchievementStatus from '../constants/achievementStatus';
+import SilverBG from '../assets/images/achievement_status_bg/silver.png';
+import GoldBG from '../assets/images/achievement_status_bg/gold.png';
+import PlatinumBG from '../assets/images/achievement_status_bg/platinum.png';
 
 function ProfileDropdown() {
   const { mainAppStore, depositFundsStore, tabsStore } = useStores();
   const { t } = useTranslation();
+
+  const getStatusLabel = useCallback((type?: string) => {
+    const key = mainAppStore.activeAccount?.achievementStatus;
+    switch (key) {
+      case AchievementStatus.SILVER:
+        return type === 'color' ? '#C5DDF1' : SilverBG;
+      case AchievementStatus.GOLD:
+        return type === 'color' ? '#fffccc' : GoldBG;
+      case AchievementStatus.PLATINUM:
+        return type === 'color' ? '#00ffdd' : PlatinumBG;
+      default:
+        return type === 'color' ? '#C5DDF1' : SilverBG;
+    }
+  }, [mainAppStore.activeAccount]);
+
   const renderStatusLabel = () => {
     switch (mainAppStore.profileStatus) {
       case PersonalDataKYCEnum.NotVerified:
         return (
-          <FlexContainer margin="0 0 20px 0" flexDirection="column">
-            <Link to={Page.PROOF_OF_IDENTITY}>
-              <FlexContainer
-                borderRadius="12px"
-                backgroundColor="#3B2B3D"
-                height="24px"
+          <FlexContainer
+            margin="20px 0 0"
+            width="100%"
+          >
+            <CustomeNavLink to={Page.PROOF_OF_IDENTITY}>
+              <VerificationButton
+                borderRadius="5px"
+                backgroundColor="#ED145B"
+                height="21px"
                 alignItems="center"
-                padding="0 4px 0 8px"
+                width="100%"
+                justifyContent="center"
               >
-                <FlexContainer margin="0 4px 0 0">
-                  <SvgIcon {...IconInfo} fillColor="#FF2B47" />
-                </FlexContainer>
-                <FlexContainer>
-                  <PrimaryTextSpan
-                    color="#FF557E"
-                    fontSize="12px"
-                    fontWeight="bold"
-                    whiteSpace="nowrap"
-                  >
-                    {t('Verify your profile')}
-                  </PrimaryTextSpan>
-                </FlexContainer>
-              </FlexContainer>
-            </Link>
+                <PrimaryTextSpan
+                  color="#ffffff"
+                  fontSize="10px"
+                >
+                  {t('Not Verified')}
+                </PrimaryTextSpan>
+              </VerificationButton>
+            </CustomeNavLink>
           </FlexContainer>
         );
 
@@ -63,85 +76,120 @@ function ProfileDropdown() {
 
   return (
     <FlexContainer
-      backgroundColor="#1c2026"
-      padding="16px"
-      borderRadius="4px"
+      backgroundColor="#1C1F26"
+      padding="0 32px 20px"
+      borderRadius="5px"
       flexDirection="column"
-      width="172px"
-      boxShadow="box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.24), 0px 8px 16px rgba(37, 38, 54, 0.6)"
+      width="286px"
+      border="1px solid rgba(169, 171, 173, 0.1)"
+      boxShadow="0px 34px 44px rgba(0, 0, 0, 0.25)"
     >
-      {renderStatusLabel()}
-
+      {(mainAppStore.activeAccount?.achievementStatus === AchievementStatus.GOLD
+        || mainAppStore.activeAccount?.achievementStatus === AchievementStatus.SILVER
+        || mainAppStore.activeAccount?.achievementStatus === AchievementStatus.PLATINUM)
+        && <StatusLabel
+          width="124px"
+          height="24px"
+          padding="5px"
+          borderRadius="0 0 12px 12px"
+          alignItems="center"
+          justifyContent="center"
+          margin="0 auto"
+          background={`url(${getStatusLabel()})`}
+        >
+          <PrimaryTextSpan
+            fontSize="12px"
+            textTransform="uppercase"
+            color={getStatusLabel('color')}
+            fontWeight={500}
+          >
+            {mainAppStore.activeAccount?.achievementStatus}
+          </PrimaryTextSpan>
+        </StatusLabel>
+      }
       <FlexWithBottomBorder
-        margin="0 0 16px 0"
-        padding="0 0 16px 0"
         flexDirection="column"
+        padding="0 0 18px"
+        margin="20px 0"
+        width="100%"
       >
-        <PrimaryTextSpan fontSize="12px" color="#fffccc" marginBottom="16px">
-          {t('Profile')}
-        </PrimaryTextSpan>
-
-        <CustomeNavLink to={Page.ACCOUNT_SEQURITY} activeClassName="is-active">
-          <PrimaryTextSpan fontSize="12px" color="#fffccc">
-            {t('Security')}
+        <FlexContainer alignItems="center">
+          <FlexContainer
+            borderRadius="50%"
+            width="40px"
+            height="40px"
+            justifyContent="center"
+            alignItems="center"
+            marginRight="8px"
+            backgroundColor="#77797D"
+          >
+            <SvgIcon width={25} height={25} {...IconUser} fillColor={'rgba(196, 196, 196, 0.5)'} />
+          </FlexContainer>
+          <FlexContainer
+            flexDirection={'column'}
+          >
+            {!!mainAppStore.profileName.length && <PrimaryTextSpan
+              fontSize="12px"
+              color="#fffccc"
+            >
+              {mainAppStore.profileName}
+            </PrimaryTextSpan>}
+            <PrimaryTextSpan
+              fontSize="12px"
+              color="rgba(255, 255, 255, 0.4)"
+            >
+              {mainAppStore.profileEmail}
+            </PrimaryTextSpan>
+          </FlexContainer>
+        </FlexContainer>
+        {renderStatusLabel()}
+      </FlexWithBottomBorder>
+      <FlexContainer margin="0 0 12px">
+        <CustomeNavLink to={Page.ACCOUNT_SEQURITY}>
+          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+            {t('Account Settings')}
           </PrimaryTextSpan>
         </CustomeNavLink>
-      </FlexWithBottomBorder>
-      <FlexWithBottomBorder
-        margin="0 0 16px 0"
-        padding="0 0 16px 0"
-        flexDirection="column"
-      >
-        <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
-          <ButtonWithoutStyles onClick={depositFundsStore.togglePopup}>
-            <PrimaryTextSpan fontSize="12px" color="#fffccc">
-              {t('Deposit')}
-            </PrimaryTextSpan>
-          </ButtonWithoutStyles>
-          <SvgIcon {...IconDeposit} fillColor="rgba(255, 255, 255, 0.6)" />
-        </FlexContainer>
-        <FlexContainer justifyContent="space-between">
-          <CustomeNavLink
-            to={Page.ACCOUNT_WITHDRAW}
-            activeClassName="is-active"
-          >
-            <PrimaryTextSpan fontSize="12px" color="#fffccc">
-              {t('Withdraw')}
-            </PrimaryTextSpan>
-          </CustomeNavLink>
-
-          <SvgIcon {...IconWithdraw} fillColor="rgba(255, 255, 255, 0.6)" />
-        </FlexContainer>
-      </FlexWithBottomBorder>
-      <FlexWithBottomBorder
-        margin="0 0 16px 0"
-        padding="0"
-        flexDirection="column"
-      >
-        <FlexContainer margin="0 0 16px">
-          <NavLink to={Page.ACCOUNT_BALANCE_HISTORY}>
-            <PrimaryTextSpan fontSize="12px" color="#fffccc">
-              {t('Balance history')}
-            </PrimaryTextSpan>
-          </NavLink>
-        </FlexContainer>
-        {/* <FlexContainer margin="0 0 16px">
-          <PrimaryTextSpan fontSize="12px" color="#fffccc">
-            Settings
+      </FlexContainer>
+      <FlexContainer margin="0 0 12px">
+        <DepositButtonWrapper onClick={depositFundsStore.togglePopup}>
+          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+            {t('Deposit')}
           </PrimaryTextSpan>
-        </FlexContainer> */}
-        {/* <FlexContainer>
-          <PrimaryTextSpan fontSize="12px" color="#fffccc">
-            Historical quotes
+        </DepositButtonWrapper>
+      </FlexContainer>
+      <FlexContainer margin="0 0 12px">
+        <CustomeNavLink
+          to={Page.ACCOUNT_WITHDRAW}
+          activeClassName="is-active"
+        >
+          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+            {t('Withdraw')}
           </PrimaryTextSpan>
-        </FlexContainer> */}
-      </FlexWithBottomBorder>
+        </CustomeNavLink>
+      </FlexContainer>
+      <FlexContainer margin="0 0 12px">
+        <CustomeNavLink to={Page.ACCOUNT_BALANCE_HISTORY}>
+          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+            {t('Balance history')}
+          </PrimaryTextSpan>
+        </CustomeNavLink>
+      </FlexContainer>
+      {/* <FlexContainer margin="0 0 16px">
+        <PrimaryTextSpan fontSize="12px" color="#fffccc">
+          Settings
+        </PrimaryTextSpan>
+      </FlexContainer> */}
+      {/* <FlexContainer>
+        <PrimaryTextSpan fontSize="12px" color="#fffccc">
+          Historical quotes
+        </PrimaryTextSpan>
+      </FlexContainer> */}
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={handleLogoutClick}>
-          <PrimaryTextSpan fontSize="12px" color="#fffccc">
+          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
             {t('Logout')}
           </PrimaryTextSpan>
-          <SvgIcon {...IconLogout} fillColor="rgba(255, 255, 255, 0.6)" />
         </LogoutButton>
       </FlexContainer>
     </FlexContainer>
@@ -151,16 +199,59 @@ function ProfileDropdown() {
 export default ProfileDropdown;
 
 const FlexWithBottomBorder = styled(FlexContainer)`
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid rgba(112, 113, 117, 0.5);
+`;
+
+const VerificationButton = styled(FlexContainer)`
+  transition: 0.4;
+  &:hover {
+    background-color: #ff557e;
+  }
+`;
+
+const StatusLabel = styled(FlexContainer)`
+  border: 1px solid rgba(169, 171, 173, 0.1);
+  border-top: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
 `;
 
 const LogoutButton = styled(ButtonWithoutStyles)`
   display: flex;
   justify-content: space-between;
+  span{
+    transition: 0.4s;
+  }
+  &:hover {
+    span{
+      color: #fffccc;
+    }
+  }
 `;
 
 const CustomeNavLink = styled(NavLink)`
-  &.is-active {
-    pointer-events: none;
+  display: block;
+  width: 100%;
+  span{
+    transition: 0.4s;
+  }
+  &:hover {
+    span{
+      color: #fffccc;
+    }
+  }
+  &:hover, &:active, &:focus, &:visited {
+    text-decoration: none;
+  }
+`;
+
+const DepositButtonWrapper = styled(ButtonWithoutStyles)`
+  span{
+    transition: 0.4s;
+  }
+  &:hover {
+    span{
+      color: #fffccc;
+    }
   }
 `;

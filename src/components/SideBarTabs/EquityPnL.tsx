@@ -49,7 +49,7 @@ const EquityPnL: FC<Props> = ({ position }) => {
       () => {
         workCallback(quotesStore.quotes[position.instrument]);
       },
-      { delay: 2000 }
+      { delay: 1000 }
     );
     return () => {
       disposer();

@@ -13,7 +13,7 @@ const AccountTotal = () => {
         () => {
           setTotal(quotesStore.total);
         },
-        { delay: 2000 }
+        { delay: 1000 }
       ),
     []
   );

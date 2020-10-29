@@ -5,6 +5,7 @@ interface PrimaryTextType {
   fontWeight?: 'bold' | 'normal' | number;
   fontStyle?: 'italic' | 'normal';
   fontSize?:
+    | '8px'
     | '12px'
     | '11px'
     | '13px'

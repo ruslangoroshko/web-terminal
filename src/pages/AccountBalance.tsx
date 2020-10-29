@@ -24,7 +24,11 @@ import Helmet from 'react-helmet';
 import DatePickerAccountBalanceDropdown from '../components/DatePickerAccountBalanceDropdown';
 
 function AccountBalance() {
-  const { mainAppStore, badRequestPopupStore, dateRangeStore } = useStores();
+  const {
+    mainAppStore,
+    badRequestPopupStore,
+    dateRangeAccountBalanceStore,
+  } = useStores();
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [balanceHistoryReport, setBalanceHistoryReport] = useState<
@@ -45,9 +49,9 @@ function AccountBalance() {
       try {
         const response = await API.getBalanceHistory({
           // FIXME: typings
-          accountId: mainAppStore.accounts.find(acc => acc.isLive)!.id,
-          endDate: dateRangeStore.endDate.valueOf(),
-          startDate: dateRangeStore.startDate.valueOf(),
+          accountId: mainAppStore.accounts.find((acc) => acc.isLive)!.id,
+          endDate: dateRangeAccountBalanceStore.endDate.valueOf(),
+          startDate: dateRangeAccountBalanceStore.startDate.valueOf(),
           page: isScrolling ? balanceHistoryReport.page + 1 : 1,
           pageSize: 20,
         });
@@ -70,8 +74,8 @@ function AccountBalance() {
       }
     },
     [
-      dateRangeStore.endDate,
-      dateRangeStore.startDate,
+      dateRangeAccountBalanceStore.endDate,
+      dateRangeAccountBalanceStore.startDate,
       balanceHistoryReport.page,
       mainAppStore.activeAccount,
     ]

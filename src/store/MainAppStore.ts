@@ -92,6 +92,8 @@ export class MainAppStore implements MainAppStoreProps {
   @observable tradingUrl = '';
   @observable isInterceptorsInjected = false;
   @observable profilePhone = '';
+  @observable profileName = '';
+  @observable profileEmail = '';
   @observable lang = CountriesEnum.EN;
   @observable token = '';
   @observable refreshToken = '';
@@ -155,10 +157,21 @@ export class MainAppStore implements MainAppStoreProps {
     connectToWebocket();
 
     connection.on(Topics.UNAUTHORIZED, () => {
-      localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
-      this.isInitLoading = false;
-      this.isLoading = false;
-      this.isAuthorized = false;
+      if (this.refreshToken) {
+        this.postRefreshToken().then(() => {
+          Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
+
+          if (IS_LIVE) {
+            this.fetchTradingUrl();
+          } else {
+            this.setTradingUrl('/');
+            injectInerceptors('/', this);
+            this.handleInitConnection();
+          }
+        });
+      } else {
+        this.signOut();
+      }
     });
 
     connection.on(
@@ -390,6 +403,8 @@ export class MainAppStore implements MainAppStoreProps {
   signOut = () => {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
     localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY);
+    this.isInitLoading = false;
+    this.isLoading = false;
     this.token = '';
     this.refreshToken = '';
     this.isAuthorized = false;

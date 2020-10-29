@@ -13,6 +13,7 @@ export interface FlexContainerProps {
   padding?: string;
   margin?: string;
   backgroundColor?: string;
+  background?: string;
   textColor?: string;
   position?: 'relative' | 'absolute' | 'fixed' | 'sticky' | 'static';
   top?: string;
@@ -48,6 +49,7 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   flex-wrap: ${props => props.flexWrap};
   flex-direction: ${props => props.flexDirection};
   background-color: ${props => props.backgroundColor};
+  background: ${props => props.background};
   color: ${props => props.textColor};
   top: ${props => props.top};
   right: ${props => props.right};

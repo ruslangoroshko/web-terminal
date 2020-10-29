@@ -36,7 +36,12 @@ interface Props {
 function ActivePositionExpanded(props: Props) {
   const { position, currencySymbol } = props;
 
-  const { mainAppStore, notificationStore, markersOnChartStore } = useStores();
+  const {
+    mainAppStore,
+    notificationStore,
+    markersOnChartStore,
+    instrumentsStore,
+  } = useStores();
   const { t } = useTranslation();
 
   const { precision } = useInstrument(position.instrument);
@@ -55,7 +60,12 @@ function ActivePositionExpanded(props: Props) {
       });
 
       if (response.result === OperationApiResponseCodes.Ok) {
-        markersOnChartStore.removeMarkerByPositionId(position.id);
+        if (
+          instrumentsStore.activeInstrument?.instrumentItem.id ===
+          position.instrument
+        ) {
+          markersOnChartStore.removeMarkerByPositionId(position.id);
+        }
 
         mixpanel.track(mixpanelEvents.CLOSE_ORDER, {
           [mixapanelProps.AMOUNT]: position.investmentAmount,

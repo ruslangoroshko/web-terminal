@@ -1,7 +1,7 @@
 import { action, computed, observable } from 'mobx';
 import { AskBidEnum } from '../enums/AskBid';
 import { PositionModelWSDTO } from '../types/Positions';
-import { IExecutionLineAdapter } from '../vendor/charting_library/charting_library.min';
+import { IExecutionLineAdapter } from '../vendor/charting_library/charting_library';
 import { RootStore } from './RootStore';
 
 interface IMarkersOnChartStore {
@@ -9,7 +9,6 @@ interface IMarkersOnChartStore {
 }
 
 interface Marker {
-  id: number;
   positionId: number;
   marker: IExecutionLineAdapter;
 }
@@ -42,12 +41,12 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
             position.operation === AskBidEnum.Buy ? '#00ffdd' : '#ed145b'
           )
           .setDirection(position.operation === AskBidEnum.Buy ? 'buy' : 'sell')
-          .setTime(position.openDate / 1000)
-          .setPrice(position.investmentAmount)
+          .setTime((position.openDate - 1000) / 1000)
+          .setPrice(position.openPrice)
           .setArrowSpacing(0);
+
         if (marker) {
           this.activeMarkers.push({
-            id: this.lastMarkerId,
             positionId: position.id,
             marker,
           });
@@ -69,23 +68,15 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
         position.operation === AskBidEnum.Buy ? '#00ffdd' : '#ed145b'
       )
       .setDirection(position.operation === AskBidEnum.Buy ? 'buy' : 'sell')
-      .setTime((position.openDate - 100) / 1000)
+      .setTime((position.openDate - 1000) / 1000)
       .setPrice(position.investmentAmount);
     if (marker) {
       this.activeMarkers.push({
-        id: this.lastMarkerId,
         positionId: position.id,
         marker,
       });
     }
   };
-
-  @computed
-  get lastMarkerId() {
-    return this.activeMarkers.length
-      ? this.activeMarkers[this.activeMarkers.length - 1].id + 1
-      : 0;
-  }
 
   @action
   clearMarkersOnChart = () => {

@@ -7,6 +7,7 @@ import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { RootStore } from './RootStore';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
+import { IPositionLineAdapter } from '../vendor/charting_library/charting_library';
 
 interface IQuotesStore {
   quotes: BidAskKeyValueList;

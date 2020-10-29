@@ -1,4 +1,4 @@
-import React, { useEffect, FC, useRef } from 'react';
+import React, { useEffect, FC, useRef, useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { InstrumentModelWSDTO } from '../types/InstrumentsTypes';
 import Topics from '../constants/websocketTopics';
@@ -12,6 +12,7 @@ import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import ImageContainer from './ImageContainer';
+import { autorun } from 'mobx';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -22,6 +23,7 @@ interface Props {
 const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
   const { quotesStore, mainAppStore, instrumentsStore } = useStores();
   const buttonCloseRef = useRef<HTMLButtonElement>(null);
+  const [closePrice, setClosePrice] = useState('');
 
   const switchInstrument = (e: any) => {
     if (buttonCloseRef.current && buttonCloseRef.current.contains(e.target)) {
@@ -38,12 +40,26 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
         if (!response.data.length) {
           return;
         }
-        response.data.forEach(item => {
+        response.data.forEach((item) => {
           quotesStore.setQuote(item);
         });
       }
     );
   }, [instrument]);
+
+  useEffect(() => {
+    const disposer = autorun(
+      () => {
+        setClosePrice(
+          quotesStore.quotes[instrument.id].bid.c.toFixed(instrument.digits)
+        );
+      },
+      { delay: 1000 }
+    );
+    return () => {
+      disposer();
+    };
+  }, []);
 
   return (
     <MagicWrapperBorders isActive={isActive}>
@@ -58,29 +74,23 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
           width="100%"
         >
           {quotesStore.quotes[instrument.id] && (
-            <Observer>
-              {() => (
-                <>
-                  <FlexContainer margin="0 8px 0 0" width="24px">
-                    <ImageContainer instrumentId={instrument.id} />
-                  </FlexContainer>
-                  <FlexContainer margin="0 8px 0 0" flexDirection="column">
-                    <PrimaryTextSpan fontSize="12px">
-                      {instrument.name}
-                    </PrimaryTextSpan>
-                    <PrimaryTextSpan
-                      fontSize="11px"
-                      lineHeight="14px"
-                      color="rgba(255, 255, 255, 0.4)"
-                    >
-                      {quotesStore.quotes[instrument.id].bid.c.toFixed(
-                        instrument.digits
-                      )}
-                    </PrimaryTextSpan>
-                  </FlexContainer>
-                </>
-              )}
-            </Observer>
+            <>
+              <FlexContainer margin="0 8px 0 0" width="24px">
+                <ImageContainer instrumentId={instrument.id} />
+              </FlexContainer>
+              <FlexContainer margin="0 8px 0 0" flexDirection="column">
+                <PrimaryTextSpan fontSize="12px">
+                  {instrument.name}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="14px"
+                  color="rgba(255, 255, 255, 0.4)"
+                >
+                  {closePrice}
+                </PrimaryTextSpan>
+              </FlexContainer>
+            </>
           )}
           <FlexContainer padding="0 8px 0 0">
             <Observer>
@@ -118,12 +128,12 @@ const QuotesFeedWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
   width: 128px;
   height: 40px;
   align-items: center;
-  box-shadow: ${props =>
+  box-shadow: ${(props) =>
     props.isActive ? 'inset 0px 1px 0px #00ffdd' : 'none'};
   border-radius: 0px 0px 4px 4px;
   overflow: hidden;
   transition: box-shadow 0.2s ease, background-color 0.2s ease;
-  background: ${props =>
+  background: ${(props) =>
     props.isActive
       ? 'radial-gradient(50.41% 50% at 50% 0%, rgba(0, 255, 221, 0.08) 0%, rgba(0, 255, 221, 0) 100%), rgba(255, 255, 255, 0.04)'
       : 'none'};
@@ -131,13 +141,13 @@ const QuotesFeedWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
   &:hover {
     cursor: pointer;
 
-    background-color: ${props =>
+    background-color: ${(props) =>
       !props.isActive && 'rgba(255, 255, 255, 0.08)'};
   }
   &:hover {
     cursor: pointer;
 
-    background-color: ${props =>
+    background-color: ${(props) =>
       !props.isActive && 'rgba(255, 255, 255, 0.08)'};
   }
 `;
@@ -147,11 +157,11 @@ const MagicWrapperBorders = styled.div<{ isActive?: boolean }>`
   display: table-cell;
   width: 128px;
   height: 20px;
-  border-right: ${props =>
+  border-right: ${(props) =>
     props.isActive
       ? '1px double rgba(0, 0, 0, 0)'
       : '1px solid rgba(0, 0, 0, 0.6)'};
-  border-left: ${props =>
+  border-left: ${(props) =>
     props.isActive
       ? '1px double rgba(0, 0, 0, 0)'
       : '1px solid rgba(0, 0, 0, 0.6)'};

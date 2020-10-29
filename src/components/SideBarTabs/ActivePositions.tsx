@@ -33,6 +33,13 @@ import mixapanelProps from '../../constants/mixpanelProps';
 import EquityPnL from './EquityPnL';
 import ActivePositionPnL from './ActivePositionPnL';
 import ActivePositionPnLPercent from './ActivePositionPnLPercent';
+import {
+  IOrderLineAdapter,
+  IPositionLineAdapter,
+} from '../../vendor/charting_library/charting_library';
+import { autorun } from 'mobx';
+import { LineStyles } from '../../enums/TradingViewStyles';
+
 interface Props {
   position: PositionModelWSDTO;
 }
@@ -54,6 +61,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     SLTPStore,
     notificationStore,
     markersOnChartStore,
+    tradingViewStore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -84,15 +92,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     [quotesStore.quotes[position.instrument].bid.c, position.instrument]
   );
 
-  // const throttledCurrentPriceAsk = useRef(throttle(currentPriceAsk, 2000));
-
-  // useEffect(
-  //   () =>
-  //     throttledCurrentPriceAsk.current(
-  //       quotesStore.quotes[position.instrument].bid.c
-  //     ),
-  //   [quotesStore.quotes[position.instrument].bid.c]
-  // );
+  const positionColor =
+    position.operation === AskBidEnum.Buy ? '#3BFF8A' : '#FF557E';
 
   const validationSchema = useCallback(
     () =>
@@ -211,7 +212,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       });
 
       if (response.result === OperationApiResponseCodes.Ok) {
-        markersOnChartStore.removeMarkerByPositionId(position.id);
+        if (
+          instrumentsStore.activeInstrument?.instrumentItem.id ===
+          position.instrument
+        ) {
+          markersOnChartStore.removeMarkerByPositionId(position.id);
+        }
 
         mixpanel.track(mixpanelEvents.CLOSE_ORDER, {
           [mixapanelProps.AMOUNT]: position.investmentAmount,
@@ -227,6 +233,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             ? 'real'
             : 'demo',
         });
+
+        notificationStore.notificationMessage = t(
+          'The order has been closed successfully'
+        );
+        notificationStore.isSuccessfull = true;
+        notificationStore.openNotification();
+        return Promise.resolve();
       } else {
         mixpanel.track(mixpanelEvents.CLOSE_ORDER_FAILED, {
           [mixapanelProps.AMOUNT]: position.investmentAmount,
@@ -243,15 +256,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             : 'demo',
           [mixapanelProps.ERROR_TEXT]: apiResponseCodeMessages[response.result],
         });
+        notificationStore.notificationMessage = t(
+          apiResponseCodeMessages[response.result]
+        );
+        notificationStore.isSuccessfull = false;
+        notificationStore.openNotification();
+        return Promise.reject();
       }
-
-      notificationStore.notificationMessage =
-        response.result === OperationApiResponseCodes.Ok
-          ? t('The order has been closed successfully')
-          : t(apiResponseCodeMessages[response.result]);
-      notificationStore.isSuccessfull =
-        response.result === OperationApiResponseCodes.Ok;
-      notificationStore.openNotification();
     } catch (error) {}
   };
 
@@ -293,18 +304,80 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     validateOnChange: true,
   });
 
-  const setInstrumentActive = (e: any) => {
-    if (
-      (clickableWrapper.current &&
-        clickableWrapper.current.contains(e.target)) ||
-      (tooltipWrapperRef.current &&
-        tooltipWrapperRef.current.contains(e.target))
-    ) {
-      e.preventDefault();
-    } else {
-      instrumentsStore.switchInstrument(position.instrument);
-    }
-  };
+  const setInstrumentActive = useCallback(
+    async (e: any) => {
+      if (
+        (clickableWrapper.current &&
+          clickableWrapper.current.contains(e.target)) ||
+        (tooltipWrapperRef.current &&
+          tooltipWrapperRef.current.contains(e.target))
+      ) {
+        e.preventDefault();
+      } else {
+        try {
+          await instrumentsStore.switchInstrument(position.instrument);
+          tradingViewStore.clearActivePositionLine();
+          tradingViewStore.selectedPosition = position;
+
+          tradingViewStore.activeOrderLinePosition = tradingViewStore.tradingWidget
+            ?.chart()
+            .createOrderLine({ disableUndo: true })
+            .setLineStyle(1)
+            .setLineWidth(2)
+            .setLineColor('rgba(73,76,81,1)')
+            .setQuantity(`x${position.multiplier}`)
+            .setQuantityBorderColor('#494C51')
+            .setQuantityTextColor('#ffffff')
+            .setQuantityBackgroundColor('#2A2C33')
+            .setText(`$${position.investmentAmount}`)
+            .setBodyBackgroundColor('#2A2C33')
+            .setBodyTextColor('#ffffff')
+            .setBodyBorderColor('#494C51')
+            .setPrice(position.openPrice)
+            .setLineLength(10);
+
+          tradingViewStore.activeOrderLinePositionPnL = tradingViewStore.tradingWidget
+            ?.chart()
+            .createOrderLine({
+              disableUndo: true,
+            })
+            .onCancel(function (this: IOrderLineAdapter) {
+              tradingViewStore.setApplyHandler(closePosition);
+              tradingViewStore.toggleActivePositionPopup(true);
+            })
+            .setLineStyle(1)
+            .setLineWidth(2)
+            .setText(`${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL()).toFixed(2)}`)
+            .setQuantity('')
+            .setPrice(+position.openPrice)
+            .setBodyBorderColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
+            .setBodyTextColor(PnL() > 0 ? '#252636' : '#ffffff')
+            .setCancelButtonBackgroundColor('#2A2C33')
+            .setCancelButtonBorderColor('#494C51')
+            .setCancelButtonIconColor('#ffffff')
+            .setBodyBackgroundColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
+            .setLineColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
+            .setLineLength(10);
+          // tradingViewStore.tradingWidget?.activeChart().bringToFront([
+          //   //@ts-ignore
+          //   tradingViewStore.activeOrderLinePositionPnL._line._id,
+          //   //@ts-ignore
+          //   tradingViewStore.activeOrderLinePosition._line._id,
+          // ])
+          
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    [
+      position,
+      tradingViewStore.tradingWidget,
+      instrumentsStore.instruments,
+      tradingViewStore.activeOrderLinePositionPnL,
+      tradingViewStore.selectedPosition,
+    ]
+  );
 
   const handleApply = useCallback(async () => {
     await setFieldValue(
@@ -345,8 +418,50 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   };
 
   const activeInstrument = useCallback(() => {
-    return instrumentsStore.instruments.find(item => item.instrumentItem.id === position.instrument)?.instrumentItem;
+    return instrumentsStore.instruments.find(
+      (item) => item.instrumentItem.id === position.instrument
+    )?.instrumentItem;
   }, [position]);
+
+  useEffect(() => {
+    const disposer = autorun(
+      () => {
+        if (
+          tradingViewStore.activeOrderLinePositionPnL &&
+          instrumentsStore.activeInstrument &&
+          tradingViewStore.selectedPosition &&
+          tradingViewStore.selectedPosition.id === position.id
+        ) {
+          tradingViewStore.tradingWidget?.applyOverrides({
+            'scalesProperties.showSeriesLastValue': false,
+            'mainSeriesProperties.showPriceLine': false,
+          });
+
+          tradingViewStore.activeOrderLinePositionPnL
+            .setPrice(
+              quotesStore.quotes[
+                instrumentsStore.activeInstrument.instrumentItem.id
+              ].bid.c
+            )
+            .setBodyTextColor(PnL() > 0 ? '#252636' : '#ffffff')
+            .setText(
+              `${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL()).toFixed(2)}`
+            );
+        }
+      },
+      { delay: 100 }
+    );
+    return () => {
+      disposer();
+      tradingViewStore.tradingWidget?.applyOverrides({
+        'scalesProperties.showSeriesLastValue': true,
+        'mainSeriesProperties.showPriceLine': true,
+      });
+      if (tradingViewStore.activeOrderLinePositionPnL) {
+        tradingViewStore.clearActivePositionLine();
+      }
+    };
+  }, []);
 
   return (
     <InstrumentInfoWrapper

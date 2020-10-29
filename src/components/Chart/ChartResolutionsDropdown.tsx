@@ -13,10 +13,11 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import { ObjectKeys } from '../../helpers/objectKeys';
+import { ResolutionString } from '../../vendor/charting_library/charting_library';
 
 interface Props {}
 
-const ChartResolutionsDropdown: FC<Props> = props => {
+const ChartResolutionsDropdown: FC<Props> = (props) => {
   const { tradingViewStore, instrumentsStore } = useStores();
 
   const [on, toggle] = useState(false);
@@ -28,16 +29,19 @@ const ChartResolutionsDropdown: FC<Props> = props => {
   ) => () => {
     tradingViewStore.tradingWidget
       ?.chart()
-      .setResolution(supportedResolutions[resolutionKey], () => {
-        if (instrumentsStore.activeInstrument) {
-          instrumentsStore.editActiveInstrument({
-            ...instrumentsStore.activeInstrument,
-            resolution: resolutionKey,
-            interval: null,
-          });
+      .setResolution(
+        supportedResolutions[resolutionKey] as ResolutionString,
+        () => {
+          if (instrumentsStore.activeInstrument) {
+            instrumentsStore.editActiveInstrument({
+              ...instrumentsStore.activeInstrument,
+              resolution: resolutionKey,
+              interval: null,
+            });
+          }
+          toggle(false);
         }
-        toggle(false);
-      });
+      );
   };
 
   const handleToggle = () => {
@@ -54,8 +58,11 @@ const ChartResolutionsDropdown: FC<Props> = props => {
     if (!resolutionKey) {
       return '';
     }
+    const bigLetter = ['1 day', '1 month'];
     const splittedBySpace = resolutionKey.split(' ');
-    return `${splittedBySpace[0]}${splittedBySpace[1][0]}`;
+    return bigLetter.includes(resolutionKey)
+      ? `${splittedBySpace[0]}${splittedBySpace[1][0]}`.toUpperCase()
+      : `${splittedBySpace[0]}${splittedBySpace[1][0]}`;
   };
 
   useEffect(() => {
@@ -92,7 +99,7 @@ const ChartResolutionsDropdown: FC<Props> = props => {
           <Observer>
             {() => (
               <>
-                {ObjectKeys(supportedResolutions).map(key => (
+                {ObjectKeys(supportedResolutions).map((key) => (
                   <ButtonWithoutStyles
                     key={key}
                     onClick={handleChangeResolution(key)}

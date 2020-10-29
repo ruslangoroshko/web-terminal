@@ -91,13 +91,14 @@ function AccountSwitcherDropdown() {
               {() => (
                 <FlexContainer
                   position="absolute"
-                  top="-8px"
-                  left="-100%"
+                  top="100%"
+                  right="0"
                   flexDirection="column"
                   zIndex="200"
                   backgroundColor="#1C2026"
-                  borderRadius="0 0 8px 8px"
+                  borderRadius="5px"
                   overflow="hidden"
+                  boxShadow="0px 34px 44px rgba(0, 0, 0, 0.25)"
                 >
                   {mainAppStore.sortedAccounts.map((acc) => (
                     <AccountInfo
