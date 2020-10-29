@@ -43,6 +43,9 @@ export class TradingViewStore implements ContextProps {
   clearActivePositionLine = () => {
     this.activeOrderLinePositionPnL?.remove();
     this.activeOrderLinePositionPnL = undefined;
+    this.activeOrderLinePosition?.remove();
+    this.activeOrderLinePosition = undefined;
+
     this.tradingWidget?.applyOverrides({
       'scalesProperties.showSeriesLastValue': true,
       'mainSeriesProperties.showPriceLine': true,

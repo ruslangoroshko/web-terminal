@@ -44,11 +44,16 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
           .setTime((position.openDate - 1000) / 1000)
           .setPrice(position.openPrice)
           .setArrowSpacing(0);
+
         if (marker) {
           this.activeMarkers.push({
             positionId: position.id,
             marker,
           });
+          this.rootStore.tradingViewStore.tradingWidget?.activeChart().sendBackward([
+            //@ts-ignore
+            marker._line._id,
+          ]);
         }
       }
     });
@@ -74,6 +79,10 @@ export class MarkersOnChartStore implements IMarkersOnChartStore {
         positionId: position.id,
         marker,
       });
+      this.rootStore.tradingViewStore.tradingWidget?.activeChart().sendBackward([
+        //@ts-ignore
+        marker._line._id,
+      ]);
     }
   };
 

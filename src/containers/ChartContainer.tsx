@@ -60,6 +60,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         'symbol_info',
         'context_menus',
         'main_series_scale_menu',
+        'popup_hints',
       ],
       enabled_features: ['remove_library_container_border'],
       fullscreen: false,

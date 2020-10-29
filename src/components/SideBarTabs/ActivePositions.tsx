@@ -38,6 +38,7 @@ import {
   IPositionLineAdapter,
 } from '../../vendor/charting_library/charting_library';
 import { autorun } from 'mobx';
+import { LineStyles } from '../../enums/TradingViewStyles';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -317,6 +318,24 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           await instrumentsStore.switchInstrument(position.instrument);
           tradingViewStore.clearActivePositionLine();
           tradingViewStore.selectedPosition = position;
+
+          tradingViewStore.activeOrderLinePosition = tradingViewStore.tradingWidget
+            ?.chart()
+            .createOrderLine({ disableUndo: true })
+            .setLineStyle(1)
+            .setLineWidth(2)
+            .setLineColor('rgba(73,76,81,0)')
+            .setQuantity(`x${position.multiplier}`)
+            .setQuantityBorderColor('#494C51')
+            .setQuantityTextColor('#ffffff')
+            .setQuantityBackgroundColor('#2A2C33')
+            .setText(`$${position.investmentAmount}`)
+            .setBodyBackgroundColor('#2A2C33')
+            .setBodyTextColor('#ffffff')
+            .setBodyBorderColor('#494C51')
+            .setPrice(position.openPrice)
+            .setLineLength(10);
+
           tradingViewStore.activeOrderLinePositionPnL = tradingViewStore.tradingWidget
             ?.chart()
             .createOrderLine({
@@ -328,10 +347,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             })
             .setLineStyle(1)
             .setLineWidth(2)
-            .setText(`${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL())}`)
+            .setText(`${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL()).toFixed(2)}`)
             .setQuantity('')
             .setPrice(+position.openPrice)
-            .setLineStyle(0)
             .setBodyBorderColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
             .setBodyTextColor(PnL() > 0 ? '#252636' : '#ffffff')
             .setCancelButtonBackgroundColor('#2A2C33')
@@ -340,6 +358,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             .setBodyBackgroundColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
             .setLineColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
             .setLineLength(10);
+          tradingViewStore.tradingWidget?.activeChart().bringToFront([
+            //@ts-ignore
+            tradingViewStore.activeOrderLinePositionPnL._line._id,
+            //@ts-ignore
+            tradingViewStore.activeOrderLinePosition._line._id,
+          ])
+          
         } catch (error) {
           console.log(error);
         }
@@ -419,7 +444,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               ].bid.c
             )
             .setBodyTextColor(PnL() > 0 ? '#252636' : '#ffffff')
-            .setText(`${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL())}`)
+            .setText(
+              `${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL()).toFixed(2)}`
+            );
         }
       },
       { delay: 100 }
