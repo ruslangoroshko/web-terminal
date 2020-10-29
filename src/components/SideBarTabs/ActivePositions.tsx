@@ -324,7 +324,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             .createOrderLine({ disableUndo: true })
             .setLineStyle(1)
             .setLineWidth(2)
-            .setLineColor('rgba(73,76,81,0)')
+            .setLineColor('rgba(73,76,81,1)')
             .setQuantity(`x${position.multiplier}`)
             .setQuantityBorderColor('#494C51')
             .setQuantityTextColor('#ffffff')
