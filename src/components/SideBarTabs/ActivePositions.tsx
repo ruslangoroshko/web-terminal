@@ -443,7 +443,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 instrumentsStore.activeInstrument.instrumentItem.id
               ].bid.c
             )
-            .setBodyTextColor(PnL() > 0 ? '#252636' : '#ffffff')
+            .setBodyTextColor(PnL() >= 0 ? '#252636' : '#ffffff')
             .setBodyBackgroundColor(PnL() >= 0 ? '#00FFDD' : '#ED145B')
             .setText(
               `${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL()).toFixed(2)}`
