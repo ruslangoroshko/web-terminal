@@ -444,7 +444,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               ].bid.c
             )
             .setBodyTextColor(PnL() > 0 ? '#252636' : '#ffffff')
-            .setBodyBackgroundColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
+            .setBodyBackgroundColor(PnL() >= 0 ? '#00FFDD' : '#ED145B')
             .setText(
               `${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL()).toFixed(2)}`
             );
