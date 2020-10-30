@@ -19,7 +19,7 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
 import depositMethod from '../../constants/depositMethod';
-import InputMask, { InputState, MaskOptions } from 'react-input-mask';
+import InputMask from 'react-input-mask';
 
 import LabelBgIcon from '../../assets/svg/icon-triangle-error.svg';
 
@@ -232,13 +232,6 @@ const VisaMasterCardForm = () => {
     });
   }, []);
 
-  const handleChangeNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.persist()
-    setTimeout(() => {
-      setFieldValue('cardNumber', e.target.value);
-    }, 0);
-  };
-
   return (
     <FlexContainer flexDirection="column" padding="32px 0 0 68px">
       <form autoComplete="on" noValidate onSubmit={handleSubmit}>
@@ -379,7 +372,7 @@ const VisaMasterCardForm = () => {
                 /\d/,
                 /\d/,
               ]}
-              onChange={e => e.preventDefault()}
+              onChange={(e) => e.preventDefault()}
               onInput={handleChange}
               autoComplete="cc-number"
               value={values.cardNumber}
@@ -498,6 +491,8 @@ const VisaMasterCardForm = () => {
           >
             <PrimaryTextSpan color="#003A38" fontSize="14px" fontWeight="bold">
               {t('Deposit')} {mainAppStore.activeAccount?.symbol}
+            </PrimaryTextSpan>
+            <PrimaryTextSpan color="#003A38" fontSize="14px" fontWeight="bold">
               {values.amount}
             </PrimaryTextSpan>
           </PrimaryButton>
