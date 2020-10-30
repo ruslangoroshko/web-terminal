@@ -7,8 +7,6 @@ import Page from '../../constants/Pages';
 import { useStores } from '../../hooks/useStores';
 import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import IconClose from '../../assets/svg/icon-close.svg';
-import VisaMasterImage from '../../assets/images/visa-master.png';
-import BitcoinImage from '../../assets/images/bitcoin.png';
 
 import SvgIcon from '../SvgIcon';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -25,11 +23,9 @@ import mixpanelEvents from '../../constants/mixpanelEvents';
 
 import BitcoinForm from './BitcoinForm';
 import VisaMasterCardForm from './VisaMasterCardForm';
-import BankTransferForm from './BankTransferForm';
 
 import CardIcon from '../../assets/svg/payments/icon-card.svg';
 import BitcoinIcon from '../../assets/svg/payments/icon-bitcoin.svg';
-import BankTransferIcon from '../../assets/svg/payments/icon-banktransfer.svg';
 
 import MastercardIdCheckImage from '../../assets/images/mastercard-id-check.png';
 import SslCertifiedImage from '../../assets/images/ssl-certified.png';
@@ -37,11 +33,6 @@ import VisaSecureImage from '../../assets/images/visa-secure.png';
 import NotificationPopup from '../NotificationPopup';
 
 const depositList = [
-  // {
-  //   id: DepositTypeEnum.BankTransfer,
-  //   name: 'Visa / Mastercard',
-  //   icon: CardIcon,
-  // },
   {
     id: DepositTypeEnum.VisaMaster,
     name: 'Visa / Mastercard',

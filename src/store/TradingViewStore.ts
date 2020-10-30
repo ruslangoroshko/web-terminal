@@ -41,6 +41,7 @@ export class TradingViewStore implements ContextProps {
 
   @action
   clearActivePositionLine = () => {
+    this.selectedPosition = undefined;
     this.activeOrderLinePositionPnL?.remove();
     this.activeOrderLinePositionPnL = undefined;
     this.activeOrderLinePosition?.remove();

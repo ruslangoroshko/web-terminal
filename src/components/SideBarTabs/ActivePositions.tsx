@@ -39,6 +39,7 @@ import {
 } from '../../vendor/charting_library/charting_library';
 import { autorun } from 'mobx';
 import { LineStyles } from '../../enums/TradingViewStyles';
+import { Observer } from 'mobx-react-lite';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -364,7 +365,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           //   //@ts-ignore
           //   tradingViewStore.activeOrderLinePosition._line._id,
           // ])
-          
         } catch (error) {
           console.log(error);
         }
@@ -443,7 +443,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                 instrumentsStore.activeInstrument.instrumentItem.id
               ].bid.c
             )
-            .setBodyTextColor(PnL() > 0 ? '#252636' : '#ffffff')
+            .setBodyTextColor(PnL() >= 0 ? '#252636' : '#ffffff')
+            .setBodyBackgroundColor(PnL() >= 0 ? '#00FFDD' : '#ED145B')
             .setText(
               `${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL()).toFixed(2)}`
             );
@@ -464,205 +465,229 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   }, []);
 
   return (
-    <InstrumentInfoWrapper
-      padding="8px 8px 0 12px"
-      ref={instrumentRef}
-      flexDirection="column"
-      onClick={setInstrumentActive}
-      minHeight="79px"
-    >
-      <InstrumentInfoWrapperForBorder
-        justifyContent="space-between"
-        padding="0 0 8px 0"
-      >
-        <FlexContainer width="32px" alignItems="flex-start">
-          <ImageContainer instrumentId={position.instrument} />
-        </FlexContainer>
-        <FlexContainer flexDirection="column" margin="0 6px 0 0">
-          <PrimaryTextSpan fontSize="12px" lineHeight="14px" marginBottom="2px">
-            {activeInstrument()?.name}
-          </PrimaryTextSpan>
-          <FlexContainer margin="0 0 12px 0" alignItems="center">
-            <FlexContainer margin="0 4px 0 0">
-              <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
+    <Observer>
+      {() => (
+        <InstrumentInfoWrapper
+          padding="8px 8px 0 12px"
+          ref={instrumentRef}
+          flexDirection="column"
+          onClick={setInstrumentActive}
+          minHeight="79px"
+          className={
+            tradingViewStore.selectedPosition?.id === position.id
+              ? 'active'
+              : ''
+          }
+        >
+          <InstrumentInfoWrapperForBorder
+            justifyContent="space-between"
+            padding="0 0 8px 0"
+          >
+            <FlexContainer width="32px" alignItems="flex-start">
+              <ImageContainer instrumentId={position.instrument} />
             </FlexContainer>
-            <PrimaryTextSpan
-              fontSize="10px"
-              color={isBuy ? '#00FFDD' : '#ED145B'}
-              textTransform="uppercase"
-              fontWeight="bold"
-            >
-              {isBuy ? t('Buy') : t('Sell')}
-            </PrimaryTextSpan>
-          </FlexContainer>
-          <PrimaryTextSpan
-            color="rgba(255, 255, 255, 0.5)"
-            fontSize="10px"
-            lineHeight="12px"
-          >
-            {moment(position.openDate).format('DD MMM, HH:mm:ss')}
-          </PrimaryTextSpan>
-        </FlexContainer>
-        <FlexContainer flexDirection="column" alignItems="flex-end">
-          <PrimaryTextSpan marginBottom="4px" fontSize="12px" lineHeight="14px">
-            {mainAppStore.activeAccount?.symbol}
-            {position.investmentAmount.toFixed(2)}
-          </PrimaryTextSpan>
-          <PrimaryTextSpan
-            color="rgba(255, 255, 255, 0.5)"
-            fontSize="10px"
-            lineHeight="12px"
-            marginBottom="12px"
-          >
-            &times;{position.multiplier}
-          </PrimaryTextSpan>
+            <FlexContainer flexDirection="column" margin="0 6px 0 0">
+              <PrimaryTextSpan
+                fontSize="12px"
+                lineHeight="14px"
+                marginBottom="2px"
+              >
+                {activeInstrument()?.name}
+              </PrimaryTextSpan>
+              <FlexContainer margin="0 0 12px 0" alignItems="center">
+                <FlexContainer margin="0 4px 0 0">
+                  <SvgIcon
+                    {...Icon}
+                    fillColor={isBuy ? '#00FFDD' : '#ED145B'}
+                  />
+                </FlexContainer>
+                <PrimaryTextSpan
+                  fontSize="10px"
+                  color={isBuy ? '#00FFDD' : '#ED145B'}
+                  textTransform="uppercase"
+                  fontWeight="bold"
+                >
+                  {isBuy ? t('Buy') : t('Sell')}
+                </PrimaryTextSpan>
+              </FlexContainer>
+              <PrimaryTextSpan
+                color="rgba(255, 255, 255, 0.5)"
+                fontSize="10px"
+                lineHeight="12px"
+              >
+                {moment(position.openDate).format('DD MMM, HH:mm:ss')}
+              </PrimaryTextSpan>
+            </FlexContainer>
+            <FlexContainer flexDirection="column" alignItems="flex-end">
+              <PrimaryTextSpan
+                marginBottom="4px"
+                fontSize="12px"
+                lineHeight="14px"
+              >
+                {mainAppStore.activeAccount?.symbol}
+                {position.investmentAmount.toFixed(2)}
+              </PrimaryTextSpan>
+              <PrimaryTextSpan
+                color="rgba(255, 255, 255, 0.5)"
+                fontSize="10px"
+                lineHeight="12px"
+                marginBottom="12px"
+              >
+                &times;{position.multiplier}
+              </PrimaryTextSpan>
 
-          <FlexContainer ref={tooltipWrapperRef}>
-            <InformationPopup
-              classNameTooltip={`position_${position.id}`}
-              bgColor="#000"
-              width="200px"
-              direction="bottom"
-            >
-              <FlexContainer flexDirection="column" width="100%">
-                <FlexContainer
-                  justifyContent="space-between"
-                  margin="0 0 8px 0"
+              <FlexContainer ref={tooltipWrapperRef}>
+                <InformationPopup
+                  classNameTooltip={`position_${position.id}`}
+                  bgColor="#000"
+                  width="200px"
+                  direction="bottom"
                 >
-                  <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.4)"
-                    fontSize="12px"
-                  >
-                    {t('Price opened')}
-                  </PrimaryTextSpan>
-                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {t('at')} {position.openPrice.toFixed(+precision)}
-                  </PrimaryTextSpan>
-                </FlexContainer>
+                  <FlexContainer flexDirection="column" width="100%">
+                    <FlexContainer
+                      justifyContent="space-between"
+                      margin="0 0 8px 0"
+                    >
+                      <PrimaryTextSpan
+                        color="rgba(255, 255, 255, 0.4)"
+                        fontSize="12px"
+                      >
+                        {t('Price opened')}
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        {t('at')} {position.openPrice.toFixed(+precision)}
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+                    <FlexContainer
+                      justifyContent="space-between"
+                      margin="0 0 8px 0"
+                    >
+                      <PrimaryTextSpan
+                        color="rgba(255, 255, 255, 0.4)"
+                        fontSize="12px"
+                      >
+                        {t('Opened')}
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        {moment(position.openDate).format('DD MMM, HH:mm:ss')}
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+                    <FlexContainer
+                      justifyContent="space-between"
+                      margin="0 0 8px 0"
+                    >
+                      <PrimaryTextSpan
+                        color="rgba(255, 255, 255, 0.4)"
+                        fontSize="12px"
+                      >
+                        {t('Equity')}
+                      </PrimaryTextSpan>
+                      <EquityPnL position={position} />
+                    </FlexContainer>
+                    <FlexContainer
+                      justifyContent="space-between"
+                      margin="0 0 8px 0"
+                    >
+                      <PrimaryTextSpan
+                        color="rgba(255, 255, 255, 0.4)"
+                        fontSize="12px"
+                      >
+                        {t('Overnight fee')}
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        {getNumberSign(position.swap)}
+                        {mainAppStore.activeAccount?.symbol}
+                        {Math.abs(position.swap).toFixed(2)}
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+                    <FlexContainer justifyContent="space-between">
+                      <PrimaryTextSpan
+                        color="rgba(255, 255, 255, 0.4)"
+                        fontSize="12px"
+                      >
+                        {t('Position ID')}
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        {position.id}
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+                  </FlexContainer>
+                </InformationPopup>
+              </FlexContainer>
+            </FlexContainer>
+            <FlexContainer flexDirection="column">
+              <FlexContainer justifyContent="flex-end" margin="0 0 8px 0">
                 <FlexContainer
-                  justifyContent="space-between"
-                  margin="0 0 8px 0"
+                  flexDirection="column"
+                  alignItems="flex-end"
+                  margin="0 8px 0 0"
                 >
-                  <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.4)"
-                    fontSize="12px"
-                  >
-                    {t('Opened')}
-                  </PrimaryTextSpan>
-                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {moment(position.openDate).format('DD MMM, HH:mm:ss')}
-                  </PrimaryTextSpan>
-                </FlexContainer>
-                <FlexContainer
-                  justifyContent="space-between"
-                  margin="0 0 8px 0"
-                >
-                  <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.4)"
-                    fontSize="12px"
-                  >
-                    {t('Equity')}
-                  </PrimaryTextSpan>
-                  <EquityPnL position={position} />
-                </FlexContainer>
-                <FlexContainer
-                  justifyContent="space-between"
-                  margin="0 0 8px 0"
-                >
-                  <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.4)"
-                    fontSize="12px"
-                  >
-                    {t('Overnight fee')}
-                  </PrimaryTextSpan>
-                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {getNumberSign(position.swap)}
-                    {mainAppStore.activeAccount?.symbol}
-                    {Math.abs(position.swap).toFixed(2)}
-                  </PrimaryTextSpan>
-                </FlexContainer>
-                <FlexContainer justifyContent="space-between">
-                  <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.4)"
-                    fontSize="12px"
-                  >
-                    {t('Position ID')}
-                  </PrimaryTextSpan>
-                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {position.id}
-                  </PrimaryTextSpan>
+                  <ActivePositionPnL position={position} />
+                  <ActivePositionPnLPercent position={position} />
                 </FlexContainer>
               </FlexContainer>
-            </InformationPopup>
-          </FlexContainer>
-        </FlexContainer>
-        <FlexContainer flexDirection="column">
-          <FlexContainer justifyContent="flex-end" margin="0 0 8px 0">
-            <FlexContainer
-              flexDirection="column"
-              alignItems="flex-end"
-              margin="0 8px 0 0"
-            >
-              <ActivePositionPnL position={position} />
-              <ActivePositionPnLPercent position={position} />
-            </FlexContainer>
-          </FlexContainer>
-          <FlexContainer ref={clickableWrapper}>
-            {((touched.sl && errors.sl) || (touched.tp && errors.tp)) && (
-              <ErropPopup
-                textColor="#fffccc"
-                bgColor={ColorsPallete.RAZZMATAZZ}
-                classNameTooltip={Fields.AMOUNT}
-                direction="left"
-              >
-                {errors.sl || errors.tp}
-              </ErropPopup>
-            )}
+              <FlexContainer ref={clickableWrapper}>
+                {((touched.sl && errors.sl) || (touched.tp && errors.tp)) && (
+                  <ErropPopup
+                    textColor="#fffccc"
+                    bgColor={ColorsPallete.RAZZMATAZZ}
+                    classNameTooltip={Fields.AMOUNT}
+                    direction="left"
+                  >
+                    {errors.sl || errors.tp}
+                  </ErropPopup>
+                )}
 
-            <CustomForm>
-              <AutoClosePopupSideBar
-                ref={instrumentRef}
-                stopLossValue={position.sl}
-                takeProfitValue={position.tp}
-                stopLossType={position.slType}
-                takeProfitType={position.tpType}
-                updateSLTP={handleApply}
-                stopLossError={errors.sl}
-                takeProfitError={errors.tp}
-                removeSl={removeSL}
-                removeTP={removeTP}
-                resetForm={resetForm}
-              >
-                <SetSLTPButton>
-                  <PrimaryTextSpan
-                    fontSize="12px"
-                    lineHeight="14px"
-                    color={position.tp ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
+                <CustomForm>
+                  <AutoClosePopupSideBar
+                    ref={instrumentRef}
+                    stopLossValue={position.sl}
+                    takeProfitValue={position.tp}
+                    stopLossType={position.slType}
+                    takeProfitType={position.tpType}
+                    updateSLTP={handleApply}
+                    stopLossError={errors.sl}
+                    takeProfitError={errors.tp}
+                    removeSl={removeSL}
+                    removeTP={removeTP}
+                    resetForm={resetForm}
                   >
-                    {t('TP')}
-                  </PrimaryTextSpan>
-                  &nbsp;
-                  <PrimaryTextSpan
-                    fontSize="12px"
-                    lineHeight="14px"
-                    color={position.sl ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'}
-                  >
-                    {t('SL')}
-                  </PrimaryTextSpan>
-                </SetSLTPButton>
-              </AutoClosePopupSideBar>
-            </CustomForm>
-            <ClosePositionPopup
-              applyHandler={closePosition}
-              buttonLabel={`${t('Close')}`}
-              ref={instrumentRef}
-              confirmText={`${t('Close position')}?`}
-              isButton
-            ></ClosePositionPopup>
-          </FlexContainer>
-        </FlexContainer>
-      </InstrumentInfoWrapperForBorder>
-    </InstrumentInfoWrapper>
+                    <SetSLTPButton>
+                      <PrimaryTextSpan
+                        fontSize="12px"
+                        lineHeight="14px"
+                        color={
+                          position.tp ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'
+                        }
+                      >
+                        {t('TP')}
+                      </PrimaryTextSpan>
+                      &nbsp;
+                      <PrimaryTextSpan
+                        fontSize="12px"
+                        lineHeight="14px"
+                        color={
+                          position.sl ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'
+                        }
+                      >
+                        {t('SL')}
+                      </PrimaryTextSpan>
+                    </SetSLTPButton>
+                  </AutoClosePopupSideBar>
+                </CustomForm>
+                <ClosePositionPopup
+                  applyHandler={closePosition}
+                  buttonLabel={`${t('Close')}`}
+                  ref={instrumentRef}
+                  confirmText={`${t('Close position')}?`}
+                  isButton
+                ></ClosePositionPopup>
+              </FlexContainer>
+            </FlexContainer>
+          </InstrumentInfoWrapperForBorder>
+        </InstrumentInfoWrapper>
+      )}
+    </Observer>
   );
 };
 
@@ -672,7 +697,8 @@ const InstrumentInfoWrapper = styled(FlexContainer)`
   transition: all 0.2s ease;
   will-change: background-color;
 
-  &:hover {
+  &:hover,
+  &.active {
     background-color: rgba(0, 0, 0, 0.3);
     cursor: pointer;
   }
