@@ -410,6 +410,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.isAuthorized = false;
     this.rootStore.quotesStore.activePositions = [];
     this.rootStore.quotesStore.pendingOrders = [];
+    this.rootStore.withdrawalStore.history = null;
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
     this.activeAccount = undefined;
     this.activeAccountId = '';
