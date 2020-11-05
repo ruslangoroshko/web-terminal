@@ -33,22 +33,22 @@ const DatePickerAccountBalanceDropdown: FC<Props> = observer(({ datesChangeCallb
 
     switch (dateRange) {
       case ShowDatesDropdownEnum.Today:
-        dateRangeAccountBalanceStore.startDate = moment().subtract(1, 'days');
+        dateRangeAccountBalanceStore.startDate = moment().startOf('day').utc(true);
         dateRangeAccountBalanceStore.endDate = moment();
         break;
 
       case ShowDatesDropdownEnum.Week:
-        dateRangeAccountBalanceStore.startDate = moment().subtract(1, 'weeks');
+        dateRangeAccountBalanceStore.startDate = moment().subtract(1, 'weeks').startOf('day').utc(true);
         dateRangeAccountBalanceStore.endDate = moment();
         break;
 
       case ShowDatesDropdownEnum.Month:
-        dateRangeAccountBalanceStore.startDate = moment().subtract(1, 'months');
+        dateRangeAccountBalanceStore.startDate = moment().subtract(1, 'months').startOf('day').utc(true);
         dateRangeAccountBalanceStore.endDate = moment();
         break;
 
       case ShowDatesDropdownEnum.Year:
-        dateRangeAccountBalanceStore.startDate = moment().subtract(1, 'years');
+        dateRangeAccountBalanceStore.startDate = moment().subtract(1, 'years').startOf('day').utc(true);
         dateRangeAccountBalanceStore.endDate = moment();
         break;
 
