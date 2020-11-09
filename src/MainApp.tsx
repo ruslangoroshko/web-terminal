@@ -8,7 +8,6 @@ import { slickSliderStyles } from './styles/slickSlider';
 import 'react-dates/lib/css/_datepicker.css';
 import reactDatePickerOverrides from './styles/react-date-picker-overrides';
 import { useStores } from './hooks/useStores';
-import { Observer } from 'mobx-react-lite';
 import NetworkErrorPopup from './components/NetworkErrorPopup';
 import { useTranslation } from 'react-i18next';
 import { autorun } from 'mobx';
@@ -41,18 +40,9 @@ const MainApp: FC = () => {
           src={`https://www.google.com/recaptcha/api.js?render=${mainAppStore.initModel.recaptchaToken}`}
         ></script>
       </Helmet>
-      <Observer>
-        {() => (
-          <>
-            {!mainAppStore.isInitLoading && (
-              <Router>
-                <RoutingLayout></RoutingLayout>
-              </Router>
-            )}
-          </>
-        )}
-      </Observer>
-
+      <Router>
+        <RoutingLayout></RoutingLayout>
+      </Router>
       <Global
         styles={css`
           @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic,cyrillic-ext');
