@@ -165,6 +165,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
                   alignItems="center"
                   padding="0 20px 0 0"
                   width="100%"
+                  flexWrap="wrap"
                 >
                   <PrimaryTextSpan color="#fffccc" fontSize="14px">
                     {renderTPValue()}

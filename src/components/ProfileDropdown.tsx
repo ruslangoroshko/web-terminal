@@ -123,20 +123,28 @@ function ProfileDropdown() {
             marginRight="8px"
             backgroundColor="#77797D"
           >
-            <SvgIcon width={25} height={25} {...IconUser} fillColor={'rgba(196, 196, 196, 0.5)'} />
+            <SvgIcon width={25} height={25} {...IconUser} fillColor="rgba(196, 196, 196, 0.5)" />
           </FlexContainer>
           <FlexContainer
-            flexDirection={'column'}
+            flexDirection="column"
+            width="calc(100% - 50px)"
           >
             {!!mainAppStore.profileName.length && <PrimaryTextSpan
               fontSize="12px"
               color="#fffccc"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+              title={mainAppStore.profileName}
             >
               {mainAppStore.profileName}
             </PrimaryTextSpan>}
             <PrimaryTextSpan
               fontSize="12px"
               color="rgba(255, 255, 255, 0.4)"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              title={mainAppStore.profileEmail}
             >
               {mainAppStore.profileEmail}
             </PrimaryTextSpan>
