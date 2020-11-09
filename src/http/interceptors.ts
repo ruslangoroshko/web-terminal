@@ -4,7 +4,7 @@ import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { MainAppStore } from '../store/MainAppStore';
 import RequestHeaders from '../constants/headers';
 
-const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
+const injectInerceptors = (mainAppStore: MainAppStore) => {
   // TODO: research init flow
   mainAppStore.isInterceptorsInjected = true;
   axios.interceptors.response.use(
@@ -62,13 +62,18 @@ const injectInerceptors = (tradingUrl: string, mainAppStore: MainAppStore) => {
   );
   axios.interceptors.request.use(function (config: AxiosRequestConfig) {
     // TODO: sink about eat
-    if (IS_LIVE && tradingUrl && config.url && !config.url.includes('auth/')) {
+    if (
+      IS_LIVE &&
+      mainAppStore.initModel.tradingUrl &&
+      config.url &&
+      !config.url.includes('auth/')
+    ) {
       if (config.url.includes('://')) {
         const arrayOfSubpath = config.url.split('://')[1].split('/');
         const subPath = arrayOfSubpath.slice(1).join('/');
-        config.url = `${tradingUrl}/${subPath}`;
+        config.url = `${mainAppStore.initModel.tradingUrl}/${subPath}`;
       } else {
-        config.url = `${tradingUrl}${config.url}`;
+        config.url = `${mainAppStore.initModel.tradingUrl}${config.url}`;
       }
     }
     config.headers[RequestHeaders.ACCEPT_LANGUAGE] = `${mainAppStore.lang}`;

@@ -394,7 +394,7 @@ class API {
             policyUrl: '',
             supportUrl: '',
             termsUrl: '',
-            tradingUrl: '',
+            tradingUrl: '/',
             authUrl: '',
             mixpanelToken: '582507549d28c813188211a0d15ec940',
             recaptchaToken: '',

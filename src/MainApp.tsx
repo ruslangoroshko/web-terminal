@@ -7,10 +7,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { slickSliderStyles } from './styles/slickSlider';
 import 'react-dates/lib/css/_datepicker.css';
 import reactDatePickerOverrides from './styles/react-date-picker-overrides';
-import LoaderFullscreen from './components/LoaderFullscreen';
 import { useStores } from './hooks/useStores';
 import { Observer } from 'mobx-react-lite';
-import injectInerceptors from './http/interceptors';
 import NetworkErrorPopup from './components/NetworkErrorPopup';
 import { useTranslation } from 'react-i18next';
 import { autorun } from 'mobx';
@@ -20,14 +18,8 @@ const MainApp: FC = () => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    if (IS_LIVE) {
-      mainAppStore.fetchTradingUrl();
-    } else {
-      mainAppStore.setTradingUrl('/');
-      injectInerceptors('/', mainAppStore);
-      mainAppStore.handleInitConnection();
-    }
-  }, [mainAppStore.isAuthorized]);
+    mainAppStore.handleInitConnection();
+  }, []);
 
   useEffect(() => {
     autorun(() => {
@@ -40,9 +32,6 @@ const MainApp: FC = () => {
   return (
     <>
       <NetworkErrorPopup />
-      <Observer>
-        {() => <LoaderFullscreen isLoading={!mainAppStore.tradingUrl} />}
-      </Observer>
       <Helmet>
         <title>{`${mainAppStore.initModel.brandName} ${t(
           'trading platform'
@@ -55,7 +44,7 @@ const MainApp: FC = () => {
       <Observer>
         {() => (
           <>
-            {!!mainAppStore.tradingUrl && (
+            {mainAppStore.isInitLoading && (
               <Router>
                 <RoutingLayout></RoutingLayout>
               </Router>
