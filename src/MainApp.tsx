@@ -19,7 +19,7 @@ const MainApp: FC = () => {
 
   useEffect(() => {
     mainAppStore.handleInitConnection();
-  }, []);
+  }, [mainAppStore.isLoading]);
 
   useEffect(() => {
     autorun(() => {
@@ -44,7 +44,7 @@ const MainApp: FC = () => {
       <Observer>
         {() => (
           <>
-            {mainAppStore.isInitLoading && (
+            {!mainAppStore.isInitLoading && (
               <Router>
                 <RoutingLayout></RoutingLayout>
               </Router>
