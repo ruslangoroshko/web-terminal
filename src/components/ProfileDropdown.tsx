@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Page from '../constants/Pages';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import { useTranslation } from 'react-i18next';
