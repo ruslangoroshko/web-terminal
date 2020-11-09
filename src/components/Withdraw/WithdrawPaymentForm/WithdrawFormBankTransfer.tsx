@@ -38,7 +38,9 @@ const WithdrawFormBankTransfer = () => {
           .min(10, `${t('min')}: $10`)
           .max(
             mainAppStore.activeAccount?.balance || 0,
-            `${t('max')}: ${mainAppStore.accounts.find((item) => item.isLive)?.balance.toFixed(2)}`
+            `${t('max')}: ${mainAppStore.accounts
+              .find((item) => item.isLive)
+              ?.balance.toFixed(2)}`
           ),
         details: yup
           .string()
@@ -55,7 +57,7 @@ const WithdrawFormBankTransfer = () => {
         details: values.details,
       };
 
-      const accountInfo = mainAppStore.accounts.find(item => item.isLive);
+      const accountInfo = mainAppStore.accounts.find((item) => item.isLive);
 
       const data: CreateWithdrawalParams = {
         accountId: accountInfo?.id || '',
@@ -65,14 +67,17 @@ const WithdrawFormBankTransfer = () => {
         data: JSON.stringify(dataParam),
       };
 
-      const result = await API.createWithdrawal(data);
+      const result = await API.createWithdrawal(
+        data,
+        mainAppStore.initModel.tradingUrl
+      );
       if (result.status === WithdrawalHistoryResponseStatus.Successful) {
         withdrawalStore.opentTab(WithdrawalTabsEnum.History);
         notificationStore.isSuccessfull = true;
       } else {
         notificationStore.isSuccessfull = false;
       }
-      
+
       if (
         result.status ===
         WithdrawalHistoryResponseStatus.WithdrawalRequestAlreadyCreated
@@ -354,7 +359,7 @@ const InputFieldText = styled.textarea`
 const InputWrapper = styled(FlexContainer)`
   border-radius: 4px;
   border: 1px solid
-    ${props => (props.hasError ? '#ED145B' : 'rgba(255, 255, 255, 0.1)')};
+    ${(props) => (props.hasError ? '#ED145B' : 'rgba(255, 255, 255, 0.1)')};
   color: #fff;
   background-color: rgba(255, 255, 255, 0.06);
 `;

@@ -25,9 +25,12 @@ const WithdrawHistoryItem = (props: Props) => {
   const { t } = useTranslation();
   const handleCancel = async (withdrawalId: string) => {
     try {
-      const result = await API.cancelWithdrawal({
-        withdrawalId,
-      });
+      const result = await API.cancelWithdrawal(
+        {
+          withdrawalId,
+        },
+        mainAppStore.initModel.tradingUrl
+      );
       if (result.status === WithdrawalHistoryResponseStatus.Successful) {
         updateHistory();
         withdrawalStore.closePendingPopup();

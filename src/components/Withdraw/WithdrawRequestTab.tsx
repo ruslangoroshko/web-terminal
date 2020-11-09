@@ -38,7 +38,9 @@ const WithdrawRequestTab = observer(() => {
   useEffect(() => {
     const initHistoryList = async () => {
       try {
-        const result = await API.getWithdrawalHistory();
+        const result = await API.getWithdrawalHistory(
+          mainAppStore.initModel.tradingUrl
+        );
         if (result.status === WithdrawalHistoryResponseStatus.Successful) {
           const isPending = result.history?.some(
             (item) =>
