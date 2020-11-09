@@ -14,7 +14,7 @@ import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
 
 const WithdrawHistoryTab = () => {
-  const { withdrawalStore, mainAppStore } = useStores();
+  const { withdrawalStore, mainAppStore, notificationStore } = useStores();
   const { t } = useTranslation();
   const initHistoryList = async () => {
     withdrawalStore.setLoad();
@@ -31,6 +31,13 @@ const WithdrawHistoryTab = () => {
 
         withdrawalStore.setHistory(sortedList);
       }
+
+      if (result.status === WithdrawalHistoryResponseStatus.SystemError) {
+        notificationStore.isSuccessfull = false;
+        notificationStore.notificationMessage = t('Technical Error');
+        notificationStore.openNotification();
+      }
+
       withdrawalStore.endLoad();
     } catch (error) {}
   };
