@@ -19,6 +19,7 @@ import OrdersExpanded from '../components/SideBarTabs/OrdersExpanded';
 import Markets from '../components/SideBarTabs/Markets';
 import DepositPopupWrapper from '../components/DepositPopup/DepositPopupWrapper';
 import DepositPaymentResultPopup from '../components/DepositPopup/DepositPaymentResultPopup/DepositPaymentResultPopup';
+import { LOCAL_STORAGE_SIDEBAR } from '../constants/global';
 
 interface Props {}
 
@@ -93,6 +94,14 @@ const RenderExpandedTabByType = observer(() => {
 const AuthorizedContainer: FC<Props> = props => {
   const { children } = props;
   const { tabsStore, mainAppStore } = useStores();
+
+  useEffect(() => {
+    const wasOpen = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
+    console.log(wasOpen);
+    if (wasOpen) {
+      tabsStore.sideBarTabType = parseInt(wasOpen);
+    }
+  }, []);
 
   return (
     <FlexContainer

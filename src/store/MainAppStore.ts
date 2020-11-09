@@ -2,6 +2,7 @@ import {
   LOCAL_STORAGE_TOKEN_KEY,
   LOCAL_STORAGE_REFRESH_TOKEN_KEY,
   LOCAL_STORAGE_LANGUAGE,
+  LOCAL_STORAGE_SIDEBAR,
 } from './../constants/global';
 import {
   UserAuthenticate,
@@ -403,6 +404,7 @@ export class MainAppStore implements MainAppStoreProps {
   signOut = () => {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
     localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY);
+    localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
     this.isInitLoading = false;
     this.isLoading = false;
     this.token = '';

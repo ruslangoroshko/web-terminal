@@ -3,6 +3,7 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import MarketsIcon from '../../assets/svg/icon-bottom-bar-markets.svg';
 import PortfolioIcon from '../../assets/svg/icon-bottom-bar-portfolio.svg';
 import IconHistory from '../../assets/svg/icon-sidebar-history.svg';
+import { LOCAL_STORAGE_SIDEBAR } from '../../constants/global';
 import SideBarButton from './SideBarButton';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
@@ -22,6 +23,7 @@ const SideBar = observer(() => {
       dateRangeStore.resetDatepicker();
     } else {
       tabsStore.sideBarTabType = tabType;
+      localStorage.setItem(LOCAL_STORAGE_SIDEBAR, `${tabType}`);
     }
 
     if (tabsStore.sideBarTabType !== SideBarTabType.History) {
