@@ -129,9 +129,9 @@ export class MainAppStore implements MainAppStoreProps {
 
   handleInitConnection = async (token = this.token) => {
     this.isLoading = true;
-    const connectionString = `${
-      IS_LIVE ? this.initModel.tradingUrl : ''
-    }/signalr`;
+    const connectionString = IS_LOCAL
+      ? WS_HOST
+      : `${this.initModel.tradingUrl}/signalr`;
     const connection = initConnection(connectionString);
 
     const connectToWebocket = async () => {
