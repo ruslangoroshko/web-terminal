@@ -39,12 +39,14 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
     }
   };
 
-  const fetchFavoriteInstruments = useCallback(
-    async (accountId: string, type: AccountTypeEnum) => {
+  const fetchFavoriteInstruments = useCallback(async () => {
+    if (mainAppStore.activeAccount) {
       try {
         const response = await API.getFavoriteInstrumets({
-          type,
-          accountId,
+          type: mainAppStore.activeAccount?.isLive
+            ? AccountTypeEnum.Live
+            : AccountTypeEnum.Demo,
+          accountId: mainAppStore.activeAccountId,
         });
         instrumentsStore.setActiveInstrumentsIds(response);
         instrumentsStore.switchInstrument(
@@ -54,19 +56,12 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
       }
-    },
-    []
-  );
+    }
+  }, [mainAppStore.activeAccountId, mainAppStore.activeAccount]);
 
   useEffect(() => {
     if (mainAppStore.activeAccountId && instrumentsStore.instruments.length) {
-      fetchFavoriteInstruments(
-        mainAppStore.activeAccountId,
-        // sh@t from backend
-        mainAppStore.activeAccount?.isLive
-          ? AccountTypeEnum.Live
-          : AccountTypeEnum.Demo
-      );
+      fetchFavoriteInstruments();
     }
   }, [instrumentsStore.instruments, mainAppStore.activeAccountId]);
 

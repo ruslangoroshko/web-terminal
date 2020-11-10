@@ -276,7 +276,9 @@ export class MainAppStore implements MainAppStoreProps {
           [Fields.ACCOUNT_ID]: activeAccount.id,
         });
         this.activeAccount = activeAccount;
-        this.activeAccountId = activeAccount.id;
+        if (this.activeAccountId !== activeAccount.id) {
+          this.activeAccountId = activeAccount.id;
+        }
       } else {
         this.isDemoRealPopup = true;
       }
@@ -297,7 +299,10 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setActiveAccount = (account: AccountModelWebSocketDTO) => {
     this.activeAccount = account;
-    this.activeAccountId = account.id;
+    if (this.activeAccountId !== account.id) {
+      this.activeAccountId = account.id;
+    }
+
     // TODO: think how remove crutch
     this.rootStore.historyStore.positionsHistoryReport.positionsHistory = [];
     API.setKeyValue({
