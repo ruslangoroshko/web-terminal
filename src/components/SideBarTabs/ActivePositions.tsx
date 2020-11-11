@@ -357,7 +357,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             .setCancelButtonBorderColor('#494C51')
             .setCancelButtonIconColor('#ffffff')
             .setBodyBackgroundColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
-            .setLineColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
+            .setLineColor('rgba(73,76,81,1)')
             .setLineLength(10);
           // tradingViewStore.tradingWidget?.activeChart().bringToFront([
           //   //@ts-ignore
