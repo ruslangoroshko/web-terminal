@@ -48,14 +48,11 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
             : AccountTypeEnum.Demo,
           accountId: mainAppStore.activeAccountId,
         });
+
         instrumentsStore.setActiveInstrumentsIds(response);
-        if (response.length) {
-          instrumentsStore.switchInstrument(response[0]);
-        } else if (instrumentsStore.instruments.length) {
-          instrumentsStore.switchInstrument(
-            instrumentsStore.instruments[0].instrumentItem.id
-          );
-        }
+        instrumentsStore.switchInstrument(
+          response[0] || instrumentsStore.instruments[0].instrumentItem.id
+        );
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
@@ -68,10 +65,10 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
   ]);
 
   useEffect(() => {
-    if (mainAppStore.activeAccountId && instrumentsStore.instruments.length) {
+    if (instrumentsStore.instruments.length) {
       fetchFavoriteInstruments();
     }
-  }, [instrumentsStore.instruments, mainAppStore.activeAccountId]);
+  }, [instrumentsStore.instruments]);
 
   return (
     <InstrumentsWrapper>

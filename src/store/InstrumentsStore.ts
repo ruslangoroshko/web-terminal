@@ -206,7 +206,7 @@ export class InstrumentsStore implements ContextProps {
             'mainSeriesProperties.showPriceLine': true,
           });
         } else {
-          reject();
+          resolve();
         }
       }
     });
