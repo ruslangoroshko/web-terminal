@@ -167,10 +167,24 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
                   width="100%"
                   flexWrap="wrap"
                 >
-                  <PrimaryTextSpan color="#fffccc" fontSize="14px">
+                  <PrimaryTextSpan
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    whiteSpace="nowrap"
+                    title={renderTPValue()}
+                    color="#fffccc"
+                    fontSize="14px"
+                  >
                     {renderTPValue()}
                   </PrimaryTextSpan>
-                  <PrimaryTextSpan color="#fffccc" fontSize="14px">
+                  <PrimaryTextSpan
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    whiteSpace="nowrap"
+                    title={renderSLValue()}
+                    color="#fffccc"
+                    fontSize="14px"
+                  >
                     {renderSLValue()}
                   </PrimaryTextSpan>
                 </FlexContainer>
