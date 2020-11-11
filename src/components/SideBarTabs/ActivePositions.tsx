@@ -346,6 +346,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               tradingViewStore.setApplyHandler(closePosition);
               tradingViewStore.toggleActivePositionPopup(true);
             })
+            .setCancelTooltip('Close position')
             .setLineStyle(1)
             .setLineWidth(2)
             .setText(`${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL()).toFixed(2)}`)
