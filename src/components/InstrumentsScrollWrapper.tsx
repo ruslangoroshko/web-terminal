@@ -49,15 +49,23 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
           accountId: mainAppStore.activeAccountId,
         });
         instrumentsStore.setActiveInstrumentsIds(response);
-        instrumentsStore.switchInstrument(
-          response[0] || instrumentsStore.instruments[0].instrumentItem.id
-        );
+        if (response.length) {
+          instrumentsStore.switchInstrument(response[0]);
+        } else if (instrumentsStore.instruments.length) {
+          instrumentsStore.switchInstrument(
+            instrumentsStore.instruments[0].instrumentItem.id
+          );
+        }
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
       }
     }
-  }, [mainAppStore.activeAccountId, mainAppStore.activeAccount]);
+  }, [
+    mainAppStore.activeAccountId,
+    mainAppStore.activeAccount,
+    instrumentsStore.instruments,
+  ]);
 
   useEffect(() => {
     if (mainAppStore.activeAccountId && instrumentsStore.instruments.length) {
