@@ -33,7 +33,7 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
 
     switch (dateRange) {
       case ShowDatesDropdownEnum.Today:
-        dateRangeStore.startDate = moment().subtract(1, 'days');
+        dateRangeStore.startDate = moment().startOf('day');
         dateRangeStore.endDate = moment();
         break;
 
@@ -142,56 +142,6 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
               </PrimaryTextSpan>
             </DateRangeItemButton>
           </DefinedDaterangeWrapper>
-          {/* <FlexContainer padding="16px 0" position="relative">
-            <SelectDateButton onClick={dateRangeStore.toggleDatepicker}>
-              <PrimaryTextSpan>Select Date</PrimaryTextSpan>
-              <SvgIcon {...IconCalendar} fillColor="rgba(255, 255, 255, 0.6)" />
-            </SelectDateButton>
-            {dateRangeStore.focusedInput && (
-              <FlexContainer position="absolute" top="100%" left="100%">
-                <DayPickerRangeController
-                  keepOpenOnDateSelect={false}
-                  startDate={dateRangeStore.startDate}
-                  endDate={dateRangeStore.endDate}
-                  onOutsideClick={dateRangeStore.closeDatepicker}
-                  onDatesChange={({ startDate, endDate }) => {
-                    dateRangeStore.startDate = startDate || moment();
-                    dateRangeStore.endDate = endDate || moment();
-                    datesChangeCallback();
-                  }}
-                  focusedInput={dateRangeStore.focusedInput}
-                  onFocusChange={focusedInput => {
-                    dateRangeStore.focusedInput = focusedInput;
-                    if (focusedInput === null) {
-                      dateRangeStore.closeDropdown();
-                    }
-                  }}
-                  numberOfMonths={2}
-                  navNext={
-                    <ButtonRightArrow>
-                      <SvgIcon
-                        {...IconRightArrow}
-                        fillColor="rgba(255, 255, 255, 0.6)"
-                      ></SvgIcon>
-                    </ButtonRightArrow>
-                  }
-                  navPrev={
-                    <ButtonLeftArrow>
-                      <SvgIcon
-                        {...IconLeftArrow}
-                        fillColor="rgba(255, 255, 255, 0.6)"
-                      ></SvgIcon>
-                    </ButtonLeftArrow>
-                  }
-                  renderMonthElement={({ month }) => (
-                    <PrimaryTextParagraph>
-                      {month.format('MMMM YYYY')}
-                    </PrimaryTextParagraph>
-                  )}
-                />
-              </FlexContainer>
-            )}
-          </FlexContainer> */}
         </DatePickerWrapper>
       )}
     </FlexContainer>

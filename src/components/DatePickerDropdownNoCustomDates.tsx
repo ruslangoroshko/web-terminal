@@ -34,7 +34,7 @@ const {t} = useTranslation()
 
       switch (dateRange) {
         case ShowDatesDropdownEnum.Today:
-          dateRangeStore.startDate = moment().startOf('d');
+          dateRangeStore.startDate = moment().startOf('day');
           dateRangeStore.endDate = moment();
           break;
 
