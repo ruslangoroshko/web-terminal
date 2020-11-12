@@ -16,7 +16,7 @@ import API from '../helpers/API';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import initConnection from '../services/websocketService';
 import Topics from '../constants/websocketTopics';
-import Axios from 'axios';
+import Axios, { AxiosRequestConfig } from 'axios';
 import RequestHeaders from '../constants/headers';
 import KeysInApi from '../constants/keysInApi';
 import { RootStore } from './RootStore';
@@ -121,10 +121,33 @@ export class MainAppStore implements MainAppStoreProps {
     try {
       const initModel = await API.getInitModel();
       this.initModel = initModel;
+      this.setInterceptors();
     } catch (error) {
       this.rootStore.badRequestPopupStore.openModal();
       this.rootStore.badRequestPopupStore.setMessage(error);
     }
+  };
+
+  setInterceptors = () => {
+    Axios.interceptors.request.use((config: AxiosRequestConfig) => {
+      if (
+        IS_LIVE &&
+        this.initModel.tradingUrl &&
+        config.url &&
+        !config.url.includes('auth/')
+      ) {
+        if (config.url.includes('://')) {
+          const arrayOfSubpath = config.url.split('://')[1].split('/');
+          const subPath = arrayOfSubpath.slice(1).join('/');
+          config.url = `${this.initModel.tradingUrl}/${subPath}`;
+        } else {
+          config.url = `${this.initModel.tradingUrl}${config.url}`;
+        }
+      }
+
+      config.headers[RequestHeaders.ACCEPT_LANGUAGE] = `${this.lang}`;
+      return config;
+    });
   };
 
   handleInitConnection = async (token = this.token) => {
