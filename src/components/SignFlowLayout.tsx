@@ -9,10 +9,11 @@ import Logo from './Logo';
 import { useStores } from '../hooks/useStores';
 import { useTranslation } from 'react-i18next';
 import { Observer } from 'mobx-react-lite';
+import LanguageButton from './NavBar/LanguageButton';
 
 interface Props {}
 
-const SignFlowLayout: FC<Props> = props => {
+const SignFlowLayout: FC<Props> = (props) => {
   const { children } = props;
   const { mainAppStore } = useStores();
   const { t } = useTranslation();
@@ -28,6 +29,9 @@ const SignFlowLayout: FC<Props> = props => {
       height="100vh"
       position="relative"
     >
+      <FlexContainer position="absolute" top="16px" right="16px">
+        <LanguageButton></LanguageButton>
+      </FlexContainer>
       <FlexContainer>
         <FlexContainer alignItems="center">
           <FlexContainer margin="0 6px 0 0" width="154px">

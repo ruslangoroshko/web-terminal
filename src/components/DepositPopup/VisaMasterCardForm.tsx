@@ -489,10 +489,10 @@ const VisaMasterCardForm = () => {
             onClick={handlerClickSubmit}
             disabled={isSubmitting}
           >
-            <PrimaryTextSpan color="#003A38" fontSize="14px" fontWeight="bold">
+            <PrimaryTextSpan className="notranslate" color="#003A38" fontSize="14px" fontWeight="bold">
               {t('Deposit')} {mainAppStore.activeAccount?.symbol}
             </PrimaryTextSpan>
-            <PrimaryTextSpan color="#003A38" fontSize="14px" fontWeight="bold">
+            <PrimaryTextSpan className="notranslate" color="#003A38" fontSize="14px" fontWeight="bold">
               {values.amount}
             </PrimaryTextSpan>
           </PrimaryButton>

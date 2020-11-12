@@ -7,10 +7,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { slickSliderStyles } from './styles/slickSlider';
 import 'react-dates/lib/css/_datepicker.css';
 import reactDatePickerOverrides from './styles/react-date-picker-overrides';
-import LoaderFullscreen from './components/LoaderFullscreen';
 import { useStores } from './hooks/useStores';
-import { Observer } from 'mobx-react-lite';
-import injectInerceptors from './http/interceptors';
 import NetworkErrorPopup from './components/NetworkErrorPopup';
 import { useTranslation } from 'react-i18next';
 import { autorun } from 'mobx';
@@ -20,14 +17,8 @@ const MainApp: FC = () => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    if (IS_LIVE) {
-      mainAppStore.fetchTradingUrl();
-    } else {
-      mainAppStore.setTradingUrl('/');
-      injectInerceptors('/', mainAppStore);
-      mainAppStore.handleInitConnection();
-    }
-  }, [mainAppStore.isAuthorized]);
+    mainAppStore.handleInitConnection();
+  }, [mainAppStore.isLoading]);
 
   useEffect(() => {
     autorun(() => {
@@ -40,9 +31,6 @@ const MainApp: FC = () => {
   return (
     <>
       <NetworkErrorPopup />
-      <Observer>
-        {() => <LoaderFullscreen isLoading={!mainAppStore.tradingUrl} />}
-      </Observer>
       <Helmet>
         <title>{`${mainAppStore.initModel.brandName} ${t(
           'trading platform'
@@ -52,18 +40,9 @@ const MainApp: FC = () => {
           src={`https://www.google.com/recaptcha/api.js?render=${mainAppStore.initModel.recaptchaToken}`}
         ></script>
       </Helmet>
-      <Observer>
-        {() => (
-          <>
-            {!!mainAppStore.tradingUrl && (
-              <Router>
-                <RoutingLayout></RoutingLayout>
-              </Router>
-            )}
-          </>
-        )}
-      </Observer>
-
+      <Router>
+        <RoutingLayout></RoutingLayout>
+      </Router>
       <Global
         styles={css`
           @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic,cyrillic-ext');

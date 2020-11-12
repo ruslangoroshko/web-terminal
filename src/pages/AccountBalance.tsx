@@ -8,12 +8,11 @@ import { BalanceHistoryReport } from '../types/HistoryReportTypes';
 import styled from '@emotion/styled';
 import SvgIcon from '../components/SvgIcon';
 import IconNoTradingHistory from '../assets/svg/icon-no-trading-history.svg';
-import DatePickerDropdown from '../components/DatePickerDropdown';
 import { TableGrid, Th } from '../styles/TableElements';
 import BalanceHistoryItem from '../components/BalanceHistoryItem';
 import InfinityScrollList from '../components/InfinityScrollList';
 import BadRequestPopup from '../components/BadRequestPopup';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import IconClose from '../assets/svg/icon-popup-close.svg';
 import { useHistory } from 'react-router-dom';
@@ -23,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import Helmet from 'react-helmet';
 import DatePickerAccountBalanceDropdown from '../components/DatePickerAccountBalanceDropdown';
 
-function AccountBalance() {
+const AccountBalance = () => {
   const {
     mainAppStore,
     badRequestPopupStore,
@@ -213,7 +212,7 @@ function AccountBalance() {
       </FlexContainer>
     </AccountSettingsContainer>
   );
-}
+};
 
 export default AccountBalance;
 

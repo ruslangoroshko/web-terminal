@@ -2,6 +2,7 @@ import {
   LOCAL_STORAGE_TOKEN_KEY,
   LOCAL_STORAGE_REFRESH_TOKEN_KEY,
   LOCAL_STORAGE_LANGUAGE,
+  LOCAL_STORAGE_SIDEBAR,
 } from './../constants/global';
 import {
   UserAuthenticate,
@@ -24,7 +25,6 @@ import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
-import injectInerceptors from '../http/interceptors';
 import { InstrumentModelWSDTO } from '../types/InstrumentsTypes';
 import { AskBidEnum } from '../enums/AskBid';
 import { ServerError } from '../types/ServerErrorType';
@@ -32,6 +32,7 @@ import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { InitModel } from '../types/InitAppTypes';
 import { CountriesEnum } from '../enums/CountriesEnum';
 import mixapanelProps from '../constants/mixpanelProps';
+import injectInerceptors from '../http/interceptors';
 
 interface MainAppStoreProps {
   token: string;
@@ -46,7 +47,6 @@ interface MainAppStoreProps {
   activeAccount?: AccountModelWebSocketDTO;
   accounts: AccountModelWebSocketDTO[];
   setActiveAccount: (acc: AccountModelWebSocketDTO) => void;
-  tradingUrl: string;
   profileStatus: PersonalDataKYCEnum;
   isDemoRealPopup: boolean;
   signalRReconnectTimeOut: string;
@@ -75,7 +75,7 @@ export class MainAppStore implements MainAppStoreProps {
     policyUrl: '',
     supportUrl: '',
     termsUrl: '',
-    tradingUrl: '',
+    tradingUrl: '/',
     authUrl: '',
     mixpanelToken: '582507549d28c813188211a0d15ec940',
     recaptchaToken: '',
@@ -89,7 +89,6 @@ export class MainAppStore implements MainAppStoreProps {
   @observable accounts: AccountModelWebSocketDTO[] = [];
   @observable profileStatus: PersonalDataKYCEnum =
     PersonalDataKYCEnum.NotVerified;
-  @observable tradingUrl = '';
   @observable isInterceptorsInjected = false;
   @observable profilePhone = '';
   @observable profileName = '';
@@ -107,6 +106,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
+
     this.token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY) || '';
     this.refreshToken =
       localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY) || '';
@@ -114,6 +114,7 @@ export class MainAppStore implements MainAppStoreProps {
     // @ts-ignore
     this.lang =
       localStorage.getItem(LOCAL_STORAGE_LANGUAGE) || CountriesEnum.EN;
+    injectInerceptors(this);
   }
 
   initApp = async () => {
@@ -127,11 +128,10 @@ export class MainAppStore implements MainAppStoreProps {
   };
 
   handleInitConnection = async (token = this.token) => {
-    const wsConnectSub =
-      this.tradingUrl[this.tradingUrl.length - 1] === '/'
-        ? 'signalr'
-        : `/signalr`;
-    const connectionString = IS_LIVE ? this.tradingUrl + wsConnectSub : WS_HOST;
+    this.isLoading = true;
+    const connectionString = IS_LOCAL
+      ? WS_HOST
+      : `${this.initModel.tradingUrl}/signalr`;
     const connection = initConnection(connectionString);
 
     const connectToWebocket = async () => {
@@ -160,14 +160,7 @@ export class MainAppStore implements MainAppStoreProps {
       if (this.refreshToken) {
         this.postRefreshToken().then(() => {
           Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
-
-          if (IS_LIVE) {
-            this.fetchTradingUrl();
-          } else {
-            this.setTradingUrl('/');
-            injectInerceptors('/', this);
-            this.handleInitConnection();
-          }
+          this.handleInitConnection();
         });
       } else {
         this.signOut();
@@ -252,21 +245,6 @@ export class MainAppStore implements MainAppStoreProps {
     });
   };
 
-  fetchTradingUrl = async (token = this.token) => {
-    try {
-      const response = await API.getTradingUrl(this.initModel.authUrl);
-      this.setTradingUrl(response.tradingUrl);
-      if (!this.isInterceptorsInjected) {
-        injectInerceptors(response.tradingUrl, this);
-      }
-      this.handleInitConnection(token);
-    } catch (error) {
-      this.setTradingUrl('/');
-      this.isLoading = false;
-      this.isInitLoading = false;
-    }
-  };
-
   postRefreshToken = async () => {
     const refreshToken = `${this.refreshToken}`;
     this.refreshToken = '';
@@ -298,7 +276,9 @@ export class MainAppStore implements MainAppStoreProps {
           [Fields.ACCOUNT_ID]: activeAccount.id,
         });
         this.activeAccount = activeAccount;
-        this.activeAccountId = activeAccount.id;
+        if (this.activeAccountId !== activeAccount.id) {
+          this.activeAccountId = activeAccount.id;
+        }
       } else {
         this.isDemoRealPopup = true;
       }
@@ -319,7 +299,10 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setActiveAccount = (account: AccountModelWebSocketDTO) => {
     this.activeAccount = account;
-    this.activeAccountId = account.id;
+    if (this.activeAccountId !== account.id) {
+      this.activeAccountId = account.id;
+    }
+
     // TODO: think how remove crutch
     this.rootStore.historyStore.positionsHistoryReport.positionsHistory = [];
     API.setKeyValue({
@@ -339,7 +322,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.connectTimeOut = response.data.connectionTimeOut;
       this.setTokenHandler(response.data.token);
-      this.fetchTradingUrl(response.data.token);
+      this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
       mixpanel.track(mixpanelEvents.LOGIN, {
         [mixapanelProps.BRAND_NAME]: this.initModel.brandName.toLowerCase(),
@@ -363,7 +346,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.isAuthorized = true;
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.setTokenHandler(response.data.token);
-      this.fetchTradingUrl(response.data.token);
+      this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
       mixpanel.track(mixpanelEvents.LOGIN);
     }
@@ -387,8 +370,8 @@ export class MainAppStore implements MainAppStoreProps {
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
+      this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
-      this.fetchTradingUrl(response.data.token);
     }
 
     if (
@@ -403,6 +386,7 @@ export class MainAppStore implements MainAppStoreProps {
   signOut = () => {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
     localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY);
+    localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
     this.isInitLoading = false;
     this.isLoading = false;
     this.token = '';
@@ -410,15 +394,11 @@ export class MainAppStore implements MainAppStoreProps {
     this.isAuthorized = false;
     this.rootStore.quotesStore.activePositions = [];
     this.rootStore.quotesStore.pendingOrders = [];
+    this.rootStore.withdrawalStore.history = null;
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
     this.activeAccount = undefined;
     this.activeAccountId = '';
     mixpanel.reset();
-  };
-
-  @action
-  setTradingUrl = (tradingUrl: string) => {
-    this.tradingUrl = tradingUrl;
   };
 
   setTokenHandler = (token: string) => {

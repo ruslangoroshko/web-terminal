@@ -27,6 +27,7 @@ import EquityPnL from './EquityPnL';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
+import mixpanelValues from '../../constants/mixpanelValues';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -80,6 +81,7 @@ function ActivePositionExpanded(props: Props) {
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
             : 'demo',
+          [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
         });
       } else {
         mixpanel.track(mixpanelEvents.CLOSE_ORDER_FAILED, {
@@ -96,6 +98,7 @@ function ActivePositionExpanded(props: Props) {
             ? 'real'
             : 'demo',
           [mixapanelProps.ERROR_TEXT]: apiResponseCodeMessages[response.result],
+          [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
         });
       }
 

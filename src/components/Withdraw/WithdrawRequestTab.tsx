@@ -28,8 +28,9 @@ import API from '../../helpers/API';
 import { WithdrawalStatusesEnum } from '../../enums/WithdrawalStatusesEnum';
 
 const WithdrawRequestTab = observer(() => {
-  const { mainAppStore, withdrawalStore } = useStores();
+  const { mainAppStore, withdrawalStore, notificationStore } = useStores();
   const requestWrapper = useRef(document.createElement('div'));
+
   const [paymentMeyhod, setPaymentMethod] = useState(
     WithdrawalTypesEnum.BankTransfer
   );
@@ -37,7 +38,9 @@ const WithdrawRequestTab = observer(() => {
   useEffect(() => {
     const initHistoryList = async () => {
       try {
-        const result = await API.getWithdrawalHistory();
+        const result = await API.getWithdrawalHistory(
+          mainAppStore.initModel.tradingUrl
+        );
         if (result.status === WithdrawalHistoryResponseStatus.Successful) {
           const isPending = result.history?.some(
             (item) =>
@@ -48,6 +51,12 @@ const WithdrawRequestTab = observer(() => {
           if (isPending) {
             withdrawalStore.setPendingPopup();
           }
+        }
+
+        if (result.status === WithdrawalHistoryResponseStatus.SystemError) {
+          notificationStore.isSuccessfull = false;
+          notificationStore.notificationMessage = t('Technical Error');
+          notificationStore.openNotification();
         }
       } catch (error) {}
     };

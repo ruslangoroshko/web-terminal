@@ -114,9 +114,7 @@ module.exports = (env, argv) => {
         ),
       }),
       new webpack.DefinePlugin({
-        WS_HOST: ['production', 'none'].includes(argv.mode)
-          ? JSON.stringify('/signalr')
-          : JSON.stringify('http://localhost:5678/signalr'),
+        WS_HOST: JSON.stringify('http://localhost:5678/signalr'),
         API_STRING: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('')
           : JSON.stringify('http://localhost:5678'),
@@ -127,8 +125,8 @@ module.exports = (env, argv) => {
           ? JSON.stringify('/deposit')
           : JSON.stringify('http://localhost:5680/deposit'),
         API_WITHDRAWAL_STRING: ['production', 'none'].includes(argv.mode)
-          ? JSON.stringify('/withdrawal')
-          : JSON.stringify('http://localhost:5681/withdrawal'),
+          ? JSON.stringify('')
+          : JSON.stringify('http://localhost:5681'),
         CHARTING_LIBRARY_PATH: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('./charting_library/')
           : JSON.stringify('./src/vendor/charting_library/'),
