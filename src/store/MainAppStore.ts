@@ -424,7 +424,6 @@ export class MainAppStore implements MainAppStoreProps {
     mixpanel.track(mixpanelEvents.LOGOUT, {
       [mixapanelProps.BRAND_NAME]: this.initModel.brandName,
     });
-    mixpanel.reset();
   };
 
   setTokenHandler = (token: string) => {
