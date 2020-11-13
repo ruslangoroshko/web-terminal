@@ -76,7 +76,11 @@ export interface RemovePendingOrders {
 export interface UpdateSLTP {
   processId: string;
   accountId: string;
+  investmentAmount: number;
   positionId: number;
+  multiplier: number;
+  operation: AskBidEnum;
+  instrumentId: string;
   tp: number | null;
   sl: number | null;
   tpType: TpSlTypeEnum | null;

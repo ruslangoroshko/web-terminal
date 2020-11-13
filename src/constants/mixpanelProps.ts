@@ -17,11 +17,16 @@ const mixapanelProps = {
   MULTIPLIER: 'Multiplier',
   TREND: 'Trend',
   SLTP: 'SLTP',
+  SL_TYPE: 'SL type',
+  TP_TYPE: 'TP type',
+  SL_VALUE: 'SL value',
+  TP_VALUE: 'TP value',
   AVAILABLE_BALANCE: 'Available Balance',
   ACCOUNT_TYPE: 'Account Type',
   EVENT_REF: 'Event ref',
   ERROR_TEXT: 'Error text',
   SERVER_ERROR: 'Server error',
+  POSITION_ID: 'Position ID',
 };
 
 Object.freeze(mixapanelProps);
