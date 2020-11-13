@@ -40,6 +40,7 @@ import BadRequestPopup from '../BadRequestPopup';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
 import mixapanelProps from '../../constants/mixpanelProps';
+import mixpanelValues from '../../constants/mixpanelValues';
 
 // TODO: too much code, refactor
 
@@ -263,12 +264,19 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
+            [mixapanelProps.SL_TYPE]:
+              values.slType !== null ? mixpanelValues[values.slType] : null,
+            [mixapanelProps.TP_TYPE]:
+              values.tpType !== null ? mixpanelValues[values.tpType] : null,
+            [mixapanelProps.SL_VALUE]: values.sl,
+            [mixapanelProps.TP_VALUE]: values.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
               ? 'real'
               : 'demo',
+            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+            [mixapanelProps.POSITION_ID]: response.position.id,
           });
         } else {
           mixpanel.track(mixpanelEvents.LIMIT_ORDER_FAILED, {
@@ -279,7 +287,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
+            [mixapanelProps.SL_TYPE]:
+              values.slType !== null ? mixpanelValues[values.slType] : null,
+            [mixapanelProps.TP_TYPE]:
+              values.tpType !== null ? mixpanelValues[values.tpType] : null,
+            [mixapanelProps.SL_VALUE]: values.sl,
+            [mixapanelProps.TP_VALUE]: values.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -287,6 +300,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               : 'demo',
             [mixapanelProps.ERROR_TEXT]:
               apiResponseCodeMessages[response.result],
+            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
           });
         }
         resetForm();
@@ -321,12 +335,19 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
+            [mixapanelProps.SL_TYPE]:
+              values.slType !== null ? mixpanelValues[values.slType] : null,
+            [mixapanelProps.TP_TYPE]:
+              values.tpType !== null ? mixpanelValues[values.tpType] : null,
+            [mixapanelProps.SL_VALUE]: values.sl,
+            [mixapanelProps.TP_VALUE]: values.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
               ? 'real'
               : 'demo',
+            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+            [mixapanelProps.POSITION_ID]: response.position.id,
           });
         } else {
           mixpanel.track(mixpanelEvents.MARKET_ORDER_FAILED, {
@@ -337,7 +358,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.MULTIPLIER]: values.multiplier,
             [mixapanelProps.TREND]:
               values.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SLTP]: values.sl || values.tp ? true : false,
+            [mixapanelProps.SL_TYPE]:
+              values.slType !== null ? mixpanelValues[values.slType] : null,
+            [mixapanelProps.TP_TYPE]:
+              values.tpType !== null ? mixpanelValues[values.tpType] : null,
+            [mixapanelProps.SL_VALUE]: values.sl,
+            [mixapanelProps.TP_VALUE]: values.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -345,6 +371,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               : 'demo',
             [mixapanelProps.ERROR_TEXT]:
               apiResponseCodeMessages[response.result],
+            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
           });
         }
         resetForm();

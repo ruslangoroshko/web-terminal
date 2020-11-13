@@ -76,12 +76,18 @@ function ActivePositionExpanded(props: Props) {
           [mixapanelProps.MULTIPLIER]: position.multiplier,
           [mixapanelProps.TREND]:
             position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
+          [mixapanelProps.SL_TYPE]:
+            position.slType !== null ? mixpanelValues[position.slType] : null,
+          [mixapanelProps.TP_TYPE]:
+            position.tpType !== null ? mixpanelValues[position.tpType] : null,
+          [mixapanelProps.SL_VALUE]: position.sl,
+          [mixapanelProps.TP_VALUE]: position.tp,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
             : 'demo',
           [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+          [mixapanelProps.POSITION_ID]: response.position.id,
         });
       } else {
         mixpanel.track(mixpanelEvents.CLOSE_ORDER_FAILED, {
@@ -92,7 +98,12 @@ function ActivePositionExpanded(props: Props) {
           [mixapanelProps.MULTIPLIER]: position.multiplier,
           [mixapanelProps.TREND]:
             position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
+          [mixapanelProps.SL_TYPE]:
+            position.slType !== null ? mixpanelValues[position.slType] : null,
+          [mixapanelProps.TP_TYPE]:
+            position.tpType !== null ? mixpanelValues[position.tpType] : null,
+          [mixapanelProps.SL_VALUE]: position.sl,
+          [mixapanelProps.TP_VALUE]: position.tp,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
