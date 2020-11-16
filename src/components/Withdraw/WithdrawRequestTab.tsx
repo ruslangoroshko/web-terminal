@@ -52,12 +52,6 @@ const WithdrawRequestTab = observer(() => {
             withdrawalStore.setPendingPopup();
           }
         }
-
-        if (result.status === WithdrawalHistoryResponseStatus.SystemError) {
-          notificationStore.isSuccessfull = false;
-          notificationStore.notificationMessage = t('Technical Error');
-          notificationStore.openNotification();
-        }
       } catch (error) {}
     };
     initHistoryList();
