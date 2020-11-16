@@ -45,7 +45,7 @@ import mixpanelValues from '../../constants/mixpanelValues';
 // TODO: too much code, refactor
 
 const PRECISION_USD = 2;
-const DEFAULT_INVEST_AMOUNT = 10;
+const DEFAULT_INVEST_AMOUNT = 50;
 const MAX_INPUT_VALUE = 9999999.99;
 
 interface Props {
