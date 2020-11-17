@@ -13,9 +13,9 @@ function ImageContainer(props: Props) {
 
   return (
     <ImageElem
-      src={`${mainAppStore.initModel.tradingUrl}${getImageSource(
-        instrumentId
-      )}`}
+      src={`${
+        IS_LOCAL ? API_STRING : mainAppStore.initModel.tradingUrl
+      }${getImageSource(instrumentId)}`}
     />
   );
 }

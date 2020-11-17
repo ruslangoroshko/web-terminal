@@ -42,6 +42,9 @@ const mixpanelEvents = {
   KYC_STEP_3: 'kyc step 3',
   PHONE_FIELD: 'phone field',
   PHONE_FIELD_VIEW: 'phone field view',
+  LOGOUT: 'logout',
+  EDIT_SLTP: 'edit sltp',
+  EDIT_SLTP_FAILED: 'edit sltp failed',
 };
 
 Object.freeze(mixpanelEvents);

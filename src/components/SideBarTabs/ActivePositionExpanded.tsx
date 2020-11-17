@@ -27,6 +27,7 @@ import EquityPnL from './EquityPnL';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
+import mixpanelValues from '../../constants/mixpanelValues';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -75,11 +76,18 @@ function ActivePositionExpanded(props: Props) {
           [mixapanelProps.MULTIPLIER]: position.multiplier,
           [mixapanelProps.TREND]:
             position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
+          [mixapanelProps.SL_TYPE]:
+            position.slType !== null ? mixpanelValues[position.slType] : null,
+          [mixapanelProps.TP_TYPE]:
+            position.tpType !== null ? mixpanelValues[position.tpType] : null,
+          [mixapanelProps.SL_VALUE]: position.sl,
+          [mixapanelProps.TP_VALUE]: position.tp,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
             : 'demo',
+          [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+          [mixapanelProps.POSITION_ID]: response.position.id,
         });
       } else {
         mixpanel.track(mixpanelEvents.CLOSE_ORDER_FAILED, {
@@ -90,12 +98,18 @@ function ActivePositionExpanded(props: Props) {
           [mixapanelProps.MULTIPLIER]: position.multiplier,
           [mixapanelProps.TREND]:
             position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
+          [mixapanelProps.SL_TYPE]:
+            position.slType !== null ? mixpanelValues[position.slType] : null,
+          [mixapanelProps.TP_TYPE]:
+            position.tpType !== null ? mixpanelValues[position.tpType] : null,
+          [mixapanelProps.SL_VALUE]: position.sl,
+          [mixapanelProps.TP_VALUE]: position.tp,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
             : 'demo',
           [mixapanelProps.ERROR_TEXT]: apiResponseCodeMessages[response.result],
+          [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
         });
       }
 

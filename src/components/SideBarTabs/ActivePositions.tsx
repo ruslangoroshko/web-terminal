@@ -36,6 +36,7 @@ import ActivePositionPnLPercent from './ActivePositionPnLPercent';
 import { IOrderLineAdapter } from '../../vendor/charting_library/charting_library';
 import { autorun } from 'mobx';
 import { Observer } from 'mobx-react-lite';
+import mixpanelValues from '../../constants/mixpanelValues';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -75,6 +76,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       tpType: position.tpType,
       slType: position.slType,
       operation: position.operation,
+      investmentAmount: position.investmentAmount,
+      multiplier: position.multiplier,
     }),
     [position]
   );
@@ -88,9 +91,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     () => quotesStore.quotes[position.instrument].bid.c,
     [quotesStore.quotes[position.instrument].bid.c, position.instrument]
   );
-
-  const positionColor =
-    position.operation === AskBidEnum.Buy ? '#3BFF8A' : '#FF557E';
 
   const validationSchema = useCallback(
     () =>
@@ -262,7 +262,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     [currentPriceBid, currentPriceAsk, position]
   );
 
-  const closePosition = async () => {
+  const closePosition = (closeFrom: string) => async () => {
     try {
       const response = await API.closePosition({
         accountId: mainAppStore.activeAccount!.id,
@@ -286,11 +286,18 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           [mixapanelProps.MULTIPLIER]: position.multiplier,
           [mixapanelProps.TREND]:
             position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
+          [mixapanelProps.SL_TYPE]:
+            position.slType !== null ? mixpanelValues[position.slType] : null,
+          [mixapanelProps.TP_TYPE]:
+            position.tpType !== null ? mixpanelValues[position.tpType] : null,
+          [mixapanelProps.SL_VALUE]: position.sl,
+          [mixapanelProps.TP_VALUE]: position.tp,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
             : 'demo',
+          [mixapanelProps.EVENT_REF]: closeFrom,
+          [mixapanelProps.POSITION_ID]: response.position.id,
         });
 
         notificationStore.notificationMessage = t(
@@ -308,12 +315,18 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           [mixapanelProps.MULTIPLIER]: position.multiplier,
           [mixapanelProps.TREND]:
             position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
+          [mixapanelProps.SL_TYPE]:
+            position.slType !== null ? mixpanelValues[position.slType] : null,
+          [mixapanelProps.TP_TYPE]:
+            position.tpType !== null ? mixpanelValues[position.tpType] : null,
+          [mixapanelProps.SL_VALUE]: position.sl,
+          [mixapanelProps.TP_VALUE]: position.tp,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
             : 'demo',
           [mixapanelProps.ERROR_TEXT]: apiResponseCodeMessages[response.result],
+          [mixapanelProps.EVENT_REF]: closeFrom,
         });
         notificationStore.notificationMessage = t(
           apiResponseCodeMessages[response.result]
@@ -325,33 +338,86 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     } catch (error) {}
   };
 
-  const updateSLTP = async (values: UpdateSLTP) => {
-    const valuesToSubmit = {
-      ...values,
-      slType: values.sl ? values.slType : null,
-      tpType: values.tp ? values.tpType : null,
-      sl: values.sl || null,
-      tp: values.tp || null,
-    };
-    try {
-      const response = await API.updateSLTP(valuesToSubmit);
-      if (tradingViewStore.selectedPosition?.id === values.positionId) {
-        checkSL(valuesToSubmit.slType, valuesToSubmit.sl);
-        checkTP(valuesToSubmit.tpType, valuesToSubmit.tp);
+  const updateSLTP = useCallback(
+    async (values: UpdateSLTP) => {
+      const valuesToSubmit = {
+        ...values,
+        slType: values.sl ? values.slType : null,
+        tpType: values.tp ? values.tpType : null,
+        sl: values.sl || null,
+        tp: values.tp || null,
+      };
+      try {
+        const response = await API.updateSLTP(valuesToSubmit);
+        if (tradingViewStore.selectedPosition?.id === values.positionId) {
+          checkSL(valuesToSubmit.slType, valuesToSubmit.sl);
+          checkTP(valuesToSubmit.tpType, valuesToSubmit.tp);
+        }
+        tradingViewStore.toggleMovedPositionPopup(false);
+        if (response.result === OperationApiResponseCodes.Ok) {
+          mixpanel.track(mixpanelEvents.EDIT_SLTP, {
+            [mixapanelProps.AMOUNT]: position.investmentAmount,
+            [mixapanelProps.ACCOUNT_CURRENCY]:
+              mainAppStore.activeAccount?.currency || '',
+            [mixapanelProps.INSTRUMENT_ID]: position.instrument,
+            [mixapanelProps.MULTIPLIER]: position.multiplier,
+            [mixapanelProps.TREND]:
+              position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+            [mixapanelProps.SL_TYPE]:
+              position.slType !== null ? mixpanelValues[position.slType] : null,
+            [mixapanelProps.TP_TYPE]:
+              position.tpType !== null ? mixpanelValues[position.tpType] : null,
+            [mixapanelProps.SL_VALUE]: position.sl,
+            [mixapanelProps.TP_VALUE]: position.tp,
+            [mixapanelProps.AVAILABLE_BALANCE]:
+              mainAppStore.activeAccount?.balance || 0,
+            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+              ? 'real'
+              : 'demo',
+            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+            [mixapanelProps.POSITION_ID]: position.id,
+          });
+        } else {
+          mixpanel.track(mixpanelEvents.EDIT_SLTP_FAILED, {
+            [mixapanelProps.AMOUNT]: valuesToSubmit.investmentAmount,
+            [mixapanelProps.ACCOUNT_CURRENCY]:
+              mainAppStore.activeAccount?.currency || '',
+            [mixapanelProps.INSTRUMENT_ID]: valuesToSubmit.instrumentId,
+            [mixapanelProps.MULTIPLIER]: valuesToSubmit.multiplier,
+            [mixapanelProps.TREND]:
+              valuesToSubmit.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+            [mixapanelProps.SL_TYPE]:
+              valuesToSubmit.slType !== null
+                ? mixpanelValues[valuesToSubmit.slType]
+                : null,
+            [mixapanelProps.TP_TYPE]:
+              valuesToSubmit.tpType !== null
+                ? mixpanelValues[valuesToSubmit.tpType]
+                : null,
+            [mixapanelProps.SL_VALUE]: valuesToSubmit.sl,
+            [mixapanelProps.TP_VALUE]: valuesToSubmit.tp,
+            [mixapanelProps.AVAILABLE_BALANCE]:
+              mainAppStore.activeAccount?.balance || 0,
+            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+              ? 'real'
+              : 'demo',
+            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+          });
+          notificationStore.notificationMessage = t(
+            apiResponseCodeMessages[response.result]
+          );
+          notificationStore.isSuccessfull = false;
+          notificationStore.openNotification();
+        }
+      } catch (error) {
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
       }
-      tradingViewStore.toggleMovedPositionPopup(false);
-      if (response.result === OperationApiResponseCodes.DayOff) {
-        notificationStore.notificationMessage = t(
-          apiResponseCodeMessages[response.result]
-        );
-        notificationStore.isSuccessfull = false;
-        notificationStore.openNotification();
-      }
-    } catch (error) {
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
-    }
-  };
+    },
+    [mainAppStore.activeAccount]
+  );
 
   const {
     setFieldValue,
@@ -406,10 +472,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               disableUndo: true,
             })
             .onCancel(function (this: IOrderLineAdapter) {
-              tradingViewStore.setApplyHandler(closePosition, true);
+              tradingViewStore.setApplyHandler(
+                closePosition(mixpanelValues.CHART), true
+              );
               tradingViewStore.confirmText = 'Close position?';
               tradingViewStore.toggleActivePositionPopup(true);
             })
+            .setCancelTooltip('Close position')
             .setLineStyle(1)
             .setLineWidth(2)
             .setText(`${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL()).toFixed(2)}`)
@@ -421,7 +490,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             .setCancelButtonBorderColor('#494C51')
             .setCancelButtonIconColor('#ffffff')
             .setBodyBackgroundColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
-            .setLineColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
+            .setLineColor('rgba(73,76,81,1)')
             .setLineLength(10);
 
           checkSL(position.slType, position.sl);
@@ -929,7 +998,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                   </AutoClosePopupSideBar>
                 </CustomForm>
                 <ClosePositionPopup
-                  applyHandler={closePosition}
+                  applyHandler={closePosition(mixpanelValues.PORTFOLIO)}
                   buttonLabel={`${t('Close')}`}
                   ref={instrumentRef}
                   confirmText={`${t('Close position')}?`}

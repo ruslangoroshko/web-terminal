@@ -60,9 +60,5 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       return Promise.reject(error);
     }
   );
-  axios.interceptors.request.use(function (config: AxiosRequestConfig) {
-    config.headers[RequestHeaders.ACCEPT_LANGUAGE] = `${mainAppStore.lang}`;
-    return config;
-  });
 };
 export default injectInerceptors;

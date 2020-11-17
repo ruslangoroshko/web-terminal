@@ -32,7 +32,6 @@ const DatePickerAccountBalanceDropdown: FC<Props> = observer(
       switch (dateRange) {
         case ShowDatesDropdownEnum.Today:
           dateRangeAccountBalanceStore.startDate = moment().startOf('day');
-          console.log(dateRangeAccountBalanceStore.startDate.toString());
           dateRangeAccountBalanceStore.endDate = moment();
           break;
 
