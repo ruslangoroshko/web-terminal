@@ -74,7 +74,7 @@ function UserProfileButton() {
         mixpanel.people.set({
           [mixapanelProps.PHONE]: response.data.phone || '',
           [mixapanelProps.EMAIL]: response.data.email || '',
-          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
           [mixapanelProps.TRADER_ID]: response.data.id || '',
           [mixapanelProps.FIRST_NAME]: response.data.firstName || '',
           [mixapanelProps.KYC_STATUS]: KYCStatus[response.data.kyc],
@@ -82,7 +82,7 @@ function UserProfileButton() {
         });
         mixpanel.people.union({
           [mixapanelProps.PLATFORMS_USED]: 'web',
-          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
         });
 
         mainAppStore.setSignUpFlag(false);

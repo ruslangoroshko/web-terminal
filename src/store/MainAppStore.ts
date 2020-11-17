@@ -348,7 +348,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
       mixpanel.track(mixpanelEvents.LOGIN, {
-        [mixapanelProps.BRAND_NAME]: this.initModel.brandName.toLowerCase(),
+        [mixapanelProps.BRAND_NAME]: this.initModel.brandProperty,
       });
     }
 
@@ -422,7 +422,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.activeAccount = undefined;
     this.activeAccountId = '';
     mixpanel.track(mixpanelEvents.LOGOUT, {
-      [mixapanelProps.BRAND_NAME]: this.initModel.brandName,
+      [mixapanelProps.BRAND_NAME]: this.initModel.brandProperty,
     });
   };
 

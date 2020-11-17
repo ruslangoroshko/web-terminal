@@ -136,7 +136,7 @@ function SignUp() {
                   notificationStore.openNotification();
                   mainAppStore.isInitLoading = false;
                   mixpanel.track(mixpanelEvents.SIGN_UP_FAILED, {
-                    [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
+                    [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
                     [mixapanelProps.ERROR_TEXT]: t(
                       apiResponseCodeMessages[result]
                     ),
@@ -145,7 +145,7 @@ function SignUp() {
                 } else {
                   mainAppStore.setSignUpFlag(true);
                   mixpanel.track(mixpanelEvents.SIGN_UP, {
-                    [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
+                    [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
                   });
                   push(Page.DASHBOARD);
                 }
@@ -246,7 +246,7 @@ function SignUp() {
 
   useEffect(() => {
     mixpanel.track(mixpanelEvents.SIGN_UP_VIEW, {
-      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
+      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
     });
   }, []);
 
