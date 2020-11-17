@@ -693,7 +693,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         sl: null,
         processId: getProcessId(),
         accountId: mainAppStore.activeAccountId,
-        positionId: tradingViewStore.selectedPosition?.id
+        positionId: tradingViewStore.selectedPosition?.id,
+        investmentAmount: tradingViewStore.selectedPosition?.investmentAmount,
+        multiplier: tradingViewStore.selectedPosition?.multiplier,
+        operation: tradingViewStore.selectedPosition?.operation,
+        instrumentId: tradingViewStore.selectedPosition?.instrument
       };
       tradingViewStore.selectedPosition.sl = null;
       tradingViewStore.selectedPosition.slType = null;
@@ -717,7 +721,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           : null,
         processId: getProcessId(),
         accountId: mainAppStore.activeAccountId,
-        positionId: tradingViewStore.selectedPosition?.id
+        positionId: tradingViewStore.selectedPosition?.id,
+        investmentAmount: tradingViewStore.selectedPosition?.investmentAmount,
+        multiplier: tradingViewStore.selectedPosition?.multiplier,
+        operation: tradingViewStore.selectedPosition?.operation,
+        instrumentId: tradingViewStore.selectedPosition?.instrument
       };
       tradingViewStore.selectedPosition.tp = null;
       tradingViewStore.selectedPosition.tpType = null;
