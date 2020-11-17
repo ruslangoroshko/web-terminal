@@ -272,7 +272,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               response.order.tpType !== null
                 ? mixpanelValues[response.order.tpType]
                 : null,
-            [mixapanelProps.SL_VALUE]: response.order.sl,
+            [mixapanelProps.SL_VALUE]:
+              response.order.sl !== null ? Math.abs(response.order.sl) : null,
             [mixapanelProps.TP_VALUE]: response.order.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
@@ -299,7 +300,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               modelToSubmit.tpType !== null
                 ? mixpanelValues[modelToSubmit.tpType]
                 : null,
-            [mixapanelProps.SL_VALUE]: modelToSubmit.sl,
+            [mixapanelProps.SL_VALUE]:
+              modelToSubmit.sl !== null ? Math.abs(modelToSubmit.sl) : null,
             [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
@@ -351,7 +353,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               response.position.tpType !== null
                 ? mixpanelValues[response.position.tpType]
                 : null,
-            [mixapanelProps.SL_VALUE]: response.position.sl,
+            [mixapanelProps.SL_VALUE]:
+              response.position.sl !== null
+                ? Math.abs(response.position.sl)
+                : null,
             [mixapanelProps.TP_VALUE]: response.position.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
@@ -378,7 +383,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               modelToSubmit.tpType !== null
                 ? mixpanelValues[modelToSubmit.tpType]
                 : null,
-            [mixapanelProps.SL_VALUE]: modelToSubmit.sl,
+            [mixapanelProps.SL_VALUE]:
+              modelToSubmit.sl !== null ? Math.abs(modelToSubmit.sl) : null,
             [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
