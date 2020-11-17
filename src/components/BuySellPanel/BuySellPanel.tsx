@@ -284,23 +284,23 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           });
         } else {
           mixpanel.track(mixpanelEvents.LIMIT_ORDER_FAILED, {
-            [mixapanelProps.AMOUNT]: response.order.investmentAmount,
+            [mixapanelProps.AMOUNT]: modelToSubmit.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
               mainAppStore.activeAccount?.currency || '',
-            [mixapanelProps.INSTRUMENT_ID]: response.order.instrument,
-            [mixapanelProps.MULTIPLIER]: response.order.multiplier,
+            [mixapanelProps.INSTRUMENT_ID]: modelToSubmit.instrumentId,
+            [mixapanelProps.MULTIPLIER]: modelToSubmit.multiplier,
             [mixapanelProps.TREND]:
-              response.order.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+              modelToSubmit.operation === AskBidEnum.Buy ? 'buy' : 'sell',
             [mixapanelProps.SL_TYPE]:
-              response.order.slType !== null
-                ? mixpanelValues[response.order.slType]
+              modelToSubmit.slType !== null
+                ? mixpanelValues[modelToSubmit.slType]
                 : null,
             [mixapanelProps.TP_TYPE]:
-              response.order.tpType !== null
-                ? mixpanelValues[response.order.tpType]
+              modelToSubmit.tpType !== null
+                ? mixpanelValues[modelToSubmit.tpType]
                 : null,
-            [mixapanelProps.SL_VALUE]: response.order.sl,
-            [mixapanelProps.TP_VALUE]: response.order.tp,
+            [mixapanelProps.SL_VALUE]: modelToSubmit.sl,
+            [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -363,23 +363,23 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           });
         } else {
           mixpanel.track(mixpanelEvents.MARKET_ORDER_FAILED, {
-            [mixapanelProps.AMOUNT]: response.position.investmentAmount,
+            [mixapanelProps.AMOUNT]: modelToSubmit.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
               mainAppStore.activeAccount?.currency || '',
-            [mixapanelProps.INSTRUMENT_ID]: response.position.instrument,
-            [mixapanelProps.MULTIPLIER]: response.position.multiplier,
+            [mixapanelProps.INSTRUMENT_ID]: modelToSubmit.instrumentId,
+            [mixapanelProps.MULTIPLIER]: modelToSubmit.multiplier,
             [mixapanelProps.TREND]:
-              response.position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+              modelToSubmit.operation === AskBidEnum.Buy ? 'buy' : 'sell',
             [mixapanelProps.SL_TYPE]:
-              response.position.slType !== null
-                ? mixpanelValues[response.position.slType]
+              modelToSubmit.slType !== null
+                ? mixpanelValues[modelToSubmit.slType]
                 : null,
             [mixapanelProps.TP_TYPE]:
-              response.position.tpType !== null
-                ? mixpanelValues[response.position.tpType]
+              modelToSubmit.tpType !== null
+                ? mixpanelValues[modelToSubmit.tpType]
                 : null,
-            [mixapanelProps.SL_VALUE]: response.position.sl,
-            [mixapanelProps.TP_VALUE]: response.position.tp,
+            [mixapanelProps.SL_VALUE]: modelToSubmit.sl,
+            [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
