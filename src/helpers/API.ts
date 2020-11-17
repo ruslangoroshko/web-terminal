@@ -55,6 +55,7 @@ import {
   cancelWithdrawalParams,
 } from '../types/WithdrawalTypes';
 import { ListForEN } from '../constants/listOfLanguages';
+import { PendingOrderResponseDTO } from '../types/PendingOrdersTypes';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -168,7 +169,7 @@ class API {
 
   openPendingOrder = async (position: OpenPendingOrder) => {
     const formData = this.convertParamsToFormData(position);
-    const response = await axios.post<OpenPositionResponseDTO>(
+    const response = await axios.post<PendingOrderResponseDTO>(
       `${API_STRING}${API_LIST.PENDING_ORDERS.ADD}`,
       formData
     );
@@ -177,7 +178,7 @@ class API {
 
   removePendingOrder = async (position: RemovePendingOrders) => {
     const formData = this.convertParamsToFormData(position);
-    const response = await axios.post<OpenPositionResponseDTO>(
+    const response = await axios.post<PendingOrderResponseDTO>(
       `${API_STRING}${API_LIST.PENDING_ORDERS.REMOVE}`,
       formData
     );

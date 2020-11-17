@@ -76,7 +76,7 @@ function ResetPassword(props: Props) {
       );
       if (response.result === OperationApiResponseCodes.Ok) {
         mixpanel.track(mixpanelEvents.FORGOT_PASSWORD_SET_NEW, {
-          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandName.toLowerCase(),
+          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
         });
         setIsSuccessfull(true);
       }

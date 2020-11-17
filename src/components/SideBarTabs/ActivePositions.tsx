@@ -76,6 +76,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       tpType: position.tpType,
       slType: position.slType,
       operation: position.operation,
+      investmentAmount: position.investmentAmount,
+      multiplier: position.multiplier,
     }),
     [position]
   );
@@ -222,12 +224,18 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           [mixapanelProps.MULTIPLIER]: position.multiplier,
           [mixapanelProps.TREND]:
             position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
+          [mixapanelProps.SL_TYPE]:
+            position.slType !== null ? mixpanelValues[position.slType] : null,
+          [mixapanelProps.TP_TYPE]:
+            position.tpType !== null ? mixpanelValues[position.tpType] : null,
+          [mixapanelProps.SL_VALUE]: position.sl,
+          [mixapanelProps.TP_VALUE]: position.tp,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
             : 'demo',
           [mixapanelProps.EVENT_REF]: closeFrom,
+          [mixapanelProps.POSITION_ID]: response.position.id,
         });
 
         notificationStore.notificationMessage = t(
@@ -245,7 +253,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           [mixapanelProps.MULTIPLIER]: position.multiplier,
           [mixapanelProps.TREND]:
             position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-          [mixapanelProps.SLTP]: position.sl || position.tp ? true : false,
+          [mixapanelProps.SL_TYPE]:
+            position.slType !== null ? mixpanelValues[position.slType] : null,
+          [mixapanelProps.TP_TYPE]:
+            position.tpType !== null ? mixpanelValues[position.tpType] : null,
+          [mixapanelProps.SL_VALUE]: position.sl,
+          [mixapanelProps.TP_VALUE]: position.tp,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
@@ -263,28 +276,82 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     } catch (error) {}
   };
 
-  const updateSLTP = async (values: UpdateSLTP) => {
-    const valuesToSubmit = {
-      ...values,
-      slType: values.sl ? values.slType : null,
-      tpType: values.tp ? values.tpType : null,
-      sl: values.sl || null,
-      tp: values.tp || null,
-    };
-    try {
-      const response = await API.updateSLTP(valuesToSubmit);
-      if (response.result === OperationApiResponseCodes.DayOff) {
-        notificationStore.notificationMessage = t(
-          apiResponseCodeMessages[response.result]
-        );
-        notificationStore.isSuccessfull = false;
-        notificationStore.openNotification();
+  const updateSLTP = useCallback(
+    async (values: UpdateSLTP) => {
+      const valuesToSubmit = {
+        ...values,
+        slType: values.sl ? values.slType : null,
+        tpType: values.tp ? values.tpType : null,
+        sl: values.sl || null,
+        tp: values.tp || null,
+      };
+      try {
+        const response = await API.updateSLTP(valuesToSubmit);
+
+        if (response.result === OperationApiResponseCodes.Ok) {
+          mixpanel.track(mixpanelEvents.EDIT_SLTP, {
+            [mixapanelProps.AMOUNT]: position.investmentAmount,
+            [mixapanelProps.ACCOUNT_CURRENCY]:
+              mainAppStore.activeAccount?.currency || '',
+            [mixapanelProps.INSTRUMENT_ID]: position.instrument,
+            [mixapanelProps.MULTIPLIER]: position.multiplier,
+            [mixapanelProps.TREND]:
+              position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+            [mixapanelProps.SL_TYPE]:
+              position.slType !== null ? mixpanelValues[position.slType] : null,
+            [mixapanelProps.TP_TYPE]:
+              position.tpType !== null ? mixpanelValues[position.tpType] : null,
+            [mixapanelProps.SL_VALUE]: position.sl,
+            [mixapanelProps.TP_VALUE]: position.tp,
+            [mixapanelProps.AVAILABLE_BALANCE]:
+              mainAppStore.activeAccount?.balance || 0,
+            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+              ? 'real'
+              : 'demo',
+            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+            [mixapanelProps.POSITION_ID]: position.id,
+          });
+        } else {
+          mixpanel.track(mixpanelEvents.EDIT_SLTP_FAILED, {
+            [mixapanelProps.AMOUNT]: valuesToSubmit.investmentAmount,
+            [mixapanelProps.ACCOUNT_CURRENCY]:
+              mainAppStore.activeAccount?.currency || '',
+            [mixapanelProps.INSTRUMENT_ID]: valuesToSubmit.instrumentId,
+            [mixapanelProps.MULTIPLIER]: valuesToSubmit.multiplier,
+            [mixapanelProps.TREND]:
+              valuesToSubmit.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+            [mixapanelProps.SL_TYPE]:
+              valuesToSubmit.slType !== null
+                ? mixpanelValues[valuesToSubmit.slType]
+                : null,
+            [mixapanelProps.TP_TYPE]:
+              valuesToSubmit.tpType !== null
+                ? mixpanelValues[valuesToSubmit.tpType]
+                : null,
+            [mixapanelProps.SL_VALUE]: valuesToSubmit.sl,
+            [mixapanelProps.TP_VALUE]: valuesToSubmit.tp,
+            [mixapanelProps.AVAILABLE_BALANCE]:
+              mainAppStore.activeAccount?.balance || 0,
+            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+              ? 'real'
+              : 'demo',
+            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+          });
+          notificationStore.notificationMessage = t(
+            apiResponseCodeMessages[response.result]
+          );
+          notificationStore.isSuccessfull = false;
+          notificationStore.openNotification();
+        }
+      } catch (error) {
+        badRequestPopupStore.openModal();
+        badRequestPopupStore.setMessage(error);
       }
-    } catch (error) {
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
-    }
-  };
+    },
+    [mainAppStore.activeAccount]
+  );
 
   const {
     setFieldValue,
