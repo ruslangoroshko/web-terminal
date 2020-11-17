@@ -17,6 +17,8 @@ interface Props {
   removeSl: () => void;
   removeTP: () => void;
   resetForm?: () => void;
+  toggleOut?: () => void;
+  active?: boolean;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -34,9 +36,11 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       removeSl,
       removeTP,
       resetForm,
+      active,
+      toggleOut
     } = props;
 
-    const [on, toggle] = useState(false);
+    const [on, toggle] = useState(!!active);
     const [isTop, setIsTop] = useState(true);
 
     const [popupPosition, setPopupPosition] = useState({
@@ -70,6 +74,9 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     const handleClickOutside = (e: any) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         toggle(false);
+        if (!!toggleOut) {
+          toggleOut();
+        }
       }
     };
 
@@ -78,6 +85,10 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         resetForm();
       }
     }, [on]);
+
+    useEffect(() => {
+      toggle(!!active);
+    }, [active]);
 
     useEffect(() => {
       document.addEventListener('mousedown', handleClickOutside);
@@ -118,6 +129,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               isDisabled={isDisabled}
               removeSL={removeSl}
               removeTP={removeTP}
+              toggleOut={toggleOut}
             />
           </FlexContainer>
         )}

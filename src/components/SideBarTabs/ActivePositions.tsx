@@ -1,4 +1,4 @@
-import React, { FC, useRef, useCallback, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, useRef } from 'react';
 import * as yup from 'yup';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
@@ -187,6 +187,68 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
     [position, currentPriceBid, currentPriceAsk]
   );
 
+  const getActualPricing = (value: number, sltp: string) => {
+    if (tradingViewStore.selectedPosition) {
+      const swap = tradingViewStore.selectedPosition?.swap;
+      const investmentAmount = tradingViewStore.selectedPosition?.investmentAmount;
+      const multiplier = tradingViewStore.selectedPosition?.multiplier;
+      const openPrice = tradingViewStore.selectedPosition?.openPrice;
+      let actualPrice: number = tradingViewStore.selectedPosition?.openPrice;
+      if (tradingViewStore.selectedPosition?.operation === AskBidEnum.Buy && sltp === 'tp') {
+        if (tradingViewStore.selectedPosition?.tpType === TpSlTypeEnum.Currency) {
+          const profitVolume = (Math.abs(value) - swap) / (investmentAmount * multiplier);
+          actualPrice = openPrice + (profitVolume * openPrice);
+        } else {
+          actualPrice = openPrice + Math.abs(value);
+        }
+      } else if (tradingViewStore.selectedPosition?.operation === AskBidEnum.Buy && sltp === 'sl') {
+        if (tradingViewStore.selectedPosition?.slType === TpSlTypeEnum.Currency) {
+          const profitVolume = (Math.abs(value) + swap) / (investmentAmount * multiplier);
+          actualPrice = openPrice - (profitVolume * openPrice);
+        } else {
+          actualPrice = openPrice - Math.abs(value);
+        }
+      } else if (tradingViewStore.selectedPosition?.operation === AskBidEnum.Sell && sltp === 'tp') {
+        if (tradingViewStore.selectedPosition?.tpType === TpSlTypeEnum.Currency) {
+          const profitVolume = (Math.abs(value) - swap) / (investmentAmount * multiplier);
+          actualPrice = openPrice - (profitVolume * openPrice);
+        } else {
+          actualPrice = openPrice - Math.abs(value);
+        }
+      } else if (tradingViewStore.selectedPosition?.operation === AskBidEnum.Sell && sltp === 'sl') {
+        if (tradingViewStore.selectedPosition?.slType === TpSlTypeEnum.Currency) {
+          const profitVolume = (Math.abs(value) + swap) / (investmentAmount * multiplier);
+          actualPrice = openPrice + (profitVolume * openPrice);
+        } else {
+          actualPrice = openPrice + Math.abs(value);
+        }
+      }
+      return actualPrice;
+    }
+    return 0;
+  }
+
+  const getNewPricing = (value: number, sltp: string) => {
+    if (tradingViewStore.selectedPosition) {
+      const swap = tradingViewStore.selectedPosition?.swap;
+      const amount = tradingViewStore.selectedPosition?.investmentAmount;
+      const multiplier = tradingViewStore.selectedPosition?.multiplier;
+      const openPrice = tradingViewStore.selectedPosition?.openPrice;
+      let actualPrice: number = tradingViewStore.selectedPosition?.openPrice;
+      if (tradingViewStore.selectedPosition?.operation === AskBidEnum.Buy && sltp === 'tp') {
+        actualPrice = -(1 - (swap / (amount * multiplier)) - value / openPrice) * (amount * multiplier)
+      } else if (tradingViewStore.selectedPosition?.operation === AskBidEnum.Buy && sltp === 'sl') {
+        actualPrice = (1 + (swap / (amount * multiplier)) - value / openPrice) * (amount * multiplier)
+      } else if (tradingViewStore.selectedPosition?.operation === AskBidEnum.Sell && sltp === 'tp') {
+        actualPrice = (1 - (swap / (amount * multiplier)) - value / openPrice) * (amount * multiplier)
+      } else if (tradingViewStore.selectedPosition?.operation === AskBidEnum.Sell && sltp === 'sl') {
+        actualPrice = -(1 + (swap / (amount * multiplier)) - value / openPrice) * (amount * multiplier)
+      }
+      return actualPrice;
+    }
+    return 0;
+  }
+
   const PnL = useCallback(
     () =>
       calculateFloatingProfitAndLoss({
@@ -295,7 +357,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       };
       try {
         const response = await API.updateSLTP(valuesToSubmit);
-
+        if (tradingViewStore.selectedPosition?.id === values.positionId) {
+          checkSL(valuesToSubmit.slType, valuesToSubmit.sl);
+          checkTP(valuesToSubmit.tpType, valuesToSubmit.tp);
+        }
+        tradingViewStore.toggleMovedPositionPopup(false);
         if (response.result === OperationApiResponseCodes.Ok) {
           mixpanel.track(mixpanelEvents.EDIT_SLTP, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
@@ -423,8 +489,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             })
             .onCancel(function (this: IOrderLineAdapter) {
               tradingViewStore.setApplyHandler(
-                closePosition(mixpanelValues.CHART)
+                closePosition(mixpanelValues.CHART), true
               );
+              tradingViewStore.confirmText = 'Close position?';
               tradingViewStore.toggleActivePositionPopup(true);
             })
             .setCancelTooltip('Close position')
@@ -441,6 +508,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             .setBodyBackgroundColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
             .setLineColor('rgba(73,76,81,1)')
             .setLineLength(10);
+
+          checkSL(position.slType, position.sl);
+          checkTP(position.tpType, position.tp);
           // tradingViewStore.tradingWidget?.activeChart().bringToFront([
           //   //@ts-ignore
           //   tradingViewStore.activeOrderLinePositionPnL._line._id,
@@ -460,6 +530,142 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       tradingViewStore.selectedPosition,
     ]
   );
+
+  const checkSL = (slType: number | null, sl: number | null) => {
+    if (sl && !tradingViewStore.activeOrderLinePositionSL) {
+      tradingViewStore.activeOrderLinePositionSL = tradingViewStore.tradingWidget
+        ?.chart()
+        .createOrderLine({
+          disableUndo: false
+        })
+        .onMove(onMoveSL)
+        .onCancel('', function() {
+          tradingViewStore.setApplyHandler(removeSLChart);
+          tradingViewStore.confirmText = 'Cancel Stop loss level?';
+          tradingViewStore.toggleActivePositionPopup(true);
+        })
+        .setText(t(`STOP LOSS: -$${Math.abs(sl)}`))
+        .setQuantity('')
+        .setPrice(getActualPricing(sl, 'sl'))
+        .setExtendLeft(false)
+        .setBodyBorderColor('#494C51')
+        .setBodyTextColor('#ffffff')
+        .setCancelButtonBackgroundColor('#2A2C33')
+        .setCancelButtonBorderColor('#494C51')
+        .setCancelButtonIconColor('#ffffff')
+        .setBodyBackgroundColor('#2A2C33')
+        .setLineColor('#494C51')
+        .setLineLength(10);
+    } else if(sl && tradingViewStore.activeOrderLinePositionSL) {
+      tradingViewStore.activeOrderLinePositionSL
+        .setPrice(getActualPricing(sl, 'sl'))
+        .setText(`STOP LOSS -$${Math.abs(sl)}`)
+    } else if (!sl && tradingViewStore.activeOrderLinePositionSL) {
+      tradingViewStore.activeOrderLinePositionSL.remove();
+      tradingViewStore.activeOrderLinePositionSL = undefined;
+    }
+  };
+
+  const checkTP = (tpType: number | null, tp: number | null) => {
+    if (tp && !tradingViewStore.activeOrderLinePositionTP) {
+      tradingViewStore.activeOrderLinePositionTP = tradingViewStore.tradingWidget
+        ?.chart()
+        .createOrderLine({
+          disableUndo: false
+        })
+        .onMove(onMoveTP)
+        .onCancel('', function() {
+          tradingViewStore.setApplyHandler(removeTPChart);
+          tradingViewStore.confirmText = 'Cancel Take profit level?';
+          tradingViewStore.toggleActivePositionPopup(true);
+        })
+        .setQuantity('')
+        .setText(t(`TAKE PROFIT +$${Math.abs(tp)}`))
+        .setPrice(getActualPricing(tp, 'tp'))
+        .setExtendLeft(false)
+        .setBodyBorderColor('#494C51')
+        .setBodyTextColor('#ffffff')
+        .setCancelButtonBackgroundColor('#2A2C33')
+        .setCancelButtonBorderColor('#494C51')
+        .setCancelButtonIconColor('#ffffff')
+        .setBodyBackgroundColor('#2A2C33')
+        .setLineColor('#494C51')
+        .setLineLength(10);
+    } else if(tp && tradingViewStore.activeOrderLinePositionTP) {
+      tradingViewStore.activeOrderLinePositionTP
+        .setPrice(getActualPricing(tp, 'tp'))
+        .setText(`TAKE PROFIT +$${Math.abs(tp)}`)
+    } else if (!tp && tradingViewStore.activeOrderLinePositionTP) {
+      tradingViewStore.activeOrderLinePositionTP.remove();
+      tradingViewStore.activeOrderLinePositionTP = undefined;
+    }
+  };
+
+  const onMoveSL = useCallback(async () => {
+    if (tradingViewStore.activeOrderLinePositionSL && tradingViewStore.selectedPosition) {
+      const newPosition = tradingViewStore.activeOrderLinePositionSL?.getPrice() - tradingViewStore.selectedPosition?.openPrice
+      tradingViewStore.toggleMovedPositionPopup(true);
+      await setFieldValue(
+        Fields.STOP_LOSS_TYPE,
+        TpSlTypeEnum.Currency
+      );
+      await setFieldValue(
+        Fields.STOP_LOSS,
+        newPosition.toFixed(2)
+      );
+    }
+  }, [tradingViewStore.activeOrderLinePositionSL, tradingViewStore.selectedPosition]);
+
+  const onMoveTP = useCallback(async () => {
+    if (tradingViewStore.activeOrderLinePositionTP && tradingViewStore.selectedPosition) {
+      const newPosition = tradingViewStore.activeOrderLinePositionTP?.getPrice() - tradingViewStore.selectedPosition?.openPrice
+      tradingViewStore.toggleMovedPositionPopup(true);
+      await setFieldValue(
+        Fields.TAKE_PROFIT_TYPE,
+        TpSlTypeEnum.Currency
+      );
+      await setFieldValue(
+        Fields.TAKE_PROFIT,
+        newPosition.toFixed(2)
+      );
+    }
+  }, [tradingViewStore.activeOrderLinePositionTP, tradingViewStore.selectedPosition]);
+
+  const getActualSL = useCallback(() => {
+    if (tradingViewStore.activeOrderLinePositionSL && tradingViewStore.selectedPosition) {
+      const newPosition = tradingViewStore.activeOrderLinePositionSL?.getPrice()
+      return tradingViewStore.activePopup
+      && position.id === tradingViewStore.selectedPosition?.id
+        ? parseFloat(getNewPricing(newPosition, 'sl').toFixed(2)) : position.sl
+    }
+    return position.sl;
+  }, [tradingViewStore.selectedPosition, tradingViewStore.activeOrderLinePositionSL]);
+
+  const getActualTP = useCallback(() => {
+    if (tradingViewStore.activeOrderLinePositionTP && tradingViewStore.selectedPosition) {
+      const newPosition = tradingViewStore.activeOrderLinePositionTP?.getPrice()
+      return tradingViewStore.activePopup
+      && position.id === tradingViewStore.selectedPosition?.id
+        ? parseFloat(getNewPricing(newPosition, 'tp').toFixed(2)) : position.tp
+    }
+    return position.tp;
+  }, [tradingViewStore.selectedPosition, tradingViewStore.activeOrderLinePositionTP]);
+
+  const resetSLTPLines = () => {
+    if (tradingViewStore.selectedPosition?.id === position.id) {
+      if (tradingViewStore.activeOrderLinePositionTP && position.tp) {
+        tradingViewStore.activeOrderLinePositionTP
+          .setPrice(getActualPricing(position.tp, 'tp'))
+          .setText(`TAKE PROFIT +$${Math.abs(position.tp)}`);
+      }
+      if (tradingViewStore.activeOrderLinePositionSL && position.sl) {
+        tradingViewStore.activeOrderLinePositionSL
+          .setPrice(getActualPricing(position.sl, 'sl'))
+          .setText(`STOP LOSS -$${Math.abs(position.sl)}`);
+      }
+      tradingViewStore.toggleMovedPositionPopup(false);
+    }
+  };
 
   const handleApply = useCallback(async () => {
     await setFieldValue(
@@ -488,6 +694,60 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       }
     });
   }, [SLTPStore.takeProfitValue, SLTPStore.stopLossValue]);
+
+  const removeSLChart = useCallback(async () => {
+    if (tradingViewStore.selectedPosition) {
+      tradingViewStore.activeOrderLinePositionSL?.remove();
+      tradingViewStore.activeOrderLinePositionSL = undefined;
+      removeSL();
+      const objectToSend: UpdateSLTP = {
+        tpType: tradingViewStore?.selectedPosition
+          ? tradingViewStore.selectedPosition?.tpType
+          : null,
+        slType: null,
+        tp: tradingViewStore?.selectedPosition ? tradingViewStore.selectedPosition?.tp : null,
+        sl: null,
+        processId: getProcessId(),
+        accountId: mainAppStore.activeAccountId,
+        positionId: tradingViewStore.selectedPosition?.id,
+        investmentAmount: tradingViewStore.selectedPosition?.investmentAmount,
+        multiplier: tradingViewStore.selectedPosition?.multiplier,
+        operation: tradingViewStore.selectedPosition?.operation,
+        instrumentId: tradingViewStore.selectedPosition?.instrument
+      };
+      tradingViewStore.selectedPosition.sl = null;
+      tradingViewStore.selectedPosition.slType = null;
+      updateSLTP(objectToSend);
+    }
+  }, [tradingViewStore.selectedPosition]);
+
+  const removeTPChart  = useCallback(async () => {
+    if (tradingViewStore.selectedPosition) {
+      tradingViewStore.activeOrderLinePositionTP?.remove();
+      tradingViewStore.activeOrderLinePositionTP = undefined;
+      removeTP();
+      const objectToSend: UpdateSLTP = {
+        tpType: null,
+        slType: tradingViewStore?.selectedPosition
+          ? tradingViewStore.selectedPosition?.slType
+          : null,
+        tp: null,
+        sl: (tradingViewStore?.selectedPosition && tradingViewStore.selectedPosition?.sl)
+          ? Math.abs(tradingViewStore.selectedPosition?.sl)
+          : null,
+        processId: getProcessId(),
+        accountId: mainAppStore.activeAccountId,
+        positionId: tradingViewStore.selectedPosition?.id,
+        investmentAmount: tradingViewStore.selectedPosition?.investmentAmount,
+        multiplier: tradingViewStore.selectedPosition?.multiplier,
+        operation: tradingViewStore.selectedPosition?.operation,
+        instrumentId: tradingViewStore.selectedPosition?.instrument
+      };
+      tradingViewStore.selectedPosition.tp = null;
+      tradingViewStore.selectedPosition.tpType = null;
+      updateSLTP(objectToSend);
+    }
+  }, [tradingViewStore.selectedPosition]);
 
   const removeSL = () => {
     SLTPStore.stopLossValue = '';
@@ -720,11 +980,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                   </ErropPopup>
                 )}
 
-                <CustomForm>
+                <CustomForm className={tradingViewStore.activePopup
+                && position.id === tradingViewStore.selectedPosition?.id ? 'chart_update' : ''}>
                   <AutoClosePopupSideBar
                     ref={instrumentRef}
-                    stopLossValue={position.sl}
-                    takeProfitValue={position.tp}
+                    stopLossValue={getActualSL()}
+                    takeProfitValue={getActualTP()}
                     stopLossType={position.slType}
                     takeProfitType={position.tpType}
                     updateSLTP={handleApply}
@@ -733,6 +994,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                     removeSl={removeSL}
                     removeTP={removeTP}
                     resetForm={resetForm}
+                    toggleOut={resetSLTPLines}
+                    active={tradingViewStore.activePopup
+                      && position.id === tradingViewStore.selectedPosition?.id}
                   >
                     <SetSLTPButton>
                       <PrimaryTextSpan
@@ -817,4 +1081,10 @@ const SetSLTPButton = styled(FlexContainer)`
 
 const CustomForm = styled.form`
   margin: 0;
+  &.chart_update > div > div {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 `;
