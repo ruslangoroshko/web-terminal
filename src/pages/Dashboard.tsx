@@ -238,7 +238,7 @@ const Dashboard: FC = observer(() => {
                           <ConfirmPopup
                             toggle={tradingViewStore.toggleActivePositionPopup}
                             applyHandler={tradingViewStore.applyHandler}
-                            confirmText={t('Close position?')}
+                            confirmText={t(tradingViewStore?.confirmText)}
                           ></ConfirmPopup>
                         </ClosePopupWrapper>
                       )}

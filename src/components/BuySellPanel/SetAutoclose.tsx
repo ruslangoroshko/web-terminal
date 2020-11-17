@@ -31,6 +31,7 @@ interface Props {
   isDisabled?: boolean;
   removeSL: () => void;
   removeTP: () => void;
+  toggleOut?: () => void;
 }
 
 const SetAutoclose: FC<Props> = observer(props => {
@@ -46,6 +47,7 @@ const SetAutoclose: FC<Props> = observer(props => {
     tpError,
     removeSL,
     removeTP,
+    toggleOut
   } = props;
 
   const { t } = useTranslation();
@@ -129,6 +131,9 @@ const SetAutoclose: FC<Props> = observer(props => {
 
   const handleToggle = () => {
     toggle(false);
+    if (!!toggleOut) {
+      toggleOut();
+    }
   };
 
   useEffect(() => {
