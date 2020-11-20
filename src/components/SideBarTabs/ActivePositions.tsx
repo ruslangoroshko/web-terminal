@@ -1064,6 +1064,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
                     removeTP={removeTP}
                     resetForm={resetForm}
                     toggleOut={resetSLTPLines}
+                    instrumentId={position.instrument}
                     active={
                       tradingViewStore.activePopup &&
                       position.id === tradingViewStore.selectedPosition?.id

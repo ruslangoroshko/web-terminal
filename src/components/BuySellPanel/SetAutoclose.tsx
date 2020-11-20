@@ -32,6 +32,7 @@ interface Props {
   removeSL: () => void;
   removeTP: () => void;
   toggleOut?: () => void;
+  instrumentId?: string;
 }
 
 const SetAutoclose: FC<Props> = observer(props => {
@@ -47,7 +48,8 @@ const SetAutoclose: FC<Props> = observer(props => {
     tpError,
     removeSL,
     removeTP,
-    toggleOut
+    toggleOut,
+    instrumentId
   } = props;
 
   const { t } = useTranslation();
@@ -63,8 +65,12 @@ const SetAutoclose: FC<Props> = observer(props => {
         break;
 
       case TpSlTypeEnum.Price:
-        PRECISION =
-          instrumentsStore.activeInstrument?.instrumentItem.digits || 2;
+        if (instrumentId) {
+          PRECISION = instrumentsStore.instruments.find(instrument =>
+            instrument.instrumentItem.id === instrumentId)?.instrumentItem.digits || 2
+        } else {
+          PRECISION = 2;
+        }
         break;
 
       default:

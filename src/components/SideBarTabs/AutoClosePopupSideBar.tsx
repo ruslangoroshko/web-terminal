@@ -19,6 +19,7 @@ interface Props {
   resetForm?: () => void;
   toggleOut?: () => void;
   active?: boolean;
+  instrumentId?: string;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -37,7 +38,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       removeTP,
       resetForm,
       active,
-      toggleOut
+      toggleOut,
+      instrumentId
     } = props;
 
     const [on, toggle] = useState(!!active);
@@ -130,6 +132,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               removeSL={removeSl}
               removeTP={removeTP}
               toggleOut={toggleOut}
+              instrumentId={instrumentId}
             />
           </FlexContainer>
         )}
