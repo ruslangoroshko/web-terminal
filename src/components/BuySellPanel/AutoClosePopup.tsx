@@ -68,12 +68,12 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
         setFieldError(Fields.TAKE_PROFIT, '');
         setFieldError(Fields.STOP_LOSS, '');
       }
-      toggle(!on);
+      SLTPStore.toggleBuySell(!on);
     };
 
     const handleClickOutside = (e: any) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-        toggle(false);
+        handleClose();
       }
     };
 
@@ -85,6 +85,10 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
       await validateForm();
     };
 
+    const handleClose = () => {
+      SLTPStore.toggleBuySell(false);
+    };
+
     useEffect(() => {
       document.addEventListener('mousedown', handleClickOutside);
 
@@ -92,6 +96,10 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }, []);
+
+    useEffect(() => {
+      toggle(SLTPStore.openedBuySell);
+    }, [SLTPStore.openedBuySell]);
 
     const handleApplySetAutoClose = useCallback(async () => {
       await setFieldValue(
@@ -220,7 +228,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
               takeProfitType={takeProfitType}
               slError={stopLossError}
               tpError={takeProfitError}
-              toggle={toggle}
+              toggle={SLTPStore.toggleBuySell}
               removeSL={removeSL}
               removeTP={removeTP}
             />
