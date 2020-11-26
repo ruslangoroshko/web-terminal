@@ -50,6 +50,8 @@ const WithdrawRequestTab = observer(() => {
 
           if (isPending) {
             withdrawalStore.setPendingPopup();
+          } else {
+            withdrawalStore.closePendingPopup();
           }
         }
       } catch (error) {}
