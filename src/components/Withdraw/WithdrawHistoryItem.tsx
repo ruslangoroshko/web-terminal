@@ -41,13 +41,16 @@ const WithdrawHistoryItem = (props: Props) => {
   const selectStatusColor = (status: WithdrawalStatusesEnum | null) => {
     switch (status) {
       case WithdrawalStatusesEnum.Pending:
-        return '#FFFCCC';
+        return 'rgba(255, 255, 255, 0.4)';
       case WithdrawalStatusesEnum.Canceled:
         return '#FF557E';
       case WithdrawalStatusesEnum.Approved:
-        return '#FFFCCC';
+        return '#00FFDD';
       case WithdrawalStatusesEnum.Declined:
         return '#FF557E';
+      case WithdrawalStatusesEnum.Proccesing:   
+        return '#fffccc';
+        
       default:
         return 'rgba(255, 255, 255, 0.4)';
     }
