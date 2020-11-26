@@ -56,6 +56,9 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     const handleToggle = () => {
+      if (on && !!toggleOut) {
+        toggleOut();
+      }
       toggle(!on);
       const {
         top,

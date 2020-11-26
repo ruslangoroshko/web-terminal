@@ -662,11 +662,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       tradingViewStore.activeOrderLinePositionSL &&
       tradingViewStore.selectedPosition
     ) {
-      const newPosition = Math.abs(getNewPricing(tradingViewStore.activeOrderLinePositionSL?.getPrice(), 'sl'));
+      const newPosition = position.slType === TpSlTypeEnum.Currency
+        ? parseFloat(Math.abs(getNewPricing(tradingViewStore.activeOrderLinePositionSL?.getPrice(), 'sl')).toFixed(2))
+        : tradingViewStore.activeOrderLinePositionSL?.getPrice();
       tradingViewStore.toggleMovedPositionPopup(true);
-      checkSL(TpSlTypeEnum.Currency, parseFloat(newPosition.toFixed(2)));
-      await setFieldValue(Fields.STOP_LOSS_TYPE, TpSlTypeEnum.Currency);
-      await setFieldValue(Fields.STOP_LOSS, newPosition.toFixed(2));
+      checkSL(position.slType, newPosition);
+      await setFieldValue(Fields.STOP_LOSS_TYPE, position.slType);
+      await setFieldValue(Fields.STOP_LOSS, newPosition);
     }
   }, [
     tradingViewStore.activeOrderLinePositionSL,
@@ -680,11 +682,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       tradingViewStore.activeOrderLinePositionTP &&
       tradingViewStore.selectedPosition
     ) {
-      const newPosition = Math.abs(getNewPricing(tradingViewStore.activeOrderLinePositionTP?.getPrice(), 'tp'));
+      const newPosition = position.tpType === TpSlTypeEnum.Currency
+        ? parseFloat(Math.abs(getNewPricing(tradingViewStore.activeOrderLinePositionTP?.getPrice(), 'tp')).toFixed(2))
+        : tradingViewStore.activeOrderLinePositionTP?.getPrice();
       tradingViewStore.toggleMovedPositionPopup(true);
-      checkTP(TpSlTypeEnum.Currency, parseFloat(newPosition.toFixed(2)));
-      await setFieldValue(Fields.TAKE_PROFIT_TYPE, TpSlTypeEnum.Currency);
-      await setFieldValue(Fields.TAKE_PROFIT, newPosition.toFixed(2));
+      checkTP(position.tpType, newPosition);
+      await setFieldValue(Fields.TAKE_PROFIT_TYPE, position.tpType);
+      await setFieldValue(Fields.TAKE_PROFIT, newPosition);
     }
   }, [
     tradingViewStore.activeOrderLinePositionTP,
@@ -699,7 +703,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       const newPosition = tradingViewStore.activeOrderLinePositionSL?.getPrice();
       return tradingViewStore.activePopup &&
         position.id === tradingViewStore.selectedPosition?.id
-        ? [parseFloat(getNewPricing(newPosition, 'sl').toFixed(2)), TpSlTypeEnum.Currency]
+        ? [position.slType === TpSlTypeEnum.Currency
+          ? parseFloat(getNewPricing(newPosition, 'sl').toFixed(2))
+          : newPosition, position.slType]
         : [position.sl, position.slType];
     }
     return [position.sl, position.slType];
@@ -716,7 +722,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       const newPosition = tradingViewStore.activeOrderLinePositionTP?.getPrice();
       return tradingViewStore.activePopup &&
         position.id === tradingViewStore.selectedPosition?.id
-        ? [parseFloat(getNewPricing(newPosition, 'tp').toFixed(2)), TpSlTypeEnum.Currency]
+        ? [position.tpType === TpSlTypeEnum.Currency
+          ? parseFloat(getNewPricing(newPosition, 'tp').toFixed(2))
+          : newPosition, position.tpType]
         : [position.tp, position.tpType];
     }
     return [position.tp, position.tpType];

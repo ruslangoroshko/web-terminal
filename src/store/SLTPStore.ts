@@ -24,6 +24,7 @@ export class SLTPStore implements ContextProps {
     this.takeProfitValue = '';
     this.autoCloseTPType = null;
     this.autoCloseSLType = null;
+    this.openedBuySell = false;
   };
 
   @action
