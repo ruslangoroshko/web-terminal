@@ -163,7 +163,7 @@ const SetAutoclose: FC<Props> = observer(props => {
       flexDirection="column"
       width="200px"
     >
-      <ButtonClose onClick={handleToggle}>
+      <ButtonClose type="button" onClick={handleToggle}>
         <SvgIcon
           {...IconClose}
           fillColor="rgba(255, 255, 255, 0.6)"
