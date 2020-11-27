@@ -390,7 +390,7 @@ const InputPnL = styled.input`
   background-color: transparent;
   border: none;
   outline: none;
-  width: 100%;
+  width: 106px;
   height: 100%;
   font-weight: bold;
   font-size: 14px;
