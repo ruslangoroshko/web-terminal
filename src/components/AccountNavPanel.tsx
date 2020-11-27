@@ -7,12 +7,18 @@ import Page from '../constants/Pages';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { useStores } from '../hooks/useStores';
 import { useTranslation } from 'react-i18next';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
+import mixapanelProps from '../constants/mixpanelProps';
 
 const AccountNavPanel = () => {
   const { mainAppStore, tabsStore } = useStores();
   const { t } = useTranslation();
   const handleLogoutClick = () => {
     tabsStore.closeAnyTab();
+    mixpanel.track(mixpanelEvents.LOGOUT, {
+      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
+    });
     mainAppStore.signOut();
   };
   return (

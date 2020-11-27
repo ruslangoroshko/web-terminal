@@ -14,33 +14,36 @@ import AchievementStatus from '../constants/achievementStatus';
 import SilverBG from '../assets/images/achievement_status_bg/silver.png';
 import GoldBG from '../assets/images/achievement_status_bg/gold.png';
 import PlatinumBG from '../assets/images/achievement_status_bg/platinum.png';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
+import mixapanelProps from '../constants/mixpanelProps';
 
 function ProfileDropdown() {
   const { mainAppStore, depositFundsStore, tabsStore } = useStores();
   const { t } = useTranslation();
 
-  const getStatusLabel = useCallback((type?: string) => {
-    const key = mainAppStore.activeAccount?.achievementStatus;
-    switch (key) {
-      case AchievementStatus.SILVER:
-        return type === 'color' ? '#C5DDF1' : SilverBG;
-      case AchievementStatus.GOLD:
-        return type === 'color' ? '#fffccc' : GoldBG;
-      case AchievementStatus.PLATINUM:
-        return type === 'color' ? '#00ffdd' : PlatinumBG;
-      default:
-        return type === 'color' ? '#C5DDF1' : SilverBG;
-    }
-  }, [mainAppStore.activeAccount]);
+  const getStatusLabel = useCallback(
+    (type?: string) => {
+      const key = mainAppStore.activeAccount?.achievementStatus;
+      switch (key) {
+        case AchievementStatus.SILVER:
+          return type === 'color' ? '#C5DDF1' : SilverBG;
+        case AchievementStatus.GOLD:
+          return type === 'color' ? '#fffccc' : GoldBG;
+        case AchievementStatus.PLATINUM:
+          return type === 'color' ? '#00ffdd' : PlatinumBG;
+        default:
+          return type === 'color' ? '#C5DDF1' : SilverBG;
+      }
+    },
+    [mainAppStore.activeAccount]
+  );
 
   const renderStatusLabel = () => {
     switch (mainAppStore.profileStatus) {
       case PersonalDataKYCEnum.NotVerified:
         return (
-          <FlexContainer
-            margin="20px 0 0"
-            width="100%"
-          >
+          <FlexContainer margin="20px 0 0" width="100%">
             <CustomeNavLink to={Page.PROOF_OF_IDENTITY}>
               <VerificationButton
                 borderRadius="5px"
@@ -50,10 +53,7 @@ function ProfileDropdown() {
                 width="100%"
                 justifyContent="center"
               >
-                <PrimaryTextSpan
-                  color="#ffffff"
-                  fontSize="10px"
-                >
+                <PrimaryTextSpan color="#ffffff" fontSize="10px">
                   {t('Not Verified')}
                 </PrimaryTextSpan>
               </VerificationButton>
@@ -71,6 +71,9 @@ function ProfileDropdown() {
   };
   const handleLogoutClick = () => {
     tabsStore.closeAnyTab();
+    mixpanel.track(mixpanelEvents.LOGOUT, {
+      [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
+    });
     mainAppStore.signOut();
   };
 
@@ -84,10 +87,13 @@ function ProfileDropdown() {
       border="1px solid rgba(169, 171, 173, 0.1)"
       boxShadow="0px 34px 44px rgba(0, 0, 0, 0.25)"
     >
-      {(mainAppStore.activeAccount?.achievementStatus === AchievementStatus.GOLD
-        || mainAppStore.activeAccount?.achievementStatus === AchievementStatus.SILVER
-        || mainAppStore.activeAccount?.achievementStatus === AchievementStatus.PLATINUM)
-        && <StatusLabel
+      {(mainAppStore.activeAccount?.achievementStatus ===
+        AchievementStatus.GOLD ||
+        mainAppStore.activeAccount?.achievementStatus ===
+          AchievementStatus.SILVER ||
+        mainAppStore.activeAccount?.achievementStatus ===
+          AchievementStatus.PLATINUM) && (
+        <StatusLabel
           width="124px"
           height="24px"
           padding="5px"
@@ -106,7 +112,7 @@ function ProfileDropdown() {
             {mainAppStore.activeAccount?.achievementStatus}
           </PrimaryTextSpan>
         </StatusLabel>
-      }
+      )}
       <FlexWithBottomBorder
         flexDirection="column"
         padding="0 0 18px"
@@ -123,22 +129,26 @@ function ProfileDropdown() {
             marginRight="8px"
             backgroundColor="#77797D"
           >
-            <SvgIcon width={25} height={25} {...IconUser} fillColor="rgba(196, 196, 196, 0.5)" />
+            <SvgIcon
+              width={25}
+              height={25}
+              {...IconUser}
+              fillColor="rgba(196, 196, 196, 0.5)"
+            />
           </FlexContainer>
-          <FlexContainer
-            flexDirection="column"
-            width="calc(100% - 50px)"
-          >
-            {!!mainAppStore.profileName.length && <PrimaryTextSpan
-              fontSize="12px"
-              color="#fffccc"
-              overflow="hidden"
-              textOverflow="ellipsis"
-              whiteSpace="nowrap"
-              title={mainAppStore.profileName}
-            >
-              {mainAppStore.profileName}
-            </PrimaryTextSpan>}
+          <FlexContainer flexDirection="column" width="calc(100% - 50px)">
+            {!!mainAppStore.profileName.length && (
+              <PrimaryTextSpan
+                fontSize="12px"
+                color="#fffccc"
+                overflow="hidden"
+                textOverflow="ellipsis"
+                whiteSpace="nowrap"
+                title={mainAppStore.profileName}
+              >
+                {mainAppStore.profileName}
+              </PrimaryTextSpan>
+            )}
             <PrimaryTextSpan
               fontSize="12px"
               color="rgba(255, 255, 255, 0.4)"
@@ -167,10 +177,7 @@ function ProfileDropdown() {
         </DepositButtonWrapper>
       </FlexContainer>
       <FlexContainer margin="0 0 12px">
-        <CustomeNavLink
-          to={Page.ACCOUNT_WITHDRAW}
-          activeClassName="is-active"
-        >
+        <CustomeNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="is-active">
           <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
             {t('Withdraw')}
           </PrimaryTextSpan>
@@ -227,11 +234,11 @@ const StatusLabel = styled(FlexContainer)`
 const LogoutButton = styled(ButtonWithoutStyles)`
   display: flex;
   justify-content: space-between;
-  span{
+  span {
     transition: 0.4s;
   }
   &:hover {
-    span{
+    span {
       color: #fffccc;
     }
   }
@@ -240,25 +247,28 @@ const LogoutButton = styled(ButtonWithoutStyles)`
 const CustomeNavLink = styled(NavLink)`
   display: block;
   width: 100%;
-  span{
+  span {
     transition: 0.4s;
   }
   &:hover {
-    span{
+    span {
       color: #fffccc;
     }
   }
-  &:hover, &:active, &:focus, &:visited {
+  &:hover,
+  &:active,
+  &:focus,
+  &:visited {
     text-decoration: none;
   }
 `;
 
 const DepositButtonWrapper = styled(ButtonWithoutStyles)`
-  span{
+  span {
     transition: 0.4s;
   }
   &:hover {
-    span{
+    span {
       color: #fffccc;
     }
   }
