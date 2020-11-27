@@ -410,6 +410,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         position.tp = valuesToSubmit.tp;
         position.slType = valuesToSubmit.slType;
         position.tpType = valuesToSubmit.tpType;
+        tradingViewStore.selectedPosition = position;
         tradingViewStore.toggleMovedPositionPopup(false);
         if (response.result === OperationApiResponseCodes.Ok) {
           mixpanel.track(mixpanelEvents.EDIT_SLTP, {
@@ -712,6 +713,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   }, [
     tradingViewStore.selectedPosition,
     tradingViewStore.activeOrderLinePositionSL,
+    position.sl
   ]);
 
   const getActualTP = useCallback(() => {
@@ -731,6 +733,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   }, [
     tradingViewStore.selectedPosition,
     tradingViewStore.activeOrderLinePositionTP,
+    position.tp
   ]);
 
   const resetSLTPLines = () => {
