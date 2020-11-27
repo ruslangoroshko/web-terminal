@@ -59,6 +59,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     mainAppStore,
     badRequestPopupStore,
     markersOnChartStore,
+    SLTPStore
   } = useStores();
 
   const { t } = useTranslation();
@@ -709,18 +710,23 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 {errors.sl || errors.tp}
               </ErropPopup>
             )}
-          <AutoClosePopup
-            ref={setAutoCloseWrapperRef}
-            setFieldValue={setFieldValue}
-            stopLossError={errors.sl}
-            takeProfitError={errors.tp}
-            stopLossType={values.slType}
-            stopLossValue={values.sl}
-            takeProfitType={values.tpType}
-            takeProfitValue={values.tp}
-            validateForm={validateForm}
-            setFieldError={setFieldError}
-          ></AutoClosePopup>
+          <Observer>
+            {() => (
+              <AutoClosePopup
+                ref={setAutoCloseWrapperRef}
+                setFieldValue={setFieldValue}
+                stopLossError={errors.sl}
+                takeProfitError={errors.tp}
+                stopLossType={values.slType}
+                stopLossValue={values.sl}
+                takeProfitType={values.tpType}
+                takeProfitValue={values.tp}
+                validateForm={validateForm}
+                setFieldError={setFieldError}
+                opened={SLTPStore.openedBuySell}
+              ></AutoClosePopup>
+            )}
+          </Observer>
         </FlexContainer>
 
         <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

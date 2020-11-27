@@ -1,6 +1,7 @@
 export enum WithdrawHistoryStatusName {
   'Pending',
   'Canceled',
-  'Processing',
+  'Approved',
   'Declined',
+  'Proccesing',
 }
