@@ -408,17 +408,17 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       };
       try {
         const response = await API.updateSLTP(valuesToSubmit);
-        if (tradingViewStore.selectedPosition?.id === values.positionId) {
-          checkSL(values.slType, valuesToSubmit.sl);
-          checkTP(values.tpType, valuesToSubmit.tp);
-        }
-        position.sl = valuesToSubmit.sl;
-        position.tp = valuesToSubmit.tp;
-        position.slType = valuesToSubmit.slType;
-        position.tpType = valuesToSubmit.tpType;
-        tradingViewStore.selectedPosition = position;
-        tradingViewStore.toggleMovedPositionPopup(false);
         if (response.result === OperationApiResponseCodes.Ok) {
+          if (tradingViewStore.selectedPosition?.id === values.positionId) {
+            checkSL(values.slType, valuesToSubmit.sl);
+            checkTP(values.tpType, valuesToSubmit.tp);
+          }
+          position.sl = valuesToSubmit.sl;
+          position.tp = valuesToSubmit.tp;
+          position.slType = valuesToSubmit.slType;
+          position.tpType = valuesToSubmit.tpType;
+          tradingViewStore.selectedPosition = position;
+          tradingViewStore.toggleMovedPositionPopup(false);
           mixpanel.track(mixpanelEvents.EDIT_SLTP, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -450,6 +450,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             [mixapanelProps.POSITION_ID]: response.position.id,
           });
         } else {
+          if (tradingViewStore.selectedPosition?.id === values.positionId) {
+            checkSL(position.slType, position.sl);
+            checkTP(position.tpType, position.tp);
+          }
+          setFieldValue(Fields.STOP_LOSS, position.sl);
+          setFieldValue(Fields.STOP_LOSS_TYPE, position.slType);
+          setFieldValue(Fields.TAKE_PROFIT, position.tp);
+          setFieldValue(Fields.TAKE_PROFIT_TYPE, position.tpType);
           mixpanel.track(mixpanelEvents.EDIT_SLTP_FAILED, {
             [mixapanelProps.AMOUNT]: valuesToSubmit.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
