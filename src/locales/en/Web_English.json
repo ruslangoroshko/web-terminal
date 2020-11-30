@@ -340,5 +340,10 @@
     "Server error": "Server error",
     "Unsupported card type": "Unsupported card type",
     "Not Verified": "Not Verified",
-    "Account Settings": "Account Settings"
+    "Account Settings": "Account Settings",
+    "Proccesing": "Proccesing",
+    "Pending": "Pending",
+	"Canceled": "Canceled",
+	"Approved": "Approved",
+	"Declined": "Declined"
 }
