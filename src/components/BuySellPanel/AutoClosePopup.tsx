@@ -116,9 +116,9 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
       );
       await setFieldValue(
         Fields.TAKE_PROFIT,
-        +SLTPStore.takeProfitValue || null
+        SLTPStore.takeProfitValue === '' ? null : +SLTPStore.takeProfitValue
       );
-      await setFieldValue(Fields.STOP_LOSS, +SLTPStore.stopLossValue || null);
+      await setFieldValue(Fields.STOP_LOSS, SLTPStore.stopLossValue === '' ? null : SLTPStore.stopLossValue);
       return new Promise<void>(async (resolve, reject) => {
         const errors = await validateForm();
         if (!Object.keys(errors).length) {

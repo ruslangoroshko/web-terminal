@@ -98,6 +98,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         tp: yup
           .number()
           .nullable()
+          .test(Fields.TAKE_PROFIT, t('Take Profit can not be zero'), (value) => {
+            return value !== 0;
+          })
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
             is: (operation, tpType) =>
               operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
@@ -140,6 +143,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         sl: yup
           .number()
           .nullable()
+          .test(Fields.STOP_LOSS, t('Stop Loss can not be zero'), (value) => {
+            return value !== 0;
+          })
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
             is: (operation, slType) =>
               operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
