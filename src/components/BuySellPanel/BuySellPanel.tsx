@@ -272,7 +272,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.ACCOUNT_CURRENCY]:
               mainAppStore.activeAccount?.currency || '',
             [mixapanelProps.INSTRUMENT_ID]: response.order.instrument,
-            [mixapanelProps.MULTIPLIER]: response.order.multiplier,
+            [mixapanelProps.MULTIPLIER]: response.order?.multiplier || modelToSubmit.multiplier,
             [mixapanelProps.TREND]:
               response.order.operation === AskBidEnum.Buy ? 'buy' : 'sell',
             [mixapanelProps.SL_TYPE]:
@@ -353,7 +353,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.ACCOUNT_CURRENCY]:
               mainAppStore.activeAccount?.currency || '',
             [mixapanelProps.INSTRUMENT_ID]: response.position.instrument,
-            [mixapanelProps.MULTIPLIER]: response.position.multiplier,
+            [mixapanelProps.MULTIPLIER]: response.position?.multiplier || modelToSubmit.multiplier,
             [mixapanelProps.TREND]:
               response.position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
             [mixapanelProps.SL_TYPE]:
