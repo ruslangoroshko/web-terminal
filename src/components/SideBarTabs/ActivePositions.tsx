@@ -713,7 +713,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   }, [
     tradingViewStore.selectedPosition,
     tradingViewStore.activeOrderLinePositionSL,
-    position.sl
+    position.sl,
+    tradingViewStore.activePopup
   ]);
 
   const getActualTP = useCallback(() => {
@@ -733,7 +734,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
   }, [
     tradingViewStore.selectedPosition,
     tradingViewStore.activeOrderLinePositionTP,
-    position.tp
+    position.tp,
+    tradingViewStore.activePopup
   ]);
 
   const resetSLTPLines = () => {

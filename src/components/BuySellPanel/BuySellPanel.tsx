@@ -724,6 +724,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 validateForm={validateForm}
                 setFieldError={setFieldError}
                 opened={SLTPStore.openedBuySell}
+                instrumentId={values.instrumentId}
               ></AutoClosePopup>
             )}
           </Observer>

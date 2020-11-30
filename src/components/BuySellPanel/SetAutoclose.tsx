@@ -128,9 +128,9 @@ const SetAutoclose: FC<Props> = observer(props => {
 
   const handleApplyValues = async () => {
     if (handleApply) {
+      toggle(false);
       try {
         await handleApply();
-        toggle(false);
       } catch (error) {}
     }
   };
@@ -154,7 +154,7 @@ const SetAutoclose: FC<Props> = observer(props => {
       takeProfitValue !== null ? takeProfitValue.toString() : '';
     SLTPStore.stopLossValue =
       stopLossValue !== null ? Math.abs(stopLossValue).toString() : '';
-  }, []);
+  }, [stopLossValue, takeProfitValue]);
 
   return (
     <Wrapper
@@ -232,6 +232,7 @@ const SetAutoclose: FC<Props> = observer(props => {
                 onChange={handleChangeProfit}
                 value={SLTPStore.takeProfitValue}
                 disabled={isDisabled}
+                typeSlTp={SLTPStore.autoCloseTPType}
               ></InputPnL>
               {!!SLTPStore.takeProfitValue && !isDisabled && (
                 <CloseValueButtonWrapper
@@ -314,6 +315,7 @@ const SetAutoclose: FC<Props> = observer(props => {
                 onChange={handleChangeLoss}
                 value={SLTPStore.stopLossValue}
                 disabled={isDisabled}
+                typeSlTp={SLTPStore.autoCloseSLType}
               ></InputPnL>
               {!!SLTPStore.stopLossValue && !isDisabled && (
                 <CloseValueButtonWrapper
@@ -386,11 +388,11 @@ const ButtonClose = styled(ButtonWithoutStyles)`
   align-items: center;
 `;
 
-const InputPnL = styled.input`
+const InputPnL = styled.input<{ typeSlTp?: TpSlTypeEnum | null }>`
   background-color: transparent;
   border: none;
   outline: none;
-  width: 106px;
+  width: ${props => props.typeSlTp === TpSlTypeEnum.Currency ? '106px' : '120px'};
   height: 100%;
   font-weight: bold;
   font-size: 14px;
