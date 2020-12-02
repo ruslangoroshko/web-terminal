@@ -43,6 +43,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     } = props;
 
     const [on, toggle] = useState(!!active);
+    const [openAgain, setOpenAgain] = useState(false);
     const [isTop, setIsTop] = useState(true);
 
     const [popupPosition, setPopupPosition] = useState({
@@ -55,7 +56,10 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const handleToggle = () => {
+    const handleToggle = (bySidebar: boolean) => {
+      if (active && bySidebar) {
+        setOpenAgain(true);
+      }
       if (on && !!toggleOut) {
         toggleOut();
       }
@@ -93,6 +97,10 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     useEffect(() => {
       toggle(!!active);
+      if (openAgain) {
+        toggle(true);
+        setOpenAgain(false);
+      }
     }, [active]);
 
     useEffect(() => {
@@ -105,7 +113,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     return (
       <FlexContainer ref={wrapperRef}>
-        <ButtonWithoutStyles type="button" onClick={handleToggle}>
+        <ButtonWithoutStyles type="button" onClick={() => handleToggle(true)}>
           {children}
         </ButtonWithoutStyles>
         {on && (

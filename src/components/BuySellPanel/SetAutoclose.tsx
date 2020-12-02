@@ -128,9 +128,9 @@ const SetAutoclose: FC<Props> = observer(props => {
 
   const handleApplyValues = async () => {
     if (handleApply) {
-      toggle(false);
       try {
         await handleApply();
+        toggle(false);
       } catch (error) {}
     }
   };
