@@ -31,6 +31,8 @@ interface Props {
   isDisabled?: boolean;
   removeSL: () => void;
   removeTP: () => void;
+  toggleOut?: () => void;
+  instrumentId?: string;
 }
 
 const SetAutoclose: FC<Props> = observer(props => {
@@ -46,6 +48,8 @@ const SetAutoclose: FC<Props> = observer(props => {
     tpError,
     removeSL,
     removeTP,
+    toggleOut,
+    instrumentId
   } = props;
 
   const { t } = useTranslation();
@@ -61,8 +65,12 @@ const SetAutoclose: FC<Props> = observer(props => {
         break;
 
       case TpSlTypeEnum.Price:
-        PRECISION =
-          instrumentsStore.activeInstrument?.instrumentItem.digits || 2;
+        if (instrumentId) {
+          PRECISION = instrumentsStore.instruments.find(instrument =>
+            instrument.instrumentItem.id === instrumentId)?.instrumentItem.digits || 2
+        } else {
+          PRECISION = 2;
+        }
         break;
 
       default:
@@ -129,6 +137,9 @@ const SetAutoclose: FC<Props> = observer(props => {
 
   const handleToggle = () => {
     toggle(false);
+    if (!!toggleOut) {
+      toggleOut();
+    }
   };
 
   useEffect(() => {
@@ -143,7 +154,7 @@ const SetAutoclose: FC<Props> = observer(props => {
       takeProfitValue !== null ? takeProfitValue.toString() : '';
     SLTPStore.stopLossValue =
       stopLossValue !== null ? Math.abs(stopLossValue).toString() : '';
-  }, []);
+  }, [stopLossValue, takeProfitValue]);
 
   return (
     <Wrapper
@@ -152,7 +163,7 @@ const SetAutoclose: FC<Props> = observer(props => {
       flexDirection="column"
       width="200px"
     >
-      <ButtonClose onClick={handleToggle}>
+      <ButtonClose type="button" onClick={handleToggle}>
         <SvgIcon
           {...IconClose}
           fillColor="rgba(255, 255, 255, 0.6)"
@@ -221,6 +232,7 @@ const SetAutoclose: FC<Props> = observer(props => {
                 onChange={handleChangeProfit}
                 value={SLTPStore.takeProfitValue}
                 disabled={isDisabled}
+                typeSlTp={SLTPStore.autoCloseTPType}
               ></InputPnL>
               {!!SLTPStore.takeProfitValue && !isDisabled && (
                 <CloseValueButtonWrapper
@@ -303,6 +315,7 @@ const SetAutoclose: FC<Props> = observer(props => {
                 onChange={handleChangeLoss}
                 value={SLTPStore.stopLossValue}
                 disabled={isDisabled}
+                typeSlTp={SLTPStore.autoCloseSLType}
               ></InputPnL>
               {!!SLTPStore.stopLossValue && !isDisabled && (
                 <CloseValueButtonWrapper
@@ -375,11 +388,11 @@ const ButtonClose = styled(ButtonWithoutStyles)`
   align-items: center;
 `;
 
-const InputPnL = styled.input`
+const InputPnL = styled.input<{ typeSlTp?: TpSlTypeEnum | null }>`
   background-color: transparent;
   border: none;
   outline: none;
-  width: 100%;
+  width: ${props => props.typeSlTp === TpSlTypeEnum.Currency ? '106px' : '120px'};
   height: 100%;
   font-weight: bold;
   font-size: 14px;

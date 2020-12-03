@@ -26,7 +26,7 @@ const ConfirmPopup: FC<Props> = ({ toggle, applyHandler, confirmText }) => {
   return (
     <FlexContainer
       width="300px"
-      padding="40px 80px 44px"
+      padding="40px 60px 44px"
       position="relative"
       borderRadius="4px"
       backgroundColor="#1C2026"
@@ -46,6 +46,7 @@ const ConfirmPopup: FC<Props> = ({ toggle, applyHandler, confirmText }) => {
         color="#fffccc"
         marginBottom="16px"
         textAlign="center"
+        width="100%"
       >
         {confirmText}
       </PrimaryTextParagraph>
@@ -62,4 +63,6 @@ export default ConfirmPopup;
 
 const ConfirmButton = styled(PrimaryButton)`
   padding: 8px;
+  width: 140px;
+  margin: auto;
 `;

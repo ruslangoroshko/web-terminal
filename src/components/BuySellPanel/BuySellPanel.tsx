@@ -59,6 +59,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     mainAppStore,
     badRequestPopupStore,
     markersOnChartStore,
+    SLTPStore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -144,6 +145,13 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         tp: yup
           .number()
           .nullable()
+          .test(
+            Fields.TAKE_PROFIT,
+            t('Take Profit can not be zero'),
+            (value) => {
+              return +value !== 0 || value === null;
+            }
+          )
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
             is: (operation, tpType) =>
               operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
@@ -175,6 +183,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         sl: yup
           .number()
           .nullable()
+          .test(Fields.STOP_LOSS, t('Stop Loss can not be zero'), (value) => {
+            return +value !== 0 || value === null;
+          })
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
             is: (operation, slType) =>
               operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
@@ -261,7 +272,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.ACCOUNT_CURRENCY]:
               mainAppStore.activeAccount?.currency || '',
             [mixapanelProps.INSTRUMENT_ID]: response.order.instrument,
-            [mixapanelProps.MULTIPLIER]: response.order.multiplier,
+            [mixapanelProps.MULTIPLIER]: response.order?.multiplier || modelToSubmit.multiplier,
             [mixapanelProps.TREND]:
               response.order.operation === AskBidEnum.Buy ? 'buy' : 'sell',
             [mixapanelProps.SL_TYPE]:
@@ -272,7 +283,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               response.order.tpType !== null
                 ? mixpanelValues[response.order.tpType]
                 : null,
-            [mixapanelProps.SL_VALUE]: response.order.sl,
+            [mixapanelProps.SL_VALUE]:
+              response.order.sl !== null ? Math.abs(response.order.sl) : null,
             [mixapanelProps.TP_VALUE]: response.order.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
@@ -299,7 +311,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               modelToSubmit.tpType !== null
                 ? mixpanelValues[modelToSubmit.tpType]
                 : null,
-            [mixapanelProps.SL_VALUE]: modelToSubmit.sl,
+            [mixapanelProps.SL_VALUE]:
+              modelToSubmit.sl !== null ? Math.abs(modelToSubmit.sl) : null,
             [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
@@ -340,7 +353,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.ACCOUNT_CURRENCY]:
               mainAppStore.activeAccount?.currency || '',
             [mixapanelProps.INSTRUMENT_ID]: response.position.instrument,
-            [mixapanelProps.MULTIPLIER]: response.position.multiplier,
+            [mixapanelProps.MULTIPLIER]: response.position?.multiplier || modelToSubmit.multiplier,
             [mixapanelProps.TREND]:
               response.position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
             [mixapanelProps.SL_TYPE]:
@@ -351,7 +364,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               response.position.tpType !== null
                 ? mixpanelValues[response.position.tpType]
                 : null,
-            [mixapanelProps.SL_VALUE]: response.position.sl,
+            [mixapanelProps.SL_VALUE]:
+              response.position.sl !== null
+                ? Math.abs(response.position.sl)
+                : null,
             [mixapanelProps.TP_VALUE]: response.position.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
@@ -378,7 +394,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               modelToSubmit.tpType !== null
                 ? mixpanelValues[modelToSubmit.tpType]
                 : null,
-            [mixapanelProps.SL_VALUE]: modelToSubmit.sl,
+            [mixapanelProps.SL_VALUE]:
+              modelToSubmit.sl !== null ? Math.abs(modelToSubmit.sl) : null,
             [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
             [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
@@ -703,18 +720,24 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 {errors.sl || errors.tp}
               </ErropPopup>
             )}
-          <AutoClosePopup
-            ref={setAutoCloseWrapperRef}
-            setFieldValue={setFieldValue}
-            stopLossError={errors.sl}
-            takeProfitError={errors.tp}
-            stopLossType={values.slType}
-            stopLossValue={values.sl}
-            takeProfitType={values.tpType}
-            takeProfitValue={values.tp}
-            validateForm={validateForm}
-            setFieldError={setFieldError}
-          ></AutoClosePopup>
+          <Observer>
+            {() => (
+              <AutoClosePopup
+                ref={setAutoCloseWrapperRef}
+                setFieldValue={setFieldValue}
+                stopLossError={errors.sl}
+                takeProfitError={errors.tp}
+                stopLossType={values.slType}
+                stopLossValue={values.sl}
+                takeProfitType={values.tpType}
+                takeProfitValue={values.tp}
+                validateForm={validateForm}
+                setFieldError={setFieldError}
+                opened={SLTPStore.openedBuySell}
+                instrumentId={values.instrumentId}
+              ></AutoClosePopup>
+            )}
+          </Observer>
         </FlexContainer>
 
         <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

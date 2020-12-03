@@ -15,6 +15,7 @@ export class SLTPStore implements ContextProps {
   @observable takeProfitValue: string = '';
   @observable stopLossValue: string = '';
   @observable purchaseAtValue: string = '';
+  @observable openedBuySell: boolean = false;
 
   @action
   clearStore = () => {
@@ -23,5 +24,11 @@ export class SLTPStore implements ContextProps {
     this.takeProfitValue = '';
     this.autoCloseTPType = null;
     this.autoCloseSLType = null;
+    this.openedBuySell = false;
+  };
+
+  @action
+  toggleBuySell = (value: boolean) => {
+    this.openedBuySell = value;
   };
 }

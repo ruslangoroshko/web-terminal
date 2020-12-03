@@ -17,6 +17,9 @@ interface Props {
   removeSl: () => void;
   removeTP: () => void;
   resetForm?: () => void;
+  toggleOut?: () => void;
+  active?: boolean;
+  instrumentId?: string;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -34,9 +37,13 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       removeSl,
       removeTP,
       resetForm,
+      active,
+      toggleOut,
+      instrumentId
     } = props;
 
-    const [on, toggle] = useState(false);
+    const [on, toggle] = useState(!!active);
+    const [openAgain, setOpenAgain] = useState(false);
     const [isTop, setIsTop] = useState(true);
 
     const [popupPosition, setPopupPosition] = useState({
@@ -49,7 +56,13 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const handleToggle = () => {
+    const handleToggle = (bySidebar: boolean) => {
+      if (active && bySidebar) {
+        setOpenAgain(true);
+      }
+      if (on && !!toggleOut) {
+        toggleOut();
+      }
       toggle(!on);
       const {
         top,
@@ -70,6 +83,9 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     const handleClickOutside = (e: any) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         toggle(false);
+        if (!!toggleOut) {
+          toggleOut();
+        }
       }
     };
 
@@ -78,6 +94,14 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         resetForm();
       }
     }, [on]);
+
+    useEffect(() => {
+      toggle(!!active);
+      if (openAgain) {
+        toggle(true);
+        setOpenAgain(false);
+      }
+    }, [active]);
 
     useEffect(() => {
       document.addEventListener('mousedown', handleClickOutside);
@@ -89,7 +113,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     return (
       <FlexContainer ref={wrapperRef}>
-        <ButtonWithoutStyles type="button" onClick={handleToggle}>
+        <ButtonWithoutStyles type="button" onClick={() => handleToggle(true)}>
           {children}
         </ButtonWithoutStyles>
         {on && (
@@ -118,6 +142,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               isDisabled={isDisabled}
               removeSL={removeSl}
               removeTP={removeTP}
+              toggleOut={toggleOut}
+              instrumentId={instrumentId}
             />
           </FlexContainer>
         )}

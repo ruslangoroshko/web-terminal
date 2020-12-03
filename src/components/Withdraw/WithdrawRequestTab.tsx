@@ -45,11 +45,13 @@ const WithdrawRequestTab = observer(() => {
           const isPending = result.history?.some(
             (item) =>
               item.status === WithdrawalStatusesEnum.Pending ||
-              item.status === WithdrawalStatusesEnum.Approved
+              item.status === WithdrawalStatusesEnum.Proccesing
           );
 
           if (isPending) {
             withdrawalStore.setPendingPopup();
+          } else {
+            withdrawalStore.closePendingPopup();
           }
         }
       } catch (error) {}

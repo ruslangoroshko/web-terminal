@@ -16,9 +16,13 @@ export class TradingViewStore implements ContextProps {
   @observable tradingWidget?: IChartingLibraryWidget;
   @observable activeOrderLinePositionPnL?: IOrderLineAdapter;
   @observable activeOrderLinePosition?: IOrderLineAdapter;
+  @observable activeOrderLinePositionTP?: IOrderLineAdapter;
+  @observable activeOrderLinePositionSL?: IOrderLineAdapter;
   @observable selectedPosition?: PositionModelWSDTO;
   @observable activePositionPopup: boolean = false;
   @observable applyHandler: any;
+  @observable confirmText: string = '';
+  @observable activePopup: boolean = false;
 
   rootStore: RootStore;
 
@@ -32,10 +36,17 @@ export class TradingViewStore implements ContextProps {
   };
 
   @action
-  setApplyHandler = (applyHandler: () => Promise<void>) => {
+  toggleMovedPositionPopup = (flag: boolean) => {
+    this.activePopup = flag;
+  };
+
+  @action
+  setApplyHandler = (applyHandler: () => Promise<void>, clear?: boolean) => {
     this.applyHandler = () =>
       applyHandler().then(() => {
-        this.clearActivePositionLine();
+        if (clear) {
+          this.clearActivePositionLine();
+        }
       });
   };
 
@@ -46,6 +57,10 @@ export class TradingViewStore implements ContextProps {
     this.activeOrderLinePositionPnL = undefined;
     this.activeOrderLinePosition?.remove();
     this.activeOrderLinePosition = undefined;
+    this.activeOrderLinePositionSL?.remove();
+    this.activeOrderLinePositionSL = undefined;
+    this.activeOrderLinePositionTP?.remove();
+    this.activeOrderLinePositionTP = undefined;
 
     this.tradingWidget?.applyOverrides({
       'scalesProperties.showSeriesLastValue': true,

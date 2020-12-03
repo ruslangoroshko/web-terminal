@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import routesList, { RouteLayoutType } from '../constants/routesList';
 import RouteWrapper from '../components/RouteWrapper';
 import { useLocation, matchPath, Switch } from 'react-router-dom';
@@ -26,6 +26,12 @@ const RoutingLayout: FC = () => {
   if (currentRoute) {
     layoutType = currentRoute.layoutType;
   }
+
+  useEffect(() => {
+    console.log('mainAppStore.isAuthorized', mainAppStore.isAuthorized);
+    console.log('mainAppStore.isInitLoading', mainAppStore.isInitLoading);
+    console.log('mainAppStore.isLoading', mainAppStore.isLoading);
+  }, []);
 
   switch (layoutType) {
     case RouteLayoutType.Authorized:

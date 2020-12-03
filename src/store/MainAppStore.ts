@@ -421,9 +421,6 @@ export class MainAppStore implements MainAppStoreProps {
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
     this.activeAccount = undefined;
     this.activeAccountId = '';
-    mixpanel.track(mixpanelEvents.LOGOUT, {
-      [mixapanelProps.BRAND_NAME]: this.initModel.brandProperty,
-    });
   };
 
   setTokenHandler = (token: string) => {

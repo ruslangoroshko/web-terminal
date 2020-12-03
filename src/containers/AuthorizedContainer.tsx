@@ -91,7 +91,7 @@ const RenderExpandedTabByType = observer(() => {
   }
 });
 
-const AuthorizedContainer: FC<Props> = props => {
+const AuthorizedContainer: FC<Props> = (props) => {
   const { children } = props;
   const { tabsStore, mainAppStore } = useStores();
 
@@ -113,7 +113,9 @@ const AuthorizedContainer: FC<Props> = props => {
       maxHeight="100vh"
       overflow="hidden"
     >
-      <NavBar></NavBar>
+      <Observer>
+        {() => <>{mainAppStore.isAuthorized && <NavBar></NavBar>}</>}
+      </Observer>
       <Observer>
         {() => (
           <>
@@ -128,7 +130,9 @@ const AuthorizedContainer: FC<Props> = props => {
       </Observer>
 
       <FlexContainer height="calc(100% - 48px)">
-        <SideBar></SideBar>
+        <Observer>
+          {() => <>{mainAppStore.isAuthorized && <SideBar></SideBar>}</>}
+        </Observer>
         <SideBarAndPageContentWrapper width="100%">
           <Observer>
             {() => (
@@ -168,7 +172,7 @@ export default AuthorizedContainer;
 const TabsLayoutWrapper = styled(FlexContainer)<
   FlexContainerProps & { isExpanded: boolean }
 >`
-  transform: ${props =>
+  transform: ${(props) =>
     props.isExpanded ? 'translateX(100%)' : 'translateX(-60px)'};
   backface-visibility: hidden;
   will-change: transform;

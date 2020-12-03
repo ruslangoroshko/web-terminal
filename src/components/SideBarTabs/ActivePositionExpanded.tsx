@@ -69,19 +69,26 @@ function ActivePositionExpanded(props: Props) {
         }
 
         mixpanel.track(mixpanelEvents.CLOSE_ORDER, {
-          [mixapanelProps.AMOUNT]: position.investmentAmount,
+          [mixapanelProps.AMOUNT]: response.position.investmentAmount,
           [mixapanelProps.ACCOUNT_CURRENCY]:
             mainAppStore.activeAccount?.currency || '',
-          [mixapanelProps.INSTRUMENT_ID]: position.instrument,
-          [mixapanelProps.MULTIPLIER]: position.multiplier,
+          [mixapanelProps.INSTRUMENT_ID]: response.position.instrument,
+          [mixapanelProps.MULTIPLIER]: response.position.multiplier,
           [mixapanelProps.TREND]:
-            position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+            response.position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
           [mixapanelProps.SL_TYPE]:
-            position.slType !== null ? mixpanelValues[position.slType] : null,
+            response.position.slType !== null
+              ? mixpanelValues[response.position.slType]
+              : null,
           [mixapanelProps.TP_TYPE]:
-            position.tpType !== null ? mixpanelValues[position.tpType] : null,
-          [mixapanelProps.SL_VALUE]: position.sl,
-          [mixapanelProps.TP_VALUE]: position.tp,
+            response.position.tpType !== null
+              ? mixpanelValues[response.position.tpType]
+              : null,
+          [mixapanelProps.SL_VALUE]:
+            response.position.sl !== null
+              ? Math.abs(response.position.sl)
+              : null,
+          [mixapanelProps.TP_VALUE]: response.position.tp,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
@@ -102,7 +109,8 @@ function ActivePositionExpanded(props: Props) {
             position.slType !== null ? mixpanelValues[position.slType] : null,
           [mixapanelProps.TP_TYPE]:
             position.tpType !== null ? mixpanelValues[position.tpType] : null,
-          [mixapanelProps.SL_VALUE]: position.sl,
+          [mixapanelProps.SL_VALUE]:
+            position.sl !== null ? Math.abs(position.sl) : null,
           [mixapanelProps.TP_VALUE]: position.tp,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
