@@ -40,7 +40,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
   };
 
   const fetchFavoriteInstruments = useCallback(async () => {
-    if (mainAppStore.activeAccount) {
+    if (mainAppStore.activeAccount && !instrumentsStore.manualChange) {
       try {
         const response = await API.getFavoriteInstrumets({
           type: mainAppStore.activeAccount?.isLive
@@ -57,6 +57,8 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
       }
+    } else {
+      instrumentsStore.manualChange = false;
     }
   }, [
     mainAppStore.activeAccountId,

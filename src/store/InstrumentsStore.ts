@@ -12,6 +12,8 @@ import {
   SeriesStyle,
 } from '../vendor/charting_library/charting_library';
 import { supportedResolutions } from '../constants/supportedTimeScales';
+import { LOCAL_CHART_TYPE } from '../constants/global';
+import { getChartTypeByLabel } from '../constants/chartValues';
 import { getIntervalByKey } from '../helpers/getIntervalByKey';
 import moment from 'moment';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
@@ -44,6 +46,7 @@ export class InstrumentsStore implements ContextProps {
   @observable activeInstrumentGroupId?: InstrumentGroupWSDTO['id'];
 
   @observable sortByField: string | null = null;
+  @observable manualChange: boolean = false;
 
   @observable pricesChange: IPriceChange = {};
 
@@ -66,11 +69,29 @@ export class InstrumentsStore implements ContextProps {
 
   @action
   setInstruments = (instruments: InstrumentModelWSDTO[]) => {
+    const localType = localStorage.getItem(LOCAL_CHART_TYPE);
+    const currentType = localType
+      ? getChartTypeByLabel(localType)
+      : SeriesStyle.Area;
     this.instruments = instruments.map(
       (item) =>
         <IActiveInstrument>{
-          chartType: SeriesStyle.Area,
+          chartType: currentType,
           instrumentItem: item,
+          interval: '1D',
+          resolution: '1 minute',
+        }
+    );
+  };
+
+  @action
+  changeInstruments = (type: SeriesStyle) => {
+    this.manualChange = true;
+    this.instruments = this.instruments.map(
+      (item) =>
+        <IActiveInstrument>{
+          chartType: type,
+          instrumentItem: item.instrumentItem,
           interval: '1D',
           resolution: '1 minute',
         }

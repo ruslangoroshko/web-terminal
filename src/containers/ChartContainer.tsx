@@ -13,6 +13,8 @@ import ColorsPallete from '../styles/colorPallete';
 import { useStores } from '../hooks/useStores';
 import { supportedResolutions } from '../constants/supportedTimeScales';
 import { BASIC_RESOLUTION_KEY } from '../constants/chartValues';
+import { LOCAL_CHART_TYPE } from '../constants/global';
+import { getChartTypeByLabel } from '../constants/chartValues';
 import { observer } from 'mobx-react-lite';
 import { IActiveInstrument } from '../types/InstrumentsTypes';
 
@@ -34,6 +36,10 @@ interface IProps {
 const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
   const { mainAppStore, tradingViewStore, markersOnChartStore } = useStores();
   useEffect(() => {
+    const localType = localStorage.getItem(LOCAL_CHART_TYPE);
+    const currentType = localType
+      ? getChartTypeByLabel(localType)
+      : SeriesStyle.Area;
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: instrumentId,
       datafeed: new DataFeedService(
@@ -67,7 +73,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
       autosize: true,
       overrides: {
         'symbolWatermarkProperties.transparency': 90,
-        'mainSeriesProperties.style': SeriesStyle.Area,
+        'mainSeriesProperties.style': currentType,
         'mainSeriesProperties.lineStyle.color': ColorsPallete.MINT,
         'mainSeriesProperties.lineStyle.linestyle': LineStyles.LINESTYLE_SOLID,
         'mainSeriesProperties.lineStyle.linewidth': 2,

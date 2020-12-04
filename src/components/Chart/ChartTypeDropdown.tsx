@@ -12,6 +12,7 @@ import {
   getChartIconByType,
   availableChartTypes,
 } from '../../constants/chartValues';
+import { LOCAL_CHART_TYPE } from '../../constants/global';
 import { useTranslation } from 'react-i18next';
 
 interface Props {}
@@ -25,7 +26,8 @@ const ChartTypeDropdown: FC<Props> = props => {
 
   const handleChangeChart = (chartType: SeriesStyle) => () => {
     tradingViewStore.tradingWidget?.chart().setChartType(chartType);
-
+    localStorage.setItem(LOCAL_CHART_TYPE, getChartLabelByType(chartType));
+    instrumentsStore.changeInstruments(chartType);
     if (instrumentsStore.activeInstrument) {
       instrumentsStore.editActiveInstrument({
         ...instrumentsStore.activeInstrument,
