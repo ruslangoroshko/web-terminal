@@ -17,6 +17,9 @@ import { useHistory } from 'react-router-dom';
 import Page from '../../constants/Pages';
 import { useTranslation } from 'react-i18next';
 import { autorun } from 'mobx';
+import CopyIcon from '../../assets/svg_no_compress/icon-copy.svg';
+import SvgIcon from '../SvgIcon';
+import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 
 interface Props {
   account: AccountModelWebSocketDTO;
@@ -54,6 +57,22 @@ const AccountInfo: FC<Props> = observer((props) => {
     notificationStore.isSuccessfull = true;
     notificationStore.openNotification();
     push(Page.DASHBOARD);
+  };
+
+
+  const handleCopyText = (e: any, accountId: string) => {
+    e.stopPropagation();
+    let el = document.createElement('textarea');
+    el.value = accountId;
+    el.setAttribute('readonly', '');
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+
+    notificationStore.notificationMessage = t('Copied to clipboard');
+    notificationStore.isSuccessfull = true;
+    notificationStore.openNotification();
   };
 
   useEffect(() => {
@@ -110,7 +129,9 @@ const AccountInfo: FC<Props> = observer((props) => {
             marginRight={'45px'}
             width={'125px'}
           >
-            <FlexContainer>
+            <FlexContainer
+              marginBottom="4px"
+            >
               <PrimaryTextSpan
                 fontSize={'16px'}
                 color={isActiveAccount ? '#fffccc' : 'rgba(255, 255, 255, 0.4)'}
@@ -140,13 +161,17 @@ const AccountInfo: FC<Props> = observer((props) => {
                 </PrimaryTextSpan>
               </FlexContainer>
             </FlexContainer>
-            <PrimaryTextSpan
+            <AccountId
               className={isActiveAccount ? 'account_total_active' : 'account_total'}
               fontSize="10px"
               color="rgba(255, 255, 255, 0.4)"
+              textTransform="uppercase"
             >
-              {account.currency}
-            </PrimaryTextSpan>
+              {account.id}
+              <ButtonWithoutStyles onClick={(e) => handleCopyText(e, account.id)}>
+                <SvgIcon {...CopyIcon} width="12px" height="12px" fillColor="#ffffff" />
+              </ButtonWithoutStyles>
+            </AccountId>
           </FlexContainer>
           {isActiveAccount && (
             <>
@@ -261,4 +286,19 @@ const DepositButton = styled(SecondaryButton)`
   padding: 8px 16px;
   width: 144px;
   height: 40px;
+`;
+
+const AccountId = styled(PrimaryTextSpan)`
+  display: flex;
+  svg {
+    display: none;
+    margin-left: 7px;
+    position: relative;
+    top: -1px;
+  }
+  &:hover {
+    svg {
+      display: block;
+    }
+  }
 `;
