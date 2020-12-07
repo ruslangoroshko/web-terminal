@@ -78,6 +78,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       operation: position.operation,
       investmentAmount: position.investmentAmount,
       multiplier: position.multiplier,
+      closedByChart: false
     }),
     [position]
   );
@@ -406,6 +407,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         sl: values.sl || null,
         tp: values.tp || null,
       };
+      delete valuesToSubmit.closedByChart;
       try {
         const response = await API.updateSLTP(valuesToSubmit);
         if (response.result === OperationApiResponseCodes.Ok) {
@@ -445,13 +447,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
               ? 'real'
               : 'demo',
-            [mixapanelProps.EVENT_REF]: tradingViewStore.activePopup &&
-            position.id === tradingViewStore.selectedPosition?.id
+            [mixapanelProps.EVENT_REF]: ((tradingViewStore.activePopup &&
+              position.id === tradingViewStore.selectedPosition?.id) || values.closedByChart)
               ? mixpanelValues.CHART
               : mixpanelValues.PORTFOLIO,
             [mixapanelProps.POSITION_ID]: response.position.id,
           });
           tradingViewStore.toggleMovedPositionPopup(false);
+          setFieldValue(Fields.CLOSED_BY_CHART, false);
         } else {
           if (tradingViewStore.selectedPosition?.id === values.positionId) {
             checkSL(position.slType, position.sl);
@@ -486,8 +489,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
               ? 'real'
               : 'demo',
-            [mixapanelProps.EVENT_REF]: tradingViewStore.activePopup &&
-            position.id === tradingViewStore.selectedPosition?.id
+            [mixapanelProps.EVENT_REF]: ((tradingViewStore.activePopup &&
+            position.id === tradingViewStore.selectedPosition?.id) || values.closedByChart)
               ? mixpanelValues.CHART
               : mixpanelValues.PORTFOLIO,
           });
@@ -495,6 +498,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             apiResponseCodeMessages[response.result]
           );
           notificationStore.isSuccessfull = false;
+          setFieldValue(Fields.CLOSED_BY_CHART, false);
           notificationStore.openNotification();
         }
       } catch (error) {
@@ -816,6 +820,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
 
   const removeSLChart = useCallback(async () => {
     if (tradingViewStore.selectedPosition) {
+      setFieldValue(Fields.CLOSED_BY_CHART, true);
       tradingViewStore.activeOrderLinePositionSL?.remove();
       tradingViewStore.activeOrderLinePositionSL = undefined;
       removeSL();
@@ -835,6 +840,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         multiplier: tradingViewStore.selectedPosition?.multiplier,
         operation: tradingViewStore.selectedPosition?.operation,
         instrumentId: tradingViewStore.selectedPosition?.instrument,
+        closedByChart: true,
       };
       tradingViewStore.selectedPosition.sl = null;
       tradingViewStore.selectedPosition.slType = null;
@@ -844,6 +850,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
 
   const removeTPChart = useCallback(async () => {
     if (tradingViewStore.selectedPosition) {
+      setFieldValue(Fields.CLOSED_BY_CHART, true);
       tradingViewStore.activeOrderLinePositionTP?.remove();
       tradingViewStore.activeOrderLinePositionTP = undefined;
       removeTP();
@@ -865,6 +872,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         multiplier: tradingViewStore.selectedPosition?.multiplier,
         operation: tradingViewStore.selectedPosition?.operation,
         instrumentId: tradingViewStore.selectedPosition?.instrument,
+        closedByChart: true,
       };
       tradingViewStore.selectedPosition.tp = null;
       tradingViewStore.selectedPosition.tpType = null;

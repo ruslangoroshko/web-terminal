@@ -29,6 +29,7 @@ const Fields = {
   COUNTRY: 'country',
   CUSTON_PASSPORT_ID: 'customPassportId',
   CUSTOM_PROOF_OF_ADDRESS: 'customProofOfAddress',
+  CLOSED_BY_CHART: 'closedByChart',
 };
 
 Object.freeze(Fields);
