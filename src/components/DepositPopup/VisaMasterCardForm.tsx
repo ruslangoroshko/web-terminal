@@ -30,9 +30,14 @@ import moment from 'moment';
 import depositResponseMessages from '../../constants/depositResponseMessages';
 import { useHistory } from 'react-router-dom';
 import { DepositRequestStatusEnum } from '../../enums/DepositRequestStatusEnum';
+import LoaderComponent from '../LoaderComponent';
+import PreloaderButtonMask from '../PreloaderButtonMask';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
+
+  const [loading, setLoading] = useState(false);
+
   const placeholderValues = [250, 500, 1000];
 
   const { t } = useTranslation();
@@ -133,6 +138,7 @@ const VisaMasterCardForm = () => {
   };
 
   const handleSubmitForm = async (values: any) => {
+    setLoading(true);
     let parts = values.expirationDate.split('/');
 
     const params: CreateDepositInvoiceParams = {
@@ -175,6 +181,7 @@ const VisaMasterCardForm = () => {
           });
           break;
       }
+      setLoading(false);
     } catch (error) {}
   };
 
@@ -234,7 +241,7 @@ const VisaMasterCardForm = () => {
 
   return (
     <FlexContainer flexDirection="column" padding="32px 0 0 68px">
-      <form autoComplete="on" noValidate onSubmit={handleSubmit}>
+      <CustomForm autoComplete="on" noValidate onSubmit={handleSubmit}>
         <FlexContainer flexDirection="column">
           <PrimaryTextParagraph
             textTransform="uppercase"
@@ -287,44 +294,6 @@ const VisaMasterCardForm = () => {
 
         <FlexContainer marginBottom="20px">
           <img src={VisaMasterCardImage} alt="" width="40px" />
-        </FlexContainer>
-
-        <FlexContainer flexDirection="column" marginBottom="20px">
-          <PrimaryTextParagraph
-            textTransform="uppercase"
-            fontSize="11px"
-            color="rgba(255,255,255,0.3)"
-            marginBottom="6px"
-          >
-            {t('Card holder')}
-          </PrimaryTextParagraph>
-
-          <FlexContainer
-            borderRadius="4px"
-            backgroundColor="#292C33"
-            marginBottom="10px"
-            maxHeight="48px"
-            alignItems="center"
-            position="relative"
-          >
-            <CustomInput
-              autoComplete="cc-name"
-              placeholder={t('Your name')}
-              value={values.fullName}
-              onChange={handleChange}
-              name="fullName"
-              id="fullName"
-              hasError={!!(touched.fullName && errors.fullName)}
-            />
-            {touched.fullName && errors.fullName && (
-              <ErrorInputLabel>
-                <ErrorLabelDekor>
-                  <SvgIcon {...LabelBgIcon} fillColor="#ED145B" />
-                </ErrorLabelDekor>
-                {errors.fullName}
-              </ErrorInputLabel>
-            )}
-          </FlexContainer>
         </FlexContainer>
 
         <FlexContainer flexDirection="column" marginBottom="20px">
@@ -482,28 +451,80 @@ const VisaMasterCardForm = () => {
           </FlexContainer>
         </CustomFlex>
 
-        <FlexContainer marginBottom="40px">
+        <FlexContainer flexDirection="column" marginBottom="20px">
+          <PrimaryTextParagraph
+            textTransform="uppercase"
+            fontSize="11px"
+            color="rgba(255,255,255,0.3)"
+            marginBottom="6px"
+          >
+            {t('Card holder')}
+          </PrimaryTextParagraph>
+
+          <FlexContainer
+            borderRadius="4px"
+            backgroundColor="#292C33"
+            marginBottom="10px"
+            maxHeight="48px"
+            alignItems="center"
+            position="relative"
+          >
+            <CustomInput
+              autoComplete="cc-name"
+              placeholder={t('Your name')}
+              value={values.fullName}
+              onChange={handleChange}
+              name="fullName"
+              id="fullName"
+              hasError={!!(touched.fullName && errors.fullName)}
+            />
+            {touched.fullName && errors.fullName && (
+              <ErrorInputLabel>
+                <ErrorLabelDekor>
+                  <SvgIcon {...LabelBgIcon} fillColor="#ED145B" />
+                </ErrorLabelDekor>
+                {errors.fullName}
+              </ErrorInputLabel>
+            )}
+          </FlexContainer>
+        </FlexContainer>
+
+        <FlexContainer marginBottom="40px" position="relative" overflow="hidden" borderRadius="8px">
+          <PreloaderButtonMask loading={loading} />
           <PrimaryButton
             padding="12px 20px"
             width="100%"
             onClick={handlerClickSubmit}
             disabled={isSubmitting}
           >
-            <PrimaryTextSpan className="notranslate" color="#003A38" fontSize="14px" fontWeight="bold">
+            <PrimaryTextSpan
+              className="notranslate"
+              color="#003A38"
+              fontSize="14px"
+              fontWeight="bold"
+            >
               {t('Deposit')} {mainAppStore.activeAccount?.symbol}
             </PrimaryTextSpan>
-            <PrimaryTextSpan className="notranslate" color="#003A38" fontSize="14px" fontWeight="bold">
+            <PrimaryTextSpan
+              className="notranslate"
+              color="#003A38"
+              fontSize="14px"
+              fontWeight="bold"
+            >
               {values.amount}
             </PrimaryTextSpan>
           </PrimaryButton>
         </FlexContainer>
-      </form>
+      </CustomForm>
     </FlexContainer>
   );
 };
 
 export default VisaMasterCardForm;
 
+const CustomForm = styled.form`
+  margin-bottom: 0;
+`;
 const CustomFlex = styled(FlexContainer)`
   justify-content: space-between;
   & > div {

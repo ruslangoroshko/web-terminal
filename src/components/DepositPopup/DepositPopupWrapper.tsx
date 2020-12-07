@@ -157,7 +157,7 @@ const DepositPopupInner: FC = () => {
               <FlexContainer
                 position="absolute"
                 right="32px"
-                top="26px"
+                top="22px"
                 zIndex="300"
               >
                 <ButtonWithoutStyles onClick={depositFundsStore.togglePopup}>
@@ -168,7 +168,7 @@ const DepositPopupInner: FC = () => {
                   />
                 </ButtonWithoutStyles>
               </FlexContainer>
-              <FlexContainer padding="24px 48px" flexDirection="column">
+              <FlexContainer padding="20px 48px" flexDirection="column">
                 <PrimaryTextSpan
                   fontSize="16px"
                   fontWeight="bold"
@@ -254,7 +254,7 @@ const DepositPopupInner: FC = () => {
                 padding="0 40px 20px 0"
                 width="calc(100% - 292px)"
                 position="relative"
-                minHeight="688px"
+                //minHeight="688px"
               >
                 <Observer>{() => <>{renderDepositType()}</>}</Observer>
               </FlexContainer>
@@ -273,7 +273,7 @@ const DepositModalWrap = styled(FlexContainer)`
   border: 1px solid rgba(169, 171, 173, 0.1);
   box-shadow: 0px 34px 44px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
-  min-height: 688px;
+  //min-height: 688px;
 `;
 
 const HeaderDepositPopup = styled(FlexContainer)`
