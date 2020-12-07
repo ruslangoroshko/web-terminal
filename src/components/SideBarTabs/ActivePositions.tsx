@@ -418,7 +418,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           position.slType = valuesToSubmit.slType;
           position.tpType = valuesToSubmit.tpType;
           tradingViewStore.selectedPosition = position;
-          tradingViewStore.toggleMovedPositionPopup(false);
           mixpanel.track(mixpanelEvents.EDIT_SLTP, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -446,9 +445,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
               ? 'real'
               : 'demo',
-            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+            [mixapanelProps.EVENT_REF]: tradingViewStore.activePopup &&
+            position.id === tradingViewStore.selectedPosition?.id
+              ? mixpanelValues.CHART
+              : mixpanelValues.PORTFOLIO,
             [mixapanelProps.POSITION_ID]: response.position.id,
           });
+          tradingViewStore.toggleMovedPositionPopup(false);
         } else {
           if (tradingViewStore.selectedPosition?.id === values.positionId) {
             checkSL(position.slType, position.sl);
@@ -483,7 +486,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
             [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
               ? 'real'
               : 'demo',
-            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+            [mixapanelProps.EVENT_REF]: tradingViewStore.activePopup &&
+            position.id === tradingViewStore.selectedPosition?.id
+              ? mixpanelValues.CHART
+              : mixpanelValues.PORTFOLIO,
           });
           notificationStore.notificationMessage = t(
             apiResponseCodeMessages[response.result]
@@ -608,6 +614,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           tradingViewStore.confirmText = 'Cancel Stop loss level?';
           tradingViewStore.toggleActivePositionPopup(true);
         })
+        .setCancelTooltip('Cancel SL')
         .setText(slText)
         .setQuantity('')
         .setPrice(getActualPricing(sl, 'sl', slType))
@@ -649,6 +656,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           tradingViewStore.toggleActivePositionPopup(true);
         })
         .setQuantity('')
+        .setCancelTooltip('Cancel TP')
         .setText(tpText)
         .setPrice(getActualPricing(tp, 'tp', tpType))
         .setExtendLeft(false)
