@@ -137,7 +137,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
               .test(
                 Fields.TAKE_PROFIT,
                 t('Take profit level should be higher than the current P/L'),
-                (value) => value > PnL()
+                (value) => value === null || value > PnL()
               ),
           }),
         sl: yup
