@@ -720,7 +720,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         position.id === tradingViewStore.selectedPosition?.id
         ? [position.slType === TpSlTypeEnum.Currency
           ? parseFloat(getNewPricing(newPosition, 'sl').toFixed(2))
-          : newPosition, position.slType]
+          : parseFloat(newPosition.toFixed(activeInstrument()?.digits || 2)), position.slType]
         : [position.sl, position.slType];
     }
     return [position.sl, position.slType];
@@ -741,7 +741,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
         position.id === tradingViewStore.selectedPosition?.id
         ? [position.tpType === TpSlTypeEnum.Currency
           ? parseFloat(getNewPricing(newPosition, 'tp').toFixed(2))
-          : newPosition, position.tpType]
+          : parseFloat(newPosition.toFixed(activeInstrument()?.digits || 2)), position.tpType]
         : [position.tp, position.tpType];
     }
     return [position.tp, position.tpType];
