@@ -85,4 +85,5 @@ export interface UpdateSLTP {
   sl: number | null;
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
+  closedByChart?: boolean;
 }
