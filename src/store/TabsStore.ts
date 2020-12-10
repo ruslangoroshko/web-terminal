@@ -2,7 +2,10 @@ import { observable, action } from 'mobx';
 import { SideBarTabType } from '../enums/SideBarTabType';
 import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
 import { HistoryTabEnum } from '../enums/HistoryTabEnum';
-import { LOCAL_STORAGE_SIDEBAR } from '../constants/global';
+import {
+  LOCAL_STORAGE_SIDEBAR,
+  LOCAL_POSITION
+} from '../constants/global';
 
 interface ContextProps {
   sideBarTabType: SideBarTabType | null;
@@ -23,5 +26,6 @@ export class TabsStore implements ContextProps {
     this.isTabExpanded = false;
     this.sideBarTabType = null;
     localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
+    localStorage.removeItem(LOCAL_POSITION);
   };
 }

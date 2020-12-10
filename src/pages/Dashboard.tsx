@@ -33,6 +33,7 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import ShouldValidatePhonePopup from '../components/ShouldValidatePhonePopup';
 import ConfirmPopup from '../components/ConfirmPopup';
+import { LOCAL_MARKET_TABS } from '../constants/global';
 
 // TODO: refactor dashboard observer to small Observers (isLoading flag)
 
@@ -77,7 +78,8 @@ const Dashboard: FC = observer(() => {
           if (mainAppStore.activeAccount?.id === response.accountId) {
             instrumentsStore.instrumentGroups = response.data;
             if (response.data.length) {
-              instrumentsStore.activeInstrumentGroupId = response.data[0].id;
+              const lastMarketTab = localStorage.getItem(LOCAL_MARKET_TABS);
+              instrumentsStore.activeInstrumentGroupId = !!lastMarketTab ? lastMarketTab : response.data[0].id;
             }
           }
         }

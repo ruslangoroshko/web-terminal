@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { observer } from 'mobx-react-lite';
 import API from '../helpers/API';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
+import { LOCAL_INSTRUMENT_ACTIVE } from '../constants/global';
 
 interface Props {}
 
@@ -50,8 +51,11 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
         });
 
         instrumentsStore.setActiveInstrumentsIds(response);
+        const lastActive = localStorage.getItem(LOCAL_INSTRUMENT_ACTIVE);
         instrumentsStore.switchInstrument(
-          response[0] || instrumentsStore.instruments[0].instrumentItem.id
+          !!lastActive
+            ? lastActive
+            : (response[0] || instrumentsStore.instruments[0].instrumentItem.id)
         );
       } catch (error) {
         badRequestPopupStore.openModal();

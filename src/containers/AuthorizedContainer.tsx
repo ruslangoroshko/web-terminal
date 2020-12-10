@@ -97,7 +97,6 @@ const AuthorizedContainer: FC<Props> = (props) => {
 
   useEffect(() => {
     const wasOpen = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
-    console.log(wasOpen);
     if (wasOpen) {
       tabsStore.sideBarTabType = parseInt(wasOpen);
     }

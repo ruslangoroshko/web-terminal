@@ -37,12 +37,14 @@ import { IOrderLineAdapter } from '../../vendor/charting_library/charting_librar
 import { autorun } from 'mobx';
 import { Observer } from 'mobx-react-lite';
 import mixpanelValues from '../../constants/mixpanelValues';
+import { LOCAL_POSITION } from '../../constants/global';
 
 interface Props {
   position: PositionModelWSDTO;
+  ready: boolean;
 }
 
-const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
+const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
   const isBuy = position.operation === AskBidEnum.Buy;
 
   const instrumentRef = useRef<HTMLDivElement>(null);
@@ -538,7 +540,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
           await instrumentsStore.switchInstrument(position.instrument);
           tradingViewStore.clearActivePositionLine();
           tradingViewStore.selectedPosition = position;
-
+          localStorage.setItem(LOCAL_POSITION, `${position.id}`);
           tradingViewStore.activeOrderLinePosition = tradingViewStore.tradingWidget
             ?.chart()
             .createOrderLine({ disableUndo: true })
@@ -937,6 +939,17 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position }) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (ready) {
+      const lastPosition = localStorage.getItem(LOCAL_POSITION);
+      if (!!lastPosition) {
+        if (position.id === parseInt(lastPosition)) {
+          setInstrumentActive(false);
+        }
+      }
+    }
+  }, [ready]);
 
   return (
     <Observer>

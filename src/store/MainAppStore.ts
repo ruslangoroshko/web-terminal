@@ -3,6 +3,8 @@ import {
   LOCAL_STORAGE_REFRESH_TOKEN_KEY,
   LOCAL_STORAGE_LANGUAGE,
   LOCAL_STORAGE_SIDEBAR,
+  LOCAL_POSITION,
+  LOCAL_MARKET_TABS
 } from './../constants/global';
 import {
   UserAuthenticate,
@@ -410,6 +412,8 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
     localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY);
     localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
+    localStorage.removeItem(LOCAL_POSITION);
+    localStorage.removeItem(LOCAL_MARKET_TABS);
     this.isInitLoading = false;
     this.isLoading = false;
     this.token = '';

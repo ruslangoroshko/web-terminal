@@ -12,7 +12,7 @@ import {
   SeriesStyle,
 } from '../vendor/charting_library/charting_library';
 import { supportedResolutions } from '../constants/supportedTimeScales';
-import { LOCAL_CHART_TYPE } from '../constants/global';
+import { LOCAL_CHART_TYPE, LOCAL_INSTRUMENT_ACTIVE } from '../constants/global';
 import { getChartTypeByLabel } from '../constants/chartValues';
 import { getIntervalByKey } from '../helpers/getIntervalByKey';
 import moment from 'moment';
@@ -64,6 +64,10 @@ export class InstrumentsStore implements ContextProps {
           this.activeInstrumentsIds.indexOf(a.instrumentItem.id) -
           this.activeInstrumentsIds.indexOf(b.instrumentItem.id)
       );
+    const lastActive = localStorage.getItem(LOCAL_INSTRUMENT_ACTIVE);
+    if (!!lastActive) {
+      this.switchInstrument(lastActive);
+    }
     return filteredActiveInstruments;
   }
 
@@ -104,7 +108,7 @@ export class InstrumentsStore implements ContextProps {
       this.instruments.find(
         (item) => item.instrumentItem.id === activeInstrumentId
       ) || this.instruments[0];
-
+    localStorage.setItem(LOCAL_INSTRUMENT_ACTIVE, activeInstrumentId);
     this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
   };
 
@@ -193,6 +197,7 @@ export class InstrumentsStore implements ContextProps {
           (item) => item.instrumentItem.id === instrumentId
         ) || this.instruments[0];
       if (newActiveInstrument) {
+        localStorage.setItem(LOCAL_INSTRUMENT_ACTIVE, instrumentId);
         this.addActiveInstrumentId(instrumentId);
         this.activeInstrument = newActiveInstrument;
         const tvWidget = this.rootStore.tradingViewStore.tradingWidget;

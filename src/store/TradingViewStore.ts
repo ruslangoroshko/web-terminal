@@ -23,11 +23,18 @@ export class TradingViewStore implements ContextProps {
   @observable applyHandler: any;
   @observable confirmText: string = '';
   @observable activePopup: boolean = false;
+  @observable tradingWidgetReady: boolean = false;
 
   rootStore: RootStore;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
+  }
+
+  @action
+  setTradingWidget = (tradingWidget: IChartingLibraryWidget) => {
+    this.tradingWidget = tradingWidget;
+    this.tradingWidgetReady = true;
   }
 
   @action

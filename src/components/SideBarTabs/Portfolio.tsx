@@ -22,7 +22,7 @@ import PortfolioTotalEquity from './PortfolioTotalEquity';
 interface Props {}
 
 const Portfolio: FC<Props> = () => {
-  const { sortingStore, mainAppStore, tabsStore, quotesStore } = useStores();
+  const { sortingStore, mainAppStore, tabsStore, quotesStore, tradingViewStore } = useStores();
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     tabsStore.portfolioTab = portfolioTab;
@@ -149,7 +149,7 @@ const Portfolio: FC<Props> = () => {
         {() => (
           <ActivePositionsWrapper flexDirection="column">
             {quotesStore.sortedActivePositions.map((item) => (
-              <ActivePositionsPortfolioTab key={item.id} position={item} />
+              <ActivePositionsPortfolioTab ready={tradingViewStore.tradingWidgetReady} key={item.id} position={item} />
             ))}
             {!quotesStore.sortedActivePositions.length && (
               <FlexContainer

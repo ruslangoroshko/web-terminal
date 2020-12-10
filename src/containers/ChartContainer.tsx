@@ -120,7 +120,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
     const tvWidget = new widget(widgetOptions);
 
     tvWidget.onChartReady(async () => {
-      tradingViewStore.tradingWidget = tvWidget;
+      tradingViewStore.setTradingWidget(tvWidget);
       markersOnChartStore.renderActivePositionsMarkersOnChart();
     });
     return () => {
