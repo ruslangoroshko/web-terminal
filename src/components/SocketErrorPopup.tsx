@@ -6,11 +6,14 @@ import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import { useStores } from '../hooks/useStores';
 import { observer, Observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 const SocketErrorPopup = observer(() => {
   const { badRequestPopupStore, mainAppStore } = useStores();
   const [show, setShow] = useState(false);
   const [shouldRender, setRender] = useState(false);
+
+  const { t } = useTranslation();
 
   const handleLostConnection = () => {
     badRequestPopupStore.setNetwork(true);
@@ -47,7 +50,7 @@ const SocketErrorPopup = observer(() => {
     <Modal>
       <ModalWrap show={show}>
         <PrimaryTextParagraph color="#ffffff" textAlign="center">
-          Restarting session...
+          {t('Restarting session')}...
         </PrimaryTextParagraph>
         <PrimaryTextParagraph
           fontSize="12px"

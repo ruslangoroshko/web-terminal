@@ -345,5 +345,6 @@
     "Pending": "Pending",
 	"Canceled": "Canceled",
 	"Approved": "Approved",
-	"Declined": "Declined"
+    "Declined": "Declined",
+    "Restarting session": "Restarting session"
 }
