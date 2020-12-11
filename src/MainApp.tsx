@@ -9,6 +9,7 @@ import 'react-dates/lib/css/_datepicker.css';
 import reactDatePickerOverrides from './styles/react-date-picker-overrides';
 import { useStores } from './hooks/useStores';
 import NetworkErrorPopup from './components/NetworkErrorPopup';
+import SocketErrorPopup from './components/SocketErrorPopup';
 import { useTranslation } from 'react-i18next';
 import { autorun } from 'mobx';
 
@@ -31,6 +32,7 @@ const MainApp: FC = () => {
   return (
     <>
       <NetworkErrorPopup />
+      <SocketErrorPopup />
       <Helmet>
         <title>{`${mainAppStore.initModel.brandName} ${t(
           'trading platform'

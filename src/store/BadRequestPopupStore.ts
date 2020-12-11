@@ -8,13 +8,19 @@ interface ContextProps {
 export class BadRequestPopupStore implements ContextProps {
   @observable requsetMessage: string = '';
   @observable isActive: boolean = false;
-  @observable isNetwork: boolean = true;
+  @observable isNetwork: boolean = false;
   @observable isRecconect: boolean = false;
-  @observable isReload: boolean = true;
+  @observable isReload: boolean = false;
+  @observable isSocket: boolean = false;
 
   @action
   setNetwork = (status: boolean) => {
     this.isNetwork = status;
+  };
+
+  @action
+  setSocket = (status: boolean) => {
+    this.isSocket = status;
   };
 
   @action

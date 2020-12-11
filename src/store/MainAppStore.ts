@@ -259,11 +259,7 @@ export class MainAppStore implements MainAppStoreProps {
     );
 
     connection.onclose((error) => {
-      this.rootStore.badRequestPopupStore.openModal();
-      this.rootStore.badRequestPopupStore.setMessage(
-        error?.message ||
-          apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
-      );
+      this.rootStore.badRequestPopupStore.setSocket(true);
       this.socketError = true;
       console.log('websocket error: ', error);
       console.log('=====/=====');
