@@ -730,12 +730,16 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
       tradingViewStore.selectedPosition
     ) {
       const newPosition = tradingViewStore.activeOrderLinePositionSL?.getPrice();
-      return tradingViewStore.activePopup &&
-        position.id === tradingViewStore.selectedPosition?.id
+      const actualPricement = tradingViewStore.activePopup &&
+      position.id === tradingViewStore.selectedPosition?.id
         ? [position.slType === TpSlTypeEnum.Currency
           ? parseFloat(getNewPricing(newPosition, 'sl').toFixed(2))
           : parseFloat(newPosition.toFixed(activeInstrument()?.digits || 2)), position.slType]
         : [position.sl, position.slType];
+      SLTPStore.stopLossValue = position.slType === TpSlTypeEnum.Currency
+        ? getNewPricing(newPosition, 'sl').toFixed(2)
+        : newPosition.toFixed(activeInstrument()?.digits || 2);
+      return actualPricement;
     }
     return [position.sl, position.slType];
   }, [
@@ -751,12 +755,16 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
       tradingViewStore.selectedPosition
     ) {
       const newPosition = tradingViewStore.activeOrderLinePositionTP?.getPrice();
-      return tradingViewStore.activePopup &&
+      const actualPricement = tradingViewStore.activePopup &&
         position.id === tradingViewStore.selectedPosition?.id
-        ? [position.tpType === TpSlTypeEnum.Currency
-          ? parseFloat(getNewPricing(newPosition, 'tp').toFixed(2))
-          : parseFloat(newPosition.toFixed(activeInstrument()?.digits || 2)), position.tpType]
-        : [position.tp, position.tpType];
+          ? [position.tpType === TpSlTypeEnum.Currency
+            ? parseFloat(getNewPricing(newPosition, 'tp').toFixed(2))
+            : parseFloat(newPosition.toFixed(activeInstrument()?.digits || 2)), position.tpType]
+          : [position.tp, position.tpType];
+      SLTPStore.takeProfitValue = position.tpType === TpSlTypeEnum.Currency
+        ? getNewPricing(newPosition, 'tp').toFixed(2)
+        : newPosition.toFixed(activeInstrument()?.digits || 2);
+      return actualPricement;
     }
     return [position.tp, position.tpType];
   }, [
