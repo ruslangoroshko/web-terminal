@@ -20,6 +20,11 @@ import { autorun } from 'mobx';
 import CopyIcon from '../../assets/svg_no_compress/icon-copy.svg';
 import SvgIcon from '../SvgIcon';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import {
+  LOCAL_MARKET_TABS,
+  LOCAL_POSITION,
+  LOCAL_STORAGE_SIDEBAR
+} from '../../constants/global';
 
 interface Props {
   account: AccountModelWebSocketDTO;
@@ -50,6 +55,9 @@ const AccountInfo: FC<Props> = observer((props) => {
     });
     tabsStore.sideBarTabType = null;
     mainAppStore.setActiveAccount(account);
+    localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
+    localStorage.removeItem(LOCAL_POSITION);
+    localStorage.removeItem(LOCAL_MARKET_TABS);
     toggle();
     notificationStore.notificationMessage = `${t(
       'Your account has been switched on'
@@ -98,21 +106,21 @@ const AccountInfo: FC<Props> = observer((props) => {
       onClick={isActiveAccount ? toggle : handleSwitch}
     >
       <FlexContainer justifyContent="space-between">
-        <FlexContainer alignItems={'flex-start'}>
+        <FlexContainer alignItems="flex-start">
           <FlexContainer
             backgroundColor={isActiveAccount ? '#fffccc' : '#C4C4C4'}
             alignItems="center"
             justifyContent="center"
-            width={'40px'}
-            height={'40px'}
-            borderRadius={'50%'}
-            marginRight={'10px'}
+            width="40px"
+            height="40px"
+            borderRadius="50%"
+            marginRight="10px"
           >
             <FlexContainer
-              width={'16px'}
-              height={'16px'}
-              borderRadius={'50%'}
-              backgroundColor={'#2A2D38'}
+              width="16px"
+              height="16px"
+              borderRadius="50%"
+              backgroundColor="#2A2D38"
               alignItems="center"
               justifyContent="center"
             >
@@ -126,14 +134,14 @@ const AccountInfo: FC<Props> = observer((props) => {
           </FlexContainer>
           <FlexContainer
             flexDirection="column"
-            marginRight={'45px'}
-            width={'125px'}
+            marginRight="45px"
+            width="125px"
           >
             <FlexContainer
               marginBottom="4px"
             >
               <PrimaryTextSpan
-                fontSize={'16px'}
+                fontSize="16px"
                 color={isActiveAccount ? '#fffccc' : 'rgba(255, 255, 255, 0.4)'}
                 marginRight="6px"
                 className={isActiveAccount ? 'account_total_active' : 'account_total'}
