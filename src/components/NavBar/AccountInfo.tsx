@@ -72,7 +72,7 @@ const AccountInfo: FC<Props> = observer((props) => {
 
     notificationStore.notificationMessage = t('Copied to clipboard');
     notificationStore.isSuccessfull = true;
-    notificationStore.openNotification();
+    notificationStore.openNotificationGlobal();
   };
 
   useEffect(() => {

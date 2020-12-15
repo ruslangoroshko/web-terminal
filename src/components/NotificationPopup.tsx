@@ -61,6 +61,7 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
       justifyContent="space-between"
       position="relative"
       show={show}
+      margin={notificationStore.isActiveNotificationGlobal ? '0 0 0 60px' : '0'}
       onAnimationEnd={onAnimationEnd}
     >
       <PrimaryTextSpan

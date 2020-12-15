@@ -10,17 +10,24 @@ interface ContextProps {
 export class NotificationStore implements ContextProps {
   @observable notificationMessage: string = '';
   @observable isActiveNotification: boolean = false;
+  @observable isActiveNotificationGlobal: boolean = false;
   @observable isSuccessfull: boolean = false;
   @observable timer?: NodeJS.Timeout;
 
   @action
   closeNotification = () => {
     this.isActiveNotification = false;
+    this.isActiveNotificationGlobal = false;
   };
 
   @action
   openNotification = () => {
     this.isActiveNotification = true;
+  };
+
+  @action
+  openNotificationGlobal = () => {
+    this.isActiveNotificationGlobal = true;
   };
 
   // TODO: rewrite to actions

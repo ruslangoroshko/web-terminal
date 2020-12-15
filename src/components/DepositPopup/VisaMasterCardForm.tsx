@@ -631,6 +631,7 @@ const ErrorInputLabel = styled.span`
   bottom: -12px;
   padding: 8px 16px;
   transform: translateY(100%);
+  z-index: 1;
 `;
 
 const ErrorLabelDekor = styled.span`

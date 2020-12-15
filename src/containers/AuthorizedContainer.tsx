@@ -20,6 +20,7 @@ import Markets from '../components/SideBarTabs/Markets';
 import DepositPopupWrapper from '../components/DepositPopup/DepositPopupWrapper';
 import DepositPaymentResultPopup from '../components/DepositPopup/DepositPaymentResultPopup/DepositPaymentResultPopup';
 import { LOCAL_STORAGE_SIDEBAR } from '../constants/global';
+import NotificationPopup from '../components/NotificationPopup';
 
 interface Props {}
 
@@ -93,7 +94,7 @@ const RenderExpandedTabByType = observer(() => {
 
 const AuthorizedContainer: FC<Props> = (props) => {
   const { children } = props;
-  const { tabsStore, mainAppStore } = useStores();
+  const { tabsStore, mainAppStore, notificationStore } = useStores();
 
   useEffect(() => {
     const wasOpen = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
@@ -112,6 +113,20 @@ const AuthorizedContainer: FC<Props> = (props) => {
       maxHeight="100vh"
       overflow="hidden"
     >
+      <FlexContainer
+        position="absolute"
+        bottom="100px"
+        left="14px"
+        zIndex="1005"
+      >
+        <Observer>
+          {() => (
+            <NotificationPopup
+              show={notificationStore.isActiveNotificationGlobal}
+            ></NotificationPopup>
+          )}
+        </Observer>
+      </FlexContainer>
       <Observer>
         {() => <>{mainAppStore.isAuthorized && <NavBar></NavBar>}</>}
       </Observer>
