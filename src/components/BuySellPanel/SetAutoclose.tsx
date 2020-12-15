@@ -210,7 +210,7 @@ const SetAutoclose: FC<Props> = observer(props => {
         width="100%"
         position="relative"
       >
-        {tpError && (
+        {(tpError && !!SLTPStore.takeProfitValue) && (
           <ErropPopup
             textColor="#fffccc"
             bgColor={ColorsPallete.RAZZMATAZZ}
@@ -293,7 +293,7 @@ const SetAutoclose: FC<Props> = observer(props => {
         width="100%"
         position="relative"
       >
-        {slError && (
+        {(slError && !!SLTPStore.stopLossValue) && (
           <ErropPopup
             textColor="#fffccc"
             bgColor={ColorsPallete.RAZZMATAZZ}
