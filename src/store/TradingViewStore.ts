@@ -32,9 +32,9 @@ export class TradingViewStore implements ContextProps {
   }
 
   @action
-  setTradingWidget = (tradingWidget: IChartingLibraryWidget) => {
+  setTradingWidget = (tradingWidget: IChartingLibraryWidget | undefined) => {
     this.tradingWidget = tradingWidget;
-    this.tradingWidgetReady = true;
+    this.tradingWidgetReady = !!tradingWidget;
   }
 
   @action
