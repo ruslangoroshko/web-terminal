@@ -905,7 +905,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
           tradingViewStore.activeOrderLinePositionPnL &&
           instrumentsStore.activeInstrument &&
           tradingViewStore.selectedPosition &&
-          tradingViewStore.selectedPosition.id === position.id
+          tradingViewStore.selectedPosition.id === position.id &&
+          tradingViewStore.tradingWidget
         ) {
           tradingViewStore.tradingWidget?.applyOverrides({
             'scalesProperties.showSeriesLastValue': false,

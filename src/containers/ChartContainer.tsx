@@ -124,6 +124,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
       markersOnChartStore.renderActivePositionsMarkersOnChart();
     });
     return () => {
+      tradingViewStore.setTradingWidget(undefined);
       tvWidget.remove();
     };
   }, []);
