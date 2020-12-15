@@ -23,7 +23,8 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
   LOCAL_MARKET_TABS,
   LOCAL_POSITION,
-  LOCAL_STORAGE_SIDEBAR
+  LOCAL_STORAGE_SIDEBAR,
+  LOCAL_INSTRUMENT_ACTIVE
 } from '../../constants/global';
 
 interface Props {
@@ -58,6 +59,7 @@ const AccountInfo: FC<Props> = observer((props) => {
     localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
     localStorage.removeItem(LOCAL_POSITION);
     localStorage.removeItem(LOCAL_MARKET_TABS);
+    localStorage.removeItem(LOCAL_INSTRUMENT_ACTIVE);
     toggle();
     notificationStore.notificationMessage = `${t(
       'Your account has been switched on'
