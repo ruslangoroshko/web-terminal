@@ -35,7 +35,6 @@ import PreloaderButtonMask from '../PreloaderButtonMask';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
-
   const [loading, setLoading] = useState(false);
 
   const placeholderValues = [250, 500, 1000];
@@ -94,6 +93,7 @@ const VisaMasterCardForm = () => {
       .required(t('Required field'))
       .test('cvv', t('CVV is invalid'), (val) => val?.length === 3),
   });
+
   const initialValues = {
     amount: 500,
     fullName: '',
@@ -239,6 +239,10 @@ const VisaMasterCardForm = () => {
     });
   }, []);
 
+  useEffect(() => {
+    console.log('cvv', values.cvv);
+  }, [values]);
+
   return (
     <FlexContainer flexDirection="column" padding="32px 0 0 68px">
       <CustomForm autoComplete="on" noValidate onSubmit={handleSubmit}>
@@ -318,7 +322,6 @@ const VisaMasterCardForm = () => {
               // TODO: shouldForwardProp
               // @ts-ignore
               maskPlaceholder={''}
-              maskChar=""
               placeholder="1234 5678 9012 3456"
               mask={[
                 /\d/,
@@ -389,7 +392,7 @@ const VisaMasterCardForm = () => {
                 onBeforeInput={handleBeforeInputChange}
                 value={values.expirationDate}
                 onChange={handleChangeExpireDate}
-                maxLength={5}
+                //maxLength={5}
                 name="expirationDate"
                 id="expirationDate"
                 className={`input-border ${
@@ -489,7 +492,12 @@ const VisaMasterCardForm = () => {
           </FlexContainer>
         </FlexContainer>
 
-        <FlexContainer marginBottom="40px" position="relative" overflow="hidden" borderRadius="8px">
+        <FlexContainer
+          marginBottom="40px"
+          position="relative"
+          overflow="hidden"
+          borderRadius="8px"
+        >
           <PreloaderButtonMask loading={loading} />
           <PrimaryButton
             padding="12px 20px"
