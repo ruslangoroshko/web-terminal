@@ -115,7 +115,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                (value) => value > currentPriceBid()
+                (value) => value > currentPriceBid() || value === null
               ),
           })
           .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
@@ -129,7 +129,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                (value) => value < currentPriceAsk()
+                (value) => value < currentPriceAsk() || value === null
               ),
           })
           .when([Fields.TAKE_PROFIT_TYPE], {
@@ -159,7 +159,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                (value) => value < currentPriceBid()
+                (value) => value < currentPriceBid() || value === null
               ),
           })
           .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
@@ -172,7 +172,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                 `${t('Error message')}: ${t(
                   'This level is higher or lower than the one currently allowed'
                 )}`,
-                (value) => value > currentPriceAsk()
+                (value) => value > currentPriceAsk() || value === null
               ),
           })
           .when([Fields.STOP_LOSS_TYPE], {
@@ -736,9 +736,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
           ? parseFloat(getNewPricing(newPosition, 'sl').toFixed(2))
           : parseFloat(newPosition.toFixed(activeInstrument()?.digits || 2)), position.slType]
         : [position.sl, position.slType];
-      SLTPStore.stopLossValue = position.slType === TpSlTypeEnum.Currency
-        ? getNewPricing(newPosition, 'sl').toFixed(2)
-        : newPosition.toFixed(activeInstrument()?.digits || 2);
       return actualPricement;
     }
     return [position.sl, position.slType];
@@ -761,9 +758,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
             ? parseFloat(getNewPricing(newPosition, 'tp').toFixed(2))
             : parseFloat(newPosition.toFixed(activeInstrument()?.digits || 2)), position.tpType]
           : [position.tp, position.tpType];
-      SLTPStore.takeProfitValue = position.tpType === TpSlTypeEnum.Currency
-        ? getNewPricing(newPosition, 'tp').toFixed(2)
-        : newPosition.toFixed(activeInstrument()?.digits || 2);
       return actualPricement;
     }
     return [position.tp, position.tpType];
@@ -1156,6 +1150,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                     resetForm={resetForm}
                     toggleOut={resetSLTPLines}
                     instrumentId={position.instrument}
+                    digits={activeInstrument()?.digits || 2}
                     active={
                       tradingViewStore.activePopup &&
                       position.id === tradingViewStore.selectedPosition?.id

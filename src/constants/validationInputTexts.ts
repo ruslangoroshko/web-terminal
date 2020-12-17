@@ -6,7 +6,9 @@ const validationInputTexts = {
     USER_AGREEMENT: 'Please accept the Terms of service and Privacy Policy to continue',
     PASSWORD_MIN_CHARACTERS: 'Min 8 characters',
     PASSWORD_MAX_CHARACTERS: 'Max 31 symbols',
-    PASSWORD_MATCH: 'Min one number and one letter'
+    PASSWORD_MATCH: 'Min one number and one letter',
+    ZERO_ERROR_TP: 'Take Profit can not be zero',
+    ZERO_ERROR_SL: 'Stop Loss can not be zero',
 }
 
 Object.freeze(validationInputTexts)
