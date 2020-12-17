@@ -553,7 +553,7 @@ const CustomInput = styled.input<{ hasError: boolean }>`
   font-size: 14px;
   font-weight: bold;
   width: 100%;
-  padding: 24px 16px;
+  padding: 12px 16px;
   background-color: transparent;
   border: 1px solid
     ${({ hasError }) => (hasError ? '#ED145B !important' : '#494b50')};
@@ -590,7 +590,7 @@ const CustomInputMask = styled(InputMask)`
   font-size: 14px;
   font-weight: bold;
   width: 100%;
-  padding: 24px 16px;
+  padding: 12px 16px;
   background-color: transparent;
   border-radius: 4px;
   transition: all 0.2s ease;
