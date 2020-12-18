@@ -14,7 +14,7 @@ interface Props {
   toggle: () => void;
 }
 
-const AddInstrumentsPopup: FC<Props> = props => {
+const AddInstrumentsPopup: FC<Props> = (props) => {
   const { t } = useTranslation();
   const { toggle } = props;
   const { instrumentsStore } = useStores();
@@ -23,23 +23,25 @@ const AddInstrumentsPopup: FC<Props> = props => {
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value.trim().toLowerCase();
-    // TODO: put method inside store 
+    // TODO: put method inside store
     instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments
       .filter(
-        item =>
+        (item) =>
           !searchValue ||
           item.instrumentItem.id.toLowerCase().includes(searchValue) ||
           item.instrumentItem.base.toLowerCase().includes(searchValue) ||
           item.instrumentItem.name.toLowerCase().includes(searchValue) ||
           item.instrumentItem.quote.toLowerCase().includes(searchValue)
       )
-      .map(item => item.instrumentItem);
+      .map((item) => item.instrumentItem);
   };
 
   useEffect(() => {
-    instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments
+    instrumentsStore.filteredInstrumentsSearch = [
+      ...instrumentsStore.instruments,
+    ]
       .sort((a, b) => a.instrumentItem.weight - b.instrumentItem.weight)
-      .map(item => item.instrumentItem);
+      .map((item) => item.instrumentItem);
 
     const rect = wrapperRef.current?.getBoundingClientRect();
     // TODO: improve calclulation logic, make more universal method
@@ -100,7 +102,7 @@ const AddInstrumentsPopup: FC<Props> = props => {
         <Observer>
           {() => (
             <>
-              {instrumentsStore.filteredInstrumentsSearch.map(instrument => (
+              {instrumentsStore.filteredInstrumentsSearch.map((instrument) => (
                 <InstrumentMarkets
                   instrument={instrument}
                   key={instrument.id}
