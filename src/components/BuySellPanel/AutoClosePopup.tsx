@@ -45,6 +45,7 @@ interface Props {
   setFieldError: (field: string, value: string | undefined) => void;
   opened: boolean;
   instrumentId: string;
+  investAmount?: number;
 }
 
 const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
@@ -60,7 +61,8 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
       validateForm,
       setFieldError,
       opened,
-      instrumentId
+      instrumentId,
+      investAmount
     } = props;
     const { mainAppStore, SLTPStore } = useStores();
     const [on, toggle] = useState(false);
@@ -237,6 +239,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
               removeSL={removeSL}
               removeTP={removeTP}
               instrumentId={instrumentId}
+              investAmount={investAmount}
             />
           </FlexContainer>
         )}

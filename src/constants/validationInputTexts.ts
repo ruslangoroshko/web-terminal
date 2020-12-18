@@ -9,6 +9,7 @@ const validationInputTexts = {
     PASSWORD_MATCH: 'Min one number and one letter',
     ZERO_ERROR_TP: 'Take Profit can not be zero',
     ZERO_ERROR_SL: 'Stop Loss can not be zero',
+    STOP_LOSS_HIGHER: 'Stop loss level can not be higher than the Invest amount'
 }
 
 Object.freeze(validationInputTexts)

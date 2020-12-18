@@ -36,6 +36,7 @@ interface Props {
   instrumentId?: string;
   digits?: number;
   active?: boolean;
+  investAmount?: number;
 }
 
 const SetAutoclose: FC<Props> = observer(props => {
@@ -53,7 +54,8 @@ const SetAutoclose: FC<Props> = observer(props => {
     removeTP,
     toggleOut,
     instrumentId,
-    digits
+    digits,
+    investAmount
   } = props;
 
   const { t } = useTranslation();
@@ -65,6 +67,7 @@ const SetAutoclose: FC<Props> = observer(props => {
 
   const [errorSL, setErrorSL] = useState<boolean>(false);
   const [errorTP, setErrorTP] = useState<boolean>(false);
+  const [errorHighLevel, setErrorHighLevel] = useState<boolean>(false);
   const [errorSLForm, setErrorSLForm] = useState<string | undefined>(slError);
   const [errorTPForm, setErrorTPForm] = useState<string | undefined>(tpError);
 
@@ -141,6 +144,7 @@ const SetAutoclose: FC<Props> = observer(props => {
     setErrorSL(false);
     setErrorSLForm(undefined);
     setActiveNowSL(false);
+    setErrorHighLevel(false);
     SLTPStore.stopLossValue = e.target.value.replace(',', '.');
   };
 
@@ -175,8 +179,11 @@ const SetAutoclose: FC<Props> = observer(props => {
   };
 
   const beforeApply = () => {
-    const checkTP = getActiveTP() === '0';
-    const checkSL = getActiveSL() === '0';
+    const checkTP = parseFloat(getActiveTP()) === 0;
+    const checkSL = parseFloat(getActiveSL()) === 0;
+    const checkSLLevel = investAmount
+      ? parseFloat(getActiveSL()) >= investAmount
+      : false;
     if (checkSL) {
       setErrorSL(true);
     } else {
@@ -187,7 +194,12 @@ const SetAutoclose: FC<Props> = observer(props => {
     } else {
       setErrorTP(false);
     }
-    if (!checkTP && !checkSL) {
+    if (checkSLLevel) {
+      setErrorHighLevel(true);
+    } else {
+      setErrorHighLevel(false);
+    }
+    if (!checkTP && !checkSL && !checkSLLevel) {
       setErrorSLForm(slError);
       setErrorTPForm(tpError);
       handleApplyValues();
@@ -197,12 +209,23 @@ const SetAutoclose: FC<Props> = observer(props => {
   const onRemoveTP = () => {
     setErrorTP(false);
     removeTP();
-  }
+  };
 
   const onRemoveSL = () => {
     setErrorSL(false);
+    setErrorHighLevel(false);
     removeSL();
-  }
+  };
+
+  const getActualSLError = () => {
+    if (errorSL) {
+      return t(validationInputTexts.ZERO_ERROR_SL);
+    } else if (errorHighLevel) {
+      return t(validationInputTexts.STOP_LOSS_HIGHER);
+    } else {
+      return slError;
+    }
+  };
 
   useEffect(() => {
     SLTPStore.autoCloseSLType =
@@ -287,7 +310,7 @@ const SetAutoclose: FC<Props> = observer(props => {
             classNameTooltip={getProcessId()}
             direction="left"
           >
-            {errorTP ? validationInputTexts.ZERO_ERROR_TP : tpError}
+            {errorTP ? t(validationInputTexts.ZERO_ERROR_TP) : tpError}
           </ErropPopup>
         )}
         {SLTPStore.autoCloseTPType !== TpSlTypeEnum.Price && (
@@ -363,14 +386,14 @@ const SetAutoclose: FC<Props> = observer(props => {
         width="100%"
         position="relative"
       >
-        {(errorSLForm || errorSL) && (
+        {(errorSLForm || errorSL || errorHighLevel) && (
           <ErropPopup
             textColor="#fffccc"
             bgColor={ColorsPallete.RAZZMATAZZ}
             classNameTooltip={getProcessId()}
             direction="left"
           >
-            {errorSL ? validationInputTexts.ZERO_ERROR_SL : slError}
+            {getActualSLError()}
           </ErropPopup>
         )}
         {SLTPStore.autoCloseSLType !== TpSlTypeEnum.Price && (
