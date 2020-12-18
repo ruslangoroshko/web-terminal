@@ -233,6 +233,8 @@ export class InstrumentsStore implements ContextProps {
         } else {
           resolve();
         }
+      } else {
+        resolve();
       }
     });
 
