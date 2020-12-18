@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useRef } from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
@@ -50,6 +50,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
   const instrumentRef = useRef<HTMLDivElement>(null);
   const clickableWrapper = useRef<HTMLDivElement>(null);
   const tooltipWrapperRef = useRef<HTMLDivElement>(null);
+
+  const [showErrorSL, setShowErrorSL] = useState<boolean>(false);
+  const [showErrorTP, setShowErrorTP] = useState<boolean>(false);
 
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 
@@ -811,6 +814,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
       Fields.STOP_LOSS,
       SLTPStore.stopLossValue !== '' ? +SLTPStore.stopLossValue : null
     );
+    setShowErrorSL(true);
+    setShowErrorTP(true);
     return new Promise<void>(async (resolve, reject) => {
       const errors = await validateForm();
       if (!Object.keys(errors).length) {
@@ -953,6 +958,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
       }
     }
   }, [ready]);
+
+  useEffect(() => {
+    setShowErrorSL(false);
+  }, [SLTPStore.stopLossValue])
+
+  useEffect(() => {
+    setShowErrorTP(false);
+  }, [SLTPStore.takeProfitValue])
 
   return (
     <Observer>
@@ -1143,8 +1156,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                     stopLossType={getActualSL()[1]}
                     takeProfitType={getActualTP()[1]}
                     updateSLTP={handleApply}
-                    stopLossError={errors.sl}
-                    takeProfitError={errors.tp}
+                    stopLossError={showErrorSL ? errors.sl : ''}
+                    takeProfitError={showErrorTP ? errors.tp : ''}
                     removeSl={removeSL}
                     removeTP={removeTP}
                     resetForm={resetForm}
