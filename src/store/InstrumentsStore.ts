@@ -187,15 +187,14 @@ export class InstrumentsStore implements ContextProps {
   // TODO: refactor, too heavy
   @action
   switchInstrument = async (instrumentId: string) =>
-    new Promise((resolve, reject) => {
+    new Promise<void>((resolve, reject) => {
       if (this.activeInstrument?.instrumentItem.id === instrumentId) {
         resolve();
         return;
       }
-      const newActiveInstrument =
-        this.instruments.find(
-          (item) => item.instrumentItem.id === instrumentId
-        ) || this.instruments[0];
+      const newActiveInstrument = this.instruments.find(
+        (item) => item.instrumentItem.id === instrumentId
+      );
       if (newActiveInstrument) {
         localStorage.setItem(LOCAL_INSTRUMENT_ACTIVE, instrumentId);
         this.addActiveInstrumentId(instrumentId);
