@@ -16,11 +16,13 @@ import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data
 import { sortByPendingOrdersLabels } from '../../constants/sortByDropdownValues';
 import { SortByPendingOrdersEnum } from '../../enums/SortByPendingOrdersEnum';
 import { useTranslation } from 'react-i18next';
+import { LOCAL_PORTFOLIO_TABS } from '../../constants/global';
 
 const Orders: FC = () => {
   const { sortingStore, tabsStore, mainAppStore, quotesStore } = useStores();
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
     tabsStore.portfolioTab = portfolioTab;
   };
 

@@ -6,4 +6,5 @@ export const LOCAL_STORAGE_SIDEBAR = 'sidebar';
 export const LOCAL_CHART_TYPE = 'chart-type-desktop';
 export const LOCAL_POSITION = 'active-position';
 export const LOCAL_MARKET_TABS = 'active-market';
+export const LOCAL_PORTFOLIO_TABS = 'active-portfolio';
 export const LOCAL_INSTRUMENT_ACTIVE = 'active-instrument';

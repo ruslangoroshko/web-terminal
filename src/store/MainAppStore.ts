@@ -4,7 +4,8 @@ import {
   LOCAL_STORAGE_LANGUAGE,
   LOCAL_STORAGE_SIDEBAR,
   LOCAL_POSITION,
-  LOCAL_MARKET_TABS
+  LOCAL_MARKET_TABS,
+  LOCAL_PORTFOLIO_TABS,
 } from './../constants/global';
 import {
   UserAuthenticate,
@@ -410,6 +411,7 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
     localStorage.removeItem(LOCAL_POSITION);
     localStorage.removeItem(LOCAL_MARKET_TABS);
+    localStorage.removeItem(LOCAL_PORTFOLIO_TABS);
     this.isInitLoading = false;
     this.isLoading = false;
     this.token = '';

@@ -20,6 +20,7 @@ import { Th, TableGrid } from '../../styles/TableElements';
 import { useTranslation } from 'react-i18next';
 import PortfolioTotalProfit from './PortfolioTotalProfit';
 import PortfolioTotalEquity from './PortfolioTotalEquity';
+import { LOCAL_PORTFOLIO_TABS } from '../../constants/global';
 
 interface Props {}
 
@@ -30,6 +31,7 @@ const PortfolioExpanded: FC<Props> = () => {
   };
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
     tabsStore.portfolioTab = portfolioTab;
   };
 

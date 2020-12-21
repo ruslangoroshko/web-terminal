@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import API from '../../helpers/API';
 import IconNoTradingHistory from '../../assets/svg/icon-no-trading-history.svg';
@@ -14,7 +14,7 @@ import InfinityScrollList from '../InfinityScrollList';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 
-const TradingHistory: FC = () => {
+const TradingHistory: FC = observer(() => {
   const { tabsStore, mainAppStore, historyStore, dateRangeStore } = useStores();
 
   const { t } = useTranslation();
@@ -52,9 +52,11 @@ const TradingHistory: FC = () => {
   );
 
   useEffect(() => {
-    fetchPositionsHistory().finally(() => {
-      setIsLoading(false);
-    });
+    if (mainAppStore.activeAccount) {
+      fetchPositionsHistory().finally(() => {
+        setIsLoading(false);
+      });
+    }
     return () => {
       historyStore.positionsHistoryReport = {
         ...historyStore.positionsHistoryReport,
@@ -62,7 +64,7 @@ const TradingHistory: FC = () => {
         positionsHistory: [],
       };
     };
-  }, []);
+  }, [mainAppStore.activeAccount]);
 
   return (
     <PortfolioWrapper flexDirection="column" height="100%">
@@ -153,7 +155,7 @@ const TradingHistory: FC = () => {
       </Observer>
     </PortfolioWrapper>
   );
-};
+});
 
 export default TradingHistory;
 

@@ -16,6 +16,7 @@ import IconPortfolioNoData from '../../assets/svg/icon-portfolio-no-data-expande
 import { Th, TableGrid } from '../../styles/TableElements';
 import OrderExpandedItem from './OrderExpandedItem';
 import { useTranslation } from 'react-i18next';
+import { LOCAL_PORTFOLIO_TABS } from '../../constants/global';
 
 const OrdersExpanded: FC = () => {
   const { tabsStore, mainAppStore, quotesStore } = useStores();
@@ -24,6 +25,7 @@ const OrdersExpanded: FC = () => {
   };
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
     tabsStore.portfolioTab = portfolioTab;
   };
 

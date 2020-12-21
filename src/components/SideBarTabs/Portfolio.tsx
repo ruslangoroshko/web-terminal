@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
@@ -18,6 +18,7 @@ import { SortByProfitEnum } from '../../enums/SortByProfitEnum';
 import { useTranslation } from 'react-i18next';
 import PortfolioTotalProfit from './PortfolioTotalProfit';
 import PortfolioTotalEquity from './PortfolioTotalEquity';
+import { LOCAL_PORTFOLIO_TABS } from '../../constants/global';
 
 interface Props {}
 
@@ -25,6 +26,7 @@ const Portfolio: FC<Props> = () => {
   const { sortingStore, mainAppStore, tabsStore, quotesStore, tradingViewStore } = useStores();
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
     tabsStore.portfolioTab = portfolioTab;
   };
 
@@ -40,6 +42,13 @@ const Portfolio: FC<Props> = () => {
   };
 
   const { t } = useTranslation();
+
+  useEffect(() => {
+    const activeTab = localStorage.getItem(LOCAL_PORTFOLIO_TABS);
+    if (!!activeTab) {
+      tabsStore.portfolioTab = parseFloat(activeTab);
+    }
+  }, []);
 
   return (
     <PortfolioWrapper flexDirection="column" height="100%">

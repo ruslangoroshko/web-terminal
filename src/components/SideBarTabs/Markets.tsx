@@ -12,11 +12,13 @@ import { SortByMarketsEnum } from '../../enums/SortByMarketsEnum';
 import { sortByMarketsLabels } from '../../constants/sortByDropdownValues';
 import SortByDropdown from '../SortByDropdown';
 import { useTranslation } from 'react-i18next';
+import { LOCAL_MARKET_TABS } from '../../constants/global';
 
 function Markets() {
   const { instrumentsStore, sortingStore } = useStores();
 
   const setActiveInstrumentGroup = (groupId: string) => () => {
+    localStorage.setItem(LOCAL_MARKET_TABS, groupId);
     instrumentsStore.activeInstrumentGroupId = groupId;
   };
   const [on, toggle] = useState(false);
