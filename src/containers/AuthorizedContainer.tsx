@@ -113,6 +113,7 @@ const AuthorizedContainer: FC<Props> = (props) => {
       maxHeight="100vh"
       overflow="hidden"
     >
+      <HiddenAnchor id="hidden-anchor" target="_blank" />
       <FlexContainer
         position="absolute"
         bottom="100px"
@@ -222,4 +223,8 @@ const ResizableContentAnimationWrapper = styled(FlexContainer)`
   animation: ${fadein} 0.2s forwards 0.3s;
   flex-direction: column;
   height: 100%;
+`;
+
+const HiddenAnchor = styled.a`
+  visibility: hidden;
 `;

@@ -155,10 +155,12 @@ const VisaMasterCardForm = () => {
 
       switch (result.status) {
         case DepositRequestStatusEnum.Success:
-          Object.assign(document.createElement('a'), {
-            target: '_blank',
-            href: result.secureLink,
-          }).click();
+          const hiddenAnchor = document.getElementById('hidden-anchor');
+          if (hiddenAnchor) {
+            hiddenAnchor.setAttribute('href', result.secureLink);
+            hiddenAnchor.click();
+          }
+
           break;
 
         case DepositRequestStatusEnum.PaymentDeclined:
