@@ -37,6 +37,8 @@ const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
   const [loading, setLoading] = useState(false);
 
+  const isMozilla = navigator.userAgent.indexOf('Mozilla') !== -1;
+
   const placeholderValues = [250, 500, 1000];
 
   const { t } = useTranslation();
@@ -433,7 +435,7 @@ const VisaMasterCardForm = () => {
                 type="password"
                 // @ts-ignore
                 maskPlaceholder={''}
-                autoComplete="cc-csc"
+                autoComplete={isMozilla ? 'off' : 'cc-csc'}
                 placeholder="***"
                 mask="999"
                 value={values.cvv}
