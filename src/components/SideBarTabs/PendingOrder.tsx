@@ -35,7 +35,7 @@ const PendingOrder: FC<Props> = props => {
   const { mainAppStore, instrumentsStore, tradingViewStore } = useStores();
   const clickableWrapperRef = useRef<HTMLDivElement>(null);
 
-  const instrumentRef = useRef<HTMLDivElement>(null);
+  const instrumentRef = useRef<HTMLDivElement>(document.createElement("div"));
   const { precision } = useInstrument(pendingOrder.instrument);
   const handleCloseOrder = () => {
     API.removePendingOrder({
@@ -65,6 +65,7 @@ const PendingOrder: FC<Props> = props => {
   useEffect(() => {
     const lastPendingActive = localStorage.getItem(LOCAL_PENDING_POSITION);
     if (!!lastPendingActive) {
+      instrumentRef.current.scrollIntoView();
       tradingViewStore.selectedPendingPosition = parseFloat(lastPendingActive);
       instrumentsStore.switchInstrument(pendingOrder.instrument);
     }

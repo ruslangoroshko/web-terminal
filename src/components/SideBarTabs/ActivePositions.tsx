@@ -47,7 +47,7 @@ interface Props {
 const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
   const isBuy = position.operation === AskBidEnum.Buy;
 
-  const instrumentRef = useRef<HTMLDivElement>(null);
+  const instrumentRef = useRef<HTMLDivElement>(document.createElement("div"));
   const clickableWrapper = useRef<HTMLDivElement>(null);
   const tooltipWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -540,10 +540,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
         e.preventDefault();
       } else {
         try {
-          await instrumentsStore.switchInstrument(position.instrument);
           tradingViewStore.clearActivePositionLine();
           tradingViewStore.selectedPosition = position;
           localStorage.setItem(LOCAL_POSITION, `${position.id}`);
+          await instrumentsStore.switchInstrument(position.instrument);
           tradingViewStore.activeOrderLinePosition = tradingViewStore.tradingWidget
             ?.chart()
             .createOrderLine({ disableUndo: true })
@@ -953,6 +953,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
       const lastPosition = localStorage.getItem(LOCAL_POSITION);
       if (!!lastPosition) {
         if (position.id === parseInt(lastPosition)) {
+          instrumentRef.current.scrollIntoView();
           setInstrumentActive(false);
         }
       }
