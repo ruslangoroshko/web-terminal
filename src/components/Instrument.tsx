@@ -67,6 +67,7 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
         padding="6px 0 6px 8px"
         isActive={isActive}
         onClick={switchInstrument}
+        title={instrument.name}
       >
         <FlexContainer
           alignItems="center"
@@ -74,12 +75,18 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
           width="100%"
         >
           {quotesStore.quotes[instrument.id] && (
-            <>
-              <FlexContainer margin="0 8px 0 0" width="24px">
+            <FlexContainer marginRight="8px">
+              <FlexContainer minWidth="24px" width="24px" marginRight="8px">
                 <ImageContainer instrumentId={instrument.id} />
               </FlexContainer>
-              <FlexContainer margin="0 8px 0 0" flexDirection="column">
-                <PrimaryTextSpan fontSize="12px">
+              <FlexContainer flexDirection="column">
+                <PrimaryTextSpan
+                  fontSize="12px"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                  maxWidth="calc(120px - 24px - 24px - 16px)"
+                >
                   {instrument.name}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan
@@ -90,7 +97,7 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
                   {closePrice}
                 </PrimaryTextSpan>
               </FlexContainer>
-            </>
+            </FlexContainer>
           )}
           <FlexContainer padding="0 8px 0 0">
             <Observer>
