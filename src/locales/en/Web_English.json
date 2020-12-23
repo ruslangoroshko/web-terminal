@@ -346,5 +346,7 @@
 	"Canceled": "Canceled",
 	"Approved": "Approved",
     "Declined": "Declined",
-    "Restarting session": "Restarting session"
+    "Restarting session": "Restarting session",
+    "Max 49 symbols": "Max 49 symbols",
+    "Cardholder name is invalid": "Cardholder name is invalid"
 }
