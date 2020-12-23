@@ -54,10 +54,10 @@ const VisaMasterCardForm = () => {
       .string()
       .required(t('Required field'))
       .trim()
-      .test('fullName', t('Only latin symbols'), (value) => {
-        return /[a-zA-Z]/g.test(value);
+      .test('fullName', t('Cardholder name is invalid'), (value) => {
+        return  /^[a-z ,.~`'-]+$/i.test(value);
       })
-      .test('fullName', t('Max 40 symbols'), (val) => val?.length <= 40),
+      .test('fullName', t('Cardholder name is invalid'), (val) => val?.length <= 49),
 
     cardNumber: yup
       .string()
