@@ -4,7 +4,8 @@ import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
 import { HistoryTabEnum } from '../enums/HistoryTabEnum';
 import {
   LOCAL_STORAGE_SIDEBAR,
-  LOCAL_POSITION
+  LOCAL_POSITION,
+  LOCAL_PENDING_POSITION,
 } from '../constants/global';
 
 interface ContextProps {
@@ -27,5 +28,6 @@ export class TabsStore implements ContextProps {
     this.sideBarTabType = null;
     localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
     localStorage.removeItem(LOCAL_POSITION);
+    localStorage.removeItem(LOCAL_PENDING_POSITION);
   };
 }

@@ -195,7 +195,7 @@ export class InstrumentsStore implements ContextProps {
       const newActiveInstrument = this.instruments.find(
         (item) => item.instrumentItem.id === instrumentId
       );
-      if (newActiveInstrument) {
+      if (newActiveInstrument && this.activeInstrumentsIds.length !== 0) {
         localStorage.setItem(LOCAL_INSTRUMENT_ACTIVE, instrumentId);
         this.addActiveInstrumentId(instrumentId);
         this.activeInstrument = newActiveInstrument;

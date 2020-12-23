@@ -1,4 +1,4 @@
-import React, { useRef, FC, useCallback } from 'react';
+import React, { useRef, FC, useCallback, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import moment from 'moment';
@@ -17,6 +17,8 @@ import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
 import { useTranslation } from 'react-i18next';
 import useInstrument from '../../hooks/useInstrument';
+import { LOCAL_PENDING_POSITION } from '../../constants/global';
+import { Observer } from 'mobx-react-lite';
 
 interface Props {
   pendingOrder: PendingOrderWSDTO;
@@ -30,7 +32,7 @@ const PendingOrder: FC<Props> = props => {
 
   const { t } = useTranslation();
 
-  const { mainAppStore, instrumentsStore } = useStores();
+  const { mainAppStore, instrumentsStore, tradingViewStore } = useStores();
   const clickableWrapperRef = useRef<HTMLDivElement>(null);
 
   const instrumentRef = useRef<HTMLDivElement>(null);
@@ -44,6 +46,8 @@ const PendingOrder: FC<Props> = props => {
   };
 
   const switchInstrument = (e: any) => {
+    tradingViewStore.selectedPendingPosition = pendingOrder.id;
+    localStorage.setItem(LOCAL_PENDING_POSITION, `${pendingOrder.id}`);
     if (
       clickableWrapperRef.current &&
       clickableWrapperRef.current.contains(e.target)
@@ -58,83 +62,99 @@ const PendingOrder: FC<Props> = props => {
     return instrumentsStore.instruments.find(item => item.instrumentItem.id === pendingOrder.instrument)?.instrumentItem;
   }, [pendingOrder]);
 
+  useEffect(() => {
+    const lastPendingActive = localStorage.getItem(LOCAL_PENDING_POSITION);
+    if (!!lastPendingActive) {
+      tradingViewStore.selectedPendingPosition = parseFloat(lastPendingActive);
+      instrumentsStore.switchInstrument(pendingOrder.instrument);
+    }
+  }, [])
+
   return (
-    <OrderWrapper
-      flexDirection="column"
-      onClick={switchInstrument}
-      ref={instrumentRef}
-      padding="0 16px"
-      minHeight="67px"
-    >
-      <OrderWrapperWithBorder padding="12px 0" justifyContent="space-between">
-        <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
-          <ImageContainer instrumentId={pendingOrder.instrument} />
-        </FlexContainer>
-        <FlexContainer flexDirection="column" margin="0 38px 0 0">
-          <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
-            {activeInstrument()?.name}
-          </PrimaryTextSpan>
-          <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="10px">
-            {moment(pendingOrder.created).format('DD MMM, HH:mm:ss')}
-          </PrimaryTextSpan>
-        </FlexContainer>
-        <FlexContainer flexDirection="column" margin="0 24px 0 0">
-          <FlexContainer margin="0 4px 0 0">
-            <FlexContainer margin="0 4px 0 0">
-              <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
-            </FlexContainer>
-            <PrimaryTextSpan
-              fontSize="12px"
-              color={isBuy ? '#00FFDD' : '#ED145B'}
-            >
-              {isBuy ? t('Buy') : t('Sell')}
-            </PrimaryTextSpan>
-          </FlexContainer>
-          <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
-            {t('at')} {pendingOrder.openPrice.toFixed(+precision)}
-          </PrimaryTextSpan>
-        </FlexContainer>
-        <FlexContainer
+    <Observer>
+      {() => (
+        <OrderWrapper
           flexDirection="column"
-          margin="0 8px 0 0"
-          alignItems="flex-end"
+          onClick={switchInstrument}
+          ref={instrumentRef}
+          padding="0 16px"
+          minHeight="67px"
+          className={tradingViewStore.selectedPendingPosition === pendingOrder.id
+            ? 'active'
+            : ''
+          }
         >
-          <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
-            {currencySymbol}
-            {pendingOrder.investmentAmount.toFixed(2)}
-          </PrimaryTextSpan>
-          <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
-            &times;{pendingOrder.multiplier}
-          </PrimaryTextSpan>
-        </FlexContainer>
-        <FlexContainer alignItems="center" ref={clickableWrapperRef}>
-          <FlexContainer margin="0 4px 0 0">
-            <AutoClosePopupSideBar
-              ref={instrumentRef}
-              stopLossValue={pendingOrder.sl}
-              takeProfitValue={pendingOrder.tp}
-              stopLossType={pendingOrder.slType}
-              takeProfitType={pendingOrder.tpType}
-              removeTP={() => {}}
-              removeSl={() => {}}
-              isDisabled
+          <OrderWrapperWithBorder padding="12px 0" justifyContent="space-between">
+            <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
+              <ImageContainer instrumentId={pendingOrder.instrument} />
+            </FlexContainer>
+            <FlexContainer flexDirection="column" margin="0 38px 0 0">
+              <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
+                {activeInstrument()?.name}
+              </PrimaryTextSpan>
+              <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="10px">
+                {moment(pendingOrder.created).format('DD MMM, HH:mm:ss')}
+              </PrimaryTextSpan>
+            </FlexContainer>
+            <FlexContainer flexDirection="column" margin="0 24px 0 0">
+              <FlexContainer margin="0 4px 0 0">
+                <FlexContainer margin="0 4px 0 0">
+                  <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
+                </FlexContainer>
+                <PrimaryTextSpan
+                  fontSize="12px"
+                  color={isBuy ? '#00FFDD' : '#ED145B'}
+                >
+                  {isBuy ? t('Buy') : t('Sell')}
+                </PrimaryTextSpan>
+              </FlexContainer>
+              <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
+                {t('at')} {pendingOrder.openPrice.toFixed(+precision)}
+              </PrimaryTextSpan>
+            </FlexContainer>
+            <FlexContainer
+              flexDirection="column"
+              margin="0 8px 0 0"
+              alignItems="flex-end"
             >
-              <SvgIcon
-                {...IconSettings}
-                fillColor="rgba(255, 255, 255, 0.6)"
-                hoverFillColor="#00FFDD"
-              />
-            </AutoClosePopupSideBar>
-          </FlexContainer>
-          <ClosePositionPopup
-            applyHandler={handleCloseOrder}
-            buttonLabel={`${t('Close')}`}
-            ref={instrumentRef}
-            confirmText={`${t('Cancel order')}?`}
-          ></ClosePositionPopup>
-        </FlexContainer>
-      </OrderWrapperWithBorder>
-    </OrderWrapper>
+              <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
+                {currencySymbol}
+                {pendingOrder.investmentAmount.toFixed(2)}
+              </PrimaryTextSpan>
+              <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
+                &times;{pendingOrder.multiplier}
+              </PrimaryTextSpan>
+            </FlexContainer>
+            <FlexContainer alignItems="center" ref={clickableWrapperRef}>
+              <FlexContainer margin="0 4px 0 0">
+                <AutoClosePopupSideBar
+                  ref={instrumentRef}
+                  stopLossValue={pendingOrder.sl}
+                  takeProfitValue={pendingOrder.tp}
+                  stopLossType={pendingOrder.slType}
+                  takeProfitType={pendingOrder.tpType}
+                  removeTP={() => {}}
+                  removeSl={() => {}}
+                  isDisabled
+                >
+                  <SvgIcon
+                    {...IconSettings}
+                    fillColor="rgba(255, 255, 255, 0.6)"
+                    hoverFillColor="#00FFDD"
+                  />
+                </AutoClosePopupSideBar>
+              </FlexContainer>
+              <ClosePositionPopup
+                applyHandler={handleCloseOrder}
+                buttonLabel={`${t('Close')}`}
+                ref={instrumentRef}
+                confirmText={`${t('Cancel order')}?`}
+              ></ClosePositionPopup>
+            </FlexContainer>
+          </OrderWrapperWithBorder>
+        </OrderWrapper>
+      )}
+    </Observer>
   );
 };
 
@@ -144,7 +164,8 @@ const OrderWrapper = styled(FlexContainer)`
   transition: all 0.2s ease;
   will-change: background-color;
 
-  &:hover {
+  &:hover,
+  &.active {
     background-color: rgba(0, 0, 0, 0.3);
     cursor: pointer;
   }

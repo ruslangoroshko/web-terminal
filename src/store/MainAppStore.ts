@@ -6,6 +6,7 @@ import {
   LOCAL_POSITION,
   LOCAL_MARKET_TABS,
   LOCAL_PORTFOLIO_TABS,
+  LOCAL_PENDING_POSITION,
 } from './../constants/global';
 import {
   UserAuthenticate,
@@ -412,6 +413,7 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_POSITION);
     localStorage.removeItem(LOCAL_MARKET_TABS);
     localStorage.removeItem(LOCAL_PORTFOLIO_TABS);
+    localStorage.removeItem(LOCAL_PENDING_POSITION);
     this.isInitLoading = false;
     this.isLoading = false;
     this.token = '';
