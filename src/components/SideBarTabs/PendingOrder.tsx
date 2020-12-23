@@ -83,7 +83,9 @@ const PendingOrder: FC<Props> = (props) => {
             marginBottom="4px"
             textOverflow="ellipsis"
             overflow="hidden"
+            whiteSpace="nowrap"
             maxWidth="70px"
+            title={orderInstrument()?.name}
           >
             {orderInstrument()?.name}
           </PrimaryTextSpan>
