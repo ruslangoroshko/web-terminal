@@ -57,8 +57,15 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
           <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
             <ImageContainer instrumentId={id} />
           </FlexContainer>
-          <FlexContainer flexDirection="column" width="120px">
-            <PrimaryTextSpan fontSize="12px" color="#fffccc" marginBottom="4px">
+          <FlexContainer flexDirection="column" width="110px" marginRight="4px">
+            <PrimaryTextSpan
+              fontSize="12px"
+              color="#fffccc"
+              marginBottom="4px"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+            >
               {name}
             </PrimaryTextSpan>
             <PrimaryTextSpan
@@ -71,7 +78,7 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
               {base}/{quote}
             </PrimaryTextSpan>
           </FlexContainer>
-          <FlexContainer width="40px" justifyContent="flex-end">
+          <FlexContainer width="48px" justifyContent="flex-end">
             <PrimaryTextSpan fontSize="12px" color="#fffccc">
               <Observer>
                 {() => <>{quotesStore.quotes[id].bid.c.toFixed(digits)}</>}
