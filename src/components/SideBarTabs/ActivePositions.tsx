@@ -936,6 +936,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
       },
       { delay: 100 }
     );
+    const lastPosition = localStorage.getItem(LOCAL_POSITION);
+    if (!!lastPosition) {
+      if (position.id === parseInt(lastPosition)) {
+        instrumentRef.current.scrollIntoView();
+      }
+    }
     return () => {
       disposer();
       tradingViewStore.tradingWidget?.applyOverrides({
@@ -978,7 +984,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
           onClick={setInstrumentActive}
           minHeight="79px"
           className={
-            tradingViewStore.selectedPosition?.id === position.id
+            (tradingViewStore.selectedPosition?.id === position.id
+              || parseInt(localStorage.getItem(LOCAL_POSITION) || '0') === position.id)
               ? 'active'
               : ''
           }
