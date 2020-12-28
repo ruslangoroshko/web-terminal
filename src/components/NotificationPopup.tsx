@@ -50,6 +50,13 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
     return;
   }, [notificationStore.isActiveNotification]);
 
+  useEffect(() => {
+    return () => {
+      notificationStore.closeNotification();
+      notificationStore.notificationMessage = "";
+    }
+  }, [])
+
   return shouldRender ? (
     <NotificationWrapper
       backgroundColor="#1c2026"
