@@ -14,9 +14,12 @@ import { PrimaryTextSpan } from '../styles/TextsElements';
 import ImageContainer from './ImageContainer';
 import { autorun } from 'mobx';
 import {
+  LOCAL_PORTFOLIO_TABS,
   LOCAL_POSITION,
-  LOCAL_PENDING_POSITION,
+  LOCAL_STORAGE_SIDEBAR,
 } from './../constants/global';
+import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
+import { SideBarTabType } from '../enums/SideBarTabType';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -33,10 +36,16 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
     if (buttonCloseRef.current && buttonCloseRef.current.contains(e.target)) {
       e.preventDefault();
     } else {
-      localStorage.removeItem(LOCAL_POSITION);
-      localStorage.removeItem(LOCAL_PENDING_POSITION);
-      tradingViewStore.selectedPosition = undefined;
-      tradingViewStore.selectedPendingPosition = undefined;
+      const activeTab = localStorage.getItem(LOCAL_PORTFOLIO_TABS);
+      const isHistory = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
+      if (!!activeTab && parseInt(activeTab) === PortfolioTabEnum.Orders) {
+        tradingViewStore.selectedPendingPosition = undefined;
+      } else if (!!activeTab && parseInt(activeTab) === PortfolioTabEnum.Portfolio) {
+        tradingViewStore.selectedPosition = undefined;
+        localStorage.removeItem(LOCAL_POSITION);
+      } else if (!!isHistory && parseFloat(isHistory) === SideBarTabType.History) {
+        tradingViewStore.selectedHistory = undefined;
+      }
       instrumentsStore.switchInstrument(instrument.id);
     }
   };
