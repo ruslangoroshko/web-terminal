@@ -341,9 +341,12 @@
     "Top Up": "Doładować",
     "Not Verified": "Nie zweryfikowano",
     "Account Settings": "Ustawienia konta",
-    "Proccesing": "Przetwarzanie",
     "Pending": "W oczekiwaniu",
     "Canceled": "Anulowano",
     "Approved": "Zatwierdzono",
-    "Declined": "Odrzucono"
+    "Declined": "Odrzucono",
+    "Processing": "Przetwarzanie",
+    "Restarting session": "Ponowne uruchamianie sesji",
+    "Max 49 symbols": "Max 49 symboli",
+    "Cardholder name is invalid": "Nieprawidłowa nazwa posiadacza karty"
 }
