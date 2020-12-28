@@ -55,7 +55,7 @@ const VisaMasterCardForm = () => {
       .required(t('Required field'))
       .trim()
       .test('fullName', t('Cardholder name is invalid'), (value) => {
-        return  /^[a-z ,.~`'-]+$/i.test(value);
+        return  /^[a-z .~`'-]+$/i.test(value);
       })
       .test('fullName', t('Cardholder name is invalid'), (val) => val?.length <= 49),
 
@@ -212,6 +212,12 @@ const VisaMasterCardForm = () => {
     }
     handleChange(e);
   };
+  const handleBlurFullname = () => {
+    setFieldValue('fullName', values.fullName.trim());
+  }
+  const handleChangeFullname = (e: any) => {
+    setFieldValue('fullName', e.target.value.trimLeft());
+  }
 
   const handleBeforeInputChange = (e: any) => {
     const regexp = '^(0[1-9]|1[0-2])/?(([0-9]{4})$)';
@@ -480,7 +486,8 @@ const VisaMasterCardForm = () => {
               autoComplete="cc-name"
               placeholder={t('Your name')}
               value={values.fullName}
-              onChange={handleChange}
+              onChange={handleChangeFullname}
+              onBlur={handleBlurFullname}
               name="fullName"
               id="fullName"
               hasError={!!(touched.fullName && errors.fullName)}
