@@ -64,7 +64,7 @@ const PendingOrder: FC<Props> = props => {
 
   useEffect(() => {
     const lastPendingActive = localStorage.getItem(LOCAL_PENDING_POSITION);
-    if (!!lastPendingActive) {
+    if (!!lastPendingActive && pendingOrder.id === parseFloat(lastPendingActive)) {
       instrumentRef.current.scrollIntoView();
       tradingViewStore.selectedPendingPosition = parseFloat(lastPendingActive);
       instrumentsStore.switchInstrument(pendingOrder.instrument);

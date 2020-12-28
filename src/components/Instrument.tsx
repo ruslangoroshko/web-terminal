@@ -13,6 +13,10 @@ import { Observer } from 'mobx-react-lite';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import ImageContainer from './ImageContainer';
 import { autorun } from 'mobx';
+import {
+  LOCAL_POSITION,
+  LOCAL_PENDING_POSITION,
+} from './../constants/global';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -21,7 +25,7 @@ interface Props {
 }
 
 const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
-  const { quotesStore, mainAppStore, instrumentsStore } = useStores();
+  const { quotesStore, mainAppStore, instrumentsStore, tradingViewStore } = useStores();
   const buttonCloseRef = useRef<HTMLButtonElement>(null);
   const [closePrice, setClosePrice] = useState('');
 
@@ -29,6 +33,10 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
     if (buttonCloseRef.current && buttonCloseRef.current.contains(e.target)) {
       e.preventDefault();
     } else {
+      localStorage.removeItem(LOCAL_POSITION);
+      localStorage.removeItem(LOCAL_PENDING_POSITION);
+      tradingViewStore.selectedPosition = undefined;
+      tradingViewStore.selectedPendingPosition = undefined;
       instrumentsStore.switchInstrument(instrument.id);
     }
   };
