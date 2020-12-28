@@ -27,6 +27,7 @@ import {
   LOCAL_INSTRUMENT_ACTIVE,
   LOCAL_PORTFOLIO_TABS,
   LOCAL_PENDING_POSITION,
+  LOCAL_HISTORY_POSITION
 } from '../../constants/global';
 
 interface Props {
@@ -64,6 +65,7 @@ const AccountInfo: FC<Props> = observer((props) => {
     localStorage.removeItem(LOCAL_PORTFOLIO_TABS);
     localStorage.removeItem(LOCAL_INSTRUMENT_ACTIVE);
     localStorage.removeItem(LOCAL_PENDING_POSITION);
+    localStorage.removeItem(LOCAL_HISTORY_POSITION);
     toggle();
     notificationStore.notificationMessage = `${t(
       'Your account has been switched on'

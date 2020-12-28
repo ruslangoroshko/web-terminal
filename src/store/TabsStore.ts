@@ -6,6 +6,7 @@ import {
   LOCAL_STORAGE_SIDEBAR,
   LOCAL_POSITION,
   LOCAL_PENDING_POSITION,
+  LOCAL_HISTORY_POSITION
 } from '../constants/global';
 
 interface ContextProps {
@@ -29,5 +30,6 @@ export class TabsStore implements ContextProps {
     localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
     localStorage.removeItem(LOCAL_POSITION);
     localStorage.removeItem(LOCAL_PENDING_POSITION);
+    localStorage.removeItem(LOCAL_HISTORY_POSITION);
   };
 }

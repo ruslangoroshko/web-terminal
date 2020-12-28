@@ -9,3 +9,4 @@ export const LOCAL_PENDING_POSITION = 'active-pending-position';
 export const LOCAL_MARKET_TABS = 'active-market';
 export const LOCAL_PORTFOLIO_TABS = 'active-portfolio';
 export const LOCAL_INSTRUMENT_ACTIVE = 'active-instrument';
+export const LOCAL_HISTORY_POSITION = 'active-history-position';

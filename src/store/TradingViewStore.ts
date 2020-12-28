@@ -20,6 +20,7 @@ export class TradingViewStore implements ContextProps {
   @observable activeOrderLinePositionSL?: IOrderLineAdapter;
   @observable selectedPosition?: PositionModelWSDTO;
   @observable selectedPendingPosition?: number;
+  @observable selectedHistory?: string;
   @observable activePositionPopup: boolean = false;
   @observable applyHandler: any;
   @observable confirmText: string = '';
