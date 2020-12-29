@@ -27,12 +27,6 @@ const RoutingLayout: FC = () => {
     layoutType = currentRoute.layoutType;
   }
 
-  useEffect(() => {
-    console.log('mainAppStore.isAuthorized', mainAppStore.isAuthorized);
-    console.log('mainAppStore.isInitLoading', mainAppStore.isInitLoading);
-    console.log('mainAppStore.isLoading', mainAppStore.isLoading);
-  }, []);
-
   switch (layoutType) {
     case RouteLayoutType.Authorized:
       return (

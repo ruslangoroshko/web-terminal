@@ -41,7 +41,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
   };
 
   const fetchFavoriteInstruments = useCallback(async () => {
-    if (mainAppStore.activeAccount && !instrumentsStore.manualChange) {
+    if (mainAppStore.activeAccount) {
       try {
         const response = await API.getFavoriteInstrumets({
           type: mainAppStore.activeAccount?.isLive
@@ -53,16 +53,14 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
         instrumentsStore.setActiveInstrumentsIds(response);
         const lastActive = localStorage.getItem(LOCAL_INSTRUMENT_ACTIVE);
         instrumentsStore.switchInstrument(
-          !!lastActive
-            ? lastActive
-            : (response[0] || instrumentsStore.instruments[0].instrumentItem.id)
+          lastActive ||
+            response[0] ||
+            instrumentsStore.instruments[0].instrumentItem.id
         );
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
       }
-    } else {
-      instrumentsStore.manualChange = false;
     }
   }, [
     mainAppStore.activeAccountId,
