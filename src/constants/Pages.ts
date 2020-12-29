@@ -17,6 +17,7 @@ const Page = {
   ACCOUNT_SEQURITY: '/account-security',
   ACCOUNT_HISTORY_QUOTES: '/account-history-quotes',
   PAYMENTS: '/payments/:status',
+  DEPOSIT_POPUP: '/#deposit',
 
   ABOUT_US: 'https://www.monfex.com/why-us',
   FAQ: '#',
