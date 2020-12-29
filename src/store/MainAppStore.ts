@@ -7,7 +7,8 @@ import {
   LOCAL_MARKET_TABS,
   LOCAL_PORTFOLIO_TABS,
   LOCAL_PENDING_POSITION,
-  LOCAL_HISTORY_POSITION
+  LOCAL_HISTORY_POSITION,
+  LOCAL_HISTORY_TIME,
 } from './../constants/global';
 import {
   UserAuthenticate,
@@ -416,6 +417,7 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_PORTFOLIO_TABS);
     localStorage.removeItem(LOCAL_PENDING_POSITION);
     localStorage.removeItem(LOCAL_HISTORY_POSITION);
+    localStorage.removeItem(LOCAL_HISTORY_TIME);
     this.isInitLoading = false;
     this.isLoading = false;
     this.token = '';

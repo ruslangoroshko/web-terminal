@@ -14,6 +14,8 @@ import { PrimaryTextSpan } from '../styles/TextsElements';
 import ImageContainer from './ImageContainer';
 import { autorun } from 'mobx';
 import {
+  LOCAL_HISTORY_POSITION,
+  LOCAL_PENDING_POSITION,
   LOCAL_PORTFOLIO_TABS,
   LOCAL_POSITION,
   LOCAL_STORAGE_SIDEBAR,
@@ -40,11 +42,13 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
       const isHistory = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
       if (!!activeTab && parseInt(activeTab) === PortfolioTabEnum.Orders) {
         tradingViewStore.selectedPendingPosition = undefined;
+        localStorage.removeItem(LOCAL_PENDING_POSITION);
       } else if (!!activeTab && parseInt(activeTab) === PortfolioTabEnum.Portfolio) {
         tradingViewStore.selectedPosition = undefined;
         localStorage.removeItem(LOCAL_POSITION);
       } else if (!!isHistory && parseFloat(isHistory) === SideBarTabType.History) {
         tradingViewStore.selectedHistory = undefined;
+        localStorage.removeItem(LOCAL_HISTORY_POSITION);
       }
       instrumentsStore.switchInstrument(instrument.id);
     }

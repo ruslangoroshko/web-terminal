@@ -10,3 +10,5 @@ export const LOCAL_MARKET_TABS = 'active-market';
 export const LOCAL_PORTFOLIO_TABS = 'active-portfolio';
 export const LOCAL_INSTRUMENT_ACTIVE = 'active-instrument';
 export const LOCAL_HISTORY_POSITION = 'active-history-position';
+export const LOCAL_HISTORY_TIME = 'history-time';
+export const LOCAL_HISTORY_PAGE = 'history-page';

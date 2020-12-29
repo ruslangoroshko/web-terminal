@@ -13,6 +13,7 @@ import LoaderForComponents from '../LoaderForComponents';
 import InfinityScrollList from '../InfinityScrollList';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import { LOCAL_HISTORY_POSITION, LOCAL_HISTORY_TIME } from '../../constants/global';
 
 const TradingHistory: FC = observer(() => {
   const { tabsStore, mainAppStore, historyStore, dateRangeStore } = useStores();
@@ -23,10 +24,18 @@ const TradingHistory: FC = observer(() => {
 
   const fetchPositionsHistory = useCallback(
     async (isScrolling = false) => {
+      const dataStart = localStorage.getItem(LOCAL_HISTORY_TIME);
+      const neededData = localStorage.getItem(LOCAL_HISTORY_POSITION);
+      console.log(dataStart
+        && neededData
+        && moment(dataStart).valueOf() || dateRangeStore.startDate.valueOf());
       try {
         const response = await API.getPositionsHistory({
           accountId: mainAppStore.activeAccount!.id,
-          startDate: dateRangeStore.startDate.valueOf(),
+          startDate: (dataStart
+            && neededData
+            && moment(dataStart).valueOf())
+              || dateRangeStore.startDate.valueOf(),
           endDate: moment().valueOf(),
           page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
           pageSize: 20,
