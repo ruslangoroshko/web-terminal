@@ -46,7 +46,6 @@ export class InstrumentsStore implements ContextProps {
   @observable activeInstrumentGroupId?: InstrumentGroupWSDTO['id'];
 
   @observable sortByField: string | null = null;
-  @observable manualChange: boolean = false;
 
   @observable pricesChange: IPriceChange = {};
 
@@ -55,7 +54,7 @@ export class InstrumentsStore implements ContextProps {
   }
 
   @computed get activeInstruments() {
-    const filteredActiveInstruments = this.instruments
+    const filteredActiveInstruments = [...this.instruments]
       .filter((item) =>
         this.activeInstrumentsIds.includes(item.instrumentItem.id)
       )
@@ -64,10 +63,7 @@ export class InstrumentsStore implements ContextProps {
           this.activeInstrumentsIds.indexOf(a.instrumentItem.id) -
           this.activeInstrumentsIds.indexOf(b.instrumentItem.id)
       );
-    const lastActive = localStorage.getItem(LOCAL_INSTRUMENT_ACTIVE);
-    if (!!lastActive) {
-      this.switchInstrument(lastActive);
-    }
+
     return filteredActiveInstruments;
   }
 
@@ -89,17 +85,14 @@ export class InstrumentsStore implements ContextProps {
   };
 
   @action
-  changeInstruments = (type: SeriesStyle) => {
-    this.manualChange = true;
-    this.instruments = this.instruments.map(
-      (item) =>
-        <IActiveInstrument>{
-          chartType: type,
-          instrumentItem: item.instrumentItem,
-          interval: '1D',
-          resolution: '1 minute',
-        }
-    );
+  changeInstrumentChartType = (type: SeriesStyle) => {
+    if (this.activeInstrument) {
+      const instrumentIndex = this.instruments.findIndex(
+        (item) =>
+          item.instrumentItem.id === this.activeInstrument?.instrumentItem.id
+      );
+      this.instruments[instrumentIndex].chartType = type;
+    }
   };
 
   @action
@@ -186,8 +179,9 @@ export class InstrumentsStore implements ContextProps {
 
   // TODO: refactor, too heavy
   @action
-  switchInstrument = async (instrumentId: string) =>
-    new Promise<void>((resolve, reject) => {
+  switchInstrument = async (instrumentId: string) => {
+    console.log('promise');
+    return new Promise<void>((resolve, reject) => {
       if (this.activeInstrument?.instrumentItem.id === instrumentId) {
         resolve();
         return;
@@ -237,6 +231,7 @@ export class InstrumentsStore implements ContextProps {
         resolve();
       }
     });
+  };
 
   @action
   setPricesChanges = (prices: PriceChangeWSDTO[]) => {
