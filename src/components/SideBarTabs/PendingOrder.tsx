@@ -25,7 +25,7 @@ interface Props {
   currencySymbol: string;
 }
 
-const PendingOrder: FC<Props> = props => {
+const PendingOrder: FC<Props> = (props) => {
   const { pendingOrder, currencySymbol } = props;
   const isBuy = pendingOrder.operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
@@ -58,8 +58,10 @@ const PendingOrder: FC<Props> = props => {
     }
   };
 
-  const activeInstrument = useCallback(() => {
-    return instrumentsStore.instruments.find(item => item.instrumentItem.id === pendingOrder.instrument)?.instrumentItem;
+  const orderInstrument = useCallback(() => {
+    return instrumentsStore.instruments.find(
+      (item) => item.instrumentItem.id === pendingOrder.instrument
+    )?.instrumentItem;
   }, [pendingOrder]);
 
   useEffect(() => {
@@ -91,7 +93,7 @@ const PendingOrder: FC<Props> = props => {
             </FlexContainer>
             <FlexContainer flexDirection="column" margin="0 38px 0 0">
               <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
-                {activeInstrument()?.name}
+                {orderInstrument()?.name}
               </PrimaryTextSpan>
               <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="10px">
                 {moment(pendingOrder.created).format('DD MMM, HH:mm:ss')}

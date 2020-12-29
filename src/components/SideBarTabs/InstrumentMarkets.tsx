@@ -16,7 +16,7 @@ interface Props {
   toggle?: () => void;
 }
 
-const InstrumentMarkets: FC<Props> = observer(props => {
+const InstrumentMarkets: FC<Props> = observer((props) => {
   const {
     instrument: { base, id, name, quote, digits },
     toggle,
@@ -43,7 +43,11 @@ const InstrumentMarkets: FC<Props> = observer(props => {
       flexDirection="column"
       onClick={setInstrumentActive}
     >
-      <InstrumentWrapper padding="12px 0" justifyContent="space-between">
+      <InstrumentWrapper
+        height="100%"
+        padding="12px 0"
+        justifyContent="space-between"
+      >
         <FlexContainer justifyContent="space-between">
           <FlexContainer alignItems="center" margin="0 8px 0 0">
             <ButtonWithoutStyles ref={favouritesButtonRef}>
@@ -53,8 +57,15 @@ const InstrumentMarkets: FC<Props> = observer(props => {
           <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
             <ImageContainer instrumentId={id} />
           </FlexContainer>
-          <FlexContainer flexDirection="column" width="120px">
-            <PrimaryTextSpan fontSize="12px" color="#fffccc" marginBottom="4px">
+          <FlexContainer flexDirection="column" width="110px" marginRight="4px">
+            <PrimaryTextSpan
+              fontSize="12px"
+              color="#fffccc"
+              marginBottom="4px"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+            >
               {name}
             </PrimaryTextSpan>
             <PrimaryTextSpan
@@ -67,7 +78,7 @@ const InstrumentMarkets: FC<Props> = observer(props => {
               {base}/{quote}
             </PrimaryTextSpan>
           </FlexContainer>
-          <FlexContainer width="40px" justifyContent="flex-end">
+          <FlexContainer width="48px" justifyContent="flex-end">
             <PrimaryTextSpan fontSize="12px" color="#fffccc">
               <Observer>
                 {() => <>{quotesStore.quotes[id].bid.c.toFixed(digits)}</>}
@@ -104,7 +115,6 @@ const InstrumentWrapper = styled(FlexContainer)`
 const InstrumentHoverWrapper = styled(FlexContainer)`
   transition: all 0.2s ease;
   will-change: background-color;
-  min-height: 57px;
   &:hover {
     background-color: rgba(0, 0, 0, 0.3);
     cursor: pointer;
