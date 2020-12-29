@@ -18,6 +18,13 @@ import TradingHistoryExpandedItem from './TradingHistoryExpandedItem';
 import { Th, TableGrid } from '../../styles/TableElements';
 import InfinityScrollList from '../InfinityScrollList';
 import { useTranslation } from 'react-i18next';
+import {
+  LOCAL_HISTORY_DATERANGE,
+  LOCAL_HISTORY_PAGE,
+  LOCAL_HISTORY_POSITION,
+  LOCAL_HISTORY_TIME,
+} from '../../constants/global';
+import moment from 'moment';
 
 const TradingHistoryExpanded: FC = () => {
   const { tabsStore, mainAppStore, historyStore, dateRangeStore } = useStores();
@@ -36,13 +43,16 @@ const TradingHistoryExpanded: FC = () => {
         page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
         pageSize: 20,
       });
+      if (isScrolling) {
+        localStorage.setItem(LOCAL_HISTORY_PAGE, `${response.page}`);
+      }
       historyStore.positionsHistoryReport = {
         ...response,
         positionsHistory: isScrolling
           ? [
               ...historyStore.positionsHistoryReport.positionsHistory,
               ...response.positionsHistory,
-            ]
+            ].sort((a, b) => b.closeDate - a.closeDate)
           : response.positionsHistory,
       };
     },
@@ -55,6 +65,37 @@ const TradingHistoryExpanded: FC = () => {
   );
 
   useEffect(() => {
+    if (mainAppStore.activeAccount) {
+      let checkScroll: boolean = false;
+      const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
+      const neededData: string | null = localStorage.getItem(LOCAL_HISTORY_POSITION);
+      const neededPage: string | null = localStorage.getItem(LOCAL_HISTORY_PAGE);
+      const neededRange: string | null = localStorage.getItem(LOCAL_HISTORY_DATERANGE);
+      if (neededData) {
+        if (dataStart) {
+          dateRangeStore.startDate = moment(dataStart);
+        }
+        if (neededPage && parseInt(neededPage) > 0) {
+          checkScroll = true;
+          for (let i = 1; i <= parseInt(neededPage) + 1; i++) {
+            historyStore.positionsHistoryReport.page = i;
+            fetchPositionsHistory(true).finally(() => {
+              if (i <= parseInt(neededPage) + 1) {
+                setIsLoading(false);
+              }
+            });
+          }
+        }
+        if (neededRange) {
+          dateRangeStore.dropdownValueType = parseInt(neededRange);
+        }
+      }
+      if (!checkScroll) {
+        fetchPositionsHistory().finally(() => {
+          setIsLoading(false);
+        });
+      }
+    }
     return () => {
       historyStore.positionsHistoryReport = {
         ...historyStore.positionsHistoryReport,
@@ -62,7 +103,7 @@ const TradingHistoryExpanded: FC = () => {
         positionsHistory: [],
       };
     };
-  }, []);
+  }, [mainAppStore.activeAccount]);
 
   return (
     <TradingHistoryExpandedWrapper

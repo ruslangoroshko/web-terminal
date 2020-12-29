@@ -14,6 +14,9 @@ import { PrimaryTextSpan } from '../styles/TextsElements';
 import ImageContainer from './ImageContainer';
 import { autorun } from 'mobx';
 import {
+  LOCAL_HISTORY_DATERANGE,
+  LOCAL_HISTORY_PAGE,
+  LOCAL_HISTORY_TIME,
   LOCAL_HISTORY_POSITION,
   LOCAL_PENDING_POSITION,
   LOCAL_PORTFOLIO_TABS,
@@ -49,6 +52,9 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
       } else if (!!isHistory && parseFloat(isHistory) === SideBarTabType.History) {
         tradingViewStore.selectedHistory = undefined;
         localStorage.removeItem(LOCAL_HISTORY_POSITION);
+        localStorage.removeItem(LOCAL_HISTORY_TIME);
+        localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
+        localStorage.removeItem(LOCAL_HISTORY_PAGE);
       }
       instrumentsStore.switchInstrument(instrument.id);
     }

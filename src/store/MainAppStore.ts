@@ -9,6 +9,8 @@ import {
   LOCAL_PENDING_POSITION,
   LOCAL_HISTORY_POSITION,
   LOCAL_HISTORY_TIME,
+  LOCAL_HISTORY_DATERANGE,
+  LOCAL_HISTORY_PAGE,
 } from './../constants/global';
 import {
   UserAuthenticate,
@@ -418,6 +420,8 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_PENDING_POSITION);
     localStorage.removeItem(LOCAL_HISTORY_POSITION);
     localStorage.removeItem(LOCAL_HISTORY_TIME);
+    localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
+    localStorage.removeItem(LOCAL_HISTORY_PAGE);
     this.isInitLoading = false;
     this.isLoading = false;
     this.token = '';

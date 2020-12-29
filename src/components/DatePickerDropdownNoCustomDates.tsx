@@ -15,7 +15,10 @@ import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 import moment from 'moment';
 import { DayPickerRangeController } from 'react-dates';
 import { useTranslation } from 'react-i18next';
-import { LOCAL_HISTORY_TIME } from '../constants/global';
+import {
+  LOCAL_HISTORY_DATERANGE,
+  LOCAL_HISTORY_TIME
+} from '../constants/global';
 
  interface Props {
   datesChangeCallback: () => void;
@@ -58,6 +61,7 @@ const {t} = useTranslation()
           break;
       }
       localStorage.setItem(LOCAL_HISTORY_TIME, `${dateRangeStore.startDate}`);
+      localStorage.setItem(LOCAL_HISTORY_DATERANGE, `${dateRange}`);
       dateRangeStore.openedDropdown = false;
       datesChangeCallback();
     };

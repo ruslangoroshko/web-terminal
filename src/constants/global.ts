@@ -12,3 +12,4 @@ export const LOCAL_INSTRUMENT_ACTIVE = 'active-instrument';
 export const LOCAL_HISTORY_POSITION = 'active-history-position';
 export const LOCAL_HISTORY_TIME = 'history-time';
 export const LOCAL_HISTORY_PAGE = 'history-page';
+export const LOCAL_HISTORY_DATERANGE = 'history-daterange';
