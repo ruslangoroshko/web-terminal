@@ -52,8 +52,7 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
 
   useEffect(() => {
     return () => {
-      notificationStore.closeNotification();
-      notificationStore.notificationMessage = "";
+      notificationStore.resetNotification();
     }
   }, [])
 
