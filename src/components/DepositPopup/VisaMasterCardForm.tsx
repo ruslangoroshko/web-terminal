@@ -32,6 +32,7 @@ import { useHistory } from 'react-router-dom';
 import { DepositRequestStatusEnum } from '../../enums/DepositRequestStatusEnum';
 import LoaderComponent from '../LoaderComponent';
 import PreloaderButtonMask from '../PreloaderButtonMask';
+import Page from '../../constants/Pages';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -42,7 +43,7 @@ const VisaMasterCardForm = () => {
   const placeholderValues = [250, 500, 1000];
 
   const { t } = useTranslation();
-
+  const { push } = useHistory();
   const validationSchema = yup.object().shape({
     amount: yup
       .number()
@@ -55,9 +56,13 @@ const VisaMasterCardForm = () => {
       .required(t('Required field'))
       .trim()
       .test('fullName', t('Cardholder name is invalid'), (value) => {
-        return  /^[a-z .~`'-]+$/i.test(value);
+        return /^[a-z .~`'-]+$/i.test(value);
       })
-      .test('fullName', t('Cardholder name is invalid'), (val) => val?.length <= 49),
+      .test(
+        'fullName',
+        t('Cardholder name is invalid'),
+        (val) => val?.length <= 49
+      ),
 
     cardNumber: yup
       .string()
@@ -105,7 +110,6 @@ const VisaMasterCardForm = () => {
   };
 
   const { mainAppStore, notificationStore, depositFundsStore } = useStores();
-  const { push } = useHistory();
 
   const checkCardNumLuhn = (card: string) => {
     let value = card.replace(/\D/g, '');
@@ -186,7 +190,10 @@ const VisaMasterCardForm = () => {
           break;
       }
       setLoading(false);
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+      push(Page.DEPOSIT_POPUP);
+    }
   };
 
   const {
@@ -214,10 +221,10 @@ const VisaMasterCardForm = () => {
   };
   const handleBlurFullname = () => {
     setFieldValue('fullName', values.fullName.trim());
-  }
+  };
   const handleChangeFullname = (e: any) => {
     setFieldValue('fullName', e.target.value.trimLeft());
-  }
+  };
 
   const handleBeforeInputChange = (e: any) => {
     const regexp = '^(0[1-9]|1[0-2])/?(([0-9]{4})$)';
