@@ -21,12 +21,14 @@ import Page from '../constants/Pages';
 import { useTranslation } from 'react-i18next';
 import Helmet from 'react-helmet';
 import DatePickerAccountBalanceDropdown from '../components/DatePickerAccountBalanceDropdown';
+import NotificationPopup from '../components/NotificationPopup';
 
 const AccountBalance = () => {
   const {
     mainAppStore,
     badRequestPopupStore,
     dateRangeAccountBalanceStore,
+    notificationStore,
   } = useStores();
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(true);
@@ -89,6 +91,20 @@ const AccountBalance = () => {
 
   return (
     <AccountSettingsContainer>
+      <FlexContainer
+        position="absolute"
+        bottom="100px"
+        left="14px"
+        zIndex="100"
+      >
+        <Observer>
+          {() => (
+            <NotificationPopup
+              show={notificationStore.isActiveNotification}
+            ></NotificationPopup>
+          )}
+        </Observer>
+      </FlexContainer>
       <Helmet>{t('Balance history')}</Helmet>
       <IconButton onClick={() => push(Page.DASHBOARD)}>
         <SvgIcon
