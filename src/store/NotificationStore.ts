@@ -21,6 +21,13 @@ export class NotificationStore implements ContextProps {
   };
 
   @action
+  resetNotification = () => {
+    this.isActiveNotification = false;
+    this.isActiveNotificationGlobal = false;
+    this.notificationMessage = '';
+  };
+
+  @action
   openNotification = () => {
     this.isActiveNotification = true;
   };

@@ -9,6 +9,9 @@ import {
   LOCAL_PENDING_POSITION,
   LOCAL_HISTORY_POSITION,
   LOCAL_STORAGE_IS_NEW_USER,
+  LOCAL_HISTORY_TIME,
+  LOCAL_HISTORY_DATERANGE,
+  LOCAL_HISTORY_PAGE,
 } from './../constants/global';
 import {
   UserAuthenticate,
@@ -420,6 +423,9 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_PORTFOLIO_TABS);
     localStorage.removeItem(LOCAL_PENDING_POSITION);
     localStorage.removeItem(LOCAL_HISTORY_POSITION);
+    localStorage.removeItem(LOCAL_HISTORY_TIME);
+    localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
+    localStorage.removeItem(LOCAL_HISTORY_PAGE);
     this.isInitLoading = false;
     this.isLoading = false;
     this.token = '';
@@ -427,6 +433,8 @@ export class MainAppStore implements MainAppStoreProps {
     this.isAuthorized = false;
     this.rootStore.quotesStore.activePositions = [];
     this.rootStore.quotesStore.pendingOrders = [];
+    this.rootStore.tradingViewStore.selectedPendingPosition = undefined;
+    this.rootStore.tradingViewStore.selectedHistory = undefined;
     this.rootStore.withdrawalStore.history = null;
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
     this.activeAccount = undefined;
