@@ -7,7 +7,8 @@ import {
   LOCAL_MARKET_TABS,
   LOCAL_PORTFOLIO_TABS,
   LOCAL_PENDING_POSITION,
-  LOCAL_HISTORY_POSITION
+  LOCAL_HISTORY_POSITION,
+  LOCAL_STORAGE_IS_NEW_USER,
 } from './../constants/global';
 import {
   UserAuthenticate,
@@ -342,6 +343,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.initModel.authUrl
     );
     if (response.result === OperationApiResponseCodes.Ok) {
+      localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.isAuthorized = true;
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.connectTimeOut = response.data.connectionTimeOut;
@@ -367,6 +369,7 @@ export class MainAppStore implements MainAppStoreProps {
     const response = await API.postLpLoginToken(params, this.initModel.authUrl);
 
     if (response.result === OperationApiResponseCodes.Ok) {
+      localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.isAuthorized = true;
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.setTokenHandler(response.data.token);
@@ -391,6 +394,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.initModel.authUrl
     );
     if (response.result === OperationApiResponseCodes.Ok) {
+      localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.isAuthorized = true;
       this.setTokenHandler(response.data.token);
