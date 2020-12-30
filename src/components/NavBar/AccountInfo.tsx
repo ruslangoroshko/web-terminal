@@ -73,12 +73,15 @@ const AccountInfo: FC<Props> = observer((props) => {
     localStorage.removeItem(LOCAL_HISTORY_TIME);
     localStorage.removeItem(LOCAL_HISTORY_PAGE);
     toggle();
-    notificationStore.notificationMessage = `${t(
-      'Your account has been switched on'
-    )} ${account.isLive ? t('Real') : t('Demo')}`;
-    notificationStore.isSuccessfull = true;
-    notificationStore.openNotification();
     push(Page.DASHBOARD);
+
+    setTimeout(() => {
+      notificationStore.notificationMessage = `${t(
+        'Your account has been switched on'
+      )} ${account.isLive ? t('Real') : t('Demo')}`;
+      notificationStore.isSuccessfull = true;
+      notificationStore.openNotification();
+    }, 500)
   };
 
 
