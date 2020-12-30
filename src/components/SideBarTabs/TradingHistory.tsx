@@ -19,8 +19,7 @@ import {
   LOCAL_HISTORY_POSITION,
   LOCAL_HISTORY_TIME,
 } from '../../constants/global';
-import { ShowDatesDropdownEnum } from '../../enums/ShowDatesDropdownEnum';
-import { PositionHistoryDTO } from '../../types/HistoryReportTypes';;
+import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
 
 const TradingHistory: FC = observer(() => {
   const { tabsStore, mainAppStore, historyStore, dateRangeStore } = useStores();
@@ -31,10 +30,11 @@ const TradingHistory: FC = observer(() => {
 
   const fetchPositionsHistory = useCallback(
     async (isScrolling = false) => {
+      const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
       try {
         const response = await API.getPositionsHistory({
           accountId: mainAppStore.activeAccount!.id,
-          startDate: dateRangeStore.startDate.valueOf(),
+          startDate: moment(dataStart || dateRangeStore.startDate).valueOf(),
           endDate: moment().valueOf(),
           page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
           pageSize: 20,

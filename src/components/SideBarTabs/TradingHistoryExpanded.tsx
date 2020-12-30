@@ -65,16 +65,13 @@ const TradingHistoryExpanded: FC = () => {
   );
 
   useEffect(() => {
-    if (mainAppStore.activeAccount) {
+    if (mainAppStore.activeAccount && tabsStore.isTabExpanded) {
       let checkScroll: boolean = false;
       const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
       const neededData: string | null = localStorage.getItem(LOCAL_HISTORY_POSITION);
       const neededPage: string | null = localStorage.getItem(LOCAL_HISTORY_PAGE);
       const neededRange: string | null = localStorage.getItem(LOCAL_HISTORY_DATERANGE);
       if (neededData) {
-        if (dataStart) {
-          dateRangeStore.startDate = moment(dataStart);
-        }
         if (neededPage && parseInt(neededPage) > 0) {
           checkScroll = true;
           for (let i = 1; i <= parseInt(neededPage) + 1; i++) {
@@ -86,9 +83,12 @@ const TradingHistoryExpanded: FC = () => {
             });
           }
         }
-        if (neededRange) {
-          dateRangeStore.dropdownValueType = parseInt(neededRange);
-        }
+      }
+      if (neededRange) {
+        dateRangeStore.dropdownValueType = parseInt(neededRange);
+      }
+      if (dataStart) {
+        dateRangeStore.startDate = moment(dataStart);
       }
       if (!checkScroll) {
         fetchPositionsHistory().finally(() => {
