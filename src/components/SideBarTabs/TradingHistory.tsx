@@ -19,6 +19,8 @@ import {
   LOCAL_HISTORY_POSITION,
   LOCAL_HISTORY_TIME,
 } from '../../constants/global';
+import { ShowDatesDropdownEnum } from '../../enums/ShowDatesDropdownEnum';
+import { PositionHistoryDTO } from '../../types/HistoryReportTypes';;
 
 const TradingHistory: FC = observer(() => {
   const { tabsStore, mainAppStore, historyStore, dateRangeStore } = useStores();
@@ -40,13 +42,29 @@ const TradingHistory: FC = observer(() => {
         if (isScrolling) {
           localStorage.setItem(LOCAL_HISTORY_PAGE, `${response.page}`);
         }
+        const allPositions: PositionHistoryDTO[] = [
+          ...historyStore.positionsHistoryReport.positionsHistory,
+          ...response.positionsHistory,
+        ];
+        const filteredPositions: PositionHistoryDTO[] = [];
+        allPositions.forEach((item) => {
+          let checkPosition = true;
+          filteredPositions.every((position) => {
+            if (position.id === item.id) {
+              checkPosition = false;
+              return false;
+            } else {
+              return true;
+            }
+          });
+          if (checkPosition) {
+            filteredPositions.push(item);
+          }
+        });
         historyStore.positionsHistoryReport = {
           ...response,
           positionsHistory: isScrolling
-            ? [
-                ...historyStore.positionsHistoryReport.positionsHistory,
-                ...response.positionsHistory,
-              ].sort((a, b) => b.closeDate - a.closeDate)
+            ? filteredPositions.sort((a, b) => b.closeDate - a.closeDate)
             : response.positionsHistory,
         };
       } catch (error) {}
@@ -72,7 +90,7 @@ const TradingHistory: FC = observer(() => {
         }
         if (neededPage && parseInt(neededPage) > 0) {
           checkScroll = true;
-          for (let i = 1; i <= parseInt(neededPage) + 1; i++) {
+          for (let i = 0; i < parseInt(neededPage) + 1; i++) {
             historyStore.positionsHistoryReport.page = i;
             fetchPositionsHistory(true).finally(() => {
               if (i <= parseInt(neededPage) + 1) {
@@ -84,6 +102,9 @@ const TradingHistory: FC = observer(() => {
         if (neededRange) {
           dateRangeStore.dropdownValueType = parseInt(neededRange);
         }
+      }
+      if (!neededRange && !neededData) {
+        dateRangeStore.dropdownValueType = ShowDatesDropdownEnum.Week;
       }
       if (!checkScroll) {
         fetchPositionsHistory().finally(() => {

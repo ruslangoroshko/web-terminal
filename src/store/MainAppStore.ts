@@ -37,11 +37,11 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import { InstrumentModelWSDTO } from '../types/InstrumentsTypes';
 import { AskBidEnum } from '../enums/AskBid';
 import { ServerError } from '../types/ServerErrorType';
-import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { InitModel } from '../types/InitAppTypes';
 import { CountriesEnum } from '../enums/CountriesEnum';
 import mixapanelProps from '../constants/mixpanelProps';
 import injectInerceptors from '../http/interceptors';
+import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 
 interface MainAppStoreProps {
   token: string;
@@ -436,6 +436,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.tradingViewStore.selectedPendingPosition = undefined;
     this.rootStore.tradingViewStore.selectedHistory = undefined;
     this.rootStore.withdrawalStore.history = null;
+    this.rootStore.dateRangeStore.dropdownValueType = ShowDatesDropdownEnum.Week;
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
     this.activeAccount = undefined;
     this.activeAccountId = '';
