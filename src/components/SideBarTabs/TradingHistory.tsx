@@ -85,9 +85,6 @@ const TradingHistory: FC = observer(() => {
       const neededPage: string | null = localStorage.getItem(LOCAL_HISTORY_PAGE);
       const neededRange: string | null = localStorage.getItem(LOCAL_HISTORY_DATERANGE);
       if (neededData) {
-        if (dataStart) {
-          dateRangeStore.startDate = moment(dataStart);
-        }
         if (neededPage && parseInt(neededPage) > 0) {
           checkScroll = true;
           for (let i = 0; i < parseInt(neededPage) + 1; i++) {
@@ -99,12 +96,12 @@ const TradingHistory: FC = observer(() => {
             });
           }
         }
-        if (neededRange) {
-          dateRangeStore.dropdownValueType = parseInt(neededRange);
-        }
       }
-      if (!neededRange && !neededData) {
-        dateRangeStore.dropdownValueType = ShowDatesDropdownEnum.Week;
+      if (neededRange) {
+        dateRangeStore.dropdownValueType = parseInt(neededRange);
+      }
+      if (dataStart) {
+        dateRangeStore.startDate = moment(dataStart);
       }
       if (!checkScroll) {
         fetchPositionsHistory().finally(() => {
