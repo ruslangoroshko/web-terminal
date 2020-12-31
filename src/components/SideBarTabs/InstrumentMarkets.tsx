@@ -10,6 +10,16 @@ import { useStores } from '../../hooks/useStores';
 import { observer, Observer } from 'mobx-react-lite';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import ImageContainer from '../ImageContainer';
+import {
+  LOCAL_HISTORY_PAGE,
+  LOCAL_HISTORY_POSITION,
+  LOCAL_PENDING_POSITION,
+  LOCAL_PORTFOLIO_TABS,
+  LOCAL_POSITION,
+  LOCAL_STORAGE_SIDEBAR,
+} from '../../constants/global';
+import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
+import { SideBarTabType } from '../../enums/SideBarTabType';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -21,7 +31,7 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
     instrument: { base, id, name, quote, digits },
     toggle,
   } = props;
-  const { instrumentsStore, quotesStore } = useStores();
+  const { instrumentsStore, quotesStore, tradingViewStore } = useStores();
 
   const favouritesButtonRef = useRef<HTMLButtonElement>(null);
   const setInstrumentActive = (e: any) => {
@@ -31,6 +41,32 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
     ) {
       e.preventDefault();
     } else {
+      const activeTab = localStorage.getItem(LOCAL_PORTFOLIO_TABS);
+      const isHistory = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
+      if (!!isHistory) {
+        if (
+          !!activeTab &&
+          parseInt(activeTab) === PortfolioTabEnum.Orders &&
+          parseFloat(isHistory) === SideBarTabType.Portfolio
+        ) {
+          tradingViewStore.selectedPendingPosition = undefined;
+          localStorage.removeItem(LOCAL_PENDING_POSITION);
+        } else if (
+          ((!!activeTab &&
+            parseInt(activeTab) === PortfolioTabEnum.Portfolio)
+            || !activeTab) &&
+          parseFloat(isHistory) === SideBarTabType.Portfolio
+        ) {
+          tradingViewStore.selectedPosition = undefined;
+          localStorage.removeItem(LOCAL_POSITION);
+        } else if (
+          parseFloat(isHistory) === SideBarTabType.History
+        ) {
+          tradingViewStore.selectedHistory = undefined;
+          localStorage.removeItem(LOCAL_HISTORY_POSITION);
+          localStorage.removeItem(LOCAL_HISTORY_PAGE);
+        }
+      }
       instrumentsStore.switchInstrument(id);
       if (toggle) {
         toggle();

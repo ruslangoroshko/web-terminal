@@ -5,12 +5,14 @@ import styled from '@emotion/styled';
 import { observer } from 'mobx-react-lite';
 import API from '../helpers/API';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
-import { LOCAL_INSTRUMENT_ACTIVE } from '../constants/global';
+import {
+  LOCAL_INSTRUMENT_ACTIVE,
+} from '../constants/global';
 
 interface Props {}
 
 const InstrumentsScrollWrapper: FC<Props> = observer(() => {
-  const { instrumentsStore, mainAppStore, badRequestPopupStore } = useStores();
+  const { instrumentsStore, mainAppStore, badRequestPopupStore, tradingViewStore } = useStores();
 
   const handleRemoveInstrument = (itemId: string) => async () => {
     let indexEl = instrumentsStore.activeInstrumentsIds.findIndex(
