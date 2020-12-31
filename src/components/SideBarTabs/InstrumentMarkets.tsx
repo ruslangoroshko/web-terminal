@@ -41,6 +41,8 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
     <InstrumentHoverWrapper
       padding="0 16px"
       flexDirection="column"
+      height="58px"
+      minHeight="58px"
       onClick={setInstrumentActive}
     >
       <InstrumentWrapper
