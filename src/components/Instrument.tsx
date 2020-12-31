@@ -52,8 +52,6 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
       } else if (!!isHistory && parseFloat(isHistory) === SideBarTabType.History) {
         tradingViewStore.selectedHistory = undefined;
         localStorage.removeItem(LOCAL_HISTORY_POSITION);
-        localStorage.removeItem(LOCAL_HISTORY_TIME);
-        localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
         localStorage.removeItem(LOCAL_HISTORY_PAGE);
       }
       instrumentsStore.switchInstrument(instrument.id);
