@@ -33,7 +33,12 @@ interface Props {
 }
 
 const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
-  const { quotesStore, mainAppStore, instrumentsStore, tradingViewStore } = useStores();
+  const {
+    quotesStore,
+    mainAppStore,
+    instrumentsStore,
+    tradingViewStore,
+  } = useStores();
   const buttonCloseRef = useRef<HTMLButtonElement>(null);
   const [closePrice, setClosePrice] = useState('');
 
@@ -46,10 +51,16 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
       if (!!activeTab && parseInt(activeTab) === PortfolioTabEnum.Orders) {
         tradingViewStore.selectedPendingPosition = undefined;
         localStorage.removeItem(LOCAL_PENDING_POSITION);
-      } else if (!!activeTab && parseInt(activeTab) === PortfolioTabEnum.Portfolio) {
+      } else if (
+        !!activeTab &&
+        parseInt(activeTab) === PortfolioTabEnum.Portfolio
+      ) {
         tradingViewStore.selectedPosition = undefined;
         localStorage.removeItem(LOCAL_POSITION);
-      } else if (!!isHistory && parseFloat(isHistory) === SideBarTabType.History) {
+      } else if (
+        !!isHistory &&
+        parseFloat(isHistory) === SideBarTabType.History
+      ) {
         tradingViewStore.selectedHistory = undefined;
         localStorage.removeItem(LOCAL_HISTORY_POSITION);
         localStorage.removeItem(LOCAL_HISTORY_PAGE);
@@ -100,7 +111,7 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
           width="100%"
         >
           {quotesStore.quotes[instrument.id] && (
-            <FlexContainer marginRight="8px">
+            <FlexContainer marginRight="8px" height="100%">
               <FlexContainer minWidth="24px" width="24px" marginRight="8px">
                 <ImageContainer instrumentId={instrument.id} />
               </FlexContainer>
