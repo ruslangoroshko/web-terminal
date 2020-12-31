@@ -95,10 +95,19 @@ const PendingOrder: FC<Props> = (props) => {
             padding="12px 0"
             justifyContent="space-between"
           >
-            <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
+            <FlexContainer
+              minWidth="32px"
+              width="32px"
+              height="32px"
+              marginRight="8px"
+            >
               <ImageContainer instrumentId={pendingOrder.instrument} />
             </FlexContainer>
-            <FlexContainer flexDirection="column" margin="0 38px 0 0">
+            <FlexContainer
+              flexDirection="column"
+              marginRight="8px"
+              width="100%"
+            >
               <PrimaryTextSpan
                 color="#fffccc"
                 fontSize="12px"
@@ -112,12 +121,12 @@ const PendingOrder: FC<Props> = (props) => {
                 {orderInstrument()?.name}
               </PrimaryTextSpan>
               <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="10px">
-                {moment(pendingOrder.created).format('DD MMM, HH:mm:ss')}
+                {moment(pendingOrder.created).format('DD MMM, HH:mm')}
               </PrimaryTextSpan>
             </FlexContainer>
-            <FlexContainer flexDirection="column" margin="0 24px 0 0">
-              <FlexContainer margin="0 4px 0 0">
-                <FlexContainer margin="0 4px 0 0">
+            <FlexContainer flexDirection="column" marginRight="24px">
+              <FlexContainer marginRight="4px">
+                <FlexContainer marginRight="4px">
                   <SvgIcon
                     {...Icon}
                     fillColor={isBuy ? '#00FFDD' : '#ED145B'}
