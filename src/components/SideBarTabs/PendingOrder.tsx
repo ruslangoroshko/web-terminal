@@ -84,7 +84,6 @@ const PendingOrder: FC<Props> = (props) => {
           onClick={switchInstrument}
           ref={instrumentRef}
           padding="0 16px"
-          minHeight="67px"
           className={
             tradingViewStore.selectedPendingPosition === pendingOrder.id
               ? 'active'
@@ -124,8 +123,12 @@ const PendingOrder: FC<Props> = (props) => {
                 {moment(pendingOrder.created).format('DD MMM, HH:mm')}
               </PrimaryTextSpan>
             </FlexContainer>
-            <FlexContainer flexDirection="column" marginRight="24px">
-              <FlexContainer marginRight="4px">
+            <FlexContainer
+              flexDirection="column"
+              marginRight="4px"
+              width="100%"
+            >
+              <FlexContainer>
                 <FlexContainer marginRight="4px">
                   <SvgIcon
                     {...Icon}
@@ -135,6 +138,7 @@ const PendingOrder: FC<Props> = (props) => {
                 <PrimaryTextSpan
                   fontSize="12px"
                   color={isBuy ? '#00FFDD' : '#ED145B'}
+                  textTransform="uppercase"
                 >
                   {isBuy ? t('Buy') : t('Sell')}
                 </PrimaryTextSpan>
@@ -145,8 +149,9 @@ const PendingOrder: FC<Props> = (props) => {
             </FlexContainer>
             <FlexContainer
               flexDirection="column"
-              margin="0 8px 0 0"
+              marginRight="8px"
               alignItems="flex-end"
+              minWidth="52px"
             >
               <PrimaryTextSpan
                 color="#fffccc"
@@ -161,7 +166,7 @@ const PendingOrder: FC<Props> = (props) => {
               </PrimaryTextSpan>
             </FlexContainer>
             <FlexContainer alignItems="center" ref={clickableWrapperRef}>
-              <FlexContainer margin="0 4px 0 0">
+              <FlexContainer marginRight="4px">
                 <AutoClosePopupSideBar
                   ref={instrumentRef}
                   stopLossValue={pendingOrder.sl}
