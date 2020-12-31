@@ -35,7 +35,7 @@ const PendingOrder: FC<Props> = (props) => {
   const { mainAppStore, instrumentsStore, tradingViewStore } = useStores();
   const clickableWrapperRef = useRef<HTMLDivElement>(null);
 
-  const instrumentRef = useRef<HTMLDivElement>(document.createElement("div"));
+  const instrumentRef = useRef<HTMLDivElement>(document.createElement('div'));
   const { precision } = useInstrument(pendingOrder.instrument);
   const handleCloseOrder = () => {
     API.removePendingOrder({
@@ -66,12 +66,15 @@ const PendingOrder: FC<Props> = (props) => {
 
   useEffect(() => {
     const lastPendingActive = localStorage.getItem(LOCAL_PENDING_POSITION);
-    if (!!lastPendingActive && pendingOrder.id === parseFloat(lastPendingActive)) {
+    if (
+      !!lastPendingActive &&
+      pendingOrder.id === parseFloat(lastPendingActive)
+    ) {
       instrumentRef.current.scrollIntoView();
       tradingViewStore.selectedPendingPosition = parseFloat(lastPendingActive);
       instrumentsStore.switchInstrument(pendingOrder.instrument);
     }
-  }, [])
+  }, []);
 
   return (
     <Observer>
@@ -81,32 +84,61 @@ const PendingOrder: FC<Props> = (props) => {
           onClick={switchInstrument}
           ref={instrumentRef}
           padding="0 16px"
-          minHeight="67px"
-          className={tradingViewStore.selectedPendingPosition === pendingOrder.id
-            ? 'active'
-            : ''
+          className={
+            tradingViewStore.selectedPendingPosition === pendingOrder.id
+              ? 'active'
+              : ''
           }
         >
-          <OrderWrapperWithBorder padding="12px 0" justifyContent="space-between">
-            <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
+          <OrderWrapperWithBorder
+            padding="12px 0"
+            justifyContent="space-between"
+          >
+            <FlexContainer
+              minWidth="32px"
+              width="32px"
+              height="32px"
+              marginRight="8px"
+            >
               <ImageContainer instrumentId={pendingOrder.instrument} />
             </FlexContainer>
-            <FlexContainer flexDirection="column" margin="0 38px 0 0">
-              <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
+            <FlexContainer
+              flexDirection="column"
+              marginRight="8px"
+              width="100%"
+            >
+              <PrimaryTextSpan
+                color="#fffccc"
+                fontSize="12px"
+                marginBottom="4px"
+                textOverflow="ellipsis"
+                overflow="hidden"
+                whiteSpace="nowrap"
+                maxWidth="70px"
+                title={orderInstrument()?.name}
+              >
                 {orderInstrument()?.name}
               </PrimaryTextSpan>
               <PrimaryTextSpan color="rgba(255, 255, 255, 0.5)" fontSize="10px">
-                {moment(pendingOrder.created).format('DD MMM, HH:mm:ss')}
+                {moment(pendingOrder.created).format('DD MMM, HH:mm')}
               </PrimaryTextSpan>
             </FlexContainer>
-            <FlexContainer flexDirection="column" margin="0 24px 0 0">
-              <FlexContainer margin="0 4px 0 0">
-                <FlexContainer margin="0 4px 0 0">
-                  <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
+            <FlexContainer
+              flexDirection="column"
+              marginRight="4px"
+              width="100%"
+            >
+              <FlexContainer>
+                <FlexContainer marginRight="4px">
+                  <SvgIcon
+                    {...Icon}
+                    fillColor={isBuy ? '#00FFDD' : '#ED145B'}
+                  />
                 </FlexContainer>
                 <PrimaryTextSpan
                   fontSize="12px"
                   color={isBuy ? '#00FFDD' : '#ED145B'}
+                  textTransform="uppercase"
                 >
                   {isBuy ? t('Buy') : t('Sell')}
                 </PrimaryTextSpan>
@@ -117,10 +149,15 @@ const PendingOrder: FC<Props> = (props) => {
             </FlexContainer>
             <FlexContainer
               flexDirection="column"
-              margin="0 8px 0 0"
+              marginRight="8px"
               alignItems="flex-end"
+              minWidth="52px"
             >
-              <PrimaryTextSpan color="#fffccc" fontSize="12px" marginBottom="4px">
+              <PrimaryTextSpan
+                color="#fffccc"
+                fontSize="12px"
+                marginBottom="4px"
+              >
                 {currencySymbol}
                 {pendingOrder.investmentAmount.toFixed(2)}
               </PrimaryTextSpan>
@@ -129,7 +166,7 @@ const PendingOrder: FC<Props> = (props) => {
               </PrimaryTextSpan>
             </FlexContainer>
             <FlexContainer alignItems="center" ref={clickableWrapperRef}>
-              <FlexContainer margin="0 4px 0 0">
+              <FlexContainer marginRight="4px">
                 <AutoClosePopupSideBar
                   ref={instrumentRef}
                   stopLossValue={pendingOrder.sl}
