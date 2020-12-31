@@ -185,7 +185,9 @@ const Dashboard: FC = observer(() => {
       </FlexContainer>
       <FlexContainer flexDirection="column">
         <FlexContainer marginBottom="20px" height="40px">
-          <InstrumentsScrollWrapper></InstrumentsScrollWrapper>
+          <Observer>
+            {() => <InstrumentsScrollWrapper></InstrumentsScrollWrapper>}
+          </Observer>
           <FlexContainer position="relative" alignItems="center">
             <Toggle>
               {({ on, toggle }) => (

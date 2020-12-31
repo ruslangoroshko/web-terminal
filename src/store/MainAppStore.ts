@@ -437,6 +437,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.quotesStore.pendingOrders = [];
     this.rootStore.tradingViewStore.selectedPendingPosition = undefined;
     this.rootStore.tradingViewStore.selectedHistory = undefined;
+    this.rootStore.tradingViewStore.selectedPosition = undefined;
     this.rootStore.withdrawalStore.history = null;
     this.rootStore.dateRangeStore.dropdownValueType = ShowDatesDropdownEnum.Week;
     this.rootStore.dateRangeStore.startDate = moment().subtract(1, 'weeks');
