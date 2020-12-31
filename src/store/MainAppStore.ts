@@ -42,6 +42,8 @@ import { CountriesEnum } from '../enums/CountriesEnum';
 import mixapanelProps from '../constants/mixpanelProps';
 import injectInerceptors from '../http/interceptors';
 import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
+import moment from 'moment';
+import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
 
 interface MainAppStoreProps {
   token: string;
@@ -437,6 +439,8 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.tradingViewStore.selectedHistory = undefined;
     this.rootStore.withdrawalStore.history = null;
     this.rootStore.dateRangeStore.dropdownValueType = ShowDatesDropdownEnum.Week;
+    this.rootStore.dateRangeStore.startDate = moment().subtract(1, 'weeks');
+    this.rootStore.tabsStore.portfolioTab = PortfolioTabEnum.Portfolio;
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
     this.activeAccount = undefined;
     this.activeAccountId = '';
