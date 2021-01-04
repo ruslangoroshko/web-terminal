@@ -65,7 +65,9 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
   useEffect(() => {
     const lastPendingActive = localStorage.getItem(LOCAL_HISTORY_POSITION);
     if (!!lastPendingActive && props.tradingHistoryItem.id === parseFloat(lastPendingActive)) {
-      instrumentRef.current.scrollIntoView();
+      setTimeout(() => {
+        instrumentRef.current.scrollIntoView();
+      }, 500)
       tradingViewStore.selectedHistory = lastPendingActive;
       instrumentsStore.switchInstrument(props.tradingHistoryItem.instrument);
     }
