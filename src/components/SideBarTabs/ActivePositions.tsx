@@ -764,7 +764,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
               position.slType === TpSlTypeEnum.Currency
                 ? parseFloat(getNewPricing(newPosition, 'sl').toFixed(2))
                 : parseFloat(
-                    newPosition.toFixed(activeInstrument()?.digits || 2)
+                    newPosition.toFixed(positionInstrument()?.digits || 2)
                   ),
               position.slType,
             ]
@@ -792,7 +792,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
               position.tpType === TpSlTypeEnum.Currency
                 ? parseFloat(getNewPricing(newPosition, 'tp').toFixed(2))
                 : parseFloat(
-                    newPosition.toFixed(activeInstrument()?.digits || 2)
+                    newPosition.toFixed(positionInstrument()?.digits || 2)
                   ),
               position.tpType,
             ]
@@ -939,7 +939,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
     setFieldValue(Fields.TAKE_PROFIT, null);
   };
 
-  const activeInstrument = useCallback(() => {
+  const positionInstrument = useCallback(() => {
     return instrumentsStore.instruments.find(
       (item) => item.instrumentItem.id === position.instrument
     )?.instrumentItem;
@@ -1046,8 +1046,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                 overflow="hidden"
                 textOverflow="ellipsis"
                 whiteSpace="nowrap"
+                width="80px"
+                title={positionInstrument()?.name}
               >
-                {activeInstrument()?.name}
+                {positionInstrument()?.name}
               </PrimaryTextSpan>
               <FlexContainer margin="0 0 12px 0" alignItems="center">
                 <FlexContainer margin="0 4px 0 0">
@@ -1215,7 +1217,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                     resetForm={resetForm}
                     toggleOut={resetSLTPLines}
                     instrumentId={position.instrument}
-                    digits={activeInstrument()?.digits || 2}
+                    digits={positionInstrument()?.digits || 2}
                     active={
                       tradingViewStore.activePopup &&
                       position.id === tradingViewStore.selectedPosition?.id
