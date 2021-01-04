@@ -147,7 +147,7 @@ const AccountBalance = () => {
             </FlexContainer>
           </FlexContainer>
         </FlexContainer>
-        <FlexContainer flexDirection="column" maxHeight="calc(100vh - 200px)">
+        <FlexContainer flexDirection="column" maxHeight="calc(100vh - 200px)" overflow="auto">
           <TableGrid columnsCount={4}>
             <Th>
               <FlexContainer padding="0 0 0 12px">
