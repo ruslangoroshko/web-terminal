@@ -1043,6 +1043,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                 fontSize="12px"
                 lineHeight="14px"
                 marginBottom="2px"
+                overflow="hidden"
+                textOverflow="ellipsis"
+                whiteSpace="nowrap"
               >
                 {activeInstrument()?.name}
               </PrimaryTextSpan>
