@@ -29,7 +29,7 @@ const TradingHistory: FC = observer(() => {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchPositionsHistory = useCallback(
-    async (isScrolling = false) => {
+    async (isScrolling = false, last = false) => {
       const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
       const checkIsNaN = dataStart ? isNaN(moment(dataStart).valueOf()) : true;
       try {
@@ -65,6 +65,11 @@ const TradingHistory: FC = observer(() => {
             filteredPositions.push(item);
           }
         });
+        if (last) {
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+        }
         historyStore.positionsHistoryReport = {
           ...response,
           positionsHistory: isScrolling
@@ -93,11 +98,7 @@ const TradingHistory: FC = observer(() => {
           checkScroll = true;
           for (let i = 0; i < parseInt(neededPage) + 1; i++) {
             historyStore.positionsHistoryReport.page = i;
-            fetchPositionsHistory(true).finally(() => {
-              if (i <= parseInt(neededPage) + 1) {
-                setIsLoading(false);
-              }
-            });
+            fetchPositionsHistory(true, i <= parseInt(neededPage) + 1);
           }
         }
       }
