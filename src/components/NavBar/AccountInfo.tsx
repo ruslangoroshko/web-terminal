@@ -32,6 +32,9 @@ import {
   LOCAL_HISTORY_TIME,
   LOCAL_HISTORY_PAGE,
 } from '../../constants/global';
+import { ShowDatesDropdownEnum } from '../../enums/ShowDatesDropdownEnum';
+import moment from 'moment';
+import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 
 interface Props {
   account: AccountModelWebSocketDTO;
@@ -46,6 +49,9 @@ const AccountInfo: FC<Props> = observer((props) => {
     tabsStore,
     notificationStore,
     depositFundsStore,
+    tradingViewStore,
+    withdrawalStore,
+    dateRangeStore
   } = useStores();
   const { push } = useHistory();
 
@@ -72,6 +78,15 @@ const AccountInfo: FC<Props> = observer((props) => {
     localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
     localStorage.removeItem(LOCAL_HISTORY_TIME);
     localStorage.removeItem(LOCAL_HISTORY_PAGE);
+    quotesStore.activePositions = [];
+    quotesStore.pendingOrders = [];
+    tradingViewStore.selectedPendingPosition = undefined;
+    tradingViewStore.selectedHistory = undefined;
+    tradingViewStore.selectedPosition = undefined;
+    withdrawalStore.history = null;
+    dateRangeStore.dropdownValueType = ShowDatesDropdownEnum.Week;
+    dateRangeStore.startDate = moment().subtract(1, 'weeks');
+    tabsStore.portfolioTab = PortfolioTabEnum.Portfolio;
     toggle();
     push(Page.DASHBOARD);
 

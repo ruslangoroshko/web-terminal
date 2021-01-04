@@ -31,10 +31,11 @@ const TradingHistory: FC = observer(() => {
   const fetchPositionsHistory = useCallback(
     async (isScrolling = false) => {
       const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
+      const checkIsNaN = dataStart ? isNaN(moment(dataStart).valueOf()) : true;
       try {
         const response = await API.getPositionsHistory({
           accountId: mainAppStore.activeAccount!.id,
-          startDate: moment(dataStart || dateRangeStore.startDate).valueOf(),
+          startDate: moment((checkIsNaN || !dataStart) ? dateRangeStore.startDate : dataStart).valueOf(),
           endDate: moment().valueOf(),
           page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
           pageSize: 20,
