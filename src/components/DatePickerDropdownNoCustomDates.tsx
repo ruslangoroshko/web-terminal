@@ -17,7 +17,9 @@ import { DayPickerRangeController } from 'react-dates';
 import { useTranslation } from 'react-i18next';
 import {
   LOCAL_HISTORY_DATERANGE,
-  LOCAL_HISTORY_TIME
+  LOCAL_HISTORY_PAGE,
+  LOCAL_HISTORY_POSITION,
+  LOCAL_HISTORY_TIME,
 } from '../constants/global';
 
  interface Props {
@@ -62,6 +64,8 @@ const {t} = useTranslation()
       }
       localStorage.setItem(LOCAL_HISTORY_TIME, `${dateRangeStore.startDate}`);
       localStorage.setItem(LOCAL_HISTORY_DATERANGE, `${dateRange}`);
+      localStorage.removeItem(LOCAL_HISTORY_PAGE);
+      localStorage.removeItem(LOCAL_HISTORY_POSITION);
       dateRangeStore.openedDropdown = false;
       datesChangeCallback();
     };

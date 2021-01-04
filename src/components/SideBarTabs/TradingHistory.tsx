@@ -40,8 +40,11 @@ const TradingHistory: FC = observer(() => {
           page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
           pageSize: 20,
         });
+        const pagesNow = localStorage.getItem(LOCAL_HISTORY_PAGE);
         if (isScrolling) {
-          localStorage.setItem(LOCAL_HISTORY_PAGE, `${response.page}`);
+          if (!pagesNow || (!!pagesNow && parseInt(pagesNow) < response.page)) {
+            localStorage.setItem(LOCAL_HISTORY_PAGE, `${response.page}`);
+          }
         }
         const allPositions: PositionHistoryDTO[] = [
           ...historyStore.positionsHistoryReport.positionsHistory,

@@ -76,30 +76,32 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
 
   const handleCloseInstrument = () => {
     handleClose();
-    const activeTab = localStorage.getItem(LOCAL_PORTFOLIO_TABS);
-    const isHistory = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
-    if (!!isHistory) {
-      if (
-        !!activeTab &&
-        parseInt(activeTab) === PortfolioTabEnum.Orders &&
-        parseFloat(isHistory) === SideBarTabType.Portfolio
-      ) {
-        tradingViewStore.selectedPendingPosition = undefined;
-        localStorage.removeItem(LOCAL_PENDING_POSITION);
-      } else if (
-        ((!!activeTab &&
-          parseInt(activeTab) === PortfolioTabEnum.Portfolio)
-          || !activeTab) &&
-        parseFloat(isHistory) === SideBarTabType.Portfolio
-      ) {
-        tradingViewStore.selectedPosition = undefined;
-        localStorage.removeItem(LOCAL_POSITION);
-      } else if (
-        parseFloat(isHistory) === SideBarTabType.History
-      ) {
-        tradingViewStore.selectedHistory = undefined;
-        localStorage.removeItem(LOCAL_HISTORY_POSITION);
-        localStorage.removeItem(LOCAL_HISTORY_PAGE);
+    if (instrumentsStore.activeInstrument?.instrumentItem.id === instrument.id) {
+      const activeTab = localStorage.getItem(LOCAL_PORTFOLIO_TABS);
+      const isHistory = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
+      if (!!isHistory) {
+        if (
+          !!activeTab &&
+          parseInt(activeTab) === PortfolioTabEnum.Orders &&
+          parseFloat(isHistory) === SideBarTabType.Portfolio
+        ) {
+          tradingViewStore.selectedPendingPosition = undefined;
+          localStorage.removeItem(LOCAL_PENDING_POSITION);
+        } else if (
+          ((!!activeTab &&
+            parseInt(activeTab) === PortfolioTabEnum.Portfolio)
+            || !activeTab) &&
+          parseFloat(isHistory) === SideBarTabType.Portfolio
+        ) {
+          tradingViewStore.selectedPosition = undefined;
+          localStorage.removeItem(LOCAL_POSITION);
+        } else if (
+          parseFloat(isHistory) === SideBarTabType.History
+        ) {
+          tradingViewStore.selectedHistory = undefined;
+          localStorage.removeItem(LOCAL_HISTORY_POSITION);
+          localStorage.removeItem(LOCAL_HISTORY_PAGE);
+        }
       }
     }
   }
