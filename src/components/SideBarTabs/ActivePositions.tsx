@@ -1046,7 +1046,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                 overflow="hidden"
                 textOverflow="ellipsis"
                 whiteSpace="nowrap"
-                width="74px"
+                maxWidth="74px"
                 title={positionInstrument()?.name}
               >
                 {positionInstrument()?.name}
