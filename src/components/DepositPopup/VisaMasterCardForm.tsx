@@ -62,7 +62,17 @@ const VisaMasterCardForm = () => {
         'fullName',
         t('Cardholder name is invalid'),
         (val) => val?.length <= 49
-      ),
+      )
+      .test('fullName', t('Cardholder name is invalid'), (val) => {
+        if (val?.length) {
+          let value: String[] = val
+            ?.trim()
+            .split(' ')
+            .filter((item: string) => item);
+          return !!(value[0] && value[1]);
+        }
+        return false;
+      }),
 
     cardNumber: yup
       .string()
