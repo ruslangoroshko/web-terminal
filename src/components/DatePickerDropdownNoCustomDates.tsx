@@ -62,7 +62,7 @@ const {t} = useTranslation()
         default:
           break;
       }
-      localStorage.setItem(LOCAL_HISTORY_TIME, `${dateRangeStore.startDate}`);
+      localStorage.setItem(LOCAL_HISTORY_TIME, `${moment(dateRangeStore.startDate)}`);
       localStorage.setItem(LOCAL_HISTORY_DATERANGE, `${dateRange}`);
       localStorage.removeItem(LOCAL_HISTORY_PAGE);
       localStorage.removeItem(LOCAL_HISTORY_POSITION);
