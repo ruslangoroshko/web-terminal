@@ -31,15 +31,15 @@ const routesList = [
     layoutType: RouteLayoutType.SignFlow,
   },
   {
-    component: LpLogin,
-    path: Page.LP_LOGIN,
-    exact: true,
-    strict: true,
-    layoutType: RouteLayoutType.Public,
-  },
-  {
     component: SignUp,
     path: Page.SIGN_UP,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.SignFlow,
+  },
+  {
+    component: LpLogin,
+    path: Page.LP_LOGIN,
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.Public,
