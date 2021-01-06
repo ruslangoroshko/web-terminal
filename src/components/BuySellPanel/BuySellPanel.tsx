@@ -73,7 +73,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       instrumentId: instrument.id,
       operation: null,
       multiplier: instrument.multiplier[0],
-      investmentAmount: DEFAULT_INVEST_AMOUNT,
+      investmentAmount: (mainAppStore.activeAccount?.isLive
+        ? mainAppStore.activeAccount?.dia_d
+        : mainAppStore.activeAccount?.dia_l)
+        || DEFAULT_INVEST_AMOUNT,
       tp: null,
       sl: null,
       slType: null,
