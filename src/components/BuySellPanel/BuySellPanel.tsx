@@ -114,6 +114,18 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           )
           .test(
             Fields.AMOUNT,
+            `${t('Minimum trade volume')} $${
+              instrument.minOperationVolume
+            }. ${t('Please increase your trade amount or multiplier')}.`,
+            function (value) {
+              if (value !== null) {
+                return value !== 0;
+              }
+              return true;
+            }
+          )
+          .test(
+            Fields.AMOUNT,
             `${t('Maximum trade volume')} $${
               instrument.maxOperationVolume
             }. ${t('Please decrease your trade amount or multiplier')}.`,
@@ -272,7 +284,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.ACCOUNT_CURRENCY]:
               mainAppStore.activeAccount?.currency || '',
             [mixapanelProps.INSTRUMENT_ID]: response.order.instrument,
-            [mixapanelProps.MULTIPLIER]: response.order?.multiplier || modelToSubmit.multiplier,
+            [mixapanelProps.MULTIPLIER]:
+              response.order?.multiplier || modelToSubmit.multiplier,
             [mixapanelProps.TREND]:
               response.order.operation === AskBidEnum.Buy ? 'buy' : 'sell',
             [mixapanelProps.SL_TYPE]:
@@ -353,7 +366,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.ACCOUNT_CURRENCY]:
               mainAppStore.activeAccount?.currency || '',
             [mixapanelProps.INSTRUMENT_ID]: response.position.instrument,
-            [mixapanelProps.MULTIPLIER]: response.position?.multiplier || modelToSubmit.multiplier,
+            [mixapanelProps.MULTIPLIER]:
+              response.position?.multiplier || modelToSubmit.multiplier,
             [mixapanelProps.TREND]:
               response.position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
             [mixapanelProps.SL_TYPE]:
