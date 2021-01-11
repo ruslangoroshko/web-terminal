@@ -53,15 +53,13 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
           localStorage.removeItem(LOCAL_PENDING_POSITION);
         } else if (
           ((!!activeTab &&
-            parseInt(activeTab) === PortfolioTabEnum.Portfolio)
-            || !activeTab) &&
+            parseInt(activeTab) === PortfolioTabEnum.Portfolio) ||
+            !activeTab) &&
           parseFloat(isHistory) === SideBarTabType.Portfolio
         ) {
           tradingViewStore.selectedPosition = undefined;
           localStorage.removeItem(LOCAL_POSITION);
-        } else if (
-          parseFloat(isHistory) === SideBarTabType.History
-        ) {
+        } else if (parseFloat(isHistory) === SideBarTabType.History) {
           tradingViewStore.selectedHistory = undefined;
           localStorage.removeItem(LOCAL_HISTORY_POSITION);
           localStorage.removeItem(LOCAL_HISTORY_PAGE);
@@ -119,7 +117,12 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
           <FlexContainer width="48px" justifyContent="flex-end">
             <PrimaryTextSpan fontSize="12px" color="#fffccc">
               <Observer>
-                {() => <>{quotesStore.quotes[id].bid.c.toFixed(digits)}</>}
+                {() => (
+                  <>
+                    {quotesStore.quotes[id] &&
+                      quotesStore.quotes[id].bid.c.toFixed(digits)}
+                  </>
+                )}
               </Observer>
             </PrimaryTextSpan>
           </FlexContainer>
