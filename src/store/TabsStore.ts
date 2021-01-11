@@ -10,6 +10,8 @@ import {
   LOCAL_HISTORY_TIME,
   LOCAL_HISTORY_DATERANGE,
   LOCAL_HISTORY_PAGE,
+  LOCAL_POSITION_SORT,
+  LOCAL_PENDING_POSITION_SORT,
 } from '../constants/global';
 
 interface ContextProps {
@@ -32,7 +34,9 @@ export class TabsStore implements ContextProps {
     this.sideBarTabType = null;
     localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
     localStorage.removeItem(LOCAL_POSITION);
+    localStorage.removeItem(LOCAL_POSITION_SORT);
     localStorage.removeItem(LOCAL_PENDING_POSITION);
+    localStorage.removeItem(LOCAL_PENDING_POSITION_SORT);
     localStorage.removeItem(LOCAL_HISTORY_POSITION);
     localStorage.removeItem(LOCAL_HISTORY_TIME);
     localStorage.removeItem(LOCAL_HISTORY_DATERANGE);

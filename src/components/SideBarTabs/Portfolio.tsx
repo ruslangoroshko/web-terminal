@@ -18,7 +18,10 @@ import { SortByProfitEnum } from '../../enums/SortByProfitEnum';
 import { useTranslation } from 'react-i18next';
 import PortfolioTotalProfit from './PortfolioTotalProfit';
 import PortfolioTotalEquity from './PortfolioTotalEquity';
-import { LOCAL_PORTFOLIO_TABS } from '../../constants/global';
+import {
+  LOCAL_PORTFOLIO_TABS,
+  LOCAL_POSITION_SORT
+} from '../../constants/global';
 
 interface Props {}
 
@@ -38,6 +41,7 @@ const Portfolio: FC<Props> = () => {
 
   const handleChangeSorting = (sortType: SortByProfitEnum) => () => {
     sortingStore.activePositionsSortBy = sortType;
+    localStorage.setItem(LOCAL_POSITION_SORT, `${sortType}`);
     toggle(false);
   };
 
@@ -45,8 +49,12 @@ const Portfolio: FC<Props> = () => {
 
   useEffect(() => {
     const activeTab = localStorage.getItem(LOCAL_PORTFOLIO_TABS);
+    const activeSort = localStorage.getItem(LOCAL_POSITION_SORT);
     if (!!activeTab) {
       tabsStore.portfolioTab = parseFloat(activeTab);
+    }
+    if (!!activeSort) {
+      sortingStore.activePositionsSortBy = parseFloat(activeSort);
     }
   }, []);
 
@@ -134,25 +142,27 @@ const Portfolio: FC<Props> = () => {
         >
           {t('Sort by')}:
         </PrimaryTextSpan>
-        <SortByDropdown
-          selectedLabel={t(
-            sortByDropdownProfitLabels[sortingStore.activePositionsSortBy]
-          )}
-          opened={on}
-          toggle={handleToggle}
-        >
-          {Object.entries(sortByDropdownProfitLabels).map(([key, value]) => (
-            <DropdownItemText
-              color="#fffccc"
-              fontSize="12px"
-              key={key}
-              onClick={handleChangeSorting(+key)}
-              whiteSpace="nowrap"
-            >
-              {t(value)}
-            </DropdownItemText>
-          ))}
-        </SortByDropdown>
+        <Observer>{
+          () => <SortByDropdown
+            selectedLabel={t(
+              sortByDropdownProfitLabels[sortingStore.activePositionsSortBy]
+            )}
+            opened={on}
+            toggle={handleToggle}
+          >
+            {Object.entries(sortByDropdownProfitLabels).map(([key, value]) => (
+              <DropdownItemText
+                color="#fffccc"
+                fontSize="12px"
+                key={key}
+                onClick={handleChangeSorting(+key)}
+                whiteSpace="nowrap"
+              >
+                {t(value)}
+              </DropdownItemText>
+            ))}
+          </SortByDropdown>
+        }</Observer>
       </SortByWrapper>
       <Observer>
         {() => (
