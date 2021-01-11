@@ -21,20 +21,24 @@ import CopyIcon from '../../assets/svg_no_compress/icon-copy.svg';
 import SvgIcon from '../SvgIcon';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import {
-  LOCAL_MARKET_TABS,
-  LOCAL_POSITION,
-  LOCAL_STORAGE_SIDEBAR,
-  LOCAL_INSTRUMENT_ACTIVE,
-  LOCAL_PORTFOLIO_TABS,
-  LOCAL_PENDING_POSITION,
-  LOCAL_HISTORY_POSITION,
   LOCAL_HISTORY_DATERANGE,
-  LOCAL_HISTORY_TIME,
   LOCAL_HISTORY_PAGE,
+  LOCAL_HISTORY_POSITION,
+  LOCAL_HISTORY_TIME,
+  LOCAL_INSTRUMENT_ACTIVE,
+  LOCAL_MARKET_TABS,
+  LOCAL_PENDING_POSITION,
+  LOCAL_PENDING_POSITION_SORT,
+  LOCAL_PORTFOLIO_TABS,
+  LOCAL_POSITION,
+  LOCAL_POSITION_SORT,
+  LOCAL_STORAGE_SIDEBAR,
 } from '../../constants/global';
 import { ShowDatesDropdownEnum } from '../../enums/ShowDatesDropdownEnum';
 import moment from 'moment';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
+import { SortByProfitEnum } from '../../enums/SortByProfitEnum';
+import { SortByPendingOrdersEnum } from '../../enums/SortByPendingOrdersEnum';
 
 interface Props {
   account: AccountModelWebSocketDTO;
@@ -51,7 +55,8 @@ const AccountInfo: FC<Props> = observer((props) => {
     depositFundsStore,
     tradingViewStore,
     withdrawalStore,
-    dateRangeStore
+    dateRangeStore,
+    sortingStore
   } = useStores();
   const { push } = useHistory();
 
@@ -70,10 +75,12 @@ const AccountInfo: FC<Props> = observer((props) => {
     mainAppStore.setActiveAccount(account);
     localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
     localStorage.removeItem(LOCAL_POSITION);
+    localStorage.removeItem(LOCAL_POSITION_SORT);
     localStorage.removeItem(LOCAL_MARKET_TABS);
     localStorage.removeItem(LOCAL_PORTFOLIO_TABS);
     localStorage.removeItem(LOCAL_INSTRUMENT_ACTIVE);
     localStorage.removeItem(LOCAL_PENDING_POSITION);
+    localStorage.removeItem(LOCAL_PENDING_POSITION_SORT);
     localStorage.removeItem(LOCAL_HISTORY_POSITION);
     localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
     localStorage.removeItem(LOCAL_HISTORY_TIME);
@@ -84,6 +91,8 @@ const AccountInfo: FC<Props> = observer((props) => {
     tradingViewStore.selectedHistory = undefined;
     tradingViewStore.selectedPosition = undefined;
     withdrawalStore.history = null;
+    sortingStore.activePositionsSortBy = SortByProfitEnum.NewFirstAsc;
+    sortingStore.pendingOrdersSortBy = SortByPendingOrdersEnum.NewFirstAsc;
     dateRangeStore.dropdownValueType = ShowDatesDropdownEnum.Week;
     dateRangeStore.startDate = moment().subtract(1, 'weeks');
     tabsStore.portfolioTab = PortfolioTabEnum.Portfolio;
