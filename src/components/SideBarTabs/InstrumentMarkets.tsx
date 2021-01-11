@@ -34,6 +34,8 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
   const { instrumentsStore, quotesStore, tradingViewStore } = useStores();
 
   const favouritesButtonRef = useRef<HTMLButtonElement>(null);
+
+  // TODO: refactor :)
   const setInstrumentActive = (e: any) => {
     if (
       favouritesButtonRef.current &&
