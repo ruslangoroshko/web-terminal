@@ -13,6 +13,7 @@ import { Observer } from 'mobx-react-lite';
 import Fields from '../../constants/fields';
 import { SecondaryButton } from '../../styles/Buttons';
 import { useTranslation } from 'react-i18next';
+import InformationPopup from '../InformationPopup';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
@@ -82,8 +83,9 @@ const PurchaseAtPopup: FC<Props> = ({
       }
     }
     // see another regex
-    const regex = `^[0-9]{1,7}([,.][0-9]{1,${instrumentsStore.activeInstrument
-      ?.instrumentItem.digits || 2}})?$`;
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${
+      instrumentsStore.activeInstrument?.instrumentItem.digits || 2
+    }})?$`;
     const splittedValue =
       currTargetValue.substring(0, e.currentTarget.selectionStart) +
       e.data +
@@ -182,13 +184,18 @@ const PurchaseAtPopup: FC<Props> = ({
               >
                 {t('When Price is')}
               </PrimaryTextSpan>
-              <InfoIcon
-                width="14px"
-                justifyContent="center"
-                alignItems="center"
+              <InformationPopup
+                bgColor="#000000"
+                classNameTooltip="autoclose"
+                width="212px"
+                direction="left"
               >
-                i
-              </InfoIcon>
+                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  {t(
+                    'When the position reached the specified take profit or stop loss level, the position will be closed automatically.'
+                  )}
+                </PrimaryTextSpan>
+              </InformationPopup>
             </FlexContainer>
             <InputWrapper
               margin="0 0 16px 0"
@@ -350,15 +357,15 @@ const ButtonAutoClosePurchase = styled(SecondaryButton)<{
   hasPrice?: boolean;
 }>`
   height: 40px;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.hasPrice ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.12)'};
   width: 100%;
   border: 1px solid
-    ${props =>
+    ${(props) =>
       props.hasPrice ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0)'};
 
   display: flex;
-  justify-content: ${props => (props.hasPrice ? 'space-between' : 'center')};
+  justify-content: ${(props) => (props.hasPrice ? 'space-between' : 'center')};
   align-items: center;
 `;
 
