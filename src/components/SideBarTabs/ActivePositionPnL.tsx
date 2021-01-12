@@ -16,18 +16,7 @@ const ActivePositionPnL: FC<Props> = ({ position }) => {
   const textElementRef = useRef<HTMLSpanElement>(null);
   const [canRenderFlag, setCanRenderFlag] = useState(false);
 
-  const [statePnL, setStatePnL] = useState(
-    calculateFloatingProfitAndLoss({
-      investment: position.investmentAmount,
-      multiplier: position.multiplier,
-      costs: position.swap + position.commission,
-      side: isBuy ? 1 : -1,
-      currentPrice: isBuy
-        ? quotesStore.quotes[position.instrument].bid.c
-        : quotesStore.quotes[position.instrument].ask.c,
-      openPrice: position.openPrice,
-    })
-  );
+  const [statePnL, setStatePnL] = useState<number | null>(null);
 
   const workCallback = useCallback(
     (quote, canRenderFlag) => {
@@ -51,7 +40,12 @@ const ActivePositionPnL: FC<Props> = ({ position }) => {
     () =>
       autorun(
         () => {
-          workCallback(quotesStore.quotes[position.instrument], canRenderFlag);
+          if (quotesStore.quotes[position.instrument]) {
+            workCallback(
+              quotesStore.quotes[position.instrument],
+              canRenderFlag
+            );
+          }
         },
         { delay: 1000 }
       ),
@@ -92,7 +86,7 @@ const ActivePositionPnL: FC<Props> = ({ position }) => {
     };
   }, []);
 
-  return (
+  return statePnL !== null ? (
     <QuoteText
       isGrowth={statePnL >= 0}
       marginBottom="4px"
@@ -104,6 +98,6 @@ const ActivePositionPnL: FC<Props> = ({ position }) => {
       {mainAppStore.activeAccount?.symbol}
       {Math.abs(statePnL).toFixed(2)}
     </QuoteText>
-  );
+  ) : null;
 };
 export default ActivePositionPnL;
