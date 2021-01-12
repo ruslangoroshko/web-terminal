@@ -37,7 +37,7 @@ const WithdrawFormBankTransfer = () => {
           .number()
           .min(10, `${t('min')}: $10`)
           .max(
-            mainAppStore.activeAccount?.balance || 0,
+            mainAppStore.accounts.find((item) => item.isLive)?.balance || 0,
             `${t('max')}: ${mainAppStore.accounts
               .find((item) => item.isLive)
               ?.balance.toFixed(2)}`
