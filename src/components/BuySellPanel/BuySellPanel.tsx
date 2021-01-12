@@ -492,7 +492,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     async function fetchMultiplier() {
       try {
         const response = await API.getKeyValue(`Multiplier_${instrument.id}`);
-        console.log(response)
         if (response.length > 0) {
           setFieldValue(Fields.MULTIPLIER, parseInt(response));
         }
