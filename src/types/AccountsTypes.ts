@@ -22,8 +22,6 @@ export interface AccountModelWebSocketDTO {
       amount: number;
     }
   ];
-  dia_l?: number;
-  dia_d?: number;
 }
 
 
