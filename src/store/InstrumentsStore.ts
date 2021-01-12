@@ -47,6 +47,8 @@ export class InstrumentsStore implements ContextProps {
 
   @observable sortByField: string | null = null;
 
+  @observable hiddenChart: boolean = false;
+
   @observable pricesChange: IPriceChange = {};
 
   constructor(rootStore: RootStore) {
@@ -198,6 +200,7 @@ export class InstrumentsStore implements ContextProps {
           if (this.rootStore.tradingViewStore.activeOrderLinePositionPnL) {
             this.rootStore.tradingViewStore.clearActivePositionLine();
           }
+          this.hiddenChart = true;
           tvWidget.chart().setSymbol(instrumentId, () => {
             tvWidget
               .chart()
@@ -215,6 +218,7 @@ export class InstrumentsStore implements ContextProps {
                   }
                 }
               );
+            this.hiddenChart = false;
             tvWidget.chart().setChartType(newActiveInstrument.chartType);
             resolve();
           });
