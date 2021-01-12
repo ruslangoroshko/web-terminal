@@ -39,7 +39,7 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
   };
 
   useEffect(() => {
-    if (notificationStore.isActiveNotification) {
+    if (notificationStore.isActiveNotification || notificationStore.isActiveNotificationGlobal) {
       if (notificationStore.timer) {
         clearTimeout(notificationStore.timer);
       }
@@ -48,7 +48,7 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
       }, 5000);
     }
     return;
-  }, [notificationStore.isActiveNotification]);
+  }, [notificationStore.isActiveNotification, notificationStore.isActiveNotificationGlobal]);
 
   useEffect(() => {
     return () => {
