@@ -23,7 +23,7 @@ function SvgIcon(props: Props) {
     strokeColor,
     transformProp,
   } = props;
-  const viewBoxValues = viewBox.split(' ');
+  const viewBoxValues = viewBox ? viewBox.split(' ') : ['100', '100', '0', '0'];
   const viewBoxWidth = width || +viewBoxValues[2];
   const viewBoxHeight = height || +viewBoxValues[3];
   return (
@@ -49,13 +49,13 @@ const SvgIconElement = styled.svg<{
   hoverFillColor?: string;
   transformProp?: string;
 }>`
-  fill: ${props => props.fillColor};
-  stroke: ${props => props.strokeColor};
+  fill: ${(props) => props.fillColor};
+  stroke: ${(props) => props.strokeColor};
   transition: fill 0.2s ease;
   will-change: fill;
-  transform: ${props => props.transformProp};
+  transform: ${(props) => props.transformProp};
 
   &:hover {
-    fill: ${props => props.hoverFillColor};
+    fill: ${(props) => props.hoverFillColor};
   }
 `;

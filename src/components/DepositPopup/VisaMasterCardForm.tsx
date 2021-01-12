@@ -33,6 +33,7 @@ import { DepositRequestStatusEnum } from '../../enums/DepositRequestStatusEnum';
 import LoaderComponent from '../LoaderComponent';
 import PreloaderButtonMask from '../PreloaderButtonMask';
 import Page from '../../constants/Pages';
+import testIds from '../../constants/testIds';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -266,10 +267,6 @@ const VisaMasterCardForm = () => {
     });
   }, []);
 
-  useEffect(() => {
-    console.log('cvv', values.cvv);
-  }, [values]);
-
   return (
     <FlexContainer flexDirection="column" padding="32px 0 0 68px">
       <CustomForm autoComplete="on" noValidate onSubmit={handleSubmit}>
@@ -298,6 +295,7 @@ const VisaMasterCardForm = () => {
               onBeforeInput={investOnBeforeInputHandler}
               name="amount"
               id="amount"
+              data-testid={testIds.VISAMASTERFORM_AMOUNT}
             />
             {errors.amount && <ErrorText>{errors.amount}</ErrorText>}
             <CurrencyDropdown
@@ -377,6 +375,7 @@ const VisaMasterCardForm = () => {
               value={values.cardNumber}
               name="cardNumber"
               id="cardNumber"
+              data-testid={testIds.VISAMASTERFORM_CARD}
               className={`input-border ${
                 !!(touched.cardNumber && errors.cardNumber) && 'error'
               }`}
@@ -422,6 +421,7 @@ const VisaMasterCardForm = () => {
                 //maxLength={5}
                 name="expirationDate"
                 id="expirationDate"
+                data-testid={testIds.VISAMASTERFORM_DATE}
                 className={`input-border ${
                   !!(touched.expirationDate && errors.expirationDate) && 'error'
                 }`}
@@ -465,6 +465,7 @@ const VisaMasterCardForm = () => {
                 onChange={handleChange}
                 name="cvv"
                 id="cvv"
+                data-testid={testIds.VISAMASTERFORM_CVV}
                 className={`input-border ${
                   !!(touched.cvv && errors.cvv) && 'error'
                 }`}
@@ -507,6 +508,7 @@ const VisaMasterCardForm = () => {
               onBlur={handleBlurFullname}
               name="fullName"
               id="fullName"
+              data-testid={testIds.VISAMASTERFORM_CARDHOLDER_NAME}
               hasError={!!(touched.fullName && errors.fullName)}
             />
             {touched.fullName && errors.fullName && (
@@ -532,6 +534,7 @@ const VisaMasterCardForm = () => {
             width="100%"
             onClick={handlerClickSubmit}
             disabled={isSubmitting}
+            data-testid={testIds.VISAMASTERFORM_SUBMIT}
           >
             <PrimaryTextSpan
               className="notranslate"

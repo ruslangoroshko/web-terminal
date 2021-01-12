@@ -21,6 +21,7 @@ import DepositPopupWrapper from '../components/DepositPopup/DepositPopupWrapper'
 import DepositPaymentResultPopup from '../components/DepositPopup/DepositPaymentResultPopup/DepositPaymentResultPopup';
 import { LOCAL_STORAGE_SIDEBAR } from '../constants/global';
 import NotificationPopup from '../components/NotificationPopup';
+import testIds from '../constants/testIds';
 
 interface Props {}
 
@@ -113,7 +114,10 @@ const AuthorizedContainer: FC<Props> = (props) => {
       maxHeight="100vh"
       overflow="hidden"
     >
-      <HiddenAnchor id="hidden-anchor" target="_blank" />
+      <HiddenAnchor
+        id="hidden-anchor"
+        target="_blank"
+      />
       <FlexContainer
         position="absolute"
         bottom="100px"
