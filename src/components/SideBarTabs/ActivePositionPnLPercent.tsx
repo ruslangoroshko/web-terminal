@@ -18,18 +18,7 @@ const ActivePositionPnLPercent: FC<Props> = ({ position }) => {
   const textElementRef = useRef<HTMLSpanElement>(null);
   const [canRenderFlag, setCanRenderFlag] = useState(false);
 
-  const [statePnL, setStatePnL] = useState(
-    calculateFloatingProfitAndLoss({
-      investment: position.investmentAmount,
-      multiplier: position.multiplier,
-      costs: position.swap + position.commission,
-      side: isBuy ? 1 : -1,
-      currentPrice: isBuy
-        ? quotesStore.quotes[position.instrument].bid.c
-        : quotesStore.quotes[position.instrument].ask.c,
-      openPrice: position.openPrice,
-    })
-  );
+  const [statePnL, setStatePnL] = useState<number | null>(null);
 
   const workCallback = useCallback(
     (quote, canRenderFlag) => {
@@ -53,7 +42,12 @@ const ActivePositionPnLPercent: FC<Props> = ({ position }) => {
     () =>
       autorun(
         () => {
-          workCallback(quotesStore.quotes[position.instrument], canRenderFlag);
+          if (quotesStore.quotes[position.instrument]) {
+            workCallback(
+              quotesStore.quotes[position.instrument],
+              canRenderFlag
+            );
+          }
         },
         { delay: 1000 }
       ),
@@ -93,7 +87,7 @@ const ActivePositionPnLPercent: FC<Props> = ({ position }) => {
       }
     };
   }, []);
-  return (
+  return statePnL !== null ? (
     <PrimaryTextSpan
       fontSize="10px"
       lineHeight="12px"
@@ -103,7 +97,7 @@ const ActivePositionPnLPercent: FC<Props> = ({ position }) => {
       {statePnL >= 0 ? '+' : ''}
       {calculateInPercent(position.investmentAmount, statePnL)}%
     </PrimaryTextSpan>
-  );
+  ) : null;
 };
 
 export default ActivePositionPnLPercent;

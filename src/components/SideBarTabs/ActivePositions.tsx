@@ -89,13 +89,19 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
   );
 
   const currentPriceAsk = useCallback(
-    () => quotesStore.quotes[position.instrument].ask.c,
-    [quotesStore.quotes[position.instrument].ask.c, position.instrument]
+    () =>
+      quotesStore.quotes[position.instrument]
+        ? quotesStore.quotes[position.instrument].ask.c
+        : 0,
+    [quotesStore.quotes[position.instrument], position.instrument]
   );
 
   const currentPriceBid = useCallback(
-    () => quotesStore.quotes[position.instrument].bid.c,
-    [quotesStore.quotes[position.instrument].bid.c, position.instrument]
+    () =>
+      quotesStore.quotes[position.instrument]
+        ? quotesStore.quotes[position.instrument].bid.c
+        : 0,
+    [quotesStore.quotes[position.instrument], position.instrument]
   );
 
   const validationSchema = useCallback(
@@ -953,7 +959,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
           instrumentsStore.activeInstrument &&
           tradingViewStore.selectedPosition &&
           tradingViewStore.selectedPosition.id === position.id &&
-          tradingViewStore.tradingWidget
+          tradingViewStore.tradingWidget &&
+          quotesStore.quotes[
+            instrumentsStore.activeInstrument.instrumentItem.id
+          ]
         ) {
           tradingViewStore.tradingWidget?.applyOverrides({
             'scalesProperties.showSeriesLastValue': false,
@@ -977,10 +986,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
       { delay: 100 }
     );
     const lastPosition = localStorage.getItem(LOCAL_POSITION);
-    if (!!lastPosition) {
-      if (position.id === parseInt(lastPosition)) {
-        instrumentRef.current.scrollIntoView();
-      }
+    if (lastPosition && position.id === +lastPosition) {
+      instrumentRef.current.scrollIntoView();
     }
     return () => {
       disposer();
@@ -997,11 +1004,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
   useEffect(() => {
     if (ready) {
       const lastPosition = localStorage.getItem(LOCAL_POSITION);
-      if (!!lastPosition) {
-        if (position.id === parseInt(lastPosition)) {
-          instrumentRef.current.scrollIntoView();
-          setInstrumentActive(false);
-        }
+      if (lastPosition && position.id === +lastPosition) {
+        instrumentRef.current.scrollIntoView();
+        setInstrumentActive(false);
       }
     }
   }, [ready]);
