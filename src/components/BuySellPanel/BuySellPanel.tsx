@@ -41,6 +41,7 @@ import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
 import mixapanelProps from '../../constants/mixpanelProps';
 import mixpanelValues from '../../constants/mixpanelValues';
+import KeysInApi from '../../constants/keysInApi';
 
 // TODO: too much code, refactor
 
@@ -279,6 +280,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         notificationStore.openNotification();
 
         if (response.result === OperationApiResponseCodes.Ok) {
+          API.setKeyValue( {
+            key: mainAppStore.activeAccount?.isLive
+              ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
+              : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO,
+            value: `${response.order.investmentAmount}`
+          });
+          API.setKeyValue( {
+            key: `Multiplier_${instrument.id}`,
+            value: `${response.order?.multiplier || modelToSubmit.multiplier}`
+          });
           mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
             [mixapanelProps.AMOUNT]: response.order.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -337,7 +348,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
           });
         }
-        resetForm();
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
@@ -360,7 +370,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
         if (response.result === OperationApiResponseCodes.Ok) {
           markersOnChartStore.addNewMarker(response.position);
-
+          API.setKeyValue( {
+            key: mainAppStore.activeAccount?.isLive
+              ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
+              : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO,
+            value: `${response.position.investmentAmount}`
+          });
+          API.setKeyValue( {
+            key: `Multiplier_${instrument.id}`,
+            value: `${response.position?.multiplier || modelToSubmit.multiplier}`
+          });
           mixpanel.track(mixpanelEvents.MARKET_ORDER, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -421,7 +440,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
           });
         }
-        resetForm();
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
@@ -459,6 +477,30 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     resetForm();
     setFieldValue(Fields.ACCOUNT_ID, mainAppStore.activeAccount?.id);
   }, [mainAppStore.activeAccount]);
+
+  useEffect(() => {
+    async function fetchDefaultInvestAmount() {
+      try {
+        const response: string = await API.getKeyValue(mainAppStore.activeAccount?.isLive
+          ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
+          : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO);
+        if (response.length > 0) {
+          setFieldValue(Fields.AMOUNT, parseInt(response));
+        }
+      } catch (error) {}
+    }
+    async function fetchMultiplier() {
+      try {
+        const response = await API.getKeyValue(`Multiplier_${instrument.id}`);
+        console.log(response)
+        if (response.length > 0) {
+          setFieldValue(Fields.MULTIPLIER, parseInt(response));
+        }
+      } catch (error) {}
+    }
+    fetchDefaultInvestAmount();
+    fetchMultiplier();
+  }, [mainAppStore.activeAccount, instrument])
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
