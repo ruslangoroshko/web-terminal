@@ -69,7 +69,11 @@ function ShouldValidatePhonePopup() {
     );
     const mask = phoneNumber?.nationalNumber.replace(/\d/g, '9');
     if (mask) {
-      setDialMask(`+\\${country.dial.split('').join('\\')}${mask}`);
+      setDialMask(
+        `+\\${country.dial.split('').join('\\')}${mask}${
+          country.id === 'BGR' ? '9' : ''
+        }`
+      );
     } else {
       setDialMask(`+\\${country.dial.split('').join('\\')}99999999999999`);
     }
