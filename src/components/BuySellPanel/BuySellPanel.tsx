@@ -46,7 +46,8 @@ import KeysInApi from '../../constants/keysInApi';
 // TODO: too much code, refactor
 
 const PRECISION_USD = 2;
-const DEFAULT_INVEST_AMOUNT = 50;
+const DEFAULT_INVEST_AMOUNT_LIVE = 1000;
+const DEFAULT_INVEST_AMOUNT_DEMO = 50;
 const MAX_INPUT_VALUE = 9999999.99;
 
 interface Props {
@@ -74,7 +75,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       instrumentId: instrument.id,
       operation: null,
       multiplier: instrument.multiplier[0],
-      investmentAmount: DEFAULT_INVEST_AMOUNT,
+      investmentAmount: mainAppStore.activeAccount?.isLive
+        ? DEFAULT_INVEST_AMOUNT_LIVE
+        : DEFAULT_INVEST_AMOUNT_DEMO,
       tp: null,
       sl: null,
       slType: null,
@@ -287,7 +290,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             value: `${response.order.investmentAmount}`
           });
           API.setKeyValue( {
-            key: `Multiplier_${instrument.id}`,
+            key: `mult_${instrument.id.trim().toLowerCase()}`,
             value: `${response.order?.multiplier || modelToSubmit.multiplier}`
           });
           mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
@@ -377,7 +380,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             value: `${response.position.investmentAmount}`
           });
           API.setKeyValue( {
-            key: `Multiplier_${instrument.id}`,
+            key: `mult_${instrument.id.trim().toLowerCase()}`,
             value: `${response.position?.multiplier || modelToSubmit.multiplier}`
           });
           mixpanel.track(mixpanelEvents.MARKET_ORDER, {
@@ -491,7 +494,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
     async function fetchMultiplier() {
       try {
-        const response = await API.getKeyValue(`Multiplier_${instrument.id}`);
+        const response = await API.getKeyValue(`mult_${instrument.id.trim().toLowerCase()}`);
         if (response.length > 0) {
           setFieldValue(Fields.MULTIPLIER, parseInt(response));
         }
@@ -599,7 +602,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       !investAmountRef.current?.contains(e.relatedTarget) &&
       !values.investmentAmount
     ) {
-      setFieldValue(Fields.AMOUNT, DEFAULT_INVEST_AMOUNT);
+      setFieldValue(Fields.AMOUNT, mainAppStore.activeAccount?.isLive
+        ? DEFAULT_INVEST_AMOUNT_LIVE
+        : DEFAULT_INVEST_AMOUNT_DEMO);
     }
   };
 
