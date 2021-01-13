@@ -136,7 +136,8 @@ function SignUp() {
                   notificationStore.openNotification();
                   mainAppStore.isInitLoading = false;
                   mixpanel.track(mixpanelEvents.SIGN_UP_FAILED, {
-                    [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
+                    [mixapanelProps.BRAND_NAME]:
+                      mainAppStore.initModel.brandProperty,
                     [mixapanelProps.ERROR_TEXT]: t(
                       apiResponseCodeMessages[result]
                     ),
@@ -145,7 +146,8 @@ function SignUp() {
                 } else {
                   mainAppStore.setSignUpFlag(true);
                   mixpanel.track(mixpanelEvents.SIGN_UP, {
-                    [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
+                    [mixapanelProps.BRAND_NAME]:
+                      mainAppStore.initModel.brandProperty,
                   });
                   push(Page.DASHBOARD);
                 }
@@ -210,7 +212,11 @@ function SignUp() {
     );
     const mask = phoneNumber?.nationalNumber.replace(/\d/g, '9');
     if (mask) {
-      setDialMask(`+\\${country.dial.split('').join('\\')}${mask}`);
+      setDialMask(
+        `+\\${country.dial.split('').join('\\')}${mask}${
+          country.id === 'BGR' ? '9' : ''
+        }`
+      );
     } else {
       setDialMask(`+\\${country.dial.split('').join('\\')}99999999999999`);
     }
