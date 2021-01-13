@@ -46,8 +46,8 @@ import KeysInApi from '../../constants/keysInApi';
 // TODO: too much code, refactor
 
 const PRECISION_USD = 2;
-const DEFAULT_INVEST_AMOUNT_LIVE = 1000;
-const DEFAULT_INVEST_AMOUNT_DEMO = 50;
+const DEFAULT_INVEST_AMOUNT_LIVE = 50;
+const DEFAULT_INVEST_AMOUNT_DEMO = 1000;
 const MAX_INPUT_VALUE = 9999999.99;
 
 interface Props {
