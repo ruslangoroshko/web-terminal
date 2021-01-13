@@ -916,7 +916,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 export default BuySellPanel;
 
 const InvestInput = styled.input`
-  width: 100%;
+  width: calc(100% - 27px);
   outline: none;
   border: none;
   background-color: transparent;
