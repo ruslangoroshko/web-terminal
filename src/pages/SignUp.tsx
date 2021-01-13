@@ -140,7 +140,7 @@ function SignUp() {
                     [mixapanelProps.ERROR_TEXT]: t(
                       apiResponseCodeMessages[result]
                     ),
-                    [mixapanelProps.EMAIL]: values.email,
+                    [mixapanelProps.EMAIL_FAILED]: values.email,
                   });
                 } else {
                   mainAppStore.setSignUpFlag(true);
