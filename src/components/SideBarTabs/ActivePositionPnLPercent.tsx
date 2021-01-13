@@ -87,17 +87,21 @@ const ActivePositionPnLPercent: FC<Props> = ({ position }) => {
       }
     };
   }, []);
-  return statePnL !== null ? (
+  return (
     <PrimaryTextSpan
       fontSize="10px"
       lineHeight="12px"
       color="rgba(255, 255, 255, 0.5)"
       ref={textElementRef}
     >
-      {statePnL >= 0 ? '+' : ''}
-      {calculateInPercent(position.investmentAmount, statePnL)}%
+      {statePnL !== null ? (
+        <>
+          {statePnL >= 0 ? '+' : ''}
+          {calculateInPercent(position.investmentAmount, statePnL)}%
+        </>
+      ) : null}
     </PrimaryTextSpan>
-  ) : null;
+  );
 };
 
 export default ActivePositionPnLPercent;

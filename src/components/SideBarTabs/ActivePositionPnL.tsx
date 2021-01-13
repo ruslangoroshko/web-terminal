@@ -86,18 +86,22 @@ const ActivePositionPnL: FC<Props> = ({ position }) => {
     };
   }, []);
 
-  return statePnL !== null ? (
+  return (
     <QuoteText
-      isGrowth={statePnL >= 0}
+      isGrowth={Number(statePnL) >= 0}
       marginBottom="4px"
       fontSize="12px"
       lineHeight="14px"
       ref={textElementRef}
     >
-      {statePnL >= 0 ? '+' : '-'}
-      {mainAppStore.activeAccount?.symbol}
-      {Math.abs(statePnL).toFixed(2)}
+      {statePnL !== null ? (
+        <>
+          {statePnL >= 0 ? '+' : '-'}
+          {mainAppStore.activeAccount?.symbol}
+          {Math.abs(statePnL).toFixed(2)}
+        </>
+      ) : null}
     </QuoteText>
-  ) : null;
+  );
 };
 export default ActivePositionPnL;
