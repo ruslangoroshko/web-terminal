@@ -8,6 +8,7 @@ import IconClose from '../assets/svg/icon-close.svg';
 import { keyframes } from '@emotion/core';
 import { useStores } from '../hooks/useStores';
 import { observer } from 'mobx-react-lite';
+import testIds from '../constants/testIds';
 
 interface Props {
   show: boolean;
@@ -17,7 +18,6 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
   const { notificationStore } = useStores();
 
   const [shouldRender, setRender] = useState(show);
-  let test: NodeJS.Timeout;
 
   useEffect(() => {
     if (show) {
@@ -53,8 +53,8 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
   useEffect(() => {
     return () => {
       notificationStore.resetNotification();
-    }
-  }, [])
+    };
+  }, []);
 
   return shouldRender ? (
     <NotificationWrapper
@@ -74,6 +74,7 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
         color={notificationStore.isSuccessfull ? '#00FFDD' : '#ED145B'}
         fontSize="12px"
         marginRight="20px"
+        data-testid={testIds.NOTIFICATION_POPUP_MESSAGE}
       >
         {notificationStore.notificationMessage}
       </PrimaryTextSpan>
@@ -115,9 +116,9 @@ const NotificationWrapper = styled(FlexContainer)<{
   show: boolean;
 }>`
   border-left: 2px solid
-    ${props => (props.isSuccessfull ? '#00FFDD' : '#ED145B')};
+    ${(props) => (props.isSuccessfull ? '#00FFDD' : '#ED145B')};
   min-width: 250px;
-  animation: ${props =>
+  animation: ${(props) =>
       props.show ? translateAnimationIn : translateAnimationOut}
     0.5s ease;
 
@@ -128,7 +129,7 @@ const NotificationWrapper = styled(FlexContainer)<{
     left: 0;
     bottom: 0;
     width: 40px;
-    background: ${props =>
+    background: ${(props) =>
       props.isSuccessfull
         ? `linear-gradient(90deg, rgba(0, 255, 221, 0.08) 0%, rgba(0, 255, 221, 0) 100%)`
         : `linear-gradient(90deg, rgba(237, 20, 91, 0.08) 0%, rgba(237, 20, 91, 0) 100%)`};

@@ -63,10 +63,10 @@ test('User can  make a deposit with Master Card', async () => {
     return response.data;
   };
   const visaCardValues = {
-    cardNumber: '4263982640269299',
+    cardNumber: '5425233430109903',
     cvv: '837',
-    expirationDate: new Date(`2023-02`).getTime(),
-    fullName: 'Testing Name',
+    expirationDate: new Date(`2023-04`).getTime(),
+    fullName: 'Testing Master',
     amount: 500,
     accountId: 'stl00001067usd',
   };

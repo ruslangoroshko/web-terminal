@@ -6,6 +6,8 @@ const testIds = {
   VISAMASTERFORM_CARDHOLDER_NAME: 'visa-master-form-card-holder-name',
   VISAMASTERFORM_SUBMIT: 'visa-master-form-submit',
   HIDDEN_ANCHOR: 'hidden-anchor',
+  NOTIFICATION_POPUP_MESSAGE: 'notification-popup-message',
+  BITCOIN_COPY_BUTTON: 'bitcoin-copy-button',
 };
 Object.freeze(testIds);
 export default testIds;
