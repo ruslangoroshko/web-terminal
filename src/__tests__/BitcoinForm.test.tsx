@@ -6,6 +6,7 @@ import NotificationPopup from '../components/NotificationPopup';
 import axios from 'axios';
 import { DepositApiResponseCodes } from '../enums/DepositApiResponseCodes';
 import { act } from 'react-dom/test-utils';
+import { decorate, observable } from 'mobx';
 
 jest.mock('react-router-dom', () => ({
   useHistory: () => ({
@@ -28,20 +29,6 @@ jest.mock('axios');
 
 describe('fetchData', () => {
   it('fetches successfully data from an API', async () => {
-    const data = {
-      data: {
-        hits: [
-          {
-            objectID: '1',
-            title: 'a',
-          },
-          {
-            objectID: '2',
-            title: 'b',
-          },
-        ],
-      },
-    };
     // @ts-ignore
     axios.get.mockImplementationOnce(() =>
       Promise.resolve({
@@ -51,6 +38,28 @@ describe('fetchData', () => {
     );
   });
 });
+
+jest.mock('axios');
+
+class NotificationStore {
+  notificationMessage = '';
+
+  resetNotification = () => {
+
+  }
+
+  
+}
+
+const DecoratedNotificationStore = decorate(new NotificationStore(), {
+  notificationMessage: observable,
+});
+
+jest.mock('../hooks/useStores', () => ({
+  useStores: () => ({
+    notificationStore: jest.fn(() => DecoratedNotificationStore),
+  }),
+}));
 
 test('Check that user received the notification after coping BTC adress', async () => {
   await act(async () => {
@@ -65,7 +74,7 @@ test('Check that user received the notification after coping BTC adress', async 
       expect(
         notificationPopupRenderer.getByTestId(
           testIds.NOTIFICATION_POPUP_MESSAGE
-        ).outerHTML
+        ).textContent
       ).toEqual('Copied to clipboard');
     });
   });
