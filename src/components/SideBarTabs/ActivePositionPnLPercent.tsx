@@ -18,7 +18,20 @@ const ActivePositionPnLPercent: FC<Props> = ({ position }) => {
   const textElementRef = useRef<HTMLSpanElement>(null);
   const [canRenderFlag, setCanRenderFlag] = useState(false);
 
-  const [statePnL, setStatePnL] = useState<number | null>(null);
+  const [statePnL, setStatePnL] = useState<number | null>(
+    quotesStore.quotes[position.instrument]
+      ? calculateFloatingProfitAndLoss({
+        investment: position.investmentAmount,
+        multiplier: position.multiplier,
+        costs: position.swap + position.commission,
+        side: isBuy ? 1 : -1,
+        currentPrice: isBuy
+          ? quotesStore.quotes[position.instrument].bid.c
+          : quotesStore.quotes[position.instrument].ask.c,
+        openPrice: position.openPrice,
+      })
+      : null
+  );
 
   const workCallback = useCallback(
     (quote, canRenderFlag) => {
