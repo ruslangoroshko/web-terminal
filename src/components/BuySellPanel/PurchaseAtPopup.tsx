@@ -20,13 +20,16 @@ interface Props {
   purchaseAtValue?: number | null;
   instrumentId: string;
   digits: number;
+  onToggle?: (arg0: boolean) => void;
 }
+const noop = () => {};
 
 const PurchaseAtPopup: FC<Props> = ({
   setFieldValue,
   purchaseAtValue,
   instrumentId,
   digits,
+  onToggle = noop,
 }) => {
   const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
     SLTPStore.purchaseAtValue = e.target.value.replace(',', '.');
@@ -47,6 +50,7 @@ const PurchaseAtPopup: FC<Props> = ({
 
   const handleToggle = () => {
     toggle(!on);
+    onToggle(!on);
   };
 
   const handleClickOutside = (e: any) => {

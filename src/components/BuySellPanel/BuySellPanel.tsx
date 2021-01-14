@@ -283,15 +283,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         notificationStore.openNotification();
 
         if (response.result === OperationApiResponseCodes.Ok) {
-          API.setKeyValue( {
+          API.setKeyValue({
             key: mainAppStore.activeAccount?.isLive
               ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
               : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO,
-            value: `${response.order.investmentAmount}`
+            value: `${response.order.investmentAmount}`,
           });
-          API.setKeyValue( {
+          API.setKeyValue({
             key: `mult_${instrument.id.trim().toLowerCase()}`,
-            value: `${response.order?.multiplier || modelToSubmit.multiplier}`
+            value: `${response.order?.multiplier || modelToSubmit.multiplier}`,
           });
           mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
             [mixapanelProps.AMOUNT]: response.order.investmentAmount,
@@ -373,15 +373,17 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
         if (response.result === OperationApiResponseCodes.Ok) {
           markersOnChartStore.addNewMarker(response.position);
-          API.setKeyValue( {
+          API.setKeyValue({
             key: mainAppStore.activeAccount?.isLive
               ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
               : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO,
-            value: `${response.position.investmentAmount}`
+            value: `${response.position.investmentAmount}`,
           });
-          API.setKeyValue( {
+          API.setKeyValue({
             key: `mult_${instrument.id.trim().toLowerCase()}`,
-            value: `${response.position?.multiplier || modelToSubmit.multiplier}`
+            value: `${
+              response.position?.multiplier || modelToSubmit.multiplier
+            }`,
           });
           mixpanel.track(mixpanelEvents.MARKET_ORDER, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
@@ -484,9 +486,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   useEffect(() => {
     async function fetchDefaultInvestAmount() {
       try {
-        const response: string = await API.getKeyValue(mainAppStore.activeAccount?.isLive
-          ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
-          : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO);
+        const response: string = await API.getKeyValue(
+          mainAppStore.activeAccount?.isLive
+            ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
+            : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO
+        );
         if (response.length > 0) {
           setFieldValue(Fields.AMOUNT, parseInt(response));
         }
@@ -494,7 +498,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
     async function fetchMultiplier() {
       try {
-        const response = await API.getKeyValue(`mult_${instrument.id.trim().toLowerCase()}`);
+        const response = await API.getKeyValue(
+          `mult_${instrument.id.trim().toLowerCase()}`
+        );
         if (response.length > 0) {
           setFieldValue(Fields.MULTIPLIER, parseInt(response));
         }
@@ -502,7 +508,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
     fetchDefaultInvestAmount();
     fetchMultiplier();
-  }, [mainAppStore.activeAccount, instrument])
+  }, [mainAppStore.activeAccount, instrument]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
@@ -602,17 +608,20 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       !investAmountRef.current?.contains(e.relatedTarget) &&
       !values.investmentAmount
     ) {
-      setFieldValue(Fields.AMOUNT, mainAppStore.activeAccount?.isLive
-        ? DEFAULT_INVEST_AMOUNT_LIVE
-        : DEFAULT_INVEST_AMOUNT_DEMO);
+      setFieldValue(
+        Fields.AMOUNT,
+        mainAppStore.activeAccount?.isLive
+          ? DEFAULT_INVEST_AMOUNT_LIVE
+          : DEFAULT_INVEST_AMOUNT_DEMO
+      );
     }
   };
 
-  const handleToggleMultiplier = (active: boolean) => {
-    if (active) {
-      setFieldError(Fields.AMOUNT, '')
+  const handleResetError = (active: boolean) => {
+    if (active || SLTPStore.openedBuySell) {
+      setFieldError(Fields.AMOUNT, '');
     }
-  }
+  };
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -741,7 +750,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         <Observer>
           {() => (
             <MultiplierDropdown
-            onToggle={handleToggleMultiplier}
+              onToggle={handleResetError}
               multipliers={instrument.multiplier}
               selectedMultiplier={values.multiplier}
               setFieldValue={setFieldValue}
@@ -790,6 +799,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           <Observer>
             {() => (
               <AutoClosePopup
+                onToggle={handleResetError}
                 ref={setAutoCloseWrapperRef}
                 setFieldValue={setFieldValue}
                 stopLossError={errors.sl}
@@ -910,6 +920,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           </InformationPopup>
         </FlexContainer>
         <PurchaseAtPopup
+          onToggle={handleResetError}
           setFieldValue={setFieldValue}
           purchaseAtValue={values.openPrice}
           instrumentId={instrument.id}
