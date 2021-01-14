@@ -608,6 +608,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
   };
 
+  const handleToggleMultiplier = (active: boolean) => {
+    if (active) {
+      setFieldError(Fields.AMOUNT, '')
+    }
+  }
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -735,6 +741,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         <Observer>
           {() => (
             <MultiplierDropdown
+            onToggle={handleToggleMultiplier}
               multipliers={instrument.multiplier}
               selectedMultiplier={values.multiplier}
               setFieldValue={setFieldValue}
