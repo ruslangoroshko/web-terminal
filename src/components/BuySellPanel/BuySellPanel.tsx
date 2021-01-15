@@ -245,7 +245,14 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 }
               ),
           }),
-        openPrice: yup.number().nullable(),
+        openPrice: yup
+          .number()
+          .nullable()
+          .test(
+            Fields.STOP_LOSS,
+            t('Open Price can not be zero'),
+            (value) => value !== 0
+          ),
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
       }),
@@ -625,7 +632,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const handleResetError = (active: boolean) => {
     if (active || SLTPStore.openedBuySell) {
+      setFieldValue(Fields.OPERATION, null);
       setFieldError(Fields.AMOUNT, '');
+      setFieldError(Fields.PURCHASE_AT, '');
     }
   };
 
@@ -642,9 +651,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
   };
 
-  return isLoading
-    ? null
-    : (
+  return isLoading ? null : (
     <FlexContainer padding="16px" flexDirection="column">
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
@@ -871,7 +878,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           </Observer>
         </FlexContainer>
         <FlexContainer flexDirection="column" position="relative">
-          {values.operation !== null && (
+          {values.operation !== null && !errors.openPrice && (
             <ConfirmPopupWrapper position="absolute" right="100%" top="0px">
               <ConfirmationPopup
                 closePopup={closePopup}
@@ -927,12 +934,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
+
         <PurchaseAtPopup
           onToggle={handleResetError}
           setFieldValue={setFieldValue}
           purchaseAtValue={values.openPrice}
           instrumentId={instrument.id}
           digits={instrument.digits}
+          hasError={!!(touched.openPrice && errors.openPrice)}
+          errorText={errors.openPrice}
         ></PurchaseAtPopup>
       </CustomForm>
     </FlexContainer>
