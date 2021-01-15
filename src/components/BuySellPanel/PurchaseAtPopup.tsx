@@ -33,17 +33,14 @@ const PurchaseAtPopup: FC<Props> = ({
   purchaseAtValue,
   instrumentId,
   digits,
-  hasError = false,
   onToggle = noop,
-  errorText,
 }) => {
-  const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
-    SLTPStore.purchaseAtValue = e.target.value.replace(',', '.');
-  };
+  
 
   const [on, toggle] = useState(false);
-
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const [inputError, setInputError] = useState<string | null>(null);
 
   const { t } = useTranslation();
 
@@ -53,6 +50,11 @@ const PurchaseAtPopup: FC<Props> = ({
     instrumentsStore,
     mainAppStore,
   } = useStores();
+
+  const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputError(null);
+    SLTPStore.purchaseAtValue = e.target.value.replace(',', '.');
+  };
 
   const handleToggle = () => {
     toggle(!on);
@@ -66,6 +68,12 @@ const PurchaseAtPopup: FC<Props> = ({
   };
 
   const applyPurchaseAt = () => {
+    if (+SLTPStore.purchaseAtValue === 0) {
+      setInputError(`${t('Open Price can not be zero')}`);
+      return;
+    } else {
+      setInputError(null);
+    }
     setFieldValue(Fields.PURCHASE_AT, +SLTPStore.purchaseAtValue);
     toggle(false);
   };
@@ -132,18 +140,7 @@ const PurchaseAtPopup: FC<Props> = ({
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
-      {hasError && (
-        <ErropPopup
-          textColor="#fffccc"
-          bgColor={ColorsPallete.RAZZMATAZZ}
-          classNameTooltip={Fields.PURCHASE_AT}
-          direction="left"
-        >
-          {errorText}
-        </ErropPopup>
-      )}
-
-      {(purchaseAtValue || purchaseAtValue === 0) ? (
+      {purchaseAtValue ? (
         <FlexContainer position="relative" width="100%">
           <ButtonAutoClosePurchase
             onClick={handleToggle}
@@ -225,6 +222,17 @@ const PurchaseAtPopup: FC<Props> = ({
               position="relative"
               justifyContent="space-between"
             >
+              {inputError !== null && (
+                <ErropPopup
+                  textColor="#fffccc"
+                  bgColor={ColorsPallete.RAZZMATAZZ}
+                  classNameTooltip={Fields.PURCHASE_AT}
+                  direction="left"
+                >
+                  {inputError}
+                </ErropPopup>
+              )}
+
               <Observer>
                 {() => (
                   <InputPnL
