@@ -14,6 +14,8 @@ import Fields from '../../constants/fields';
 import { SecondaryButton } from '../../styles/Buttons';
 import { useTranslation } from 'react-i18next';
 import InformationPopup from '../InformationPopup';
+import ErropPopup from '../ErropPopup';
+import ColorsPallete from '../../styles/colorPallete';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
@@ -21,6 +23,8 @@ interface Props {
   instrumentId: string;
   digits: number;
   onToggle?: (arg0: boolean) => void;
+  hasError?: boolean;
+  errorText?: string;
 }
 const noop = () => {};
 
@@ -29,7 +33,9 @@ const PurchaseAtPopup: FC<Props> = ({
   purchaseAtValue,
   instrumentId,
   digits,
+  hasError = false,
   onToggle = noop,
+  errorText,
 }) => {
   const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
     SLTPStore.purchaseAtValue = e.target.value.replace(',', '.');
@@ -126,12 +132,23 @@ const PurchaseAtPopup: FC<Props> = ({
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
-      {purchaseAtValue ? (
+      {hasError && (
+        <ErropPopup
+          textColor="#fffccc"
+          bgColor={ColorsPallete.RAZZMATAZZ}
+          classNameTooltip={Fields.PURCHASE_AT}
+          direction="left"
+        >
+          {errorText}
+        </ErropPopup>
+      )}
+
+      {(purchaseAtValue || purchaseAtValue === 0) ? (
         <FlexContainer position="relative" width="100%">
           <ButtonAutoClosePurchase
             onClick={handleToggle}
             type="button"
-            hasPrice={!!purchaseAtValue}
+            hasPrice={!!(purchaseAtValue || purchaseAtValue === 0)}
           >
             <PrimaryTextSpan color="#fffccc" fontSize="14px">
               {mainAppStore.activeAccount?.symbol}
