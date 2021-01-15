@@ -245,14 +245,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 }
               ),
           }),
-        openPrice: yup
-          .number()
-          .nullable()
-          .test(
-            Fields.STOP_LOSS,
-            t('Open Price can not be zero'),
-            (value) => value !== 0
-          ),
+        openPrice: yup.number().nullable(),
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
       }),
@@ -878,7 +871,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           </Observer>
         </FlexContainer>
         <FlexContainer flexDirection="column" position="relative">
-          {values.operation !== null && !errors.openPrice && (
+          {values.operation !== null && (
             <ConfirmPopupWrapper position="absolute" right="100%" top="0px">
               <ConfirmationPopup
                 closePopup={closePopup}
@@ -941,8 +934,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           purchaseAtValue={values.openPrice}
           instrumentId={instrument.id}
           digits={instrument.digits}
-          hasError={!!(touched.openPrice && errors.openPrice)}
-          errorText={errors.openPrice}
         ></PurchaseAtPopup>
       </CustomForm>
     </FlexContainer>
