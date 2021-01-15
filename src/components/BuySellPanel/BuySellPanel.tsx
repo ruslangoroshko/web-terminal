@@ -68,6 +68,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const setAutoCloseWrapperRef = useRef<HTMLDivElement>(null);
 
+  const [isLoading, setLoading] = useState(true);
+
   const initialValues = useCallback(
     () => ({
       processId: getProcessId(),
@@ -283,6 +285,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         notificationStore.openNotification();
 
         if (response.result === OperationApiResponseCodes.Ok) {
+          setFieldValue(Fields.OPERATION, null);
           API.setKeyValue({
             key: mainAppStore.activeAccount?.isLive
               ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
@@ -372,6 +375,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         notificationStore.openNotification();
 
         if (response.result === OperationApiResponseCodes.Ok) {
+          setFieldValue(Fields.OPERATION, null);
           markersOnChartStore.addNewMarker(response.position);
           API.setKeyValue({
             key: mainAppStore.activeAccount?.isLive
@@ -473,13 +477,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   });
 
   useEffect(() => {
-    resetForm();
+    setFieldValue(Fields.OPERATION, null);
     setFieldValue(Fields.INSTRUMNENT_ID, instrument.id);
-    setFieldValue(Fields.MULTIPLIER, instrument.multiplier[0]);
   }, [instrument]);
 
   useEffect(() => {
-    resetForm();
+    setFieldValue(Fields.OPERATION, null);
     setFieldValue(Fields.ACCOUNT_ID, mainAppStore.activeAccount?.id);
   }, [mainAppStore.activeAccount]);
 
@@ -494,6 +497,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         if (response.length > 0) {
           setFieldValue(Fields.AMOUNT, parseInt(response));
         }
+        setLoading(false);
       } catch (error) {}
     }
     async function fetchMultiplier() {
@@ -503,12 +507,14 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         );
         if (response.length > 0) {
           setFieldValue(Fields.MULTIPLIER, parseInt(response));
+        } else {
+          setFieldValue(Fields.MULTIPLIER, instrument.multiplier[0]);
         }
+        fetchDefaultInvestAmount();
       } catch (error) {}
     }
-    fetchDefaultInvestAmount();
     fetchMultiplier();
-  }, [mainAppStore.activeAccount, instrument]);
+  }, [mainAppStore.activeAccount?.id, instrument]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
@@ -636,7 +642,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
   };
 
-  return (
+  return isLoading
+    ? null
+    : (
     <FlexContainer padding="16px" flexDirection="column">
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
