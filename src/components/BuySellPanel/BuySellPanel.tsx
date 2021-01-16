@@ -104,6 +104,18 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           .number()
           .test(
             Fields.AMOUNT,
+            `${t('Insufficient funds to open a position. You have only')} $${
+              mainAppStore.activeAccount?.balance
+            }`,
+            (value) => {
+              if (value) {
+                return value <= (mainAppStore.activeAccount?.balance || 0);
+              }
+              return true;
+            }
+          )
+          .test(
+            Fields.AMOUNT,
             `${t('Minimum trade volume')} $${
               instrument.minOperationVolume
             }. ${t('Please increase your trade amount or multiplier')}.`,
@@ -146,18 +158,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               return true;
             }
           )
-          .test(
-            Fields.AMOUNT,
-            `${t('Insufficient funds to open a position. You have only')} $${
-              mainAppStore.activeAccount?.balance
-            }`,
-            (value) => {
-              if (value) {
-                return value <= (mainAppStore.activeAccount?.balance || 0);
-              }
-              return true;
-            }
-          )
+          
           .required(t('Please fill Invest amount')),
         multiplier: yup.number().required(t('Required amount')),
         tp: yup
