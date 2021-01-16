@@ -13,7 +13,7 @@ import { UserAuthenticate, UserAuthenticateResponse } from '../types/UserInfo';
 import RequestHeaders from '../constants/headers';
 
 const API_DEPOSIT_STRING = 'http://localhost:5682/deposit';
-const AUTH_URL = 'http://localhost:5678';
+const AUTH_URL = 'http://localhost:5679';
 // process.env.NODE_ENV === 'development'
 //   ? JSON.stringify('/deposit')
 //   : JSON.stringify();
@@ -60,59 +60,52 @@ const createDepositInvoice = async (
 };
 
 test('User can make a deposit with Visa Card', async () => {
-  try {
-    const { data: authenticateResponse } = await authenticate(
-      {
-        email: 'qweasd@mailinator.com',
-        password: 'qwe123qwe',
-      },
-      AUTH_URL
-    );
+  expect.assertions(1);
+  const { data: authenticateResponse } = await authenticate(
+    {
+      email: 'qweasd@mailinator.com',
+      password: 'qwe123qwe',
+    },
+    AUTH_URL
+  );
 
-    const visaCardValues = {
-      cardNumber: '4242424242424242',
-      cvv: '837',
-      expirationDate: new Date(`2023-02`).getTime(),
-      fullName: 'Testing Name',
-      amount: 500,
-      accountId: 'stl00001067usd',
-    };
-
-    return createDepositInvoice(
-      visaCardValues,
-      authenticateResponse.token
-    ).then((response) => {
-      expect(response.status).toEqual(DepositRequestStatusEnum.Success);
-    });
-  } catch (error) {
-    return false;
-  }
+  const visaCardValues = {
+    cardNumber: '4242424242424242',
+    cvv: '837',
+    expirationDate: new Date(`2023-02`).getTime(),
+    fullName: 'Testing Name',
+    amount: 500,
+    accountId: 'stl00001067usd',
+  };
+  const response = await createDepositInvoice(
+    visaCardValues,
+    authenticateResponse.token
+  );
+  expect(response.status).toEqual(DepositRequestStatusEnum.Success);
 });
 
 test('User can make a deposit with Master Card', async () => {
-  try {
-    const { data: authenticateResponse } = await authenticate(
-      {
-        email: 'qweasd@mailinator.com',
-        password: 'qwe123qwe',
-      },
-      AUTH_URL
-    );
+  expect.assertions(1);
+  const { data: authenticateResponse } = await authenticate(
+    {
+      email: 'qweasd@mailinator.com',
+      password: 'qwe123qwe',
+    },
+    AUTH_URL
+  );
 
-    const visaCardValues = {
-      cardNumber: '5425233430109903',
-      cvv: '837',
-      expirationDate: new Date(`2023-04`).getTime(),
-      fullName: 'Testing Master',
-      amount: 500,
-      accountId: 'stl00001067usd',
-    };
+  const visaCardValues = {
+    cardNumber: '5425233430109903',
+    cvv: '837',
+    expirationDate: new Date(`2023-04`).getTime(),
+    fullName: 'Testing Master',
+    amount: 500,
+    accountId: 'stl00001067usd',
+  };
 
-    return createDepositInvoice(
-      visaCardValues,
-      authenticateResponse.token
-    ).then((response) => {
-      expect(response.status).toEqual(DepositRequestStatusEnum.Success);
-    });
-  } catch (error) {}
+  const response = await createDepositInvoice(
+    visaCardValues,
+    authenticateResponse.token
+  );
+  expect(response.status).toEqual(DepositRequestStatusEnum.Success);
 });
