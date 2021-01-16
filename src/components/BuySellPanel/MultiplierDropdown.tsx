@@ -9,18 +9,22 @@ interface Props {
   multipliers: number[];
   selectedMultiplier: number;
   setFieldValue: (arg0: any, arg1: any) => void;
+  onToggle?: (arg0: boolean) => void;
 }
 
+const noop = () => {}
+
 function MultiplierDropdown(props: Props) {
-  const { multipliers, selectedMultiplier, setFieldValue } = props;
+  const { multipliers, selectedMultiplier, setFieldValue, onToggle = noop } = props;
   const [on, toggle] = useState(false);
   const handleChangeMultiplier = (multiplier: number) => () => {
     setFieldValue(Fields.MULTIPLIER, multiplier);
     toggle(false);
   };
-  const wrapperRef = useRef<HTMLDivElement>(null);
 
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const handleToggle = () => {
+    onToggle(!on)
     toggle(!on);
   };
   const handleClickOutside = (e: any) => {
@@ -31,11 +35,11 @@ function MultiplierDropdown(props: Props) {
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
   return (
     <FlexContainer position="relative" margin="0 0 14px 0" ref={wrapperRef}>
       <MultiplierButton isActive={on} onClick={handleToggle} type="button">
@@ -83,7 +87,7 @@ export default MultiplierDropdown;
 const MultiplierDropdownWrapper = styled(FlexContainer)`
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.25),
     0px 6px 12px rgba(0, 0, 0, 0.25);
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 1);
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
     background-color: rgba(0, 0, 0, 0.34);
     backdrop-filter: blur(12px);

@@ -75,7 +75,7 @@ export default InvestAmountDropdown;
 const MultiplierDropdownWrapper = styled(FlexContainer)`
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.25),
     0px 6px 12px rgba(0, 0, 0, 0.25);
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 1);
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
     background-color: rgba(0, 0, 0, 0.34);
     backdrop-filter: blur(12px);

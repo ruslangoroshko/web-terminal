@@ -13,27 +13,34 @@ import { Observer } from 'mobx-react-lite';
 import Fields from '../../constants/fields';
 import { SecondaryButton } from '../../styles/Buttons';
 import { useTranslation } from 'react-i18next';
+import InformationPopup from '../InformationPopup';
+import ErropPopup from '../ErropPopup';
+import ColorsPallete from '../../styles/colorPallete';
 
 interface Props {
   setFieldValue: (field: any, value: any) => void;
   purchaseAtValue?: number | null;
   instrumentId: string;
   digits: number;
+  onToggle?: (arg0: boolean) => void;
+  hasError?: boolean;
+  errorText?: string;
 }
+const noop = () => {};
 
 const PurchaseAtPopup: FC<Props> = ({
   setFieldValue,
   purchaseAtValue,
   instrumentId,
   digits,
+  onToggle = noop,
 }) => {
-  const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
-    SLTPStore.purchaseAtValue = e.target.value.replace(',', '.');
-  };
+  
 
   const [on, toggle] = useState(false);
-
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const [inputError, setInputError] = useState<string | null>(null);
 
   const { t } = useTranslation();
 
@@ -44,8 +51,14 @@ const PurchaseAtPopup: FC<Props> = ({
     mainAppStore,
   } = useStores();
 
+  const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputError(null);
+    SLTPStore.purchaseAtValue = e.target.value.replace(',', '.');
+  };
+
   const handleToggle = () => {
     toggle(!on);
+    onToggle(!on);
   };
 
   const handleClickOutside = (e: any) => {
@@ -55,6 +68,12 @@ const PurchaseAtPopup: FC<Props> = ({
   };
 
   const applyPurchaseAt = () => {
+    if (+SLTPStore.purchaseAtValue === 0) {
+      setInputError(`${t('Open Price can not be zero')}`);
+      return;
+    } else {
+      setInputError(null);
+    }
     setFieldValue(Fields.PURCHASE_AT, +SLTPStore.purchaseAtValue);
     toggle(false);
   };
@@ -82,8 +101,9 @@ const PurchaseAtPopup: FC<Props> = ({
       }
     }
     // see another regex
-    const regex = `^[0-9]{1,7}([,.][0-9]{1,${instrumentsStore.activeInstrument
-      ?.instrumentItem.digits || 2}})?$`;
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${
+      instrumentsStore.activeInstrument?.instrumentItem.digits || 2
+    }})?$`;
     const splittedValue =
       currTargetValue.substring(0, e.currentTarget.selectionStart) +
       e.data +
@@ -125,7 +145,7 @@ const PurchaseAtPopup: FC<Props> = ({
           <ButtonAutoClosePurchase
             onClick={handleToggle}
             type="button"
-            hasPrice={!!purchaseAtValue}
+            hasPrice={!!(purchaseAtValue || purchaseAtValue === 0)}
           >
             <PrimaryTextSpan color="#fffccc" fontSize="14px">
               {mainAppStore.activeAccount?.symbol}
@@ -182,13 +202,18 @@ const PurchaseAtPopup: FC<Props> = ({
               >
                 {t('When Price is')}
               </PrimaryTextSpan>
-              <InfoIcon
-                width="14px"
-                justifyContent="center"
-                alignItems="center"
+              <InformationPopup
+                bgColor="#000000"
+                classNameTooltip="autoclose"
+                width="212px"
+                direction="left"
               >
-                i
-              </InfoIcon>
+                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  {t(
+                    'When the position reached the specified take profit or stop loss level, the position will be closed automatically.'
+                  )}
+                </PrimaryTextSpan>
+              </InformationPopup>
             </FlexContainer>
             <InputWrapper
               margin="0 0 16px 0"
@@ -197,6 +222,17 @@ const PurchaseAtPopup: FC<Props> = ({
               position="relative"
               justifyContent="space-between"
             >
+              {inputError !== null && (
+                <ErropPopup
+                  textColor="#fffccc"
+                  bgColor={ColorsPallete.RAZZMATAZZ}
+                  classNameTooltip={Fields.PURCHASE_AT}
+                  direction="left"
+                >
+                  {inputError}
+                </ErropPopup>
+              )}
+
               <Observer>
                 {() => (
                   <InputPnL
@@ -256,7 +292,7 @@ const Wrapper = styled(FlexContainer)`
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.25),
     0px 6px 12px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 1);
   @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
     background-color: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(12px);
@@ -350,15 +386,15 @@ const ButtonAutoClosePurchase = styled(SecondaryButton)<{
   hasPrice?: boolean;
 }>`
   height: 40px;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.hasPrice ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.12)'};
   width: 100%;
   border: 1px solid
-    ${props =>
+    ${(props) =>
       props.hasPrice ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0)'};
 
   display: flex;
-  justify-content: ${props => (props.hasPrice ? 'space-between' : 'center')};
+  justify-content: ${(props) => (props.hasPrice ? 'space-between' : 'center')};
   align-items: center;
 `;
 
