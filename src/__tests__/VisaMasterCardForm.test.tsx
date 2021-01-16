@@ -1,7 +1,6 @@
-import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react';
-import VisaMasterCardForm from '../components/DepositPopup/VisaMasterCardForm';
-import testIds from '../constants/testIds';
+/**
+ * @jest-environment node
+ */
 import axios from 'axios';
 import API_LIST from '../helpers/apiList';
 import {
@@ -9,8 +8,10 @@ import {
   CreateDepositInvoiceDTO,
 } from '../types/DepositTypes';
 import { DepositRequestStatusEnum } from '../enums/DepositRequestStatusEnum';
+import AUTH_API_LIST from '../helpers/apiListAuth';
+import { UserAuthenticate, UserAuthenticateResponse } from '../types/UserInfo';
 
-const API_DEPOSIT_STRING = 'http://localhost:5680/deposit';
+const API_DEPOSIT_STRING = 'http://localhost:5682/deposit';
 // process.env.NODE_ENV === 'development'
 //   ? JSON.stringify('/deposit')
 //   : JSON.stringify();
@@ -32,7 +33,25 @@ jest.mock('mixpanel-browser', () => ({
   track: jest.fn(),
 }));
 
+const authenticate = async (credentials: UserAuthenticate, authUrl: string) => {
+  const response = await axios.post<UserAuthenticateResponse>(
+    `${authUrl}${AUTH_API_LIST.TRADER.AUTHENTICATE}`,
+    credentials
+  );
+  return response.data;
+};
+
 test('User can make a deposit with Visa Card', () => {
+
+  try {
+    const {data} = authenticate({
+      email: 'qweasd@mailinator.com',
+      password: 'qwe123qwe'
+    })
+  } catch (error) {
+    
+  }
+
   const createDepositInvoice = async (params: CreateDepositInvoiceParams) => {
     const response = await axios.post<CreateDepositInvoiceDTO>(
       `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE}`,
@@ -40,6 +59,7 @@ test('User can make a deposit with Visa Card', () => {
     );
     return response.data;
   };
+
   const visaCardValues = {
     cardNumber: '4263982640269299',
     cvv: '837',
