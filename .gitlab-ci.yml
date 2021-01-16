@@ -18,11 +18,10 @@ stages:
   - publish
   - publish-kubernetes
 
-javascript:
+prebuild-test:
   stage: test
   image: node:14.6.0
   script:
-    - npm i
     - jest --ci --reporters=default --reporters=jest-junit
   artifacts:
     when: always
