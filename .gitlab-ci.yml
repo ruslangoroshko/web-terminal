@@ -21,6 +21,7 @@ stages:
 javascript:
   stage: test
   script:
+    - npm i
     - 'jest --ci --reporters=default --reporters=jest-junit'
   artifacts:
     when: always
