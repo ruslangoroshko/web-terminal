@@ -49,7 +49,6 @@ module.exports = (env, argv) => {
         {
           test: /\.svg$/,
           include: [path.resolve(__dirname, './src/assets/svg_no_compress/')],
-          exclude: [path.resolve(__dirname, './src/assets/svg/')],
           use: [
             'svg-sprite-loader',
             {

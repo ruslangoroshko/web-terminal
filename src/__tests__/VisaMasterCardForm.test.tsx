@@ -13,7 +13,7 @@ import { UserAuthenticate, UserAuthenticateResponse } from '../types/UserInfo';
 import RequestHeaders from '../constants/headers';
 
 const API_DEPOSIT_STRING = 'http://localhost:5682/deposit';
-const AUTH_URL = 'http://localhost:5679';
+const AUTH_URL = 'http://localhost:5678';
 // process.env.NODE_ENV === 'development'
 //   ? JSON.stringify('/deposit')
 //   : JSON.stringify();
