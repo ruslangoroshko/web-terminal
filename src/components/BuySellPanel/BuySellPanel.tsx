@@ -298,7 +298,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             key: `mult_${instrument.id.trim().toLowerCase()}`,
             value: `${response.order?.multiplier || modelToSubmit.multiplier}`,
           });
-          resetForm();
+          setFieldValue(Fields.PURCHASE_AT, '');
           mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
             [mixapanelProps.AMOUNT]: response.order.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -487,6 +487,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   useEffect(() => {
     setFieldValue(Fields.OPERATION, null);
     setFieldValue(Fields.ACCOUNT_ID, mainAppStore.activeAccount?.id);
+    setFieldValue(Fields.PURCHASE_AT, '');
   }, [mainAppStore.activeAccount]);
 
   useEffect(() => {
@@ -710,13 +711,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           </PrimaryTextSpan>
 
           <FlexContainer alignItems="center" ref={investAmountRef}>
-            <InvestInput
-              {...getFieldProps(Fields.AMOUNT)}
-              onBeforeInput={investOnBeforeInputHandler}
-              onChange={investOnChangeHandler}
-              onFocus={investOnFocusHandler}
-              onBlur={investOnBlurHandler}
-            />
+            <Observer>
+              {() => <InvestInput
+                {...getFieldProps(Fields.AMOUNT)}
+                onBeforeInput={investOnBeforeInputHandler}
+                onChange={investOnChangeHandler}
+                onFocus={investOnFocusHandler}
+                onBlur={investOnBlurHandler}
+              />}
+            </Observer>
             {investedAmountDropdown && (
               <InvestAmountDropdown
                 toggle={handleToggle}
