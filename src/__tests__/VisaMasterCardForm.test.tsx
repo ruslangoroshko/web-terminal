@@ -12,8 +12,8 @@ import AUTH_API_LIST from '../helpers/apiListAuth';
 import { UserAuthenticate, UserAuthenticateResponse } from '../types/UserInfo';
 import RequestHeaders from '../constants/headers';
 
-const API_DEPOSIT_STRING = '/' || 'http://localhost:5682/deposit';
-const AUTH_URL = '/' || 'http://localhost:5679';
+const API_DEPOSIT_STRING = process.env.TRADING_URL || 'http://localhost:5682';
+const AUTH_URL = process.env.API_AUTH_STRING || 'http://localhost:5679';
 // process.env.NODE_ENV === 'development'
 //   ? JSON.stringify('/deposit')
 //   : JSON.stringify();
@@ -48,7 +48,7 @@ const createDepositInvoice = async (
   token: string
 ) => {
   const response = await axios.post<CreateDepositInvoiceDTO>(
-    `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE}`,
+    `${API_DEPOSIT_STRING}/deposit${API_LIST.DEPOSIT.CREATE_INVOICE}`,
     params,
     {
       headers: {
@@ -59,7 +59,7 @@ const createDepositInvoice = async (
   return response.data;
 };
 
-test('User can make a deposit with Visa Card', async () => {
+test('User can make a deposit with Visa Card, response status', async () => {
   expect.assertions(1);
   const { data: authenticateResponse } = await authenticate(
     {
@@ -70,12 +70,12 @@ test('User can make a deposit with Visa Card', async () => {
   );
 
   const visaCardValues = {
-    cardNumber: '4242424242424242',
+    cardNumber: '4731219122045861',
     cvv: '837',
     expirationDate: new Date(`2023-02`).getTime(),
     fullName: 'Testing Name',
     amount: 500,
-    accountId: 'stl00001067usd',
+    accountId: 'stl00001069usd',
   };
   const response = await createDepositInvoice(
     visaCardValues,
@@ -84,7 +84,7 @@ test('User can make a deposit with Visa Card', async () => {
   expect(response.status).toEqual(DepositRequestStatusEnum.Success);
 });
 
-test('User can make a deposit with Master Card', async () => {
+test('User can make a deposit with Master Card, response status', async () => {
   expect.assertions(1);
   const { data: authenticateResponse } = await authenticate(
     {
@@ -100,7 +100,7 @@ test('User can make a deposit with Master Card', async () => {
     expirationDate: new Date(`2023-04`).getTime(),
     fullName: 'Testing Master',
     amount: 500,
-    accountId: 'stl00001067usd',
+    accountId: 'stl00001069usd',
   };
 
   const response = await createDepositInvoice(
