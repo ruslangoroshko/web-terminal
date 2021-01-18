@@ -27,7 +27,7 @@ prebuild-test:
   script:
     - npm i
     - npm test
-only:
+  only:
     - test
 
 prebuild-prod:
@@ -39,7 +39,7 @@ prebuild-prod:
   script:
     - npm i
     - npm test
-only:
+  only:
     - master
 
 build-dev:
