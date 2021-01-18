@@ -13,33 +13,34 @@ variables:
   KUBERNETES_APP_TEST_SELECTOR_NAME: web-terminal
 
 stages:
+ # - test
   - build
   - publish
   - publish-kubernetes
 
-prebuild-test:
-  stage: test
-  image: node:14.6.0
-  variables:
-    API_AUTH_STRING: ${TEST_API_AUTH_STRING}
-    TRADING_URL: ${TEST_TRADING_URL}
-  script:
-    - npm i
-    - npm test
-  only:
-    - test
+#prebuild-test:
+#  stage: test
+#  image: node:14.6.0
+#  variables:
+#    API_AUTH_STRING: ${TEST_API_AUTH_STRING}
+#    TRADING_URL: ${TEST_TRADING_URL}
+#  script:
+#    - npm i
+#    - npm test
+#  only:
+#    - test
 
-prebuild-prod:
-  stage: test
-  image: node:14.6.0
-  variables:
-    API_AUTH_STRING: ${MASTER_API_AUTH_STRING}
-    TRADING_URL: ${MASTER_TRADING_URL}
-  script:
-    - npm i
-    - npm test
-  only:
-    - master
+#prebuild-prod:
+#  stage: test
+#  image: node:14.6.0
+#  variables:
+#    API_AUTH_STRING: ${MASTER_API_AUTH_STRING}
+#    TRADING_URL: ${MASTER_TRADING_URL}
+#  script:
+#    - npm i
+#    - npm test
+#  only:
+#    - master
 
 build-dev:
   stage: build
