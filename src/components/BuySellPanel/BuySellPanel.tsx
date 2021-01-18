@@ -644,7 +644,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(
     () => {
-      setFieldValue(Fields.PURCHASE_AT, '');
+      resetForm();
     }, [mainAppStore.activeAccount]
   )
 
