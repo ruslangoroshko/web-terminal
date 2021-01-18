@@ -59,7 +59,7 @@ const createDepositInvoice = async (
   return response.data;
 };
 
-test('User can make a deposit with Visa Card', async () => {
+test('User can make a deposit with Visa Card, response status', async () => {
   expect.assertions(1);
   const { data: authenticateResponse } = await authenticate(
     {
@@ -84,7 +84,7 @@ test('User can make a deposit with Visa Card', async () => {
   expect(response.status).toEqual(DepositRequestStatusEnum.Success);
 });
 
-test('User can make a deposit with Master Card', async () => {
+test('User can make a deposit with Master Card, response status', async () => {
   expect.assertions(1);
   const { data: authenticateResponse } = await authenticate(
     {
