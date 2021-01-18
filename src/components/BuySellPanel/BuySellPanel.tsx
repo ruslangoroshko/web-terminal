@@ -158,7 +158,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               return true;
             }
           )
-          
+
           .required(t('Please fill Invest amount')),
         multiplier: yup.number().required(t('Required amount')),
         tp: yup
@@ -286,6 +286,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         notificationStore.openNotification();
 
         if (response.result === OperationApiResponseCodes.Ok) {
+          
           setFieldValue(Fields.OPERATION, null);
           API.setKeyValue({
             key: mainAppStore.activeAccount?.isLive
@@ -297,6 +298,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             key: `mult_${instrument.id.trim().toLowerCase()}`,
             value: `${response.order?.multiplier || modelToSubmit.multiplier}`,
           });
+          resetForm();
           mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
             [mixapanelProps.AMOUNT]: response.order.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -638,6 +640,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(
+    () => {
+      resetForm();
+    }, [mainAppStore.activeAccount]
+  )
 
   const onKeyDown = (keyEvent: any) => {
     if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
