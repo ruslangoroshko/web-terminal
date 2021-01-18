@@ -14,9 +14,6 @@ import RequestHeaders from '../constants/headers';
 
 const API_DEPOSIT_STRING = process.env.TRADING_URL || 'http://localhost:5682';
 const AUTH_URL = process.env.API_AUTH_STRING || 'http://localhost:5679';
-// process.env.NODE_ENV === 'development'
-//   ? JSON.stringify('/deposit')
-//   : JSON.stringify();
 
 jest.mock('react-router-dom', () => ({
   useHistory: () => ({
@@ -59,7 +56,7 @@ const createDepositInvoice = async (
   return response.data;
 };
 
-test('User can make a deposit with Visa Card, response status', async () => {
+test('User can make a deposit with card, response status', async () => {
   expect.assertions(1);
   const { data: authenticateResponse } = await authenticate(
     {
@@ -84,28 +81,3 @@ test('User can make a deposit with Visa Card, response status', async () => {
   expect(response.status).toEqual(DepositRequestStatusEnum.Success);
 });
 
-test('User can make a deposit with Master Card, response status', async () => {
-  expect.assertions(1);
-  const { data: authenticateResponse } = await authenticate(
-    {
-      email: 'qweasd@mailinator.com',
-      password: 'qwe123qwe',
-    },
-    AUTH_URL
-  );
-
-  const visaCardValues = {
-    cardNumber: '5555555555554444',
-    cvv: '837',
-    expirationDate: new Date(`2023-04`).getTime(),
-    fullName: 'Testing Master',
-    amount: 500,
-    accountId: 'stl00001069usd',
-  };
-
-  const response = await createDepositInvoice(
-    visaCardValues,
-    authenticateResponse.token
-  );
-  expect(response.status).toEqual(DepositRequestStatusEnum.Success);
-});
