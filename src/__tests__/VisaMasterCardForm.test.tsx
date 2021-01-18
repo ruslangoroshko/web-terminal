@@ -12,8 +12,8 @@ import AUTH_API_LIST from '../helpers/apiListAuth';
 import { UserAuthenticate, UserAuthenticateResponse } from '../types/UserInfo';
 import RequestHeaders from '../constants/headers';
 
-const API_DEPOSIT_STRING = '/' || 'http://localhost:5682/deposit';
-const AUTH_URL = '/' || 'http://localhost:5679';
+const API_DEPOSIT_STRING = process.env.TRADING_URL || 'http://localhost:5682';
+const AUTH_URL = process.env.API_AUTH_STRING || 'http://localhost:5679';
 // process.env.NODE_ENV === 'development'
 //   ? JSON.stringify('/deposit')
 //   : JSON.stringify();
@@ -48,7 +48,7 @@ const createDepositInvoice = async (
   token: string
 ) => {
   const response = await axios.post<CreateDepositInvoiceDTO>(
-    `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE}`,
+    `${API_DEPOSIT_STRING}/deposit${API_LIST.DEPOSIT.CREATE_INVOICE}`,
     params,
     {
       headers: {
