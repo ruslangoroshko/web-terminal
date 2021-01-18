@@ -17,13 +17,6 @@ stages:
   - publish
   - publish-kubernetes
 
-prebuild-test:
-  stage: test
-  image: node:14.6.0
-  script:
-    - npm i
-    - npm test
-
 build-dev:
   stage: build
   image: node:14.6.0
