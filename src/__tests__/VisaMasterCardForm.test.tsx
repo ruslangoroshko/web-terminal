@@ -70,12 +70,12 @@ test('User can make a deposit with Visa Card, response status', async () => {
   );
 
   const visaCardValues = {
-    cardNumber: '4242424242424242',
+    cardNumber: '4731219122045861',
     cvv: '837',
     expirationDate: new Date(`2023-02`).getTime(),
     fullName: 'Testing Name',
     amount: 500,
-    accountId: 'stl00001067usd',
+    accountId: 'stl00001069usd',
   };
   const response = await createDepositInvoice(
     visaCardValues,
@@ -100,7 +100,7 @@ test('User can make a deposit with Master Card, response status', async () => {
     expirationDate: new Date(`2023-04`).getTime(),
     fullName: 'Testing Master',
     amount: 500,
-    accountId: 'stl00001067usd',
+    accountId: 'stl00001069usd',
   };
 
   const response = await createDepositInvoice(
