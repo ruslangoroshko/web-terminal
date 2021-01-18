@@ -13,17 +13,9 @@ variables:
   KUBERNETES_APP_TEST_SELECTOR_NAME: web-terminal
 
 stages:
-  - test
   - build
   - publish
   - publish-kubernetes
-
-prebuild-test:
-  stage: test
-  image: node:14.6.0
-  script:
-    - npm i
-    - npm test
 
 build-dev:
   stage: build
