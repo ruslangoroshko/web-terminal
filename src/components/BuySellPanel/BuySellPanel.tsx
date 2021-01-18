@@ -61,6 +61,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     mainAppStore,
     badRequestPopupStore,
     markersOnChartStore,
+    instrumentsStore,
     SLTPStore,
   } = useStores();
 
@@ -286,7 +287,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         notificationStore.openNotification();
 
         if (response.result === OperationApiResponseCodes.Ok) {
-          
+          SLTPStore.purchaseAtValue = '';
+          resetForm();
           setFieldValue(Fields.OPERATION, null);
           API.setKeyValue({
             key: mainAppStore.activeAccount?.isLive
@@ -392,6 +394,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               response.position?.multiplier || modelToSubmit.multiplier
             }`,
           });
+          SLTPStore.purchaseAtValue = '';
+          resetForm();
           mixpanel.track(mixpanelEvents.MARKET_ORDER, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -644,8 +648,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(
     () => {
+      SLTPStore.purchaseAtValue = '';
       resetForm();
-    }, [mainAppStore.activeAccount]
+    }, [mainAppStore.activeAccount, instrumentsStore.activeInstrument]
   )
 
   const onKeyDown = (keyEvent: any) => {
