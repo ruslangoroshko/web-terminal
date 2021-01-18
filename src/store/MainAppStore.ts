@@ -48,6 +48,7 @@ import moment from 'moment';
 import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
 import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
+import { polandLocalsList } from '../constants/polandLocalsList';
 
 interface MainAppStoreProps {
   token: string;
@@ -128,7 +129,11 @@ export class MainAppStore implements MainAppStoreProps {
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
     // @ts-ignore
     this.lang =
-      localStorage.getItem(LOCAL_STORAGE_LANGUAGE) || CountriesEnum.EN;
+      localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
+      ((navigator.language &&
+        polandLocalsList.includes(navigator.language))
+        ? CountriesEnum.PL
+        : CountriesEnum.EN);
     injectInerceptors(this);
   }
 
