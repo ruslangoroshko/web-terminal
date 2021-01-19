@@ -858,7 +858,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           </PrimaryTextSpan>
           <Observer>
             {() => (
-              <PrimaryTextSpan fontSize="12px" color="#fffccc">
+              <PrimaryTextSpan fontSize="12px" color={isLoading ? '#fffccc00' : '#fffccc'}>
                 {mainAppStore.activeAccount?.symbol}
                 {(values.investmentAmount * values.multiplier).toFixed(
                   PRECISION_USD
