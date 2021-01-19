@@ -181,7 +181,8 @@ const SetAutoclose: FC<Props> = observer(props => {
   const beforeApply = () => {
     const checkTP = parseFloat(getActiveTP()) === 0;
     const checkSL = parseFloat(getActiveSL()) === 0;
-    const checkSLLevel = investAmount
+    const checkSLLevel = (investAmount &&
+      SLTPStore.autoCloseSLType === TpSlTypeEnum.Currency)
       ? parseFloat(getActiveSL()) >= investAmount
       : false;
     if (checkSL) {
@@ -233,6 +234,10 @@ const SetAutoclose: FC<Props> = observer(props => {
     SLTPStore.autoCloseTPType =
       takeProfitType !== null ? takeProfitType : TpSlTypeEnum.Currency;
   }, [stopLossType, takeProfitType]);
+
+  useEffect(() => {
+    setErrorHighLevel(false);
+  }, [SLTPStore.autoCloseSLType]);
 
   useEffect(() => {
     SLTPStore.takeProfitValue =
