@@ -46,8 +46,9 @@ interface Props {
   opened: boolean;
   instrumentId: string;
   investAmount?: number;
+  onToggle?: (arg0: boolean) => void;
 }
-
+const noop = () => {}
 const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
   (props, setAutocloseRef) => {
     const {
@@ -62,7 +63,8 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
       setFieldError,
       opened,
       instrumentId,
-      investAmount
+      investAmount,
+      onToggle = noop
     } = props;
     const { mainAppStore, SLTPStore } = useStores();
     const [on, toggle] = useState(false);
@@ -74,6 +76,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
         setFieldError(Fields.TAKE_PROFIT, '');
         setFieldError(Fields.STOP_LOSS, '');
       }
+      onToggle(!on);
       SLTPStore.toggleBuySell(!on);
     };
 

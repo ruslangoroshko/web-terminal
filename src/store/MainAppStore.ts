@@ -12,6 +12,8 @@ import {
   LOCAL_HISTORY_TIME,
   LOCAL_HISTORY_DATERANGE,
   LOCAL_HISTORY_PAGE,
+  LOCAL_POSITION_SORT,
+  LOCAL_PENDING_POSITION_SORT,
 } from './../constants/global';
 import {
   UserAuthenticate,
@@ -44,6 +46,9 @@ import injectInerceptors from '../http/interceptors';
 import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 import moment from 'moment';
 import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
+import { SortByProfitEnum } from '../enums/SortByProfitEnum';
+import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
+import { polandLocalsList } from '../constants/polandLocalsList';
 
 interface MainAppStoreProps {
   token: string;
@@ -124,7 +129,11 @@ export class MainAppStore implements MainAppStoreProps {
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
     // @ts-ignore
     this.lang =
-      localStorage.getItem(LOCAL_STORAGE_LANGUAGE) || CountriesEnum.EN;
+      localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
+      ((navigator.language &&
+        polandLocalsList.includes(navigator.language))
+        ? CountriesEnum.PL
+        : CountriesEnum.EN);
     injectInerceptors(this);
   }
 
@@ -421,9 +430,11 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY);
     localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
     localStorage.removeItem(LOCAL_POSITION);
+    localStorage.removeItem(LOCAL_POSITION_SORT);
     localStorage.removeItem(LOCAL_MARKET_TABS);
     localStorage.removeItem(LOCAL_PORTFOLIO_TABS);
     localStorage.removeItem(LOCAL_PENDING_POSITION);
+    localStorage.removeItem(LOCAL_PENDING_POSITION_SORT);
     localStorage.removeItem(LOCAL_HISTORY_POSITION);
     localStorage.removeItem(LOCAL_HISTORY_TIME);
     localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
@@ -439,6 +450,8 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.tradingViewStore.selectedHistory = undefined;
     this.rootStore.tradingViewStore.selectedPosition = undefined;
     this.rootStore.withdrawalStore.history = null;
+    this.rootStore.sortingStore.activePositionsSortBy = SortByProfitEnum.NewFirstAsc;
+    this.rootStore.sortingStore.pendingOrdersSortBy = SortByPendingOrdersEnum.NewFirstAsc;
     this.rootStore.dateRangeStore.dropdownValueType = ShowDatesDropdownEnum.Week;
     this.rootStore.dateRangeStore.startDate = moment().subtract(1, 'weeks');
     this.rootStore.tabsStore.portfolioTab = PortfolioTabEnum.Portfolio;

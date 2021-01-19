@@ -83,9 +83,10 @@ const ConfirmationPopup: FC<Props> = ({
         <Observer>
           {() => (
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              {quotesStore.quotes[instrumentId][
-                values.operation === AskBidEnum.Buy ? 'ask' : 'bid'
-              ].c.toFixed(digits)}
+              {quotesStore.quotes[instrumentId] &&
+                quotesStore.quotes[instrumentId][
+                  values.operation === AskBidEnum.Buy ? 'ask' : 'bid'
+                ].c.toFixed(digits)}
             </PrimaryTextSpan>
           )}
         </Observer>

@@ -61,7 +61,7 @@ const SingIn = observer(() => {
         mixpanel.track(mixpanelEvents.LOGIN_FAILED, {
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
           [mixapanelProps.ERROR_TEXT]: t(apiResponseCodeMessages[result]),
-          [mixapanelProps.EMAIL]: credentials.email,
+          [mixapanelProps.EMAIL_FAILED]: credentials.email,
         });
       }
       if (result === OperationApiResponseCodes.Ok) {

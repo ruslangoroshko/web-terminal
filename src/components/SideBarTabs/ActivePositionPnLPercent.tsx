@@ -18,17 +18,19 @@ const ActivePositionPnLPercent: FC<Props> = ({ position }) => {
   const textElementRef = useRef<HTMLSpanElement>(null);
   const [canRenderFlag, setCanRenderFlag] = useState(false);
 
-  const [statePnL, setStatePnL] = useState(
-    calculateFloatingProfitAndLoss({
-      investment: position.investmentAmount,
-      multiplier: position.multiplier,
-      costs: position.swap + position.commission,
-      side: isBuy ? 1 : -1,
-      currentPrice: isBuy
-        ? quotesStore.quotes[position.instrument].bid.c
-        : quotesStore.quotes[position.instrument].ask.c,
-      openPrice: position.openPrice,
-    })
+  const [statePnL, setStatePnL] = useState<number | null>(
+    quotesStore.quotes[position.instrument]
+      ? calculateFloatingProfitAndLoss({
+        investment: position.investmentAmount,
+        multiplier: position.multiplier,
+        costs: position.swap + position.commission,
+        side: isBuy ? 1 : -1,
+        currentPrice: isBuy
+          ? quotesStore.quotes[position.instrument].bid.c
+          : quotesStore.quotes[position.instrument].ask.c,
+        openPrice: position.openPrice,
+      })
+      : null
   );
 
   const workCallback = useCallback(
@@ -53,7 +55,12 @@ const ActivePositionPnLPercent: FC<Props> = ({ position }) => {
     () =>
       autorun(
         () => {
-          workCallback(quotesStore.quotes[position.instrument], canRenderFlag);
+          if (quotesStore.quotes[position.instrument]) {
+            workCallback(
+              quotesStore.quotes[position.instrument],
+              canRenderFlag
+            );
+          }
         },
         { delay: 1000 }
       ),
@@ -100,8 +107,12 @@ const ActivePositionPnLPercent: FC<Props> = ({ position }) => {
       color="rgba(255, 255, 255, 0.5)"
       ref={textElementRef}
     >
-      {statePnL >= 0 ? '+' : ''}
-      {calculateInPercent(position.investmentAmount, statePnL)}%
+      {statePnL !== null ? (
+        <>
+          {statePnL >= 0 ? '+' : ''}
+          {calculateInPercent(position.investmentAmount, statePnL)}%
+        </>
+      ) : null}
     </PrimaryTextSpan>
   );
 };

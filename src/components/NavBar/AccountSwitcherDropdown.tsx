@@ -7,12 +7,12 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { useStores } from '../../hooks/useStores';
 import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import AccountInfo from './AccountInfo';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import AccountTotal from './AccountTotal';
 import styled from '@emotion/styled';
 
-function AccountSwitcherDropdown() {
+const AccountSwitcherDropdown = observer(() => {
   const { mainAppStore } = useStores();
   const { t } = useTranslation();
   return (
@@ -128,7 +128,7 @@ function AccountSwitcherDropdown() {
       )}
     </Toggle>
   );
-}
+});
 
 export default AccountSwitcherDropdown;
 

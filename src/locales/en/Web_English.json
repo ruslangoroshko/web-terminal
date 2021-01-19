@@ -348,5 +348,6 @@
     "Declined": "Declined",
     "Restarting session": "Restarting session",
     "Max 49 symbols": "Max 49 symbols",
-    "Cardholder name is invalid": "Cardholder name is invalid"
+    "Cardholder name is invalid": "Cardholder name is invalid",
+    "Open Price can not be zero": "Open Price can not be zero"
 }

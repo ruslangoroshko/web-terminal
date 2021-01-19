@@ -41,11 +41,13 @@ import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
 import mixapanelProps from '../../constants/mixpanelProps';
 import mixpanelValues from '../../constants/mixpanelValues';
+import KeysInApi from '../../constants/keysInApi';
 
 // TODO: too much code, refactor
 
 const PRECISION_USD = 2;
-const DEFAULT_INVEST_AMOUNT = 50;
+const DEFAULT_INVEST_AMOUNT_LIVE = 50;
+const DEFAULT_INVEST_AMOUNT_DEMO = 1000;
 const MAX_INPUT_VALUE = 9999999.99;
 
 interface Props {
@@ -59,12 +61,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     mainAppStore,
     badRequestPopupStore,
     markersOnChartStore,
+    instrumentsStore,
     SLTPStore,
   } = useStores();
 
   const { t } = useTranslation();
 
   const setAutoCloseWrapperRef = useRef<HTMLDivElement>(null);
+
+  const [isLoading, setLoading] = useState(true);
 
   const initialValues = useCallback(
     () => ({
@@ -73,7 +78,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       instrumentId: instrument.id,
       operation: null,
       multiplier: instrument.multiplier[0],
-      investmentAmount: DEFAULT_INVEST_AMOUNT,
+      investmentAmount: mainAppStore.activeAccount?.isLive
+        ? DEFAULT_INVEST_AMOUNT_LIVE
+        : DEFAULT_INVEST_AMOUNT_DEMO,
       tp: null,
       sl: null,
       slType: null,
@@ -98,6 +105,18 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           .number()
           .test(
             Fields.AMOUNT,
+            `${t('Insufficient funds to open a position. You have only')} $${
+              mainAppStore.activeAccount?.balance
+            }`,
+            (value) => {
+              if (value) {
+                return value <= (mainAppStore.activeAccount?.balance || 0);
+              }
+              return true;
+            }
+          )
+          .test(
+            Fields.AMOUNT,
             `${t('Minimum trade volume')} $${
               instrument.minOperationVolume
             }. ${t('Please increase your trade amount or multiplier')}.`,
@@ -108,6 +127,18 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                   instrument.minOperationVolume /
                     +this.parent[Fields.MULTIPLIER]
                 );
+              }
+              return true;
+            }
+          )
+          .test(
+            Fields.AMOUNT,
+            `${t('Minimum trade volume')} $${
+              instrument.minOperationVolume
+            }. ${t('Please increase your trade amount or multiplier')}.`,
+            function (value) {
+              if (value !== null) {
+                return value !== 0;
               }
               return true;
             }
@@ -128,18 +159,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               return true;
             }
           )
-          .test(
-            Fields.AMOUNT,
-            `${t('Insufficient funds to open a position. You have only')} $${
-              mainAppStore.activeAccount?.balance
-            }`,
-            (value) => {
-              if (value) {
-                return value <= (mainAppStore.activeAccount?.balance || 0);
-              }
-              return true;
-            }
-          )
+
           .required(t('Please fill Invest amount')),
         multiplier: yup.number().required(t('Required amount')),
         tp: yup
@@ -267,12 +287,27 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         notificationStore.openNotification();
 
         if (response.result === OperationApiResponseCodes.Ok) {
+          SLTPStore.purchaseAtValue = '';
+          resetForm();
+          setFieldValue(Fields.OPERATION, null);
+          API.setKeyValue({
+            key: mainAppStore.activeAccount?.isLive
+              ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
+              : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO,
+            value: `${response.order.investmentAmount}`,
+          });
+          API.setKeyValue({
+            key: `mult_${instrument.id.trim().toLowerCase()}`,
+            value: `${response.order?.multiplier || modelToSubmit.multiplier}`,
+          });
+          setFieldValue(Fields.PURCHASE_AT, '');
           mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
             [mixapanelProps.AMOUNT]: response.order.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
               mainAppStore.activeAccount?.currency || '',
             [mixapanelProps.INSTRUMENT_ID]: response.order.instrument,
-            [mixapanelProps.MULTIPLIER]: response.order?.multiplier || modelToSubmit.multiplier,
+            [mixapanelProps.MULTIPLIER]:
+              response.order?.multiplier || modelToSubmit.multiplier,
             [mixapanelProps.TREND]:
               response.order.operation === AskBidEnum.Buy ? 'buy' : 'sell',
             [mixapanelProps.SL_TYPE]:
@@ -324,7 +359,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
           });
         }
-        resetForm();
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
@@ -346,14 +380,29 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         notificationStore.openNotification();
 
         if (response.result === OperationApiResponseCodes.Ok) {
+          setFieldValue(Fields.OPERATION, null);
           markersOnChartStore.addNewMarker(response.position);
-
+          API.setKeyValue({
+            key: mainAppStore.activeAccount?.isLive
+              ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
+              : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO,
+            value: `${response.position.investmentAmount}`,
+          });
+          API.setKeyValue({
+            key: `mult_${instrument.id.trim().toLowerCase()}`,
+            value: `${
+              response.position?.multiplier || modelToSubmit.multiplier
+            }`,
+          });
+          SLTPStore.purchaseAtValue = '';
+          resetForm();
           mixpanel.track(mixpanelEvents.MARKET_ORDER, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
               mainAppStore.activeAccount?.currency || '',
             [mixapanelProps.INSTRUMENT_ID]: response.position.instrument,
-            [mixapanelProps.MULTIPLIER]: response.position?.multiplier || modelToSubmit.multiplier,
+            [mixapanelProps.MULTIPLIER]:
+              response.position?.multiplier || modelToSubmit.multiplier,
             [mixapanelProps.TREND]:
               response.position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
             [mixapanelProps.SL_TYPE]:
@@ -407,7 +456,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
           });
         }
-        resetForm();
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
@@ -436,15 +484,45 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   });
 
   useEffect(() => {
-    resetForm();
+    setFieldValue(Fields.OPERATION, null);
     setFieldValue(Fields.INSTRUMNENT_ID, instrument.id);
-    setFieldValue(Fields.MULTIPLIER, instrument.multiplier[0]);
   }, [instrument]);
 
   useEffect(() => {
-    resetForm();
+    setFieldValue(Fields.OPERATION, null);
     setFieldValue(Fields.ACCOUNT_ID, mainAppStore.activeAccount?.id);
+    setFieldValue(Fields.PURCHASE_AT, '');
   }, [mainAppStore.activeAccount]);
+
+  useEffect(() => {
+    async function fetchDefaultInvestAmount() {
+      try {
+        const response: string = await API.getKeyValue(
+          mainAppStore.activeAccount?.isLive
+            ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
+            : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO
+        );
+        if (response.length > 0) {
+          setFieldValue(Fields.AMOUNT, parseInt(response));
+        }
+        setLoading(false);
+      } catch (error) {}
+    }
+    async function fetchMultiplier() {
+      try {
+        const response = await API.getKeyValue(
+          `mult_${instrument.id.trim().toLowerCase()}`
+        );
+        if (response.length > 0) {
+          setFieldValue(Fields.MULTIPLIER, parseInt(response));
+        } else {
+          setFieldValue(Fields.MULTIPLIER, instrument.multiplier[0]);
+        }
+        fetchDefaultInvestAmount();
+      } catch (error) {}
+    }
+    fetchMultiplier();
+  }, [mainAppStore.activeAccount?.id, instrument]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
@@ -544,7 +622,20 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       !investAmountRef.current?.contains(e.relatedTarget) &&
       !values.investmentAmount
     ) {
-      setFieldValue(Fields.AMOUNT, DEFAULT_INVEST_AMOUNT);
+      setFieldValue(
+        Fields.AMOUNT,
+        mainAppStore.activeAccount?.isLive
+          ? DEFAULT_INVEST_AMOUNT_LIVE
+          : DEFAULT_INVEST_AMOUNT_DEMO
+      );
+    }
+  };
+
+  const handleResetError = (active: boolean) => {
+    if (active || SLTPStore.openedBuySell) {
+      setFieldValue(Fields.OPERATION, null);
+      setFieldError(Fields.AMOUNT, '');
+      setFieldError(Fields.PURCHASE_AT, '');
     }
   };
 
@@ -554,6 +645,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(
+    () => {
+      SLTPStore.purchaseAtValue = '';
+      const oldMultiplier = values.multiplier;
+      setLoading(true);
+      resetForm();
+      setFieldValue(Fields.MULTIPLIER, oldMultiplier)
+    }, [mainAppStore.activeAccount, instrumentsStore.activeInstrument]
+  )
 
   const onKeyDown = (keyEvent: any) => {
     if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
@@ -618,13 +719,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           </PrimaryTextSpan>
 
           <FlexContainer alignItems="center" ref={investAmountRef}>
-            <InvestInput
-              {...getFieldProps(Fields.AMOUNT)}
-              onBeforeInput={investOnBeforeInputHandler}
-              onChange={investOnChangeHandler}
-              onFocus={investOnFocusHandler}
-              onBlur={investOnBlurHandler}
-            />
+            <Observer>
+              {() => <InvestInput
+                {...getFieldProps(Fields.AMOUNT)}
+                value={isLoading ? null : getFieldProps(Fields.AMOUNT).value}
+                onBeforeInput={investOnBeforeInputHandler}
+                onChange={investOnChangeHandler}
+                onFocus={investOnFocusHandler}
+                onBlur={investOnBlurHandler}
+              />}
+            </Observer>
             {investedAmountDropdown && (
               <InvestAmountDropdown
                 toggle={handleToggle}
@@ -675,6 +779,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         <Observer>
           {() => (
             <MultiplierDropdown
+              onToggle={handleResetError}
               multipliers={instrument.multiplier}
               selectedMultiplier={values.multiplier}
               setFieldValue={setFieldValue}
@@ -723,6 +828,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           <Observer>
             {() => (
               <AutoClosePopup
+                onToggle={handleResetError}
                 ref={setAutoCloseWrapperRef}
                 setFieldValue={setFieldValue}
                 stopLossError={errors.sl}
@@ -752,7 +858,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           </PrimaryTextSpan>
           <Observer>
             {() => (
-              <PrimaryTextSpan fontSize="12px" color="#fffccc">
+              <PrimaryTextSpan fontSize="12px" color={isLoading ? '#fffccc00' : '#fffccc'}>
                 {mainAppStore.activeAccount?.symbol}
                 {(values.investmentAmount * values.multiplier).toFixed(
                   PRECISION_USD
@@ -842,7 +948,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
+
         <PurchaseAtPopup
+          onToggle={handleResetError}
           setFieldValue={setFieldValue}
           purchaseAtValue={values.openPrice}
           instrumentId={instrument.id}
@@ -856,7 +964,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 export default BuySellPanel;
 
 const InvestInput = styled.input`
-  width: 100%;
+  width: calc(100% - 27px);
   outline: none;
   border: none;
   background-color: transparent;

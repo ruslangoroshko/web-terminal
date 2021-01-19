@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect, FC } from 'react';
+import React, { useState, useCallback, useEffect, FC } from 'react';
 import { useStores } from '../../hooks/useStores';
 import { AskBidEnum } from '../../enums/AskBid';
 import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
@@ -14,18 +14,7 @@ const ActivePositionEquity: FC<Props> = ({ position }) => {
   const { quotesStore, mainAppStore } = useStores();
   const isBuy = position.operation === AskBidEnum.Buy;
 
-  const [statePnL, setStatePnL] = useState(
-    calculateFloatingProfitAndLoss({
-      investment: position.investmentAmount,
-      multiplier: position.multiplier,
-      costs: position.swap + position.commission,
-      side: isBuy ? 1 : -1,
-      currentPrice: isBuy
-        ? quotesStore.quotes[position.instrument].bid.c
-        : quotesStore.quotes[position.instrument].ask.c,
-      openPrice: position.openPrice,
-    })
-  );
+  const [statePnL, setStatePnL] = useState<number | null>(null);
 
   const workCallback = useCallback(
     (quote) => {
@@ -46,7 +35,9 @@ const ActivePositionEquity: FC<Props> = ({ position }) => {
   useEffect(() => {
     const disposer = autorun(
       () => {
-        workCallback(quotesStore.quotes[position.instrument]);
+        if (quotesStore.quotes[position.instrument]) {
+          workCallback(quotesStore.quotes[position.instrument]);
+        }
       },
       { delay: 1000 }
     );
@@ -55,7 +46,7 @@ const ActivePositionEquity: FC<Props> = ({ position }) => {
     };
   }, []);
 
-  return (
+  return statePnL !== null ? (
     <QuoteText
       isGrowth={statePnL + position.investmentAmount > 0}
       fontSize="14px"
@@ -63,7 +54,7 @@ const ActivePositionEquity: FC<Props> = ({ position }) => {
       {mainAppStore.activeAccount?.symbol}
       {(statePnL + position.investmentAmount).toFixed(2)}
     </QuoteText>
-  );
+  ) : null;
 };
 
 export default ActivePositionEquity;

@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 interface PreloaderButtonMaskProps {
   loading: boolean;
 }
+// TODO: ruslan export svg to file please
 
 const PreloaderButtonMask = ({ loading }: PreloaderButtonMaskProps) => {
   if (!loading) {

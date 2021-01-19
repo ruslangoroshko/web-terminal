@@ -17,6 +17,7 @@ import { LOCAL_CHART_TYPE } from '../constants/global';
 import { getChartTypeByLabel } from '../constants/chartValues';
 import { observer } from 'mobx-react-lite';
 import { IActiveInstrument } from '../types/InstrumentsTypes';
+import styled from '@emotion/styled';
 
 function getLanguageFromURL(): LanguageCode | null {
   const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -34,7 +35,7 @@ interface IProps {
 }
 
 const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
-  const { mainAppStore, tradingViewStore, markersOnChartStore } = useStores();
+  const { mainAppStore, tradingViewStore, markersOnChartStore, instrumentsStore } = useStores();
   useEffect(() => {
     const localType = localStorage.getItem(LOCAL_CHART_TYPE);
     const currentType = localType
@@ -129,7 +130,11 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
     };
   }, []);
 
-  return <FlexContainer width="100%" height="100%" id={containerId} />;
+  return <ChartWrapper width="100%" height="100%" isHidden={instrumentsStore.hiddenChart} id={containerId} />;
 });
 
 export default ChartContainer;
+
+const ChartWrapper = styled(FlexContainer)<{ isHidden?: boolean }>`
+  visibility: ${(props) => props.isHidden ? 'hidden' : 'visible'};
+`;

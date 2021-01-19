@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
@@ -16,7 +16,10 @@ import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data
 import { sortByPendingOrdersLabels } from '../../constants/sortByDropdownValues';
 import { SortByPendingOrdersEnum } from '../../enums/SortByPendingOrdersEnum';
 import { useTranslation } from 'react-i18next';
-import { LOCAL_PORTFOLIO_TABS } from '../../constants/global';
+import {
+  LOCAL_PENDING_POSITION_SORT,
+  LOCAL_PORTFOLIO_TABS
+} from '../../constants/global';
 
 const Orders: FC = () => {
   const { sortingStore, tabsStore, mainAppStore, quotesStore } = useStores();
@@ -34,9 +37,17 @@ const Orders: FC = () => {
 
   const handleChangeSorting = (sortType: SortByPendingOrdersEnum) => () => {
     sortingStore.pendingOrdersSortBy = sortType;
+    localStorage.setItem(LOCAL_PENDING_POSITION_SORT, `${sortType}`);
     toggle(false);
   };
   const { t } = useTranslation();
+
+  useEffect(() => {
+    const activeSort = localStorage.getItem(LOCAL_PENDING_POSITION_SORT);
+    if (!!activeSort) {
+      sortingStore.pendingOrdersSortBy = parseFloat(activeSort);
+    }
+  }, []);
 
   return (
     <PortfolioWrapper flexDirection="column">
@@ -76,25 +87,29 @@ const Orders: FC = () => {
         >
           {t('Sort by')}:
         </PrimaryTextSpan>
-        <SortByDropdown
-          opened={on}
-          selectedLabel={t(
-            sortByPendingOrdersLabels[sortingStore.pendingOrdersSortBy]
-          )}
-          toggle={handleToggle}
-        >
-          {Object.entries(sortByPendingOrdersLabels).map(([key, value]) => (
-            <DropdownItemText
-              color="#fffccc"
-              fontSize="12px"
-              key={key}
-              onClick={handleChangeSorting(+key)}
-              whiteSpace="nowrap"
+        <Observer>
+          {
+            () => <SortByDropdown
+              opened={on}
+              selectedLabel={t(
+                sortByPendingOrdersLabels[sortingStore.pendingOrdersSortBy]
+              )}
+              toggle={handleToggle}
             >
-              {t(value)}
-            </DropdownItemText>
-          ))}
-        </SortByDropdown>
+              {Object.entries(sortByPendingOrdersLabels).map(([key, value]) => (
+                <DropdownItemText
+                  color="#fffccc"
+                  fontSize="12px"
+                  key={key}
+                  onClick={handleChangeSorting(+key)}
+                  whiteSpace="nowrap"
+                >
+                  {t(value)}
+                </DropdownItemText>
+              ))}
+            </SortByDropdown>
+          }
+        </Observer>
       </SortByWrapper>
       <Observer>
         {() => (
