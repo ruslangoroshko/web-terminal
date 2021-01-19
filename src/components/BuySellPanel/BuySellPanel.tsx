@@ -507,7 +507,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO
         );
         if (response.length > 0) {
-          setFieldValue(Fields.AMOUNT, parseInt(response));
+          setFieldValue(Fields.AMOUNT, parseFloat(response));
         }
         setLoading(false);
       } catch (error) {}
