@@ -290,6 +290,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           SLTPStore.purchaseAtValue = '';
           resetForm();
           setFieldValue(Fields.OPERATION, null);
+          setFieldValue(Fields.MULTIPLIER, otherValues.multiplier);
+          setFieldValue(Fields.AMOUNT, otherValues.investmentAmount);
           API.setKeyValue({
             key: mainAppStore.activeAccount?.isLive
               ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
@@ -396,6 +398,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           });
           SLTPStore.purchaseAtValue = '';
           resetForm();
+          setFieldValue(Fields.MULTIPLIER, otherValues.multiplier);
+          setFieldValue(Fields.AMOUNT, otherValues.investmentAmount);
           mixpanel.track(mixpanelEvents.MARKET_ORDER, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
