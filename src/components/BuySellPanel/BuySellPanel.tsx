@@ -649,7 +649,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   useEffect(
     () => {
       SLTPStore.purchaseAtValue = '';
+      const oldMultiplier = values.multiplier;
+      setLoading(true);
       resetForm();
+      setFieldValue(Fields.MULTIPLIER, oldMultiplier)
     }, [mainAppStore.activeAccount, instrumentsStore.activeInstrument]
   )
 
@@ -659,7 +662,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
   };
 
-  return isLoading ? null : (
+  return (
     <FlexContainer padding="16px" flexDirection="column">
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
@@ -719,6 +722,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             <Observer>
               {() => <InvestInput
                 {...getFieldProps(Fields.AMOUNT)}
+                value={isLoading ? null : getFieldProps(Fields.AMOUNT).value}
                 onBeforeInput={investOnBeforeInputHandler}
                 onChange={investOnChangeHandler}
                 onFocus={investOnFocusHandler}
