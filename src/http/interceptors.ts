@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { MainAppStore } from '../store/MainAppStore';
@@ -31,32 +31,46 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
         }, +mainAppStore.connectTimeOut);
       }
-      if (error.response?.status === 500) {
-        mainAppStore.rootStore.badRequestPopupStore.setMessage(
-          error.response?.statusText
-        );
-        mainAppStore.rootStore.badRequestPopupStore.openModal();
-        mainAppStore.isLoading = false;
-      } else if (error.response?.status === 401) {
-        if (mainAppStore.refreshToken) {
-          return mainAppStore
-            .postRefreshToken()
-            .then(() => {
-              axios.defaults.headers[RequestHeaders.AUTHORIZATION] =
-                mainAppStore.token;
 
-              error.config.headers[RequestHeaders.AUTHORIZATION] =
-                mainAppStore.token;
+      switch (error.response?.status) {
+        case 400:
+        case 500:
+          function requestAgain() {
+            mainAppStore.rootStore.badRequestPopupStore.setMessage(
+              error.response?.statusText || 'error'
+            );
+            mainAppStore.rootStore.badRequestPopupStore.openModal();
+            mainAppStore.isLoading = false;
+          }
+          setTimeout(requestAgain, +mainAppStore.connectTimeOut);
+          mainAppStore.isLoading = false;
+          break;
 
-              return axios.request(error.config);
-            })
-            .catch(() => {
-              mainAppStore.refreshToken = '';
-            });
-        } else {
-          mainAppStore.signOut();
-        }
+        case 401:
+          if (mainAppStore.refreshToken) {
+            return mainAppStore
+              .postRefreshToken()
+              .then(() => {
+                axios.defaults.headers[RequestHeaders.AUTHORIZATION] =
+                  mainAppStore.token;
+
+                error.config.headers[RequestHeaders.AUTHORIZATION] =
+                  mainAppStore.token;
+
+                return axios.request(error.config);
+              })
+              .catch(() => {
+                mainAppStore.refreshToken = '';
+              });
+          } else {
+            mainAppStore.signOut();
+          }
+          break;
+
+        default:
+          break;
       }
+
       return Promise.reject(error);
     }
   );
