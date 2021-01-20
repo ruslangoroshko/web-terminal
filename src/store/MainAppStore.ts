@@ -53,7 +53,6 @@ import { polandLocalsList } from '../constants/polandLocalsList';
 interface MainAppStoreProps {
   token: string;
   refreshToken: string;
-  isInterceptorsInjected: boolean;
   isAuthorized: boolean;
   signIn: (credentials: UserAuthenticate) => void;
   signUp: (credentials: UserRegistration) => Promise<unknown>;
@@ -105,7 +104,6 @@ export class MainAppStore implements MainAppStoreProps {
   @observable accounts: AccountModelWebSocketDTO[] = [];
   @observable profileStatus: PersonalDataKYCEnum =
     PersonalDataKYCEnum.NotVerified;
-  @observable isInterceptorsInjected = false;
   @observable profilePhone = '';
   @observable profileName = '';
   @observable profileEmail = '';
@@ -130,8 +128,7 @@ export class MainAppStore implements MainAppStoreProps {
     // @ts-ignore
     this.lang =
       localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
-      ((navigator.language &&
-        polandLocalsList.includes(navigator.language))
+      (navigator.language && polandLocalsList.includes(navigator.language)
         ? CountriesEnum.PL
         : CountriesEnum.EN);
     injectInerceptors(this);
@@ -285,11 +282,9 @@ export class MainAppStore implements MainAppStoreProps {
   };
 
   postRefreshToken = async () => {
-    const refreshToken = `${this.refreshToken}`;
-    this.refreshToken = '';
     try {
       const result = await API.refreshToken(
-        { refreshToken },
+        { refreshToken: this.refreshToken },
         this.initModel.authUrl
       );
       if (result.refreshToken) {
@@ -450,9 +445,12 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.tradingViewStore.selectedHistory = undefined;
     this.rootStore.tradingViewStore.selectedPosition = undefined;
     this.rootStore.withdrawalStore.history = null;
-    this.rootStore.sortingStore.activePositionsSortBy = SortByProfitEnum.NewFirstAsc;
-    this.rootStore.sortingStore.pendingOrdersSortBy = SortByPendingOrdersEnum.NewFirstAsc;
-    this.rootStore.dateRangeStore.dropdownValueType = ShowDatesDropdownEnum.Week;
+    this.rootStore.sortingStore.activePositionsSortBy =
+      SortByProfitEnum.NewFirstAsc;
+    this.rootStore.sortingStore.pendingOrdersSortBy =
+      SortByPendingOrdersEnum.NewFirstAsc;
+    this.rootStore.dateRangeStore.dropdownValueType =
+      ShowDatesDropdownEnum.Week;
     this.rootStore.dateRangeStore.startDate = moment().subtract(1, 'weeks');
     this.rootStore.tabsStore.portfolioTab = PortfolioTabEnum.Portfolio;
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
