@@ -67,7 +67,7 @@ test('User can make a deposit with card, response status', async () => {
   );
 
   const visaCardValues = {
-    cardNumber: '4242424242424242',
+    cardNumber: '4929980372988546',
     cvv: '837',
     expirationDate: new Date(`2023-02`).getTime(),
     fullName: 'Testing Name',
