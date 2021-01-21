@@ -106,6 +106,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           }
           break;
 
+        case 403: {
+          mainAppStore.signOut();
+          break;
+        }
+
         default:
           break;
       }
