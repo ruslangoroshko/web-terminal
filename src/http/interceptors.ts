@@ -93,6 +93,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
                   resolve(axios(originalRequest));
                 })
                 .catch((err) => {
+                  mainAppStore.refreshToken = '';
                   processQueue(err, null);
                   reject(err);
                 })
