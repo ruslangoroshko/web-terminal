@@ -97,6 +97,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
                   reject(err);
                 })
                 .finally(() => {
+                  mainAppStore.isLoading = false;
                   isRefreshing = false;
                 });
             });
