@@ -36,6 +36,7 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
     mainAppStore,
     instrumentsStore,
     tradingViewStore,
+    notificationStore
   } = useStores();
   const buttonCloseRef = useRef<HTMLButtonElement>(null);
   const [closePrice, setClosePrice] = useState('');
@@ -68,6 +69,7 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
           localStorage.removeItem(LOCAL_HISTORY_PAGE);
         }
       }
+      notificationStore.resetNotification();
       instrumentsStore.switchInstrument(instrument.id);
     }
   };
