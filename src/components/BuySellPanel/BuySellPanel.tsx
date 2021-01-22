@@ -654,9 +654,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     () => {
       SLTPStore.purchaseAtValue = '';
       const oldMultiplier = values.multiplier;
+      const oldAmount = values.investmentAmount;
       setLoading(true);
       resetForm();
-      setFieldValue(Fields.MULTIPLIER, oldMultiplier)
+      setFieldValue(Fields.MULTIPLIER, oldMultiplier);
+      setFieldValue(Fields.AMOUNT, oldAmount);
     }, [mainAppStore.activeAccount, instrumentsStore.activeInstrument]
   )
 
