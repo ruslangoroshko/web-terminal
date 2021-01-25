@@ -134,7 +134,11 @@ const SingIn = observer(() => {
       </FlexContainer>
       <FlexContainer width="320px" flexDirection="column">
         <SignTypeTabs></SignTypeTabs>
-        <CustomForm noValidate onSubmit={handleSubmit}>
+        <CustomForm
+          noValidate
+          onSubmit={handleSubmit}
+          data-e2e-id={e2eTests.SING_IN_PASSWORD}
+        >
           <FlexContainer flexDirection="column">
             <FlexContainer
               position="relative"
