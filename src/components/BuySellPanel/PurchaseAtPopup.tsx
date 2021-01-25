@@ -138,6 +138,10 @@ const PurchaseAtPopup: FC<Props> = ({
     };
   }, []);
 
+  useEffect(() => {
+    setInputError(null);
+  }, [instrumentsStore.activeInstrument, mainAppStore.activeAccount]);
+
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
       {purchaseAtValue ? (
