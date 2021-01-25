@@ -788,7 +788,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           {() => (
             <MultiplierDropdown
               onToggle={handleResetError}
-              multipliers={instrument.multiplier}
+              multipliers={instrumentsStore.instruments.find(item => item.instrumentItem.id === instrument.id)
+                ?.instrumentItem.multiplier || instrument.multiplier}
               selectedMultiplier={values.multiplier}
               setFieldValue={setFieldValue}
             ></MultiplierDropdown>

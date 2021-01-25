@@ -26,7 +26,7 @@ const InformationPopup: FC<Props> = props => {
         position="absolute"
         backgroundColor={bgColor}
         className={classNameTooltip}
-        zIndex="101"
+        zIndex="103"
       >
         {children}
       </TooltipWrapper>
