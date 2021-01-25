@@ -134,11 +134,7 @@ const SingIn = observer(() => {
       </FlexContainer>
       <FlexContainer width="320px" flexDirection="column">
         <SignTypeTabs></SignTypeTabs>
-        <CustomForm
-          noValidate
-          onSubmit={handleSubmit}
-          data-e2e-id={e2eTests.SING_IN_FORM}
-        >
+        <CustomForm noValidate onSubmit={handleSubmit}>
           <FlexContainer flexDirection="column">
             <FlexContainer
               position="relative"
@@ -178,6 +174,8 @@ const SingIn = observer(() => {
               padding="12px"
               type="submit"
               onClick={handlerClickSubmit}
+              data-e2e-id={e2eTests.SING_IN_FORM}
+
               //disabled={!formikBag.isValid || formikBag.isSubmitting}
             >
               <PrimaryTextSpan
