@@ -137,7 +137,7 @@ const SingIn = observer(() => {
         <CustomForm
           noValidate
           onSubmit={handleSubmit}
-          data-e2e-id={e2eTests.SING_IN_PASSWORD}
+          data-e2e-id={e2eTests.SING_IN_FORM}
         >
           <FlexContainer flexDirection="column">
             <FlexContainer
