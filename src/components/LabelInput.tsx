@@ -13,9 +13,10 @@ interface Props {
   hasError?: boolean;
   autoComplete?: string;
   errorText?: string;
+  datae2eId?: string;
 }
 
-const LabelInput: FC<Props> = props => {
+const LabelInput: FC<Props> = (props) => {
   const {
     labelText,
     id,
@@ -26,6 +27,7 @@ const LabelInput: FC<Props> = props => {
     hasError,
     autoComplete,
     errorText,
+    datae2eId,
   } = props;
   const [focused, setFocused] = useState(false);
 
@@ -50,6 +52,7 @@ const LabelInput: FC<Props> = props => {
         onBlur={removeFocus}
         hasError={hasError}
         autoComplete={autoComplete}
+        data-e2e-Id={datae2eId}
       ></Input>
       <Label>{labelText}</Label>
       {hasError && focused && (
@@ -79,7 +82,7 @@ const Input = styled.input<{ hasError?: boolean }>`
   border: none;
   outline: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  border-bottom: ${props => props.hasError && '1px solid #ED145B !important'};
+  border-bottom: ${(props) => props.hasError && '1px solid #ED145B !important'};
   background-color: transparent;
   width: 100%;
   caret-color: #fff;

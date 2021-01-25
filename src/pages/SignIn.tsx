@@ -153,7 +153,7 @@ const SingIn = observer(() => {
                 id={Fields.EMAIL}
                 hasError={!!(touched.email && errors.email)}
                 errorText={errors.email}
-                data-e2e-id={e2eTests.SING_IN_USERNAME}
+                datae2eId={e2eTests.SING_IN_USERNAME}
               ></LabelInput>
             </FlexContainer>
             <FlexContainer
@@ -170,7 +170,7 @@ const SingIn = observer(() => {
                 type="password"
                 hasError={!!(touched.password && errors.password)}
                 errorText={errors.password}
-                data-e2e-id={e2eTests.SING_IN_PASSWORD}
+                datae2eId={e2eTests.SING_IN_PASSWORD}
               ></LabelInput>
             </FlexContainer>
 
