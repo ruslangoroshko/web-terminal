@@ -87,6 +87,7 @@ const SingIn = observer(() => {
     validateForm,
     handleChange,
     handleSubmit,
+    submitForm,
     errors,
     touched,
   } = useFormik({
@@ -103,6 +104,8 @@ const SingIn = observer(() => {
     if (curErrorsKeys.length) {
       const el = document.getElementById(curErrorsKeys[0]);
       if (el) el.focus();
+    } else {
+      submitForm();
     }
   };
 
@@ -172,7 +175,7 @@ const SingIn = observer(() => {
 
             <PrimaryButton
               padding="12px"
-              type="submit"
+              type="button"
               onClick={handlerClickSubmit}
               data-e2e-id={e2eTests.SING_IN_FORM}
 
