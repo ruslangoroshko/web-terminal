@@ -520,13 +520,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         if (response.length > 0) {
           setFieldValue(Fields.MULTIPLIER, parseInt(response));
         } else {
-          setFieldValue(Fields.MULTIPLIER, instrument.multiplier[0]);
+          const realMultiplier = instrumentsStore.instruments.find(item => item.instrumentItem.id === instrument.id)
+            ?.instrumentItem.multiplier[0] || instrument.multiplier[0];
+          setFieldValue(Fields.MULTIPLIER, realMultiplier);
         }
         fetchDefaultInvestAmount();
       } catch (error) {}
     }
     fetchMultiplier();
-  }, [mainAppStore.activeAccount?.id, instrument]);
+  }, [mainAppStore.activeAccount?.id, instrument, instrumentsStore.instruments]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
@@ -654,9 +656,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     () => {
       SLTPStore.purchaseAtValue = '';
       const oldMultiplier = values.multiplier;
+      const oldAmount = values.investmentAmount;
       setLoading(true);
       resetForm();
-      setFieldValue(Fields.MULTIPLIER, oldMultiplier)
+      setFieldValue(Fields.MULTIPLIER, oldMultiplier);
+      setFieldValue(Fields.AMOUNT, oldAmount);
     }, [mainAppStore.activeAccount, instrumentsStore.activeInstrument]
   )
 
