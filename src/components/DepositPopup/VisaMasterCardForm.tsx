@@ -34,6 +34,7 @@ import LoaderComponent from '../LoaderComponent';
 import PreloaderButtonMask from '../PreloaderButtonMask';
 import Page from '../../constants/Pages';
 import testIds from '../../constants/testIds';
+import e2eTests from '../../constants/e2eTests';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -296,6 +297,7 @@ const VisaMasterCardForm = () => {
               name="amount"
               id="amount"
               data-testid={testIds.VISAMASTERFORM_AMOUNT}
+              data-e2e-id={e2eTests.DEPOSIT_AMOUNT}
             />
             {errors.amount && <ErrorText>{errors.amount}</ErrorText>}
             <CurrencyDropdown
@@ -379,6 +381,7 @@ const VisaMasterCardForm = () => {
               className={`input-border ${
                 !!(touched.cardNumber && errors.cardNumber) && 'error'
               }`}
+              data-e2e-id={e2eTests.DEPOSIT_CARD}
             />
             {touched.cardNumber && errors.cardNumber && (
               <ErrorInputLabel>
@@ -425,6 +428,7 @@ const VisaMasterCardForm = () => {
                 className={`input-border ${
                   !!(touched.expirationDate && errors.expirationDate) && 'error'
                 }`}
+                data-e2e-id={e2eTests.DEPOSIT_EXPIRE_DATE}
               />
               {touched.expirationDate && errors.expirationDate && (
                 <ErrorInputLabel>
@@ -469,6 +473,7 @@ const VisaMasterCardForm = () => {
                 className={`input-border ${
                   !!(touched.cvv && errors.cvv) && 'error'
                 }`}
+                data-e2e-id={e2eTests.DEPOSIT_CVV}
               />
               {touched.cvv && errors.cvv && (
                 <ErrorInputLabel>
@@ -510,6 +515,7 @@ const VisaMasterCardForm = () => {
               id="fullName"
               data-testid={testIds.VISAMASTERFORM_CARDHOLDER_NAME}
               hasError={!!(touched.fullName && errors.fullName)}
+              data-e2e-id={e2eTests.DEPOSIT_CARDHOLDER}
             />
             {touched.fullName && errors.fullName && (
               <ErrorInputLabel>
@@ -535,6 +541,7 @@ const VisaMasterCardForm = () => {
             onClick={handlerClickSubmit}
             disabled={isSubmitting}
             data-testid={testIds.VISAMASTERFORM_SUBMIT}
+            data-e2e-id={e2eTests.DEPOSIT_SUBMIT_BTN}
           >
             <PrimaryTextSpan
               className="notranslate"
