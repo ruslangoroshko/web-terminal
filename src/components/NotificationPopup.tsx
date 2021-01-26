@@ -12,10 +12,11 @@ import testIds from '../constants/testIds';
 
 interface Props {
   show: boolean;
+  global?: boolean
 }
 
-const NotificationPopup: FC<Props> = observer(({ show }) => {
-  const { notificationStore } = useStores();
+const NotificationPopup: FC<Props> = observer(({ show, global }) => {
+  const { notificationStore, tabsStore } = useStores();
 
   const [shouldRender, setRender] = useState(show);
 
@@ -45,7 +46,7 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
       }
       notificationStore.timer = setTimeout(() => {
         notificationStore.closeNotification();
-      }, 5000);
+      }, 3000);
     }
     return;
   }, [notificationStore.isActiveNotification, notificationStore.isActiveNotificationGlobal]);
@@ -67,7 +68,9 @@ const NotificationPopup: FC<Props> = observer(({ show }) => {
       justifyContent="space-between"
       position="relative"
       show={show}
-      margin={notificationStore.isActiveNotificationGlobal ? '0 0 0 60px' : '0'}
+      margin={global
+        ? tabsStore.sideBarTabType === null ? '0 0 0 60px' : '0 0 0 380px'
+        : '0'}
       onAnimationEnd={onAnimationEnd}
     >
       <PrimaryTextSpan

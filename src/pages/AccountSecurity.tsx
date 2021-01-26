@@ -22,6 +22,12 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import NotificationPopup from '../components/NotificationPopup';
 import Page from '../constants/Pages';
 import { useTranslation } from 'react-i18next';
+import Topics from '../constants/websocketTopics';
+import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
+import { PositionModelWSDTO } from '../types/Positions';
+import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
+import { InstrumentModelWSDTO, PriceChangeWSDTO } from '../types/InstrumentsTypes';
+import { LOCAL_MARKET_TABS } from '../constants/global';
 
 function AccountSecurity() {
   const { t } = useTranslation();
@@ -55,13 +61,79 @@ function AccountSecurity() {
     repeatPassword: '',
   };
 
-  const { badRequestPopupStore, notificationStore, mainAppStore } = useStores();
+  const { badRequestPopupStore, notificationStore, mainAppStore, quotesStore, instrumentsStore } = useStores();
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     document.title = t('Change password');
   }, []);
+
+  useEffect(() => {
+    if (mainAppStore.activeAccount) {
+      mainAppStore.activeSession?.on(
+        Topics.ACTIVE_POSITIONS,
+        (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            quotesStore.setActivePositions(response.data);
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.PENDING_ORDERS,
+        (response: ResponseFromWebsocket<PendingOrderWSDTO[]>) => {
+          if (mainAppStore.activeAccount?.id === response.accountId) {
+            quotesStore.pendingOrders = response.data;
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.INSTRUMENT_GROUPS,
+        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
+          if (mainAppStore.activeAccount?.id === response.accountId) {
+            instrumentsStore.instrumentGroups = response.data;
+            if (response.data.length) {
+              const lastMarketTab = localStorage.getItem(LOCAL_MARKET_TABS);
+              instrumentsStore.activeInstrumentGroupId = !!lastMarketTab ? lastMarketTab : response.data[0].id;
+            }
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.PRICE_CHANGE,
+        (response: ResponseFromWebsocket<PriceChangeWSDTO[]>) => {
+          instrumentsStore.setPricesChanges(response.data);
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.UPDATE_ACTIVE_POSITION,
+        (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            quotesStore.setActivePositions(
+              quotesStore.activePositions.map((item) =>
+                item.id === response.data.id ? response.data : item
+              )
+            );
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.UPDATE_PENDING_ORDER,
+        (response: ResponseFromWebsocket<PendingOrderWSDTO>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            quotesStore.pendingOrders = quotesStore.pendingOrders.map((item) =>
+              item.id === response.data.id ? response.data : item
+            );
+          }
+        }
+      );
+    }
+  }, [mainAppStore.activeAccount]);
 
   const handleSubmitForm = async () => {
     setIsLoading(true);

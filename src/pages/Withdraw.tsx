@@ -21,15 +21,22 @@ import Helmet from 'react-helmet';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
+import Topics from '../constants/websocketTopics';
+import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
+import { PositionModelWSDTO } from '../types/Positions';
+import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
+import { InstrumentModelWSDTO, PriceChangeWSDTO } from '../types/InstrumentsTypes';
+import { LOCAL_MARKET_TABS } from '../constants/global';
 
 function AccountSecurity() {
   const {
     badRequestPopupStore,
     notificationStore,
     withdrawalStore,
+    quotesStore,
+    mainAppStore,
+    instrumentsStore
   } = useStores();
-
-  const { mainAppStore} = useStores();
 
   const { push } = useHistory();
   const { t } = useTranslation();
@@ -37,6 +44,72 @@ function AccountSecurity() {
   const openTab = (tab: number) => {
     withdrawalStore.opentTab(tab);
   };
+
+  useEffect(() => {
+    if (mainAppStore.activeAccount) {
+      mainAppStore.activeSession?.on(
+        Topics.ACTIVE_POSITIONS,
+        (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            quotesStore.setActivePositions(response.data);
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.PENDING_ORDERS,
+        (response: ResponseFromWebsocket<PendingOrderWSDTO[]>) => {
+          if (mainAppStore.activeAccount?.id === response.accountId) {
+            quotesStore.pendingOrders = response.data;
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.INSTRUMENT_GROUPS,
+        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
+          if (mainAppStore.activeAccount?.id === response.accountId) {
+            instrumentsStore.instrumentGroups = response.data;
+            if (response.data.length) {
+              const lastMarketTab = localStorage.getItem(LOCAL_MARKET_TABS);
+              instrumentsStore.activeInstrumentGroupId = !!lastMarketTab ? lastMarketTab : response.data[0].id;
+            }
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.PRICE_CHANGE,
+        (response: ResponseFromWebsocket<PriceChangeWSDTO[]>) => {
+          instrumentsStore.setPricesChanges(response.data);
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.UPDATE_ACTIVE_POSITION,
+        (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            quotesStore.setActivePositions(
+              quotesStore.activePositions.map((item) =>
+                item.id === response.data.id ? response.data : item
+              )
+            );
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.UPDATE_PENDING_ORDER,
+        (response: ResponseFromWebsocket<PendingOrderWSDTO>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            quotesStore.pendingOrders = quotesStore.pendingOrders.map((item) =>
+              item.id === response.data.id ? response.data : item
+            );
+          }
+        }
+      );
+    }
+  }, [mainAppStore.activeAccount]);
 
   useEffect(() => {
     mixpanel.track(mixpanelEvents.WITHDRAW_VIEW, {
