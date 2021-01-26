@@ -508,6 +508,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         );
         if (response.length > 0) {
           setFieldValue(Fields.AMOUNT, parseFloat(response));
+        } else {
+          setFieldValue(Fields.AMOUNT, mainAppStore.activeAccount?.isLive
+            ? DEFAULT_INVEST_AMOUNT_LIVE
+            : DEFAULT_INVEST_AMOUNT_DEMO
+          );
         }
         setLoading(false);
       } catch (error) {}
