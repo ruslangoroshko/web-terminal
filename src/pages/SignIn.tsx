@@ -24,6 +24,7 @@ import BadRequestPopup from '../components/BadRequestPopup';
 import { useTranslation } from 'react-i18next';
 import mixapanelProps from '../constants/mixpanelProps';
 import Helmet from 'react-helmet';
+import e2eTests from '../constants/e2eTests';
 
 const SingIn = observer(() => {
   const { t } = useTranslation();
@@ -86,6 +87,7 @@ const SingIn = observer(() => {
     validateForm,
     handleChange,
     handleSubmit,
+    submitForm,
     errors,
     touched,
   } = useFormik({
@@ -102,6 +104,8 @@ const SingIn = observer(() => {
     if (curErrorsKeys.length) {
       const el = document.getElementById(curErrorsKeys[0]);
       if (el) el.focus();
+    } else {
+      submitForm();
     }
   };
 
@@ -148,6 +152,7 @@ const SingIn = observer(() => {
                 id={Fields.EMAIL}
                 hasError={!!(touched.email && errors.email)}
                 errorText={errors.email}
+                datae2eId={e2eTests.SING_IN_USERNAME}
               ></LabelInput>
             </FlexContainer>
             <FlexContainer
@@ -164,13 +169,16 @@ const SingIn = observer(() => {
                 type="password"
                 hasError={!!(touched.password && errors.password)}
                 errorText={errors.password}
+                datae2eId={e2eTests.SING_IN_PASSWORD}
               ></LabelInput>
             </FlexContainer>
 
             <PrimaryButton
               padding="12px"
-              type="submit"
+              type="button"
               onClick={handlerClickSubmit}
+              data-e2e-id={e2eTests.SING_IN_FORM}
+
               //disabled={!formikBag.isValid || formikBag.isSubmitting}
             >
               <PrimaryTextSpan
