@@ -94,6 +94,12 @@ export class InstrumentsStore implements ContextProps {
           item.instrumentItem.id === this.activeInstrument?.instrumentItem.id
       );
       this.instruments[instrumentIndex].chartType = type;
+      this.instruments = this.instruments.map(
+        (item) => {
+          item.chartType = type;
+          return item;
+        }
+      );
     }
   };
 
