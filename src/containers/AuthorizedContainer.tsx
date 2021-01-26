@@ -128,6 +128,7 @@ const AuthorizedContainer: FC<Props> = (props) => {
           {() => (
             <NotificationPopup
               show={notificationStore.isActiveNotificationGlobal}
+              global={true}
             ></NotificationPopup>
           )}
         </Observer>
