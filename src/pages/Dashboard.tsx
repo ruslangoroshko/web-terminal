@@ -178,7 +178,7 @@ const Dashboard: FC = observer(() => {
         <Observer>
           {() => (
             <NotificationPopup
-              show={notificationStore.isActiveNotification}
+              show={notificationStore.isActiveNotification && !notificationStore.isActiveNotificationGlobal}
             ></NotificationPopup>
           )}
         </Observer>
