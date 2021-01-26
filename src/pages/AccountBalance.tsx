@@ -22,6 +22,10 @@ import { useTranslation } from 'react-i18next';
 import Helmet from 'react-helmet';
 import DatePickerAccountBalanceDropdown from '../components/DatePickerAccountBalanceDropdown';
 import NotificationPopup from '../components/NotificationPopup';
+import Topics from '../constants/websocketTopics';
+import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
+import { PositionModelWSDTO } from '../types/Positions';
+import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 
 const AccountBalance = () => {
   const {
@@ -29,6 +33,7 @@ const AccountBalance = () => {
     badRequestPopupStore,
     dateRangeAccountBalanceStore,
     notificationStore,
+    quotesStore
   } = useStores();
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(true);
@@ -86,6 +91,28 @@ const AccountBalance = () => {
       fetchBalanceHistory().finally(() => {
         setIsLoading(false);
       });
+    }
+  }, [mainAppStore.activeAccount]);
+
+  useEffect(() => {
+    if (mainAppStore.activeAccount) {
+      mainAppStore.activeSession?.on(
+        Topics.ACTIVE_POSITIONS,
+        (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            quotesStore.setActivePositions(response.data);
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.PENDING_ORDERS,
+        (response: ResponseFromWebsocket<PendingOrderWSDTO[]>) => {
+          if (mainAppStore.activeAccount?.id === response.accountId) {
+            quotesStore.pendingOrders = response.data;
+          }
+        }
+      );
     }
   }, [mainAppStore.activeAccount]);
 

@@ -22,6 +22,10 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import NotificationPopup from '../components/NotificationPopup';
 import Page from '../constants/Pages';
 import { useTranslation } from 'react-i18next';
+import Topics from '../constants/websocketTopics';
+import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
+import { PositionModelWSDTO } from '../types/Positions';
+import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 
 function AccountSecurity() {
   const { t } = useTranslation();
@@ -55,13 +59,35 @@ function AccountSecurity() {
     repeatPassword: '',
   };
 
-  const { badRequestPopupStore, notificationStore, mainAppStore } = useStores();
+  const { badRequestPopupStore, notificationStore, mainAppStore, quotesStore } = useStores();
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     document.title = t('Change password');
   }, []);
+
+  useEffect(() => {
+    if (mainAppStore.activeAccount) {
+      mainAppStore.activeSession?.on(
+        Topics.ACTIVE_POSITIONS,
+        (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
+          if (response.accountId === mainAppStore.activeAccount?.id) {
+            quotesStore.setActivePositions(response.data);
+          }
+        }
+      );
+
+      mainAppStore.activeSession?.on(
+        Topics.PENDING_ORDERS,
+        (response: ResponseFromWebsocket<PendingOrderWSDTO[]>) => {
+          if (mainAppStore.activeAccount?.id === response.accountId) {
+            quotesStore.pendingOrders = response.data;
+          }
+        }
+      );
+    }
+  }, [mainAppStore.activeAccount]);
 
   const handleSubmitForm = async () => {
     setIsLoading(true);
