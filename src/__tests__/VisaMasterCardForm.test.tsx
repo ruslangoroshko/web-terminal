@@ -14,6 +14,8 @@ import RequestHeaders from '../constants/headers';
 
 const API_DEPOSIT_STRING = process.env.TRADING_URL || 'http://localhost:5682';
 const AUTH_URL = process.env.API_AUTH_STRING || 'http://localhost:5679';
+const cardNumber = process.env.TEST_CARDNUMBER || '4929980372988546';
+const cvv = process.env.TEST_CARD_CVV || '837';
 
 jest.mock('react-router-dom', () => ({
   useHistory: () => ({
@@ -67,8 +69,8 @@ test('User can make a deposit with card, response status', async () => {
   );
 
   const visaCardValues = {
-    cardNumber: '4929980372988546',
-    cvv: '837',
+    cardNumber,
+    cvv,
     expirationDate: new Date(`2023-02`).getTime(),
     fullName: 'Testing Name',
     amount: 500,
@@ -80,4 +82,3 @@ test('User can make a deposit with card, response status', async () => {
   );
   expect(response.status).toEqual(DepositRequestStatusEnum.Success);
 });
-
