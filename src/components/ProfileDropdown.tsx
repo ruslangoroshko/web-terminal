@@ -171,10 +171,7 @@ function ProfileDropdown() {
         </CustomeNavLink>
       </FlexContainer>
       <FlexContainer margin="0 0 12px">
-        <DepositButtonWrapper
-          onClick={depositFundsStore.togglePopup}
-          data-e2e-id={e2eTests.DEPOSIT_BUTTON_NAVBAR}
-        >
+        <DepositButtonWrapper onClick={depositFundsStore.togglePopup}>
           <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
             {t('Deposit')}
           </PrimaryTextSpan>
