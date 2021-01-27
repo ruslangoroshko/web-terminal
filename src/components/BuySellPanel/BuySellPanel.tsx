@@ -55,6 +55,8 @@ interface Props {
   instrument: InstrumentModelWSDTO;
 }
 
+// TODO: refactor https://react-hook-form.com/get-started#schemavalidation
+
 const BuySellPanel: FC<Props> = ({ instrument }) => {
   const {
     quotesStore,
