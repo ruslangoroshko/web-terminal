@@ -84,10 +84,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
       investmentAmount: position.investmentAmount,
       multiplier: position.multiplier,
       closedByChart: false,
-      isToppingUpActive: position.isToppingUpActive
+      isToppingUpActive: position.isToppingUpActive,
     }),
     [position]
   );
+
+  useEffect(() => {
+    SLTPStore.isToppingUpActive = position.isToppingUpActive;
+  }, []);
 
   const currentPriceAsk = useCallback(
     () =>
@@ -198,15 +202,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                 t('Stop loss level should be lower than the current P/L'),
                 (value) => -1 * Math.abs(value) < PnL()
               )
-              .test(
-                Fields.STOP_LOSS,
-                t('Stop loss level can not be higher than the Invest amount'),
-                (value) => Math.abs(value) <= position.investmentAmount
-              ),
+              // .test(
+              //   Fields.STOP_LOSS,
+              //   t('Stop loss level can not be higher than the Invest amount'),
+              //   (value) => Math.abs(value) <= position.investmentAmount
+              // ),
           }),
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
-        isToppingUpActive: yup.boolean()
+        isToppingUpActive: yup.boolean(),
       }),
     [position, currentPriceBid, currentPriceAsk]
   );
@@ -415,6 +419,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
     async (values: UpdateSLTP) => {
       const valuesToSubmit = {
         ...values,
+        isToppingUpActive: SLTPStore.isToppingUpActive,
         slType: values.sl ? values.slType : null,
         tpType: values.tp ? values.tpType : null,
         sl: values.sl || null,
@@ -523,7 +528,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
         badRequestPopupStore.setMessage(error);
       }
     },
-    [mainAppStore.activeAccount]
+    [mainAppStore.activeAccount, SLTPStore.isToppingUpActive]
   );
 
   const {
@@ -1004,8 +1009,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
   }, []);
 
   const handleToggleToppingUp = (on: boolean) => {
-    setFieldValue(Fields.IS_TOPPING_UP, on)
-  }
+    setFieldValue(Fields.IS_TOPPING_UP, on);
+  };
 
   useEffect(() => {
     if (ready) {

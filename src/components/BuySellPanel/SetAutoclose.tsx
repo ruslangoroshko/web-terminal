@@ -149,13 +149,6 @@ const SetAutoclose: FC<Props> = observer((props) => {
     setActiveNowSL(false);
     setErrorHighLevel(false);
     SLTPStore.stopLossValue = e.target.value.replace(',', '.');
-    console.log('change sl');
-  };
-
-  const handleChangeTopingUp = (on: boolean) => {
-    console.log('toggle')
-    SLTPStore.toggleToppingUp(on);
-    SLTPStore.updateToppingUp = true;
   };
 
   const handleApplyValues = async () => {
@@ -266,6 +259,10 @@ const SetAutoclose: FC<Props> = observer((props) => {
   useEffect(() => {
     setErrorTPForm(tpError);
   }, [tpError]);
+
+  useEffect(() => {
+    SLTPStore.isToppingUpActive = false;
+  }, []);
 
   return (
     <Wrapper
@@ -479,19 +476,11 @@ const SetAutoclose: FC<Props> = observer((props) => {
               }%, ${t(
                 'an additional 20% of the original investment amount is reserved from your balance to keep your position open.'
               )}`}
-              
             </PrimaryTextSpan>
           </InformationPopup>
         </FlexContainer>
 
-        <Observer>
-          {() => (
-            <TopingUpCheck
-              isActive={SLTPStore.isToppingUpActive}
-              onSelect={handleChangeTopingUp}
-            />
-          )}
-        </Observer>
+        <TopingUpCheck />
       </FlexContainer>
       <Observer>
         {() => (

@@ -358,7 +358,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     } else {
       const modelToSubmit = {
         ...otherValues,
-
         operation: operation === null ? AskBidEnum.Buy : operation,
         investmentAmount: +otherValues.investmentAmount,
       };
@@ -678,65 +677,54 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   );
 
   useEffect(() => {
-    autorun(() => {
-      
-      if (
-        SLTPStore.updateToppingUp &&
-        !SLTPStore.isToppingUpActive &&
-        SLTPStore.stopLossValue !== ''
-      ) {
-        console.log('toggle top up');
-        if (
-          SLTPStore.stopLossValue !== '' &&
-          SLTPStore.autoCloseSLType === TpSlTypeEnum.Price
-        ) {
-          const soValue = +positionStopOutByPrice(+SLTPStore.stopLossValue);
-          if (soValue <= 0 && Math.abs(soValue) >= postitionStopOut()) {
-            SLTPStore.stopLossValue = '';
-            setFieldValue(Fields.STOP_LOSS, null);
-          }
-        }
-        if (
-          SLTPStore.stopLossValue !== '' &&
-          SLTPStore.autoCloseSLType === TpSlTypeEnum.Currency
-        ) {
-          if (+SLTPStore.stopLossValue >= postitionStopOut()) {
-            SLTPStore.stopLossValue = '';
-            setFieldValue(Fields.STOP_LOSS, null);
-          }
+    const disposer = autorun(() => {
+      if (!SLTPStore.deleteToppingUp) {
+        switch (SLTPStore.autoCloseSLType) {
+          case TpSlTypeEnum.Currency:
+            if (+SLTPStore.stopLossValue >= postitionStopOut()) {
+              SLTPStore.toggleToppingUp(true);
+            }
+            break;
+
+          case TpSlTypeEnum.Price:
+            const soValue = +positionStopOutByPrice(+SLTPStore.stopLossValue);
+            if (soValue <= 0 && Math.abs(soValue) >= postitionStopOut()) {
+              SLTPStore.toggleToppingUp(true);
+            }
+            break;
+
+          default:
+            break;
         }
       }
-      switch (SLTPStore.autoCloseSLType) {
-        case TpSlTypeEnum.Currency:
-          if (+SLTPStore.stopLossValue >= postitionStopOut()) {
-            SLTPStore.toggleToppingUp(true);
-          } else {
-            SLTPStore.toggleToppingUp(false);
-          }
-          break;
 
-        case TpSlTypeEnum.Price:
-          const soValue = +positionStopOutByPrice(+SLTPStore.stopLossValue);
-          if (soValue <= 0 && Math.abs(soValue) >= postitionStopOut()) {
-            SLTPStore.toggleToppingUp(true);
-          } else {
-            SLTPStore.toggleToppingUp(false);
-          }
-          break;
+      if (!SLTPStore.isToppingUpActive && SLTPStore.stopLossValue !== '') {
+        switch (SLTPStore.autoCloseSLType) {
+          case TpSlTypeEnum.Currency:
+            if (+SLTPStore.stopLossValue >= postitionStopOut()) {
+              SLTPStore.stopLossValue = '';
+              setFieldValue(Fields.STOP_LOSS, null);
+            }
+            break;
 
-        default:
-          break;
-      }
+          case TpSlTypeEnum.Price:
+            const soValue = +positionStopOutByPrice(+SLTPStore.stopLossValue);
+            if (soValue <= 0 && Math.abs(soValue) >= postitionStopOut()) {
+              SLTPStore.stopLossValue = '';
+              setFieldValue(Fields.STOP_LOSS, null);
+            }
+            break;
 
-      if (SLTPStore.updateToppingUp) {
-        SLTPStore.updateToppingUp = false;
+          default:
+            break;
+        }
+        SLTPStore.toggleDeleteToppingUp(false);
       }
     });
-  });
-
-  useEffect(() => {
-    console.log('topping up value:', values.isToppingUpActive)
-  }, [values])
+    return () => {
+      disposer();
+    };
+  }, []);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
