@@ -349,5 +349,9 @@
     "Restarting session": "Restarting session",
     "Max 49 symbols": "Max 49 symbols",
     "Cardholder name is invalid": "Cardholder name is invalid",
-    "Open Price can not be zero": "Open Price can not be zero"
+    "Open Price can not be zero": "Open Price can not be zero",
+    "Auto-increase trade amount": "Auto-increase trade amount",
+    "On": "On",
+    "Off": "Off",
+    "If the loss for a position reaches 95%, an additional 20% of the original investment amount is reserved from your balance to keep your position open.": "If the loss for a position reaches 95%, an additional 20% of the original investment amount is reserved from your balance to keep your position open."
 }
