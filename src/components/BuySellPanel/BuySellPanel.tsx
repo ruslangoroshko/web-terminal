@@ -42,6 +42,7 @@ import { useTranslation } from 'react-i18next';
 import mixapanelProps from '../../constants/mixpanelProps';
 import mixpanelValues from '../../constants/mixpanelValues';
 import KeysInApi from '../../constants/keysInApi';
+import { autorun } from 'mobx';
 
 // TODO: too much code, refactor
 
@@ -85,6 +86,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       sl: null,
       slType: null,
       tpType: null,
+      isToppingUpActive: false,
     }),
     [instrument, mainAppStore.activeAccount?.id]
   );
@@ -233,23 +235,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 )}`,
                 (value) => value > currentPriceBid()
               ),
-          })
-          .when([Fields.STOP_LOSS_TYPE], {
-            is: (slType) => slType === TpSlTypeEnum.Currency,
-            then: yup
-              .number()
-              .nullable()
-              .test(
-                Fields.STOP_LOSS,
-                t('Stop loss level can not be lower than the Invest amount'),
-                function (value) {
-                  return value < this.parent[Fields.AMOUNT];
-                }
-              ),
           }),
         openPrice: yup.number().nullable(),
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
+        isToppingUpActive: yup.boolean(),
       }),
     [
       instrument,
@@ -525,15 +515,21 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         if (response.length > 0) {
           setFieldValue(Fields.MULTIPLIER, parseInt(response));
         } else {
-          const realMultiplier = instrumentsStore.instruments.find(item => item.instrumentItem.id === instrument.id)
-            ?.instrumentItem.multiplier[0] || instrument.multiplier[0];
+          const realMultiplier =
+            instrumentsStore.instruments.find(
+              (item) => item.instrumentItem.id === instrument.id
+            )?.instrumentItem.multiplier[0] || instrument.multiplier[0];
           setFieldValue(Fields.MULTIPLIER, realMultiplier);
         }
         fetchDefaultInvestAmount();
       } catch (error) {}
     }
     fetchMultiplier();
-  }, [mainAppStore.activeAccount?.id, instrument, instrumentsStore.instruments]);
+  }, [
+    mainAppStore.activeAccount?.id,
+    instrument,
+    instrumentsStore.instruments,
+  ]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const newValue = increase
@@ -650,6 +646,91 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
   };
 
+  /**
+   *  Stop Out max level
+   */
+  const postitionStopOut = useCallback(() => {
+    const invest = values.investmentAmount || 0;
+    const instrumentPercentSL = (instrument?.stopOutPercent || 95) / 100;
+    return invest * instrumentPercentSL;
+  }, [instrument, values]);
+
+  /**
+   *  Stop Out max level by price SL
+   */
+  const positionStopOutByPrice = useCallback(
+    (slPrice: number) => {
+      let currentPrice, so_level, so_percent, direction, isBuy;
+      isBuy = values.operation === AskBidEnum.Buy;
+      currentPrice = isBuy ? currentPriceBid() : currentPriceAsk();
+      so_level = -1 * postitionStopOut();
+      so_percent = (instrument.stopOutPercent || 0) / 100;
+      direction = values.operation === AskBidEnum.Buy ? 1 : -1;
+
+      return (
+        (slPrice / currentPrice - 1) *
+          values.investmentAmount *
+          values.multiplier *
+          direction +
+        Math.abs(
+          quotesStore.quotes[instrument.id].bid.c -
+            quotesStore.quotes[instrument.id].ask.c
+        ).toFixed(instrument.digits)
+      );
+    },
+    [currentPriceAsk, currentPriceBid, values]
+  );
+
+  useEffect(() => {
+    const disposer = autorun(() => {
+      if (!SLTPStore.deleteToppingUp) {
+        switch (SLTPStore.autoCloseSLType) {
+          case TpSlTypeEnum.Currency:
+            if (+SLTPStore.stopLossValue >= postitionStopOut()) {
+              SLTPStore.toggleToppingUp(true);
+            }
+            break;
+
+          case TpSlTypeEnum.Price:
+            const soValue = +positionStopOutByPrice(+SLTPStore.stopLossValue);
+            if (soValue <= 0 && Math.abs(soValue) >= postitionStopOut()) {
+              SLTPStore.toggleToppingUp(true);
+            }
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      if (!SLTPStore.isToppingUpActive && SLTPStore.stopLossValue !== '') {
+        switch (SLTPStore.autoCloseSLType) {
+          case TpSlTypeEnum.Currency:
+            if (+SLTPStore.stopLossValue >= postitionStopOut()) {
+              SLTPStore.stopLossValue = '';
+              setFieldValue(Fields.STOP_LOSS, null);
+            }
+            break;
+
+          case TpSlTypeEnum.Price:
+            const soValue = +positionStopOutByPrice(+SLTPStore.stopLossValue);
+            if (soValue <= 0 && Math.abs(soValue) >= postitionStopOut()) {
+              SLTPStore.stopLossValue = '';
+              setFieldValue(Fields.STOP_LOSS, null);
+            }
+            break;
+
+          default:
+            break;
+        }
+        SLTPStore.toggleDeleteToppingUp(false);
+      }
+    });
+    return () => {
+      disposer();
+    };
+  }, []);
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -657,17 +738,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     };
   }, []);
 
-  useEffect(
-    () => {
-      SLTPStore.purchaseAtValue = '';
-      const oldMultiplier = values.multiplier;
-      const oldAmount = values.investmentAmount;
-      setLoading(true);
-      resetForm();
-      setFieldValue(Fields.MULTIPLIER, oldMultiplier);
-      setFieldValue(Fields.AMOUNT, oldAmount);
-    }, [mainAppStore.activeAccount, instrumentsStore.activeInstrument]
-  )
+  useEffect(() => {
+    SLTPStore.purchaseAtValue = '';
+    const oldMultiplier = values.multiplier;
+    const oldAmount = values.investmentAmount;
+    setLoading(true);
+    resetForm();
+    setFieldValue(Fields.MULTIPLIER, oldMultiplier);
+    setFieldValue(Fields.AMOUNT, oldAmount);
+  }, [mainAppStore.activeAccount, instrumentsStore.activeInstrument]);
 
   const onKeyDown = (keyEvent: any) => {
     if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
@@ -733,14 +812,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
           <FlexContainer alignItems="center" ref={investAmountRef}>
             <Observer>
-              {() => <InvestInput
-                {...getFieldProps(Fields.AMOUNT)}
-                value={isLoading ? null : getFieldProps(Fields.AMOUNT).value}
-                onBeforeInput={investOnBeforeInputHandler}
-                onChange={investOnChangeHandler}
-                onFocus={investOnFocusHandler}
-                onBlur={investOnBlurHandler}
-              />}
+              {() => (
+                <InvestInput
+                  {...getFieldProps(Fields.AMOUNT)}
+                  value={isLoading ? '' : getFieldProps(Fields.AMOUNT).value}
+                  onBeforeInput={investOnBeforeInputHandler}
+                  onChange={investOnChangeHandler}
+                  onFocus={investOnFocusHandler}
+                  onBlur={investOnBlurHandler}
+                />
+              )}
             </Observer>
             {investedAmountDropdown && (
               <InvestAmountDropdown
@@ -872,7 +953,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           </PrimaryTextSpan>
           <Observer>
             {() => (
-              <PrimaryTextSpan fontSize="12px" color={isLoading ? '#fffccc00' : '#fffccc'}>
+              <PrimaryTextSpan
+                fontSize="12px"
+                color={isLoading ? '#fffccc00' : '#fffccc'}
+              >
                 {mainAppStore.activeAccount?.symbol}
                 {(values.investmentAmount * values.multiplier).toFixed(
                   PRECISION_USD
