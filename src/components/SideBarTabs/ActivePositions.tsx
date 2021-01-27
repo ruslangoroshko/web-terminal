@@ -84,6 +84,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
       investmentAmount: position.investmentAmount,
       multiplier: position.multiplier,
       closedByChart: false,
+      isToppingUpActive: position.isToppingUpActive
     }),
     [position]
   );
@@ -205,6 +206,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
           }),
         tpType: yup.number().nullable(),
         slType: yup.number().nullable(),
+        isToppingUpActive: yup.boolean()
       }),
     [position, currentPriceBid, currentPriceAsk]
   );
@@ -1000,6 +1002,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
       }
     };
   }, []);
+
+  const handleToggleToppingUp = (on: boolean) => {
+    setFieldValue(Fields.IS_TOPPING_UP, on)
+  }
 
   useEffect(() => {
     if (ready) {

@@ -19,6 +19,7 @@ import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import validationInputTexts from '../../constants/validationInputTexts';
 import { PositionModelWSDTO } from '../../types/Positions';
 import { useTranslation } from 'react-i18next';
+import TopingUpCheck from './TopingUpCheck';
 
 interface Props {
   takeProfitValue: PositionModelWSDTO['tp'];
@@ -39,7 +40,7 @@ interface Props {
   investAmount?: number;
 }
 
-const SetAutoclose: FC<Props> = observer(props => {
+const SetAutoclose: FC<Props> = observer((props) => {
   const {
     takeProfitValue,
     stopLossValue,
@@ -55,7 +56,7 @@ const SetAutoclose: FC<Props> = observer(props => {
     toggleOut,
     instrumentId,
     digits,
-    investAmount
+    investAmount,
   } = props;
 
   const { t } = useTranslation();
@@ -81,8 +82,10 @@ const SetAutoclose: FC<Props> = observer(props => {
 
       case TpSlTypeEnum.Price:
         if (instrumentId) {
-          PRECISION = instrumentsStore.instruments.find(instrument =>
-            instrument.instrumentItem.id === instrumentId)?.instrumentItem.digits || 2
+          PRECISION =
+            instrumentsStore.instruments.find(
+              (instrument) => instrument.instrumentItem.id === instrumentId
+            )?.instrumentItem.digits || 2;
         } else {
           PRECISION = 2;
         }
@@ -146,6 +149,13 @@ const SetAutoclose: FC<Props> = observer(props => {
     setActiveNowSL(false);
     setErrorHighLevel(false);
     SLTPStore.stopLossValue = e.target.value.replace(',', '.');
+    console.log('change sl');
+  };
+
+  const handleChangeTopingUp = (on: boolean) => {
+    console.log('toggle')
+    SLTPStore.toggleToppingUp(on);
+    SLTPStore.updateToppingUp = true;
   };
 
   const handleApplyValues = async () => {
@@ -166,14 +176,20 @@ const SetAutoclose: FC<Props> = observer(props => {
 
   const getActiveTP = () => {
     const checkType = SLTPStore.autoCloseTPType === TpSlTypeEnum.Price;
-    return (!!digits && checkType && activeNowTP && SLTPStore.takeProfitValue !== '')
+    return !!digits &&
+      checkType &&
+      activeNowTP &&
+      SLTPStore.takeProfitValue !== ''
       ? parseFloat(SLTPStore.takeProfitValue).toFixed(digits)
       : SLTPStore.takeProfitValue;
   };
 
   const getActiveSL = () => {
     const checkType = SLTPStore.autoCloseSLType === TpSlTypeEnum.Price;
-    return (!!digits && checkType && activeNowSL && SLTPStore.stopLossValue !== '')
+    return !!digits &&
+      checkType &&
+      activeNowSL &&
+      SLTPStore.stopLossValue !== ''
       ? parseFloat(SLTPStore.stopLossValue).toFixed(digits)
       : SLTPStore.stopLossValue;
   };
@@ -181,10 +197,7 @@ const SetAutoclose: FC<Props> = observer(props => {
   const beforeApply = () => {
     const checkTP = parseFloat(getActiveTP()) === 0;
     const checkSL = parseFloat(getActiveSL()) === 0;
-    const checkSLLevel = (investAmount &&
-      SLTPStore.autoCloseSLType === TpSlTypeEnum.Currency)
-      ? parseFloat(getActiveSL()) >= investAmount
-      : false;
+    const checkSLLevel = false;
     if (checkSL) {
       setErrorSL(true);
     } else {
@@ -259,7 +272,7 @@ const SetAutoclose: FC<Props> = observer(props => {
       position="relative"
       padding="16px"
       flexDirection="column"
-      width="200px"
+      width="250px"
     >
       <ButtonClose type="button" onClick={handleToggle}>
         <SvgIcon
@@ -437,6 +450,49 @@ const SetAutoclose: FC<Props> = observer(props => {
           isDisabled={isDisabled}
         ></PnLTypeDropdown>
       </InputWrapper>
+
+      <FlexContainer flexDirection="column" width="100%" marginBottom="12px">
+        <FlexContainer
+          margin="0 0 6px 0"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <PrimaryTextSpan
+            fontSize="11px"
+            lineHeight="12px"
+            color="rgba(255, 255, 255, 0.3)"
+            textTransform="uppercase"
+          >
+            {t('Auto-increase trade amount')}
+          </PrimaryTextSpan>
+          <InformationPopup
+            classNameTooltip="autoclose-loss"
+            bgColor="#000"
+            width="200px"
+            direction="left"
+          >
+            <PrimaryTextSpan color="#fffccc" fontSize="12px">
+              {`${t('If the loss for a position reaches ')} ${
+                instrumentsStore.instruments.find(
+                  (inst) => inst.instrumentItem.id === instrumentId
+                )?.instrumentItem.stopOutPercent
+              }%, ${t(
+                'an additional 20% of the original investment amount is reserved from your balance to keep your position open.'
+              )}`}
+              
+            </PrimaryTextSpan>
+          </InformationPopup>
+        </FlexContainer>
+
+        <Observer>
+          {() => (
+            <TopingUpCheck
+              isActive={SLTPStore.isToppingUpActive}
+              onSelect={handleChangeTopingUp}
+            />
+          )}
+        </Observer>
+      </FlexContainer>
       <Observer>
         {() => (
           <>
@@ -490,7 +546,7 @@ const InputPnL = styled.input<{ typeSlTp?: TpSlTypeEnum | null }>`
   background-color: transparent;
   border: none;
   outline: none;
-  width: ${props => props.typeSlTp === TpSlTypeEnum.Currency ? '106px' : '120px'};
+  width: calc(100% - 40px);
   height: 100%;
   font-weight: bold;
   font-size: 14px;

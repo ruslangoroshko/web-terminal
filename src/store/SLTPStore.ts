@@ -7,6 +7,8 @@ interface ContextProps {
   takeProfitValue: string;
   stopLossValue: string;
   purchaseAtValue: string;
+  isToppingUpActive: boolean;
+  updateToppingUp: boolean;
 }
 
 export class SLTPStore implements ContextProps {
@@ -16,6 +18,8 @@ export class SLTPStore implements ContextProps {
   @observable stopLossValue: string = '';
   @observable purchaseAtValue: string = '';
   @observable openedBuySell: boolean = false;
+  @observable isToppingUpActive: boolean = false;
+  @observable updateToppingUp: boolean = false;
 
   @action
   clearStore = () => {
@@ -25,10 +29,13 @@ export class SLTPStore implements ContextProps {
     this.autoCloseTPType = null;
     this.autoCloseSLType = null;
     this.openedBuySell = false;
+    this.isToppingUpActive = false;
   };
 
   @action
   toggleBuySell = (value: boolean) => {
     this.openedBuySell = value;
   };
+
+  toggleToppingUp = (value: boolean) => this.isToppingUpActive = value;
 }

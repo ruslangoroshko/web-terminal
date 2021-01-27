@@ -168,6 +168,10 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
       setFieldValue(Fields.TAKE_PROFIT, null);
     };
 
+    const handleToggleToppingUp = (on: boolean) => {
+      setFieldValue(Fields.IS_TOPPING_UP, on)
+    }
+
     return (
       <FlexContainer position="relative" ref={wrapperRef}>
         <FlexContainer width="100%" position="relative">
