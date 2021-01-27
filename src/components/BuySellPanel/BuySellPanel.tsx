@@ -688,14 +688,14 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       if (!SLTPStore.deleteToppingUp) {
         switch (SLTPStore.autoCloseSLType) {
           case TpSlTypeEnum.Currency:
-            if (+SLTPStore.stopLossValue >= postitionStopOut()) {
+            if (+SLTPStore.stopLossValue > postitionStopOut()) {
               SLTPStore.toggleToppingUp(true);
             }
             break;
 
           case TpSlTypeEnum.Price:
             const soValue = +positionStopOutByPrice(+SLTPStore.stopLossValue);
-            if (soValue <= 0 && Math.abs(soValue) >= postitionStopOut()) {
+            if (soValue <= 0 && Math.abs(soValue) > postitionStopOut()) {
               SLTPStore.toggleToppingUp(true);
             }
             break;
@@ -708,7 +708,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       if (!SLTPStore.isToppingUpActive && SLTPStore.stopLossValue !== '') {
         switch (SLTPStore.autoCloseSLType) {
           case TpSlTypeEnum.Currency:
-            if (+SLTPStore.stopLossValue >= postitionStopOut()) {
+            if (+SLTPStore.stopLossValue > postitionStopOut()) {
               SLTPStore.stopLossValue = '';
               setFieldValue(Fields.STOP_LOSS, null);
             }
@@ -716,7 +716,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
           case TpSlTypeEnum.Price:
             const soValue = +positionStopOutByPrice(+SLTPStore.stopLossValue);
-            if (soValue <= 0 && Math.abs(soValue) >= postitionStopOut()) {
+            if (soValue <= 0 && Math.abs(soValue) > postitionStopOut()) {
               SLTPStore.stopLossValue = '';
               setFieldValue(Fields.STOP_LOSS, null);
             }
