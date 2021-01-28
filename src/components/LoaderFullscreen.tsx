@@ -69,6 +69,8 @@ const fadeOut = keyframes`
 `;
 
 const FixedContainerWrapper = styled.div<{ isLoading: boolean }>`
+  position: relative;
+  z-index: 105;
   animation: ${props =>
     !props.isLoading &&
     css`
