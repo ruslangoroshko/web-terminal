@@ -501,9 +501,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         if (response.length > 0) {
           setFieldValue(Fields.AMOUNT, parseFloat(response));
         } else {
-          setFieldValue(Fields.AMOUNT, mainAppStore.activeAccount?.isLive
-            ? DEFAULT_INVEST_AMOUNT_LIVE
-            : DEFAULT_INVEST_AMOUNT_DEMO
+          setFieldValue(
+            Fields.AMOUNT,
+            mainAppStore.activeAccount?.isLive
+              ? DEFAULT_INVEST_AMOUNT_LIVE
+              : DEFAULT_INVEST_AMOUNT_DEMO
           );
         }
         setLoading(false);
@@ -653,7 +655,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   const postitionStopOut = useCallback(() => {
     const invest = values.investmentAmount || 0;
     const instrumentPercentSL = (instrument?.stopOutPercent || 95) / 100;
-    return invest * instrumentPercentSL;
+    return +Number(invest * instrumentPercentSL).toFixed(2);
   }, [instrument, values]);
 
   /**
@@ -668,7 +670,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       so_percent = (instrument.stopOutPercent || 0) / 100;
       direction = values.operation === AskBidEnum.Buy ? 1 : -1;
 
-      return (
+      const result =
         (slPrice / currentPrice - 1) *
           values.investmentAmount *
           values.multiplier *
@@ -676,8 +678,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         Math.abs(
           quotesStore.quotes[instrument.id].bid.c -
             quotesStore.quotes[instrument.id].ask.c
-        ).toFixed(instrument.digits)
-      );
+        ).toFixed(instrument.digits);
+      return +Number(result).toFixed(2);
     },
     [currentPriceAsk, currentPriceBid, values]
   );
@@ -875,8 +877,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           {() => (
             <MultiplierDropdown
               onToggle={handleResetError}
-              multipliers={instrumentsStore.instruments.find(item => item.instrumentItem.id === instrument.id)
-                ?.instrumentItem.multiplier || instrument.multiplier}
+              multipliers={
+                instrumentsStore.instruments.find(
+                  (item) => item.instrumentItem.id === instrument.id
+                )?.instrumentItem.multiplier || instrument.multiplier
+              }
               selectedMultiplier={values.multiplier}
               setFieldValue={setFieldValue}
             ></MultiplierDropdown>

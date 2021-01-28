@@ -16,6 +16,7 @@ import ImageContainer from '../ImageContainer';
 import { useTranslation } from 'react-i18next';
 import { LOCAL_HISTORY_POSITION } from '../../constants/global';
 import { Observer } from 'mobx-react-lite';
+import closingReasonText from '../../constants/ClosingReasonText';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -246,6 +247,17 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
                       {getNumberSign(swaps)}
                       {currencySymbol}
                       {Math.abs(swaps).toFixed(2)}
+                    </PrimaryTextSpan>
+                  </FlexContainer>
+                  <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
+                    <PrimaryTextSpan
+                      color="rgba(255, 255, 255, 0.4)"
+                      fontSize="12px"
+                    >
+                      {t('Closing Reason')}
+                    </PrimaryTextSpan>
+                    <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      {t(closingReasonText[closeReason])}
                     </PrimaryTextSpan>
                   </FlexContainer>
                   <FlexContainer justifyContent="space-between">
