@@ -37,6 +37,7 @@ export interface OpenPositionModelFormik {
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
   openPrice?: number | null;
+  isToppingUpActive: boolean;
 }
 
 export interface OpenPositionResponseDTO {
@@ -59,6 +60,7 @@ export interface PositionModelWSDTO {
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
   timeStamp: number;
+  isToppingUpActive: boolean;
 }
 
 export interface ClosePositionModel {

@@ -48,7 +48,7 @@ interface Props {
   investAmount?: number;
   onToggle?: (arg0: boolean) => void;
 }
-const noop = () => {}
+const noop = () => {};
 const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
   (props, setAutocloseRef) => {
     const {
@@ -64,7 +64,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
       opened,
       instrumentId,
       investAmount,
-      onToggle = noop
+      onToggle = noop,
     } = props;
     const { mainAppStore, SLTPStore } = useStores();
     const [on, toggle] = useState(false);
@@ -107,6 +107,10 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
     }, []);
 
     useEffect(() => {
+      setFieldValue(Fields.IS_TOPPING_UP, SLTPStore.isToppingUpActive);
+    }, [SLTPStore.isToppingUpActive]);
+    
+    useEffect(() => {
       toggle(SLTPStore.openedBuySell);
     }, [opened]);
 
@@ -123,7 +127,10 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
         Fields.TAKE_PROFIT,
         SLTPStore.takeProfitValue === '' ? null : +SLTPStore.takeProfitValue
       );
-      await setFieldValue(Fields.STOP_LOSS, SLTPStore.stopLossValue === '' ? null : SLTPStore.stopLossValue);
+      await setFieldValue(
+        Fields.STOP_LOSS,
+        SLTPStore.stopLossValue === '' ? null : SLTPStore.stopLossValue
+      );
       SLTPStore.toggleBuySell(false);
       return new Promise<void>(async (resolve, reject) => {
         const errors = await validateForm();
@@ -166,6 +173,10 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
     const removeTP = () => {
       SLTPStore.takeProfitValue = '';
       setFieldValue(Fields.TAKE_PROFIT, null);
+    };
+
+    const handleToggleToppingUp = (on: boolean) => {
+      setFieldValue(Fields.IS_TOPPING_UP, on);
     };
 
     return (
@@ -259,9 +270,10 @@ const ButtonAutoClosePurchase = styled(SecondaryButton)<{
   height: 40px;
   width: 100%;
   margin-bottom: 14px;
-  text-align: ${props => props.hasValues && 'left'};
-  border: ${props => props.hasValues && '1px solid rgba(255, 255, 255, 0.1)'};
-  background-color: ${props => props.hasValues && 'rgba(255, 255, 255, 0.06)'};
+  text-align: ${(props) => props.hasValues && 'left'};
+  border: ${(props) => props.hasValues && '1px solid rgba(255, 255, 255, 0.1)'};
+  background-color: ${(props) =>
+    props.hasValues && 'rgba(255, 255, 255, 0.06)'};
 `;
 
 const ClearSLTPButton = styled(ButtonWithoutStyles)`
