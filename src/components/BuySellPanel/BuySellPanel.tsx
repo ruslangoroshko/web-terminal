@@ -530,8 +530,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
     fetchMultiplier();
   }, [
-    mainAppStore.activeAccount,
-    instrumentsStore.activeInstrument,
+    mainAppStore.activeAccount?.id,
+    instrumentsStore.activeInstrument?.instrumentItem.id
   ]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
@@ -749,7 +749,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     resetForm();
     setFieldValue(Fields.MULTIPLIER, oldMultiplier);
     setFieldValue(Fields.AMOUNT, oldAmount);
-  }, [mainAppStore.activeAccount, instrumentsStore.activeInstrument]);
+  }, [
+    mainAppStore.activeAccount?.id,
+    instrumentsStore.activeInstrument?.instrumentItem.id
+  ]);
 
   const onKeyDown = (keyEvent: any) => {
     if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
