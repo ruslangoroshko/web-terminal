@@ -655,7 +655,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   const postitionStopOut = useCallback(() => {
     const invest = values.investmentAmount || 0;
     const instrumentPercentSL = (instrument?.stopOutPercent || 95) / 100;
-    return invest * instrumentPercentSL;
+    return +Number(invest * instrumentPercentSL).toFixed(2);
   }, [instrument, values]);
 
   /**
