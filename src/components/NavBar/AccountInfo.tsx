@@ -56,7 +56,8 @@ const AccountInfo: FC<Props> = observer((props) => {
     tradingViewStore,
     withdrawalStore,
     dateRangeStore,
-    sortingStore
+    sortingStore,
+    markersOnChartStore
   } = useStores();
   const { push } = useHistory();
 
@@ -100,6 +101,7 @@ const AccountInfo: FC<Props> = observer((props) => {
     push(Page.DASHBOARD);
 
     setTimeout(() => {
+      markersOnChartStore.renderActivePositionsMarkersOnChart();
       notificationStore.notificationMessage = `${t(
         'Your account has been switched on'
       )} ${account.isLive ? t('Real') : t('Demo')}`;
