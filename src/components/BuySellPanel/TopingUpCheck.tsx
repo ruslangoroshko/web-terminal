@@ -26,22 +26,6 @@ const TopingUpCheck: FC = observer(() => {
     <FlexContainer backgroundColor="#2A2C33" borderRadius="4px" padding="2px">
       <CheckButton
         type="button"
-        onClick={handleClickOn}
-        isActive={SLTPStore.isToppingUpActive}
-      >
-        <PrimaryTextSpan
-          fontSize="14px"
-          fontWeight="bold"
-          color={
-            SLTPStore.isToppingUpActive ? '#1C1F26' : 'rgba(196, 196, 196, 0.5)'
-          }
-        >
-          {t('On')}
-        </PrimaryTextSpan>
-      </CheckButton>
-
-      <CheckButton
-        type="button"
         onClick={handleClickOff}
         isActive={!SLTPStore.isToppingUpActive}
       >
@@ -55,6 +39,21 @@ const TopingUpCheck: FC = observer(() => {
           }
         >
           {t('Off')}
+        </PrimaryTextSpan>
+      </CheckButton>
+      <CheckButton
+        type="button"
+        onClick={handleClickOn}
+        isActive={SLTPStore.isToppingUpActive}
+      >
+        <PrimaryTextSpan
+          fontSize="14px"
+          fontWeight="bold"
+          color={
+            SLTPStore.isToppingUpActive ? '#1C1F26' : 'rgba(196, 196, 196, 0.5)'
+          }
+        >
+          {t('On')}
         </PrimaryTextSpan>
       </CheckButton>
     </FlexContainer>

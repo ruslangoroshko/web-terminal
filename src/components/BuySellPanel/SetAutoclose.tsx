@@ -269,7 +269,7 @@ const SetAutoclose: FC<Props> = observer((props) => {
       position="relative"
       padding="16px"
       flexDirection="column"
-      width="250px"
+      width="252px"
     >
       <ButtonClose type="button" onClick={handleToggle}>
         <SvgIcon
@@ -448,7 +448,7 @@ const SetAutoclose: FC<Props> = observer((props) => {
         ></PnLTypeDropdown>
       </InputWrapper>
 
-      <FlexContainer flexDirection="column" width="100%" marginBottom="12px">
+      <FlexContainer flexDirection="column" width="100%" marginBottom="24px">
         <FlexContainer
           margin="0 0 6px 0"
           alignItems="center"
@@ -469,7 +469,7 @@ const SetAutoclose: FC<Props> = observer((props) => {
             direction="left"
           >
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              {`${t('If the loss for a position reaches ')} ${
+              {`${t('If the loss for a position reaches')} ${
                 instrumentsStore.instruments.find(
                   (inst) => inst.instrumentItem.id === instrumentId
                 )?.instrumentItem.stopOutPercent
