@@ -64,6 +64,7 @@ function AccountSecurity() {
   const { badRequestPopupStore, notificationStore, mainAppStore, quotesStore, instrumentsStore } = useStores();
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(false);
+  const [firstTimeLoad, setFirstTimeLoad] = useState(true);
 
   useEffect(() => {
     document.title = t('Change password');
@@ -136,6 +137,7 @@ function AccountSecurity() {
   }, [mainAppStore.activeAccount]);
 
   const handleSubmitForm = async () => {
+    setFirstTimeLoad(false);
     setIsLoading(true);
 
     try {
@@ -224,14 +226,14 @@ function AccountSecurity() {
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
 
-      <Observer>
+      {!firstTimeLoad && <Observer>
         {() => (
           <LoaderForComponents
             isLoading={isLoading}
             backgroundColor="#252637"
           />
         )}
-      </Observer>
+      </Observer>}
       <FlexContainer flexDirection="column">
         <PrimaryTextSpan
           color="#FFFCCC"
