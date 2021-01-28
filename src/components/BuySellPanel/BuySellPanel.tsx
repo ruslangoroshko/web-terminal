@@ -528,9 +528,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
     fetchMultiplier();
   }, [
-    mainAppStore.activeAccount?.id,
-    instrument,
-    instrumentsStore.instruments,
+    mainAppStore.activeAccount,
+    instrumentsStore.activeInstrument,
   ]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
