@@ -124,6 +124,7 @@ const PurchaseAtPopup: FC<Props> = ({
 
   const clearPurchaseAt = () => {
     setFieldValue(Fields.PURCHASE_AT, null);
+    SLTPStore.purchaseAtValue = '';
   };
 
   const setCurrentPrice = (value: string) => () => {
