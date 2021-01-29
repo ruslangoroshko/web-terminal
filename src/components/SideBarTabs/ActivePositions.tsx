@@ -42,9 +42,14 @@ import { LOCAL_POSITION } from '../../constants/global';
 interface Props {
   position: PositionModelWSDTO;
   ready: boolean;
+  needScroll?: boolean;
 }
 
-const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
+const ActivePositionsPortfolioTab: FC<Props> = ({
+  position,
+  ready,
+  needScroll
+}) => {
   const isBuy = position.operation === AskBidEnum.Buy;
 
   const instrumentRef = useRef<HTMLDivElement>(document.createElement('div'));
@@ -1115,6 +1120,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({ position, ready }) => {
                   bgColor="#000"
                   width="200px"
                   direction="bottom"
+                  needScroll={needScroll}
                 >
                   <FlexContainer flexDirection="column" width="100%">
                     <FlexContainer

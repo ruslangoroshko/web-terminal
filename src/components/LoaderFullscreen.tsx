@@ -71,6 +71,7 @@ const fadeOut = keyframes`
 const FixedContainerWrapper = styled.div<{ isLoading: boolean }>`
   position: relative;
   z-index: 105;
+  will-change: opacity, visibility;
   animation: ${props =>
     !props.isLoading &&
     css`
