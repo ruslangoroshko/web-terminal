@@ -109,7 +109,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
     useEffect(() => {
       setFieldValue(Fields.IS_TOPPING_UP, SLTPStore.isToppingUpActive);
     }, [SLTPStore.isToppingUpActive]);
-    
+
     useEffect(() => {
       toggle(SLTPStore.openedBuySell);
     }, [opened]);
