@@ -12,255 +12,186 @@ import {
   PrimaryTextSpan,
   PrimaryTextParagraph,
 } from '../../styles/TextsElements';
-import Fields from '../../constants/fields';
-import {
-  PositionModelWSDTO,
-  OpenPositionModelFormik,
-} from '../../types/Positions';
 import { useStores } from '../../hooks/useStores';
 import SetAutoclose from './SetAutoclose';
 import IconClose from '../../assets/svg/icon-close.svg';
 import { SecondaryButton } from '../../styles/Buttons';
 import SvgIcon from '../SvgIcon';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
-import { FormikErrors } from 'formik';
 import { useTranslation } from 'react-i18next';
+import { useFormContext } from 'react-hook-form';
+import { FormValues } from './BuySellPanel';
+import Fields from '../../constants/fields';
 
 interface Props {
-  stopLossValue: PositionModelWSDTO['sl'];
-  stopLossType: PositionModelWSDTO['slType'];
-  takeProfitValue: PositionModelWSDTO['tp'];
-  takeProfitType: PositionModelWSDTO['tpType'];
-  stopLossError?: string;
-  takeProfitError?: string;
   isDisabled?: boolean;
-  setFieldValue: (
-    field: string,
-    value: any,
-    shouldValidate?: boolean | undefined
-  ) => any;
-  validateForm: (
-    values?: OpenPositionModelFormik | undefined
-  ) => Promise<FormikErrors<OpenPositionModelFormik>>;
-  setFieldError: (field: string, value: string | undefined) => void;
-  opened: boolean;
-  instrumentId: string;
-  investAmount?: number;
-  onToggle?: (arg0: boolean) => void;
 }
-const noop = () => {};
-const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
-  (props, setAutocloseRef) => {
-    const {
-      stopLossValue,
-      stopLossType,
-      takeProfitValue,
-      takeProfitType,
-      setFieldValue,
-      stopLossError,
-      takeProfitError,
-      validateForm,
-      setFieldError,
-      opened,
-      instrumentId,
-      investAmount,
-      onToggle = noop,
-    } = props;
-    const { mainAppStore, SLTPStore } = useStores();
-    const [on, toggle] = useState(false);
-    const { t } = useTranslation();
 
-    const wrapperRef = useRef<HTMLDivElement>(null);
-    const handleToggle = () => {
-      if (!on) {
-        setFieldError(Fields.TAKE_PROFIT, '');
-        setFieldError(Fields.STOP_LOSS, '');
+const AutoClosePopup = () => {
+  const { clearErrors, setValue, errors, getValues } = useFormContext<
+    FormValues
+  >();
+
+  const { mainAppStore } = useStores();
+  const [on, toggle] = useState(false);
+  const { t } = useTranslation();
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleToggle = () => {
+    toggle(!on);
+    if (!on) {
+      clearErrors(['tp', 'sl']);
+    }
+  };
+
+  const handleClickOutside = (e: any) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      handleClose();
+    }
+  };
+
+  const clearSLTP = async () => {
+    setValue('tp', null);
+    setValue('sl', null);
+    setValue('slType', null);
+    setValue('tpType', null);
+  };
+
+  const handleClose = () => {
+    //SLTPStore.toggleBuySell(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const isToppingUpActive = getValues(Fields.IS_TOPPING_UP);
+    setValue('isToppingUpActive', isToppingUpActive);
+  }, []);
+
+  const handleApplySetAutoClose = useCallback(async () => {
+    const { tp, sl, tpType, slType } = getValues();
+    setValue('tpType', tp ? tpType : null);
+    setValue('slType', sl ? slType : null);
+    return new Promise<void>(async (resolve, reject) => {
+      if (!Object.keys(errors).length) {
+        resolve();
+      } else {
+        reject();
       }
-      onToggle(!on);
-      SLTPStore.toggleBuySell(!on);
-    };
+    });
+  }, [errors]);
 
-    const handleClickOutside = (e: any) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-        handleClose();
-      }
-    };
+  const renderTPValue = () => {
+    const { tp, tpType } = getValues();
+    return `+${
+      tp !== null
+        ? `${
+            tpType === TpSlTypeEnum.Currency
+              ? mainAppStore.activeAccount?.symbol
+              : ''
+          }${tp}`
+        : t('Non Set')
+    }`;
+  };
 
-    const clearSLTP = async () => {
-      await setFieldValue(Fields.TAKE_PROFIT, null);
-      await setFieldValue(Fields.STOP_LOSS, null);
-      await setFieldValue(Fields.TAKE_PROFIT_TYPE, null);
-      await setFieldValue(Fields.STOP_LOSS_TYPE, null);
-      await validateForm();
-    };
+  const renderSLValue = () => {
+    const { sl, slType } = getValues();
+    return `—${
+      sl !== null
+        ? `${
+            slType === TpSlTypeEnum.Currency
+              ? mainAppStore.activeAccount?.symbol
+              : ''
+          }${sl}`
+        : t('Non Set')
+    }`;
+  };
+  const removeSL = () => {
+    setValue('sl', null);
+  };
 
-    const handleClose = () => {
-      SLTPStore.toggleBuySell(false);
-    };
+  const removeTP = () => {
+    setValue('tp', null);
+  };
 
-    useEffect(() => {
-      document.addEventListener('mousedown', handleClickOutside);
-
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }, []);
-
-    useEffect(() => {
-      setFieldValue(Fields.IS_TOPPING_UP, SLTPStore.isToppingUpActive);
-    }, [SLTPStore.isToppingUpActive]);
-
-    useEffect(() => {
-      toggle(SLTPStore.openedBuySell);
-    }, [opened]);
-
-    const handleApplySetAutoClose = useCallback(async () => {
-      await setFieldValue(
-        Fields.TAKE_PROFIT_TYPE,
-        SLTPStore.takeProfitValue ? SLTPStore.autoCloseTPType : null
-      );
-      await setFieldValue(
-        Fields.STOP_LOSS_TYPE,
-        SLTPStore.stopLossValue ? SLTPStore.autoCloseSLType : null
-      );
-      await setFieldValue(
-        Fields.TAKE_PROFIT,
-        SLTPStore.takeProfitValue === '' ? null : +SLTPStore.takeProfitValue
-      );
-      await setFieldValue(
-        Fields.STOP_LOSS,
-        SLTPStore.stopLossValue === '' ? null : SLTPStore.stopLossValue
-      );
-      SLTPStore.toggleBuySell(false);
-      return new Promise<void>(async (resolve, reject) => {
-        const errors = await validateForm();
-        if (!Object.keys(errors).length) {
-          resolve();
-        } else {
-          reject();
-        }
-      });
-    }, [SLTPStore.takeProfitValue, SLTPStore.stopLossValue]);
-
-    const renderTPValue = () => {
-      return `+${
-        takeProfitValue !== null
-          ? `${
-              takeProfitType === TpSlTypeEnum.Currency
-                ? mainAppStore.activeAccount?.symbol
-                : ''
-            }${takeProfitValue}`
-          : t('Non Set')
-      }`;
-    };
-
-    const renderSLValue = () => {
-      return `—${
-        stopLossValue !== null
-          ? `${
-              stopLossType === TpSlTypeEnum.Currency
-                ? mainAppStore.activeAccount?.symbol
-                : ''
-            }${stopLossValue}`
-          : t('Non Set')
-      }`;
-    };
-    const removeSL = () => {
-      SLTPStore.stopLossValue = '';
-      setFieldValue(Fields.STOP_LOSS, null);
-    };
-
-    const removeTP = () => {
-      SLTPStore.takeProfitValue = '';
-      setFieldValue(Fields.TAKE_PROFIT, null);
-    };
-
-    const handleToggleToppingUp = (on: boolean) => {
-      setFieldValue(Fields.IS_TOPPING_UP, on);
-    };
-
-    return (
-      <FlexContainer position="relative" ref={wrapperRef}>
-        <FlexContainer width="100%" position="relative">
-          <ButtonAutoClosePurchase
-            onClick={handleToggle}
-            type="button"
-            hasValues={!!(stopLossValue || takeProfitValue)}
-          >
-            <FlexContainer flexDirection="column">
-              {stopLossValue || takeProfitValue ? (
-                <FlexContainer
-                  justifyContent="space-between"
-                  alignItems="center"
-                  padding="0 20px 0 0"
-                  width="100%"
-                  flexWrap="wrap"
+  const {
+    sl,
+    slType,
+    tp,
+    tpType,
+    instrumentId,
+    investmentAmount,
+  } = getValues();
+  return (
+    <FlexContainer position="relative" ref={wrapperRef}>
+      <FlexContainer width="100%" position="relative">
+        <ButtonAutoClosePurchase
+          onClick={handleToggle}
+          type="button"
+          hasValues={!!(sl || tp)}
+        >
+          <FlexContainer flexDirection="column">
+            {sl || tp ? (
+              <FlexContainer
+                justifyContent="space-between"
+                alignItems="center"
+                padding="0 20px 0 0"
+                width="100%"
+                flexWrap="wrap"
+              >
+                <PrimaryTextSpan
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                  whiteSpace="nowrap"
+                  title={renderTPValue()}
+                  color="#fffccc"
+                  fontSize="14px"
                 >
-                  <PrimaryTextSpan
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                    whiteSpace="nowrap"
-                    title={renderTPValue()}
-                    color="#fffccc"
-                    fontSize="14px"
-                  >
-                    {renderTPValue()}
-                  </PrimaryTextSpan>
-                  <PrimaryTextSpan
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                    whiteSpace="nowrap"
-                    title={renderSLValue()}
-                    color="#fffccc"
-                    fontSize="14px"
-                  >
-                    {renderSLValue()}
-                  </PrimaryTextSpan>
-                </FlexContainer>
-              ) : (
-                <PrimaryTextParagraph color="#fffccc" fontSize="14px">
-                  {t('Set')}
-                </PrimaryTextParagraph>
-              )}
-            </FlexContainer>
-          </ButtonAutoClosePurchase>
-          {!!(stopLossValue || takeProfitValue) && (
-            <ClearSLTPButton type="button" onClick={clearSLTP}>
-              <SvgIcon
-                {...IconClose}
-                fillColor="rgba(255,255,255,0.4)"
-                hoverFillColor="#00FFDD"
-              />
-            </ClearSLTPButton>
-          )}
-        </FlexContainer>
-        {on && (
-          <FlexContainer
-            position="absolute"
-            top="20px"
-            right="100%"
-            ref={setAutocloseRef}
-          >
-            <SetAutoclose
-              handleApply={handleApplySetAutoClose}
-              stopLossValue={stopLossValue}
-              takeProfitValue={takeProfitValue}
-              stopLossType={stopLossType}
-              takeProfitType={takeProfitType}
-              slError={stopLossError}
-              tpError={takeProfitError}
-              toggle={SLTPStore.toggleBuySell}
-              removeSL={removeSL}
-              removeTP={removeTP}
-              instrumentId={instrumentId}
-              investAmount={investAmount}
-            />
+                  {renderTPValue()}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                  whiteSpace="nowrap"
+                  title={renderSLValue()}
+                  color="#fffccc"
+                  fontSize="14px"
+                >
+                  {renderSLValue()}
+                </PrimaryTextSpan>
+              </FlexContainer>
+            ) : (
+              <PrimaryTextParagraph color="#fffccc" fontSize="14px">
+                {t('Set')}
+              </PrimaryTextParagraph>
+            )}
           </FlexContainer>
+        </ButtonAutoClosePurchase>
+        {!!(sl || tp) && (
+          <ClearSLTPButton type="button" onClick={clearSLTP}>
+            <SvgIcon
+              {...IconClose}
+              fillColor="rgba(255,255,255,0.4)"
+              hoverFillColor="#00FFDD"
+            />
+          </ClearSLTPButton>
         )}
       </FlexContainer>
-    );
-  }
-);
+      {on && (
+        <FlexContainer position="absolute" top="20px" right="100%">
+          <SetAutoclose toggle={toggle} />
+        </FlexContainer>
+      )}
+    </FlexContainer>
+  );
+};
 
 export default AutoClosePopup;
 

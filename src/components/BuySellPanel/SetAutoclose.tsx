@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -11,69 +11,34 @@ import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
 import { useStores } from '../../hooks/useStores';
-import { Observer, observer } from 'mobx-react-lite';
+
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
-import validationInputTexts from '../../constants/validationInputTexts';
-import { PositionModelWSDTO } from '../../types/Positions';
 import { useTranslation } from 'react-i18next';
 import TopingUpCheck from './TopingUpCheck';
+import { useFormContext } from 'react-hook-form';
+import Fields from '../../constants/fields';
+import { FormValues } from './BuySellPanel';
 
 interface Props {
-  takeProfitValue: PositionModelWSDTO['tp'];
-  takeProfitType: PositionModelWSDTO['tpType'];
-  stopLossValue: PositionModelWSDTO['sl'];
-  stopLossType: PositionModelWSDTO['slType'];
-  slError?: string;
-  tpError?: string;
-  toggle: (arg0: boolean) => void;
-  handleApply?: () => Promise<void>;
   isDisabled?: boolean;
-  removeSL: () => void;
-  removeTP: () => void;
-  toggleOut?: () => void;
-  instrumentId?: string;
-  digits?: number;
-  active?: boolean;
-  investAmount?: number;
+  toggle: (arg0: boolean) => void;
 }
 
-const SetAutoclose: FC<Props> = observer((props) => {
-  const {
-    takeProfitValue,
-    stopLossValue,
-    stopLossType,
-    takeProfitType,
-    toggle,
-    handleApply,
-    isDisabled,
-    slError,
-    tpError,
-    removeSL,
-    removeTP,
-    toggleOut,
-    instrumentId,
-    digits,
-    investAmount,
-  } = props;
+const SetAutoclose: FC<Props> = (props) => {
+  const { isDisabled, toggle } = props;
 
   const { t } = useTranslation();
 
-  const { SLTPStore, instrumentsStore } = useStores();
+  const { getValues, setValue, errors } = useFormContext<FormValues>();
 
-  const [activeNowTP, setActiveNowTP] = useState(true);
-  const [activeNowSL, setActiveNowSL] = useState(true);
-
-  const [errorSL, setErrorSL] = useState<boolean>(false);
-  const [errorTP, setErrorTP] = useState<boolean>(false);
-  const [errorHighLevel, setErrorHighLevel] = useState<boolean>(false);
-  const [errorSLForm, setErrorSLForm] = useState<string | undefined>(slError);
-  const [errorTPForm, setErrorTPForm] = useState<string | undefined>(tpError);
+  const { instrumentsStore } = useStores();
 
   const handleBeforeInput = (fieldType: TpSlTypeEnum | null) => (e: any) => {
     let PRECISION = 2;
+    const instrumentId = getValues(Fields.INSTRUMNENT_ID);
 
     switch (fieldType) {
       case TpSlTypeEnum.Currency:
@@ -137,132 +102,35 @@ const SetAutoclose: FC<Props> = observer((props) => {
   };
 
   const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
-    setErrorTP(false);
-    setErrorTPForm(undefined);
-    setActiveNowTP(false);
-    SLTPStore.takeProfitValue = e.target.value.replace(',', '.');
+    setValue('tp', e.target.value.replace(',', '.'));
   };
 
   const handleChangeLoss = (e: ChangeEvent<HTMLInputElement>) => {
-    setErrorSL(false);
-    setErrorSLForm(undefined);
-    setActiveNowSL(false);
-    setErrorHighLevel(false);
-    SLTPStore.stopLossValue = e.target.value.replace(',', '.');
-  };
-
-  const handleApplyValues = async () => {
-    if (handleApply) {
-      try {
-        await handleApply();
-        toggle(false);
-      } catch (error) {}
-    }
+    setValue('sl', e.target.value.replace(',', '.'));
   };
 
   const handleToggle = () => {
     toggle(false);
-    if (!!toggleOut) {
-      toggleOut();
-    }
-  };
-
-  const getActiveTP = () => {
-    const checkType = SLTPStore.autoCloseTPType === TpSlTypeEnum.Price;
-    return !!digits &&
-      checkType &&
-      activeNowTP &&
-      SLTPStore.takeProfitValue !== ''
-      ? parseFloat(SLTPStore.takeProfitValue).toFixed(digits)
-      : SLTPStore.takeProfitValue;
-  };
-
-  const getActiveSL = () => {
-    const checkType = SLTPStore.autoCloseSLType === TpSlTypeEnum.Price;
-    return !!digits &&
-      checkType &&
-      activeNowSL &&
-      SLTPStore.stopLossValue !== ''
-      ? parseFloat(SLTPStore.stopLossValue).toFixed(digits)
-      : SLTPStore.stopLossValue;
-  };
-
-  const beforeApply = () => {
-    const checkTP = parseFloat(getActiveTP()) === 0;
-    const checkSL = parseFloat(getActiveSL()) === 0;
-    const checkSLLevel = false;
-    if (checkSL) {
-      setErrorSL(true);
-    } else {
-      setErrorSL(false);
-    }
-    if (checkTP) {
-      setErrorTP(true);
-    } else {
-      setErrorTP(false);
-    }
-    if (checkSLLevel) {
-      setErrorHighLevel(true);
-    } else {
-      setErrorHighLevel(false);
-    }
-    if (!checkTP && !checkSL && !checkSLLevel) {
-      setErrorSLForm(slError);
-      setErrorTPForm(tpError);
-      handleApplyValues();
-    }
-  };
-
-  const onRemoveTP = () => {
-    setErrorTP(false);
-    removeTP();
-  };
-
-  const onRemoveSL = () => {
-    setErrorSL(false);
-    setErrorHighLevel(false);
-    removeSL();
-  };
-
-  const getActualSLError = () => {
-    if (errorSL) {
-      return t(validationInputTexts.ZERO_ERROR_SL);
-    } else if (errorHighLevel) {
-      return t(validationInputTexts.STOP_LOSS_HIGHER);
-    } else {
-      return slError;
-    }
   };
 
   useEffect(() => {
-    SLTPStore.autoCloseSLType =
-      stopLossType !== null ? stopLossType : TpSlTypeEnum.Currency;
-    SLTPStore.autoCloseTPType =
-      takeProfitType !== null ? takeProfitType : TpSlTypeEnum.Currency;
-  }, [stopLossType, takeProfitType]);
-
-  useEffect(() => {
-    setErrorHighLevel(false);
-  }, [SLTPStore.autoCloseSLType]);
-
-  useEffect(() => {
-    SLTPStore.takeProfitValue =
-      takeProfitValue !== null ? takeProfitValue.toString() : '';
-    SLTPStore.stopLossValue =
-      stopLossValue !== null ? Math.abs(stopLossValue).toString() : '';
-  }, [stopLossValue, takeProfitValue]);
-
-  useEffect(() => {
-    setErrorSLForm(slError);
-  }, [slError]);
-
-  useEffect(() => {
-    setErrorTPForm(tpError);
-  }, [tpError]);
-
-  useEffect(() => {
-    SLTPStore.isToppingUpActive = false;
+    const { slType, tpType, tp, sl } = getValues();
+    setValue('slType', slType !== null ? slType : TpSlTypeEnum.Currency);
+    setValue('tpType', tpType !== null ? tpType : TpSlTypeEnum.Currency);
+    setValue('tp', tp !== null ? tp.toString() : '');
+    setValue('sl', sl !== null ? Math.abs(sl).toString() : '');
+    setValue('isToppingUpActive', false);
   }, []);
+
+  const { tp, tpType, sl, slType, instrumentId } = getValues();
+
+  const handleRemoveTp = () => {
+    setValue('tp', null);
+  };
+
+  const handleRemoveSl = () => {
+    setValue('sl', null);
+  };
 
   return (
     <Wrapper
@@ -308,57 +176,39 @@ const SetAutoclose: FC<Props> = observer((props) => {
         </InformationPopup>
       </FlexContainer>
       <InputWrapper
-        padding={
-          SLTPStore.autoCloseTPType === TpSlTypeEnum.Price
-            ? '0 0 0 8px'
-            : '0 0 0 22px'
-        }
+        padding={tpType === TpSlTypeEnum.Price ? '0 0 0 8px' : '0 0 0 22px'}
         margin="0 0 16px 0"
         height="32px"
         width="100%"
         position="relative"
       >
-        {(errorTPForm || errorTP) && (
+        {errors.tp && (
           <ErropPopup
             textColor="#fffccc"
             bgColor={ColorsPallete.RAZZMATAZZ}
             classNameTooltip={getProcessId()}
             direction="left"
           >
-            {errorTP ? t(validationInputTexts.ZERO_ERROR_TP) : tpError}
+            {errors.tp}
           </ErropPopup>
         )}
-        {SLTPStore.autoCloseTPType !== TpSlTypeEnum.Price && (
-          <PlusSign>+</PlusSign>
+        {tpType !== TpSlTypeEnum.Price && <PlusSign>+</PlusSign>}
+        <InputPnL
+          onBeforeInput={handleBeforeInput(tpType)}
+          placeholder={t('Non Set')}
+          onChange={handleChangeProfit}
+          disabled={isDisabled}
+        ></InputPnL>
+        {!!tp && !isDisabled && (
+          <CloseValueButtonWrapper position="absolute" top="50%" right="42px">
+            <ButtonWithoutStyles type="button" onClick={handleRemoveTp}>
+              <SvgIcon
+                {...IconClose}
+                fillColor="rgba(255, 255, 255, 0.6)"
+              ></SvgIcon>
+            </ButtonWithoutStyles>
+          </CloseValueButtonWrapper>
         )}
-        <Observer>
-          {() => (
-            <>
-              <InputPnL
-                onBeforeInput={handleBeforeInput(SLTPStore.autoCloseTPType)}
-                placeholder={t('Non Set')}
-                onChange={handleChangeProfit}
-                value={getActiveTP()}
-                disabled={isDisabled}
-                typeSlTp={SLTPStore.autoCloseTPType}
-              ></InputPnL>
-              {!!SLTPStore.takeProfitValue && !isDisabled && (
-                <CloseValueButtonWrapper
-                  position="absolute"
-                  top="50%"
-                  right="42px"
-                >
-                  <ButtonWithoutStyles type="button" onClick={onRemoveTP}>
-                    <SvgIcon
-                      {...IconClose}
-                      fillColor="rgba(255, 255, 255, 0.6)"
-                    ></SvgIcon>
-                  </ButtonWithoutStyles>
-                </CloseValueButtonWrapper>
-              )}
-            </>
-          )}
-        </Observer>
         <PnLTypeDropdown
           dropdownType="tp"
           isDisabled={isDisabled}
@@ -391,57 +241,40 @@ const SetAutoclose: FC<Props> = observer((props) => {
         </InformationPopup>
       </FlexContainer>
       <InputWrapper
-        padding={
-          SLTPStore.autoCloseSLType === TpSlTypeEnum.Price
-            ? '0 0 0 8px'
-            : '0 0 0 22px'
-        }
+        padding={slType === TpSlTypeEnum.Price ? '0 0 0 8px' : '0 0 0 22px'}
         margin={isDisabled ? '0' : '0 0 16px 0'}
         height="32px"
         width="100%"
         position="relative"
       >
-        {(errorSLForm || errorSL || errorHighLevel) && (
+        {errors.sl && (
           <ErropPopup
             textColor="#fffccc"
             bgColor={ColorsPallete.RAZZMATAZZ}
             classNameTooltip={getProcessId()}
             direction="left"
           >
-            {getActualSLError()}
+            {errors.sl}
           </ErropPopup>
         )}
-        {SLTPStore.autoCloseSLType !== TpSlTypeEnum.Price && (
-          <PlusSign>-</PlusSign>
+        {slType !== TpSlTypeEnum.Price && <PlusSign>-</PlusSign>}
+        <InputPnL
+          onBeforeInput={handleBeforeInput(slType)}
+          placeholder={t('Non Set')}
+          onChange={handleChangeLoss}
+          value={getValues(Fields.STOP_LOSS)}
+          disabled={isDisabled}
+        ></InputPnL>
+        {!!sl && !isDisabled && (
+          <CloseValueButtonWrapper position="absolute" top="50%" right="42px">
+            <ButtonWithoutStyles type="button" onClick={handleRemoveSl}>
+              <SvgIcon
+                {...IconClose}
+                fillColor="rgba(255, 255, 255, 0.6)"
+              ></SvgIcon>
+            </ButtonWithoutStyles>
+          </CloseValueButtonWrapper>
         )}
-        <Observer>
-          {() => (
-            <>
-              <InputPnL
-                onBeforeInput={handleBeforeInput(SLTPStore.autoCloseSLType)}
-                placeholder={t('Non Set')}
-                onChange={handleChangeLoss}
-                value={getActiveSL()}
-                disabled={isDisabled}
-                typeSlTp={SLTPStore.autoCloseSLType}
-              ></InputPnL>
-              {!!SLTPStore.stopLossValue && !isDisabled && (
-                <CloseValueButtonWrapper
-                  position="absolute"
-                  top="50%"
-                  right="42px"
-                >
-                  <ButtonWithoutStyles type="button" onClick={onRemoveSL}>
-                    <SvgIcon
-                      {...IconClose}
-                      fillColor="rgba(255, 255, 255, 0.6)"
-                    ></SvgIcon>
-                  </ButtonWithoutStyles>
-                </CloseValueButtonWrapper>
-              )}
-            </>
-          )}
-        </Observer>
         <PnLTypeDropdown
           dropdownType="sl"
           isDisabled={isDisabled}
@@ -482,27 +315,14 @@ const SetAutoclose: FC<Props> = observer((props) => {
 
         <TopingUpCheck />
       </FlexContainer>
-      <Observer>
-        {() => (
-          <>
-            {!isDisabled && (
-              <ButtonApply
-                onClick={beforeApply}
-                type="button"
-                disabled={
-                  SLTPStore.takeProfitValue === null &&
-                  SLTPStore.stopLossValue === null
-                }
-              >
-                {t('Apply')}
-              </ButtonApply>
-            )}
-          </>
-        )}
-      </Observer>
+      {!isDisabled && (
+        <ButtonApply type="button" disabled={tp === null && sl === null}>
+          {t('Apply')}
+        </ButtonApply>
+      )}
     </Wrapper>
   );
-});
+};
 
 export default SetAutoclose;
 
@@ -512,10 +332,10 @@ const Wrapper = styled(FlexContainer)`
   border-radius: 4px;
   background-color: #1c2026;
 
-  /* @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
     background-color: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(12px);
-  } */
+  }
 
   &:hover {
     cursor: default;
@@ -531,7 +351,7 @@ const ButtonClose = styled(ButtonWithoutStyles)`
   align-items: center;
 `;
 
-const InputPnL = styled.input<{ typeSlTp?: TpSlTypeEnum | null }>`
+const InputPnL = styled.input`
   background-color: transparent;
   border: none;
   outline: none;

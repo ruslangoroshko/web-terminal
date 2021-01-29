@@ -8,16 +8,16 @@ import {
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
 import { PrimaryButton } from '../../styles/Buttons';
-import { OpenPositionModelFormik } from '../../types/Positions';
 import { AskBidEnum } from '../../enums/AskBid';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
 import { useTranslation } from 'react-i18next';
+import { FormValues } from './BuySellPanel';
 
 interface Props {
   closePopup: () => void;
-  values: OpenPositionModelFormik;
+  values: FormValues;
   instrumentId: string;
   digits: number;
   disabled: boolean;

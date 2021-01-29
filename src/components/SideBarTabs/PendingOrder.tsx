@@ -167,16 +167,7 @@ const PendingOrder: FC<Props> = (props) => {
             </FlexContainer>
             <FlexContainer alignItems="center" ref={clickableWrapperRef}>
               <FlexContainer marginRight="4px">
-                <AutoClosePopupSideBar
-                  ref={instrumentRef}
-                  stopLossValue={pendingOrder.sl}
-                  takeProfitValue={pendingOrder.tp}
-                  stopLossType={pendingOrder.slType}
-                  takeProfitType={pendingOrder.tpType}
-                  removeTP={() => {}}
-                  removeSl={() => {}}
-                  isDisabled
-                >
+                <AutoClosePopupSideBar ref={instrumentRef} isDisabled>
                   <SvgIcon
                     {...IconSettings}
                     fillColor="rgba(255, 255, 255, 0.6)"

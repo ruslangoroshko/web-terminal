@@ -1,4 +1,11 @@
-import React, { ChangeEvent, useState, useRef, useEffect, FC } from 'react';
+import React, {
+  ChangeEvent,
+  useState,
+  useRef,
+  useEffect,
+  FC,
+  useMemo,
+} from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
@@ -16,27 +23,12 @@ import { useTranslation } from 'react-i18next';
 import InformationPopup from '../InformationPopup';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
+import { useFormContext } from 'react-hook-form';
+import { FormValues } from './BuySellPanel';
 
-interface Props {
-  setFieldValue: (field: any, value: any) => void;
-  purchaseAtValue?: number | null;
-  instrumentId: string;
-  digits: number;
-  onToggle?: (arg0: boolean) => void;
-  hasError?: boolean;
-  errorText?: string;
-}
-const noop = () => {};
+interface Props {}
 
-const PurchaseAtPopup: FC<Props> = ({
-  setFieldValue,
-  purchaseAtValue,
-  instrumentId,
-  digits,
-  onToggle = noop,
-}) => {
-  
-
+const PurchaseAtPopup: FC<Props> = () => {
   const [on, toggle] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -44,21 +36,17 @@ const PurchaseAtPopup: FC<Props> = ({
 
   const { t } = useTranslation();
 
-  const {
-    quotesStore,
-    SLTPStore,
-    instrumentsStore,
-    mainAppStore,
-  } = useStores();
+  const { quotesStore, instrumentsStore, mainAppStore } = useStores();
+
+  const { clearErrors, setValue, getValues } = useFormContext<FormValues>();
 
   const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputError(null);
-    SLTPStore.purchaseAtValue = e.target.value.replace(',', '.');
+    clearErrors('purchaseAt');
+    setValue('purchaseAt', e.target.value.replace(',', '.'));
   };
 
   const handleToggle = () => {
     toggle(!on);
-    onToggle(!on);
   };
 
   const handleClickOutside = (e: any) => {
@@ -68,13 +56,14 @@ const PurchaseAtPopup: FC<Props> = ({
   };
 
   const applyPurchaseAt = () => {
-    if (+SLTPStore.purchaseAtValue === 0) {
+    const purchaseAtValue = getValues(Fields.PURCHASE_AT);
+    if (purchaseAtValue === 0) {
       setInputError(`${t('Open Price can not be zero')}`);
       return;
     } else {
       setInputError(null);
     }
-    setFieldValue(Fields.PURCHASE_AT, +SLTPStore.purchaseAtValue);
+    setValue('purchaseAt', purchaseAtValue);
     toggle(false);
   };
 
@@ -123,38 +112,35 @@ const PurchaseAtPopup: FC<Props> = ({
   };
 
   const clearPurchaseAt = () => {
-    setFieldValue(Fields.PURCHASE_AT, null);
-    SLTPStore.purchaseAtValue = '';
+    setValue('purchaseAt', null);
   };
 
   const setCurrentPrice = (value: string) => () => {
-    SLTPStore.purchaseAtValue = value;
+    setValue('purchaseAt', value);
   };
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    SLTPStore.purchaseAtValue = purchaseAtValue ? `${purchaseAtValue}` : '';
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  const { instrumentId, purchaseAt } = getValues();
 
-  useEffect(() => {
-    setInputError(null);
-  }, [instrumentsStore.activeInstrument, mainAppStore.activeAccount]);
+  const digits = useMemo(
+    () =>
+      instrumentsStore.instruments.find(
+        (item) => item.instrumentItem.id === instrumentId
+      )?.instrumentItem.digits || 2,
+    [instrumentId]
+  );
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
-      {purchaseAtValue ? (
+      {purchaseAt ? (
         <FlexContainer position="relative" width="100%">
           <ButtonAutoClosePurchase
             onClick={handleToggle}
             type="button"
-            hasPrice={!!(purchaseAtValue || purchaseAtValue === 0)}
+            hasPrice={!!(purchaseAt || purchaseAt === 0)}
           >
             <PrimaryTextSpan color="#fffccc" fontSize="14px">
               {mainAppStore.activeAccount?.symbol}
-              {purchaseAtValue}
+              {purchaseAt}
             </PrimaryTextSpan>
           </ButtonAutoClosePurchase>
           <ClearPurchaseAtButton type="button" onClick={clearPurchaseAt}>
@@ -169,7 +155,7 @@ const PurchaseAtPopup: FC<Props> = ({
         <ButtonAutoClosePurchase
           onClick={handleToggle}
           type="button"
-          hasPrice={!!purchaseAtValue}
+          hasPrice={!!purchaseAt}
         >
           <PrimaryTextSpan color="#fffccc" fontSize="14px">
             {t('Set Price')}
@@ -243,7 +229,6 @@ const PurchaseAtPopup: FC<Props> = ({
                   <InputPnL
                     onBeforeInput={handleBeforeInput}
                     onChange={handleChangePurchaseAt}
-                    value={SLTPStore.purchaseAtValue}
                     placeholder={t('Non Set')}
                   ></InputPnL>
                 )}

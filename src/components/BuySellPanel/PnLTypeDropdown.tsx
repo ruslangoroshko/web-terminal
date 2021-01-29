@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import Toggle from '../Toggle';
@@ -8,11 +8,13 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SvgIcon from '../SvgIcon';
 
 import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
-import { useStores } from '../../hooks/useStores';
 import autoCloseTypes from '../../constants/autoCloseTypes';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { Observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
+import { useFormContext } from 'react-hook-form';
+import { FormValues } from './BuySellPanel';
+import Fields from '../../constants/fields';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
@@ -20,41 +22,32 @@ interface Props {
 }
 
 const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
-  const { SLTPStore } = useStores();
   const { t } = useTranslation();
+
+  const { getValues, setValue, watch } = useFormContext<FormValues>();
+
   const handleAutoClose = (
     autoClose: TpSlTypeEnum,
     toggle: () => void
   ) => () => {
-    switch (dropdownType) {
-      case 'sl':
-        SLTPStore.autoCloseSLType = autoClose;
-        break;
-
-      case 'tp':
-        SLTPStore.autoCloseTPType = autoClose;
-        break;
-    }
-
+    setValue(dropdownType, autoClose);
     toggle();
   };
 
   const availableAutoCloseTypes = [TpSlTypeEnum.Currency, TpSlTypeEnum.Price];
 
   const renderSymbol = () => {
+    const { tpType, slType } = getValues();
     switch (dropdownType) {
       case 'sl':
+        console.log(slType);
         return autoCloseTypes[
-          SLTPStore.autoCloseSLType !== null
-            ? SLTPStore.autoCloseSLType
-            : TpSlTypeEnum.Currency
+          slType !== undefined ? slType : TpSlTypeEnum.Currency
         ].symbol;
 
       case 'tp':
         return autoCloseTypes[
-          SLTPStore.autoCloseTPType !== null
-            ? SLTPStore.autoCloseTPType
-            : TpSlTypeEnum.Currency
+          tpType !== undefined ? tpType : TpSlTypeEnum.Currency
         ].symbol;
 
       default:
@@ -92,7 +85,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
               right="0"
               flexDirection="column"
             >
-              {availableAutoCloseTypes.map(key => (
+              {availableAutoCloseTypes.map((key) => (
                 <ProfitPercentPrice
                   key={key}
                   justifyContent="space-between"
@@ -130,14 +123,14 @@ const DropdownButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
   padding-left: 8px;
   height: 100%;
   width: 38px;
-  background-color: ${props => (props.isActive ? '#000000' : 'transparent')};
+  background-color: ${(props) => (props.isActive ? '#000000' : 'transparent')};
   border-radius: 2px 2px 2px 0;
 
   &:before {
     content: '';
     position: absolute;
     background-color: transparent;
-    ${props => props.isActive && OuterBorderRadius}
+    ${(props) => props.isActive && OuterBorderRadius}
   }
 
   &:disabled:hover {
