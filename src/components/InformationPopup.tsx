@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useRef } from 'react';
 import { FlexContainer, FlexContainerProps } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import SvgIcon from './SvgIcon';
@@ -10,13 +10,20 @@ interface Props {
   classNameTooltip: string;
   direction: 'top' | 'right' | 'left' | 'bottom';
   width: string;
+  needScroll?: boolean;
 }
 
 const InformationPopup: FC<Props> = props => {
-  const { bgColor, children, classNameTooltip, direction, width } = props;
+  const { bgColor, children, classNameTooltip, direction, width, needScroll } = props;
+  const infoBlock = useRef<HTMLDivElement>(null);
+  const handleHover = () => {
+    if (needScroll) {
+      infoBlock.current?.scrollIntoView();
+    }
+  };
   return (
     <FlexContainer position="relative">
-      <InfoIcon classNameTooltip={classNameTooltip}>
+      <InfoIcon onMouseEnter={handleHover} classNameTooltip={classNameTooltip}>
         <SvgIcon {...IconInfo} fillColor="rgba(255, 255, 255, 0.6)" />
       </InfoIcon>
       <TooltipWrapper
@@ -27,6 +34,7 @@ const InformationPopup: FC<Props> = props => {
         backgroundColor={bgColor}
         className={classNameTooltip}
         zIndex="103"
+        ref={infoBlock}
       >
         {children}
       </TooltipWrapper>

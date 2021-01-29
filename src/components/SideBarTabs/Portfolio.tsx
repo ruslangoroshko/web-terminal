@@ -167,8 +167,13 @@ const Portfolio: FC<Props> = () => {
       <Observer>
         {() => (
           <ActivePositionsWrapper flexDirection="column">
-            {quotesStore.sortedActivePositions.map((item) => (
-              <ActivePositionsPortfolioTab ready={tradingViewStore.tradingWidgetReady} key={item.id} position={item} />
+            {quotesStore.sortedActivePositions.map((item, index) => (
+              <ActivePositionsPortfolioTab
+                needScroll={index >= quotesStore.sortedActivePositions.length - 2}
+                ready={tradingViewStore.tradingWidgetReady}
+                key={item.id}
+                position={item}
+              />
             ))}
             {!quotesStore.sortedActivePositions.length && (
               <FlexContainer
@@ -245,6 +250,7 @@ const ActivePositionsWrapper = styled(FlexContainer)`
   overflow-y: auto;
   height: 100%;
   max-height: calc(100% - 205px);
+  scroll-behavior: smooth;
 
   ::-webkit-scrollbar {
     width: 4px;
