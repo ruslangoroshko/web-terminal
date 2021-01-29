@@ -54,20 +54,28 @@ export default LoaderFullscreen;
 const fadeOut = keyframes`
     0 {
         opacity: 1;
+        visibility: visible;
+    }
+
+    99% {
+        opacity: 0;
+        visibility: visible;
     }
 
     100% {
         opacity: 0;
+        visibility: hidden;
     }
 `;
 
 const FixedContainerWrapper = styled.div<{ isLoading: boolean }>`
   position: relative;
   z-index: 105;
+  will-change: opacity, visibility;
   animation: ${props =>
     !props.isLoading &&
     css`
-      ${fadeOut} 1s linear forwards
+      ${fadeOut} 0.5s linear forwards
     `};
 `;
 
