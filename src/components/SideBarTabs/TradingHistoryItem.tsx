@@ -21,6 +21,7 @@ import closingReasonText from '../../constants/ClosingReasonText';
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
   currencySymbol: string;
+  needScroll?: boolean;
 }
 
 const TradingHistoryItem: FC<Props> = (props: Props) => {
@@ -42,6 +43,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
       swap: swaps,
     },
     currencySymbol,
+    needScroll
   } = props;
 
   // TODO: think about rotate 180
@@ -158,8 +160,9 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
                 bgColor="#000"
                 width="200px"
                 direction="left"
+                needScroll={needScroll}
               >
-                <FlexContainer flexDirection="column" width="100%">
+                <InfoInner flexDirection="column" width="100%">
                   <FlexContainer
                     justifyContent="space-between"
                     margin="0 0 8px 0"
@@ -271,7 +274,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
                       {id}
                     </PrimaryTextSpan>
                   </FlexContainer>
-                </FlexContainer>
+                </InfoInner>
               </InformationPopup>
             </FlexContainer>
           </FlexContainer>
@@ -285,6 +288,19 @@ export default TradingHistoryItem;
 
 const TradingHistoryItemWrapperBorder = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+`;
+
+const InfoInner = styled(FlexContainer)`
+  position: relative;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: -40px;
+    bottom: 0;
+    opacity: 0;
+  }
 `;
 
 const TradingHistoryItemWrapper = styled(FlexContainer)`

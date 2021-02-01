@@ -182,11 +182,12 @@ const TradingHistory: FC = observer(() => {
               }
             >
               {historyStore.positionsHistoryReport.positionsHistory.map(
-                (item) => (
+                (item, index) => (
                   <TradingHistoryItem
                     key={item.id}
                     tradingHistoryItem={item}
                     currencySymbol={mainAppStore.activeAccount?.symbol || ''}
+                    needScroll={index >= historyStore.positionsHistoryReport.positionsHistory.length - 3}
                   />
                 )
               )}
@@ -229,6 +230,7 @@ const PortfolioWrapper = styled(FlexContainer)`
 const TradingHistoryWrapper = styled(FlexContainer)`
   overflow-y: auto;
   height: 100%;
+  scroll-behavior: smooth;
 
   ::-webkit-scrollbar {
     width: 4px;
