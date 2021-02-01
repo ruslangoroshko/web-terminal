@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
-import { FormValues } from './BuySellPanel';
+import { FormValues } from '../../types/Positions';
 
 const TopingUpCheck: FC = observer(() => {
   const { t } = useTranslation();

@@ -43,6 +43,7 @@ import KeysInApi from '../../constants/keysInApi';
 import { autorun } from 'mobx';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { FormValues } from '../../types/Positions';
 
 // TODO: too much code, refactor
 
@@ -53,22 +54,6 @@ const MAX_INPUT_VALUE = 9999999.99;
 
 interface Props {
   instrument: InstrumentModelWSDTO;
-}
-
-export interface FormValues {
-  processId: string;
-  accountId: string;
-  instrumentId: string;
-  operation: AskBidEnum | null;
-  multiplier: number;
-  investmentAmount: number;
-  tp?: number;
-  sl?: number;
-  tpType?: TpSlTypeEnum;
-  slType?: TpSlTypeEnum;
-  isToppingUpActive: boolean;
-  openPrice?: number;
-  purchaseAt?: number;
 }
 
 // TODO: refactor https://react-hook-form.com/get-started#schemavalidation
@@ -159,7 +144,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               return true;
             }
           )
-
           .required(t('Please fill Invest amount')),
         multiplier: yup.number().required(t('Required amount')),
         tp: yup
@@ -239,7 +223,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         instrumentId: yup.string(),
         operation: yup.number(),
         processId: yup.string(),
-        purchaseAt: yup.number(),
       }),
 
     [instrument, currentPriceBid, currentPriceAsk, mainAppStore.activeAccount]
@@ -282,7 +265,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             key: `mult_${instrument.id.trim().toLowerCase()}`,
             value: `${response.order?.multiplier || modelToSubmit.multiplier}`,
           });
-          setValue('purchaseAt', '');
+          setValue('openPrice', '');
           mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
             [mixapanelProps.AMOUNT]: response.order.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -466,7 +449,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     ...otherMethods
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema),
-
+    mode: 'onSubmit',
     defaultValues: {
       processId: getProcessId(),
       accountId: mainAppStore.activeAccount?.id || '',
@@ -490,7 +473,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   useEffect(() => {
     setValue('operation', null);
     setValue('accountId', mainAppStore.activeAccount?.id);
-    setValue('purchaseAt', '');
+    setValue('openPrice', undefined);
   }, [mainAppStore.activeAccount]);
 
   useEffect(() => {
@@ -649,7 +632,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const handleResetError = () => {
     setValue('operation', null);
-    clearErrors(['investmentAmount', 'purchaseAt']);
+    clearErrors(['investmentAmount', 'openPrice']);
   };
 
   /**

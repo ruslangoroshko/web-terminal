@@ -10,7 +10,11 @@ import IconShevronUp from '../../assets/svg/icon-shevron-logo-up.svg';
 import { useStores } from '../../hooks/useStores';
 import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
 import API from '../../helpers/API';
-import { PositionModelWSDTO, UpdateSLTP } from '../../types/Positions';
+import {
+  FormValues,
+  PositionModelWSDTO,
+  UpdateSLTP,
+} from '../../types/Positions';
 import { getProcessId } from '../../helpers/getProcessId';
 import moment from 'moment';
 import InformationPopup from '../InformationPopup';
@@ -37,7 +41,6 @@ import { autorun } from 'mobx';
 import { Observer } from 'mobx-react-lite';
 import mixpanelValues from '../../constants/mixpanelValues';
 import { LOCAL_POSITION } from '../../constants/global';
-import { FormValues } from '../BuySellPanel/BuySellPanel';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -522,16 +525,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     defaultValues: {
       accountId: mainAppStore.activeAccount?.id || '',
       instrumentId: position.instrument,
-      positionId: position.id,
       processId: getProcessId(),
-      tp: position.tp,
-      sl: position.sl,
-      tpType: position.tpType,
-      slType: position.slType,
+      tp: position.tp ?? undefined,
+      sl: position.sl ?? undefined,
+      tpType: position.tpType ?? undefined,
+      slType: position.slType ?? undefined,
       operation: position.operation,
       investmentAmount: position.investmentAmount,
       multiplier: position.multiplier,
-      closedByChart: false,
       isToppingUpActive: position.isToppingUpActive,
     },
   });

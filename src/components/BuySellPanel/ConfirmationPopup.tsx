@@ -13,7 +13,7 @@ import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
 import { useTranslation } from 'react-i18next';
-import { FormValues } from './BuySellPanel';
+import { FormValues } from '../../types/Positions';
 
 interface Props {
   closePopup: () => void;

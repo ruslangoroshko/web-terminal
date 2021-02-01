@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import Toggle from '../Toggle';
@@ -10,11 +10,9 @@ import SvgIcon from '../SvgIcon';
 import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
 import autoCloseTypes from '../../constants/autoCloseTypes';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
-import { Observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import { useFormContext } from 'react-hook-form';
-import { FormValues } from './BuySellPanel';
-import Fields from '../../constants/fields';
+import { FormValues } from '../../types/Positions';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
@@ -24,7 +22,7 @@ interface Props {
 const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
   const { t } = useTranslation();
 
-  const { getValues, setValue, watch } = useFormContext<FormValues>();
+  const { getValues, setValue } = useFormContext<FormValues>();
 
   const handleAutoClose = (
     autoClose: TpSlTypeEnum,
@@ -40,20 +38,21 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
     const { tpType, slType } = getValues();
     switch (dropdownType) {
       case 'sl':
-        console.log(slType);
-        return autoCloseTypes[
-          slType !== undefined ? slType : TpSlTypeEnum.Currency
-        ].symbol;
+        return autoCloseTypes[slType ?? TpSlTypeEnum.Currency].symbol;
 
       case 'tp':
-        return autoCloseTypes[
-          tpType !== undefined ? tpType : TpSlTypeEnum.Currency
-        ].symbol;
+        return autoCloseTypes[tpType ?? TpSlTypeEnum.Currency].symbol;
 
       default:
         return '';
     }
   };
+
+  useEffect(() => {
+    const { slType, tpType, tp, sl } = getValues();
+    setValue('slType', slType ?? TpSlTypeEnum.Currency);
+    setValue('tpType', tpType ?? TpSlTypeEnum.Currency);
+  }, []);
 
   return (
     <Toggle>
@@ -68,7 +67,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
             <PrimaryTextSpan
               color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
             >
-              <Observer>{() => <>{renderSymbol()}</>}</Observer>
+              {renderSymbol()}
             </PrimaryTextSpan>
             <SvgIcon
               {...IconShevronDown}

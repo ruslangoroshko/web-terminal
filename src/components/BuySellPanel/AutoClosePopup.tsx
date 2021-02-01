@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  forwardRef,
-  useCallback,
-} from 'react';
+import React, { useState, useRef, useEffect, FC } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -19,15 +13,15 @@ import { SecondaryButton } from '../../styles/Buttons';
 import SvgIcon from '../SvgIcon';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
-import { useFormContext } from 'react-hook-form';
-import { FormValues } from './BuySellPanel';
-import Fields from '../../constants/fields';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { FormValues } from '../../types/Positions';
+import hasValue from '../../helpers/hasValue';
 
 interface Props {
   isDisabled?: boolean;
 }
 
-const AutoClosePopup = () => {
+const AutoClosePopup: FC<Props> = ({ isDisabled }) => {
   const { clearErrors, setValue, errors, getValues } = useFormContext<
     FormValues
   >();
@@ -59,7 +53,7 @@ const AutoClosePopup = () => {
   };
 
   const handleClose = () => {
-    //SLTPStore.toggleBuySell(false);
+    toggle(false);
   };
 
   useEffect(() => {
@@ -70,28 +64,10 @@ const AutoClosePopup = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const isToppingUpActive = getValues(Fields.IS_TOPPING_UP);
-    setValue('isToppingUpActive', isToppingUpActive);
-  }, []);
-
-  const handleApplySetAutoClose = useCallback(async () => {
-    const { tp, sl, tpType, slType } = getValues();
-    setValue('tpType', tp ? tpType : null);
-    setValue('slType', sl ? slType : null);
-    return new Promise<void>(async (resolve, reject) => {
-      if (!Object.keys(errors).length) {
-        resolve();
-      } else {
-        reject();
-      }
-    });
-  }, [errors]);
-
   const renderTPValue = () => {
     const { tp, tpType } = getValues();
     return `+${
-      tp !== null
+      hasValue(tp)
         ? `${
             tpType === TpSlTypeEnum.Currency
               ? mainAppStore.activeAccount?.symbol
@@ -104,7 +80,7 @@ const AutoClosePopup = () => {
   const renderSLValue = () => {
     const { sl, slType } = getValues();
     return `—${
-      sl !== null
+      hasValue(sl)
         ? `${
             slType === TpSlTypeEnum.Currency
               ? mainAppStore.activeAccount?.symbol
@@ -113,22 +89,8 @@ const AutoClosePopup = () => {
         : t('Non Set')
     }`;
   };
-  const removeSL = () => {
-    setValue('sl', null);
-  };
 
-  const removeTP = () => {
-    setValue('tp', null);
-  };
-
-  const {
-    sl,
-    slType,
-    tp,
-    tpType,
-    instrumentId,
-    investmentAmount,
-  } = getValues();
+  const { sl, tp } = useWatch({});
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
       <FlexContainer width="100%" position="relative">
@@ -137,8 +99,8 @@ const AutoClosePopup = () => {
           type="button"
           hasValues={!!(sl || tp)}
         >
-          <FlexContainer flexDirection="column">
-            {sl || tp ? (
+          <FlexContainer flexDirection="column" alignItems="center">
+            {!on && (hasValue(sl) || hasValue(tp)) ? (
               <FlexContainer
                 justifyContent="space-between"
                 alignItems="center"
@@ -174,7 +136,7 @@ const AutoClosePopup = () => {
             )}
           </FlexContainer>
         </ButtonAutoClosePurchase>
-        {!!(sl || tp) && (
+        {!on && (hasValue(sl) || hasValue(tp)) && (
           <ClearSLTPButton type="button" onClick={clearSLTP}>
             <SvgIcon
               {...IconClose}

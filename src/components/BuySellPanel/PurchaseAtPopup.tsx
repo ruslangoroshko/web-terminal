@@ -24,11 +24,11 @@ import InformationPopup from '../InformationPopup';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import { useFormContext } from 'react-hook-form';
-import { FormValues } from './BuySellPanel';
+import { FormValues } from '../../types/Positions';
 
 interface Props {}
 
-const PurchaseAtPopup: FC<Props> = () => {
+const OpenPricePopup: FC<Props> = () => {
   const [on, toggle] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -40,9 +40,9 @@ const PurchaseAtPopup: FC<Props> = () => {
 
   const { clearErrors, setValue, getValues } = useFormContext<FormValues>();
 
-  const handleChangePurchaseAt = (e: ChangeEvent<HTMLInputElement>) => {
-    clearErrors('purchaseAt');
-    setValue('purchaseAt', e.target.value.replace(',', '.'));
+  const handleChangeOpenPrice = (e: ChangeEvent<HTMLInputElement>) => {
+    clearErrors('openPrice');
+    setValue('openPrice', e.target.value.replace(',', '.'));
   };
 
   const handleToggle = () => {
@@ -55,15 +55,15 @@ const PurchaseAtPopup: FC<Props> = () => {
     }
   };
 
-  const applyPurchaseAt = () => {
-    const purchaseAtValue = getValues(Fields.PURCHASE_AT);
-    if (purchaseAtValue === 0) {
+  const applyOpenPrice = () => {
+    const openPriceValue = getValues(Fields.PURCHASE_AT);
+    if (openPriceValue === 0) {
       setInputError(`${t('Open Price can not be zero')}`);
       return;
     } else {
       setInputError(null);
     }
-    setValue('purchaseAt', purchaseAtValue);
+    setValue('openPrice', openPriceValue);
     toggle(false);
   };
 
@@ -111,15 +111,15 @@ const PurchaseAtPopup: FC<Props> = () => {
     }
   };
 
-  const clearPurchaseAt = () => {
-    setValue('purchaseAt', null);
+  const clearOpenPrice = () => {
+    setValue('openPrice', null);
   };
 
   const setCurrentPrice = (value: string) => () => {
-    setValue('purchaseAt', value);
+    setValue('openPrice', value);
   };
 
-  const { instrumentId, purchaseAt } = getValues();
+  const { instrumentId, openPrice } = getValues();
 
   const digits = useMemo(
     () =>
@@ -131,31 +131,31 @@ const PurchaseAtPopup: FC<Props> = () => {
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
-      {purchaseAt ? (
+      {openPrice ? (
         <FlexContainer position="relative" width="100%">
           <ButtonAutoClosePurchase
             onClick={handleToggle}
             type="button"
-            hasPrice={!!(purchaseAt || purchaseAt === 0)}
+            hasPrice={!!(openPrice || openPrice === 0)}
           >
             <PrimaryTextSpan color="#fffccc" fontSize="14px">
               {mainAppStore.activeAccount?.symbol}
-              {purchaseAt}
+              {openPrice}
             </PrimaryTextSpan>
           </ButtonAutoClosePurchase>
-          <ClearPurchaseAtButton type="button" onClick={clearPurchaseAt}>
+          <ClearOpenPriceButton type="button" onClick={clearOpenPrice}>
             <SvgIcon
               {...IconClose}
               fillColor="rgba(255, 255, 255, 0.6)"
               hoverFillColor="#00FFDD"
             />
-          </ClearPurchaseAtButton>
+          </ClearOpenPriceButton>
         </FlexContainer>
       ) : (
         <ButtonAutoClosePurchase
           onClick={handleToggle}
           type="button"
-          hasPrice={!!purchaseAt}
+          hasPrice={!!openPrice}
         >
           <PrimaryTextSpan color="#fffccc" fontSize="14px">
             {t('Set Price')}
@@ -228,7 +228,7 @@ const PurchaseAtPopup: FC<Props> = () => {
                 {() => (
                   <InputPnL
                     onBeforeInput={handleBeforeInput}
-                    onChange={handleChangePurchaseAt}
+                    onChange={handleChangeOpenPrice}
                     placeholder={t('Non Set')}
                   ></InputPnL>
                 )}
@@ -266,7 +266,7 @@ const PurchaseAtPopup: FC<Props> = () => {
                 )}
               </Observer>
             </FlexContainer>
-            <ButtonApply type="button" onClick={applyPurchaseAt}>
+            <ButtonApply type="button" onClick={applyOpenPrice}>
               {t('Apply')}
             </ButtonApply>
           </Wrapper>
@@ -276,7 +276,7 @@ const PurchaseAtPopup: FC<Props> = () => {
   );
 };
 
-export default PurchaseAtPopup;
+export default OpenPricePopup;
 
 const Wrapper = styled(FlexContainer)`
   box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.25),
@@ -388,7 +388,7 @@ const ButtonAutoClosePurchase = styled(SecondaryButton)<{
   align-items: center;
 `;
 
-const ClearPurchaseAtButton = styled(ButtonWithoutStyles)`
+const ClearOpenPriceButton = styled(ButtonWithoutStyles)`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);

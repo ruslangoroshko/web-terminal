@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useEffect } from 'react';
+import React, { ChangeEvent, FC, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -20,7 +20,8 @@ import { useTranslation } from 'react-i18next';
 import TopingUpCheck from './TopingUpCheck';
 import { useFormContext } from 'react-hook-form';
 import Fields from '../../constants/fields';
-import { FormValues } from './BuySellPanel';
+import { FormValues } from '../../types/Positions';
+import hasValue from '../../helpers/hasValue';
 
 interface Props {
   isDisabled?: boolean;
@@ -32,11 +33,13 @@ const SetAutoclose: FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const { getValues, setValue, errors } = useFormContext<FormValues>();
+  const { getValues, setValue, errors, watch, register } = useFormContext<
+    FormValues
+  >();
 
   const { instrumentsStore } = useStores();
 
-  const handleBeforeInput = (fieldType: TpSlTypeEnum | null) => (e: any) => {
+  const handleBeforeInput = (fieldType = TpSlTypeEnum.Currency) => (e: any) => {
     let PRECISION = 2;
     const instrumentId = getValues(Fields.INSTRUMNENT_ID);
 
@@ -113,17 +116,6 @@ const SetAutoclose: FC<Props> = (props) => {
     toggle(false);
   };
 
-  useEffect(() => {
-    const { slType, tpType, tp, sl } = getValues();
-    setValue('slType', slType !== null ? slType : TpSlTypeEnum.Currency);
-    setValue('tpType', tpType !== null ? tpType : TpSlTypeEnum.Currency);
-    setValue('tp', tp !== null ? tp.toString() : '');
-    setValue('sl', sl !== null ? Math.abs(sl).toString() : '');
-    setValue('isToppingUpActive', false);
-  }, []);
-
-  const { tp, tpType, sl, slType, instrumentId } = getValues();
-
   const handleRemoveTp = () => {
     setValue('tp', null);
   };
@@ -131,6 +123,28 @@ const SetAutoclose: FC<Props> = (props) => {
   const handleRemoveSl = () => {
     setValue('sl', null);
   };
+
+  const handleApplySetAutoClose = useCallback(async () => {
+    const { slType, tpType, tp, sl } = getValues();
+    console.log({ slType, tpType, tp, sl });
+    setValue('sl', sl ?? null, { shouldValidate: true });
+    setValue('tp', tp ?? null, { shouldValidate: true });
+    return new Promise<void>(async (resolve, reject) => {
+      if (!Object.keys(errors).length) {
+        resolve(toggle(false));
+      } else {
+        reject();
+      }
+    });
+  }, [errors]);
+
+  const { tp, tpType, sl, slType, instrumentId } = watch([
+    Fields.TAKE_PROFIT_TYPE,
+    Fields.TAKE_PROFIT,
+    Fields.STOP_LOSS_TYPE,
+    Fields.STOP_LOSS,
+    Fields.INSTRUMNENT_ID,
+  ]);
 
   return (
     <Wrapper
@@ -197,6 +211,8 @@ const SetAutoclose: FC<Props> = (props) => {
           onBeforeInput={handleBeforeInput(tpType)}
           placeholder={t('Non Set')}
           onChange={handleChangeProfit}
+          ref={register({ valueAsNumber: true })}
+          name={Fields.TAKE_PROFIT}
           disabled={isDisabled}
         ></InputPnL>
         {!!tp && !isDisabled && (
@@ -262,7 +278,8 @@ const SetAutoclose: FC<Props> = (props) => {
           onBeforeInput={handleBeforeInput(slType)}
           placeholder={t('Non Set')}
           onChange={handleChangeLoss}
-          value={getValues(Fields.STOP_LOSS)}
+          name={Fields.STOP_LOSS}
+          ref={register({ valueAsNumber: true })}
           disabled={isDisabled}
         ></InputPnL>
         {!!sl && !isDisabled && (
@@ -316,7 +333,11 @@ const SetAutoclose: FC<Props> = (props) => {
         <TopingUpCheck />
       </FlexContainer>
       {!isDisabled && (
-        <ButtonApply type="button" disabled={tp === null && sl === null}>
+        <ButtonApply
+          type="button"
+          disabled={!hasValue(tp) && !hasValue(sl)}
+          onClick={handleApplySetAutoClose}
+        >
           {t('Apply')}
         </ButtonApply>
       )}
