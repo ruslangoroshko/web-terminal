@@ -531,7 +531,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     fetchMultiplier();
   }, [
     mainAppStore.activeAccount?.id,
-    instrumentsStore.activeInstrument?.instrumentItem.id
+    instrumentsStore.activeInstrument?.instrumentItem.id,
   ]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
@@ -653,10 +653,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
    *  Stop Out max level
    */
   const postitionStopOut = useCallback(() => {
-    const invest = values.investmentAmount || 0;
+    const invest = SLTPStore.investmentAmount || 0;
     const instrumentPercentSL = (instrument?.stopOutPercent || 95) / 100;
     return +Number(invest * instrumentPercentSL).toFixed(2);
-  }, [instrument, values]);
+  }, [instrument, SLTPStore.investmentAmount]);
 
   /**
    *  Stop Out max level by price SL
@@ -664,16 +664,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   const positionStopOutByPrice = useCallback(
     (slPrice: number) => {
       let currentPrice, so_level, so_percent, direction, isBuy;
-      isBuy = values.operation === AskBidEnum.Buy;
+      isBuy = SLTPStore.multiplier === AskBidEnum.Buy;
       currentPrice = isBuy ? currentPriceBid() : currentPriceAsk();
       so_level = -1 * postitionStopOut();
       so_percent = (instrument.stopOutPercent || 0) / 100;
-      direction = values.operation === AskBidEnum.Buy ? 1 : -1;
+      direction = SLTPStore.multiplier === AskBidEnum.Buy ? 1 : -1;
 
       const result =
         (slPrice / currentPrice - 1) *
-          values.investmentAmount *
-          values.multiplier *
+          SLTPStore.investmentAmount *
+          SLTPStore.multiplier *
           direction +
         Math.abs(
           quotesStore.quotes[instrument.id].bid.c -
@@ -681,7 +681,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         ).toFixed(instrument.digits);
       return +Number(result).toFixed(2);
     },
-    [currentPriceAsk, currentPriceBid, values]
+    [
+      currentPriceAsk,
+      currentPriceBid,
+      SLTPStore.investmentAmount,
+      SLTPStore.multiplier,
+    ]
   );
 
   useEffect(() => {
@@ -735,6 +740,14 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   }, []);
 
   useEffect(() => {
+    SLTPStore.investmentAmount = values.investmentAmount;
+  }, [values.investmentAmount]);
+
+  useEffect(() => {
+    SLTPStore.multiplier = values.multiplier;
+  }, [values.multiplier]);
+
+  useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -751,7 +764,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     setFieldValue(Fields.AMOUNT, oldAmount);
   }, [
     mainAppStore.activeAccount?.id,
-    instrumentsStore.activeInstrument?.instrumentItem.id
+    instrumentsStore.activeInstrument?.instrumentItem.id,
   ]);
 
   const onKeyDown = (keyEvent: any) => {
