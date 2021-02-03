@@ -1067,7 +1067,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                   <ErropPopup
                     textColor="#fffccc"
                     bgColor={ColorsPallete.RAZZMATAZZ}
-                    classNameTooltip={Fields.AMOUNT}
+                    classNameTooltip={Fields.INVEST_AMOUNT}
                     direction="left"
                   >
                     {errors.sl || errors.tp}

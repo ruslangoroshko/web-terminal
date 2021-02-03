@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -18,9 +18,10 @@ import { getProcessId } from '../../helpers/getProcessId';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
 import TopingUpCheck from './TopingUpCheck';
-import { useFormContext } from 'react-hook-form';
+import { DeepMap, FieldError, useWatch } from 'react-hook-form';
 import Fields from '../../constants/fields';
-import { FormValues } from '../../types/Positions';
+import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
+import { ConnectForm } from './ConnectForm';
 import hasValue from '../../helpers/hasValue';
 
 interface Props {
@@ -28,20 +29,16 @@ interface Props {
   toggle: (arg0: boolean) => void;
 }
 
-const SetAutoclose: FC<Props> = (props) => {
-  const { isDisabled, toggle } = props;
-
+const SetAutoclose: FC<Props> = ({ isDisabled, toggle }) => {
   const { t } = useTranslation();
-
-  const { getValues, setValue, errors, watch, register } = useFormContext<
-    FormValues
-  >();
 
   const { instrumentsStore } = useStores();
 
-  const handleBeforeInput = (fieldType = TpSlTypeEnum.Currency) => (e: any) => {
+  const handleBeforeInput = (
+    fieldType = TpSlTypeEnum.Currency,
+    instrumentId: string
+  ) => (e: any) => {
     let PRECISION = 2;
-    const instrumentId = getValues(Fields.INSTRUMNENT_ID);
 
     switch (fieldType) {
       case TpSlTypeEnum.Currency:
@@ -104,47 +101,29 @@ const SetAutoclose: FC<Props> = (props) => {
     }
   };
 
-  const handleChangeProfit = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue('tp', e.target.value.replace(',', '.'));
-  };
-
-  const handleChangeLoss = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue('sl', e.target.value.replace(',', '.'));
-  };
-
   const handleToggle = () => {
     toggle(false);
   };
 
-  const handleRemoveTp = () => {
+  const handleRemoveTp = (
+    setValue: (arg0: string, arg1: any) => void
+  ) => () => {
     setValue('tp', null);
   };
 
-  const handleRemoveSl = () => {
+  const handleRemoveSl = (
+    setValue: (arg0: string, arg1: any) => void
+  ) => () => {
     setValue('sl', null);
   };
 
-  const handleApplySetAutoClose = useCallback(async () => {
-    const { slType, tpType, tp, sl } = getValues();
-    console.log({ slType, tpType, tp, sl });
-    setValue('sl', sl ?? null, { shouldValidate: true });
-    setValue('tp', tp ?? null, { shouldValidate: true });
-    return new Promise<void>(async (resolve, reject) => {
-      if (!Object.keys(errors).length) {
-        resolve(toggle(false));
-      } else {
-        reject();
-      }
-    });
-  }, [errors]);
-
-  const { tp, tpType, sl, slType, instrumentId } = watch([
-    Fields.TAKE_PROFIT_TYPE,
-    Fields.TAKE_PROFIT,
-    Fields.STOP_LOSS_TYPE,
-    Fields.STOP_LOSS,
-    Fields.INSTRUMNENT_ID,
-  ]);
+  const handleApplySetAutoClose = (
+    errors: DeepMap<Record<string, any>, FieldError>
+  ) => () => {
+    if (!Object.keys(errors).length) {
+      toggle(false);
+    }
+  };
 
   return (
     <Wrapper
@@ -153,194 +132,239 @@ const SetAutoclose: FC<Props> = (props) => {
       flexDirection="column"
       width="252px"
     >
-      <ButtonClose type="button" onClick={handleToggle}>
-        <SvgIcon
-          {...IconClose}
-          fillColor="rgba(255, 255, 255, 0.6)"
-          hoverFillColor="#00FFDD"
-        ></SvgIcon>
-      </ButtonClose>
-      <PrimaryTextParagraph marginBottom="16px">
-        {isDisabled ? t('Autoclose') : t('Set Autoclose')}
-      </PrimaryTextParagraph>
-      <FlexContainer
-        margin="0 0 6px 0"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <PrimaryTextSpan
-          fontSize="11px"
-          lineHeight="12px"
-          color="rgba(255, 255, 255, 0.3)"
-          textTransform="uppercase"
-        >
-          {t('When Profit is')}
-        </PrimaryTextSpan>
-        <InformationPopup
-          classNameTooltip="autoclose-profit"
-          bgColor="#000"
-          width="200px"
-          direction="left"
-        >
-          <PrimaryTextSpan color="#fffccc" fontSize="12px">
-            {t(
-              'Determine the Take profit based on the amount of capital you are willing to take at the peak of the deal or based on the price level of your asset'
-            )}
-          </PrimaryTextSpan>
-        </InformationPopup>
-      </FlexContainer>
-      <InputWrapper
-        padding={tpType === TpSlTypeEnum.Price ? '0 0 0 8px' : '0 0 0 22px'}
-        margin="0 0 16px 0"
-        height="32px"
-        width="100%"
-        position="relative"
-      >
-        {errors.tp && (
-          <ErropPopup
-            textColor="#fffccc"
-            bgColor={ColorsPallete.RAZZMATAZZ}
-            classNameTooltip={getProcessId()}
-            direction="left"
-          >
-            {errors.tp}
-          </ErropPopup>
-        )}
-        {tpType !== TpSlTypeEnum.Price && <PlusSign>+</PlusSign>}
-        <InputPnL
-          onBeforeInput={handleBeforeInput(tpType)}
-          placeholder={t('Non Set')}
-          onChange={handleChangeProfit}
-          ref={register({ valueAsNumber: true })}
-          name={Fields.TAKE_PROFIT}
-          disabled={isDisabled}
-        ></InputPnL>
-        {!!tp && !isDisabled && (
-          <CloseValueButtonWrapper position="absolute" top="50%" right="42px">
-            <ButtonWithoutStyles type="button" onClick={handleRemoveTp}>
+      <ConnectForm>
+        {({ register, getValues, setValue, errors }) => (
+          <>
+            <ButtonClose type="button" onClick={handleToggle}>
               <SvgIcon
                 {...IconClose}
                 fillColor="rgba(255, 255, 255, 0.6)"
+                hoverFillColor="#00FFDD"
               ></SvgIcon>
-            </ButtonWithoutStyles>
-          </CloseValueButtonWrapper>
-        )}
-        <PnLTypeDropdown
-          dropdownType="tp"
-          isDisabled={isDisabled}
-        ></PnLTypeDropdown>
-      </InputWrapper>
-      <FlexContainer
-        margin="0 0 6px 0"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <PrimaryTextSpan
-          fontSize="11px"
-          lineHeight="12px"
-          color="rgba(255, 255, 255, 0.3)"
-          textTransform="uppercase"
-        >
-          {t('When Loss is')}
-        </PrimaryTextSpan>
-        <InformationPopup
-          classNameTooltip="autoclose-loss"
-          bgColor="#000"
-          width="200px"
-          direction="left"
-        >
-          <PrimaryTextSpan color="#fffccc" fontSize="12px">
-            {t(
-              'Determine the Stop loss based on the amount of capital you are willing to risk or based on the price level of your asset'
+            </ButtonClose>
+            <PrimaryTextParagraph marginBottom="16px">
+              {isDisabled ? t('Autoclose') : t('Set Autoclose')}
+            </PrimaryTextParagraph>
+            <FlexContainer
+              margin="0 0 6px 0"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                color="rgba(255, 255, 255, 0.3)"
+                textTransform="uppercase"
+              >
+                {t('When Profit is')}
+              </PrimaryTextSpan>
+              <InformationPopup
+                classNameTooltip="autoclose-profit"
+                bgColor="#000"
+                width="200px"
+                direction="left"
+              >
+                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  {t(
+                    'Determine the Take profit based on the amount of capital you are willing to take at the peak of the deal or based on the price level of your asset'
+                  )}
+                </PrimaryTextSpan>
+              </InformationPopup>
+            </FlexContainer>
+            <InputWrapper
+              padding={
+                getValues(Fields.TAKE_PROFIT_TYPE) === TpSlTypeEnum.Price
+                  ? '0 0 0 8px'
+                  : '0 0 0 22px'
+              }
+              margin="0 0 16px 0"
+              height="32px"
+              width="100%"
+              position="relative"
+            >
+              {errors.tp && (
+                <ErropPopup
+                  textColor="#fffccc"
+                  bgColor={ColorsPallete.RAZZMATAZZ}
+                  classNameTooltip={getProcessId()}
+                  direction="left"
+                >
+                  {errors.tp}
+                </ErropPopup>
+              )}
+              {getValues(Fields.TAKE_PROFIT_TYPE) !== TpSlTypeEnum.Price && (
+                <PlusSign>+</PlusSign>
+              )}
+              <InputPnL
+                onBeforeInput={handleBeforeInput(
+                  getValues(Fields.TAKE_PROFIT_TYPE),
+                  getValues(Fields.INSTRUMNENT_ID)
+                )}
+                placeholder={t('Non Set')}
+                ref={register({ setValueAs: setValueAsNullIfEmpty })}
+                name={Fields.TAKE_PROFIT}
+                disabled={isDisabled}
+              ></InputPnL>
+              {!!getValues(Fields.TAKE_PROFIT) && !isDisabled && (
+                <CloseValueButtonWrapper
+                  position="absolute"
+                  top="50%"
+                  right="42px"
+                >
+                  <ButtonWithoutStyles
+                    type="button"
+                    onClick={handleRemoveTp(setValue)}
+                  >
+                    <SvgIcon
+                      {...IconClose}
+                      fillColor="rgba(255, 255, 255, 0.6)"
+                    ></SvgIcon>
+                  </ButtonWithoutStyles>
+                </CloseValueButtonWrapper>
+              )}
+              <PnLTypeDropdown
+                dropdownType="tp"
+                isDisabled={isDisabled}
+              ></PnLTypeDropdown>
+            </InputWrapper>
+            <FlexContainer
+              margin="0 0 6px 0"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                color="rgba(255, 255, 255, 0.3)"
+                textTransform="uppercase"
+              >
+                {t('When Loss is')}
+              </PrimaryTextSpan>
+              <InformationPopup
+                classNameTooltip="autoclose-loss"
+                bgColor="#000"
+                width="200px"
+                direction="left"
+              >
+                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  {t(
+                    'Determine the Stop loss based on the amount of capital you are willing to risk or based on the price level of your asset'
+                  )}
+                </PrimaryTextSpan>
+              </InformationPopup>
+            </FlexContainer>
+            <InputWrapper
+              padding={
+                getValues(Fields.STOP_LOSS_TYPE) === TpSlTypeEnum.Price
+                  ? '0 0 0 8px'
+                  : '0 0 0 22px'
+              }
+              margin={isDisabled ? '0' : '0 0 16px 0'}
+              height="32px"
+              width="100%"
+              position="relative"
+            >
+              {errors.sl && (
+                <ErropPopup
+                  textColor="#fffccc"
+                  bgColor={ColorsPallete.RAZZMATAZZ}
+                  classNameTooltip={getProcessId()}
+                  direction="left"
+                >
+                  {errors.sl}
+                </ErropPopup>
+              )}
+              {getValues(Fields.STOP_LOSS_TYPE) !== TpSlTypeEnum.Price && (
+                <PlusSign>-</PlusSign>
+              )}
+              <InputPnL
+                onBeforeInput={handleBeforeInput(
+                  getValues(Fields.STOP_LOSS_TYPE),
+                  getValues(Fields.INSTRUMNENT_ID)
+                )}
+                placeholder={t('Non Set')}
+                name={Fields.STOP_LOSS}
+                ref={register({ setValueAs: setValueAsNullIfEmpty })}
+                disabled={isDisabled}
+              ></InputPnL>
+              {!!getValues(Fields.STOP_LOSS) && !isDisabled && (
+                <CloseValueButtonWrapper
+                  position="absolute"
+                  top="50%"
+                  right="42px"
+                >
+                  <ButtonWithoutStyles
+                    type="button"
+                    onClick={handleRemoveSl(setValue)}
+                  >
+                    <SvgIcon
+                      {...IconClose}
+                      fillColor="rgba(255, 255, 255, 0.6)"
+                    ></SvgIcon>
+                  </ButtonWithoutStyles>
+                </CloseValueButtonWrapper>
+              )}
+              <PnLTypeDropdown
+                dropdownType="sl"
+                isDisabled={isDisabled}
+              ></PnLTypeDropdown>
+            </InputWrapper>
+
+            <FlexContainer
+              flexDirection="column"
+              width="100%"
+              marginBottom="24px"
+            >
+              <FlexContainer
+                margin="0 0 6px 0"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  color="rgba(255, 255, 255, 0.3)"
+                  textTransform="uppercase"
+                >
+                  {t('Auto-increase trade amount')}
+                </PrimaryTextSpan>
+                <InformationPopup
+                  classNameTooltip="autoclose-loss"
+                  bgColor="#000"
+                  width="200px"
+                  direction="left"
+                >
+                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    {`${t('If the loss for a position reaches')} ${
+                      instrumentsStore.instruments.find(
+                        (inst) =>
+                          inst.instrumentItem.id ===
+                          getValues(Fields.INSTRUMNENT_ID)
+                      )?.instrumentItem.stopOutPercent
+                    }%, ${t(
+                      'an additional 20% of the original investment amount is reserved from your balance to keep your position open.'
+                    )}`}
+                  </PrimaryTextSpan>
+                </InformationPopup>
+              </FlexContainer>
+
+              <TopingUpCheck />
+            </FlexContainer>
+            {!isDisabled && (
+              <ButtonApply
+                type="button"
+                disabled={
+                  !hasValue(getValues(Fields.STOP_LOSS)) &&
+                  !hasValue(getValues(Fields.TAKE_PROFIT))
+                }
+                onClick={handleApplySetAutoClose(errors)}
+              >
+                {t('Apply')}
+              </ButtonApply>
             )}
-          </PrimaryTextSpan>
-        </InformationPopup>
-      </FlexContainer>
-      <InputWrapper
-        padding={slType === TpSlTypeEnum.Price ? '0 0 0 8px' : '0 0 0 22px'}
-        margin={isDisabled ? '0' : '0 0 16px 0'}
-        height="32px"
-        width="100%"
-        position="relative"
-      >
-        {errors.sl && (
-          <ErropPopup
-            textColor="#fffccc"
-            bgColor={ColorsPallete.RAZZMATAZZ}
-            classNameTooltip={getProcessId()}
-            direction="left"
-          >
-            {errors.sl}
-          </ErropPopup>
+          </>
         )}
-        {slType !== TpSlTypeEnum.Price && <PlusSign>-</PlusSign>}
-        <InputPnL
-          onBeforeInput={handleBeforeInput(slType)}
-          placeholder={t('Non Set')}
-          onChange={handleChangeLoss}
-          name={Fields.STOP_LOSS}
-          ref={register({ valueAsNumber: true })}
-          disabled={isDisabled}
-        ></InputPnL>
-        {!!sl && !isDisabled && (
-          <CloseValueButtonWrapper position="absolute" top="50%" right="42px">
-            <ButtonWithoutStyles type="button" onClick={handleRemoveSl}>
-              <SvgIcon
-                {...IconClose}
-                fillColor="rgba(255, 255, 255, 0.6)"
-              ></SvgIcon>
-            </ButtonWithoutStyles>
-          </CloseValueButtonWrapper>
-        )}
-        <PnLTypeDropdown
-          dropdownType="sl"
-          isDisabled={isDisabled}
-        ></PnLTypeDropdown>
-      </InputWrapper>
-
-      <FlexContainer flexDirection="column" width="100%" marginBottom="24px">
-        <FlexContainer
-          margin="0 0 6px 0"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <PrimaryTextSpan
-            fontSize="11px"
-            lineHeight="12px"
-            color="rgba(255, 255, 255, 0.3)"
-            textTransform="uppercase"
-          >
-            {t('Auto-increase trade amount')}
-          </PrimaryTextSpan>
-          <InformationPopup
-            classNameTooltip="autoclose-loss"
-            bgColor="#000"
-            width="200px"
-            direction="left"
-          >
-            <PrimaryTextSpan color="#fffccc" fontSize="12px">
-              {`${t('If the loss for a position reaches')} ${
-                instrumentsStore.instruments.find(
-                  (inst) => inst.instrumentItem.id === instrumentId
-                )?.instrumentItem.stopOutPercent
-              }%, ${t(
-                'an additional 20% of the original investment amount is reserved from your balance to keep your position open.'
-              )}`}
-            </PrimaryTextSpan>
-          </InformationPopup>
-        </FlexContainer>
-
-        <TopingUpCheck />
-      </FlexContainer>
-      {!isDisabled && (
-        <ButtonApply
-          type="button"
-          disabled={!hasValue(tp) && !hasValue(sl)}
-          onClick={handleApplySetAutoClose}
-        >
-          {t('Apply')}
-        </ButtonApply>
-      )}
+      </ConnectForm>
     </Wrapper>
   );
 };

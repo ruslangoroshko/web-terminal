@@ -9,13 +9,11 @@ interface Props {
   multipliers: number[];
   selectedMultiplier: number;
   setFieldValue: (arg0: any, arg1: any) => void;
-  onToggle?: (arg0: boolean) => void;
+  onToggle: (arg0: boolean) => void;
 }
 
-const noop = () => {}
-
 function MultiplierDropdown(props: Props) {
-  const { multipliers, selectedMultiplier, setFieldValue, onToggle = noop } = props;
+  const { multipliers, selectedMultiplier, setFieldValue, onToggle } = props;
   const [on, toggle] = useState(false);
   const handleChangeMultiplier = (multiplier: number) => () => {
     setFieldValue(Fields.MULTIPLIER, multiplier);
@@ -24,7 +22,7 @@ function MultiplierDropdown(props: Props) {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const handleToggle = () => {
-    onToggle(!on)
+    onToggle(!on);
     toggle(!on);
   };
   const handleClickOutside = (e: any) => {
@@ -59,7 +57,7 @@ function MultiplierDropdown(props: Props) {
           {multipliers
             .slice()
             .sort((a, b) => b - a)
-            .map(multiplier => (
+            .map((multiplier) => (
               <DropDownItem
                 key={multiplier}
                 alignItems="center"
@@ -112,7 +110,7 @@ const DropDownItem = styled(FlexContainer)`
 `;
 
 const MultiplierButton = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
-  border: ${props =>
+  border: ${(props) =>
     props.isActive
       ? '1px solid #21B3A4'
       : '1px solid rgba(255, 255, 255, 0.1)'};
@@ -123,6 +121,6 @@ const MultiplierButton = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
   height: 40px;
   text-align: left;
   padding: 8px 4px;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.isActive ? 'transparent' : 'rgba(255, 255, 255, 0.06)'};
 `;

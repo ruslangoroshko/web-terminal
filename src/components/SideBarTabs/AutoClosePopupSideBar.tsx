@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect, forwardRef, FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import { useFormContext } from 'react-hook-form';
+import { FormValues } from '../../types/Positions';
 
 interface Props {
   children: React.ReactNode;
@@ -53,6 +55,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }, []);
+
+    const useFormMethods = useFormContext<FormValues>();
 
     return (
       <FlexContainer ref={wrapperRef}>

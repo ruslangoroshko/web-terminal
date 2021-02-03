@@ -13,7 +13,6 @@ import SvgIcon from '../SvgIcon';
 import IconShevronBuy from '../../assets/svg/icon-buy-sell-shevron-buy.svg';
 import IconShevronSell from '../../assets/svg/icon-buy-sell-shevron-sell.svg';
 import AutoClosePopup from './AutoClosePopup';
-import PurchaseAtPopup from './PurchaseAtPopup';
 import * as yup from 'yup';
 import { InstrumentModelWSDTO } from '../../types/InstrumentsTypes';
 import { AskBidEnum } from '../../enums/AskBid';
@@ -44,6 +43,9 @@ import { autorun } from 'mobx';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { FormValues } from '../../types/Positions';
+import hasValue from '../../helpers/hasValue';
+import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
+import OpenPricePopup from './OpenPricePopup';
 
 // TODO: too much code, refactor
 
@@ -89,7 +91,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         investmentAmount: yup
           .number()
           .test(
-            Fields.AMOUNT,
+            Fields.INVEST_AMOUNT,
             `${t('Insufficient funds to open a position. You have only')} $${
               mainAppStore.activeAccount?.balance
             }`,
@@ -101,7 +103,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             }
           )
           .test(
-            Fields.AMOUNT,
+            Fields.INVEST_AMOUNT,
             `${t('Minimum trade volume')} $${
               instrument.minOperationVolume
             }. ${t('Please increase your trade amount or multiplier')}.`,
@@ -117,7 +119,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             }
           )
           .test(
-            Fields.AMOUNT,
+            Fields.INVEST_AMOUNT,
             `${t('Minimum trade volume')} $${
               instrument.minOperationVolume
             }. ${t('Please increase your trade amount or multiplier')}.`,
@@ -129,7 +131,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             }
           )
           .test(
-            Fields.AMOUNT,
+            Fields.INVEST_AMOUNT,
             `${t('Maximum trade volume')} $${
               instrument.maxOperationVolume
             }. ${t('Please decrease your trade amount or multiplier')}.`,
@@ -460,21 +462,21 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         ? DEFAULT_INVEST_AMOUNT_LIVE
         : DEFAULT_INVEST_AMOUNT_DEMO,
       isToppingUpActive: false,
+      tpType: TpSlTypeEnum.Currency,
+      slType: TpSlTypeEnum.Currency,
     },
   });
-
-  const watchOperation = watch(Fields.OPERATION);
 
   useEffect(() => {
     setValue('operation', null);
     setValue('instrumentId', instrument.id);
-  }, [instrument]);
+  }, [instrument.id]);
 
   useEffect(() => {
     setValue('operation', null);
-    setValue('accountId', mainAppStore.activeAccount?.id);
+    setValue('accountId', mainAppStore.activeAccountId);
     setValue('openPrice', undefined);
-  }, [mainAppStore.activeAccount]);
+  }, [mainAppStore.activeAccountId]);
 
   useEffect(() => {
     async function fetchDefaultInvestAmount() {
@@ -516,7 +518,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
     fetchMultiplier();
   }, [
-    mainAppStore.activeAccount?.id,
+    mainAppStore.activeAccount?.isLive,
     instrumentsStore.activeInstrument?.instrumentItem.id,
   ]);
 
@@ -602,11 +604,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       e.preventDefault();
       return;
     }
-  };
-
-  const investOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    let filteredValue: any = e.target.value.replace(',', '.');
-    setValue('investmentAmount', filteredValue);
   };
 
   const investOnFocusHandler = () => {
@@ -725,7 +722,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
   };
 
-  const { investmentAmount, operation, multiplier } = getValues();
+  const { investmentAmount, operation, multiplier } = watch();
+
+  console.log(watch());
 
   const methods = {
     ...otherMethods,
@@ -739,6 +738,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     reset,
     formState,
   };
+
   return (
     <FlexContainer padding="16px" flexDirection="column">
       <Observer>
@@ -797,17 +797,13 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </PrimaryTextSpan>
 
             <FlexContainer alignItems="center" ref={investAmountRef}>
-              <Observer>
-                {() => (
-                  <InvestInput
-                    value={isLoading ? '' : investmentAmount}
-                    onBeforeInput={investOnBeforeInputHandler}
-                    onChange={investOnChangeHandler}
-                    onFocus={investOnFocusHandler}
-                    onBlur={investOnBlurHandler}
-                  />
-                )}
-              </Observer>
+              <InvestInput
+                onBeforeInput={investOnBeforeInputHandler}
+                onFocus={investOnFocusHandler}
+                onBlur={investOnBlurHandler}
+                name={Fields.INVEST_AMOUNT}
+                ref={register({ setValueAs: setValueAsNullIfEmpty })}
+              />
               {investedAmountDropdown && (
                 <InvestAmountDropdown
                   toggle={handleToggle}
@@ -924,17 +920,13 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             >
               {t('Volume')}
             </PrimaryTextSpan>
-            <Observer>
-              {() => (
-                <PrimaryTextSpan
-                  fontSize="12px"
-                  color={isLoading ? '#fffccc00' : '#fffccc'}
-                >
-                  {mainAppStore.activeAccount?.symbol}
-                  {(investmentAmount * multiplier).toFixed(PRECISION_USD)}
-                </PrimaryTextSpan>
-              )}
-            </Observer>
+            <PrimaryTextSpan
+              fontSize="12px"
+              color={isLoading ? '#fffccc00' : '#fffccc'}
+            >
+              {mainAppStore.activeAccount?.symbol}
+              {(investmentAmount * multiplier).toFixed(PRECISION_USD)}
+            </PrimaryTextSpan>
           </FlexContainer>
           <FlexContainer justifyContent="space-between" margin="0 0 12px 0">
             <PrimaryTextSpan
@@ -961,7 +953,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </Observer>
           </FlexContainer>
           <FlexContainer flexDirection="column" position="relative">
-            {watchOperation !== null && (
+            {hasValue(operation) && (
               <ConfirmPopupWrapper position="absolute" right="100%" top="0px">
                 <ConfirmationPopup
                   closePopup={closePopup}
@@ -1017,7 +1009,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               </PrimaryTextSpan>
             </InformationPopup>
           </FlexContainer>
-          <PurchaseAtPopup></PurchaseAtPopup>
+          <OpenPricePopup></OpenPricePopup>
         </CustomForm>
       </FormProvider>
     </FlexContainer>

@@ -22,7 +22,7 @@ interface Props {
 const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
   const { t } = useTranslation();
 
-  const { getValues, setValue } = useFormContext<FormValues>();
+  const { getValues, setValue, watch } = useFormContext<FormValues>();
 
   const handleAutoClose = (
     autoClose: TpSlTypeEnum,
@@ -47,12 +47,6 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
         return '';
     }
   };
-
-  useEffect(() => {
-    const { slType, tpType, tp, sl } = getValues();
-    setValue('slType', slType ?? TpSlTypeEnum.Currency);
-    setValue('tpType', tpType ?? TpSlTypeEnum.Currency);
-  }, []);
 
   return (
     <Toggle>
