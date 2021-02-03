@@ -16,6 +16,8 @@ export class SLTPStore implements ContextProps {
   @observable takeProfitValue: string = '';
   @observable stopLossValue: string = '';
   @observable purchaseAtValue: string = '';
+  @observable investmentAmount: number = 0;
+  @observable multiplier: number = 0;
   @observable openedBuySell: boolean = false;
   @observable isToppingUpActive: boolean = false;
   @observable deleteToppingUp: boolean = false;
