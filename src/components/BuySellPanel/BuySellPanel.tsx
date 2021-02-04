@@ -1,11 +1,4 @@
-import React, {
-  ChangeEvent,
-  useRef,
-  useEffect,
-  FC,
-  useState,
-  useCallback,
-} from 'react';
+import React, { useRef, useEffect, FC, useState, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -30,7 +23,7 @@ import ConfirmationPopup from './ConfirmationPopup';
 import { keyframes } from '@emotion/core';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import BadRequestPopup from '../BadRequestPopup';
@@ -39,10 +32,13 @@ import { useTranslation } from 'react-i18next';
 import mixapanelProps from '../../constants/mixpanelProps';
 import mixpanelValues from '../../constants/mixpanelValues';
 import KeysInApi from '../../constants/keysInApi';
-import { autorun } from 'mobx';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { FormValues } from '../../types/Positions';
+import {
+  FormValues,
+  OpenPendingOrder,
+  OpenPositionModel,
+} from '../../types/Positions';
 import hasValue from '../../helpers/hasValue';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 import OpenPricePopup from './OpenPricePopup';
@@ -58,9 +54,7 @@ interface Props {
   instrument: InstrumentModelWSDTO;
 }
 
-// TODO: refactor https://react-hook-form.com/get-started#schemavalidation
-
-const BuySellPanel: FC<Props> = ({ instrument }) => {
+const BuySellPanel: FC<Props> = observer(({ instrument }) => {
   const {
     quotesStore,
     notificationStore,
@@ -68,6 +62,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     badRequestPopupStore,
     markersOnChartStore,
     instrumentsStore,
+    SLTPstore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -75,6 +70,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   const setAutoCloseWrapperRef = useRef<HTMLDivElement>(null);
 
   const [isLoading, setLoading] = useState(true);
+  const [operation, setOperation] = useState<AskBidEnum | null>(null);
+  const [multiplier, setMultiplier] = useState(instrument.multiplier[0]);
 
   const currentPriceAsk = useCallback(
     () => quotesStore.quotes[instrument.id].ask.c,
@@ -109,11 +106,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             }. ${t('Please increase your trade amount or multiplier')}.`,
             function (value) {
               if (value) {
-                return (
-                  value >=
-                  instrument.minOperationVolume /
-                    +this.parent[Fields.MULTIPLIER]
-                );
+                return value >= instrument.minOperationVolume / multiplier;
               }
               return true;
             }
@@ -137,17 +130,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             }. ${t('Please decrease your trade amount or multiplier')}.`,
             function (value) {
               if (value) {
-                return (
-                  value <=
-                  instrument.maxOperationVolume /
-                    +this.parent[Fields.MULTIPLIER]
-                );
+                return value <= instrument.maxOperationVolume / multiplier;
               }
               return true;
             }
           )
           .required(t('Please fill Invest amount')),
-        multiplier: yup.number().required(t('Required amount')),
         tp: yup
           .number()
           .test(
@@ -157,8 +145,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               return +value !== 0 || value === null;
             }
           )
-          .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
-            is: (operation, tpType) =>
+          .when([Fields.TAKE_PROFIT_TYPE], {
+            is: (tpType) =>
               operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
             then: yup
               .number()
@@ -170,12 +158,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 (value) => value > currentPriceAsk()
               ),
           })
-          .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
+          .when([Fields.TAKE_PROFIT_TYPE], {
             is: (operation, tpType) =>
               operation === AskBidEnum.Sell && tpType === TpSlTypeEnum.Price,
             then: yup
               .number()
-              .nullable()
               .test(
                 Fields.TAKE_PROFIT,
                 `${t('Error message')}: ${t(
@@ -187,256 +174,274 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         sl: yup
           .number()
           .test(Fields.STOP_LOSS, t('Stop Loss can not be zero'), (value) => {
-            return +value !== 0 || value === null;
+            return +value !== 0 || value !== null;
           })
-          .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
-            is: (operation, slType) =>
-              operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
-            then: yup
-              .number()
-              .nullable()
-              .test(
-                Fields.STOP_LOSS,
-                `${t('Error message')}: ${t(
-                  'This level is higher or lower than the one currently allowed'
-                )}`,
-                (value) => value < currentPriceAsk()
-              ),
-          })
-          .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
-            is: (operation, slType) =>
-              operation === AskBidEnum.Sell && slType === TpSlTypeEnum.Price,
-            then: yup
-              .number()
-              .nullable()
-              .test(
-                Fields.STOP_LOSS,
-                `${t('Error message')}: ${t(
-                  'This level is higher or lower than the one currently allowed'
-                )}`,
-                (value) => value > currentPriceBid()
-              ),
-          }),
+          .test(
+            Fields.STOP_LOSS,
+            `${t('Error message')}: ${t(
+              'This level is higher or lower than the one currently allowed'
+            )}`,
+            (value) => {
+              if (SLTPstore.slType === TpSlTypeEnum.Price) {
+                return value < currentPriceAsk();
+              }
+              return true;
+            }
+          )
+          .test(
+            Fields.STOP_LOSS,
+            `${t('Error message')}: ${t(
+              'This level is higher or lower than the one currently allowed'
+            )}`,
+            (value) => {
+              if (SLTPstore.slType === TpSlTypeEnum.Price) {
+                return value > currentPriceBid();
+              }
+              return true;
+            }
+          ),
         openPrice: yup.number(),
-        tpType: yup.number(),
-        slType: yup.number(),
-        isToppingUpActive: yup.boolean(),
-        accountId: yup.string(),
-        instrumentId: yup.string(),
-        operation: yup.number(),
-        processId: yup.string(),
       }),
 
-    [instrument, currentPriceBid, currentPriceAsk, mainAppStore.activeAccount]
+    [
+      instrument,
+      currentPriceBid,
+      currentPriceAsk,
+      mainAppStore.activeAccount,
+      operation,
+      SLTPstore.slType,
+      SLTPstore.tpType,
+      multiplier,
+    ]
   );
 
-  const onSubmit: SubmitHandler<FormValues> = async (values) => {
-    const { operation, ...otherValues } = values;
+  const onSubmit: SubmitHandler<FormValues> = useCallback(
+    async (values) => {
+      let availableBalance = mainAppStore.activeAccount?.balance || 0;
 
-    let availableBalance = mainAppStore.activeAccount?.balance || 0;
+      if (values.openPrice) {
+        const modelToSubmit: OpenPendingOrder = {
+          ...values,
+          operation: operation ?? AskBidEnum.Buy,
+          openPrice: values.openPrice || 0,
+          investmentAmount: values.investmentAmount,
+          tpType: hasValue(values.tp) ? SLTPstore.tpType : null,
+          slType: hasValue(values.sl) ? SLTPstore.slType : null,
+          accountId: mainAppStore.activeAccountId,
+          instrumentId: instrument.id,
+          processId: getProcessId(),
+          multiplier,
+        };
+        try {
+          const response = await API.openPendingOrder(modelToSubmit);
 
-    if (otherValues.openPrice) {
-      const modelToSubmit = {
-        ...otherValues,
-        operation: operation === null ? AskBidEnum.Buy : operation,
-        openPrice: otherValues.openPrice || 0,
-        investmentAmount: +otherValues.investmentAmount,
-      };
-      try {
-        const response = await API.openPendingOrder(modelToSubmit);
+          notificationStore.notificationMessage = t(
+            apiResponseCodeMessages[response.result]
+          );
+          notificationStore.isSuccessfull =
+            response.result === OperationApiResponseCodes.Ok;
+          notificationStore.openNotification();
 
-        notificationStore.notificationMessage = t(
-          apiResponseCodeMessages[response.result]
-        );
-        notificationStore.isSuccessfull =
-          response.result === OperationApiResponseCodes.Ok;
-        notificationStore.openNotification();
-
-        if (response.result === OperationApiResponseCodes.Ok) {
-          reset();
-          setValue('operation', null);
-          setValue('multiplier', otherValues.multiplier);
-          setValue('investmentAmount', otherValues.investmentAmount);
-          API.setKeyValue({
-            key: mainAppStore.activeAccount?.isLive
-              ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
-              : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO,
-            value: `${response.order.investmentAmount}`,
-          });
-          API.setKeyValue({
-            key: `mult_${instrument.id.trim().toLowerCase()}`,
-            value: `${response.order?.multiplier || modelToSubmit.multiplier}`,
-          });
-          setValue('openPrice', '');
-          mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
-            [mixapanelProps.AMOUNT]: response.order.investmentAmount,
-            [mixapanelProps.ACCOUNT_CURRENCY]:
-              mainAppStore.activeAccount?.currency || '',
-            [mixapanelProps.INSTRUMENT_ID]: response.order.instrument,
-            [mixapanelProps.MULTIPLIER]:
-              response.order?.multiplier || modelToSubmit.multiplier,
-            [mixapanelProps.TREND]:
-              response.order.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SL_TYPE]:
-              response.order.slType !== null
-                ? mixpanelValues[response.order.slType]
-                : null,
-            [mixapanelProps.TP_TYPE]:
-              response.order.tpType !== null
-                ? mixpanelValues[response.order.tpType]
-                : null,
-            [mixapanelProps.SL_VALUE]:
-              response.order.sl !== null ? Math.abs(response.order.sl) : null,
-            [mixapanelProps.TP_VALUE]: response.order.tp,
-            [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
-            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
-            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
-              ? 'real'
-              : 'demo',
-            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
-            [mixapanelProps.POSITION_ID]: response.order.id,
-          });
-        } else {
-          mixpanel.track(mixpanelEvents.LIMIT_ORDER_FAILED, {
-            [mixapanelProps.AMOUNT]: modelToSubmit.investmentAmount,
-            [mixapanelProps.ACCOUNT_CURRENCY]:
-              mainAppStore.activeAccount?.currency || '',
-            [mixapanelProps.INSTRUMENT_ID]: modelToSubmit.instrumentId,
-            [mixapanelProps.MULTIPLIER]: modelToSubmit.multiplier,
-            [mixapanelProps.TREND]:
-              modelToSubmit.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SL_TYPE]: modelToSubmit.slType
-              ? mixpanelValues[modelToSubmit.slType]
-              : null,
-            [mixapanelProps.TP_TYPE]:
-              modelToSubmit.tpType !== null &&
-              modelToSubmit.tpType !== undefined
-                ? mixpanelValues[modelToSubmit.tpType]
-                : null,
-            [mixapanelProps.SL_VALUE]:
-              modelToSubmit.sl !== null && modelToSubmit.sl !== undefined
-                ? Math.abs(modelToSubmit.sl)
-                : null,
-            [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
-            [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
-            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
-            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
-              ? 'real'
-              : 'demo',
-            [mixapanelProps.ERROR_TEXT]:
-              apiResponseCodeMessages[response.result],
-            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
-          });
-        }
-      } catch (error) {
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
-      }
-    } else {
-      const modelToSubmit = {
-        ...otherValues,
-        operation: operation === null ? AskBidEnum.Buy : operation,
-        investmentAmount: +otherValues.investmentAmount,
-      };
-      try {
-        // @ts-ignore
-        const response = await API.openPosition(modelToSubmit);
-
-        notificationStore.notificationMessage = t(
-          apiResponseCodeMessages[response.result]
-        );
-        notificationStore.isSuccessfull =
-          response.result === OperationApiResponseCodes.Ok;
-        notificationStore.openNotification();
-
-        if (response.result === OperationApiResponseCodes.Ok) {
-          setValue('operation', null);
-          markersOnChartStore.addNewMarker(response.position);
-          API.setKeyValue({
-            key: mainAppStore.activeAccount?.isLive
-              ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
-              : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO,
-            value: `${response.position.investmentAmount}`,
-          });
-          API.setKeyValue({
-            key: `mult_${instrument.id.trim().toLowerCase()}`,
-            value: `${
-              response.position?.multiplier || modelToSubmit.multiplier
-            }`,
-          });
-          reset();
-          setValue('multiplier', otherValues.multiplier);
-          setValue('investmentAmount', otherValues.investmentAmount);
-          mixpanel.track(mixpanelEvents.MARKET_ORDER, {
-            [mixapanelProps.AMOUNT]: response.position.investmentAmount,
-            [mixapanelProps.ACCOUNT_CURRENCY]:
-              mainAppStore.activeAccount?.currency || '',
-            [mixapanelProps.INSTRUMENT_ID]: response.position.instrument,
-            [mixapanelProps.MULTIPLIER]:
-              response.position?.multiplier || modelToSubmit.multiplier,
-            [mixapanelProps.TREND]:
-              response.position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SL_TYPE]:
-              response.position.slType !== null
-                ? mixpanelValues[response.position.slType]
-                : null,
-            [mixapanelProps.TP_TYPE]:
-              response.position.tpType !== null
-                ? mixpanelValues[response.position.tpType]
-                : null,
-            [mixapanelProps.SL_VALUE]:
-              response.position.sl !== null
-                ? Math.abs(response.position.sl)
-                : null,
-            [mixapanelProps.TP_VALUE]: response.position.tp,
-            [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
-            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
-            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
-              ? 'real'
-              : 'demo',
-            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
-            [mixapanelProps.POSITION_ID]: response.position.id,
-          });
-        } else {
-          mixpanel.track(mixpanelEvents.MARKET_ORDER_FAILED, {
-            [mixapanelProps.AMOUNT]: modelToSubmit.investmentAmount,
-            [mixapanelProps.ACCOUNT_CURRENCY]:
-              mainAppStore.activeAccount?.currency || '',
-            [mixapanelProps.INSTRUMENT_ID]: modelToSubmit.instrumentId,
-            [mixapanelProps.MULTIPLIER]: modelToSubmit.multiplier,
-            [mixapanelProps.TREND]:
-              modelToSubmit.operation === AskBidEnum.Buy ? 'buy' : 'sell',
-            [mixapanelProps.SL_TYPE]:
-              modelToSubmit.slType !== null &&
-              modelToSubmit.slType !== undefined
+          if (response.result === OperationApiResponseCodes.Ok) {
+            reset();
+            setOperation(null);
+            setValue('investmentAmount', values.investmentAmount);
+            API.setKeyValue({
+              key: mainAppStore.activeAccount?.isLive
+                ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
+                : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO,
+              value: `${response.order.investmentAmount}`,
+            });
+            API.setKeyValue({
+              key: `mult_${instrument.id.trim().toLowerCase()}`,
+              value: `${
+                response.order?.multiplier || modelToSubmit.multiplier
+              }`,
+            });
+            setValue('openPrice', '');
+            mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
+              [mixapanelProps.AMOUNT]: response.order.investmentAmount,
+              [mixapanelProps.ACCOUNT_CURRENCY]:
+                mainAppStore.activeAccount?.currency || '',
+              [mixapanelProps.INSTRUMENT_ID]: response.order.instrument,
+              [mixapanelProps.MULTIPLIER]:
+                response.order?.multiplier || modelToSubmit.multiplier,
+              [mixapanelProps.TREND]:
+                response.order.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+              [mixapanelProps.SL_TYPE]:
+                response.order.slType !== null
+                  ? mixpanelValues[response.order.slType]
+                  : null,
+              [mixapanelProps.TP_TYPE]:
+                response.order.tpType !== null
+                  ? mixpanelValues[response.order.tpType]
+                  : null,
+              [mixapanelProps.SL_VALUE]:
+                response.order.sl !== null ? Math.abs(response.order.sl) : null,
+              [mixapanelProps.TP_VALUE]: response.order.tp,
+              [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
+              [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+              [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+                ? 'real'
+                : 'demo',
+              [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+              [mixapanelProps.POSITION_ID]: response.order.id,
+            });
+          } else {
+            mixpanel.track(mixpanelEvents.LIMIT_ORDER_FAILED, {
+              [mixapanelProps.AMOUNT]: modelToSubmit.investmentAmount,
+              [mixapanelProps.ACCOUNT_CURRENCY]:
+                mainAppStore.activeAccount?.currency || '',
+              [mixapanelProps.INSTRUMENT_ID]: modelToSubmit.instrumentId,
+              [mixapanelProps.MULTIPLIER]: modelToSubmit.multiplier,
+              [mixapanelProps.TREND]:
+                modelToSubmit.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+              [mixapanelProps.SL_TYPE]: modelToSubmit.slType
                 ? mixpanelValues[modelToSubmit.slType]
                 : null,
-            [mixapanelProps.TP_TYPE]:
-              modelToSubmit.tpType !== null &&
-              modelToSubmit.tpType !== undefined
-                ? mixpanelValues[modelToSubmit.tpType]
-                : null,
-            [mixapanelProps.SL_VALUE]:
-              modelToSubmit.sl !== null && modelToSubmit.sl !== undefined
-                ? Math.abs(modelToSubmit.sl)
-                : null,
-            [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
-            [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
-            [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
-            [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
-              ? 'real'
-              : 'demo',
-            [mixapanelProps.ERROR_TEXT]:
-              apiResponseCodeMessages[response.result],
-            [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
-          });
+              [mixapanelProps.TP_TYPE]:
+                modelToSubmit.tpType !== null &&
+                modelToSubmit.tpType !== undefined
+                  ? mixpanelValues[modelToSubmit.tpType]
+                  : null,
+              [mixapanelProps.SL_VALUE]:
+                modelToSubmit.sl !== null && modelToSubmit.sl !== undefined
+                  ? Math.abs(modelToSubmit.sl)
+                  : null,
+              [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
+              [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
+              [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+              [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+                ? 'real'
+                : 'demo',
+              [mixapanelProps.ERROR_TEXT]:
+                apiResponseCodeMessages[response.result],
+              [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+            });
+          }
+        } catch (error) {
+          badRequestPopupStore.openModal();
+          badRequestPopupStore.setMessage(error);
         }
-      } catch (error) {
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
+      } else {
+        const modelToSubmit: OpenPositionModel = {
+          ...values,
+          operation: operation ?? AskBidEnum.Buy,
+          investmentAmount: values.investmentAmount,
+          tpType: hasValue(values.tp) ? SLTPstore.tpType : null,
+          slType: hasValue(values.sl) ? SLTPstore.slType : null,
+          accountId: mainAppStore.activeAccountId,
+          instrumentId: instrument.id,
+          processId: getProcessId(),
+          multiplier,
+        };
+        try {
+          const response = await API.openPosition(modelToSubmit);
+
+          notificationStore.notificationMessage = t(
+            apiResponseCodeMessages[response.result]
+          );
+          notificationStore.isSuccessfull =
+            response.result === OperationApiResponseCodes.Ok;
+          notificationStore.openNotification();
+
+          if (response.result === OperationApiResponseCodes.Ok) {
+            setOperation(null);
+            markersOnChartStore.addNewMarker(response.position);
+            API.setKeyValue({
+              key: mainAppStore.activeAccount?.isLive
+                ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
+                : KeysInApi.DEFAULT_INVEST_AMOUNT_DEMO,
+              value: `${response.position.investmentAmount}`,
+            });
+            API.setKeyValue({
+              key: `mult_${instrument.id.trim().toLowerCase()}`,
+              value: `${
+                response.position?.multiplier || modelToSubmit.multiplier
+              }`,
+            });
+            reset();
+            setValue('investmentAmount', values.investmentAmount);
+            mixpanel.track(mixpanelEvents.MARKET_ORDER, {
+              [mixapanelProps.AMOUNT]: response.position.investmentAmount,
+              [mixapanelProps.ACCOUNT_CURRENCY]:
+                mainAppStore.activeAccount?.currency || '',
+              [mixapanelProps.INSTRUMENT_ID]: response.position.instrument,
+              [mixapanelProps.MULTIPLIER]:
+                response.position?.multiplier || modelToSubmit.multiplier,
+              [mixapanelProps.TREND]:
+                response.position.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+              [mixapanelProps.SL_TYPE]:
+                response.position.slType !== null
+                  ? mixpanelValues[response.position.slType]
+                  : null,
+              [mixapanelProps.TP_TYPE]:
+                response.position.tpType !== null
+                  ? mixpanelValues[response.position.tpType]
+                  : null,
+              [mixapanelProps.SL_VALUE]:
+                response.position.sl !== null
+                  ? Math.abs(response.position.sl)
+                  : null,
+              [mixapanelProps.TP_VALUE]: response.position.tp,
+              [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
+              [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+              [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+                ? 'real'
+                : 'demo',
+              [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+              [mixapanelProps.POSITION_ID]: response.position.id,
+            });
+          } else {
+            mixpanel.track(mixpanelEvents.MARKET_ORDER_FAILED, {
+              [mixapanelProps.AMOUNT]: modelToSubmit.investmentAmount,
+              [mixapanelProps.ACCOUNT_CURRENCY]:
+                mainAppStore.activeAccount?.currency || '',
+              [mixapanelProps.INSTRUMENT_ID]: modelToSubmit.instrumentId,
+              [mixapanelProps.MULTIPLIER]: modelToSubmit.multiplier,
+              [mixapanelProps.TREND]:
+                modelToSubmit.operation === AskBidEnum.Buy ? 'buy' : 'sell',
+              [mixapanelProps.SL_TYPE]:
+                modelToSubmit.slType !== null &&
+                modelToSubmit.slType !== undefined
+                  ? mixpanelValues[modelToSubmit.slType]
+                  : null,
+              [mixapanelProps.TP_TYPE]:
+                modelToSubmit.tpType !== null &&
+                modelToSubmit.tpType !== undefined
+                  ? mixpanelValues[modelToSubmit.tpType]
+                  : null,
+              [mixapanelProps.SL_VALUE]:
+                modelToSubmit.sl !== null && modelToSubmit.sl !== undefined
+                  ? Math.abs(modelToSubmit.sl)
+                  : null,
+              [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
+              [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
+              [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
+              [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
+                ? 'real'
+                : 'demo',
+              [mixapanelProps.ERROR_TEXT]:
+                apiResponseCodeMessages[response.result],
+              [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
+            });
+          }
+        } catch (error) {
+          badRequestPopupStore.openModal();
+          badRequestPopupStore.setMessage(error);
+        }
       }
-    }
-  };
+    },
+    [
+      SLTPstore.tpType,
+      SLTPstore.slType,
+      operation,
+      multiplier,
+      instrument,
+      mainAppStore.activeAccount,
+      mainAppStore.activeAccountId,
+    ]
+  );
 
   const {
     register,
@@ -450,32 +455,22 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     formState,
     ...otherMethods
   } = useForm<FormValues>({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema()),
     mode: 'onSubmit',
     defaultValues: {
-      processId: getProcessId(),
-      accountId: mainAppStore.activeAccount?.id || '',
-      instrumentId: instrument.id,
-      operation: null,
-      multiplier: instrument.multiplier[0],
       investmentAmount: mainAppStore.activeAccount?.isLive
         ? DEFAULT_INVEST_AMOUNT_LIVE
         : DEFAULT_INVEST_AMOUNT_DEMO,
-      isToppingUpActive: false,
-      tpType: TpSlTypeEnum.Currency,
-      slType: TpSlTypeEnum.Currency,
     },
   });
 
   useEffect(() => {
-    setValue('operation', null);
-    setValue('instrumentId', instrument.id);
+    setOperation(null);
   }, [instrument.id]);
 
   useEffect(() => {
-    setValue('operation', null);
-    setValue('accountId', mainAppStore.activeAccountId);
-    setValue('openPrice', undefined);
+    setOperation(null);
+    setValue('openPrice', null);
   }, [mainAppStore.activeAccountId]);
 
   useEffect(() => {
@@ -505,22 +500,20 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           `mult_${instrument.id.trim().toLowerCase()}`
         );
         if (response.length > 0) {
-          setValue('multiplier', parseInt(response));
+          setMultiplier(parseInt(response));
         } else {
           const realMultiplier =
+            instrument.multiplier[0] ??
             instrumentsStore.instruments.find(
               (item) => item.instrumentItem.id === instrument.id
-            )?.instrumentItem.multiplier[0] || instrument.multiplier[0];
-          setValue('multiplier', realMultiplier);
+            )?.instrumentItem.multiplier[0];
+          setMultiplier(realMultiplier);
         }
-        fetchDefaultInvestAmount();
       } catch (error) {}
     }
     fetchMultiplier();
-  }, [
-    mainAppStore.activeAccount?.isLive,
-    instrumentsStore.activeInstrument?.instrumentItem.id,
-  ]);
+    fetchDefaultInvestAmount();
+  }, [mainAppStore.activeAccount?.isLive, instrument]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
     const { investmentAmount } = getValues();
@@ -536,13 +529,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const closePopup = () => {
-    setValue('operation', null);
+    setOperation(null);
   };
 
   const openConfirmBuyingPopup = (operationType: AskBidEnum) => () => {
-    setValue('operation', operationType, {
-      shouldValidate: false,
-    });
+    setOperation(operationType);
   };
 
   const [investedAmountDropdown, toggleInvestemAmountDropdown] = useState(
@@ -628,7 +619,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const handleResetError = () => {
-    setValue('operation', null);
+    setOperation(null);
     clearErrors(['investmentAmount', 'openPrice']);
   };
 
@@ -646,7 +637,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
    */
   const positionStopOutByPrice = useCallback(
     (slPrice: number) => {
-      const { operation, investmentAmount, multiplier } = getValues();
+      const { investmentAmount } = getValues();
       let currentPrice, so_level, so_percent, direction, isBuy;
       isBuy = operation === AskBidEnum.Buy;
       currentPrice = isBuy ? currentPriceBid() : currentPriceAsk();
@@ -666,48 +657,69 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       );
       return result.toFixed(2);
     },
-    [currentPriceAsk, currentPriceBid]
+    [currentPriceAsk, currentPriceBid, operation, multiplier]
+  );
+  const { investmentAmount } = watch();
+
+  const challengeStopOutBySlValue = useCallback(
+    (stopLoss) => {
+      switch (SLTPstore.slType) {
+        case TpSlTypeEnum.Currency:
+          SLTPstore.toggleToppingUp(stopLoss > postitionStopOut());
+          break;
+
+        case TpSlTypeEnum.Price:
+          const soValue = +positionStopOutByPrice(stopLoss);
+          SLTPstore.toggleToppingUp(
+            soValue <= 0 && Math.abs(soValue) > postitionStopOut()
+          );
+          break;
+
+        default:
+          break;
+      }
+    },
+    [SLTPstore.slType]
+  );
+  const stopLoss: number = watch(Fields.STOP_LOSS);
+
+  const challengeStopOutByToppingUp = useCallback(
+    (isToppingUp: boolean) => {
+      switch (SLTPstore.slType) {
+        case TpSlTypeEnum.Currency:
+          // TODO: think refactor
+          if (
+            (stopLoss > postitionStopOut() && !isToppingUp) ||
+            (stopLoss <= postitionStopOut() && isToppingUp)
+          ) {
+            setValue('sl', undefined);
+          }
+
+          break;
+
+        case TpSlTypeEnum.Price:
+          const soValue = +positionStopOutByPrice(stopLoss);
+          SLTPstore.toggleToppingUp(
+            soValue <= 0 && Math.abs(soValue) > postitionStopOut()
+          );
+          break;
+
+        default:
+          break;
+      }
+    },
+    [SLTPstore.slType, stopLoss]
   );
 
   useEffect(() => {
-    // if (!SLTPStore.deleteToppingUp) {
-    //   switch (SLTPStore.autoCloseSLType) {
-    //     case TpSlTypeEnum.Currency:
-    //       if (+SLTPStore.stopLossValue > postitionStopOut()) {
-    //         SLTPStore.toggleToppingUp(true);
-    //       }
-    //       break;
-    //     case TpSlTypeEnum.Price:
-    //       const soValue = +positionStopOutByPrice(+SLTPStore.stopLossValue);
-    //       if (soValue <= 0 && Math.abs(soValue) > postitionStopOut()) {
-    //         SLTPStore.toggleToppingUp(true);
-    //       }
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // }
-    // if (!SLTPStore.isToppingUpActive && SLTPStore.stopLossValue !== '') {
-    //   switch (SLTPStore.autoCloseSLType) {
-    //     case TpSlTypeEnum.Currency:
-    //       if (+SLTPStore.stopLossValue > postitionStopOut()) {
-    //         SLTPStore.stopLossValue = '';
-    //         setValue('sl', null);
-    //       }
-    //       break;
-    //     case TpSlTypeEnum.Price:
-    //       const soValue = +positionStopOutByPrice(+SLTPStore.stopLossValue);
-    //       if (soValue <= 0 && Math.abs(soValue) > postitionStopOut()) {
-    //         SLTPStore.stopLossValue = '';
-    //         setValue('sl', null);
-    //       }
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    //   SLTPStore.toggleDeleteToppingUp(false);
-    // }
-  }, []);
+    if (hasValue(stopLoss)) {
+      challengeStopOutBySlValue(stopLoss);
+    }
+  }, [stopLoss]);
+
+  useEffect(() => {
+    challengeStopOutByToppingUp(SLTPstore.isToppingUpActive);
+  }, [SLTPstore.isToppingUpActive]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -721,10 +733,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       keyEvent.preventDefault();
     }
   };
-
-  const { investmentAmount, operation, multiplier } = watch();
-
-  console.log(watch());
 
   const methods = {
     ...otherMethods,
@@ -789,7 +797,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 classNameTooltip={'investmentAmount'}
                 direction="left"
               >
-                {errors.investmentAmount}
+                {errors.investmentAmount.message}
               </ErropPopup>
             )}
             <PrimaryTextSpan fontWeight="bold" marginRight="2px">
@@ -864,7 +872,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                   )?.instrumentItem.multiplier || instrument.multiplier
                 }
                 selectedMultiplier={multiplier}
-                setFieldValue={setValue}
+                setMultiplier={setMultiplier}
               ></MultiplierDropdown>
             )}
           </Observer>
@@ -905,7 +913,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                   classNameTooltip={'investmentAmount'}
                   direction="left"
                 >
-                  {errors.sl || errors.tp}
+                  {errors.sl?.message || errors.tp?.message}
                 </ErropPopup>
               )}
             <AutoClosePopup></AutoClosePopup>
@@ -953,17 +961,23 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </Observer>
           </FlexContainer>
           <FlexContainer flexDirection="column" position="relative">
-            {hasValue(operation) && (
-              <ConfirmPopupWrapper position="absolute" right="100%" top="0px">
-                <ConfirmationPopup
-                  closePopup={closePopup}
-                  values={getValues()}
-                  digits={instrument.digits}
-                  instrumentId={instrument.id}
-                  disabled={formState.isSubmitting}
-                ></ConfirmationPopup>
-              </ConfirmPopupWrapper>
-            )}
+            <ConfirmPopupWrapper
+              position="absolute"
+              right="100%"
+              top="0px"
+              visibility={hasValue(operation) ? 'visible' : 'hidden'}
+            >
+              <ConfirmationPopup
+                closePopup={closePopup}
+                digits={instrument.digits}
+                instrumentId={instrument.id}
+                disabled={formState.isSubmitting}
+                investmentAmount={getValues(Fields.INVEST_AMOUNT)}
+                multiplier={multiplier}
+                operation={operation}
+                //  handleSubmit={handleSubmit(onSubmit)}
+              ></ConfirmationPopup>
+            </ConfirmPopupWrapper>
             <ButtonBuy
               type="button"
               onClick={openConfirmBuyingPopup(AskBidEnum.Buy)}
@@ -1014,7 +1028,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       </FormProvider>
     </FlexContainer>
   );
-};
+});
 
 export default BuySellPanel;
 
@@ -1111,11 +1125,9 @@ const PlusMinusButtonWrapper = styled(FlexContainer)`
 const fadein = keyframes`
   from {
     opacity: 0;
-    visibility: visible;
   }
   to {
     opacity: 1;
-    visibility: visible;
   }
 `;
 const ConfirmPopupWrapper = styled(FlexContainer)`

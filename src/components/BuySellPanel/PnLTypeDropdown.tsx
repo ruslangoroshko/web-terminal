@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import Toggle from '../Toggle';
@@ -11,42 +11,51 @@ import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
 import autoCloseTypes from '../../constants/autoCloseTypes';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
-import { useFormContext } from 'react-hook-form';
-import { FormValues } from '../../types/Positions';
+import { useStores } from '../../hooks/useStores';
+import { observer } from 'mobx-react-lite';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
   isDisabled?: boolean;
 }
 
-const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
+const PnLTypeDropdown: FC<Props> = observer(({ dropdownType, isDisabled }) => {
   const { t } = useTranslation();
-
-  const { getValues, setValue, watch } = useFormContext<FormValues>();
+  const { SLTPstore } = useStores();
 
   const handleAutoClose = (
     autoClose: TpSlTypeEnum,
     toggle: () => void
   ) => () => {
-    setValue(dropdownType, autoClose);
+    switch (dropdownType) {
+      case 'sl':
+        SLTPstore.slType = autoClose;
+        break;
+
+      case 'tp':
+        SLTPstore.tpType = autoClose;
+        break;
+
+      default:
+        break;
+    }
     toggle();
   };
 
   const availableAutoCloseTypes = [TpSlTypeEnum.Currency, TpSlTypeEnum.Price];
 
-  const renderSymbol = () => {
-    const { tpType, slType } = getValues();
+  const renderSymbol = useCallback(() => {
     switch (dropdownType) {
       case 'sl':
-        return autoCloseTypes[slType ?? TpSlTypeEnum.Currency].symbol;
+        return autoCloseTypes[SLTPstore.slType ?? TpSlTypeEnum.Currency].symbol;
 
       case 'tp':
-        return autoCloseTypes[tpType ?? TpSlTypeEnum.Currency].symbol;
+        return autoCloseTypes[SLTPstore.tpType ?? TpSlTypeEnum.Currency].symbol;
 
       default:
         return '';
     }
-  };
+  }, [SLTPstore.tpType, SLTPstore.slType]);
 
   return (
     <Toggle>
@@ -104,7 +113,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
       )}
     </Toggle>
   );
-};
+});
 
 export default PnLTypeDropdown;
 

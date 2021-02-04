@@ -71,6 +71,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     notificationStore,
     markersOnChartStore,
     tradingViewStore,
+    SLTPstore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -105,7 +106,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               return value !== 0;
             }
           )
-          .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
+          .when([Fields.TAKE_PROFIT_TYPE], {
             is: (operation, tpType) =>
               operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
             then: yup
@@ -119,9 +120,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 (value) => value > currentPriceBid() || value === null
               ),
           })
-          .when([Fields.OPERATION, Fields.TAKE_PROFIT_TYPE], {
-            is: (operation, tpType) =>
-              operation === AskBidEnum.Sell && tpType === TpSlTypeEnum.Price,
+          .when([Fields.TAKE_PROFIT_TYPE], {
+            is: (tpType) =>
+              position.operation === AskBidEnum.Sell &&
+              tpType === TpSlTypeEnum.Price,
             then: yup
               .number()
               .nullable()
@@ -150,9 +152,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           .test(Fields.STOP_LOSS, t('Stop Loss can not be zero'), (value) => {
             return value !== 0;
           })
-          .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
-            is: (operation, slType) =>
-              operation === AskBidEnum.Buy && slType === TpSlTypeEnum.Price,
+          .when([Fields.STOP_LOSS_TYPE], {
+            is: (slType) =>
+              position.operation === AskBidEnum.Buy &&
+              slType === TpSlTypeEnum.Price,
             then: yup
               .number()
               .test(
@@ -163,9 +166,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 (value) => value < currentPriceBid() || value === null
               ),
           })
-          .when([Fields.OPERATION, Fields.STOP_LOSS_TYPE], {
-            is: (operation, slType) =>
-              operation === AskBidEnum.Sell && slType === TpSlTypeEnum.Price,
+          .when([Fields.STOP_LOSS_TYPE], {
+            is: (slType) =>
+              position.operation === AskBidEnum.Sell &&
+              slType === TpSlTypeEnum.Price,
             then: yup
               .number()
               .test(
@@ -523,17 +527,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      accountId: mainAppStore.activeAccount?.id || '',
-      instrumentId: position.instrument,
-      processId: getProcessId(),
       tp: position.tp ?? undefined,
       sl: position.sl ?? undefined,
-      tpType: position.tpType ?? undefined,
-      slType: position.slType ?? undefined,
-      operation: position.operation,
       investmentAmount: position.investmentAmount,
-      multiplier: position.multiplier,
-      isToppingUpActive: position.isToppingUpActive,
     },
   });
 
@@ -719,7 +715,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           : tradingViewStore.activeOrderLinePositionSL?.getPrice();
       tradingViewStore.toggleMovedPositionPopup(true);
       checkSL(position.slType, newPosition);
-      setValue('slType', position.slType);
+      SLTPstore.slType = position.slType;
       setValue('sl', newPosition);
     }
   }, [
@@ -747,7 +743,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           : tradingViewStore.activeOrderLinePositionTP?.getPrice();
       tradingViewStore.toggleMovedPositionPopup(true);
       checkTP(position.tpType, newPosition);
-      setValue('tpType', position.tpType);
+      SLTPstore.tpType = position.tpType;
       setValue('tp', newPosition);
     }
   }, [

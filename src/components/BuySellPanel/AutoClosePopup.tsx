@@ -22,7 +22,7 @@ interface Props {
 }
 
 const AutoClosePopup: FC<Props> = ({}) => {
-  const { mainAppStore } = useStores();
+  const { mainAppStore, SLTPstore } = useStores();
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
 
@@ -42,10 +42,10 @@ const AutoClosePopup: FC<Props> = ({}) => {
   };
 
   const clearSLTP = (setValue: any) => () => {
-    setValue('tp', null);
-    setValue('sl', null);
-    setValue('slType', null);
-    setValue('tpType', null);
+    setValue('tp', undefined);
+    setValue('sl', undefined);
+    SLTPstore.tpType = null;
+    SLTPstore.slType = null;
   };
 
   const handleClose = () => {
@@ -87,6 +87,11 @@ const AutoClosePopup: FC<Props> = ({}) => {
   };
 
   const { sl, tp } = useWatch({});
+
+  useEffect(() => {
+    SLTPstore.slType = TpSlTypeEnum.Currency;
+    SLTPstore.tpType = TpSlTypeEnum.Currency;
+  }, []);
 
   return (
     <ConnectForm>

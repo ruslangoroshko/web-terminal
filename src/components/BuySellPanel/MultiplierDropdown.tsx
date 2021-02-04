@@ -3,20 +3,24 @@ import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import Fields from '../../constants/fields';
 
 interface Props {
   multipliers: number[];
   selectedMultiplier: number;
-  setFieldValue: (arg0: any, arg1: any) => void;
+  setMultiplier: (value: number) => void;
   onToggle: (arg0: boolean) => void;
 }
 
 function MultiplierDropdown(props: Props) {
-  const { multipliers, selectedMultiplier, setFieldValue, onToggle } = props;
+  const {
+    multipliers,
+    selectedMultiplier,
+    setMultiplier: setFieldValue,
+    onToggle,
+  } = props;
   const [on, toggle] = useState(false);
   const handleChangeMultiplier = (multiplier: number) => () => {
-    setFieldValue(Fields.MULTIPLIER, multiplier);
+    setFieldValue(multiplier);
     toggle(false);
   };
 

@@ -18,7 +18,7 @@ import { getProcessId } from '../../helpers/getProcessId';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
 import TopingUpCheck from './TopingUpCheck';
-import { DeepMap, FieldError, useWatch } from 'react-hook-form';
+import { DeepMap, FieldError } from 'react-hook-form';
 import Fields from '../../constants/fields';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 import { ConnectForm } from './ConnectForm';
@@ -108,13 +108,13 @@ const SetAutoclose: FC<Props> = ({ isDisabled, toggle }) => {
   const handleRemoveTp = (
     setValue: (arg0: string, arg1: any) => void
   ) => () => {
-    setValue('tp', null);
+    setValue('tp', undefined);
   };
 
   const handleRemoveSl = (
     setValue: (arg0: string, arg1: any) => void
   ) => () => {
-    setValue('sl', null);
+    setValue('sl', undefined);
   };
 
   const handleApplySetAutoClose = (
@@ -189,7 +189,7 @@ const SetAutoclose: FC<Props> = ({ isDisabled, toggle }) => {
                   classNameTooltip={getProcessId()}
                   direction="left"
                 >
-                  {errors.tp}
+                  {errors.tp.message}
                 </ErropPopup>
               )}
               {getValues(Fields.TAKE_PROFIT_TYPE) !== TpSlTypeEnum.Price && (
@@ -271,7 +271,7 @@ const SetAutoclose: FC<Props> = ({ isDisabled, toggle }) => {
                   classNameTooltip={getProcessId()}
                   direction="left"
                 >
-                  {errors.sl}
+                  {errors.sl.message}
                 </ErropPopup>
               )}
               {getValues(Fields.STOP_LOSS_TYPE) !== TpSlTypeEnum.Price && (
@@ -347,7 +347,6 @@ const SetAutoclose: FC<Props> = ({ isDisabled, toggle }) => {
                   </PrimaryTextSpan>
                 </InformationPopup>
               </FlexContainer>
-
               <TopingUpCheck />
             </FlexContainer>
             {!isDisabled && (

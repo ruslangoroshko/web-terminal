@@ -23,21 +23,17 @@ export interface OpenPendingOrder {
   operation: AskBidEnum;
   multiplier: number;
   openPrice: number;
+  tp: number | null;
+  sl: number | null;
+  tpType: TpSlTypeEnum | null;
+  slType: TpSlTypeEnum | null;
 }
 
 export interface FormValues {
-  processId: string;
-  accountId: string;
   investmentAmount: number;
-  instrumentId: string;
-  operation: AskBidEnum | null;
-  multiplier: number;
   tp: number;
   sl: number;
-  tpType: TpSlTypeEnum;
-  slType: TpSlTypeEnum;
   openPrice?: number;
-  isToppingUpActive: boolean;
 }
 
 export interface OpenPositionResponseDTO {

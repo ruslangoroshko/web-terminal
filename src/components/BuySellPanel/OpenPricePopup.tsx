@@ -246,7 +246,9 @@ const OpenPricePopup: FC<Props> = () => {
                         type="button"
                         onClick={setCurrentPrice(
                           setValue,
-                          quotesStore.quotes[instrumentId].bid.c.toFixed(digits)
+                          quotesStore.quotes[instrumentId]?.bid.c.toFixed(
+                            digits
+                          ) || ''
                         )}
                       >
                         <PrimaryTextSpan
@@ -255,7 +257,7 @@ const OpenPricePopup: FC<Props> = () => {
                           fontSize="11px"
                           lineHeight="12px"
                         >
-                          {quotesStore.quotes[instrumentId].bid.c.toFixed(
+                          {quotesStore.quotes[instrumentId]?.bid.c.toFixed(
                             digits
                           )}
                         </PrimaryTextSpan>
