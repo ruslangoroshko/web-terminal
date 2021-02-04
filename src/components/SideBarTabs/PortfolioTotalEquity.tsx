@@ -21,6 +21,7 @@ const PortfolioTotalEquity = () => {
 
   return (
     <PrimaryTextSpan fontSize="14px" lineHeight="16px" fontWeight="bold">
+      {totalEquity < 0 && '-'}
       {mainAppStore.activeAccount?.symbol}
       {Math.abs(totalEquity).toFixed(2)}
     </PrimaryTextSpan>
