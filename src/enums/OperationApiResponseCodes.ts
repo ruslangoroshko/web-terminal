@@ -1,4 +1,5 @@
 export enum OperationApiResponseCodes {
+  TooManyAttempts = -10,
   Expired = -9,
   FileNotFound = -6,
   FileWrongExtension,
