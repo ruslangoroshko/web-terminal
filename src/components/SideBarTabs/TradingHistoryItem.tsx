@@ -21,7 +21,6 @@ import closingReasonText from '../../constants/ClosingReasonText';
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
   currencySymbol: string;
-  needScroll?: boolean;
 }
 
 const TradingHistoryItem: FC<Props> = (props: Props) => {
@@ -43,7 +42,6 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
       swap: swaps,
     },
     currencySymbol,
-    needScroll
   } = props;
 
   // TODO: think about rotate 180
@@ -160,7 +158,6 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
                 bgColor="#000"
                 width="200px"
                 direction="left"
-                needScroll={needScroll}
               >
                 <InfoInner flexDirection="column" width="100%">
                   <FlexContainer
@@ -292,15 +289,6 @@ const TradingHistoryItemWrapperBorder = styled(FlexContainer)`
 
 const InfoInner = styled(FlexContainer)`
   position: relative;
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: -40px;
-    bottom: 0;
-    opacity: 0;
-  }
 `;
 
 const TradingHistoryItemWrapper = styled(FlexContainer)`

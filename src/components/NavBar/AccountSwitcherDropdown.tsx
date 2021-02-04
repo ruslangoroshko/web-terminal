@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { FlexContainer } from '../../styles/FlexContainer';
 import Toggle from '../Toggle';
@@ -15,6 +15,30 @@ import styled from '@emotion/styled';
 const AccountSwitcherDropdown = observer(() => {
   const { mainAppStore } = useStores();
   const { t } = useTranslation();
+  const [balance, setBalance] = useState<number>(0);
+
+  const animateValue = (start: number, end: number) => {
+    let startTimestamp: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / 1000, 1);
+      setBalance(parseFloat((progress * (end - start) + start).toFixed(2)));
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  };
+
+  useEffect(() => {
+    if (mainAppStore.activeAccount?.balance !== undefined) {
+      animateValue(
+        balance,
+        mainAppStore.activeAccount?.balance
+      );
+    }
+  }, [mainAppStore.activeAccount, mainAppStore.activeAccount?.balance]);
+
   return (
     <Toggle>
       {({ on, toggle }) => (
@@ -31,7 +55,7 @@ const AccountSwitcherDropdown = observer(() => {
                         fontSize="16px"
                       >
                         {mainAppStore.activeAccount?.symbol}
-                        {mainAppStore.activeAccount?.balance.toFixed(2)}
+                        {balance.toFixed(2)}
                       </PrimaryTextSpan>
                     )}
                   </Observer>
