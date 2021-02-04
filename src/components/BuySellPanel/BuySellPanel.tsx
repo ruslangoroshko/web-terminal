@@ -42,6 +42,7 @@ import {
 import hasValue from '../../helpers/hasValue';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 import OpenPricePopup from './OpenPricePopup';
+import IsToppingUpWrapper from '../IsToppingUpWrapper';
 
 // TODO: too much code, refactor
 
@@ -54,7 +55,7 @@ interface Props {
   instrument: InstrumentModelWSDTO;
 }
 
-const BuySellPanel: FC<Props> = observer(({ instrument }) => {
+const BuySellPanel: FC<Props> = ({ instrument }) => {
   const {
     quotesStore,
     notificationStore,
@@ -699,9 +700,15 @@ const BuySellPanel: FC<Props> = observer(({ instrument }) => {
 
         case TpSlTypeEnum.Price:
           const soValue = +positionStopOutByPrice(stopLoss);
-          SLTPstore.toggleToppingUp(
-            soValue <= 0 && Math.abs(soValue) > postitionStopOut()
-          );
+          if (isToppingUp) {
+            if (soValue <= 0 && Math.abs(soValue) > postitionStopOut()) {
+              setValue('sl', undefined);
+            }
+          } else {
+            if (soValue <= 0 && Math.abs(soValue) <= postitionStopOut()) {
+              setValue('sl', undefined);
+            }
+          }
           break;
 
         default:
@@ -710,16 +717,6 @@ const BuySellPanel: FC<Props> = observer(({ instrument }) => {
     },
     [SLTPstore.slType, stopLoss]
   );
-
-  useEffect(() => {
-    if (hasValue(stopLoss)) {
-      challengeStopOutBySlValue(stopLoss);
-    }
-  }, [stopLoss]);
-
-  useEffect(() => {
-    challengeStopOutByToppingUp(SLTPstore.isToppingUpActive);
-  }, [SLTPstore.isToppingUpActive]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -735,7 +732,6 @@ const BuySellPanel: FC<Props> = observer(({ instrument }) => {
   };
 
   const methods = {
-    ...otherMethods,
     watch,
     register,
     handleSubmit,
@@ -745,16 +741,24 @@ const BuySellPanel: FC<Props> = observer(({ instrument }) => {
     getValues,
     reset,
     formState,
+    ...otherMethods,
   };
 
   return (
     <FlexContainer padding="16px" flexDirection="column">
+      <IsToppingUpWrapper
+        challengeStopOutByToppingUp={challengeStopOutByToppingUp}
+        challengeStopOutBySlValue={challengeStopOutBySlValue}
+        stopLoss={stopLoss}
+      ></IsToppingUpWrapper>
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
       <FormProvider {...methods}>
         <CustomForm
           autoComplete="off"
+          id="buySellForm"
+          name="buySellForm"
           onSubmit={handleSubmit(onSubmit)}
           onKeyDown={onKeyDown}
         >
@@ -965,7 +969,7 @@ const BuySellPanel: FC<Props> = observer(({ instrument }) => {
               position="absolute"
               right="100%"
               top="0px"
-              visibility={hasValue(operation) ? 'visible' : 'hidden'}
+              visibilityProp={hasValue(operation) ? 'visible' : 'hidden'}
             >
               <ConfirmationPopup
                 closePopup={closePopup}
@@ -1028,7 +1032,7 @@ const BuySellPanel: FC<Props> = observer(({ instrument }) => {
       </FormProvider>
     </FlexContainer>
   );
-});
+};
 
 export default BuySellPanel;
 

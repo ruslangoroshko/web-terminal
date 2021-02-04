@@ -14,7 +14,7 @@ import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
 import { DisplayContents, Td } from '../../styles/TableElements';
 import ImageContainer from '../ImageContainer';
 import { useTranslation } from 'react-i18next';
-import useInstrument from '../../hooks/useInstrument';
+import useInstrumentPrecision from '../../hooks/useInstrument';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -43,7 +43,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
   const { t } = useTranslation();
 
-  const { precision } = useInstrument(instrument);
+  const { precision } = useInstrumentPrecision(instrument);
 
   return (
     <DisplayContents>

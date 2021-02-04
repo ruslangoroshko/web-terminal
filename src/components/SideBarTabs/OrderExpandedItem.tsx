@@ -18,7 +18,7 @@ import ImageContainer from '../ImageContainer';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import ClosePositionPopup from './ClosePositionPopup';
 import { useTranslation } from 'react-i18next';
-import useInstrument from '../../hooks/useInstrument';
+import useInstrumentPrecision from '../../hooks/useInstrument';
 
 interface Props {
   position: PendingOrderWSDTO;
@@ -45,7 +45,7 @@ function OrderExpandedItem(props: Props) {
   const { mainAppStore } = useStores();
   const instrumentRef = useRef<HTMLDivElement>(null);
 
-  const { precision } = useInstrument(instrument);
+  const { precision } = useInstrumentPrecision(instrument);
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
 

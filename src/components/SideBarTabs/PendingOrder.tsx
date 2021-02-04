@@ -16,7 +16,7 @@ import ClosePositionPopup from './ClosePositionPopup';
 import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
 import { useTranslation } from 'react-i18next';
-import useInstrument from '../../hooks/useInstrument';
+import useInstrumentPrecision from '../../hooks/useInstrument';
 import { LOCAL_PENDING_POSITION } from '../../constants/global';
 import { Observer } from 'mobx-react-lite';
 
@@ -36,7 +36,7 @@ const PendingOrder: FC<Props> = (props) => {
   const clickableWrapperRef = useRef<HTMLDivElement>(null);
 
   const instrumentRef = useRef<HTMLDivElement>(document.createElement('div'));
-  const { precision } = useInstrument(pendingOrder.instrument);
+  const { precision } = useInstrumentPrecision(pendingOrder.instrument);
   const handleCloseOrder = () => {
     API.removePendingOrder({
       accountId: mainAppStore.activeAccount!.id,
@@ -167,7 +167,12 @@ const PendingOrder: FC<Props> = (props) => {
             </FlexContainer>
             <FlexContainer alignItems="center" ref={clickableWrapperRef}>
               <FlexContainer marginRight="4px">
-                <AutoClosePopupSideBar ref={instrumentRef} isDisabled>
+                <AutoClosePopupSideBar
+                  positionId={`${pendingOrder.id}`}
+                  ref={instrumentRef}
+                  isDisabled
+                  handleSumbitMethod={handleCloseOrder}
+                >
                   <SvgIcon
                     {...IconSettings}
                     fillColor="rgba(255, 255, 255, 0.6)"

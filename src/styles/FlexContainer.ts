@@ -36,7 +36,7 @@ export interface FlexContainerProps {
   marginBottom?: string;
   hasError?: boolean;
   flex?: string;
-  visibility?: 'hidden' | 'visible';
+  visibilityProp?: 'hidden' | 'visible';
 }
 
 export const FlexContainer = styled.div<FlexContainerProps>`
@@ -69,5 +69,5 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   border-radius: ${(props) => props.borderRadius};
   border: ${(props) => props.border};
   box-shadow: ${(props) => props.boxShadow};
-  visibility: ${(props) => props.visibility};
+  visibility: ${(props) => props.visibilityProp};
 `;

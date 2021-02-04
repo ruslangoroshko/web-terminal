@@ -31,8 +31,8 @@ export interface OpenPendingOrder {
 
 export interface FormValues {
   investmentAmount: number;
-  tp: number;
-  sl: number;
+  tp?: number;
+  sl?: number;
   openPrice?: number;
 }
 
@@ -83,5 +83,4 @@ export interface UpdateSLTP {
   sl: number | null;
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
-  closedByChart?: boolean;
 }

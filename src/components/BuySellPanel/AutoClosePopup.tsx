@@ -13,7 +13,7 @@ import { SecondaryButton } from '../../styles/Buttons';
 import SvgIcon from '../SvgIcon';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
-import { useWatch } from 'react-hook-form';
+import { DeepMap, FieldError, useWatch } from 'react-hook-form';
 import hasValue from '../../helpers/hasValue';
 import { ConnectForm } from './ConnectForm';
 
@@ -21,7 +21,7 @@ interface Props {
   isDisabled?: boolean;
 }
 
-const AutoClosePopup: FC<Props> = ({}) => {
+const AutoClosePopup: FC<Props> = ({ isDisabled }) => {
   const { mainAppStore, SLTPstore } = useStores();
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
@@ -93,9 +93,17 @@ const AutoClosePopup: FC<Props> = ({}) => {
     SLTPstore.tpType = TpSlTypeEnum.Currency;
   }, []);
 
+  const handleApplySetAutoClose = (
+    errors: DeepMap<Record<string, any>, FieldError>
+  ) => () => {
+    if (!Object.keys(errors).length) {
+      toggle(false);
+    }
+  };
+
   return (
     <ConnectForm>
-      {({ getValues, clearErrors }) => (
+      {({ getValues, clearErrors, errors }) => (
         <>
           <FlexContainer position="relative" ref={wrapperRef}>
             <FlexContainer width="100%" position="relative">
@@ -155,9 +163,18 @@ const AutoClosePopup: FC<Props> = ({}) => {
               position="absolute"
               top="20px"
               right="100%"
-              visibility={on ? 'visible' : 'hidden'}
+              visibilityProp={on ? 'visible' : 'hidden'}
             >
-              <SetAutoclose toggle={toggle} />
+              <SetAutoclose toggle={toggle}>
+                <ButtonApply
+                  type="button"
+                  form="buySellForm"
+                  disabled={!hasValue(sl) && !hasValue(tp)}
+                  onClick={handleApplySetAutoClose(errors)}
+                >
+                  {t('Apply')}
+                </ButtonApply>
+              </SetAutoclose>
             </FlexContainer>
           </FlexContainer>
         </>
@@ -184,4 +201,14 @@ const ClearSLTPButton = styled(ButtonWithoutStyles)`
   position: absolute;
   top: 12px;
   right: 12px;
+`;
+
+const ButtonApply = styled(ButtonWithoutStyles)`
+  background: linear-gradient(0deg, #00fff2, #00fff2);
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 16px;
+  color: #003a38;
+  height: 32px;
 `;

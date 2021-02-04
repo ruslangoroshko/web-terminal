@@ -83,30 +83,29 @@ const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
         </ButtonWithoutStyles>
       )}
 
-      {on && (
-        <FlexContainer
-          position="absolute"
-          top={isTop ? `${Math.round(popupPosition.top + 26)}px` : 'auto'}
-          bottom={isTop ? 'auto' : '20px'}
-          left={
-            alignPopup === 'left'
-              ? `${Math.round(popupPosition.width * 0.75)}px`
-              : 'auto'
-          }
-          right={
-            alignPopup === 'right'
-              ? `${Math.round(popupPosition.width * 0.75)}px`
-              : 'auto'
-          }
-          zIndex="101"
-        >
-          <ConfirmPopup
-            toggle={toggle}
-            applyHandler={applyHandler}
-            confirmText={confirmText}
-          ></ConfirmPopup>
-        </FlexContainer>
-      )}
+      <FlexContainer
+        position="absolute"
+        top={isTop ? `${Math.round(popupPosition.top + 26)}px` : 'auto'}
+        bottom={isTop ? 'auto' : '20px'}
+        left={
+          alignPopup === 'left'
+            ? `${Math.round(popupPosition.width * 0.75)}px`
+            : 'auto'
+        }
+        right={
+          alignPopup === 'right'
+            ? `${Math.round(popupPosition.width * 0.75)}px`
+            : 'auto'
+        }
+        zIndex="101"
+        visibilityProp={on ? 'visible' : 'hidden'}
+      >
+        <ConfirmPopup
+          toggle={toggle}
+          applyHandler={applyHandler}
+          confirmText={confirmText}
+        ></ConfirmPopup>
+      </FlexContainer>
     </FlexContainer>
   );
 });

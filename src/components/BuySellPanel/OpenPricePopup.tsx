@@ -159,7 +159,7 @@ const OpenPricePopup: FC<Props> = () => {
               position="absolute"
               bottom="0px"
               right="100%"
-              visibility={on ? 'visible' : 'hidden'}
+              visibilityProp={on ? 'visible' : 'hidden'}
             >
               <Wrapper
                 position="relative"

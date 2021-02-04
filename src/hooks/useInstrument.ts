@@ -1,19 +1,19 @@
 import { useStores } from './useStores';
-import { useCallback, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useObserver } from 'mobx-react-lite';
 
-
-const useInstrument = (instrument: string) => {
+const useInstrumentPrecision = (instrument: string) => {
   const { instrumentsStore } = useStores();
   const [precision, setPrecision] = useState<number>(0);
 
-  useEffect(
-    () => {
-      setPrecision(instrumentsStore.instruments.find(item => item.instrumentItem.id === instrument)?.instrumentItem.digits || 0);
-    }, [instrumentsStore.instruments]
-  );
+  useEffect(() => {
+    setPrecision(
+      instrumentsStore.instruments.find(
+        (item) => item.instrumentItem.id === instrument
+      )?.instrumentItem.digits || 0
+    );
+  }, [instrumentsStore.instruments]);
 
-
-
-  return { precision };
-}
-export default useInstrument;
+  return useObserver(() => ({ precision }));
+};
+export default useInstrumentPrecision;
