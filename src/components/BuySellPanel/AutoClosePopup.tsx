@@ -143,26 +143,26 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
     }, [SLTPStore.takeProfitValue, SLTPStore.stopLossValue]);
 
     const renderTPValue = () => {
-      return `+${
+      return `${
         takeProfitValue !== null
-          ? `${
+          ? `+${
               takeProfitType === TpSlTypeEnum.Currency
                 ? mainAppStore.activeAccount?.symbol
                 : ''
             }${takeProfitValue}`
-          : t('Non Set')
+          : ''
       }`;
     };
 
     const renderSLValue = () => {
-      return `—${
+      return `${
         stopLossValue !== null
-          ? `${
+          ? `—${
               stopLossType === TpSlTypeEnum.Currency
                 ? mainAppStore.activeAccount?.symbol
                 : ''
             }${stopLossValue}`
-          : t('Non Set')
+          : ''
       }`;
     };
     const removeSL = () => {
@@ -190,7 +190,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
             <FlexContainer flexDirection="column">
               {stopLossValue || takeProfitValue ? (
                 <FlexContainer
-                  justifyContent="space-between"
+                  
                   alignItems="center"
                   padding="0 20px 0 0"
                   width="100%"
@@ -203,6 +203,7 @@ const AutoClosePopup = forwardRef<HTMLDivElement, Props>(
                     title={renderTPValue()}
                     color="#fffccc"
                     fontSize="14px"
+                    marginRight="4px"
                   >
                     {renderTPValue()}
                   </PrimaryTextSpan>
