@@ -718,14 +718,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   );
 
   useEffect(() => {
-    SLTPStore.investmentAmount = values.investmentAmount;
-  }, [values.investmentAmount]);
-
-  useEffect(() => {
-    SLTPStore.multiplier = values.multiplier;
-  }, [values.multiplier]);
-
-  useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
