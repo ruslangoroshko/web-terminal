@@ -8,7 +8,7 @@ import { css } from '@emotion/core';
 interface Props {
   bgColor: string;
   classNameTooltip: string;
-  direction: 'top' | 'right' | 'left' | 'bottom';
+  direction: 'top' | 'right' | 'left' | 'bottom' | 'bottomLeft';
   width: string;
   needScroll?: boolean;
 }
@@ -89,6 +89,17 @@ const topDirection = css`
   }
 `;
 
+const bottomLeftDirection = css`
+  top: 20px;
+  right: 0;
+
+  &:after {
+    top: -7px;
+    right: 0;
+    transform: translateX(-50%) rotate(-90deg);
+  }
+`;
+
 const TooltipWrapper = styled(FlexContainer)<
   FlexContainerProps & { direction: Props['direction'] }
 >`
@@ -131,6 +142,8 @@ const TooltipWrapper = styled(FlexContainer)<
         return leftDirection;
       case 'right':
         return rightDirection;
+      case 'bottomLeft':
+        return bottomLeftDirection;
     }
   }}
 

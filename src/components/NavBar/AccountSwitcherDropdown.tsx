@@ -16,6 +16,7 @@ const AccountSwitcherDropdown = observer(() => {
   const { mainAppStore } = useStores();
   const { t } = useTranslation();
   const [balance, setBalance] = useState<number>(0);
+  const [accountId, setAccountId] = useState<string>('');
 
   const animateValue = (start: number, end: number) => {
     let startTimestamp: number | null = null;
@@ -31,13 +32,21 @@ const AccountSwitcherDropdown = observer(() => {
   };
 
   useEffect(() => {
-    if (mainAppStore.activeAccount?.balance !== undefined) {
+    if (mainAppStore.activeAccount?.balance !== undefined &&
+        accountId === mainAppStore.activeAccount.id) {
       animateValue(
         balance,
-        mainAppStore.activeAccount?.balance
+        mainAppStore.activeAccount.balance
       );
     }
   }, [mainAppStore.activeAccount, mainAppStore.activeAccount?.balance]);
+
+  useEffect(() => {
+    if (mainAppStore.activeAccount?.balance !== undefined) {
+      setAccountId(mainAppStore.activeAccount.id)
+      setBalance(mainAppStore.activeAccount.balance);
+    }
+  }, [mainAppStore.activeAccount]);
 
   return (
     <Toggle>
