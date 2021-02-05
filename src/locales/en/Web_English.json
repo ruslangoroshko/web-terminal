@@ -360,5 +360,6 @@
     "Closing Reason": "Closing Reason",
     "None": "None",
     "By user": "By user",
-    "Stop Out": "Stop Out"
+    "Stop Out": "Stop Out",
+    "Your account is blocked. We've detected suspicious activity on your account. This block will expire in 15 min.": "Your account is blocked. We've detected suspicious activity on your account. This block will expire in 15 min."
 }
