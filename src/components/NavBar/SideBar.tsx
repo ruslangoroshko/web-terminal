@@ -16,13 +16,13 @@ const SideBar = observer(() => {
   const { tabsStore, dateRangeStore, quotesStore, historyStore } = useStores();
   const { t } = useTranslation();
   const setSideBarActive = (tabType: SideBarTabType) => () => {
-    tabsStore.isTabExpanded = false;
+    tabsStore.setTabExpanded(false);
 
     if (tabsStore.sideBarTabType === tabType) {
-      tabsStore.sideBarTabType = null;
+      tabsStore.setSideBarType(null);
       dateRangeStore.resetDatepicker();
     } else {
-      tabsStore.sideBarTabType = tabType;
+      tabsStore.setSideBarType(tabType);
       localStorage.setItem(LOCAL_STORAGE_SIDEBAR, `${tabType}`);
     }
 

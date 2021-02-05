@@ -56,10 +56,10 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
               error.response?.statusText || 'error'
             );
             mainAppStore.rootStore.badRequestPopupStore.openModal();
-            mainAppStore.isLoading = false;
+            mainAppStore.setIsLoading(false);
           }
           setTimeout(requestAgain, +mainAppStore.connectTimeOut);
-          mainAppStore.isLoading = false;
+          mainAppStore.setIsLoading(false);
           break;
 
         case 401:
@@ -98,7 +98,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
                   reject(err);
                 })
                 .finally(() => {
-                  mainAppStore.isLoading = false;
+                  mainAppStore.setIsLoading(false);
                   isRefreshing = false;
                 });
             });

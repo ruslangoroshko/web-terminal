@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, makeAutoObservable, observable } from 'mobx';
 import { PositionModelWSDTO } from '../types/Positions';
 import {
   IChartingLibraryWidget,
@@ -13,23 +13,24 @@ interface ContextProps {
 }
 
 export class TradingViewStore implements ContextProps {
-  @observable tradingWidget?: IChartingLibraryWidget;
-  @observable activeOrderLinePositionPnL?: IOrderLineAdapter;
-  @observable activeOrderLinePosition?: IOrderLineAdapter;
-  @observable activeOrderLinePositionTP?: IOrderLineAdapter;
-  @observable activeOrderLinePositionSL?: IOrderLineAdapter;
-  @observable selectedPosition?: PositionModelWSDTO;
-  @observable selectedPendingPosition?: number;
-  @observable selectedHistory?: string;
-  @observable activePositionPopup: boolean = false;
-  @observable applyHandler: any;
-  @observable confirmText: string = '';
-  @observable activePopup: boolean = false;
-  @observable tradingWidgetReady: boolean = false;
+  tradingWidget?: IChartingLibraryWidget;
+  activeOrderLinePositionPnL?: IOrderLineAdapter;
+  activeOrderLinePosition?: IOrderLineAdapter;
+  activeOrderLinePositionTP?: IOrderLineAdapter;
+  activeOrderLinePositionSL?: IOrderLineAdapter;
+  selectedPosition?: PositionModelWSDTO;
+  selectedPendingPosition?: number;
+  selectedHistory?: string;
+  activePositionPopup: boolean = false;
+  applyHandler: any;
+  confirmText: string = '';
+  activePopup: boolean = false;
+  tradingWidgetReady: boolean = false;
 
   rootStore: RootStore;
 
   constructor(rootStore: RootStore) {
+    makeAutoObservable(this, { rootStore: false });
     this.rootStore = rootStore;
   }
 
@@ -37,7 +38,7 @@ export class TradingViewStore implements ContextProps {
   setTradingWidget = (tradingWidget: IChartingLibraryWidget | undefined) => {
     this.tradingWidget = tradingWidget;
     this.tradingWidgetReady = !!tradingWidget;
-  }
+  };
 
   @action
   toggleActivePositionPopup = (flag: boolean) => {

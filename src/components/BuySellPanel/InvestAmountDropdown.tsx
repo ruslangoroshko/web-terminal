@@ -7,8 +7,8 @@ import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import Fields from '../../constants/fields';
 import { useStores } from '../../hooks/useStores';
-import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
+import { Observer } from 'mobx-react-lite';
 
 interface Props {
   setFieldValue: any;
@@ -17,12 +17,12 @@ interface Props {
 
 const currencies = [2000, 1000, 500, 250, 100];
 
-const InvestAmountDropdown: FC<Props> = observer(props => {
+const InvestAmountDropdown: FC<Props> = (props) => {
   const { setFieldValue, toggle } = props;
   const { t } = useTranslation();
 
   const handleChangeAmount = (value: number) => () => {
-    setFieldValue(Fields.AMOUNT, value);
+    setFieldValue(Fields.INVEST_AMOUNT, value);
     toggle();
   };
 
@@ -37,16 +37,24 @@ const InvestAmountDropdown: FC<Props> = observer(props => {
       right="calc(100% + 8px)"
       width="140px"
     >
-      {currencies.map(item => (
+      {currencies.map((item) => (
         <DropDownItem
           key={item}
           alignItems="center"
           onClick={handleChangeAmount(item)}
         >
-          <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="#fffccc">
-            {mainAppStore.activeAccount?.symbol}
-            {item}
-          </PrimaryTextSpan>
+          <Observer>
+            {() => (
+              <PrimaryTextSpan
+                fontSize="16px"
+                fontWeight="bold"
+                color="#fffccc"
+              >
+                {mainAppStore.activeAccount?.symbol}
+                {item}
+              </PrimaryTextSpan>
+            )}
+          </Observer>
         </DropDownItem>
       ))}
       <DropDownItem
@@ -61,14 +69,18 @@ const InvestAmountDropdown: FC<Props> = observer(props => {
         >
           {t('Available Balance')}
         </PrimaryTextParagraph>
-        <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="#fffccc">
-          {mainAppStore.activeAccount?.symbol}
-          {mainAppStore.activeAccount?.balance.toFixed(2)}
-        </PrimaryTextSpan>
+        <Observer>
+          {() => (
+            <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="#fffccc">
+              {mainAppStore.activeAccount?.symbol}
+              {mainAppStore.activeAccount?.balance.toFixed(2)}
+            </PrimaryTextSpan>
+          )}
+        </Observer>
       </DropDownItem>
     </MultiplierDropdownWrapper>
   );
-});
+};
 
 export default InvestAmountDropdown;
 

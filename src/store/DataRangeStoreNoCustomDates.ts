@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, makeAutoObservable } from 'mobx';
 import moment from 'moment';
 import { FocusedInputShape } from 'react-dates';
 import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
@@ -12,12 +12,15 @@ interface ContextProps {
 }
 
 export class DataRangeStoreNoCustomDates implements ContextProps {
-  @observable openedDropdown = false;
-  @observable dropdownValueType: ShowDatesDropdownEnum =
-    ShowDatesDropdownEnum.Week;
-  @observable startDate: moment.Moment = moment().subtract(1, 'w');
-  @observable endDate: moment.Moment = moment();
-  @observable focusedInput: FocusedInputShape | null = null;
+  openedDropdown = false;
+  dropdownValueType: ShowDatesDropdownEnum = ShowDatesDropdownEnum.Week;
+  startDate: moment.Moment = moment().subtract(1, 'w');
+  endDate: moment.Moment = moment();
+  focusedInput: FocusedInputShape | null = null;
+
+  constructor() {
+    makeAutoObservable(this);
+  }
 
   @action
   closeDropdown = () => {

@@ -57,7 +57,7 @@ const AccountInfo: FC<Props> = observer((props) => {
     withdrawalStore,
     dateRangeStore,
     sortingStore,
-    markersOnChartStore
+    markersOnChartStore,
   } = useStores();
   const { push } = useHistory();
 
@@ -72,7 +72,7 @@ const AccountInfo: FC<Props> = observer((props) => {
     mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
       [Fields.ACCOUNT_ID]: account.id,
     });
-    tabsStore.sideBarTabType = null;
+    tabsStore.setSideBarType(null);
     mainAppStore.setActiveAccount(account);
     localStorage.removeItem(LOCAL_STORAGE_SIDEBAR);
     localStorage.removeItem(LOCAL_POSITION);
@@ -86,8 +86,8 @@ const AccountInfo: FC<Props> = observer((props) => {
     localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
     localStorage.removeItem(LOCAL_HISTORY_TIME);
     localStorage.removeItem(LOCAL_HISTORY_PAGE);
-    quotesStore.activePositions = [];
-    quotesStore.pendingOrders = [];
+    quotesStore.setActivePositions([]);
+    quotesStore.setPendingOrders([]);
     tradingViewStore.selectedPendingPosition = undefined;
     tradingViewStore.selectedHistory = undefined;
     tradingViewStore.selectedPosition = undefined;
@@ -107,9 +107,8 @@ const AccountInfo: FC<Props> = observer((props) => {
       )} ${account.isLive ? t('Real') : t('Demo')}`;
       notificationStore.isSuccessfull = true;
       notificationStore.openNotification();
-    }, 500)
+    }, 500);
   };
-
 
   const handleCopyText = (e: any, accountId: string) => {
     e.stopPropagation();
@@ -180,14 +179,14 @@ const AccountInfo: FC<Props> = observer((props) => {
             marginRight="45px"
             width="125px"
           >
-            <FlexContainer
-              marginBottom="4px"
-            >
+            <FlexContainer marginBottom="4px">
               <PrimaryTextSpan
                 fontSize="16px"
                 color={isActiveAccount ? '#fffccc' : 'rgba(255, 255, 255, 0.4)'}
                 marginRight="6px"
-                className={isActiveAccount ? 'account_total_active' : 'account_total'}
+                className={
+                  isActiveAccount ? 'account_total_active' : 'account_total'
+                }
               >
                 {account.symbol}
                 {isActiveAccount
@@ -213,14 +212,23 @@ const AccountInfo: FC<Props> = observer((props) => {
               </FlexContainer>
             </FlexContainer>
             <AccountId
-              className={isActiveAccount ? 'account_total_active' : 'account_total'}
+              className={
+                isActiveAccount ? 'account_total_active' : 'account_total'
+              }
               fontSize="10px"
               color="rgba(255, 255, 255, 0.4)"
               textTransform="uppercase"
             >
               {account.id}
-              <ButtonWithoutStyles onClick={(e) => handleCopyText(e, account.id)}>
-                <SvgIcon {...CopyIcon} width="12px" height="12px" fillColor="#ffffff" />
+              <ButtonWithoutStyles
+                onClick={(e) => handleCopyText(e, account.id)}
+              >
+                <SvgIcon
+                  {...CopyIcon}
+                  width="12px"
+                  height="12px"
+                  fillColor="#ffffff"
+                />
               </ButtonWithoutStyles>
             </AccountId>
           </FlexContainer>
@@ -288,7 +296,11 @@ const AccountInfo: FC<Props> = observer((props) => {
         </FlexContainer>
         {account.isLive && (
           <DepositButton onClick={depositFundsStore.togglePopup}>
-            <PrimaryTextSpan fontSize="14px" color={isActiveAccount ? '#fffccc' : 'rgba(196, 196, 196, 0.5)'} fontWeight="bold">
+            <PrimaryTextSpan
+              fontSize="14px"
+              color={isActiveAccount ? '#fffccc' : 'rgba(196, 196, 196, 0.5)'}
+              fontWeight="bold"
+            >
               {t('Top Up')}
             </PrimaryTextSpan>
           </DepositButton>
@@ -311,9 +323,11 @@ const AccountWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
     transition: 0.4s;
   }
   &:hover {
-    background: ${(props) => (props.isActive ? '#292C33' : 'rgba(41, 44, 51, 0.35)')};
+    background: ${(props) =>
+      props.isActive ? '#292C33' : 'rgba(41, 44, 51, 0.35)'};
     &:before {
-      background: ${(props) => (props.isActive ? '#00FFDD' : 'rgba(41, 44, 51, 0.35)')};
+      background: ${(props) =>
+        props.isActive ? '#00FFDD' : 'rgba(41, 44, 51, 0.35)'};
     }
     .account_total {
       color: ${(props) => (props.isActive ? '#fffccc' : '#ffffff')};

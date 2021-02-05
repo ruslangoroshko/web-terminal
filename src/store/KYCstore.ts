@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { makeAutoObservable, observable } from 'mobx';
 import { KYCstepsEnum } from '../enums/KYCsteps';
 
 interface Props {
@@ -7,6 +7,9 @@ interface Props {
 }
 
 export class KYCstore implements Props {
-  @observable currentStep: KYCstepsEnum = KYCstepsEnum.PhoneVerification;
-  @observable filledStep: KYCstepsEnum = KYCstepsEnum.PhoneVerification;
+  currentStep: KYCstepsEnum = KYCstepsEnum.PhoneVerification;
+  filledStep: KYCstepsEnum = KYCstepsEnum.PhoneVerification;
+  constructor() {
+    makeAutoObservable(this);
+  }
 }

@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, makeAutoObservable } from 'mobx';
 import { SideBarTabType } from '../enums/SideBarTabType';
 import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
 import { HistoryTabEnum } from '../enums/HistoryTabEnum';
@@ -23,10 +23,14 @@ interface ContextProps {
 }
 
 export class TabsStore implements ContextProps {
-  @observable sideBarTabType: SideBarTabType | null = null;
-  @observable isTabExpanded = false;
-  @observable portfolioTab: PortfolioTabEnum = PortfolioTabEnum.Portfolio;
-  @observable historyTab: HistoryTabEnum = HistoryTabEnum.TradingHistory;
+  sideBarTabType: SideBarTabType | null = null;
+  isTabExpanded = false;
+  portfolioTab: PortfolioTabEnum = PortfolioTabEnum.Portfolio;
+  historyTab: HistoryTabEnum = HistoryTabEnum.TradingHistory;
+
+  constructor() {
+    makeAutoObservable(this);
+  }
 
   @action
   closeAnyTab = () => {
@@ -41,5 +45,15 @@ export class TabsStore implements ContextProps {
     localStorage.removeItem(LOCAL_HISTORY_TIME);
     localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
     localStorage.removeItem(LOCAL_HISTORY_PAGE);
+  };
+
+  @action
+  setSideBarType = (sideBarTabType: SideBarTabType | null) => {
+    this.sideBarTabType = sideBarTabType;
+  };
+
+  @action
+  setTabExpanded = (isTabExpanded: boolean) => {
+    this.isTabExpanded = isTabExpanded;
   };
 }

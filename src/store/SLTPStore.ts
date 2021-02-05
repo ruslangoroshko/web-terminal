@@ -1,41 +1,30 @@
-import { observable, action } from 'mobx';
+import { observable, action, makeAutoObservable } from 'mobx';
 import { TpSlTypeEnum } from '../enums/TpSlTypeEnum';
 
 interface ContextProps {
-  autoCloseTPType: TpSlTypeEnum | null;
-  autoCloseSLType: TpSlTypeEnum | null;
-  takeProfitValue: string;
-  stopLossValue: string;
-  purchaseAtValue: string;
+  tpType: TpSlTypeEnum;
+  slType: TpSlTypeEnum;
   isToppingUpActive: boolean;
+  instrumentId: string;
+  closedByChart: boolean;
 }
 
 export class SLTPStore implements ContextProps {
-  @observable autoCloseTPType: TpSlTypeEnum | null = null;
-  @observable autoCloseSLType: TpSlTypeEnum | null = null;
-  @observable takeProfitValue: string = '';
-  @observable stopLossValue: string = '';
-  @observable purchaseAtValue: string = '';
-  @observable investmentAmount: number = 0;
-  @observable multiplier: number = 0;
-  @observable openedBuySell: boolean = false;
-  @observable isToppingUpActive: boolean = false;
-  @observable deleteToppingUp: boolean = false;
+  tpType: TpSlTypeEnum = TpSlTypeEnum.Currency;
+  slType: TpSlTypeEnum = TpSlTypeEnum.Currency;
+  isToppingUpActive: boolean = false;
+  closedByChart: boolean = false;
+  instrumentId: string = '';
+
+  constructor() {
+    makeAutoObservable(this);
+  }
 
   @action
   clearStore = () => {
-    this.purchaseAtValue = '';
-    this.stopLossValue = '';
-    this.takeProfitValue = '';
-    this.autoCloseTPType = null;
-    this.autoCloseSLType = null;
-    this.openedBuySell = false;
-    this.isToppingUpActive = false;
-  };
-
-  @action
-  toggleBuySell = (value: boolean) => {
-    this.openedBuySell = value;
+    this.setTpType(TpSlTypeEnum.Currency);
+    this.setSlType(TpSlTypeEnum.Currency);
+    this.toggleToppingUp(false);
   };
 
   @action
@@ -44,8 +33,17 @@ export class SLTPStore implements ContextProps {
   };
 
   @action
-  toggleDeleteToppingUp = (value: boolean) => {
-    this.deleteToppingUp = value;
-    this.isToppingUpActive = false;
+  setTpType = (tpType: TpSlTypeEnum) => {
+    this.tpType = tpType;
+  };
+
+  @action
+  setSlType = (slType: TpSlTypeEnum) => {
+    this.slType = slType;
+  };
+
+  @action
+  setInstrumentId = (instrumentId: string) => {
+    this.instrumentId = instrumentId;
   };
 }

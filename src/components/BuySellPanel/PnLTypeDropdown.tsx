@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import Toggle from '../Toggle';
@@ -8,59 +8,54 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SvgIcon from '../SvgIcon';
 
 import IconShevronDown from '../../assets/svg/icon-popup-shevron-down.svg';
-import { useStores } from '../../hooks/useStores';
 import autoCloseTypes from '../../constants/autoCloseTypes';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
-import { Observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
+import { useStores } from '../../hooks/useStores';
+import { observer } from 'mobx-react-lite';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
   isDisabled?: boolean;
 }
 
-const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
-  const { SLTPStore } = useStores();
+const PnLTypeDropdown: FC<Props> = observer(({ dropdownType, isDisabled }) => {
   const { t } = useTranslation();
+  const { SLTPstore } = useStores();
+
   const handleAutoClose = (
     autoClose: TpSlTypeEnum,
     toggle: () => void
   ) => () => {
     switch (dropdownType) {
       case 'sl':
-        SLTPStore.autoCloseSLType = autoClose;
+        SLTPstore.setSlType(autoClose);
         break;
 
       case 'tp':
-        SLTPStore.autoCloseTPType = autoClose;
+        SLTPstore.setTpType(autoClose);
+        break;
+
+      default:
         break;
     }
-
     toggle();
   };
 
   const availableAutoCloseTypes = [TpSlTypeEnum.Currency, TpSlTypeEnum.Price];
 
-  const renderSymbol = () => {
+  const renderSymbol = useCallback(() => {
     switch (dropdownType) {
       case 'sl':
-        return autoCloseTypes[
-          SLTPStore.autoCloseSLType !== null
-            ? SLTPStore.autoCloseSLType
-            : TpSlTypeEnum.Currency
-        ].symbol;
+        return autoCloseTypes[SLTPstore.slType ?? TpSlTypeEnum.Currency].symbol;
 
       case 'tp':
-        return autoCloseTypes[
-          SLTPStore.autoCloseTPType !== null
-            ? SLTPStore.autoCloseTPType
-            : TpSlTypeEnum.Currency
-        ].symbol;
+        return autoCloseTypes[SLTPstore.tpType ?? TpSlTypeEnum.Currency].symbol;
 
       default:
         return '';
     }
-  };
+  }, [SLTPstore.tpType, SLTPstore.slType]);
 
   return (
     <Toggle>
@@ -75,7 +70,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
             <PrimaryTextSpan
               color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
             >
-              <Observer>{() => <>{renderSymbol()}</>}</Observer>
+              {renderSymbol()}
             </PrimaryTextSpan>
             <SvgIcon
               {...IconShevronDown}
@@ -92,7 +87,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
               right="0"
               flexDirection="column"
             >
-              {availableAutoCloseTypes.map(key => (
+              {availableAutoCloseTypes.map((key) => (
                 <ProfitPercentPrice
                   key={key}
                   justifyContent="space-between"
@@ -118,7 +113,7 @@ const PnLTypeDropdown: FC<Props> = ({ dropdownType, isDisabled }) => {
       )}
     </Toggle>
   );
-};
+});
 
 export default PnLTypeDropdown;
 
@@ -130,14 +125,14 @@ const DropdownButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
   padding-left: 8px;
   height: 100%;
   width: 38px;
-  background-color: ${props => (props.isActive ? '#000000' : 'transparent')};
+  background-color: ${(props) => (props.isActive ? '#000000' : 'transparent')};
   border-radius: 2px 2px 2px 0;
 
   &:before {
     content: '';
     position: absolute;
     background-color: transparent;
-    ${props => props.isActive && OuterBorderRadius}
+    ${(props) => props.isActive && OuterBorderRadius}
   }
 
   &:disabled:hover {
