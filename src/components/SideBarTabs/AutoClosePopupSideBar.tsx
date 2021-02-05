@@ -5,16 +5,23 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
 import { useTranslation } from 'react-i18next';
 import { ConnectForm } from '../BuySellPanel/ConnectForm';
+import { useStores } from '../../hooks/useStores';
+import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 
 interface Props {
   children: React.ReactNode;
   isDisabled?: boolean;
   handleSumbitMethod: any;
+  tpType: TpSlTypeEnum | null;
+  slType: TpSlTypeEnum | null;
+  instrumentId: string;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
-  ({ children, isDisabled, handleSumbitMethod }, ref) => {
+  ({ children, isDisabled, handleSumbitMethod, tpType, slType, instrumentId }, ref) => {
     const { t } = useTranslation();
+
+    const { SLTPstore } = useStores();
 
     const [on, toggle] = useState(false);
     const [isTop, setIsTop] = useState(true);
@@ -54,6 +61,14 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     };
 
     useEffect(() => {
+      if (on) {
+        SLTPstore.tpType = tpType ?? TpSlTypeEnum.Currency;
+        SLTPstore.slType = slType ?? TpSlTypeEnum.Currency;
+        SLTPstore.instrumentId = instrumentId;
+      }
+    }, [on]);
+
+    useEffect(() => {
       document.addEventListener('mousedown', handleClickOutside);
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
@@ -62,7 +77,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     return (
       <ConnectForm>
-        {({ errors, watch, handleSubmit }) => {
+        {({ handleSubmit }) => {
           return (
             <FlexContainer ref={wrapperRef}>
               <ButtonWithoutStyles type="button" onClick={handleToggle}>

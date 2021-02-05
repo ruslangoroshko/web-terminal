@@ -14,7 +14,7 @@ import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
 import { DisplayContents, Td } from '../../styles/TableElements';
 import ImageContainer from '../ImageContainer';
 import { useTranslation } from 'react-i18next';
-import useInstrumentPrecision from '../../hooks/useInstrument';
+import useInstrumentPrecision from '../../hooks/useInstrumentPrecision';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;

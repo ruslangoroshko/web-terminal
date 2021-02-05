@@ -22,7 +22,8 @@ import Fields from '../../constants/fields';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 import { ConnectForm } from './ConnectForm';
 import hasValue from '../../helpers/hasValue';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
+import useInstrumentPrecision from '../../hooks/useInstrumentPrecision';
 
 interface Props {
   isDisabled?: boolean;
@@ -34,7 +35,7 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
 
   const { instrumentsStore, SLTPstore } = useStores();
 
-  const handleBeforeInput = (fieldType = TpSlTypeEnum.Currency) => (e: any) => {
+  const handleBeforeInput = (fieldType: TpSlTypeEnum | null) => (e: any) => {
     let PRECISION = 2;
 
     switch (fieldType) {
@@ -43,15 +44,16 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
         break;
 
       case TpSlTypeEnum.Price:
-        if (SLTPstore.instrumentId) {
-          PRECISION =
-            instrumentsStore.instruments.find(
-              (instrument) =>
-                instrument.instrumentItem.id === SLTPstore.instrumentId
-            )?.instrumentItem.digits || 2;
-        } else {
-          PRECISION = 2;
-        }
+        PRECISION =
+          instrumentsStore.instruments.find(
+            (item) => item.instrumentItem.id === SLTPstore.instrumentId
+          )?.instrumentItem.digits || 2;
+        console.log(
+          instrumentsStore.instruments.find(
+            (item) => item.instrumentItem.id === SLTPstore.instrumentId
+          )?.instrumentItem.digits,
+          SLTPstore.instrumentId
+        );
         break;
 
       default:
@@ -124,7 +126,7 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
     >
       <ConnectForm>
         {({ register, getValues, setValue, errors, watch }) => {
-          const { tpType, slType, tp, sl } = watch();
+          const { tp, sl } = watch();
           return (
             <>
               <ButtonClose type="button" onClick={handleToggle}>
@@ -163,55 +165,63 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
                   </PrimaryTextSpan>
                 </InformationPopup>
               </FlexContainer>
-              <InputWrapper
-                padding={
-                  tpType === TpSlTypeEnum.Price ? '0 0 0 8px' : '0 0 0 22px'
-                }
-                margin="0 0 16px 0"
-                height="32px"
-                width="100%"
-                position="relative"
-              >
-                {errors.tp && (
-                  <ErropPopup
-                    textColor="#fffccc"
-                    bgColor={ColorsPallete.RAZZMATAZZ}
-                    classNameTooltip={getProcessId()}
-                    direction="left"
+              <Observer>
+                {() => (
+                  <InputWrapper
+                    padding={
+                      SLTPstore.tpType === TpSlTypeEnum.Price
+                        ? '0 0 0 8px'
+                        : '0 0 0 22px'
+                    }
+                    margin="0 0 16px 0"
+                    height="32px"
+                    width="100%"
+                    position="relative"
                   >
-                    {errors.tp.message}
-                  </ErropPopup>
+                    {errors.tp && (
+                      <ErropPopup
+                        textColor="#fffccc"
+                        bgColor={ColorsPallete.RAZZMATAZZ}
+                        classNameTooltip={getProcessId()}
+                        direction="left"
+                      >
+                        {errors.tp.message}
+                      </ErropPopup>
+                    )}
+                    {SLTPstore.tpType !== TpSlTypeEnum.Price && (
+                      <PlusSign>+</PlusSign>
+                    )}
+                    <InputPnL
+                      onBeforeInput={handleBeforeInput(SLTPstore.tpType)}
+                      placeholder={t('Non Set')}
+                      ref={register({ setValueAs: setValueAsNullIfEmpty })}
+                      name={Fields.TAKE_PROFIT}
+                      disabled={isDisabled}
+                    ></InputPnL>
+                    {hasValue(tp) && !isDisabled && (
+                      <CloseValueButtonWrapper
+                        position="absolute"
+                        top="50%"
+                        right="42px"
+                      >
+                        <ButtonWithoutStyles
+                          type="button"
+                          onClick={handleRemoveTp(setValue)}
+                        >
+                          <SvgIcon
+                            {...IconClose}
+                            fillColor="rgba(255, 255, 255, 0.6)"
+                          ></SvgIcon>
+                        </ButtonWithoutStyles>
+                      </CloseValueButtonWrapper>
+                    )}
+                    <PnLTypeDropdown
+                      dropdownType="tp"
+                      isDisabled={isDisabled}
+                    ></PnLTypeDropdown>
+                  </InputWrapper>
                 )}
-                {tpType !== TpSlTypeEnum.Price && <PlusSign>+</PlusSign>}
-                <InputPnL
-                  onBeforeInput={handleBeforeInput(tpType)}
-                  placeholder={t('Non Set')}
-                  ref={register({ setValueAs: setValueAsNullIfEmpty })}
-                  name={Fields.TAKE_PROFIT}
-                  disabled={isDisabled}
-                ></InputPnL>
-                {hasValue(tp) && !isDisabled && (
-                  <CloseValueButtonWrapper
-                    position="absolute"
-                    top="50%"
-                    right="42px"
-                  >
-                    <ButtonWithoutStyles
-                      type="button"
-                      onClick={handleRemoveTp(setValue)}
-                    >
-                      <SvgIcon
-                        {...IconClose}
-                        fillColor="rgba(255, 255, 255, 0.6)"
-                      ></SvgIcon>
-                    </ButtonWithoutStyles>
-                  </CloseValueButtonWrapper>
-                )}
-                <PnLTypeDropdown
-                  dropdownType="tp"
-                  isDisabled={isDisabled}
-                ></PnLTypeDropdown>
-              </InputWrapper>
+              </Observer>
               <FlexContainer
                 margin="0 0 6px 0"
                 alignItems="center"
@@ -238,56 +248,63 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
                   </PrimaryTextSpan>
                 </InformationPopup>
               </FlexContainer>
-              <InputWrapper
-                padding={
-                  slType === TpSlTypeEnum.Price ? '0 0 0 8px' : '0 0 0 22px'
-                }
-                margin={isDisabled ? '0' : '0 0 16px 0'}
-                height="32px"
-                width="100%"
-                position="relative"
-              >
-                {errors.sl && (
-                  <ErropPopup
-                    textColor="#fffccc"
-                    bgColor={ColorsPallete.RAZZMATAZZ}
-                    classNameTooltip={getProcessId()}
-                    direction="left"
+              <Observer>
+                {() => (
+                  <InputWrapper
+                    padding={
+                      SLTPstore.slType === TpSlTypeEnum.Price
+                        ? '0 0 0 8px'
+                        : '0 0 0 22px'
+                    }
+                    margin={isDisabled ? '0' : '0 0 16px 0'}
+                    height="32px"
+                    width="100%"
+                    position="relative"
                   >
-                    {errors.sl.message}
-                  </ErropPopup>
+                    {errors.sl && (
+                      <ErropPopup
+                        textColor="#fffccc"
+                        bgColor={ColorsPallete.RAZZMATAZZ}
+                        classNameTooltip={getProcessId()}
+                        direction="left"
+                      >
+                        {errors.sl.message}
+                      </ErropPopup>
+                    )}
+                    {SLTPstore.slType !== TpSlTypeEnum.Price && (
+                      <PlusSign>-</PlusSign>
+                    )}
+                    <InputPnL
+                      onBeforeInput={handleBeforeInput(SLTPstore.slType)}
+                      placeholder={t('Non Set')}
+                      name={Fields.STOP_LOSS}
+                      ref={register({ setValueAs: setValueAsNullIfEmpty })}
+                      disabled={isDisabled}
+                    ></InputPnL>
+                    {hasValue(sl) && !isDisabled && (
+                      <CloseValueButtonWrapper
+                        position="absolute"
+                        top="50%"
+                        right="42px"
+                      >
+                        <ButtonWithoutStyles
+                          type="button"
+                          onClick={handleRemoveSl(setValue)}
+                        >
+                          <SvgIcon
+                            {...IconClose}
+                            fillColor="rgba(255, 255, 255, 0.6)"
+                          ></SvgIcon>
+                        </ButtonWithoutStyles>
+                      </CloseValueButtonWrapper>
+                    )}
+                    <PnLTypeDropdown
+                      dropdownType="sl"
+                      isDisabled={isDisabled}
+                    ></PnLTypeDropdown>
+                  </InputWrapper>
                 )}
-                {slType !== TpSlTypeEnum.Price && <PlusSign>-</PlusSign>}
-                <InputPnL
-                  onBeforeInput={handleBeforeInput(slType)}
-                  placeholder={t('Non Set')}
-                  name={Fields.STOP_LOSS}
-                  ref={register({ setValueAs: setValueAsNullIfEmpty })}
-                  disabled={isDisabled}
-                ></InputPnL>
-                {hasValue(sl) && !isDisabled && (
-                  <CloseValueButtonWrapper
-                    position="absolute"
-                    top="50%"
-                    right="42px"
-                  >
-                    <ButtonWithoutStyles
-                      type="button"
-                      onClick={handleRemoveSl(setValue)}
-                    >
-                      <SvgIcon
-                        {...IconClose}
-                        fillColor="rgba(255, 255, 255, 0.6)"
-                      ></SvgIcon>
-                    </ButtonWithoutStyles>
-                  </CloseValueButtonWrapper>
-                )}
-                <PnLTypeDropdown
-                  dropdownType="sl"
-                  isDisabled={isDisabled}
-                ></PnLTypeDropdown>
-              </InputWrapper>
-
+              </Observer>
               <FlexContainer
                 flexDirection="column"
                 width="100%"
@@ -327,7 +344,6 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
                 </FlexContainer>
                 <TopingUpCheck />
               </FlexContainer>
-
               {!isDisabled ? children : null}
             </>
           );

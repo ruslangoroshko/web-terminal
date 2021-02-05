@@ -16,7 +16,7 @@ import ClosePositionPopup from './ClosePositionPopup';
 import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
 import { useTranslation } from 'react-i18next';
-import useInstrumentPrecision from '../../hooks/useInstrument';
+import useInstrumentPrecision from '../../hooks/useInstrumentPrecision';
 import { LOCAL_PENDING_POSITION } from '../../constants/global';
 import { Observer } from 'mobx-react-lite';
 
@@ -168,10 +168,12 @@ const PendingOrder: FC<Props> = (props) => {
             <FlexContainer alignItems="center" ref={clickableWrapperRef}>
               <FlexContainer marginRight="4px">
                 <AutoClosePopupSideBar
-                  positionId={`${pendingOrder.id}`}
                   ref={instrumentRef}
                   isDisabled
                   handleSumbitMethod={handleCloseOrder}
+                  tpType={pendingOrder.tpType}
+                  slType={pendingOrder.slType}
+                  instrumentId={pendingOrder.instrument}
                 >
                   <SvgIcon
                     {...IconSettings}

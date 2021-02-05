@@ -223,6 +223,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       if (values.openPrice) {
         const modelToSubmit: OpenPendingOrder = {
           ...values,
+          tp: values.tp ?? null,
+          sl: values.sl ?? null,
           operation: operation ?? AskBidEnum.Buy,
           openPrice: values.openPrice || 0,
           investmentAmount: values.investmentAmount,
@@ -327,6 +329,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       } else {
         const modelToSubmit: OpenPositionModel = {
           ...values,
+          tp: values.tp ?? null,
+          sl: values.sl ?? null,
           operation: operation ?? AskBidEnum.Buy,
           investmentAmount: values.investmentAmount,
           tpType: hasValue(values.tp) ? SLTPstore.tpType : null,
@@ -466,13 +470,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   });
 
   useEffect(() => {
-    setOperation(null);
-  }, [instrument.id]);
-
-  useEffect(() => {
-    setOperation(null);
-    setValue('openPrice', null);
-  }, [mainAppStore.activeAccountId]);
+    reset();
+  }, [mainAppStore.activeAccountId, instrument.id]);
 
   useEffect(() => {
     async function fetchDefaultInvestAmount() {
@@ -920,7 +919,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                   {errors.sl?.message || errors.tp?.message}
                 </ErropPopup>
               )}
-            <AutoClosePopup></AutoClosePopup>
+            <AutoClosePopup instrumentId={instrument.id}></AutoClosePopup>
           </FlexContainer>
 
           <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

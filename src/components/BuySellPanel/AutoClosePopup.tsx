@@ -18,10 +18,10 @@ import hasValue from '../../helpers/hasValue';
 import { ConnectForm } from './ConnectForm';
 
 interface Props {
-  isDisabled?: boolean;
+  instrumentId: string;
 }
 
-const AutoClosePopup: FC<Props> = ({ isDisabled }) => {
+const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
   const { mainAppStore, SLTPstore } = useStores();
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
@@ -91,6 +91,7 @@ const AutoClosePopup: FC<Props> = ({ isDisabled }) => {
   useEffect(() => {
     SLTPstore.slType = TpSlTypeEnum.Currency;
     SLTPstore.tpType = TpSlTypeEnum.Currency;
+    SLTPstore.instrumentId = instrumentId;
   }, []);
 
   const handleApplySetAutoClose = (
