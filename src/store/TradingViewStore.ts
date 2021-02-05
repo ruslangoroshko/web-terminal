@@ -1,9 +1,8 @@
-import { action, makeAutoObservable, observable } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import { PositionModelWSDTO } from '../types/Positions';
 import {
   IChartingLibraryWidget,
   IOrderLineAdapter,
-  IPositionLineAdapter,
 } from '../vendor/charting_library/charting_library';
 import { RootStore } from './RootStore';
 
@@ -18,7 +17,6 @@ export class TradingViewStore implements ContextProps {
   activeOrderLinePosition?: IOrderLineAdapter;
   activeOrderLinePositionTP?: IOrderLineAdapter;
   activeOrderLinePositionSL?: IOrderLineAdapter;
-  selectedPosition?: PositionModelWSDTO;
   selectedPendingPosition?: number;
   selectedHistory?: string;
   activePositionPopup: boolean = false;
@@ -62,7 +60,7 @@ export class TradingViewStore implements ContextProps {
 
   @action
   clearActivePositionLine = () => {
-    this.selectedPosition = undefined;
+    this.rootStore.quotesStore.setSelectedPositionId(null);
     this.activeOrderLinePositionPnL?.remove();
     this.activeOrderLinePositionPnL = undefined;
     this.activeOrderLinePosition?.remove();

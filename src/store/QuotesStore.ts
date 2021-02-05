@@ -7,6 +7,7 @@ import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { RootStore } from './RootStore';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
+import hasValue from '../helpers/hasValue';
 
 interface IQuotesStore {
   quotes: BidAskKeyValueList;
@@ -23,6 +24,7 @@ export class QuotesStore implements IQuotesStore {
   activePositions: PositionModelWSDTO[] = [];
   pendingOrders: PendingOrderWSDTO[] = [];
   rootStore: RootStore;
+  selectedPositionId: PositionModelWSDTO['id'] | null = null;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, { rootStore: false });
@@ -36,7 +38,10 @@ export class QuotesStore implements IQuotesStore {
 
   @action
   setActivePositions = (activePositions: PositionModelWSDTO[]) => {
-    this.activePositions = activePositions;
+    this.activePositions = activePositions.map((item) => ({
+      ...item,
+      sl: hasValue(item.sl) ? Math.abs(item.sl!) : item.sl,
+    }));
   };
 
   get profit() {
@@ -193,5 +198,16 @@ export class QuotesStore implements IQuotesStore {
   @action
   setPendingOrders = (pendingOrders: PendingOrderWSDTO[]) => {
     this.pendingOrders = pendingOrders;
+  };
+
+  get selectedPosition() {
+    return this.activePositions.find(
+      (item) => item.id === this.selectedPositionId
+    );
+  }
+
+  @action
+  setSelectedPositionId = (id: PositionModelWSDTO['id'] | null) => {
+    this.selectedPositionId = id;
   };
 }

@@ -105,7 +105,6 @@ export class MainAppStore implements MainAppStoreProps {
   isDemoRealPopup = false;
   isAuthorized = false;
   activeSession?: HubConnection;
-  activeAccount?: AccountModelWebSocketDTO;
   accounts: AccountModelWebSocketDTO[] = [];
   profileStatus: PersonalDataKYCEnum = PersonalDataKYCEnum.NotVerified;
   profilePhone = '';
@@ -118,7 +117,7 @@ export class MainAppStore implements MainAppStoreProps {
   activeAccountId: string = '';
   signUpFlag: boolean = false;
   lpLoginFlag: boolean = false;
-  
+
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
   connectTimeOut = '';
@@ -222,7 +221,8 @@ export class MainAppStore implements MainAppStoreProps {
     connection.on(
       Topics.ACCOUNTS,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO[]>) => {
-        this.accounts = response.data;
+        this.setAccounts(response.data);
+
         this.getActiveAccount();
 
         mixpanel.people.set({
@@ -237,9 +237,12 @@ export class MainAppStore implements MainAppStoreProps {
     connection.on(
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
-        this.activeAccount = response.data;
-        this.accounts = this.accounts.map((account) =>
-          account.id === response.data.id ? response.data : account
+        this.setActiveAccountId(response.data.id);
+
+        this.setAccounts(
+          this.accounts.map((account) =>
+            account.id === response.data.id ? response.data : account
+          )
         );
       }
     );
@@ -387,9 +390,9 @@ export class MainAppStore implements MainAppStoreProps {
         this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: activeAccount.id,
         });
-        this.activeAccount = activeAccount;
+
         if (this.activeAccountId !== activeAccount.id) {
-          this.activeAccountId = activeAccount.id;
+          this.setActiveAccountId(activeAccount.id);
         }
       } else {
         this.isDemoRealPopup = true;
@@ -415,9 +418,8 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   setActiveAccount = (account: AccountModelWebSocketDTO) => {
-    this.activeAccount = account;
     if (this.activeAccountId !== account.id) {
-      this.activeAccountId = account.id;
+      this.setActiveAccountId(account.id);
     }
 
     // TODO: think how remove crutch
@@ -526,7 +528,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.quotesStore.setPendingOrders([]);
     this.rootStore.tradingViewStore.selectedPendingPosition = undefined;
     this.rootStore.tradingViewStore.selectedHistory = undefined;
-    this.rootStore.tradingViewStore.selectedPosition = undefined;
+    this.rootStore.quotesStore.setSelectedPositionId(null);
     this.rootStore.withdrawalStore.history = null;
     this.rootStore.sortingStore.activePositionsSortBy =
       SortByProfitEnum.NewFirstAsc;
@@ -537,8 +539,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.dateRangeStore.startDate = moment().subtract(1, 'weeks');
     this.rootStore.tabsStore.portfolioTab = PortfolioTabEnum.Portfolio;
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
-    this.activeAccount = undefined;
-    this.activeAccountId = '';
+    this.setActiveAccountId('');
   };
 
   setTokenHandler = (token: string) => {
@@ -584,5 +585,19 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setIsLoading = (isLoading: boolean) => {
     this.isLoading = isLoading;
+  };
+
+  get activeAccount() {
+    return this.accounts.find((item) => item.id === this.activeAccountId);
+  }
+
+  @action
+  setActiveAccountId = (activeAccountId: AccountModelWebSocketDTO['id']) => {
+    this.activeAccountId = activeAccountId;
+  };
+
+  @action
+  setAccounts = (accounts: AccountModelWebSocketDTO[]) => {
+    this.accounts = accounts;
   };
 }

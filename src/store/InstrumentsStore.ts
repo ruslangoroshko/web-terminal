@@ -218,7 +218,7 @@ export class InstrumentsStore implements ContextProps {
                 }
               }
             );
-          this.setHiddenChart(true);
+          this.setHiddenChart(false);
           tvWidget.chart().setChartType(newActiveInstrument.chartType);
         });
 

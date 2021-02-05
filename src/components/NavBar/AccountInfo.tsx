@@ -90,7 +90,7 @@ const AccountInfo: FC<Props> = observer((props) => {
     quotesStore.setPendingOrders([]);
     tradingViewStore.selectedPendingPosition = undefined;
     tradingViewStore.selectedHistory = undefined;
-    tradingViewStore.selectedPosition = undefined;
+    quotesStore.setSelectedPositionId(null);
     withdrawalStore.history = null;
     sortingStore.activePositionsSortBy = SortByProfitEnum.NewFirstAsc;
     sortingStore.pendingOrdersSortBy = SortByPendingOrdersEnum.NewFirstAsc;

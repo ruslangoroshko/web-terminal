@@ -19,11 +19,11 @@ import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
 import TopingUpCheck from './TopingUpCheck';
 import Fields from '../../constants/fields';
-import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 import { ConnectForm } from './ConnectForm';
 import hasValue from '../../helpers/hasValue';
 import { Observer, observer } from 'mobx-react-lite';
-import useInstrumentPrecision from '../../hooks/useInstrumentPrecision';
+import setValueAsNullIfEmptyAndNegative from '../../helpers/setValueAsNullIfEmptyAndNegative';
+import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 
 interface Props {
   isDisabled?: boolean;
@@ -194,7 +194,9 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
                     <InputPnL
                       onBeforeInput={handleBeforeInput(SLTPstore.tpType)}
                       placeholder={t('Non Set')}
-                      ref={register({ setValueAs: setValueAsNullIfEmpty })}
+                      ref={register({
+                        setValueAs: setValueAsNullIfEmpty,
+                      })}
                       name={Fields.TAKE_PROFIT}
                       disabled={isDisabled}
                     ></InputPnL>
@@ -278,7 +280,9 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
                       onBeforeInput={handleBeforeInput(SLTPstore.slType)}
                       placeholder={t('Non Set')}
                       name={Fields.STOP_LOSS}
-                      ref={register({ setValueAs: setValueAsNullIfEmpty })}
+                      ref={register({
+                        setValueAs: setValueAsNullIfEmptyAndNegative,
+                      })}
                       disabled={isDisabled}
                     ></InputPnL>
                     {hasValue(sl) && !isDisabled && (

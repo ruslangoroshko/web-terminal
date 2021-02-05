@@ -78,6 +78,12 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       };
     }, []);
 
+    const submitForm = (submitMethod: () => Promise<void>) => () => {
+      submitMethod().then(() => {
+        toggle(false);
+      });
+    };
+
     return (
       <ConnectForm>
         {({ handleSubmit }) => {
@@ -86,31 +92,33 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               <ButtonWithoutStyles type="button" onClick={handleToggle}>
                 {children}
               </ButtonWithoutStyles>
-              <FlexContainer
-                position="absolute"
-                // FIXME: think about this stupid sheet
-                top={
-                  isTop
-                    ? `${
-                        popupPosition.top + Math.round(popupPosition.height / 5)
-                      }px`
-                    : 'auto'
-                }
-                left={`${Math.round(popupPosition.width * 0.75)}px`}
-                bottom={isTop ? 'auto' : '20px'}
-                zIndex="101"
-                visibilityProp={on ? 'visible' : 'hidden'}
-              >
-                <SetAutoclose isDisabled={isDisabled} toggle={toggle}>
-                  <ButtonApply
-                    type="button"
-                    disabled={isDisabled}
-                    onClick={handleSubmit(handleSumbitMethod)}
-                  >
-                    {t('Apply')}
-                  </ButtonApply>
-                </SetAutoclose>
-              </FlexContainer>
+              {on && (
+                <FlexContainer
+                  position="absolute"
+                  // FIXME: think about this stupid sheet
+                  top={
+                    isTop
+                      ? `${
+                          popupPosition.top +
+                          Math.round(popupPosition.height / 5)
+                        }px`
+                      : 'auto'
+                  }
+                  left={`${Math.round(popupPosition.width * 0.75)}px`}
+                  bottom={isTop ? 'auto' : '20px'}
+                  zIndex="101"
+                >
+                  <SetAutoclose isDisabled={isDisabled} toggle={toggle}>
+                    <ButtonApply
+                      type="button"
+                      disabled={isDisabled}
+                      onClick={submitForm(handleSubmit(handleSumbitMethod))}
+                    >
+                      {t('Apply')}
+                    </ButtonApply>
+                  </SetAutoclose>
+                </FlexContainer>
+              )}
             </FlexContainer>
           );
         }}

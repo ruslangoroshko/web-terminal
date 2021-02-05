@@ -6,7 +6,7 @@ import { useStores } from '../hooks/useStores';
 interface Props {
   challengeStopOutBySlValue: (arg0: number) => void;
   challengeStopOutByToppingUp: (arg0: boolean) => void;
-  stopLoss: number;
+  stopLoss?: number;
 }
 const IsToppingUpWrapper: FC<Props> = observer(
   ({ challengeStopOutBySlValue, challengeStopOutByToppingUp, stopLoss }) => {
@@ -14,7 +14,7 @@ const IsToppingUpWrapper: FC<Props> = observer(
 
     useEffect(() => {
       if (hasValue(stopLoss)) {
-        challengeStopOutBySlValue(stopLoss);
+        challengeStopOutBySlValue(stopLoss!);
       }
     }, [stopLoss]);
 
