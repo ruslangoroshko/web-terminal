@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, makeAutoObservable } from 'mobx';
 
 interface ContextProps {
   notificationMessage: string;
@@ -8,11 +8,15 @@ interface ContextProps {
 }
 
 export class NotificationStore implements ContextProps {
-  @observable notificationMessage: string = '';
-  @observable isActiveNotification: boolean = false;
-  @observable isActiveNotificationGlobal: boolean = false;
-  @observable isSuccessfull: boolean = false;
-  @observable timer?: NodeJS.Timeout;
+  notificationMessage: string = '';
+  isActiveNotification: boolean = false;
+  isActiveNotificationGlobal: boolean = false;
+  isSuccessfull: boolean = false;
+  timer?: NodeJS.Timeout;
+
+  constructor() {
+    makeAutoObservable(this);
+  }
 
   @action
   closeNotification = () => {
@@ -41,5 +45,5 @@ export class NotificationStore implements ContextProps {
   @action
   setNotification = (notification: string) => {
     this.notificationMessage = notification;
-  }
+  };
 }

@@ -52,7 +52,7 @@ const LabelInput: FC<Props> = (props) => {
         onBlur={removeFocus}
         hasError={hasError}
         autoComplete={autoComplete}
-        data-e2e-Id={datae2eId}
+        data-e2e-id={datae2eId}
       ></Input>
       <Label>{labelText}</Label>
       {hasError && focused && (

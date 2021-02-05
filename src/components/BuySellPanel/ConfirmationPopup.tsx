@@ -8,7 +8,6 @@ import {
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
 import { PrimaryButton } from '../../styles/Buttons';
-import { OpenPositionModelFormik } from '../../types/Positions';
 import { AskBidEnum } from '../../enums/AskBid';
 import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
@@ -17,18 +16,23 @@ import { useTranslation } from 'react-i18next';
 
 interface Props {
   closePopup: () => void;
-  values: OpenPositionModelFormik;
   instrumentId: string;
   digits: number;
   disabled: boolean;
+  investmentAmount: number;
+  operation: AskBidEnum | null;
+  multiplier: number;
+  //handleSubmit: () => void;
 }
 
 const ConfirmationPopup: FC<Props> = ({
   closePopup,
-  values,
   instrumentId,
   digits,
   disabled,
+  operation,
+  multiplier,
+  investmentAmount,
 }) => {
   const { quotesStore, mainAppStore } = useStores();
 
@@ -41,7 +45,6 @@ const ConfirmationPopup: FC<Props> = ({
       closePopup();
     }
   };
-
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -85,7 +88,7 @@ const ConfirmationPopup: FC<Props> = ({
             <PrimaryTextSpan color="#fffccc" fontSize="12px">
               {quotesStore.quotes[instrumentId] &&
                 quotesStore.quotes[instrumentId][
-                  values.operation === AskBidEnum.Buy ? 'ask' : 'bid'
+                  operation === AskBidEnum.Buy ? 'ask' : 'bid'
                 ].c.toFixed(digits)}
             </PrimaryTextSpan>
           )}
@@ -96,7 +99,7 @@ const ConfirmationPopup: FC<Props> = ({
           {t('Type')}
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
-          {values.operation !== null ? AskBidEnum[values.operation] : ''}
+          {operation !== null ? AskBidEnum[operation] : ''}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
@@ -105,7 +108,7 @@ const ConfirmationPopup: FC<Props> = ({
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
           {mainAppStore.activeAccount?.symbol}
-          {values.investmentAmount}
+          {investmentAmount}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
@@ -113,7 +116,7 @@ const ConfirmationPopup: FC<Props> = ({
           {t('Multiplier')}
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
-          &times;{values.multiplier}
+          &times;{multiplier}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
@@ -122,11 +125,11 @@ const ConfirmationPopup: FC<Props> = ({
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
           {mainAppStore.activeAccount?.symbol}
-          {(values.investmentAmount * values.multiplier).toFixed(2)}
+          {(investmentAmount * multiplier).toFixed(2)}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer flexDirection="column">
-        {values.operation === AskBidEnum.Buy ? (
+        {operation === AskBidEnum.Buy ? (
           <PrimaryButton type="submit" padding="8px 16px" disabled={disabled}>
             <PrimaryTextSpan fontSize="14px" color="#1c2026" fontWeight="bold">
               {t('Confirm Buying')}

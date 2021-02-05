@@ -35,7 +35,13 @@ interface IProps {
 }
 
 const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
-  const { mainAppStore, tradingViewStore, markersOnChartStore, instrumentsStore } = useStores();
+  const {
+    mainAppStore,
+    tradingViewStore,
+    markersOnChartStore,
+    instrumentsStore,
+  } = useStores();
+  
   useEffect(() => {
     const localType = localStorage.getItem(LOCAL_CHART_TYPE);
     const currentType = localType
@@ -130,11 +136,18 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
     };
   }, []);
 
-  return <ChartWrapper width="100%" height="100%" isHidden={instrumentsStore.hiddenChart} id={containerId} />;
+  return (
+    <ChartWrapper
+      width="100%"
+      height="100%"
+      isHidden={instrumentsStore.hiddenChart}
+      id={containerId}
+    />
+  );
 });
 
 export default ChartContainer;
 
 const ChartWrapper = styled(FlexContainer)<{ isHidden?: boolean }>`
-  visibility: ${(props) => props.isHidden ? 'hidden' : 'visible'};
+  visibility: ${(props) => (props.isHidden ? 'hidden' : 'visible')};
 `;

@@ -23,21 +23,17 @@ export interface OpenPendingOrder {
   operation: AskBidEnum;
   multiplier: number;
   openPrice: number;
-}
-
-export interface OpenPositionModelFormik {
-  processId: string;
-  accountId: string;
-  investmentAmount: number;
-  instrumentId: string;
-  operation: AskBidEnum | null;
-  multiplier: number;
   tp: number | null;
   sl: number | null;
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
-  openPrice?: number | null;
-  isToppingUpActive: boolean;
+}
+
+export interface FormValues {
+  investmentAmount: number;
+  tp?: number;
+  sl?: number;
+  openPrice?: number;
 }
 
 export interface OpenPositionResponseDTO {
@@ -87,5 +83,4 @@ export interface UpdateSLTP {
   sl: number | null;
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
-  closedByChart?: boolean;
 }

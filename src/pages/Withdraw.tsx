@@ -21,21 +21,13 @@ import Helmet from 'react-helmet';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
-import Topics from '../constants/websocketTopics';
-import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
-import { PositionModelWSDTO } from '../types/Positions';
-import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
-import { InstrumentModelWSDTO, PriceChangeWSDTO } from '../types/InstrumentsTypes';
-import { LOCAL_MARKET_TABS } from '../constants/global';
 
 function AccountSecurity() {
   const {
     badRequestPopupStore,
     notificationStore,
     withdrawalStore,
-    quotesStore,
     mainAppStore,
-    instrumentsStore
   } = useStores();
 
   const { push } = useHistory();
@@ -46,77 +38,11 @@ function AccountSecurity() {
   };
 
   useEffect(() => {
-    if (mainAppStore.activeAccount) {
-      mainAppStore.activeSession?.on(
-        Topics.ACTIVE_POSITIONS,
-        (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
-          if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.setActivePositions(response.data);
-          }
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.PENDING_ORDERS,
-        (response: ResponseFromWebsocket<PendingOrderWSDTO[]>) => {
-          if (mainAppStore.activeAccount?.id === response.accountId) {
-            quotesStore.pendingOrders = response.data;
-          }
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.INSTRUMENT_GROUPS,
-        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-          if (mainAppStore.activeAccount?.id === response.accountId) {
-            instrumentsStore.instrumentGroups = response.data;
-            if (response.data.length) {
-              const lastMarketTab = localStorage.getItem(LOCAL_MARKET_TABS);
-              instrumentsStore.activeInstrumentGroupId = !!lastMarketTab ? lastMarketTab : response.data[0].id;
-            }
-          }
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.PRICE_CHANGE,
-        (response: ResponseFromWebsocket<PriceChangeWSDTO[]>) => {
-          instrumentsStore.setPricesChanges(response.data);
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.UPDATE_ACTIVE_POSITION,
-        (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
-          if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.setActivePositions(
-              quotesStore.activePositions.map((item) =>
-                item.id === response.data.id ? response.data : item
-              )
-            );
-          }
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.UPDATE_PENDING_ORDER,
-        (response: ResponseFromWebsocket<PendingOrderWSDTO>) => {
-          if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.pendingOrders = quotesStore.pendingOrders.map((item) =>
-              item.id === response.data.id ? response.data : item
-            );
-          }
-        }
-      );
-    }
-  }, [mainAppStore.activeAccount]);
-
-  useEffect(() => {
     mixpanel.track(mixpanelEvents.WITHDRAW_VIEW, {
       [mixapanelProps.AVAILABLE_BALANCE]:
-        mainAppStore.accounts.find(item => item.isLive)?.balance || 0,
+        mainAppStore.accounts.find((item) => item.isLive)?.balance || 0,
     });
-  },[])
+  }, []);
 
   return (
     <AccountSettingsContainer>
@@ -226,7 +152,7 @@ const TabControllsWraper = styled(FlexContainer)`
 
 const TabControllItem = styled(ButtonWithoutStyles)<{ active: boolean }>`
   width: 50%;
-  color: ${props => (props.active ? '#fffccc' : '#979797')};
+  color: ${(props) => (props.active ? '#fffccc' : '#979797')};
   font-weight: 500;
   font-size: 12px;
   line-height: 16px;
@@ -242,8 +168,8 @@ const TabControllItem = styled(ButtonWithoutStyles)<{ active: boolean }>`
     content: '';
     display: block;
     width: 100%;
-    height: ${props => (props.active ? '2px' : '1px')};
-    background: ${props => (props.active ? '#FFFCCC' : '#46484d')};
+    height: ${(props) => (props.active ? '2px' : '1px')};
+    background: ${(props) => (props.active ? '#FFFCCC' : '#46484d')};
     position: absolute;
     bottom: 0;
     left: 0;

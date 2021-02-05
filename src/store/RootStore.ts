@@ -1,6 +1,5 @@
 import { QuotesStore } from './QuotesStore';
 import { MainAppStore } from './MainAppStore';
-import { SLTPStore } from './SLTPStore';
 import { TabsStore } from './TabsStore';
 import { TradingViewStore } from './TradingViewStore';
 import { InstrumentsStore } from './InstrumentsStore';
@@ -16,11 +15,12 @@ import { WithdrawalStore } from './WithdrawalStore';
 import { DateRangeAccountBalanceStore } from './DateRangeAccountBalanceStore';
 import { PhoneVerificationStore } from './PhoneVerificationStore';
 import { MarkersOnChartStore } from './MarkersOnChartStore';
+import { SLTPStore } from './SLTPStore';
+import { makeAutoObservable } from 'mobx';
 
 export class RootStore {
   quotesStore: QuotesStore;
   mainAppStore: MainAppStore;
-  SLTPStore: SLTPStore;
   tabsStore: TabsStore;
   tradingViewStore: TradingViewStore;
   instrumentsStore: InstrumentsStore;
@@ -36,11 +36,11 @@ export class RootStore {
   withdrawalStore: WithdrawalStore;
   phoneVerificationStore: PhoneVerificationStore;
   markersOnChartStore: MarkersOnChartStore;
+  SLTPstore: SLTPStore;
 
   constructor() {
     this.quotesStore = new QuotesStore(this);
     this.mainAppStore = new MainAppStore(this);
-    this.SLTPStore = new SLTPStore();
     this.tabsStore = new TabsStore();
     this.tradingViewStore = new TradingViewStore(this);
     this.instrumentsStore = new InstrumentsStore(this);
@@ -56,5 +56,6 @@ export class RootStore {
     this.withdrawalStore = new WithdrawalStore();
     this.phoneVerificationStore = new PhoneVerificationStore();
     this.markersOnChartStore = new MarkersOnChartStore(this);
+    this.SLTPstore = new SLTPStore();
   }
 }

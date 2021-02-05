@@ -48,7 +48,7 @@ const SingIn = observer(() => {
   const { mainAppStore, notificationStore, badRequestPopupStore } = useStores();
 
   const handleSubmitForm = async (credentials: UserAuthenticate) => {
-    mainAppStore.isInitLoading = true;
+    mainAppStore.setInitLoading(true);
     try {
       const result = await mainAppStore.signIn(credentials);
       if (result !== OperationApiResponseCodes.Ok) {
@@ -57,7 +57,7 @@ const SingIn = observer(() => {
         );
         notificationStore.isSuccessfull = false;
         notificationStore.openNotification();
-        mainAppStore.isInitLoading = false;
+        mainAppStore.setInitLoading(false);
 
         mixpanel.track(mixpanelEvents.LOGIN_FAILED, {
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
@@ -75,10 +75,9 @@ const SingIn = observer(() => {
         });
       }
     } catch (error) {
-      mainAppStore.isInitLoading = false;
       badRequestPopupStore.openModal();
       badRequestPopupStore.setMessage(error);
-      mainAppStore.isInitLoading = false;
+      mainAppStore.setInitLoading(false);
     }
   };
 

@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, makeAutoObservable } from 'mobx';
 import { DepositTypeEnum } from '../enums/DepositTypeEnum';
 
 interface Props {
@@ -7,21 +7,25 @@ interface Props {
 }
 
 export class DepositFundsStore implements Props {
-  @observable activeDepositType: DepositTypeEnum = DepositTypeEnum.VisaMaster;
-  @observable isActivePopup = false;
+  activeDepositType: DepositTypeEnum = DepositTypeEnum.VisaMaster;
+  isActivePopup = false;
+
+  constructor() {
+    makeAutoObservable(this);
+  }
 
   @action
   togglePopup = () => {
     this.isActivePopup = !this.isActivePopup;
-  }
+  };
 
   @action
   openPopup = () => {
     this.isActivePopup = true;
-  }
+  };
 
-  @action 
+  @action
   setActiveDepositType = (newActiveDepositeType: DepositTypeEnum) => {
     this.activeDepositType = newActiveDepositeType;
-  }
+  };
 }

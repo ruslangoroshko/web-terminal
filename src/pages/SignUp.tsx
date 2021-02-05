@@ -112,7 +112,7 @@ function SignUp() {
       { setStatus, setSubmitting }: FormikHelpers<UserRegistration>
     ) => {
       setSubmitting(true);
-      mainAppStore.isInitLoading = true;
+      mainAppStore.setInitLoading(true);
 
       grecaptcha.ready(function () {
         grecaptcha
@@ -134,7 +134,7 @@ function SignUp() {
                   );
                   notificationStore.isSuccessfull = false;
                   notificationStore.openNotification();
-                  mainAppStore.isInitLoading = false;
+                  mainAppStore.setInitLoading(false);
                   mixpanel.track(mixpanelEvents.SIGN_UP_FAILED, {
                     [mixapanelProps.BRAND_NAME]:
                       mainAppStore.initModel.brandProperty,
@@ -156,7 +156,7 @@ function SignUp() {
                 badRequestPopupStore.setMessage(error);
                 setStatus(error);
                 setSubmitting(false);
-                mainAppStore.isInitLoading = false;
+                mainAppStore.setInitLoading(false);
               }
             },
             () => {
@@ -176,7 +176,7 @@ function SignUp() {
                 )
               );
               setSubmitting(false);
-              mainAppStore.isInitLoading = false;
+              mainAppStore.setInitLoading(false);
             }
           );
       });
@@ -258,7 +258,7 @@ function SignUp() {
 
   useEffect(() => {
     const fetchAdditionalFields = async () => {
-      mainAppStore.isLoading = true;
+      mainAppStore.setIsLoading(true);
       try {
         const response = await API.getAdditionalSignUpFields(
           mainAppStore.initModel.authUrl
@@ -266,9 +266,9 @@ function SignUp() {
         if (response.length && response.find((item) => item === Fields.PHONE)) {
           setHasAdditionalField(true);
         }
-        mainAppStore.isLoading = false;
+        mainAppStore.setIsLoading(false);
       } catch (error) {
-        mainAppStore.isLoading = false;
+        mainAppStore.setIsLoading(false);
       }
     };
     fetchAdditionalFields();

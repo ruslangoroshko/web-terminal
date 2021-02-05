@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { makeAutoObservable, observable } from 'mobx';
 import { PositionsHistoryReportDTO } from '../types/HistoryReportTypes';
 import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 
@@ -9,7 +9,7 @@ interface ContextProps {
 }
 
 export class HistoryStore implements ContextProps {
-  @observable positionsHistoryReport: PositionsHistoryReportDTO = {
+  positionsHistoryReport: PositionsHistoryReportDTO = {
     page: 0,
     pageSize: 0,
     positionsHistory: [],
@@ -19,8 +19,11 @@ export class HistoryStore implements ContextProps {
     totalProfit: 0,
     totalProfitPercent: 0,
   };
-  @observable positionsDatesRangeType: ShowDatesDropdownEnum =
-    ShowDatesDropdownEnum.Week;
-  @observable balancesDatesRangeType: ShowDatesDropdownEnum =
-    ShowDatesDropdownEnum.Week;
+
+  constructor() {
+    makeAutoObservable(this);
+  }
+
+  positionsDatesRangeType: ShowDatesDropdownEnum = ShowDatesDropdownEnum.Week;
+  balancesDatesRangeType: ShowDatesDropdownEnum = ShowDatesDropdownEnum.Week;
 }

@@ -100,7 +100,7 @@ const AuthorizedContainer: FC<Props> = (props) => {
   useEffect(() => {
     const wasOpen = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
     if (wasOpen) {
-      tabsStore.sideBarTabType = parseInt(wasOpen);
+      tabsStore.setSideBarType(parseInt(wasOpen));
     }
   }, []);
 
@@ -114,10 +114,7 @@ const AuthorizedContainer: FC<Props> = (props) => {
       maxHeight="100vh"
       overflow="hidden"
     >
-      <HiddenAnchor
-        id="hidden-anchor"
-        target="_blank"
-      />
+      <HiddenAnchor id="hidden-anchor" target="_blank" />
       <FlexContainer
         position="absolute"
         bottom="100px"

@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeAutoObservable, observable } from 'mobx';
 import { AskBidEnum } from '../enums/AskBid';
 import { PositionModelWSDTO } from '../types/Positions';
 import { IExecutionLineAdapter } from '../vendor/charting_library/charting_library';
@@ -15,9 +15,10 @@ interface Marker {
 
 export class MarkersOnChartStore implements IMarkersOnChartStore {
   rootStore: RootStore;
-  @observable activeMarkers: Marker[] = [];
+  activeMarkers: Marker[] = [];
 
   constructor(rootStore: RootStore) {
+    makeAutoObservable(this, { rootStore: false });
     this.rootStore = rootStore;
   }
 
