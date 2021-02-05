@@ -18,6 +18,7 @@ import mixapanelProps from '../../constants/mixpanelProps';
 import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import AchievementStatus from '../../constants/achievementStatus';
 import ColorsPallete from '../../styles/colorPallete';
+import mixpanelEvents from '../../constants/mixpanelEvents';
 
 function UserProfileButton() {
   const { mainAppStore, phoneVerificationStore } = useStores();
@@ -85,7 +86,15 @@ function UserProfileButton() {
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
         });
 
+        if (mainAppStore.lpLoginFlag) {
+          mixpanel.track(mixpanelEvents.SIGN_UP, {
+            [mixapanelProps.BRAND_NAME]:
+            mainAppStore.initModel.brandProperty,
+          });
+        }
+
         mainAppStore.setSignUpFlag(false);
+        mainAppStore.setLpLoginFlag(false);
         mainAppStore.profileStatus = response.data.kyc;
         mainAppStore.profilePhone = response.data.phone || '';
         mainAppStore.profileName = (!!response.data.firstName && !!response.data.lastName)

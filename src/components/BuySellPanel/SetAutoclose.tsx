@@ -460,7 +460,7 @@ const SetAutoclose: FC<Props> = observer((props) => {
             color="rgba(255, 255, 255, 0.3)"
             textTransform="uppercase"
           >
-            {t('Auto-increase trade amount')}
+            {t('Save position from market noise')}
           </PrimaryTextSpan>
           <InformationPopup
             classNameTooltip="autoclose-loss"
@@ -474,7 +474,13 @@ const SetAutoclose: FC<Props> = observer((props) => {
                   (inst) => inst.instrumentItem.id === instrumentId
                 )?.instrumentItem.stopOutPercent
               }%, ${t(
-                'an additional 20% of the original investment amount is reserved from your balance to keep your position open.'
+                'an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least'
+              )} ${
+                instrumentsStore.instruments.find(
+                  (inst) => inst.instrumentItem.id === instrumentId
+                )?.instrumentItem.stopOutPercent
+              }%, ${t(
+                'all previously reserved funds are returned to your balance.'
               )}`}
             </PrimaryTextSpan>
           </InformationPopup>
