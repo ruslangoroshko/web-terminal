@@ -113,6 +113,7 @@ export class MainAppStore implements MainAppStoreProps {
   @observable socketError = false;
   @observable activeAccountId: string = '';
   @observable signUpFlag: boolean = false;
+  @observable lpLoginFlag: boolean = false;
 
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
@@ -329,6 +330,11 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setSignUpFlag = (value: boolean) => {
     this.signUpFlag = value;
+  };
+
+  @action
+  setLpLoginFlag = (value: boolean) => {
+    this.lpLoginFlag = value;
   };
 
   @action
