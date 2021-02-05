@@ -2,14 +2,7 @@ import React, { useEffect, useState, FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
-import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
-import Topics from '../constants/websocketTopics';
 import TVChartContainer from '../containers/ChartContainer';
-import {
-  InstrumentModelWSDTO,
-  PriceChangeWSDTO,
-} from '../types/InstrumentsTypes';
-import { PositionModelWSDTO } from '../types/Positions';
 import SvgIcon from '../components/SvgIcon';
 import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';
 import ActiveInstrument from '../components/ActiveInstrument';
@@ -24,7 +17,6 @@ import { Observer, observer } from 'mobx-react-lite';
 import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import NotificationPopup from '../components/NotificationPopup';
 import DemoRealPopup from '../components/DemoRealPopup';
-import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { useLocation } from 'react-router-dom';
 import StatusPaymentPopup from '../components/DepositPopup/StatusPaymentPopup';
 import { useTranslation } from 'react-i18next';
@@ -33,14 +25,10 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import ShouldValidatePhonePopup from '../components/ShouldValidatePhonePopup';
 import ConfirmPopup from '../components/ConfirmPopup';
-import { LOCAL_MARKET_TABS } from '../constants/global';
-
-// TODO: refactor dashboard observer to small Observers (isLoading flag)
 
 const Dashboard: FC = observer(() => {
   const {
     mainAppStore,
-    quotesStore,
     instrumentsStore,
     notificationStore,
     phoneVerificationStore,
@@ -51,72 +39,6 @@ const Dashboard: FC = observer(() => {
 
   const [paymentStatus, setPaymentStatus] = useState('');
   const location = useLocation();
-
-  useEffect(() => {
-    if (mainAppStore.activeAccount) {
-      mainAppStore.activeSession?.on(
-        Topics.ACTIVE_POSITIONS,
-        (response: ResponseFromWebsocket<PositionModelWSDTO[]>) => {
-          if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.setActivePositions(response.data);
-          }
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.PENDING_ORDERS,
-        (response: ResponseFromWebsocket<PendingOrderWSDTO[]>) => {
-          if (mainAppStore.activeAccount?.id === response.accountId) {
-            quotesStore.pendingOrders = response.data;
-          }
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.INSTRUMENT_GROUPS,
-        (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
-          if (mainAppStore.activeAccount?.id === response.accountId) {
-            instrumentsStore.instrumentGroups = response.data;
-            if (response.data.length) {
-              const lastMarketTab = localStorage.getItem(LOCAL_MARKET_TABS);
-              instrumentsStore.activeInstrumentGroupId = !!lastMarketTab ? lastMarketTab : response.data[0].id;
-            }
-          }
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.PRICE_CHANGE,
-        (response: ResponseFromWebsocket<PriceChangeWSDTO[]>) => {
-          instrumentsStore.setPricesChanges(response.data);
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.UPDATE_ACTIVE_POSITION,
-        (response: ResponseFromWebsocket<PositionModelWSDTO>) => {
-          if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.setActivePositions(
-              quotesStore.activePositions.map((item) =>
-                item.id === response.data.id ? response.data : item
-              )
-            );
-          }
-        }
-      );
-
-      mainAppStore.activeSession?.on(
-        Topics.UPDATE_PENDING_ORDER,
-        (response: ResponseFromWebsocket<PendingOrderWSDTO>) => {
-          if (response.accountId === mainAppStore.activeAccount?.id) {
-            quotesStore.pendingOrders = quotesStore.pendingOrders.map((item) =>
-              item.id === response.data.id ? response.data : item
-            );
-          }
-        }
-      );
-    }
-  }, [mainAppStore.activeAccount]);
 
   useEffect(() => {
     if (location.search) {
@@ -178,7 +100,10 @@ const Dashboard: FC = observer(() => {
         <Observer>
           {() => (
             <NotificationPopup
-              show={notificationStore.isActiveNotification && !notificationStore.isActiveNotificationGlobal}
+              show={
+                notificationStore.isActiveNotification &&
+                !notificationStore.isActiveNotificationGlobal
+              }
             ></NotificationPopup>
           )}
         </Observer>

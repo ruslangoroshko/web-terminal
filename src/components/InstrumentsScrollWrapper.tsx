@@ -2,17 +2,15 @@ import React, { FC, useEffect, useCallback } from 'react';
 import Instrument from './Instrument';
 import { useStores } from '../hooks/useStores';
 import styled from '@emotion/styled';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import API from '../helpers/API';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
-import {
-  LOCAL_INSTRUMENT_ACTIVE,
-} from '../constants/global';
+import { LOCAL_INSTRUMENT_ACTIVE } from '../constants/global';
 
 interface Props {}
 
 const InstrumentsScrollWrapper: FC<Props> = observer(() => {
-  const { instrumentsStore, mainAppStore, badRequestPopupStore, tradingViewStore } = useStores();
+  const { instrumentsStore, mainAppStore, badRequestPopupStore } = useStores();
 
   const handleRemoveInstrument = (itemId: string) => async () => {
     let indexEl = instrumentsStore.activeInstrumentsIds.findIndex(
@@ -54,7 +52,7 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
 
         instrumentsStore.setActiveInstrumentsIds(response);
         const lastActive = localStorage.getItem(LOCAL_INSTRUMENT_ACTIVE);
-        instrumentsStore.switchInstrument(
+        await instrumentsStore.switchInstrument(
           lastActive ||
             response[0] ||
             instrumentsStore.instruments[0].instrumentItem.id
@@ -80,12 +78,8 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
     <InstrumentsWrapper>
       {instrumentsStore.activeInstruments.map((item) => (
         <Instrument
-          instrument={item.instrumentItem}
           key={item.instrumentItem.id}
-          isActive={
-            item.instrumentItem.id ===
-            instrumentsStore.activeInstrument?.instrumentItem.id
-          }
+          instrument={item.instrumentItem}
           handleClose={handleRemoveInstrument(item.instrumentItem.id)}
         />
       ))}

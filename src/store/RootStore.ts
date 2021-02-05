@@ -16,6 +16,7 @@ import { DateRangeAccountBalanceStore } from './DateRangeAccountBalanceStore';
 import { PhoneVerificationStore } from './PhoneVerificationStore';
 import { MarkersOnChartStore } from './MarkersOnChartStore';
 import { SLTPStore } from './SLTPStore';
+import { makeAutoObservable } from 'mobx';
 
 export class RootStore {
   quotesStore: QuotesStore;

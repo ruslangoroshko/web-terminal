@@ -1,30 +1,49 @@
-import { observable, action } from 'mobx';
+import { observable, action, makeAutoObservable } from 'mobx';
 import { TpSlTypeEnum } from '../enums/TpSlTypeEnum';
 
 interface ContextProps {
-  tpType: TpSlTypeEnum | null;
-  slType: TpSlTypeEnum | null;
+  tpType: TpSlTypeEnum;
+  slType: TpSlTypeEnum;
   isToppingUpActive: boolean;
   instrumentId: string;
   closedByChart: boolean;
 }
 
 export class SLTPStore implements ContextProps {
-  @observable tpType: TpSlTypeEnum | null = null;
-  @observable slType: TpSlTypeEnum | null = null;
-  @observable isToppingUpActive: boolean = false;
-  @observable closedByChart: boolean = false;
-  @observable instrumentId: string = '';
+  tpType: TpSlTypeEnum = TpSlTypeEnum.Currency;
+  slType: TpSlTypeEnum = TpSlTypeEnum.Currency;
+  isToppingUpActive: boolean = false;
+  closedByChart: boolean = false;
+  instrumentId: string = '';
+
+  constructor() {
+    makeAutoObservable(this);
+  }
 
   @action
   clearStore = () => {
-    this.tpType = null;
-    this.slType = null;
-    this.isToppingUpActive = false;
+    this.setTpType(TpSlTypeEnum.Currency);
+    this.setSlType(TpSlTypeEnum.Currency);
+    this.toggleToppingUp(false);
   };
 
   @action
   toggleToppingUp = (value: boolean) => {
     this.isToppingUpActive = value;
+  };
+
+  @action
+  setTpType = (tpType: TpSlTypeEnum) => {
+    this.tpType = tpType;
+  };
+
+  @action
+  setSlType = (slType: TpSlTypeEnum) => {
+    this.slType = slType;
+  };
+
+  @action
+  setInstrumentId = (instrumentId: string) => {
+    this.instrumentId = instrumentId;
   };
 }

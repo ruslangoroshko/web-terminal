@@ -1,12 +1,11 @@
 import React from 'react';
-import { render, fireEvent, waitFor, cleanup } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import testIds from '../constants/testIds';
 import BitcoinForm from '../components/DepositPopup/BitcoinForm';
 import NotificationPopup from '../components/NotificationPopup';
 import axios from 'axios';
 import { DepositApiResponseCodes } from '../enums/DepositApiResponseCodes';
 import { act } from 'react-dom/test-utils';
-import { action, decorate, observable } from 'mobx';
 
 jest.mock('react-router-dom', () => ({
   useHistory: () => ({

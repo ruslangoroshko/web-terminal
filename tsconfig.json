@@ -17,7 +17,8 @@
     "noImplicitThis": false,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "useDefineForClassFields": true
   },
   "include": ["./src/**/*"]
 }

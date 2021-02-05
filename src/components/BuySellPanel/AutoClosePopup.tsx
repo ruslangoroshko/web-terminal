@@ -44,8 +44,8 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
   const clearSLTP = (setValue: any) => () => {
     setValue('tp', undefined);
     setValue('sl', undefined);
-    SLTPstore.tpType = null;
-    SLTPstore.slType = null;
+    SLTPstore.setTpType(TpSlTypeEnum.Currency);
+    SLTPstore.setSlType(TpSlTypeEnum.Currency);
   };
 
   const handleClose = () => {
@@ -89,9 +89,9 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
   const { sl, tp } = useWatch({});
 
   useEffect(() => {
-    SLTPstore.slType = TpSlTypeEnum.Currency;
-    SLTPstore.tpType = TpSlTypeEnum.Currency;
-    SLTPstore.instrumentId = instrumentId;
+    SLTPstore.setSlType(TpSlTypeEnum.Currency);
+    SLTPstore.setTpType(TpSlTypeEnum.Currency);
+    SLTPstore.setInstrumentId(instrumentId);
   }, []);
 
   const handleApplySetAutoClose = (

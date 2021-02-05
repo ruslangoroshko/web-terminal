@@ -18,7 +18,10 @@ interface Props {
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
-  ({ children, isDisabled, handleSumbitMethod, tpType, slType, instrumentId }, ref) => {
+  (
+    { children, isDisabled, handleSumbitMethod, tpType, slType, instrumentId },
+    ref
+  ) => {
     const { t } = useTranslation();
 
     const { SLTPstore } = useStores();
@@ -62,8 +65,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     useEffect(() => {
       if (on) {
-        SLTPstore.tpType = tpType ?? TpSlTypeEnum.Currency;
-        SLTPstore.slType = slType ?? TpSlTypeEnum.Currency;
+        SLTPstore.setTpType(tpType ?? TpSlTypeEnum.Currency);
+        SLTPstore.setSlType(slType ?? TpSlTypeEnum.Currency);
         SLTPstore.instrumentId = instrumentId;
       }
     }, [on]);

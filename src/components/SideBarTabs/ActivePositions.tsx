@@ -38,7 +38,7 @@ import ActivePositionPnL from './ActivePositionPnL';
 import ActivePositionPnLPercent from './ActivePositionPnLPercent';
 import { IOrderLineAdapter } from '../../vendor/charting_library/charting_library';
 import { autorun } from 'mobx';
-import { Observer } from 'mobx-react-lite';
+import { Observer, useLocalObservable } from 'mobx-react-lite';
 import mixpanelValues from '../../constants/mixpanelValues';
 import { LOCAL_POSITION } from '../../constants/global';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -403,6 +403,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     } catch (error) {}
   };
 
+  const slType = useLocalObservable(async () => SLTPstore.slType);
+  const tpType = useLocalObservable(async () => SLTPstore.tpType);
+
   const updateSLTP = useCallback(
     async (values: FormValues) => {
       const valuesToSubmit: UpdateSLTP = SLTPstore.closedByChart
@@ -410,8 +413,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             ...values,
             sl: values.sl ?? null,
             tp: values.tp ?? null,
-            slType: values.sl ? SLTPstore.slType : null,
-            tpType: values.tp ? SLTPstore.tpType : null,
+            slType: values.sl ? await slType : null,
+            tpType: values.tp ? await tpType : null,
             instrumentId: position.instrument,
             accountId: mainAppStore.activeAccountId,
             multiplier: position.multiplier,
@@ -424,12 +427,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             ...values,
             sl: values.sl ?? null,
             tp: values.tp ?? null,
-            slType: tradingViewStore.selectedPosition
-              ? tradingViewStore.selectedPosition?.slType
-              : null,
-            tpType: tradingViewStore?.selectedPosition
-              ? tradingViewStore.selectedPosition?.tpType
-              : null,
+            slType: values.sl ? await slType : null,
+            tpType: values.tp ? await tpType : null,
             instrumentId:
               tradingViewStore.selectedPosition?.instrument ||
               position.instrument,
@@ -544,7 +543,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         badRequestPopupStore.setMessage(error);
       }
     },
-    [mainAppStore.activeAccountId, mainAppStore.activeAccount]
+    [
+      mainAppStore.activeAccountId,
+      mainAppStore.activeAccount,
+      SLTPstore.slType,
+      SLTPstore.tpType,
+      SLTPstore.closedByChart,
+    ]
   );
 
   const {
@@ -747,7 +752,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           : tradingViewStore.activeOrderLinePositionSL?.getPrice();
       tradingViewStore.toggleMovedPositionPopup(true);
       checkSL(position.slType, newPosition);
-      SLTPstore.slType = position.slType;
+      SLTPstore.setSlType(position.slType ?? TpSlTypeEnum.Currency);
       setValue('sl', newPosition);
     }
   }, [
@@ -775,7 +780,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           : tradingViewStore.activeOrderLinePositionTP?.getPrice();
       tradingViewStore.toggleMovedPositionPopup(true);
       checkTP(position.tpType, newPosition);
-      SLTPstore.tpType = position.tpType;
+      SLTPstore.tpType = position.tpType ?? TpSlTypeEnum.Currency;
       setValue('tp', newPosition);
     }
   }, [

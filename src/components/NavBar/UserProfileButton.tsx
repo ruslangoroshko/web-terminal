@@ -33,19 +33,30 @@ function UserProfileButton() {
     }
   };
 
-  const getBackgroundColor = useCallback((type: string) => {
-    const key = mainAppStore.activeAccount?.achievementStatus;
-    switch (key) {
-      case AchievementStatus.SILVER:
-        return type === 'background' ? ColorsPallete.BACKGROUND_SILVER : ColorsPallete.STAR_OTHER;
-      case AchievementStatus.GOLD:
-        return type === 'background' ? ColorsPallete.BACKGROUND_GOLD : ColorsPallete.STAR_OTHER;
-      case AchievementStatus.PLATINUM:
-        return type === 'background' ? ColorsPallete.BACKGROUND_PLATINUM : ColorsPallete.STAR_OTHER;
-      default:
-        return type === 'background' ? ColorsPallete.BACKGROUND_BASIC : ColorsPallete.STAR_BASIC;
-    }
-  }, [mainAppStore.activeAccount]);
+  const getBackgroundColor = useCallback(
+    (type: string) => {
+      const key = mainAppStore.activeAccount?.achievementStatus;
+      switch (key) {
+        case AchievementStatus.SILVER:
+          return type === 'background'
+            ? ColorsPallete.BACKGROUND_SILVER
+            : ColorsPallete.STAR_OTHER;
+        case AchievementStatus.GOLD:
+          return type === 'background'
+            ? ColorsPallete.BACKGROUND_GOLD
+            : ColorsPallete.STAR_OTHER;
+        case AchievementStatus.PLATINUM:
+          return type === 'background'
+            ? ColorsPallete.BACKGROUND_PLATINUM
+            : ColorsPallete.STAR_OTHER;
+        default:
+          return type === 'background'
+            ? ColorsPallete.BACKGROUND_BASIC
+            : ColorsPallete.STAR_BASIC;
+      }
+    },
+    [mainAppStore.activeAccount]
+  );
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -86,10 +97,12 @@ function UserProfileButton() {
         });
 
         mainAppStore.setSignUpFlag(false);
-        mainAppStore.profileStatus = response.data.kyc;
+        mainAppStore.setProfileStatus(response.data.kyc);
         mainAppStore.profilePhone = response.data.phone || '';
-        mainAppStore.profileName = (!!response.data.firstName && !!response.data.lastName)
-          ? `${response.data.firstName} ${response.data.lastName}` : '';
+        mainAppStore.profileName =
+          !!response.data.firstName && !!response.data.lastName
+            ? `${response.data.firstName} ${response.data.lastName}`
+            : '';
         mainAppStore.profileEmail = response.data.email || '';
       } catch (error) {}
     }
@@ -109,9 +122,7 @@ function UserProfileButton() {
     >
       <Observer>
         {() => (
-          <FlexContainer
-            alignItems={'center'}
-          >
+          <FlexContainer alignItems={'center'}>
             <FlexContainer
               background={getBackgroundColor('background')}
               width={'25px'}
@@ -128,8 +139,9 @@ function UserProfileButton() {
                 width={13}
                 height={13}
               />
-              {mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified
-                && <FlexContainer
+              {mainAppStore.profileStatus ===
+                PersonalDataKYCEnum.NotVerified && (
+                <FlexContainer
                   backgroundColor={ColorsPallete.RAZZMATAZZ}
                   height={'10px'}
                   width={'10px'}
@@ -138,10 +150,8 @@ function UserProfileButton() {
                   right={'0'}
                   borderRadius={'50%'}
                   border={'2px solid #1C2026'}
-                >
-
-                </FlexContainer>
-              }
+                ></FlexContainer>
+              )}
             </FlexContainer>
             <PrimaryTextSpan
               fontSize={'12px'}

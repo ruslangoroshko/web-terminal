@@ -1,6 +1,5 @@
 import { useStores } from './useStores';
 import { useState, useEffect } from 'react';
-import { useObserver } from 'mobx-react-lite';
 
 const useInstrumentPrecision = (instrumentId: string) => {
   const { instrumentsStore } = useStores();
@@ -14,6 +13,6 @@ const useInstrumentPrecision = (instrumentId: string) => {
     );
   }, [instrumentsStore.instruments]);
 
-  return useObserver(() => ({ precision }));
+  return { precision };
 };
 export default useInstrumentPrecision;

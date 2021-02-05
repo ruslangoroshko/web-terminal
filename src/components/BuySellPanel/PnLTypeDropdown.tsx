@@ -29,11 +29,11 @@ const PnLTypeDropdown: FC<Props> = observer(({ dropdownType, isDisabled }) => {
   ) => () => {
     switch (dropdownType) {
       case 'sl':
-        SLTPstore.slType = autoClose;
+        SLTPstore.setSlType(autoClose);
         break;
 
       case 'tp':
-        SLTPstore.tpType = autoClose;
+        SLTPstore.setTpType(autoClose);
         break;
 
       default:

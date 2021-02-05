@@ -9,7 +9,7 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
 import styled from '@emotion/styled';
 import { useStores } from '../hooks/useStores';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import ImageContainer from './ImageContainer';
 import { autorun } from 'mobx';
@@ -26,20 +26,22 @@ import { SideBarTabType } from '../enums/SideBarTabType';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
-  isActive?: boolean;
   handleClose: () => void;
 }
 
-const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
+const Instrument: FC<Props> = observer(({ instrument, handleClose }) => {
   const {
     quotesStore,
     mainAppStore,
     instrumentsStore,
     tradingViewStore,
-    notificationStore
+    notificationStore,
   } = useStores();
   const buttonCloseRef = useRef<HTMLButtonElement>(null);
   const [closePrice, setClosePrice] = useState('');
+
+  const isActive =
+    instrument.id === instrumentsStore.activeInstrument?.instrumentItem.id;
 
   const switchInstrument = (e: any) => {
     if (buttonCloseRef.current && buttonCloseRef.current.contains(e.target)) {
@@ -198,7 +200,7 @@ const Instrument: FC<Props> = ({ instrument, isActive, handleClose }) => {
       </QuotesFeedWrapper>
     </MagicWrapperBorders>
   );
-};
+});
 
 export default Instrument;
 
