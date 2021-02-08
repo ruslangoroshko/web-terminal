@@ -351,45 +351,51 @@ const SetAutoclose: FC<Props> = observer((
                   </InputWrapper>
                 )}
               </Observer>
-              <FlexContainer
-                flexDirection="column"
-                width="100%"
-                marginBottom="24px"
-              >
+              {!isDisabled && (
                 <FlexContainer
-                  margin="0 0 6px 0"
-                  alignItems="center"
-                  justifyContent="space-between"
+                  flexDirection="column"
+                  width="100%"
+                  marginBottom="24px"
                 >
-                  <PrimaryTextSpan
-                    fontSize="11px"
-                    lineHeight="12px"
-                    color="rgba(255, 255, 255, 0.3)"
-                    textTransform="uppercase"
+                  <FlexContainer
+                    margin="0 0 6px 0"
+                    alignItems="center"
+                    justifyContent="space-between"
                   >
-                    {t('Auto-increase trade amount')}
-                  </PrimaryTextSpan>
-                  <InformationPopup
-                    classNameTooltip="autoclose-loss"
-                    bgColor="#000"
-                    width="200px"
-                    direction="left"
-                  >
-                    <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                      {`${t('If the loss for a position reaches')} ${
-                        instrumentsStore.instruments.find(
-                          (inst) =>
-                            inst.instrumentItem.id ===
-                            getValues(Fields.INSTRUMNENT_ID)
-                        )?.instrumentItem.stopOutPercent
-                      }%, ${t(
-                        'an additional 20% of the original investment amount is reserved from your balance to keep your position open.'
-                      )}`}
+                    <PrimaryTextSpan
+                      fontSize="11px"
+                      lineHeight="12px"
+                      color="rgba(255, 255, 255, 0.3)"
+                      textTransform="uppercase"
+                    >
+                      {t('Auto-increase trade amount')}
                     </PrimaryTextSpan>
-                  </InformationPopup>
+                    <InformationPopup
+                      classNameTooltip="autoclose-loss"
+                      bgColor="#000"
+                      width="200px"
+                      direction="left"
+                    >
+                      <Observer>
+                        {() => (
+                          <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                            {`${t('If the loss for a position reaches')} ${
+                              instrumentsStore.instruments.find(
+                                (inst) =>
+                                  inst.instrumentItem.id ===
+                                  SLTPstore.instrumentId
+                              )?.instrumentItem.stopOutPercent
+                            }%, ${t(
+                              'an additional 20% of the original investment amount is reserved from your balance to keep your position open.'
+                            )}`}
+                          </PrimaryTextSpan>
+                        )}
+                      </Observer>
+                    </InformationPopup>
+                  </FlexContainer>
+                  <TopingUpCheck />
                 </FlexContainer>
-                <TopingUpCheck />
-              </FlexContainer>
+              )}
               {!isDisabled ? children : null}
             </>
           );
