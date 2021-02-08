@@ -19,6 +19,9 @@ import { useTranslation } from 'react-i18next';
 import useInstrumentPrecision from '../../hooks/useInstrumentPrecision';
 import { LOCAL_PENDING_POSITION } from '../../constants/global';
 import { Observer } from 'mobx-react-lite';
+import { FormProvider, useForm } from 'react-hook-form';
+import { FormValues } from '../../types/Positions';
+import hasValue from '../../helpers/hasValue';
 
 interface Props {
   pendingOrder: PendingOrderWSDTO;
@@ -46,7 +49,7 @@ const PendingOrder: FC<Props> = (props) => {
   };
 
   const switchInstrument = (e: any) => {
-    tradingViewStore.selectedPendingPosition = pendingOrder.id;
+    tradingViewStore.setSelectedPendingPosition(pendingOrder.id);
     localStorage.setItem(LOCAL_PENDING_POSITION, `${pendingOrder.id}`);
     if (
       clickableWrapperRef.current &&
@@ -71,10 +74,21 @@ const PendingOrder: FC<Props> = (props) => {
       pendingOrder.id === parseFloat(lastPendingActive)
     ) {
       instrumentRef.current.scrollIntoView();
-      tradingViewStore.selectedPendingPosition = parseFloat(lastPendingActive);
+      tradingViewStore.setSelectedPendingPosition(
+        parseFloat(lastPendingActive)
+      );
       instrumentsStore.switchInstrument(pendingOrder.instrument);
     }
   }, []);
+
+  const methodsForForm = useForm<FormValues>({
+    reValidateMode: 'onSubmit',
+    defaultValues: {
+      tp: pendingOrder.tp ?? undefined,
+      sl: hasValue(pendingOrder.sl) ? Math.abs(pendingOrder.sl!) : undefined,
+      investmentAmount: pendingOrder.investmentAmount,
+    },
+  });
 
   return (
     <Observer>
@@ -167,20 +181,22 @@ const PendingOrder: FC<Props> = (props) => {
             </FlexContainer>
             <FlexContainer alignItems="center" ref={clickableWrapperRef}>
               <FlexContainer marginRight="4px">
-                <AutoClosePopupSideBar
-                  ref={instrumentRef}
-                  isDisabled
-                  handleSumbitMethod={handleCloseOrder}
-                  tpType={pendingOrder.tpType}
-                  slType={pendingOrder.slType}
-                  instrumentId={pendingOrder.instrument}
-                >
-                  <SvgIcon
-                    {...IconSettings}
-                    fillColor="rgba(255, 255, 255, 0.6)"
-                    hoverFillColor="#00FFDD"
-                  />
-                </AutoClosePopupSideBar>
+                <FormProvider {...methodsForForm}>
+                  <AutoClosePopupSideBar
+                    ref={instrumentRef}
+                    isDisabled
+                    handleSumbitMethod={handleCloseOrder}
+                    tpType={pendingOrder.tpType}
+                    slType={pendingOrder.slType}
+                    instrumentId={pendingOrder.instrument}
+                  >
+                    <SvgIcon
+                      {...IconSettings}
+                      fillColor="rgba(255, 255, 255, 0.6)"
+                      hoverFillColor="#00FFDD"
+                    />
+                  </AutoClosePopupSideBar>
+                </FormProvider>
               </FlexContainer>
               <ClosePositionPopup
                 applyHandler={handleCloseOrder}
