@@ -94,6 +94,12 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
     SLTPstore.setInstrumentId(instrumentId);
   }, []);
 
+  useEffect(() => {
+   if (!on) {
+     SLTPstore.isToppingUpActive = false;
+   }
+  }, [on]);
+
   const handleApplySetAutoClose = (
     errors: DeepMap<Record<string, any>, FieldError>
   ) => () => {
