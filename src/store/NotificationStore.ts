@@ -41,9 +41,13 @@ export class NotificationStore implements ContextProps {
     this.isActiveNotificationGlobal = true;
   };
 
-  // TODO: rewrite to actions
   @action
   setNotification = (notification: string) => {
     this.notificationMessage = notification;
+  };
+
+  @action
+  setIsSuccessfull = (newIsSuccessfull: boolean) => {
+    this.isSuccessfull = newIsSuccessfull;
   };
 }

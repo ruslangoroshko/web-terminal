@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent, useState } from 'react';
+import React, { FC, ChangeEvent, useState, forwardRef } from 'react';
 import styled from '@emotion/styled';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import ErropPopup from './ErropPopup';
@@ -16,7 +16,7 @@ interface Props {
   datae2eId?: string;
 }
 
-const LabelInput: FC<Props> = (props) => {
+const LabelInput = forwardRef<HTMLInputElement, Props>((props, ref) => {
   const {
     labelText,
     id,
@@ -43,6 +43,7 @@ const LabelInput: FC<Props> = (props) => {
     <LabelWrapper htmlFor={id}>
       <Input
         id={id}
+        ref={ref}
         type={type || 'type'}
         name={name}
         onChange={onChange}
@@ -67,7 +68,7 @@ const LabelInput: FC<Props> = (props) => {
       )}
     </LabelWrapper>
   );
-};
+});
 
 export default LabelInput;
 
