@@ -373,6 +373,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               ? Math.abs(response.position.sl)
               : null,
           [mixapanelProps.TP_VALUE]: response.position.tp,
+          [mixapanelProps.SAVE_POSITION]: `${SLTPStore.isToppingUpActive}`,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
@@ -403,6 +404,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           [mixapanelProps.SL_VALUE]:
             position.sl !== null ? Math.abs(position.sl) : null,
           [mixapanelProps.TP_VALUE]: position.tp,
+          [mixapanelProps.SAVE_POSITION]: `${SLTPStore.isToppingUpActive}`,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
@@ -464,6 +466,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 ? Math.abs(response.position.sl)
                 : null,
             [mixapanelProps.TP_VALUE]: response.position.tp,
+            [mixapanelProps.SAVE_POSITION]: `${SLTPStore.isToppingUpActive}`,
             [mixapanelProps.AVAILABLE_BALANCE]:
               mainAppStore.activeAccount?.balance || 0,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
@@ -508,6 +511,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             [mixapanelProps.SL_VALUE]:
               valuesToSubmit.sl !== null ? Math.abs(valuesToSubmit.sl) : null,
             [mixapanelProps.TP_VALUE]: valuesToSubmit.tp,
+            [mixapanelProps.SAVE_POSITION]: `${SLTPStore.isToppingUpActive}`,
             [mixapanelProps.AVAILABLE_BALANCE]:
               mainAppStore.activeAccount?.balance || 0,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
