@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useFormik } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { UserAuthenticate } from '../types/UserInfo';
@@ -25,6 +24,8 @@ import { useTranslation } from 'react-i18next';
 import mixapanelProps from '../constants/mixpanelProps';
 import Helmet from 'react-helmet';
 import e2eTests from '../constants/e2eTests';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const SingIn = observer(() => {
   const { t } = useTranslation();
@@ -55,7 +56,7 @@ const SingIn = observer(() => {
         notificationStore.notificationMessage = t(
           apiResponseCodeMessages[result]
         );
-        notificationStore.isSuccessfull = false;
+        notificationStore.setIsSuccessfull(false);
         notificationStore.openNotification();
         mainAppStore.setInitLoading(false);
 
@@ -81,32 +82,14 @@ const SingIn = observer(() => {
     }
   };
 
-  const {
-    values,
-    validateForm,
-    handleChange,
-    handleSubmit,
-    submitForm,
-    errors,
-    touched,
-  } = useFormik({
-    initialValues,
-    onSubmit: handleSubmitForm,
-    validationSchema,
-    validateOnBlur: false,
-    validateOnChange: true,
+  const { handleSubmit, control, errors, formState } = useForm<
+    UserAuthenticate
+  >({
+    resolver: yupResolver(validationSchema),
+    shouldFocusError: true,
+    mode: 'onSubmit',
+    defaultValues: initialValues,
   });
-
-  const handlerClickSubmit = async () => {
-    const curErrors = await validateForm();
-    const curErrorsKeys = Object.keys(curErrors);
-    if (curErrorsKeys.length) {
-      const el = document.getElementById(curErrorsKeys[0]);
-      if (el) el.focus();
-    } else {
-      submitForm();
-    }
-  };
 
   useEffect(() => {
     mixpanel.track(mixpanelEvents.LOGIN_VIEW, {
@@ -136,49 +119,68 @@ const SingIn = observer(() => {
       </FlexContainer>
       <FlexContainer width="320px" flexDirection="column">
         <SignTypeTabs></SignTypeTabs>
-        <CustomForm noValidate onSubmit={handleSubmit}>
+        <CustomForm noValidate onSubmit={handleSubmit(handleSubmitForm)}>
           <FlexContainer flexDirection="column">
             <FlexContainer
               position="relative"
               flexDirection="column"
               margin="0 0 16px 0"
             >
-              <LabelInput
+              <Controller
+                control={control}
                 name={Fields.EMAIL}
-                onChange={handleChange}
-                labelText={t('Email')}
-                value={values.email || ''}
-                id={Fields.EMAIL}
-                hasError={!!(touched.email && errors.email)}
-                errorText={errors.email}
-                datae2eId={e2eTests.SING_IN_USERNAME}
-              ></LabelInput>
+                render={(
+                  { onChange, value, name, ref, onBlur },
+                  { invalid, isTouched, isDirty }
+                ) => (
+                  <LabelInput
+                    ref={ref}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    name={name}
+                    labelText={t('Email')}
+                    value={value}
+                    id={Fields.EMAIL}
+                    hasError={!!(isTouched && errors.email)}
+                    errorText={errors.email?.message}
+                    datae2eId={e2eTests.SING_IN_USERNAME}
+                  ></LabelInput>
+                )}
+              />
             </FlexContainer>
             <FlexContainer
               position="relative"
               flexDirection="column"
               margin="0 0 16px 0"
             >
-              <LabelInput
+              <Controller
+                control={control}
                 name={Fields.PASSWORD}
-                onChange={handleChange}
-                labelText={t('Password')}
-                value={values.password || ''}
-                id={Fields.PASSWORD}
-                type="password"
-                hasError={!!(touched.password && errors.password)}
-                errorText={errors.password}
-                datae2eId={e2eTests.SING_IN_PASSWORD}
-              ></LabelInput>
+                render={(
+                  { onChange, value, name, ref },
+                  { invalid, isTouched, isDirty }
+                ) => (
+                  <LabelInput
+                    ref={ref}
+                    name={name}
+                    onChange={onChange}
+                    labelText={t('Password')}
+                    value={value}
+                    id={Fields.PASSWORD}
+                    type="password"
+                    hasError={!!(isTouched && errors.password)}
+                    errorText={errors.password?.message}
+                    datae2eId={e2eTests.SING_IN_PASSWORD}
+                  ></LabelInput>
+                )}
+              />
             </FlexContainer>
 
             <PrimaryButton
               padding="12px"
-              type="button"
-              onClick={handlerClickSubmit}
+              type="submit"
               data-e2e-id={e2eTests.SING_IN_FORM}
-
-              //disabled={!formikBag.isValid || formikBag.isSubmitting}
+              disabled={formState.isSubmitting}
             >
               <PrimaryTextSpan
                 color="#1c2026"

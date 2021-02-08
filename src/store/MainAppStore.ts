@@ -311,9 +311,9 @@ export class MainAppStore implements MainAppStoreProps {
           this.rootStore.instrumentsStore.instrumentGroups = response.data;
           if (response.data.length) {
             const lastMarketTab = localStorage.getItem(LOCAL_MARKET_TABS);
-            this.rootStore.instrumentsStore.activeInstrumentGroupId = !!lastMarketTab
-              ? lastMarketTab
-              : response.data[0].id;
+            this.rootStore.instrumentsStore.setActiveInstrumentGroupId(
+              lastMarketTab || response.data[0].id
+            );
           }
         }
       }
