@@ -75,4 +75,11 @@ export class TradingViewStore implements ContextProps {
       'mainSeriesProperties.showPriceLine': true,
     });
   };
+
+  @action
+  setSelectedPendingPosition = (
+    newSelectedPendingPosition: number | undefined
+  ) => {
+    this.selectedPendingPosition = newSelectedPendingPosition;
+  };
 }

@@ -526,7 +526,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.setIsAuthorized(false);
     this.rootStore.quotesStore.setActivePositions([]);
     this.rootStore.quotesStore.setPendingOrders([]);
-    this.rootStore.tradingViewStore.selectedPendingPosition = undefined;
+    this.rootStore.tradingViewStore.setSelectedPendingPosition(undefined);
     this.rootStore.tradingViewStore.selectedHistory = undefined;
     this.rootStore.quotesStore.setSelectedPositionId(null);
     this.rootStore.withdrawalStore.history = null;

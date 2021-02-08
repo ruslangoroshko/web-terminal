@@ -88,7 +88,7 @@ const AccountInfo: FC<Props> = observer((props) => {
     localStorage.removeItem(LOCAL_HISTORY_PAGE);
     quotesStore.setActivePositions([]);
     quotesStore.setPendingOrders([]);
-    tradingViewStore.selectedPendingPosition = undefined;
+    tradingViewStore.setSelectedPendingPosition(undefined);
     tradingViewStore.selectedHistory = undefined;
     quotesStore.setSelectedPositionId(null);
     withdrawalStore.history = null;
