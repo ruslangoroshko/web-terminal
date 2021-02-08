@@ -336,17 +336,21 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
                       width="200px"
                       direction="left"
                     >
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                        {`${t('If the loss for a position reaches')} ${
-                          instrumentsStore.instruments.find(
-                            (inst) =>
-                              inst.instrumentItem.id ===
-                              getValues(Fields.INSTRUMNENT_ID)
-                          )?.instrumentItem.stopOutPercent
-                        }%, ${t(
-                          'an additional 20% of the original investment amount is reserved from your balance to keep your position open.'
-                        )}`}
-                      </PrimaryTextSpan>
+                      <Observer>
+                        {() => (
+                          <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                            {`${t('If the loss for a position reaches')} ${
+                              instrumentsStore.instruments.find(
+                                (inst) =>
+                                  inst.instrumentItem.id ===
+                                  SLTPstore.instrumentId
+                              )?.instrumentItem.stopOutPercent
+                            }%, ${t(
+                              'an additional 20% of the original investment amount is reserved from your balance to keep your position open.'
+                            )}`}
+                          </PrimaryTextSpan>
+                        )}
+                      </Observer>
                     </InformationPopup>
                   </FlexContainer>
                   <TopingUpCheck />
