@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -28,14 +28,28 @@ import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 interface Props {
   isDisabled?: boolean;
   toggle: (arg0: boolean) => void;
+  on?: boolean;
 }
 
-const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
+const SetAutoclose: FC<Props> = observer((
+  {
+    isDisabled,
+    toggle,
+    on,
+    children
+  }
+) => {
   const { t } = useTranslation();
 
   const { instrumentsStore, SLTPstore } = useStores();
+  const [oldSl, setOldSl] = useState<number | null | undefined>(null);
+  const [oldTp, setOldTp] = useState<number | null | undefined>(null);
 
-  const handleBeforeInput = (fieldType: TpSlTypeEnum | null) => (e: any) => {
+  const handleBeforeInput = (
+    fieldType: TpSlTypeEnum | null,
+    fieldName: string,
+    oldValue: number
+  ) => (e: any) => {
     let PRECISION = 2;
 
     switch (fieldType) {
@@ -54,6 +68,19 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
           )?.instrumentItem.digits,
           SLTPstore.instrumentId
         );
+        break;
+
+      default:
+        break;
+    }
+
+    switch (fieldName) {
+      case Fields.STOP_LOSS:
+        setOldSl(oldSl !== null ? oldSl : oldValue);
+        break;
+
+      case Fields.TAKE_PROFIT:
+        setOldTp(oldTp !== null ? oldTp : oldValue);
         break;
 
       default:
@@ -101,7 +128,15 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
     }
   };
 
-  const handleToggle = () => {
+  const handleToggle = (
+    setValue: (arg0: string, arg1: any) => void
+  ) => () => {
+    if (oldTp !== null ) {
+      setValue('tp', oldTp);
+    }
+    if (oldSl !== null) {
+      setValue('sl', oldSl);
+    }
     toggle(false);
   };
 
@@ -117,6 +152,11 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
     setValue('sl', undefined);
   };
 
+  useEffect(() => {
+    setOldSl(null);
+    setOldTp(null);
+  }, [on]);
+
   //const observableSlType = useLocalObservable(as() => SLTPstore.tpType);
 
   return (
@@ -131,7 +171,7 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
           const { tp, sl } = watch();
           return (
             <>
-              <ButtonClose type="button" onClick={handleToggle}>
+              <ButtonClose type="button" onClick={handleToggle(setValue)}>
                 <SvgIcon
                   {...IconClose}
                   fillColor="rgba(255, 255, 255, 0.6)"
@@ -194,7 +234,7 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
                       <PlusSign>+</PlusSign>
                     )}
                     <InputPnL
-                      onBeforeInput={handleBeforeInput(SLTPstore.tpType)}
+                      onBeforeInput={handleBeforeInput(SLTPstore.tpType, Fields.TAKE_PROFIT, tp)}
                       placeholder={t('Non Set')}
                       ref={register({
                         setValueAs: setValueAsNullIfEmpty,
@@ -279,7 +319,7 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
                       <PlusSign>-</PlusSign>
                     )}
                     <InputPnL
-                      onBeforeInput={handleBeforeInput(SLTPstore.slType)}
+                      onBeforeInput={handleBeforeInput(SLTPstore.slType, Fields.STOP_LOSS, sl)}
                       placeholder={t('Non Set')}
                       name={Fields.STOP_LOSS}
                       ref={register({
