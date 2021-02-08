@@ -1,12 +1,12 @@
 import { observable, action, makeAutoObservable } from 'mobx';
 
 interface ContextProps {
-  requsetMessage?: string;
+  requestMessage?: string;
   isActive: boolean;
 }
 
 export class BadRequestPopupStore implements ContextProps {
-  requsetMessage: string = '';
+  requestMessage: string = '';
   isActive: boolean = false;
   isNetwork: boolean = false;
   isRecconect: boolean = false;
@@ -61,9 +61,8 @@ export class BadRequestPopupStore implements ContextProps {
     this.isActive = !this.isNetwork;
   };
 
-  // TODO: rewrite to actions
   @action
   setMessage = (message: string) => {
-    this.requsetMessage = message;
+    this.requestMessage = message;
   };
 }

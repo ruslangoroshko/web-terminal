@@ -279,4 +279,9 @@ export class InstrumentsStore implements ContextProps {
   setHiddenChart = (hiddenChart: boolean) => {
     this.hiddenChart = hiddenChart;
   };
+
+  @action
+  setActiveInstrumentGroupId = (groupId: string) => {
+    this.activeInstrumentGroupId = groupId;
+  };
 }

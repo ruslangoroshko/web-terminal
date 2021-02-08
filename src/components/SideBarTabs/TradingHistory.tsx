@@ -36,12 +36,13 @@ const TradingHistory: FC = observer(() => {
       try {
         const response = await API.getPositionsHistory({
           accountId: mainAppStore.activeAccount!.id,
-          startDate: moment(((checkIsNaN && checkNumber)
-            || !dataStart)
-            ? dateRangeStore.startDate
-            : (checkIsNaN
+          startDate: moment(
+            (checkIsNaN && checkNumber) || !dataStart
+              ? dateRangeStore.startDate
+              : checkIsNaN
               ? parseInt(dataStart)
-              : dataStart)).valueOf(),
+              : dataStart
+          ).valueOf(),
           endDate: moment().valueOf(),
           page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
           pageSize: 20,
@@ -76,12 +77,12 @@ const TradingHistory: FC = observer(() => {
             setIsLoading(false);
           }, 500);
         }
-        historyStore.positionsHistoryReport = {
+        historyStore.setPositionsHistoryReport({
           ...response,
           positionsHistory: isScrolling
             ? filteredPositions.sort((a, b) => b.closeDate - a.closeDate)
             : response.positionsHistory,
-        };
+        });
       } catch (error) {}
     },
     [
@@ -96,9 +97,15 @@ const TradingHistory: FC = observer(() => {
     if (mainAppStore.activeAccount) {
       let checkScroll: boolean = false;
       const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
-      const neededData: string | null = localStorage.getItem(LOCAL_HISTORY_POSITION);
-      const neededPage: string | null = localStorage.getItem(LOCAL_HISTORY_PAGE);
-      const neededRange: string | null = localStorage.getItem(LOCAL_HISTORY_DATERANGE);
+      const neededData: string | null = localStorage.getItem(
+        LOCAL_HISTORY_POSITION
+      );
+      const neededPage: string | null = localStorage.getItem(
+        LOCAL_HISTORY_PAGE
+      );
+      const neededRange: string | null = localStorage.getItem(
+        LOCAL_HISTORY_DATERANGE
+      );
       if (neededData) {
         if (neededPage && parseInt(neededPage) > 0) {
           checkScroll = true;
@@ -187,7 +194,12 @@ const TradingHistory: FC = observer(() => {
                     key={item.id}
                     tradingHistoryItem={item}
                     currencySymbol={mainAppStore.activeAccount?.symbol || ''}
-                    needScroll={index >= historyStore.positionsHistoryReport.positionsHistory.length - 3}
+                    needScroll={
+                      index >=
+                      historyStore.positionsHistoryReport.positionsHistory
+                        .length -
+                        3
+                    }
                   />
                 )
               )}

@@ -21,7 +21,7 @@ import TopingUpCheck from './TopingUpCheck';
 import Fields from '../../constants/fields';
 import { ConnectForm } from './ConnectForm';
 import hasValue from '../../helpers/hasValue';
-import { Observer, observer } from 'mobx-react-lite';
+import { Observer, observer, useLocalObservable } from 'mobx-react-lite';
 import setValueAsNullIfEmptyAndNegative from '../../helpers/setValueAsNullIfEmptyAndNegative';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 
@@ -116,6 +116,8 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
   ) => () => {
     setValue('sl', undefined);
   };
+
+  //const observableSlType = useLocalObservable(as() => SLTPstore.tpType);
 
   return (
     <Wrapper

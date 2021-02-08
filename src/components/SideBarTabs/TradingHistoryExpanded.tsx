@@ -49,7 +49,7 @@ const TradingHistoryExpanded: FC = () => {
           localStorage.setItem(LOCAL_HISTORY_PAGE, `${response.page}`);
         }
       }
-      historyStore.positionsHistoryReport = {
+      historyStore.setPositionsHistoryReport({
         ...response,
         positionsHistory: isScrolling
           ? [
@@ -57,7 +57,7 @@ const TradingHistoryExpanded: FC = () => {
               ...response.positionsHistory,
             ].sort((a, b) => b.closeDate - a.closeDate)
           : response.positionsHistory,
-      };
+      });
     },
     [
       mainAppStore.activeAccount?.id,
@@ -71,9 +71,15 @@ const TradingHistoryExpanded: FC = () => {
     if (mainAppStore.activeAccount && tabsStore.isTabExpanded) {
       let checkScroll: boolean = false;
       const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
-      const neededData: string | null = localStorage.getItem(LOCAL_HISTORY_POSITION);
-      const neededPage: string | null = localStorage.getItem(LOCAL_HISTORY_PAGE);
-      const neededRange: string | null = localStorage.getItem(LOCAL_HISTORY_DATERANGE);
+      const neededData: string | null = localStorage.getItem(
+        LOCAL_HISTORY_POSITION
+      );
+      const neededPage: string | null = localStorage.getItem(
+        LOCAL_HISTORY_PAGE
+      );
+      const neededRange: string | null = localStorage.getItem(
+        LOCAL_HISTORY_DATERANGE
+      );
       if (neededData) {
         if (neededPage && parseInt(neededPage) > 0) {
           checkScroll = true;
@@ -229,7 +235,7 @@ const TradingHistoryExpanded: FC = () => {
                     }
                   >
                     {historyStore.positionsHistoryReport.positionsHistory.map(
-                      item => (
+                      (item) => (
                         <TradingHistoryExpandedItem
                           key={item.id}
                           currencySymbol={
