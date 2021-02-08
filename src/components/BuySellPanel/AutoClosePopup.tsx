@@ -19,9 +19,10 @@ import { ConnectForm } from './ConnectForm';
 
 interface Props {
   instrumentId: string;
+  refAutoclose: React.RefObject<HTMLDivElement>;
 }
 
-const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
+const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
   const { mainAppStore, SLTPstore } = useStores();
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
@@ -95,8 +96,23 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
   }, []);
 
   const handleApplySetAutoClose = (
-    errors: DeepMap<Record<string, any>, FieldError>
+    errors: DeepMap<Record<string, any>, FieldError>,
+    setError: (arg0: string, arg1: any) => void,
+    getValues: any
   ) => () => {
+    const { sl, tp } = getValues();
+    if (tp === 0) {
+      setError('tp', {
+        type: 'manual',
+        message: t('Take Profit can not be zero')
+      });
+    }
+    if (sl === 0) {
+      setError('sl', {
+        type: 'manual',
+        message: t('Stop Loss can not be zero')
+      });
+    }
     if (!Object.keys(errors).length) {
       toggle(false);
     }
@@ -104,7 +120,13 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
 
   return (
     <ConnectForm>
-      {({ getValues, clearErrors, errors }) => (
+      {({
+        getValues,
+        clearErrors,
+        errors,
+        setValue,
+        setError,
+      }) => (
         <>
           <FlexContainer position="relative" ref={wrapperRef}>
             <FlexContainer width="100%" position="relative">
@@ -151,7 +173,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
                 </FlexContainer>
               </ButtonAutoClosePurchase>
               {!on && (hasValue(sl) || hasValue(tp)) && (
-                <ClearSLTPButton type="button" onClick={clearSLTP}>
+                <ClearSLTPButton type="button" onClick={clearSLTP(setValue)}>
                   <SvgIcon
                     {...IconClose}
                     fillColor="rgba(255,255,255,0.4)"
@@ -164,14 +186,15 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
               position="absolute"
               top="20px"
               right="100%"
-              visibilityProp={on ? 'visible' : 'hidden'}
+              display={on ? 'flex' : 'none'}
+              ref={refAutoclose}
             >
-              <SetAutoclose toggle={toggle}>
+              <SetAutoclose toggle={toggle} on={on}>
                 <ButtonApply
                   type="button"
                   form="buySellForm"
                   disabled={!hasValue(sl) && !hasValue(tp)}
-                  onClick={handleApplySetAutoClose(errors)}
+                  onClick={handleApplySetAutoClose(errors, setError, getValues)}
                 >
                   {t('Apply')}
                 </ButtonApply>
