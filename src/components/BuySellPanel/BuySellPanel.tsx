@@ -282,7 +282,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               [mixapanelProps.SL_VALUE]:
                 response.order.sl !== null ? Math.abs(response.order.sl) : null,
               [mixapanelProps.TP_VALUE]: response.order.tp,
-              [mixapanelProps.SAVE_POSITION]: `${SLTPStore.isToppingUpActive}`,
+              [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
               [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
               [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
               [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -313,7 +313,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                   ? Math.abs(modelToSubmit.sl)
                   : null,
               [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
-              [mixapanelProps.SAVE_POSITION]: `${SLTPStore.isToppingUpActive}`,
+              [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
               [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
               [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
               [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -391,7 +391,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                   ? Math.abs(response.position.sl)
                   : null,
               [mixapanelProps.TP_VALUE]: response.position.tp,
-              [mixapanelProps.SAVE_POSITION]: `${SLTPStore.isToppingUpActive}`,
+              [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
               [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
               [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
               [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -424,7 +424,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                   ? Math.abs(modelToSubmit.sl)
                   : null,
               [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
-              [mixapanelProps.SAVE_POSITION]: `${SLTPStore.isToppingUpActive}`,
+              [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
               [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
               [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
               [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
