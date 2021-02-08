@@ -17,7 +17,7 @@ import ImageContainer from '../ImageContainer';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import ClosePositionPopup from './ClosePositionPopup';
 import { useTranslation } from 'react-i18next';
-import useInstrument from '../../hooks/useInstrument';
+import useInstrumentPrecision from '../../hooks/useInstrumentPrecision';
 import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
 import ActivePositionPnL from './ActivePositionPnL';
@@ -45,7 +45,7 @@ function ActivePositionExpanded(props: Props) {
   } = useStores();
   const { t } = useTranslation();
 
-  const { precision } = useInstrument(position.instrument);
+  const { precision } = useInstrumentPrecision(position.instrument);
 
   const instrumentRef = useRef<HTMLDivElement>(null);
 

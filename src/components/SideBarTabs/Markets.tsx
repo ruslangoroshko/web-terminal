@@ -19,7 +19,7 @@ function Markets() {
 
   const setActiveInstrumentGroup = (groupId: string) => () => {
     localStorage.setItem(LOCAL_MARKET_TABS, groupId);
-    instrumentsStore.activeInstrumentGroupId = groupId;
+    instrumentsStore.setActiveInstrumentGroupId(groupId);
   };
   const [on, toggle] = useState(false);
 
@@ -49,7 +49,7 @@ function Markets() {
         <Observer>
           {() => (
             <>
-              {instrumentsStore.instrumentGroups.map(item => (
+              {instrumentsStore.instrumentGroups.map((item) => (
                 <MarketButton
                   key={item.id}
                   isActive={
@@ -160,7 +160,7 @@ function Markets() {
       <Observer>
         {() => (
           <MarketsWrapper flexDirection="column">
-            {instrumentsStore.sortedInstruments.map(item => (
+            {instrumentsStore.sortedInstruments.map((item) => (
               <InstrumentMarkets
                 instrument={item}
                 key={item.id}
@@ -180,7 +180,7 @@ const MarketButtonsWrapper = styled(FlexContainer)`
 `;
 
 const MarketButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
-  background: ${props =>
+  background: ${(props) =>
     props.isActive &&
     `radial-gradient(
       50.44% 50% at 50.67% 100%,
@@ -188,7 +188,7 @@ const MarketButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
       rgba(0, 255, 221, 0) 100%
     ),
     rgba(255, 255, 255, 0.08)`};
-  box-shadow: ${props => props.isActive && 'inset 0px -1px 0px #00ffdd'};
+  box-shadow: ${(props) => props.isActive && 'inset 0px -1px 0px #00ffdd'};
   transition: background 0.2s ease;
   padding: 8px;
 

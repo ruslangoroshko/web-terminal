@@ -76,7 +76,7 @@ function BadRequestPopup() {
           <FlexContainer position="relative">
             <TextBlockForDev
               ref={copyText}
-              value={badRequestPopupStore.requsetMessage || 'message is empty'}
+              value={badRequestPopupStore.requestMessage || 'message is empty'}
               readOnly
               className={`${copied && 'active'}`}
             />

@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, forwardRef } from 'react';
 import styled from '@emotion/styled';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import ErropPopup from './ErropPopup';
@@ -7,6 +7,8 @@ interface Props {
   labelText: string;
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  // TODO: make required type
+  onBlur?: (e: ChangeEvent<HTMLInputElement>) => void;
   name: string;
   id: string;
   type?: string;
@@ -16,12 +18,13 @@ interface Props {
   datae2eId?: string;
 }
 
-const LabelInput: FC<Props> = (props) => {
+const LabelInput = forwardRef<HTMLInputElement, Props>((props, ref) => {
   const {
     labelText,
     id,
     name,
     onChange,
+    onBlur,
     value,
     type,
     hasError,
@@ -29,33 +32,23 @@ const LabelInput: FC<Props> = (props) => {
     errorText,
     datae2eId,
   } = props;
-  const [focused, setFocused] = useState(false);
-
-  const removeFocus = () => {
-    setFocused(false);
-  };
-
-  const toggleFocus = () => {
-    setFocused(true);
-  };
-
   return (
     <LabelWrapper htmlFor={id}>
       <Input
         id={id}
-        type={type || 'type'}
+        ref={ref}
+        type={type || 'text'}
         name={name}
         onChange={onChange}
-        onFocus={toggleFocus}
+        onBlur={onBlur}
         value={value}
         required
-        onBlur={removeFocus}
         hasError={hasError}
         autoComplete={autoComplete}
-        data-e2e-Id={datae2eId}
+        data-e2e-id={datae2eId}
       ></Input>
       <Label>{labelText}</Label>
-      {hasError && focused && (
+      {hasError && (
         <ErropPopup
           textColor="#fffccc"
           bgColor="#ED145B"
@@ -67,7 +60,7 @@ const LabelInput: FC<Props> = (props) => {
       )}
     </LabelWrapper>
   );
-};
+});
 
 export default LabelInput;
 

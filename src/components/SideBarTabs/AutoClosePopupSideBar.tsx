@@ -1,51 +1,32 @@
-import React, { useState, useRef, useEffect, forwardRef } from 'react';
+import React, { useState, useRef, useEffect, forwardRef, FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import { PositionModelWSDTO } from '../../types/Positions';
+import styled from '@emotion/styled';
+import { useTranslation } from 'react-i18next';
+import { ConnectForm } from '../BuySellPanel/ConnectForm';
+import { useStores } from '../../hooks/useStores';
+import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 
 interface Props {
-  updateSLTP?: () => Promise<void>;
-  stopLossValue: PositionModelWSDTO['sl'];
-  stopLossType: PositionModelWSDTO['slType'];
-  takeProfitValue: PositionModelWSDTO['tp'];
-  takeProfitType: PositionModelWSDTO['tpType'];
-  stopLossError?: string;
-  takeProfitError?: string;
-  isDisabled?: boolean;
   children: React.ReactNode;
-  removeSl: () => void;
-  removeTP: () => void;
-  resetForm?: () => void;
-  toggleOut?: () => void;
-  active?: boolean;
-  instrumentId?: string;
-  digits?: number;
+  isDisabled?: boolean;
+  handleSumbitMethod: any;
+  tpType: TpSlTypeEnum | null;
+  slType: TpSlTypeEnum | null;
+  instrumentId: string;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
-  (props, ref) => {
-    const {
-      updateSLTP,
-      stopLossValue,
-      stopLossType,
-      takeProfitValue,
-      takeProfitType,
-      isDisabled,
-      children,
-      stopLossError,
-      takeProfitError,
-      removeSl,
-      removeTP,
-      resetForm,
-      active,
-      toggleOut,
-      instrumentId,
-      digits
-    } = props;
+  (
+    { children, isDisabled, handleSumbitMethod, tpType, slType, instrumentId },
+    ref
+  ) => {
+    const { t } = useTranslation();
 
-    const [on, toggle] = useState(!!active);
-    const [openAgain, setOpenAgain] = useState(false);
+    const { SLTPstore } = useStores();
+
+    const [on, toggle] = useState(false);
     const [isTop, setIsTop] = useState(true);
 
     const [popupPosition, setPopupPosition] = useState({
@@ -58,13 +39,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const handleToggle = (bySidebar: boolean) => {
-      if (active && bySidebar) {
-        setOpenAgain(true);
-      }
-      if (on && !!toggleOut) {
-        toggleOut();
-      }
+    const handleToggle = () => {
       toggle(!on);
       const {
         top,
@@ -77,7 +52,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       } = ref.current.getBoundingClientRect();
       setPopupPosition({ top, left, width, bottom, height });
       const rect = wrapperRef.current?.getBoundingClientRect();
-      if (rect && window.innerHeight - rect.top - 240 <= 0) {
+      if (rect && window.innerHeight - rect.top - 252 <= 0) {
         setIsTop(false);
       }
     };
@@ -85,75 +60,81 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     const handleClickOutside = (e: any) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         toggle(false);
-        if (!!toggleOut) {
-          toggleOut();
-        }
       }
     };
 
     useEffect(() => {
-      if (!on && resetForm && (stopLossError || takeProfitError)) {
-        resetForm();
+      if (on) {
+        SLTPstore.setTpType(tpType ?? TpSlTypeEnum.Currency);
+        SLTPstore.setSlType(slType ?? TpSlTypeEnum.Currency);
+        SLTPstore.instrumentId = instrumentId;
       }
     }, [on]);
 
     useEffect(() => {
-      toggle(!!active);
-      if (openAgain) {
-        toggle(true);
-        setOpenAgain(false);
-      }
-    }, [active]);
-
-    useEffect(() => {
       document.addEventListener('mousedown', handleClickOutside);
-
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }, []);
 
+    const submitForm = (submitMethod: () => Promise<void>) => () => {
+      submitMethod().then(() => {
+        toggle(false);
+      });
+    };
+
     return (
-      <FlexContainer ref={wrapperRef}>
-        <ButtonWithoutStyles type="button" onClick={() => handleToggle(true)}>
-          {children}
-        </ButtonWithoutStyles>
-        {on && (
-          <FlexContainer
-            position="absolute"
-            // FIXME: think about this stupid sheet
-            top={
-              isTop
-                ? `${popupPosition.top +
-                    Math.round(popupPosition.height / 5)}px`
-                : 'auto'
-            }
-            left={`${Math.round(popupPosition.width * 0.75)}px`}
-            bottom={isTop ? 'auto' : '20px'}
-            zIndex="101"
-          >
-            <SetAutoclose
-              handleApply={updateSLTP}
-              stopLossType={stopLossType}
-              takeProfitType={takeProfitType}
-              stopLossValue={stopLossValue}
-              takeProfitValue={takeProfitValue}
-              slError={stopLossError}
-              tpError={takeProfitError}
-              toggle={toggle}
-              isDisabled={isDisabled}
-              removeSL={removeSl}
-              removeTP={removeTP}
-              toggleOut={toggleOut}
-              instrumentId={instrumentId}
-              digits={digits}
-              active={active}
-            />
-          </FlexContainer>
-        )}
-      </FlexContainer>
+      <ConnectForm>
+        {({ handleSubmit }) => {
+          return (
+            <FlexContainer ref={wrapperRef}>
+              <ButtonWithoutStyles type="button" onClick={handleToggle}>
+                {children}
+              </ButtonWithoutStyles>
+              {on && (
+                <FlexContainer
+                  position="absolute"
+                  // FIXME: think about this stupid sheet
+                  top={
+                    isTop
+                      ? `${
+                          popupPosition.top +
+                          Math.round(popupPosition.height / 5)
+                        }px`
+                      : 'auto'
+                  }
+                  left={`${Math.round(popupPosition.width * 0.75)}px`}
+                  bottom={isTop ? 'auto' : '20px'}
+                  zIndex="101"
+                >
+                  <SetAutoclose isDisabled={isDisabled} toggle={toggle}>
+                    <ButtonApply
+                      type="button"
+                      disabled={isDisabled}
+                      onClick={submitForm(handleSubmit(handleSumbitMethod))}
+                    >
+                      {t('Apply')}
+                    </ButtonApply>
+                  </SetAutoclose>
+                </FlexContainer>
+              )}
+            </FlexContainer>
+          );
+        }}
+      </ConnectForm>
     );
   }
 );
 
 export default AutoClosePopupSideBar;
+
+const ButtonApply = styled(ButtonWithoutStyles)`
+  background: linear-gradient(0deg, #00fff2, #00fff2);
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 16px;
+  color: #003a38;
+  height: 32px;
+`;

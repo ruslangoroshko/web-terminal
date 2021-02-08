@@ -56,10 +56,10 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
               error.response?.statusText || 'error'
             );
             mainAppStore.rootStore.badRequestPopupStore.openModal();
-            mainAppStore.isLoading = false;
+            mainAppStore.setIsLoading(false);
           }
           setTimeout(requestAgain, +mainAppStore.connectTimeOut);
-          mainAppStore.isLoading = false;
+          mainAppStore.setIsLoading(false);
           break;
 
         case 401:
@@ -93,12 +93,12 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
                   resolve(axios(originalRequest));
                 })
                 .catch((err) => {
-                  mainAppStore.refreshToken = '';
+                  mainAppStore.setRefreshToken('');
                   processQueue(err, null);
                   reject(err);
                 })
                 .finally(() => {
-                  mainAppStore.isLoading = false;
+                  mainAppStore.setIsLoading(false);
                   isRefreshing = false;
                 });
             });
@@ -111,6 +111,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           failedQueue.forEach((prom) => {
             prom.reject();
           });
+          mainAppStore.rootStore.badRequestPopupStore.closeModal();
           mainAppStore.signOut();
           break;
         }

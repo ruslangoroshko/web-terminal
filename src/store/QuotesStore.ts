@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import { BidAskKeyValueList, BidAskModelWSDTO } from '../types/BidAsk';
 import { PositionModelWSDTO } from '../types/Positions';
 import calculateFloatingProfitAndLoss from '../helpers/calculateFloatingProfitAndLoss';
@@ -7,7 +7,7 @@ import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { RootStore } from './RootStore';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
-import { IPositionLineAdapter } from '../vendor/charting_library/charting_library';
+import hasValue from '../helpers/hasValue';
 
 interface IQuotesStore {
   quotes: BidAskKeyValueList;
@@ -20,12 +20,14 @@ interface IQuotesStore {
 }
 
 export class QuotesStore implements IQuotesStore {
-  @observable quotes: BidAskKeyValueList = {};
-  @observable activePositions: PositionModelWSDTO[] = [];
-  @observable pendingOrders: PendingOrderWSDTO[] = [];
+  quotes: BidAskKeyValueList = {};
+  activePositions: PositionModelWSDTO[] = [];
+  pendingOrders: PendingOrderWSDTO[] = [];
   rootStore: RootStore;
+  selectedPositionId: PositionModelWSDTO['id'] | null = null;
 
   constructor(rootStore: RootStore) {
+    makeAutoObservable(this, { rootStore: false });
     this.rootStore = rootStore;
   }
 
@@ -36,10 +38,12 @@ export class QuotesStore implements IQuotesStore {
 
   @action
   setActivePositions = (activePositions: PositionModelWSDTO[]) => {
-    this.activePositions = activePositions;
+    this.activePositions = activePositions.map((item) => ({
+      ...item,
+      sl: hasValue(item.sl) ? Math.abs(item.sl!) : item.sl,
+    }));
   };
 
-  @computed
   get profit() {
     return this.activePositions.reduce(
       (acc, prev) =>
@@ -60,7 +64,6 @@ export class QuotesStore implements IQuotesStore {
     );
   }
 
-  @computed
   get invest() {
     return this.activePositions.reduce(
       (acc, prev) => acc + prev.investmentAmount,
@@ -68,7 +71,6 @@ export class QuotesStore implements IQuotesStore {
     );
   }
 
-  @computed
   get total() {
     return (
       this.profit +
@@ -77,13 +79,11 @@ export class QuotesStore implements IQuotesStore {
     );
   }
 
-  @computed
   get totalEquity() {
     return this.profit + this.invest;
   }
 
   // TODO: move to sorting store?
-  @computed
   get sortedActivePositions() {
     let filterByFunc;
 
@@ -118,7 +118,6 @@ export class QuotesStore implements IQuotesStore {
     return this.activePositions.slice().sort(filterByFunc);
   }
 
-  @computed
   get sortedPendingOrders() {
     let filterByFunc;
 
@@ -194,5 +193,21 @@ export class QuotesStore implements IQuotesStore {
     return ascending
       ? bProfitNLoss - aProfitNLoss
       : aProfitNLoss - bProfitNLoss;
+  };
+
+  @action
+  setPendingOrders = (pendingOrders: PendingOrderWSDTO[]) => {
+    this.pendingOrders = pendingOrders;
+  };
+
+  get selectedPosition() {
+    return this.activePositions.find(
+      (item) => item.id === this.selectedPositionId
+    );
+  }
+
+  @action
+  setSelectedPositionId = (id: PositionModelWSDTO['id'] | null) => {
+    this.selectedPositionId = id;
   };
 }

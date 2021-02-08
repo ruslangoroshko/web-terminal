@@ -51,7 +51,7 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
           parseInt(activeTab) === PortfolioTabEnum.Orders &&
           parseFloat(isHistory) === SideBarTabType.Portfolio
         ) {
-          tradingViewStore.selectedPendingPosition = undefined;
+          tradingViewStore.setSelectedPendingPosition(undefined);
           localStorage.removeItem(LOCAL_PENDING_POSITION);
         } else if (
           ((!!activeTab &&
@@ -59,7 +59,7 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
             !activeTab) &&
           parseFloat(isHistory) === SideBarTabType.Portfolio
         ) {
-          tradingViewStore.selectedPosition = undefined;
+          quotesStore.setSelectedPositionId(null);
           localStorage.removeItem(LOCAL_POSITION);
         } else if (parseFloat(isHistory) === SideBarTabType.History) {
           tradingViewStore.selectedHistory = undefined;

@@ -1,4 +1,4 @@
-import { observable, computed, action, toJS } from 'mobx';
+import { computed, action, makeAutoObservable, observable } from 'mobx';
 import {
   InstrumentModelWSDTO,
   InstrumentGroupWSDTO,
@@ -28,7 +28,7 @@ interface ContextProps {
   activeInstrumentsIds: string[];
   favouriteInstrumentsIds: string[];
   pricesChange: IPriceChange;
-  activeInstrument?: IActiveInstrument;
+  // activeInstrument?: IActiveInstrument;
   instrumentGroups: InstrumentGroupWSDTO[];
   activeInstrumentGroupId?: InstrumentGroupWSDTO['id'];
   sortByField: string | null;
@@ -36,26 +36,26 @@ interface ContextProps {
 
 export class InstrumentsStore implements ContextProps {
   rootStore: RootStore;
-  @observable instruments: IActiveInstrument[] = [];
-  @observable activeInstrumentsIds: string[] = [];
-  @observable favouriteInstrumentsIds: string[] = [];
-
-  @observable activeInstrument?: IActiveInstrument;
-  @observable filteredInstrumentsSearch: InstrumentModelWSDTO[] = [];
-  @observable instrumentGroups: InstrumentGroupWSDTO[] = [];
-  @observable activeInstrumentGroupId?: InstrumentGroupWSDTO['id'];
-
-  @observable sortByField: string | null = null;
-
-  @observable hiddenChart: boolean = false;
-
-  @observable pricesChange: IPriceChange = {};
+  instruments: IActiveInstrument[] = [];
+  activeInstrumentsIds: string[] = [];
+  favouriteInstrumentsIds: string[] = [];
+  // activeInstrument?: IActiveInstrument;
+  activeInstrumentId: string = '';
+  filteredInstrumentsSearch: InstrumentModelWSDTO[] = [];
+  instrumentGroups: InstrumentGroupWSDTO[] = [];
+  activeInstrumentGroupId?: InstrumentGroupWSDTO['id'];
+  sortByField: string | null = null;
+  hiddenChart: boolean = false;
+  pricesChange: IPriceChange = {};
 
   constructor(rootStore: RootStore) {
+    makeAutoObservable(this, {
+      rootStore: false,
+    });
     this.rootStore = rootStore;
   }
 
-  @computed get activeInstruments() {
+  get activeInstruments() {
     const filteredActiveInstruments = [...this.instruments]
       .filter((item) =>
         this.activeInstrumentsIds.includes(item.instrumentItem.id)
@@ -94,30 +94,18 @@ export class InstrumentsStore implements ContextProps {
           item.instrumentItem.id === this.activeInstrument?.instrumentItem.id
       );
       this.instruments[instrumentIndex].chartType = type;
-      this.instruments = this.instruments.map(
-        (item) => {
-          item.chartType = type;
-          return item;
-        }
-      );
+      this.instruments = this.instruments.map((item) => {
+        item.chartType = type;
+        return item;
+      });
     }
   };
 
   @action
-  setActiveInstrument = (activeInstrumentId: string) => {
-    this.activeInstrument =
-      this.instruments.find(
-        (item) => item.instrumentItem.id === activeInstrumentId
-      ) || this.instruments[0];
-    localStorage.setItem(LOCAL_INSTRUMENT_ACTIVE, activeInstrumentId);
-    this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
-  };
-
-  @action
   editActiveInstrument = (activeInstrument: IActiveInstrument) => {
-    this.activeInstrument = activeInstrument;
+    this.activeInstrumentId = activeInstrument.instrumentItem.id;
     const instrumentIndex = this.instruments.findIndex(
-      (item) => item.instrumentItem.id === activeInstrument.instrumentItem.id
+      (item) => item.instrumentItem.id === this.activeInstrumentId
     );
     if (instrumentIndex !== -1) {
       this.instruments[instrumentIndex] = activeInstrument;
@@ -185,62 +173,62 @@ export class InstrumentsStore implements ContextProps {
       .map((item) => item.instrumentItem);
   }
 
+  get activeInstrument() {
+    return this.instruments.find(
+      (item) => item.instrumentItem.id === this.activeInstrumentId
+    );
+  }
+
   // TODO: refactor, too heavy
   @action
   switchInstrument = async (instrumentId: string) => {
-    console.log('promise');
-    return new Promise<void>((resolve, reject) => {
-      if (this.activeInstrument?.instrumentItem.id === instrumentId) {
-        resolve();
-        return;
-      }
-      const newActiveInstrument = this.instruments.find(
-        (item) => item.instrumentItem.id === instrumentId
-      );
-      if (newActiveInstrument && this.activeInstrumentsIds.length !== 0) {
-        localStorage.setItem(LOCAL_INSTRUMENT_ACTIVE, instrumentId);
-        this.addActiveInstrumentId(instrumentId);
-        this.activeInstrument = newActiveInstrument;
-        const tvWidget = this.rootStore.tradingViewStore.tradingWidget;
-        if (tvWidget) {
-          if (this.rootStore.tradingViewStore.activeOrderLinePositionPnL) {
-            this.rootStore.tradingViewStore.clearActivePositionLine();
-          }
-          this.hiddenChart = true;
-          tvWidget.chart().setSymbol(instrumentId, () => {
-            tvWidget
-              .chart()
-              .setResolution(
-                supportedResolutions[
-                  newActiveInstrument.resolution
-                ] as ResolutionString,
-                () => {
-                  if (newActiveInstrument.interval) {
-                    const fromTo = {
-                      from: getIntervalByKey(newActiveInstrument.interval),
-                      to: moment().valueOf(),
-                    };
-                    tvWidget.chart().setVisibleRange(fromTo);
-                  }
-                }
-              );
-            this.hiddenChart = false;
-            tvWidget.chart().setChartType(newActiveInstrument.chartType);
-            resolve();
-          });
+    if (this.activeInstrument?.instrumentItem.id === instrumentId) {
+      return;
+    }
+    const newActiveInstrument = this.instruments.find(
+      (item) => item.instrumentItem.id === instrumentId
+    );
+    if (newActiveInstrument && this.activeInstrumentsIds.length !== 0) {
+      localStorage.setItem(LOCAL_INSTRUMENT_ACTIVE, instrumentId);
+      this.addActiveInstrumentId(instrumentId);
+      this.activeInstrumentId = instrumentId;
+      // this.activeInstrument = newActiveInstrument;
 
-          this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
-          tvWidget.applyOverrides({
-            'scalesProperties.showSeriesLastValue': true,
-            'mainSeriesProperties.showPriceLine': true,
-          });
-        } else {
-          resolve();
+      // console.log('activeInstrument ', this.activeInstrument);
+      const tvWidget = this.rootStore.tradingViewStore.tradingWidget;
+      if (tvWidget) {
+        if (this.rootStore.tradingViewStore.activeOrderLinePositionPnL) {
+          this.rootStore.tradingViewStore.clearActivePositionLine();
         }
-      } else {
-        resolve();
+        this.setHiddenChart(true);
+        tvWidget.chart().setSymbol(instrumentId, () => {
+          tvWidget
+            .chart()
+            .setResolution(
+              supportedResolutions[
+                newActiveInstrument.resolution
+              ] as ResolutionString,
+              () => {
+                if (newActiveInstrument.interval) {
+                  const fromTo = {
+                    from: getIntervalByKey(newActiveInstrument.interval),
+                    to: moment().valueOf(),
+                  };
+                  tvWidget.chart().setVisibleRange(fromTo);
+                }
+              }
+            );
+          this.setHiddenChart(false);
+          tvWidget.chart().setChartType(newActiveInstrument.chartType);
+        });
+
+        this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
+        tvWidget.applyOverrides({
+          'scalesProperties.showSeriesLastValue': true,
+          'mainSeriesProperties.showPriceLine': true,
+        });
       }
-    });
+    }
   };
 
   @action
@@ -285,5 +273,15 @@ export class InstrumentsStore implements ContextProps {
       return ascending ? -1 : 1;
     }
     return 0;
+  };
+
+  @action
+  setHiddenChart = (hiddenChart: boolean) => {
+    this.hiddenChart = hiddenChart;
+  };
+
+  @action
+  setActiveInstrumentGroupId = (groupId: string) => {
+    this.activeInstrumentGroupId = groupId;
   };
 }
