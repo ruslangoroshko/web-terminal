@@ -130,12 +130,13 @@ const SingIn = observer(() => {
                 control={control}
                 name={Fields.EMAIL}
                 render={(
-                  { onChange, value, name, ref },
+                  { onChange, value, name, ref, onBlur },
                   { invalid, isTouched, isDirty }
                 ) => (
                   <LabelInput
                     ref={ref}
                     onChange={onChange}
+                    onBlur={onBlur}
                     name={name}
                     labelText={t('Email')}
                     value={value}

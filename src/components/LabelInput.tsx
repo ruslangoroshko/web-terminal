@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent, useState, forwardRef } from 'react';
+import React, { ChangeEvent, forwardRef } from 'react';
 import styled from '@emotion/styled';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import ErropPopup from './ErropPopup';
@@ -7,6 +7,8 @@ interface Props {
   labelText: string;
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  // TODO: make required type
+  onBlur?: (e: ChangeEvent<HTMLInputElement>) => void;
   name: string;
   id: string;
   type?: string;
@@ -22,6 +24,7 @@ const LabelInput = forwardRef<HTMLInputElement, Props>((props, ref) => {
     id,
     name,
     onChange,
+    onBlur,
     value,
     type,
     hasError,
@@ -29,34 +32,23 @@ const LabelInput = forwardRef<HTMLInputElement, Props>((props, ref) => {
     errorText,
     datae2eId,
   } = props;
-  const [focused, setFocused] = useState(false);
-
-  const removeFocus = () => {
-    setFocused(false);
-  };
-
-  const toggleFocus = () => {
-    setFocused(true);
-  };
-
   return (
     <LabelWrapper htmlFor={id}>
       <Input
         id={id}
         ref={ref}
-        type={type || 'type'}
+        type={type || 'text'}
         name={name}
         onChange={onChange}
-        onFocus={toggleFocus}
+        onBlur={onBlur}
         value={value}
         required
-        onBlur={removeFocus}
         hasError={hasError}
         autoComplete={autoComplete}
         data-e2e-id={datae2eId}
       ></Input>
       <Label>{labelText}</Label>
-      {hasError && focused && (
+      {hasError && (
         <ErropPopup
           textColor="#fffccc"
           bgColor="#ED145B"
