@@ -93,7 +93,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
                   resolve(axios(originalRequest));
                 })
                 .catch((err) => {
-                  mainAppStore.refreshToken = '';
+                  mainAppStore.setRefreshToken('');
                   processQueue(err, null);
                   reject(err);
                 })
@@ -111,6 +111,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           failedQueue.forEach((prom) => {
             prom.reject();
           });
+          mainAppStore.rootStore.badRequestPopupStore.closeModal();
           mainAppStore.signOut();
           break;
         }
