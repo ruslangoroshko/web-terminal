@@ -175,7 +175,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         sl: yup
           .number()
           .test(Fields.STOP_LOSS, t('Stop Loss can not be zero'), (value) => {
-            return +value !== 0 || value === null;
+            return +value !== 0 || value !== null;
           })
           .test(
             Fields.STOP_LOSS,
@@ -922,7 +922,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                   {errors.sl?.message || errors.tp?.message}
                 </ErropPopup>
               )}
-            <AutoClosePopup refAutoclose={setAutoCloseWrapperRef} instrumentId={instrument.id}></AutoClosePopup>
+            <AutoClosePopup instrumentId={instrument.id}></AutoClosePopup>
           </FlexContainer>
 
           <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
