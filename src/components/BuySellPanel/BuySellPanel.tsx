@@ -220,6 +220,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     async (values) => {
       let availableBalance = mainAppStore.activeAccount?.balance || 0;
 
+      console.log('dolifka', SLTPstore.isToppingUpActive)
       if (values.openPrice) {
         const modelToSubmit: OpenPendingOrder = {
           ...values,
@@ -341,6 +342,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           instrumentId: instrument.id,
           processId: getProcessId(),
           multiplier,
+          isToppingUpActive: SLTPstore.isToppingUpActive,
         };
         try {
           const response = await API.openPosition(modelToSubmit);
