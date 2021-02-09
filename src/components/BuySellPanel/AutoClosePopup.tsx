@@ -63,27 +63,27 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
 
   const renderTPValue = (getValues: any) => {
     const { tp, tpType } = getValues();
-    return `+${
+    return `${
       hasValue(tp)
-        ? `${
+        ? `+${
             tpType === TpSlTypeEnum.Currency
               ? mainAppStore.activeAccount?.symbol
               : ''
           }${tp}`
-        : t('Non Set')
+        : ''
     }`;
   };
 
   const renderSLValue = (getValues: any) => {
     const { sl, slType } = getValues();
-    return `—${
+    return `${
       hasValue(sl)
-        ? `${
+        ? `-${
             slType === TpSlTypeEnum.Currency
               ? mainAppStore.activeAccount?.symbol
               : ''
           }${sl}`
-        : t('Non Set')
+        : ''
     }`;
   };
 
@@ -144,7 +144,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
                 <FlexContainer flexDirection="column" alignItems="center">
                   {!on && (hasValue(sl) || hasValue(tp)) ? (
                     <FlexContainer
-                      justifyContent="space-between"
+                      
                       alignItems="center"
                       padding="0 20px 0 0"
                       width="100%"
@@ -152,6 +152,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
                     >
                       <PrimaryTextSpan
                         overflow="hidden"
+                        marginRight="4px"
                         textOverflow="ellipsis"
                         whiteSpace="nowrap"
                         title={renderTPValue(getValues)}
