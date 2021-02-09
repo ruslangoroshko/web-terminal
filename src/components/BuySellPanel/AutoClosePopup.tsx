@@ -102,7 +102,6 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
     getValues: any
   ) => () => {
     const { sl, tp } = getValues();
-    console.log(SLTPstore.isToppingUpActive)
     if (tp === 0) {
       setError('tp', {
         type: 'manual',
