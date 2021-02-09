@@ -30,7 +30,7 @@ const Portfolio: FC<Props> = () => {
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
-    tabsStore.portfolioTab = portfolioTab;
+    tabsStore.setPortfolioTab(portfolioTab);
   };
 
   const [on, toggle] = useState(false);
@@ -40,7 +40,7 @@ const Portfolio: FC<Props> = () => {
   };
 
   const handleChangeSorting = (sortType: SortByProfitEnum) => () => {
-    sortingStore.activePositionsSortBy = sortType;
+    sortingStore.setActivePositionsSortBy(sortType);
     localStorage.setItem(LOCAL_POSITION_SORT, `${sortType}`);
     toggle(false);
   };
@@ -51,10 +51,10 @@ const Portfolio: FC<Props> = () => {
     const activeTab = localStorage.getItem(LOCAL_PORTFOLIO_TABS);
     const activeSort = localStorage.getItem(LOCAL_POSITION_SORT);
     if (!!activeTab) {
-      tabsStore.portfolioTab = parseFloat(activeTab);
+      tabsStore.setPortfolioTab(parseFloat(activeTab));
     }
     if (!!activeSort) {
-      sortingStore.activePositionsSortBy = parseFloat(activeSort);
+      sortingStore.setActivePositionsSortBy(parseFloat(activeSort));
     }
   }, []);
 

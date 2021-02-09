@@ -44,9 +44,9 @@ const NotificationPopup: FC<Props> = observer(({ show, global }) => {
       if (notificationStore.timer) {
         clearTimeout(notificationStore.timer);
       }
-      notificationStore.timer = setTimeout(() => {
+      notificationStore.setTimer(setTimeout(() => {
         notificationStore.closeNotification();
-      }, 3000);
+      }, 3000));
     }
     return;
   }, [notificationStore.isActiveNotification, notificationStore.isActiveNotificationGlobal]);

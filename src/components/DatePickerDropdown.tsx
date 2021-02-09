@@ -25,37 +25,37 @@ const DatePickerDropdown: FC<Props> = observer(({ datesChangeCallback }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const toggle = (flag: boolean) => () => {
-    dateRangeStore.openedDropdown = flag;
+    dateRangeStore.setOpenedDropdown(flag);
   };
 
   const handleSelectRange = (dateRange: ShowDatesDropdownEnum) => () => {
-    dateRangeStore.dropdownValueType = dateRange;
+    dateRangeStore.setDropdownValueType(dateRange);
 
     switch (dateRange) {
       case ShowDatesDropdownEnum.Today:
-        dateRangeStore.startDate = moment().startOf('day');
-        dateRangeStore.endDate = moment();
+        dateRangeStore.setStartDate(moment().startOf('day'));
+        dateRangeStore.setEndDate(moment());
         break;
 
       case ShowDatesDropdownEnum.Week:
-        dateRangeStore.startDate = moment().subtract(1, 'weeks');
-        dateRangeStore.endDate = moment();
+        dateRangeStore.setStartDate(moment().subtract(1, 'weeks'));
+        dateRangeStore.setEndDate(moment());
         break;
 
       case ShowDatesDropdownEnum.Month:
-        dateRangeStore.startDate = moment().subtract(1, 'months');
-        dateRangeStore.endDate = moment();
+        dateRangeStore.setStartDate(moment().subtract(1, 'months'));
+        dateRangeStore.setEndDate(moment());
         break;
 
       case ShowDatesDropdownEnum.Year:
-        dateRangeStore.startDate = moment().subtract(1, 'years');
-        dateRangeStore.endDate = moment();
+        dateRangeStore.setStartDate(moment().subtract(1, 'years'));
+        dateRangeStore.setEndDate(moment());
         break;
 
       default:
         break;
     }
-    dateRangeStore.openedDropdown = false;
+    dateRangeStore.setOpenedDropdown(false);
     datesChangeCallback();
   };
 

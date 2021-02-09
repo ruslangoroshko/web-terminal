@@ -308,7 +308,7 @@ export class MainAppStore implements MainAppStoreProps {
       Topics.INSTRUMENT_GROUPS,
       (response: ResponseFromWebsocket<InstrumentModelWSDTO[]>) => {
         if (this.activeAccountId === response.accountId) {
-          this.rootStore.instrumentsStore.instrumentGroups = response.data;
+          this.rootStore.instrumentsStore.setInstrumentGroups(response.data);
           if (response.data.length) {
             const lastMarketTab = localStorage.getItem(LOCAL_MARKET_TABS);
             this.rootStore.instrumentsStore.setActiveInstrumentGroupId(
@@ -423,7 +423,10 @@ export class MainAppStore implements MainAppStoreProps {
     }
 
     // TODO: think how remove crutch
-    this.rootStore.historyStore.positionsHistoryReport.positionsHistory = [];
+    this.rootStore.historyStore.setPositionsHistoryReport({
+      ...this.rootStore.historyStore.positionsHistoryReport,
+      positionsHistory: [],
+    });
     API.setKeyValue({
       key: KeysInApi.ACTIVE_ACCOUNT_ID,
       value: account.id,
@@ -527,17 +530,14 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.quotesStore.setActivePositions([]);
     this.rootStore.quotesStore.setPendingOrders([]);
     this.rootStore.tradingViewStore.setSelectedPendingPosition(undefined);
-    this.rootStore.tradingViewStore.selectedHistory = undefined;
+    this.rootStore.tradingViewStore.setSelectedHistory(undefined);
     this.rootStore.quotesStore.setSelectedPositionId(null);
-    this.rootStore.withdrawalStore.history = null;
-    this.rootStore.sortingStore.activePositionsSortBy =
-      SortByProfitEnum.NewFirstAsc;
-    this.rootStore.sortingStore.pendingOrdersSortBy =
-      SortByPendingOrdersEnum.NewFirstAsc;
-    this.rootStore.dateRangeStore.dropdownValueType =
-      ShowDatesDropdownEnum.Week;
-    this.rootStore.dateRangeStore.startDate = moment().subtract(1, 'weeks');
-    this.rootStore.tabsStore.portfolioTab = PortfolioTabEnum.Portfolio;
+    this.rootStore.withdrawalStore.setHistory(null);
+    this.rootStore.sortingStore.setActivePositionsSortBy(SortByProfitEnum.NewFirstAsc);
+    this.rootStore.sortingStore.setPendingOrdersSortBy(SortByPendingOrdersEnum.NewFirstAsc);
+    this.rootStore.dateRangeStore.setDropdownValueType(ShowDatesDropdownEnum.Week);
+    this.rootStore.dateRangeStore.setStartDate(moment().subtract(1, 'weeks'));
+    this.rootStore.tabsStore.setPortfolioTab(PortfolioTabEnum.Portfolio);
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
     this.setActiveAccountId('');
   };
@@ -580,6 +580,21 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setProfileStatus = (profileStatus: PersonalDataKYCEnum) => {
     this.profileStatus = profileStatus;
+  };
+
+  @action
+  setProfilePhone = (profilePhone: string) => {
+    this.profilePhone = profilePhone;
+  };
+
+  @action
+  setProfileEmail = (profileEmail: string) => {
+    this.profileEmail = profileEmail;
+  };
+
+  @action
+  setProfileName = (profileName: string) => {
+    this.profileName = profileName;
   };
 
   @action

@@ -50,4 +50,9 @@ export class NotificationStore implements ContextProps {
   setIsSuccessfull = (newIsSuccessfull: boolean) => {
     this.isSuccessfull = newIsSuccessfull;
   };
+
+  @action
+  setTimer = (newTimer: NodeJS.Timeout) => {
+    this.timer = newTimer;
+  };
 }

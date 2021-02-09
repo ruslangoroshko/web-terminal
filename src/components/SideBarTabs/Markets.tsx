@@ -28,7 +28,7 @@ function Markets() {
   };
 
   const handleChangeSorting = (sortType: SortByMarketsEnum) => () => {
-    sortingStore.marketsSortBy = sortType;
+    sortingStore.setMarketsSortBy(sortType);
     toggle(false);
   };
 

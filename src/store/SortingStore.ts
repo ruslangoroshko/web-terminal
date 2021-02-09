@@ -1,6 +1,6 @@
 import { RootStore } from './RootStore';
 import { SortByProfitEnum } from '../enums/SortByProfitEnum';
-import { makeAutoObservable, observable } from 'mobx';
+import { action, makeAutoObservable, observable } from 'mobx';
 import { SortByMarketsEnum } from '../enums/SortByMarketsEnum';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
 
@@ -22,4 +22,19 @@ export class SortingStore implements ISortingStore {
     makeAutoObservable(this, { rootStore: false });
     this.rootStore = rootStore;
   }
+
+  @action
+  setActivePositionsSortBy = (newValue: SortByProfitEnum) => {
+    this.activePositionsSortBy = newValue;
+  };
+
+  @action
+  setPendingOrdersSortBy = (newValue: SortByPendingOrdersEnum) => {
+    this.pendingOrdersSortBy = newValue;
+  };
+
+  @action
+  setMarketsSortBy = (newValue: SortByMarketsEnum) => {
+    this.marketsSortBy = newValue;
+  };
 }

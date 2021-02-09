@@ -23,46 +23,37 @@ const DatePickerAccountBalanceDropdown: FC<Props> = observer(
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { t } = useTranslation();
     const toggle = (flag: boolean) => () => {
-      dateRangeAccountBalanceStore.openedDropdown = flag;
+      dateRangeAccountBalanceStore.setOpenedDropdown(flag);
     };
 
     const handleSelectRange = (dateRange: ShowDatesDropdownEnum) => () => {
-      dateRangeAccountBalanceStore.dropdownValueType = dateRange;
+      dateRangeAccountBalanceStore.setDropdownValueType(dateRange);
 
       switch (dateRange) {
         case ShowDatesDropdownEnum.Today:
-          dateRangeAccountBalanceStore.startDate = moment().startOf('day');
-          dateRangeAccountBalanceStore.endDate = moment();
+          dateRangeAccountBalanceStore.setStartDate(moment().startOf('day'));
+          dateRangeAccountBalanceStore.setEndDate(moment());
           break;
 
         case ShowDatesDropdownEnum.Week:
-          dateRangeAccountBalanceStore.startDate = moment().subtract(
-            1,
-            'weeks'
-          );
-          dateRangeAccountBalanceStore.endDate = moment();
+          dateRangeAccountBalanceStore.setStartDate(moment().subtract(1, 'weeks'));
+          dateRangeAccountBalanceStore.setEndDate(moment());
           break;
 
         case ShowDatesDropdownEnum.Month:
-          dateRangeAccountBalanceStore.startDate = moment().subtract(
-            1,
-            'months'
-          );
-          dateRangeAccountBalanceStore.endDate = moment();
+          dateRangeAccountBalanceStore.setStartDate(moment().subtract(1, 'months'));
+          dateRangeAccountBalanceStore.setEndDate(moment());
           break;
 
         case ShowDatesDropdownEnum.Year:
-          dateRangeAccountBalanceStore.startDate = moment().subtract(
-            1,
-            'years'
-          );
-          dateRangeAccountBalanceStore.endDate = moment();
+          dateRangeAccountBalanceStore.setStartDate(moment().subtract(1, 'years'));
+          dateRangeAccountBalanceStore.setEndDate(moment());
           break;
 
         default:
           break;
       }
-      dateRangeAccountBalanceStore.openedDropdown = false;
+      dateRangeAccountBalanceStore.setOpenedDropdown(false);
       datesChangeCallback();
     };
 

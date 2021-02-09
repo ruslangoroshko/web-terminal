@@ -364,10 +364,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           [mixapanelProps.POSITION_ID]: response.position.id,
         });
 
-        notificationStore.notificationMessage = t(
+        notificationStore.setNotification(t(
           'The order has been closed successfully'
-        );
-        notificationStore.isSuccessfull = true;
+        ));
+        notificationStore.setIsSuccessfull(true);
         notificationStore.openNotification();
         return Promise.resolve();
       } else {
@@ -394,10 +394,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           [mixapanelProps.ERROR_TEXT]: apiResponseCodeMessages[response.result],
           [mixapanelProps.EVENT_REF]: closeFrom,
         });
-        notificationStore.notificationMessage = t(
+        notificationStore.setNotification(t(
           apiResponseCodeMessages[response.result]
-        );
-        notificationStore.isSuccessfull = false;
+        ));
+        notificationStore.setIsSuccessfull(false);
         notificationStore.openNotification();
         return Promise.reject();
       }
@@ -496,7 +496,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             [mixapanelProps.POSITION_ID]: response.position.id,
           });
           tradingViewStore.toggleMovedPositionPopup(false);
-          SLTPstore.closedByChart = false;
+          SLTPstore.toggleClosedByChart(false);
         } else {
           if (quotesStore.selectedPositionId === position.id) {
             checkSL(position.slType, position.sl);
@@ -536,10 +536,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 ? mixpanelValues.CHART
                 : mixpanelValues.PORTFOLIO,
           });
-          notificationStore.notificationMessage = t(
+          notificationStore.setNotification(t(
             apiResponseCodeMessages[response.result]
-          );
-          notificationStore.isSuccessfull = false;
+          ));
+          notificationStore.setIsSuccessfull(false);
           notificationStore.openNotification();
         }
       } catch (error) {
@@ -591,7 +591,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           quotesStore.setSelectedPositionId(position.id);
           localStorage.setItem(LOCAL_POSITION, `${position.id}`);
           await instrumentsStore.switchInstrument(position.instrument);
-          tradingViewStore.activeOrderLinePosition = tradingViewStore.tradingWidget
+          tradingViewStore.setActiveOrderLinePosition(tradingViewStore.tradingWidget
             ?.chart()
             .createOrderLine({ disableUndo: true })
             .setLineStyle(1)
@@ -606,9 +606,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             .setBodyTextColor('#ffffff')
             .setBodyBorderColor('#494C51')
             .setPrice(position.openPrice)
-            .setLineLength(10);
+            .setLineLength(10));
 
-          tradingViewStore.activeOrderLinePositionPnL = tradingViewStore.tradingWidget
+          tradingViewStore.setActiveOrderLinePositionPnL(tradingViewStore.tradingWidget
             ?.chart()
             .createOrderLine({
               disableUndo: true,
@@ -618,7 +618,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 closePosition(mixpanelValues.CHART),
                 true
               );
-              tradingViewStore.confirmText = 'Close position?';
+              tradingViewStore.setConfirmText('Close position?');
               tradingViewStore.toggleActivePositionPopup(true);
             })
             .setCancelTooltip('Close position')
@@ -634,7 +634,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             .setCancelButtonIconColor('#ffffff')
             .setBodyBackgroundColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
             .setLineColor('rgba(73,76,81,1)')
-            .setLineLength(10);
+            .setLineLength(10));
 
           checkSL(position.slType, position.sl);
           checkTP(position.tpType, position.tp);
@@ -662,7 +662,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         }`
       : '';
     if (sl && !tradingViewStore.activeOrderLinePositionSL) {
-      tradingViewStore.activeOrderLinePositionSL = tradingViewStore.tradingWidget
+      tradingViewStore.setActiveOrderLinePositionSL(tradingViewStore.tradingWidget
         ?.chart()
         .createOrderLine({
           disableUndo: false,
@@ -670,7 +670,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         .onMove(onMoveSL)
         .onCancel('', function () {
           tradingViewStore.setApplyHandler(removeSLChart);
-          tradingViewStore.confirmText = 'Cancel Stop loss level?';
+          tradingViewStore.setConfirmText('Cancel Stop loss level?');
           tradingViewStore.toggleActivePositionPopup(true);
         })
         .setCancelTooltip('Cancel SL')
@@ -685,14 +685,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         .setCancelButtonIconColor('#ffffff')
         .setBodyBackgroundColor('#2A2C33')
         .setLineColor('#494C51')
-        .setLineLength(10);
+        .setLineLength(10));
     } else if (sl && tradingViewStore.activeOrderLinePositionSL) {
       tradingViewStore.activeOrderLinePositionSL
         .setPrice(getActualPricing(sl, 'sl', slType))
         .setText(slText);
     } else if (!sl && tradingViewStore.activeOrderLinePositionSL) {
       tradingViewStore.activeOrderLinePositionSL.remove();
-      tradingViewStore.activeOrderLinePositionSL = undefined;
+      tradingViewStore.setActiveOrderLinePositionSL(undefined);
     }
   };
 
@@ -705,7 +705,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         }`
       : '';
     if (tp && !tradingViewStore.activeOrderLinePositionTP) {
-      tradingViewStore.activeOrderLinePositionTP = tradingViewStore.tradingWidget
+      tradingViewStore.setActiveOrderLinePositionTP(tradingViewStore.tradingWidget
         ?.chart()
         .createOrderLine({
           disableUndo: false,
@@ -713,7 +713,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         .onMove(onMoveTP)
         .onCancel('', function () {
           tradingViewStore.setApplyHandler(removeTPChart);
-          tradingViewStore.confirmText = 'Cancel Take profit level?';
+          tradingViewStore.setConfirmText('Cancel Take profit level?');
           tradingViewStore.toggleActivePositionPopup(true);
         })
         .setQuantity('')
@@ -728,14 +728,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         .setCancelButtonIconColor('#ffffff')
         .setBodyBackgroundColor('#2A2C33')
         .setLineColor('#494C51')
-        .setLineLength(10);
+        .setLineLength(10));
     } else if (tp && tradingViewStore.activeOrderLinePositionTP) {
       tradingViewStore.activeOrderLinePositionTP
         .setPrice(getActualPricing(tp, 'tp', tpType))
         .setText(tpText);
     } else if (!tp && tradingViewStore.activeOrderLinePositionTP) {
       tradingViewStore.activeOrderLinePositionTP.remove();
-      tradingViewStore.activeOrderLinePositionTP = undefined;
+      tradingViewStore.setActiveOrderLinePositionTP(undefined);
     }
   };
 
@@ -785,7 +785,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           : tradingViewStore.activeOrderLinePositionTP?.getPrice();
       tradingViewStore.toggleMovedPositionPopup(true);
       checkTP(position.tpType, newPosition);
-      SLTPstore.tpType = position.tpType ?? TpSlTypeEnum.Currency;
+      SLTPstore.setTpType(position.tpType ?? TpSlTypeEnum.Currency);
       setValue('tp', newPosition);
     }
   }, [
@@ -797,13 +797,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     if (quotesStore.selectedPosition) {
       // setValue(Fields.CLOSED_BY_CHART, true);
       tradingViewStore.activeOrderLinePositionSL?.remove();
-      tradingViewStore.activeOrderLinePositionSL = undefined;
+      tradingViewStore.setActiveOrderLinePositionSL(undefined);
       removeSL();
       const objectToSend: FormValues = {
         tp: quotesStore.selectedPosition.tp ?? undefined,
         investmentAmount: quotesStore.selectedPosition.investmentAmount,
       };
-      SLTPstore.closedByChart = true;
+      SLTPstore.toggleClosedByChart(true);
       quotesStore.selectedPosition.sl = null;
       quotesStore.selectedPosition.slType = null;
       updateSLTP(objectToSend);
@@ -812,9 +812,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   const removeTPChart = useCallback(async () => {
     if (quotesStore.selectedPosition) {
-      SLTPstore.closedByChart = true;
+      SLTPstore.toggleClosedByChart(true);
       tradingViewStore.activeOrderLinePositionTP?.remove();
-      tradingViewStore.activeOrderLinePositionTP = undefined;
+      tradingViewStore.setActiveOrderLinePositionTP(undefined);
       removeTP();
       const objectToSend: FormValues = {
         sl: hasValue(quotesStore.selectedPosition.sl)
@@ -1221,6 +1221,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       handleSumbitMethod={updateSLTP}
                       tpType={position.tpType}
                       slType={position.slType}
+                      isToppingUp={position.isToppingUpActive}
                       instrumentId={position.instrument}
                       // active={
                       //   tradingViewStore.activePopup &&

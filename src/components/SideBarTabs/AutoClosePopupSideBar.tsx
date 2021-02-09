@@ -15,11 +15,12 @@ interface Props {
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
   instrumentId: string;
+  isToppingUp?: boolean;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
   (
-    { children, isDisabled, handleSumbitMethod, tpType, slType, instrumentId },
+    { children, isDisabled, handleSumbitMethod, tpType, slType, instrumentId, isToppingUp },
     ref
   ) => {
     const { t } = useTranslation();
@@ -52,7 +53,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       } = ref.current.getBoundingClientRect();
       setPopupPosition({ top, left, width, bottom, height });
       const rect = wrapperRef.current?.getBoundingClientRect();
-      if (rect && window.innerHeight - rect.top - 252 <= 0) {
+      if (rect && window.innerHeight - rect.top - 325 <= 0) {
         setIsTop(false);
       }
     };
@@ -67,7 +68,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       if (on) {
         SLTPstore.setTpType(tpType ?? TpSlTypeEnum.Currency);
         SLTPstore.setSlType(slType ?? TpSlTypeEnum.Currency);
-        SLTPstore.instrumentId = instrumentId;
+        SLTPstore.setInstrumentId(instrumentId);
+        SLTPstore.toggleToppingUp(isToppingUp || false);
       }
     }, [on]);
 

@@ -33,6 +33,11 @@ export class SLTPStore implements ContextProps {
   };
 
   @action
+  toggleClosedByChart = (value: boolean) => {
+    this.closedByChart = value;
+  };
+
+  @action
   setTpType = (tpType: TpSlTypeEnum) => {
     this.tpType = tpType;
   };

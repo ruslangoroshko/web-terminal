@@ -83,7 +83,7 @@ const PhoneVerification: FC = () => {
         key: KeysInApi.PERSONAL_DATA,
         value: JSON.stringify({ ...initialValuesPeronalData, phone }),
       });
-      kycStore.filledStep = KYCstepsEnum.PersonalData;
+      kycStore.setFilledStep(KYCstepsEnum.PersonalData);
       push(Page.PROOF_OF_IDENTITY);
     } catch (error) {}
   };
@@ -100,7 +100,7 @@ const PhoneVerification: FC = () => {
     }
     fetchCountries();
 
-    kycStore.currentStep = KYCstepsEnum.PhoneVerification;
+    kycStore.setCurrentStep(KYCstepsEnum.PhoneVerification);
   }, []);
 
   useEffect(() => {
@@ -125,7 +125,7 @@ const PhoneVerification: FC = () => {
               countries.find((item) => item.name === countryOfCitizenship)
                 ?.dial || ''
             );
-            kycStore.filledStep = KYCstepsEnum.PhoneVerification;
+            kycStore.setFilledStep(KYCstepsEnum.PhoneVerification);
           }
         }
       } catch (error) {}
