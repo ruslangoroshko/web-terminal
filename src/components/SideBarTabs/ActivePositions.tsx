@@ -1221,6 +1221,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       handleSumbitMethod={updateSLTP}
                       tpType={position.tpType}
                       slType={position.slType}
+                      isToppingUp={position.isToppingUpActive}
                       instrumentId={position.instrument}
                       // active={
                       //   tradingViewStore.activePopup &&
