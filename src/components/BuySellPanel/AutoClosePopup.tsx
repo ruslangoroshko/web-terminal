@@ -20,10 +20,9 @@ import { Observer, useLocalObservable } from 'mobx-react-lite';
 
 interface Props {
   instrumentId: string;
-  refAutoclose: React.RefObject<HTMLDivElement>;
 }
 
-const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
+const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
   const { mainAppStore, SLTPstore } = useStores();
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
@@ -97,23 +96,8 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
   }, []);
 
   const handleApplySetAutoClose = (
-    errors: DeepMap<Record<string, any>, FieldError>,
-    setError: (arg0: string, arg1: any) => void,
-    getValues: any
+    errors: DeepMap<Record<string, any>, FieldError>
   ) => () => {
-    const { sl, tp } = getValues();
-    if (tp === 0) {
-      setError('tp', {
-        type: 'manual',
-        message: t('Take Profit can not be zero'),
-      });
-    }
-    if (sl === 0) {
-      setError('sl', {
-        type: 'manual',
-        message: t('Stop Loss can not be zero'),
-      });
-    }
     if (!Object.keys(errors).length) {
       toggle(false);
     }
@@ -121,7 +105,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
 
   return (
     <ConnectForm>
-      {({ getValues, clearErrors, errors, setValue, setError }) => (
+      {({ getValues, clearErrors, errors }) => (
         <>
           <FlexContainer position="relative" ref={wrapperRef}>
             <FlexContainer width="100%" position="relative">
@@ -168,7 +152,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
                 </FlexContainer>
               </ButtonAutoClosePurchase>
               {!on && (hasValue(sl) || hasValue(tp)) && (
-                <ClearSLTPButton type="button" onClick={clearSLTP(setValue)}>
+                <ClearSLTPButton type="button" onClick={clearSLTP}>
                   <SvgIcon
                     {...IconClose}
                     fillColor="rgba(255,255,255,0.4)"
@@ -181,31 +165,18 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
               position="absolute"
               top="20px"
               right="100%"
-              display={on ? 'flex' : 'none'}
-              ref={refAutoclose}
+              visibilityProp={on ? 'visible' : 'hidden'}
             >
-              <Observer>
-                {() => (
-                  <SetAutoclose toggle={toggle} on={on}>
-                    <ButtonApply
-                      type="button"
-                      form="buySellForm"
-                      disabled={
-                        !hasValue(sl) &&
-                        !hasValue(tp) &&
-                        !SLTPstore.isToppingUpActive
-                      }
-                      onClick={handleApplySetAutoClose(
-                        errors,
-                        setError,
-                        getValues
-                      )}
-                    >
-                      {t('Apply')}
-                    </ButtonApply>
-                  </SetAutoclose>
-                )}
-              </Observer>
+              <SetAutoclose toggle={toggle}>
+                <ButtonApply
+                  type="button"
+                  form="buySellForm"
+                  disabled={!hasValue(sl) && !hasValue(tp)}
+                  onClick={handleApplySetAutoClose(errors)}
+                >
+                  {t('Apply')}
+                </ButtonApply>
+              </SetAutoclose>
             </FlexContainer>
           </FlexContainer>
         </>
