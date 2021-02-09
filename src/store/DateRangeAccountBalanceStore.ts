@@ -23,6 +23,26 @@ export class DateRangeAccountBalanceStore implements ContextProps {
   }
 
   @action
+  setDropdownValueType = (newValue: ShowDatesDropdownEnum) => {
+    this.dropdownValueType = newValue;
+  };
+
+  @action
+  setStartDate = (newValue: moment.Moment) => {
+    this.startDate = newValue;
+  };
+
+  @action
+  setEndDate = (newValue: moment.Moment) => {
+    this.endDate = newValue;
+  };
+
+  @action
+  setOpenedDropdown = (newValue: boolean) => {
+    this.openedDropdown = newValue;
+  };
+
+  @action
   closeDropdown = () => {
     this.focusedInput = null;
     this.openedDropdown = false;

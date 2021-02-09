@@ -79,18 +79,18 @@ function AccountSecurity() {
       if (response.result === OperationApiResponseCodes.Ok) {
         resetForm();
         setIsLoading(false);
-        notificationStore.notificationMessage = t(
+        notificationStore.setNotification(t(
           'Your password has been changed'
-        );
-        notificationStore.isSuccessfull = true;
+        ));
+        notificationStore.setIsSuccessfull(true);
         notificationStore.openNotification();
       } else {
         resetForm();
         setIsLoading(false);
-        notificationStore.notificationMessage = t(
+        notificationStore.setNotification(t(
           'You entered the wrong current password'
-        );
-        notificationStore.isSuccessfull = false;
+        ));
+        notificationStore.setIsSuccessfull(false);
         notificationStore.openNotification();
       }
     } catch (error) {

@@ -23,8 +23,7 @@ const AddInstrumentsPopup: FC<Props> = (props) => {
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value.trim().toLowerCase();
-    // TODO: put method inside store
-    instrumentsStore.filteredInstrumentsSearch = instrumentsStore.instruments
+    instrumentsStore.setFilteredInstrumentsSearch(instrumentsStore.instruments
       .filter(
         (item) =>
           !searchValue ||
@@ -33,15 +32,15 @@ const AddInstrumentsPopup: FC<Props> = (props) => {
           item.instrumentItem.name.toLowerCase().includes(searchValue) ||
           item.instrumentItem.quote.toLowerCase().includes(searchValue)
       )
-      .map((item) => item.instrumentItem);
+      .map((item) => item.instrumentItem));
   };
 
   useEffect(() => {
-    instrumentsStore.filteredInstrumentsSearch = [
+    instrumentsStore.setFilteredInstrumentsSearch([
       ...instrumentsStore.instruments,
     ]
       .sort((a, b) => a.instrumentItem.weight - b.instrumentItem.weight)
-      .map((item) => item.instrumentItem);
+      .map((item) => item.instrumentItem));
 
     const rect = wrapperRef.current?.getBoundingClientRect();
     // TODO: improve calclulation logic, make more universal method

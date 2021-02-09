@@ -121,11 +121,10 @@ function ActivePositionExpanded(props: Props) {
         });
       }
 
-      notificationStore.notificationMessage = t(
+      notificationStore.setNotification(t(
         apiResponseCodeMessages[response.result]
-      );
-      notificationStore.isSuccessfull =
-        response.result === OperationApiResponseCodes.Ok;
+      ));
+      notificationStore.setIsSuccessfull(response.result === OperationApiResponseCodes.Ok);
       notificationStore.openNotification();
     } catch (error) {}
   };

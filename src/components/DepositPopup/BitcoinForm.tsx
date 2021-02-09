@@ -39,8 +39,8 @@ const BitcoinForm: FC = () => {
       document.execCommand('copy');
       document.body.removeChild(el);
 
-      notificationStore.notificationMessage = t('Copied to clipboard');
-      notificationStore.isSuccessfull = true;
+      notificationStore.setNotification(t('Copied to clipboard'));
+      notificationStore.setIsSuccessfull(true);
       notificationStore.openNotification();
     }
   };

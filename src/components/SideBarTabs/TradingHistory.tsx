@@ -110,16 +110,19 @@ const TradingHistory: FC = observer(() => {
         if (neededPage && parseInt(neededPage) > 0) {
           checkScroll = true;
           for (let i = 0; i < parseInt(neededPage) + 1; i++) {
-            historyStore.positionsHistoryReport.page = i;
+            historyStore.setPositionsHistoryReport({
+              ...historyStore.positionsHistoryReport,
+              page: i
+            });
             fetchPositionsHistory(true, i <= parseInt(neededPage) + 1);
           }
         }
       }
       if (neededRange) {
-        dateRangeStore.dropdownValueType = parseInt(neededRange);
+        dateRangeStore.setDropdownValueType(parseInt(neededRange));
       }
       if (dataStart) {
-        dateRangeStore.startDate = moment(dataStart);
+        dateRangeStore.setStartDate(moment(dataStart));
       }
       if (!checkScroll) {
         fetchPositionsHistory().finally(() => {
@@ -128,11 +131,11 @@ const TradingHistory: FC = observer(() => {
       }
     }
     return () => {
-      historyStore.positionsHistoryReport = {
+      historyStore.setPositionsHistoryReport({
         ...historyStore.positionsHistoryReport,
         page: 1,
         positionsHistory: [],
-      };
+      });
     };
   }, [mainAppStore.activeAccount]);
 

@@ -13,7 +13,7 @@ const ResizableContainer: FC = observer(props => {
   const { children } = props;
   const { tabsStore, dateRangeStore } = useStores();
   const toggleExpandtab = () => {
-    tabsStore.isTabExpanded = !tabsStore.isTabExpanded;
+    tabsStore.setTabExpanded(!tabsStore.isTabExpanded);
     if (!tabsStore.isTabExpanded) {
       dateRangeStore.resetDatepicker();
     }

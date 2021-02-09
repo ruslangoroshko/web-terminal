@@ -110,7 +110,7 @@ function PersonalData() {
         key: KeysInApi.PERSONAL_DATA,
         value: JSON.stringify(values),
       });
-      kycStore.filledStep = KYCstepsEnum.PersonalData;
+      kycStore.setFilledStep(KYCstepsEnum.PersonalData);
       mixpanel.track(mixpanelEvents.KYC_STEP_1);
       push(Page.PHONE_VERIFICATION);
     } catch (error) {}
@@ -141,7 +141,7 @@ function PersonalData() {
     }
 
     async function fetchCurrentStep() {
-      kycStore.filledStep = KYCstepsEnum.NoData;
+      kycStore.setFilledStep(KYCstepsEnum.NoData);
 
       try {
         const response = await API.getKeyValue(KeysInApi.PERSONAL_DATA);
@@ -149,7 +149,7 @@ function PersonalData() {
           const parsed = JSON.parse(response);
           if (parsed instanceof Object) {
             setInitialValuesForm(parsed);
-            kycStore.filledStep = KYCstepsEnum.PersonalData;
+            kycStore.setFilledStep(KYCstepsEnum.PersonalData);
           }
         }
       } catch (error) {
@@ -157,7 +157,7 @@ function PersonalData() {
         badRequestPopupStore.openModal();
       }
     }
-    kycStore.currentStep = KYCstepsEnum.PersonalData;
+    kycStore.setCurrentStep(KYCstepsEnum.PersonalData);
 
     fetchCountries();
     fetchCurrentStep();

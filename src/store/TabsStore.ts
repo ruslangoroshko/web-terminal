@@ -56,4 +56,9 @@ export class TabsStore implements ContextProps {
   setTabExpanded = (isTabExpanded: boolean) => {
     this.isTabExpanded = isTabExpanded;
   };
+
+  @action
+  setPortfolioTab = (newTab: PortfolioTabEnum) => {
+    this.portfolioTab = newTab;
+  };
 }

@@ -21,12 +21,12 @@ import { LOCAL_PORTFOLIO_TABS } from '../../constants/global';
 const OrdersExpanded: FC = () => {
   const { tabsStore, mainAppStore, quotesStore } = useStores();
   const closeExpanded = () => {
-    tabsStore.isTabExpanded = false;
+    tabsStore.setTabExpanded(false);
   };
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
-    tabsStore.portfolioTab = portfolioTab;
+    tabsStore.setPortfolioTab(portfolioTab);
   };
 
   const { t } = useTranslation();

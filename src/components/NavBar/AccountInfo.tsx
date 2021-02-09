@@ -89,23 +89,23 @@ const AccountInfo: FC<Props> = observer((props) => {
     quotesStore.setActivePositions([]);
     quotesStore.setPendingOrders([]);
     tradingViewStore.setSelectedPendingPosition(undefined);
-    tradingViewStore.selectedHistory = undefined;
+    tradingViewStore.setSelectedHistory(undefined);
     quotesStore.setSelectedPositionId(null);
-    withdrawalStore.history = null;
-    sortingStore.activePositionsSortBy = SortByProfitEnum.NewFirstAsc;
-    sortingStore.pendingOrdersSortBy = SortByPendingOrdersEnum.NewFirstAsc;
-    dateRangeStore.dropdownValueType = ShowDatesDropdownEnum.Week;
-    dateRangeStore.startDate = moment().subtract(1, 'weeks');
-    tabsStore.portfolioTab = PortfolioTabEnum.Portfolio;
+    withdrawalStore.setHistory(null);
+    sortingStore.setActivePositionsSortBy(SortByProfitEnum.NewFirstAsc);
+    sortingStore.setPendingOrdersSortBy(SortByPendingOrdersEnum.NewFirstAsc);
+    dateRangeStore.setDropdownValueType(ShowDatesDropdownEnum.Week);
+    dateRangeStore.setStartDate(moment().subtract(1, 'weeks'));
+    tabsStore.setPortfolioTab(PortfolioTabEnum.Portfolio);
     toggle();
     push(Page.DASHBOARD);
 
     setTimeout(() => {
       markersOnChartStore.renderActivePositionsMarkersOnChart();
-      notificationStore.notificationMessage = `${t(
+      notificationStore.setNotification(`${t(
         'Your account has been switched on'
-      )} ${account.isLive ? t('Real') : t('Demo')}`;
-      notificationStore.isSuccessfull = true;
+      )} ${account.isLive ? t('Real') : t('Demo')}`);
+      notificationStore.setIsSuccessfull(true);
       notificationStore.openNotification();
     }, 500);
   };
@@ -120,8 +120,8 @@ const AccountInfo: FC<Props> = observer((props) => {
     document.execCommand('copy');
     document.body.removeChild(el);
 
-    notificationStore.notificationMessage = t('Copied to clipboard');
-    notificationStore.isSuccessfull = true;
+    notificationStore.setNotification(t('Copied to clipboard'));
+    notificationStore.setIsSuccessfull(true);
     notificationStore.openNotificationGlobal();
   };
 

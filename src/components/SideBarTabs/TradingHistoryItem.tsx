@@ -57,7 +57,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
 
   const switchInstrument = (e: any) => {
     localStorage.setItem(LOCAL_HISTORY_POSITION, `${props.tradingHistoryItem.id}`);
-    tradingViewStore.selectedHistory = `${props.tradingHistoryItem.id}`;
+    tradingViewStore.setSelectedHistory(`${props.tradingHistoryItem.id}`);
     if (popupWrapperRef.current && popupWrapperRef.current.contains(e.target)) {
       e.preventDefault();
     } else {
@@ -71,7 +71,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
       setTimeout(() => {
         instrumentRef.current.scrollIntoView();
       }, 500)
-      tradingViewStore.selectedHistory = lastPendingActive;
+      tradingViewStore.setSelectedHistory(lastPendingActive);
       instrumentsStore.switchInstrument(props.tradingHistoryItem.instrument);
     }
   }, [])

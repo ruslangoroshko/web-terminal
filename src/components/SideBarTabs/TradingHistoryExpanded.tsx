@@ -31,7 +31,7 @@ const TradingHistoryExpanded: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
   const closeExpanded = () => {
-    tabsStore.isTabExpanded = false;
+    tabsStore.setTabExpanded(false);
   };
 
   const fetchPositionsHistory = useCallback(
@@ -84,7 +84,10 @@ const TradingHistoryExpanded: FC = () => {
         if (neededPage && parseInt(neededPage) > 0) {
           checkScroll = true;
           for (let i = 1; i <= parseInt(neededPage) + 1; i++) {
-            historyStore.positionsHistoryReport.page = i;
+            historyStore.setPositionsHistoryReport({
+              ...historyStore.positionsHistoryReport,
+              page: i,
+            });
             fetchPositionsHistory(true).finally(() => {
               if (i <= parseInt(neededPage) + 1) {
                 setIsLoading(false);
@@ -94,10 +97,10 @@ const TradingHistoryExpanded: FC = () => {
         }
       }
       if (neededRange) {
-        dateRangeStore.dropdownValueType = parseInt(neededRange);
+        dateRangeStore.setDropdownValueType(parseInt(neededRange));
       }
       if (dataStart) {
-        dateRangeStore.startDate = moment(dataStart);
+        dateRangeStore.setStartDate(moment(dataStart));
       }
       if (!checkScroll) {
         fetchPositionsHistory().finally(() => {
@@ -106,11 +109,11 @@ const TradingHistoryExpanded: FC = () => {
       }
     }
     return () => {
-      historyStore.positionsHistoryReport = {
+      historyStore.setPositionsHistoryReport({
         ...historyStore.positionsHistoryReport,
         page: 1,
         positionsHistory: [],
-      };
+      });
     };
   }, [mainAppStore.activeAccount]);
 

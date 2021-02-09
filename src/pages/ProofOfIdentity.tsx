@@ -112,8 +112,8 @@ function ProofOfIdentity() {
   };
 
   useEffect(() => {
-    kycStore.currentStep = KYCstepsEnum.ProofOfIdentity;
-    kycStore.filledStep = KYCstepsEnum.PhoneVerification;
+    kycStore.setCurrentStep(KYCstepsEnum.ProofOfIdentity);
+    kycStore.setFilledStep(KYCstepsEnum.PhoneVerification);
   }, []);
 
   return (
