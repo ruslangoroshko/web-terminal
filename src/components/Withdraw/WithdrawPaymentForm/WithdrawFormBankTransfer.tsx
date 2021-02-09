@@ -73,9 +73,9 @@ const WithdrawFormBankTransfer = () => {
       );
       if (result.status === WithdrawalHistoryResponseStatus.Successful) {
         withdrawalStore.opentTab(WithdrawalTabsEnum.History);
-        notificationStore.isSuccessfull = true;
+        notificationStore.setIsSuccessfull(true);
       } else {
-        notificationStore.isSuccessfull = false;
+        notificationStore.setIsSuccessfull(false);
       }
 
       if (
@@ -85,9 +85,9 @@ const WithdrawFormBankTransfer = () => {
         withdrawalStore.setPendingPopup();
       }
 
-      notificationStore.notificationMessage = t(
+      notificationStore.setNotification(t(
         withdrawalResponseMessages[result.status]
-      );
+      ));
       notificationStore.openNotification();
     } catch (error) {}
   };

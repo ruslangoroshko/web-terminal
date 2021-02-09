@@ -97,7 +97,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
 
   useEffect(() => {
    if (!on) {
-     SLTPstore.isToppingUpActive = false;
+     SLTPstore.toggleToppingUp(false);
    }
   }, [on]);
 

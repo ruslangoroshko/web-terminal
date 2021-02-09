@@ -26,7 +26,7 @@ const Orders: FC = () => {
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
-    tabsStore.portfolioTab = portfolioTab;
+    tabsStore.setPortfolioTab(portfolioTab);
   };
 
   const [on, toggle] = useState(false);
@@ -36,7 +36,7 @@ const Orders: FC = () => {
   };
 
   const handleChangeSorting = (sortType: SortByPendingOrdersEnum) => () => {
-    sortingStore.pendingOrdersSortBy = sortType;
+    sortingStore.setPendingOrdersSortBy(sortType);
     localStorage.setItem(LOCAL_PENDING_POSITION_SORT, `${sortType}`);
     toggle(false);
   };
@@ -45,7 +45,7 @@ const Orders: FC = () => {
   useEffect(() => {
     const activeSort = localStorage.getItem(LOCAL_PENDING_POSITION_SORT);
     if (!!activeSort) {
-      sortingStore.pendingOrdersSortBy = parseFloat(activeSort);
+      sortingStore.setPendingOrdersSortBy(parseFloat(activeSort));
     }
   }, []);
 

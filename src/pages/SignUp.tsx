@@ -129,10 +129,10 @@ function SignUp() {
                   phone: phone?.trim(),
                 });
                 if (result !== OperationApiResponseCodes.Ok) {
-                  notificationStore.notificationMessage = t(
+                  notificationStore.setNotification(t(
                     apiResponseCodeMessages[result]
-                  );
-                  notificationStore.isSuccessfull = false;
+                  ));
+                  notificationStore.setIsSuccessfull(false);
                   notificationStore.openNotification();
                   mainAppStore.setInitLoading(false);
                   mixpanel.track(mixpanelEvents.SIGN_UP_FAILED, {

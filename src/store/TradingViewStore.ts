@@ -49,6 +49,11 @@ export class TradingViewStore implements ContextProps {
   };
 
   @action
+  setSelectedHistory = (newHistory: string | undefined) => {
+    this.selectedHistory = newHistory;
+  };
+
+  @action
   setApplyHandler = (applyHandler: () => Promise<void>, clear?: boolean) => {
     this.applyHandler = () =>
       applyHandler().then(() => {
@@ -81,5 +86,38 @@ export class TradingViewStore implements ContextProps {
     newSelectedPendingPosition: number | undefined
   ) => {
     this.selectedPendingPosition = newSelectedPendingPosition;
+  };
+
+  @action
+  setActiveOrderLinePosition = (
+    activeOrderLinePosition: IOrderLineAdapter | undefined
+  ) => {
+    this.activeOrderLinePosition = activeOrderLinePosition;
+  };
+
+  @action
+  setActiveOrderLinePositionPnL = (
+    activeOrderLinePositionPnL: IOrderLineAdapter | undefined
+  ) => {
+    this.activeOrderLinePositionPnL = activeOrderLinePositionPnL;
+  };
+
+  @action
+  setActiveOrderLinePositionSL = (
+    activeOrderLinePositionSL: IOrderLineAdapter | undefined
+  ) => {
+    this.activeOrderLinePositionSL = activeOrderLinePositionSL;
+  };
+
+  @action
+  setActiveOrderLinePositionTP = (
+    activeOrderLinePositionTP: IOrderLineAdapter | undefined
+  ) => {
+    this.activeOrderLinePositionTP = activeOrderLinePositionTP;
+  };
+
+  @action
+  setConfirmText = (text: string) => {
+    this.confirmText = text;
   };
 }

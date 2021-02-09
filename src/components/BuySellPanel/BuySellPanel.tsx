@@ -238,11 +238,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         try {
           const response = await API.openPendingOrder(modelToSubmit);
 
-          notificationStore.notificationMessage = t(
+          notificationStore.setNotification(t(
             apiResponseCodeMessages[response.result]
-          );
-          notificationStore.isSuccessfull =
-            response.result === OperationApiResponseCodes.Ok;
+          ));
+          notificationStore.setIsSuccessfull(response.result === OperationApiResponseCodes.Ok);
           notificationStore.openNotification();
 
           if (response.result === OperationApiResponseCodes.Ok) {
@@ -345,11 +344,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         try {
           const response = await API.openPosition(modelToSubmit);
 
-          notificationStore.notificationMessage = t(
+          notificationStore.setNotification(t(
             apiResponseCodeMessages[response.result]
-          );
-          notificationStore.isSuccessfull =
-            response.result === OperationApiResponseCodes.Ok;
+          ));
+          notificationStore.setIsSuccessfull(response.result === OperationApiResponseCodes.Ok);
           notificationStore.openNotification();
 
           if (response.result === OperationApiResponseCodes.Ok) {

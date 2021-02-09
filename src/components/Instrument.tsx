@@ -66,7 +66,7 @@ const Instrument: FC<Props> = observer(({ instrument, handleClose }) => {
           quotesStore.setSelectedPositionId(null);
           localStorage.removeItem(LOCAL_POSITION);
         } else if (parseFloat(isHistory) === SideBarTabType.History) {
-          tradingViewStore.selectedHistory = undefined;
+          tradingViewStore.setSelectedHistory(undefined);
           localStorage.removeItem(LOCAL_HISTORY_POSITION);
           localStorage.removeItem(LOCAL_HISTORY_PAGE);
         }
@@ -100,7 +100,7 @@ const Instrument: FC<Props> = observer(({ instrument, handleClose }) => {
           quotesStore.setSelectedPositionId(null);
           localStorage.removeItem(LOCAL_POSITION);
         } else if (parseFloat(isHistory) === SideBarTabType.History) {
-          tradingViewStore.selectedHistory = undefined;
+          tradingViewStore.setSelectedHistory(undefined);
           localStorage.removeItem(LOCAL_HISTORY_POSITION);
           localStorage.removeItem(LOCAL_HISTORY_PAGE);
         }

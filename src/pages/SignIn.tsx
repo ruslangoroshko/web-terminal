@@ -53,9 +53,9 @@ const SingIn = observer(() => {
     try {
       const result = await mainAppStore.signIn(credentials);
       if (result !== OperationApiResponseCodes.Ok) {
-        notificationStore.notificationMessage = t(
+        notificationStore.setNotification(t(
           apiResponseCodeMessages[result]
-        );
+        ));
         notificationStore.setIsSuccessfull(false);
         notificationStore.openNotification();
         mainAppStore.setInitLoading(false);

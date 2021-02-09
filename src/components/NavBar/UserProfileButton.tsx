@@ -107,12 +107,11 @@ function UserProfileButton() {
         mainAppStore.setSignUpFlag(false);
         mainAppStore.setLpLoginFlag(false);
         mainAppStore.setProfileStatus(response.data.kyc);
-        mainAppStore.profilePhone = response.data.phone || '';
-        mainAppStore.profileName =
-          !!response.data.firstName && !!response.data.lastName
-            ? `${response.data.firstName} ${response.data.lastName}`
-            : '';
-        mainAppStore.profileEmail = response.data.email || '';
+        mainAppStore.setProfilePhone(response.data.phone || '');
+        mainAppStore.setProfileName(!!response.data.firstName && !!response.data.lastName
+          ? `${response.data.firstName} ${response.data.lastName}`
+          : '');
+        mainAppStore.setProfileEmail(response.data.email || '');
       } catch (error) {}
     }
     fetchPersonalData();

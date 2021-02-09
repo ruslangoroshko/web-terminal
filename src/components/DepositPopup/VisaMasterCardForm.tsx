@@ -191,10 +191,10 @@ const VisaMasterCardForm = () => {
           break;
 
         default:
-          notificationStore.isSuccessfull = false;
-          notificationStore.notificationMessage = t(
+          notificationStore.setIsSuccessfull(false);
+          notificationStore.setNotification(t(
             depositResponseMessages[result.status]
-          );
+          ));
           notificationStore.openNotification();
           mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
             [mixapanelProps.ERROR_TEXT]: result.status,

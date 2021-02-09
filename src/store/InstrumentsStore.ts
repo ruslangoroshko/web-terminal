@@ -70,6 +70,11 @@ export class InstrumentsStore implements ContextProps {
   }
 
   @action
+  setFilteredInstrumentsSearch = (newFilteredInstrumentsSearch: InstrumentModelWSDTO[]) => {
+    this.filteredInstrumentsSearch = newFilteredInstrumentsSearch;
+  };
+
+  @action
   setInstruments = (instruments: InstrumentModelWSDTO[]) => {
     const localType = localStorage.getItem(LOCAL_CHART_TYPE);
     const currentType = localType
@@ -84,6 +89,11 @@ export class InstrumentsStore implements ContextProps {
           resolution: '1 minute',
         }
     );
+  };
+
+  @action
+  setInstrumentGroups = (newInstrumentGroups: InstrumentGroupWSDTO[]) => {
+    this.instrumentGroups = newInstrumentGroups;
   };
 
   @action
