@@ -13,10 +13,10 @@ import { SecondaryButton } from '../../styles/Buttons';
 import SvgIcon from '../SvgIcon';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
-import { DeepMap, FieldError, useWatch } from 'react-hook-form';
+import { DeepMap, FieldError, useFormContext, useWatch } from 'react-hook-form';
 import hasValue from '../../helpers/hasValue';
 import { ConnectForm } from './ConnectForm';
-import { Observer, useLocalObservable } from 'mobx-react-lite';
+import { FormValues } from '../../types/Positions';
 
 interface Props {
   instrumentId: string;
@@ -26,6 +26,8 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
   const { mainAppStore, SLTPstore } = useStores();
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
+
+  const { setValue } = useFormContext<FormValues>();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -38,6 +40,8 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      setValue('tp', undefined);
+      setValue('sl', undefined);
       handleClose();
     }
   };
@@ -152,7 +156,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
                 </FlexContainer>
               </ButtonAutoClosePurchase>
               {!on && (hasValue(sl) || hasValue(tp)) && (
-                <ClearSLTPButton type="button" onClick={clearSLTP}>
+                <ClearSLTPButton type="button" onClick={clearSLTP(setValue)}>
                   <SvgIcon
                     {...IconClose}
                     fillColor="rgba(255,255,255,0.4)"
@@ -170,7 +174,6 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
               <SetAutoclose toggle={toggle}>
                 <ButtonApply
                   type="button"
-                  form="buySellForm"
                   disabled={!hasValue(sl) && !hasValue(tp)}
                   onClick={handleApplySetAutoClose(errors)}
                 >
