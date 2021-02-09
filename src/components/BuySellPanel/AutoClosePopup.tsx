@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { DeepMap, FieldError, useWatch } from 'react-hook-form';
 import hasValue from '../../helpers/hasValue';
 import { ConnectForm } from './ConnectForm';
+import { Observer, useLocalObservable } from 'mobx-react-lite';
 
 interface Props {
   instrumentId: string;
@@ -63,27 +64,27 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
 
   const renderTPValue = (getValues: any) => {
     const { tp, tpType } = getValues();
-    return `+${
+    return `${
       hasValue(tp)
-        ? `${
+        ? `+${
             tpType === TpSlTypeEnum.Currency
               ? mainAppStore.activeAccount?.symbol
               : ''
           }${tp}`
-        : t('Non Set')
+        : ''
     }`;
   };
 
   const renderSLValue = (getValues: any) => {
     const { sl, slType } = getValues();
-    return `—${
+    return `${
       hasValue(sl)
-        ? `${
+        ? `-${
             slType === TpSlTypeEnum.Currency
               ? mainAppStore.activeAccount?.symbol
               : ''
           }${sl}`
-        : t('Non Set')
+        : ''
     }`;
   };
 
@@ -95,12 +96,6 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
     SLTPstore.setInstrumentId(instrumentId);
   }, []);
 
-  useEffect(() => {
-   if (!on) {
-     SLTPstore.toggleToppingUp(false);
-   }
-  }, [on]);
-
   const handleApplySetAutoClose = (
     errors: DeepMap<Record<string, any>, FieldError>,
     setError: (arg0: string, arg1: any) => void,
@@ -110,13 +105,13 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
     if (tp === 0) {
       setError('tp', {
         type: 'manual',
-        message: t('Take Profit can not be zero')
+        message: t('Take Profit can not be zero'),
       });
     }
     if (sl === 0) {
       setError('sl', {
         type: 'manual',
-        message: t('Stop Loss can not be zero')
+        message: t('Stop Loss can not be zero'),
       });
     }
     if (!Object.keys(errors).length) {
@@ -126,13 +121,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
 
   return (
     <ConnectForm>
-      {({
-        getValues,
-        clearErrors,
-        errors,
-        setValue,
-        setError,
-      }) => (
+      {({ getValues, clearErrors, errors, setValue, setError }) => (
         <>
           <FlexContainer position="relative" ref={wrapperRef}>
             <FlexContainer width="100%" position="relative">
@@ -144,7 +133,6 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
                 <FlexContainer flexDirection="column" alignItems="center">
                   {!on && (hasValue(sl) || hasValue(tp)) ? (
                     <FlexContainer
-                      justifyContent="space-between"
                       alignItems="center"
                       padding="0 20px 0 0"
                       width="100%"
@@ -152,6 +140,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
                     >
                       <PrimaryTextSpan
                         overflow="hidden"
+                        marginRight="4px"
                         textOverflow="ellipsis"
                         whiteSpace="nowrap"
                         title={renderTPValue(getValues)}
@@ -195,16 +184,28 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, refAutoclose }) => {
               display={on ? 'flex' : 'none'}
               ref={refAutoclose}
             >
-              <SetAutoclose toggle={toggle} on={on}>
-                <ButtonApply
-                  type="button"
-                  form="buySellForm"
-                  disabled={!hasValue(sl) && !hasValue(tp)}
-                  onClick={handleApplySetAutoClose(errors, setError, getValues)}
-                >
-                  {t('Apply')}
-                </ButtonApply>
-              </SetAutoclose>
+              <Observer>
+                {() => (
+                  <SetAutoclose toggle={toggle} on={on}>
+                    <ButtonApply
+                      type="button"
+                      form="buySellForm"
+                      disabled={
+                        !hasValue(sl) &&
+                        !hasValue(tp) &&
+                        !SLTPstore.isToppingUpActive
+                      }
+                      onClick={handleApplySetAutoClose(
+                        errors,
+                        setError,
+                        getValues
+                      )}
+                    >
+                      {t('Apply')}
+                    </ButtonApply>
+                  </SetAutoclose>
+                )}
+              </Observer>
             </FlexContainer>
           </FlexContainer>
         </>

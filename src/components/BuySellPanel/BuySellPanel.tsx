@@ -340,6 +340,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           instrumentId: instrument.id,
           processId: getProcessId(),
           multiplier,
+          isToppingUpActive: SLTPstore.isToppingUpActive,
         };
         try {
           const response = await API.openPosition(modelToSubmit);

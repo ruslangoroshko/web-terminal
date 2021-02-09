@@ -13,6 +13,7 @@ export interface OpenPositionModel {
   sl: number | null;
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
+  isToppingUpActive: boolean;
 }
 
 export interface OpenPendingOrder {
