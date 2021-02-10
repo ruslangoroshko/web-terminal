@@ -1,8 +1,7 @@
 import styled from '@emotion/styled';
 import { observer } from 'mobx-react-lite';
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Fields from '../../constants/fields';
 import { useStores } from '../../hooks/useStores';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { FlexContainer } from '../../styles/FlexContainer';
@@ -13,7 +12,7 @@ interface Props {}
 const TopingUpCheck: FC<Props> = observer(() => {
   const { t } = useTranslation();
   const { SLTPstore } = useStores();
-  
+
   const handleClickOn = () => {
     SLTPstore.toggleToppingUp(true);
   };

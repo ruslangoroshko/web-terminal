@@ -40,8 +40,10 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-      setValue('tp', undefined);
-      setValue('sl', undefined);
+      if (on) {
+        setValue('tp', undefined);
+        setValue('sl', undefined);
+      }
       handleClose();
     }
   };
@@ -102,6 +104,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
   const handleApplySetAutoClose = (
     errors: DeepMap<Record<string, any>, FieldError>
   ) => () => {
+    console.log(Object.keys(errors));
     if (!Object.keys(errors).length) {
       toggle(false);
     }
@@ -174,7 +177,6 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
               <SetAutoclose toggle={toggle}>
                 <ButtonApply
                   type="button"
-                  disabled={!hasValue(sl) && !hasValue(tp)}
                   onClick={handleApplySetAutoClose(errors)}
                 >
                   {t('Apply')}
