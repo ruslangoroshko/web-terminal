@@ -111,7 +111,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
             bottom={isTop ? 'auto' : '20px'}
             zIndex="101"
           >
-            <SetAutoclose isDisabled={isDisabled} toggle={toggle}>
+            <SetAutoclose isDisabled={isDisabled} toggle={toggle} isActive={on}>
               <ButtonApply
                 type="button"
                 disabled={isDisabled}

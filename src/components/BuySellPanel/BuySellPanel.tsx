@@ -143,7 +143,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             Fields.TAKE_PROFIT,
             t('Take Profit can not be zero'),
             (value) => {
-              return +value !== 0 || value === null;
+              return value !== 0 || value === null;
             }
           )
           .when([Fields.TAKE_PROFIT_TYPE], {
@@ -175,7 +175,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         sl: yup
           .number()
           .test(Fields.STOP_LOSS, t('Stop Loss can not be zero'), (value) => {
-            return +value !== 0 || value !== null;
+            return value !== 0 || value === null;
           })
           .test(
             Fields.STOP_LOSS,
