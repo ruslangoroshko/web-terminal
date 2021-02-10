@@ -514,9 +514,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     reset();
-    SLTPstore.instrumentId = instrument.id;
-    SLTPstore.slType = TpSlTypeEnum.Currency;
-    SLTPstore.tpType = TpSlTypeEnum.Currency;
+    SLTPstore.setInstrumentId(instrument.id);
+    SLTPstore.setSlType(TpSlTypeEnum.Currency);
+    SLTPstore.setTpType(TpSlTypeEnum.Currency);
   }, [mainAppStore.activeAccountId, instrument.id]);
 
   useEffect(() => {

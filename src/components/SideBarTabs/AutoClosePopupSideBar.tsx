@@ -4,14 +4,15 @@ import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import styled from '@emotion/styled';
 import { useTranslation } from 'react-i18next';
-import { ConnectForm } from '../BuySellPanel/ConnectForm';
 import { useStores } from '../../hooks/useStores';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
+import { useFormContext } from 'react-hook-form';
+import { FormValues } from '../../types/Positions';
 
 interface Props {
   children: React.ReactNode;
   isDisabled?: boolean;
-  handleSumbitMethod: any;
+  handleSumbitMethod: (values: any) => Promise<any>;
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
   instrumentId: string;
@@ -20,7 +21,15 @@ interface Props {
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
   (
-    { children, isDisabled, handleSumbitMethod, tpType, slType, instrumentId, isToppingUp },
+    {
+      children,
+      isDisabled,
+      handleSumbitMethod,
+      tpType,
+      slType,
+      instrumentId,
+      isToppingUp,
+    },
     ref
   ) => {
     const { t } = useTranslation();
@@ -29,6 +38,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     const [on, toggle] = useState(false);
     const [isTop, setIsTop] = useState(true);
+
+    const { handleSubmit, errors } = useFormContext<FormValues>();
 
     const [popupPosition, setPopupPosition] = useState({
       top: 0,
@@ -80,51 +91,38 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       };
     }, []);
 
-    const submitForm = (submitMethod: () => Promise<void>) => () => {
-      submitMethod().then(() => {
-        toggle(false);
-      });
-    };
-
     return (
-      <ConnectForm>
-        {({ handleSubmit }) => {
-          return (
-            <FlexContainer ref={wrapperRef}>
-              <ButtonWithoutStyles type="button" onClick={handleToggle}>
-                {children}
-              </ButtonWithoutStyles>
-              {on && (
-                <FlexContainer
-                  position="absolute"
-                  // FIXME: think about this stupid sheet
-                  top={
-                    isTop
-                      ? `${
-                          popupPosition.top +
-                          Math.round(popupPosition.height / 5)
-                        }px`
-                      : 'auto'
-                  }
-                  left={`${Math.round(popupPosition.width * 0.75)}px`}
-                  bottom={isTop ? 'auto' : '20px'}
-                  zIndex="101"
-                >
-                  <SetAutoclose isDisabled={isDisabled} toggle={toggle}>
-                    <ButtonApply
-                      type="button"
-                      disabled={isDisabled}
-                      onClick={submitForm(handleSubmit(handleSumbitMethod))}
-                    >
-                      {t('Apply')}
-                    </ButtonApply>
-                  </SetAutoclose>
-                </FlexContainer>
-              )}
-            </FlexContainer>
-          );
-        }}
-      </ConnectForm>
+      <FlexContainer ref={wrapperRef}>
+        <ButtonWithoutStyles type="button" onClick={handleToggle}>
+          {children}
+        </ButtonWithoutStyles>
+        {on && (
+          <FlexContainer
+            position="absolute"
+            // FIXME: think about this stupid sheet
+            top={
+              isTop
+                ? `${
+                    popupPosition.top + Math.round(popupPosition.height / 5)
+                  }px`
+                : 'auto'
+            }
+            left={`${Math.round(popupPosition.width * 0.75)}px`}
+            bottom={isTop ? 'auto' : '20px'}
+            zIndex="101"
+          >
+            <SetAutoclose isDisabled={isDisabled} toggle={toggle}>
+              <ButtonApply
+                type="button"
+                disabled={isDisabled}
+                onClick={handleSubmit(handleSumbitMethod)}
+              >
+                {t('Apply')}
+              </ButtonApply>
+            </SetAutoclose>
+          </FlexContainer>
+        )}
+      </FlexContainer>
     );
   }
 );

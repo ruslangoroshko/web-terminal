@@ -41,7 +41,7 @@ const PendingOrder: FC<Props> = (props) => {
   const instrumentRef = useRef<HTMLDivElement>(document.createElement('div'));
   const { precision } = useInstrumentPrecision(pendingOrder.instrument);
   const handleCloseOrder = () => {
-    API.removePendingOrder({
+    return API.removePendingOrder({
       accountId: mainAppStore.activeAccount!.id,
       orderId: pendingOrder.id,
       processId: getProcessId(),
