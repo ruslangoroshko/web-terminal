@@ -28,15 +28,18 @@ import { FormValues } from '../../types/Positions';
 import { ConnectForm } from './ConnectForm';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 
-interface Props {}
+interface Props {
+  instrumentId: string;
+  digits: number;
+}
 
-const OpenPricePopup: FC<Props> = () => {
+const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
   const [on, toggle] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const [inputError, setInputError] = useState<string | null>(null);
-
   const { t } = useTranslation();
+
+  const { setValue, register, errors, watch } = useFormContext<FormValues>();
 
   const { quotesStore, instrumentsStore, mainAppStore } = useStores();
 
@@ -46,20 +49,15 @@ const OpenPricePopup: FC<Props> = () => {
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      setValue('openPrice', undefined);
       toggle(false);
     }
   };
 
-  const applyOpenPrice = (setValue: any, getValues: any) => () => {
-    const openPriceValue = getValues(Fields.OPEN_PRICE);
-    if (openPriceValue === 0) {
-      setInputError(`${t('Open Price can not be zero')}`);
-      return;
-    } else {
-      setInputError(null);
+  const applyOpenPrice = (errors: any) => () => {
+    if (!Object.keys(errors).length) {
+      toggle(false);
     }
-    setValue('openPrice', openPriceValue);
-    toggle(false);
   };
 
   const handleBeforeInput = (e: any) => {
@@ -106,177 +104,168 @@ const OpenPricePopup: FC<Props> = () => {
     }
   };
 
-  const clearOpenPrice = (setValue: any) => () => {
+  const clearOpenPrice = () => {
     setValue('openPrice', null);
   };
 
-  const setCurrentPrice = (setValue: any, value: string) => () => {
+  const setCurrentPrice = (value: string) => () => {
     setValue('openPrice', value);
   };
 
-  return (
-    <ConnectForm>
-      {({ getValues, register, setValue }) => {
-        const { openPrice, instrumentId } = getValues();
-        const digits =
-          instrumentsStore.instruments.find(
-            (item) => item.instrumentItem.id === instrumentId
-          )?.instrumentItem.digits || 2;
-        return (
-          <FlexContainer position="relative" ref={wrapperRef}>
-            {openPrice ? (
-              <FlexContainer position="relative" width="100%">
-                <ButtonAutoClosePurchase
-                  onClick={handleToggle}
-                  type="button"
-                  hasPrice={!!(openPrice || openPrice === 0)}
-                >
-                  <PrimaryTextSpan color="#fffccc" fontSize="14px">
-                    {mainAppStore.activeAccount?.symbol}
-                    {openPrice}
-                  </PrimaryTextSpan>
-                </ButtonAutoClosePurchase>
-                <ClearOpenPriceButton type="button" onClick={clearOpenPrice}>
-                  <SvgIcon
-                    {...IconClose}
-                    fillColor="rgba(255, 255, 255, 0.6)"
-                    hoverFillColor="#00FFDD"
-                  />
-                </ClearOpenPriceButton>
-              </FlexContainer>
-            ) : (
-              <ButtonAutoClosePurchase
-                onClick={handleToggle}
-                type="button"
-                hasPrice={!!openPrice}
-              >
-                <PrimaryTextSpan color="#fffccc" fontSize="14px">
-                  {t('Set Price')}
-                </PrimaryTextSpan>
-              </ButtonAutoClosePurchase>
-            )}
-            <SetPriceWrapper
-              position="absolute"
-              bottom="0px"
-              right="100%"
-              visibilityProp={on ? 'visible' : 'hidden'}
-            >
-              <Wrapper
-                position="relative"
-                padding="16px"
-                flexDirection="column"
-                width="200px"
-              >
-                <ButtonClose type="button" onClick={handleToggle}>
-                  <SvgIcon
-                    {...IconClose}
-                    fillColor="rgba(255, 255, 255, 0.6)"
-                    hoverFillColor="#00FFDD"
-                  ></SvgIcon>
-                </ButtonClose>
-                <PrimaryTextParagraph marginBottom="16px">
-                  {t('Purchase at')}
-                </PrimaryTextParagraph>
-                <FlexContainer
-                  margin="0 0 6px 0"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <PrimaryTextSpan
-                    fontSize="11px"
-                    lineHeight="12px"
-                    color="rgba(255, 255, 255, 0.3)"
-                    textTransform="uppercase"
-                  >
-                    {t('When Price is')}
-                  </PrimaryTextSpan>
-                  <InformationPopup
-                    bgColor="#000000"
-                    classNameTooltip="autoclose"
-                    width="212px"
-                    direction="left"
-                  >
-                    <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                      {t(
-                        'When the position reached the specified take profit or stop loss level, the position will be closed automatically.'
-                      )}
-                    </PrimaryTextSpan>
-                  </InformationPopup>
-                </FlexContainer>
-                <InputWrapper
-                  margin="0 0 16px 0"
-                  height="32px"
-                  width="100%"
-                  position="relative"
-                  justifyContent="space-between"
-                >
-                  {inputError !== null && (
-                    <ErropPopup
-                      textColor="#fffccc"
-                      bgColor={ColorsPallete.RAZZMATAZZ}
-                      classNameTooltip={Fields.OPEN_PRICE}
-                      direction="left"
-                    >
-                      {inputError}
-                    </ErropPopup>
-                  )}
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
 
-                  <InputPnL
-                    onBeforeInput={handleBeforeInput}
-                    name={Fields.OPEN_PRICE}
-                    placeholder={t('Non Set')}
-                    ref={register({ setValueAs: setValueAsNullIfEmpty })}
-                  ></InputPnL>
-                </InputWrapper>
-                <FlexContainer
-                  justifyContent="space-between"
-                  alignItems="center"
-                  margin="0 0 16px 0"
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const { openPrice } = watch();
+  return (
+    <FlexContainer position="relative" ref={wrapperRef}>
+      {openPrice ? (
+        <FlexContainer position="relative" width="100%">
+          <ButtonAutoClosePurchase
+            onClick={handleToggle}
+            type="button"
+            hasPrice={!!(openPrice || openPrice === 0)}
+          >
+            <PrimaryTextSpan color="#fffccc" fontSize="14px">
+              {mainAppStore.activeAccount?.symbol}
+              {openPrice}
+            </PrimaryTextSpan>
+          </ButtonAutoClosePurchase>
+          <ClearOpenPriceButton type="button" onClick={clearOpenPrice}>
+            <SvgIcon
+              {...IconClose}
+              fillColor="rgba(255, 255, 255, 0.6)"
+              hoverFillColor="#00FFDD"
+            />
+          </ClearOpenPriceButton>
+        </FlexContainer>
+      ) : (
+        <ButtonAutoClosePurchase
+          onClick={handleToggle}
+          type="button"
+          hasPrice={!!openPrice}
+        >
+          <PrimaryTextSpan color="#fffccc" fontSize="14px">
+            {t('Set Price')}
+          </PrimaryTextSpan>
+        </ButtonAutoClosePurchase>
+      )}
+      <SetPriceWrapper
+        position="absolute"
+        bottom="0px"
+        right="100%"
+        visibilityProp={on ? 'visible' : 'hidden'}
+      >
+        <Wrapper
+          position="relative"
+          padding="16px"
+          flexDirection="column"
+          width="200px"
+        >
+          <ButtonClose type="button" onClick={handleToggle}>
+            <SvgIcon
+              {...IconClose}
+              fillColor="rgba(255, 255, 255, 0.6)"
+              hoverFillColor="#00FFDD"
+            ></SvgIcon>
+          </ButtonClose>
+          <PrimaryTextParagraph marginBottom="16px">
+            {t('Purchase at')}
+          </PrimaryTextParagraph>
+          <FlexContainer
+            margin="0 0 6px 0"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <PrimaryTextSpan
+              fontSize="11px"
+              lineHeight="12px"
+              color="rgba(255, 255, 255, 0.3)"
+              textTransform="uppercase"
+            >
+              {t('When Price is')}
+            </PrimaryTextSpan>
+            <InformationPopup
+              bgColor="#000000"
+              classNameTooltip="autoclose"
+              width="212px"
+              direction="left"
+            >
+              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                {t(
+                  'When the position reached the specified take profit or stop loss level, the position will be closed automatically.'
+                )}
+              </PrimaryTextSpan>
+            </InformationPopup>
+          </FlexContainer>
+          <InputWrapper
+            margin="0 0 16px 0"
+            height="32px"
+            width="100%"
+            position="relative"
+            justifyContent="space-between"
+          >
+            {errors.openPrice && (
+              <ErropPopup
+                textColor="#fffccc"
+                bgColor={ColorsPallete.RAZZMATAZZ}
+                classNameTooltip={Fields.OPEN_PRICE}
+                direction="left"
+              >
+                {errors.openPrice.message}
+              </ErropPopup>
+            )}
+
+            <InputPnL
+              onBeforeInput={handleBeforeInput}
+              name={Fields.OPEN_PRICE}
+              placeholder={t('Non Set')}
+              ref={register({ setValueAs: setValueAsNullIfEmpty })}
+            ></InputPnL>
+          </InputWrapper>
+          <FlexContainer
+            justifyContent="space-between"
+            alignItems="center"
+            margin="0 0 16px 0"
+          >
+            <PrimaryTextSpan
+              color="rgba(255, 255, 255, 0.3)"
+              fontSize="11px"
+              lineHeight="12px"
+            >
+              {t('Current price')}
+            </PrimaryTextSpan>
+            <Observer>
+              {() => (
+                <ButtonWithoutStyles
+                  type="button"
+                  onClick={setCurrentPrice(
+                    quotesStore.quotes[instrumentId]?.bid.c.toFixed(digits) ||
+                      ''
+                  )}
                 >
                   <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.3)"
+                    textDecoration="underline"
+                    color="rgba(255, 255, 255, 0.8)"
                     fontSize="11px"
                     lineHeight="12px"
                   >
-                    {t('Current price')}
+                    {quotesStore.quotes[instrumentId]?.bid.c.toFixed(digits)}
                   </PrimaryTextSpan>
-                  <Observer>
-                    {() => (
-                      <ButtonWithoutStyles
-                        type="button"
-                        onClick={setCurrentPrice(
-                          setValue,
-                          quotesStore.quotes[instrumentId]?.bid.c.toFixed(
-                            digits
-                          ) || ''
-                        )}
-                      >
-                        <PrimaryTextSpan
-                          textDecoration="underline"
-                          color="rgba(255, 255, 255, 0.8)"
-                          fontSize="11px"
-                          lineHeight="12px"
-                        >
-                          {quotesStore.quotes[instrumentId]?.bid.c.toFixed(
-                            digits
-                          )}
-                        </PrimaryTextSpan>
-                      </ButtonWithoutStyles>
-                    )}
-                  </Observer>
-                </FlexContainer>
-                <ButtonApply
-                  type="button"
-                  onClick={applyOpenPrice(setValue, getValues)}
-                >
-                  {t('Apply')}
-                </ButtonApply>
-              </Wrapper>
-            </SetPriceWrapper>
+                </ButtonWithoutStyles>
+              )}
+            </Observer>
           </FlexContainer>
-        );
-      }}
-    </ConnectForm>
+          <ButtonApply type="button" onClick={applyOpenPrice}>
+            {t('Apply')}
+          </ButtonApply>
+        </Wrapper>
+      </SetPriceWrapper>
+    </FlexContainer>
   );
 };
 
