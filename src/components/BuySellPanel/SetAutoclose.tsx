@@ -48,12 +48,6 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
           instrumentsStore.instruments.find(
             (item) => item.instrumentItem.id === SLTPstore.instrumentId
           )?.instrumentItem.digits || 2;
-        console.log(
-          instrumentsStore.instruments.find(
-            (item) => item.instrumentItem.id === SLTPstore.instrumentId
-          )?.instrumentItem.digits,
-          SLTPstore.instrumentId
-        );
         break;
 
       default:
@@ -127,7 +121,7 @@ const SetAutoclose: FC<Props> = observer(({ isDisabled, toggle, children }) => {
       width="252px"
     >
       <ConnectForm>
-        {({ register, getValues, setValue, errors, watch }) => {
+        {({ register, setValue, errors, watch }) => {
           const { tp, sl } = watch();
           return (
             <>

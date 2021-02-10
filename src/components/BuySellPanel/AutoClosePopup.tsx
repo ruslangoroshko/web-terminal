@@ -104,7 +104,6 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
   const handleApplySetAutoClose = (
     errors: DeepMap<Record<string, any>, FieldError>
   ) => () => {
-    console.log(Object.keys(errors));
     if (!Object.keys(errors).length) {
       toggle(false);
     }

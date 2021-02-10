@@ -260,7 +260,7 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
               )}
             </Observer>
           </FlexContainer>
-          <ButtonApply type="button" onClick={applyOpenPrice}>
+          <ButtonApply type="button" onClick={applyOpenPrice(errors)}>
             {t('Apply')}
           </ButtonApply>
         </Wrapper>

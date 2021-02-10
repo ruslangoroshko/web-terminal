@@ -508,22 +508,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
     mode: 'onSubmit',
-    defaultValues: {
-      investmentAmount: mainAppStore.activeAccount?.isLive
-        ? DEFAULT_INVEST_AMOUNT_LIVE
-        : DEFAULT_INVEST_AMOUNT_DEMO,
-      sl: postitionStopOut(),
-    },
   });
 
   const { investmentAmount } = watch();
 
   useEffect(() => {
-    setValue('sl', postitionStopOut(investmentAmount));
-  }, [investmentAmount]);
-
-  useEffect(() => {
     reset();
+    SLTPstore.instrumentId = instrument.id;
+    SLTPstore.slType = TpSlTypeEnum.Currency;
+    SLTPstore.tpType = TpSlTypeEnum.Currency;
   }, [mainAppStore.activeAccountId, instrument.id]);
 
   useEffect(() => {
