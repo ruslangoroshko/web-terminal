@@ -56,6 +56,6 @@ export class RootStore {
     this.withdrawalStore = new WithdrawalStore();
     this.phoneVerificationStore = new PhoneVerificationStore();
     this.markersOnChartStore = new MarkersOnChartStore(this);
-    this.SLTPstore = new SLTPStore();
+    this.SLTPstore = new SLTPStore(this);
   }
 }

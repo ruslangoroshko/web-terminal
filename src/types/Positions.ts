@@ -28,6 +28,7 @@ export interface OpenPendingOrder {
   sl: number | null;
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
+  isToppingUpActive: boolean;
 }
 
 export interface FormValues {
@@ -35,6 +36,7 @@ export interface FormValues {
   tp?: number;
   sl?: number;
   openPrice?: number;
+  isToppingUpActive: string;
 }
 
 export interface OpenPositionResponseDTO {
@@ -84,4 +86,5 @@ export interface UpdateSLTP {
   sl: number | null;
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
+  isToppingUpActive: boolean;
 }

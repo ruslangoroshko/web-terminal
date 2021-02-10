@@ -13,10 +13,10 @@ import { SecondaryButton } from '../../styles/Buttons';
 import SvgIcon from '../SvgIcon';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
-import { DeepMap, FieldError, useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import hasValue from '../../helpers/hasValue';
-import { ConnectForm } from './ConnectForm';
 import { FormValues } from '../../types/Positions';
+import { Observer } from 'mobx-react-lite';
 
 interface Props {
   instrumentId: string;
@@ -27,11 +27,13 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
 
-  const { setValue } = useFormContext<FormValues>();
+  const { setValue, clearErrors, errors, getValues, trigger } = useFormContext<
+    FormValues
+  >();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const handleToggle = (clearErrors: any) => () => {
+  const handleToggle = () => {
     toggle(!on);
     if (!on) {
       clearErrors(['tp', 'sl']);
@@ -67,8 +69,8 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
     };
   }, []);
 
-  const renderTPValue = (getValues: any) => {
-    const { tp, tpType } = getValues();
+  const renderTPValue = (tpType: TpSlTypeEnum) => {
+    const { tp } = getValues();
     return `${
       hasValue(tp)
         ? `+${
@@ -80,8 +82,8 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
     }`;
   };
 
-  const renderSLValue = (getValues: any) => {
-    const { sl, slType } = getValues();
+  const renderSLValue = (slType: TpSlTypeEnum) => {
+    const { sl } = getValues();
     return `${
       hasValue(sl)
         ? `-${
@@ -101,92 +103,87 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
     SLTPstore.setInstrumentId(instrumentId);
   }, []);
 
-  const handleApplySetAutoClose = (
-    errors: DeepMap<Record<string, any>, FieldError>
-  ) => () => {
-    console.log(Object.keys(errors));
+  const handleApplySetAutoClose = () => {
+    trigger();
     if (!Object.keys(errors).length) {
       toggle(false);
     }
   };
 
   return (
-    <ConnectForm>
-      {({ getValues, clearErrors, errors }) => (
-        <>
-          <FlexContainer position="relative" ref={wrapperRef}>
-            <FlexContainer width="100%" position="relative">
-              <ButtonAutoClosePurchase
-                onClick={handleToggle(clearErrors)}
-                type="button"
-                hasValues={!!(sl || tp)}
+    <FlexContainer position="relative" ref={wrapperRef}>
+      <FlexContainer width="100%" position="relative">
+        <ButtonAutoClosePurchase
+          onClick={handleToggle}
+          type="button"
+          hasValues={!!(sl || tp)}
+        >
+          <FlexContainer flexDirection="column" alignItems="center">
+            {!on && (hasValue(sl) || hasValue(tp)) ? (
+              <FlexContainer
+                alignItems="center"
+                padding="0 20px 0 0"
+                width="100%"
+                flexWrap="wrap"
               >
-                <FlexContainer flexDirection="column" alignItems="center">
-                  {!on && (hasValue(sl) || hasValue(tp)) ? (
-                    <FlexContainer
-                      alignItems="center"
-                      padding="0 20px 0 0"
-                      width="100%"
-                      flexWrap="wrap"
-                    >
+                <Observer>
+                  {() => (
+                    <>
                       <PrimaryTextSpan
                         overflow="hidden"
                         marginRight="4px"
                         textOverflow="ellipsis"
                         whiteSpace="nowrap"
-                        title={renderTPValue(getValues)}
+                        title={renderTPValue(SLTPstore.tpType)}
                         color="#fffccc"
                         fontSize="14px"
                       >
-                        {renderTPValue(getValues)}
+                        {renderTPValue(SLTPstore.tpType)}
                       </PrimaryTextSpan>
                       <PrimaryTextSpan
                         overflow="hidden"
                         textOverflow="ellipsis"
                         whiteSpace="nowrap"
-                        title={renderSLValue(getValues)}
+                        title={renderSLValue(SLTPstore.slType)}
                         color="#fffccc"
                         fontSize="14px"
                       >
-                        {renderSLValue(getValues)}
+                        {renderSLValue(SLTPstore.slType)}
                       </PrimaryTextSpan>
-                    </FlexContainer>
-                  ) : (
-                    <PrimaryTextParagraph color="#fffccc" fontSize="14px">
-                      {t('Set')}
-                    </PrimaryTextParagraph>
+                    </>
                   )}
-                </FlexContainer>
-              </ButtonAutoClosePurchase>
-              {!on && (hasValue(sl) || hasValue(tp)) && (
-                <ClearSLTPButton type="button" onClick={clearSLTP(setValue)}>
-                  <SvgIcon
-                    {...IconClose}
-                    fillColor="rgba(255,255,255,0.4)"
-                    hoverFillColor="#00FFDD"
-                  />
-                </ClearSLTPButton>
-              )}
-            </FlexContainer>
-            <FlexContainer
-              position="absolute"
-              top="20px"
-              right="100%"
-              visibilityProp={on ? 'visible' : 'hidden'}
-            >
-              <SetAutoclose toggle={toggle}>
-                <ButtonApply
-                  type="button"
-                  onClick={handleApplySetAutoClose(errors)}
-                >
-                  {t('Apply')}
-                </ButtonApply>
-              </SetAutoclose>
-            </FlexContainer>
+                </Observer>
+              </FlexContainer>
+            ) : (
+              <PrimaryTextParagraph color="#fffccc" fontSize="14px">
+                {t('Set')}
+              </PrimaryTextParagraph>
+            )}
           </FlexContainer>
-        </>
-      )}
-    </ConnectForm>
+        </ButtonAutoClosePurchase>
+        {!on && (hasValue(sl) || hasValue(tp)) && (
+          <ClearSLTPButton type="button" onClick={clearSLTP(setValue)}>
+            <SvgIcon
+              {...IconClose}
+              fillColor="rgba(255,255,255,0.4)"
+              hoverFillColor="#00FFDD"
+            />
+          </ClearSLTPButton>
+        )}
+      </FlexContainer>
+      <FlexContainer
+        position="absolute"
+        top="20px"
+        right="100%"
+        visibilityProp={on ? 'visible' : 'hidden'}
+      >
+        <SetAutoclose toggle={toggle} isActive={on} radioGroup="formBuySell">
+          <ButtonApply type="button" onClick={handleApplySetAutoClose}>
+            {t('Apply')}
+          </ButtonApply>
+        </SetAutoclose>
+      </FlexContainer>
+    </FlexContainer>
   );
 };
 
