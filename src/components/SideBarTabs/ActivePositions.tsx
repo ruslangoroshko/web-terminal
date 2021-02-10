@@ -38,13 +38,12 @@ import ActivePositionPnL from './ActivePositionPnL';
 import ActivePositionPnLPercent from './ActivePositionPnLPercent';
 import { IOrderLineAdapter } from '../../vendor/charting_library/charting_library';
 import { autorun } from 'mobx';
-import { Observer, useLocalObservable } from 'mobx-react-lite';
+import { Observer } from 'mobx-react-lite';
 import mixpanelValues from '../../constants/mixpanelValues';
 import { LOCAL_POSITION } from '../../constants/global';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import hasValue from '../../helpers/hasValue';
-import IsToppingUpWrapper from '../IsToppingUpWrapper';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -100,107 +99,69 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       yup.object().shape({
         tp: yup
           .number()
-          .nullable()
           .test(
             Fields.TAKE_PROFIT,
             t('Take Profit can not be zero'),
             (value) => {
-              return value !== 0;
+              return value !== 0 || value === null;
             }
           )
-          .when([Fields.TAKE_PROFIT_TYPE], {
-            is: (operation, tpType) =>
-              operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
-            then: yup
-              .number()
-              .nullable()
-              .test(
-                Fields.TAKE_PROFIT,
-                `${t('Error message')}: ${t(
-                  'This level is higher or lower than the one currently allowed'
-                )}`,
-                (value) => value > currentPriceBid() || value === null
-              ),
-          })
-          .when([Fields.TAKE_PROFIT_TYPE], {
-            is: (tpType) =>
-              position.operation === AskBidEnum.Sell &&
-              tpType === TpSlTypeEnum.Price,
-            then: yup
-              .number()
-              .nullable()
-              .test(
-                Fields.TAKE_PROFIT,
-                `${t('Error message')}: ${t(
-                  'This level is higher or lower than the one currently allowed'
-                )}`,
-                (value) => value < currentPriceAsk() || value === null
-              ),
-          })
-          .when([Fields.TAKE_PROFIT_TYPE], {
-            is: (tpType) => tpType === TpSlTypeEnum.Currency,
-            then: yup
-              .number()
-              .nullable()
-              .test(
-                Fields.TAKE_PROFIT,
-                t('Take profit level should be higher than the current P/L'),
-                (value) => value === null || value > PnL()
-              ),
-          }),
+          .test(
+            Fields.TAKE_PROFIT,
+            `${t('Error message')}: ${t(
+              'This level is higher or lower than the one currently allowed'
+            )}`,
+            (value) => {
+              if (SLTPstore.tpType === TpSlTypeEnum.Price) {
+                switch (position.operation) {
+                  case AskBidEnum.Buy:
+                    return value > currentPriceAsk();
+                  case AskBidEnum.Sell:
+                    return value < currentPriceBid();
+
+                  default:
+                    return true;
+                }
+              }
+
+              return true;
+            }
+          ),
+
         sl: yup
           .number()
-          .nullable()
           .test(Fields.STOP_LOSS, t('Stop Loss can not be zero'), (value) => {
-            return value !== 0;
+            return value !== 0 || value === null;
           })
-          .when([Fields.STOP_LOSS_TYPE], {
-            is: (slType) =>
-              position.operation === AskBidEnum.Buy &&
-              slType === TpSlTypeEnum.Price,
-            then: yup
-              .number()
-              .test(
-                Fields.STOP_LOSS,
-                `${t('Error message')}: ${t(
-                  'This level is higher or lower than the one currently allowed'
-                )}`,
-                (value) => value < currentPriceBid() || value === null
-              ),
-          })
-          .when([Fields.STOP_LOSS_TYPE], {
-            is: (slType) =>
-              position.operation === AskBidEnum.Sell &&
-              slType === TpSlTypeEnum.Price,
-            then: yup
-              .number()
-              .test(
-                Fields.STOP_LOSS,
-                `${t('Error message')}: ${t(
-                  'This level is higher or lower than the one currently allowed'
-                )}`,
-                (value) => value > currentPriceAsk() || value === null
-              ),
-          })
-          .when([Fields.STOP_LOSS_TYPE], {
-            is: (slType) => slType === TpSlTypeEnum.Currency,
-            then: yup
-              .number()
-              .test(
-                Fields.STOP_LOSS,
-                t('Stop loss level should be lower than the current P/L'),
-                (value) => -1 * Math.abs(value) < PnL()
-              ),
-            // .test(
-            //   Fields.STOP_LOSS,
-            //   t('Stop loss level can not be higher than the Invest amount'),
-            //   (value) => Math.abs(value) <= position.investmentAmount
-            // ),
-          }),
-        tpType: yup.number().nullable(),
-        slType: yup.number().nullable(),
+          .test(
+            Fields.STOP_LOSS,
+            `${t('Error message')}: ${t(
+              'This level is higher or lower than the one currently allowed'
+            )}`,
+            (value) => {
+              if (SLTPstore.slType === TpSlTypeEnum.Price) {
+                switch (position.operation) {
+                  case AskBidEnum.Buy:
+                    return value < currentPriceAsk();
+                  case AskBidEnum.Sell:
+                    return value > currentPriceBid();
+
+                  default:
+                    return true;
+                }
+              }
+
+              return true;
+            }
+          ),
       }),
-    [position, currentPriceBid, currentPriceAsk]
+    [
+      position,
+      currentPriceBid,
+      currentPriceAsk,
+      SLTPstore.slType,
+      SLTPstore.tpType,
+    ]
   );
 
   const getActualPricing = (
@@ -355,7 +316,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               ? Math.abs(response.position.sl)
               : null,
           [mixapanelProps.TP_VALUE]: response.position.tp,
-          [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
+          [mixapanelProps.SAVE_POSITION]: `${response.position.isToppingUpActive}`,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
@@ -386,7 +347,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           [mixapanelProps.SL_VALUE]:
             position.sl !== null ? Math.abs(position.sl) : null,
           [mixapanelProps.TP_VALUE]: position.tp,
-          [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
+          [mixapanelProps.SAVE_POSITION]: `${position.isToppingUpActive}`,
           [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
           [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
             ? 'real'
@@ -404,19 +365,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     } catch (error) {}
   };
 
-  const slType = useLocalObservable(async () => SLTPstore.slType);
-  const tpType = useLocalObservable(async () => SLTPstore.tpType);
-
   const updateSLTP = useCallback(
     async (values: FormValues) => {
-      debugger;
       const valuesToSubmit: UpdateSLTP = !SLTPstore.closedByChart
         ? {
             ...values,
             sl: values.sl ?? null,
             tp: values.tp ?? null,
-            slType: values.sl ? await slType : null,
-            tpType: values.tp ? await tpType : null,
+            slType: values.sl ? SLTPstore.slType : null,
+            tpType: values.tp ? SLTPstore.tpType : null,
             instrumentId: position.instrument,
             accountId: mainAppStore.activeAccountId,
             multiplier: position.multiplier,
@@ -424,13 +381,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             positionId: position.id,
             investmentAmount: position.investmentAmount,
             processId: getProcessId(),
+            isToppingUpActive: JSON.parse(values.isToppingUpActive),
           }
         : {
             ...values,
             sl: values.sl ?? null,
             tp: values.tp ?? null,
-            slType: values.sl ? await slType : null,
-            tpType: values.tp ? await tpType : null,
+            slType: values.sl ? SLTPstore.slType : null,
+            tpType: values.tp ? SLTPstore.tpType : null,
             instrumentId:
               quotesStore.selectedPosition?.instrument || position.instrument,
             accountId: mainAppStore.activeAccountId,
@@ -443,6 +401,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               quotesStore.selectedPosition?.multiplier || position.multiplier,
             operation:
               quotesStore.selectedPosition?.operation || position.operation,
+            isToppingUpActive: JSON.parse(values.isToppingUpActive),
           };
 
       try {
@@ -481,7 +440,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 ? Math.abs(response.position.sl)
                 : null,
             [mixapanelProps.TP_VALUE]: response.position.tp,
-            [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
+            [mixapanelProps.SAVE_POSITION]: `${response.position.isToppingUpActive}`,
             [mixapanelProps.AVAILABLE_BALANCE]:
               mainAppStore.activeAccount?.balance || 0,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccountId,
@@ -523,7 +482,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             [mixapanelProps.SL_VALUE]:
               valuesToSubmit.sl !== null ? Math.abs(valuesToSubmit.sl) : null,
             [mixapanelProps.TP_VALUE]: valuesToSubmit.tp,
-            [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
+            [mixapanelProps.SAVE_POSITION]: `${valuesToSubmit.isToppingUpActive}`,
             [mixapanelProps.AVAILABLE_BALANCE]:
               mainAppStore.activeAccount?.balance || 0,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccountId,
@@ -574,6 +533,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       tp: position.tp ?? undefined,
       sl: hasValue(position.sl) ? Math.abs(position.sl!) : undefined,
       investmentAmount: position.investmentAmount,
+      isToppingUpActive: JSON.stringify(position.isToppingUpActive),
     },
   });
 
@@ -813,6 +773,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       const objectToSend: FormValues = {
         tp: quotesStore.selectedPosition.tp ?? undefined,
         investmentAmount: quotesStore.selectedPosition.investmentAmount,
+        isToppingUpActive: `${position.isToppingUpActive}`,
       };
       SLTPstore.toggleClosedByChart(true);
       quotesStore.selectedPosition.sl = null;
@@ -832,6 +793,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           ? Math.abs(quotesStore.selectedPosition.sl!)
           : undefined,
         investmentAmount: quotesStore.selectedPosition.investmentAmount,
+        isToppingUpActive: `${position.isToppingUpActive}`,
       };
       quotesStore.selectedPosition.tp = null;
       quotesStore.selectedPosition.tpType = null;
@@ -912,62 +874,43 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       }
     }
   }, [ready]);
-  /**
-   *  Stop Out max level
-   */
-  const postitionStopOut = useCallback(() => {
-    const instrumentPercentSL =
-      (positionInstrument()?.stopOutPercent || 95) / 100;
-    return +(position.investmentAmount * instrumentPercentSL).toFixed(2);
-  }, [positionInstrument, position.investmentAmount]);
 
-  /**
-   *  Stop Out max level by price SL
-   */
-  const positionStopOutByPrice = useCallback(
-    (slPrice: number) => {
-      let currentPrice, so_level, so_percent, direction, isBuy;
-      isBuy = position.operation === AskBidEnum.Buy;
-      currentPrice = isBuy ? currentPriceBid() : currentPriceAsk();
-      so_level = -1 * postitionStopOut();
-      so_percent = (positionInstrument()?.stopOutPercent || 0) / 100;
-      direction = position.operation === AskBidEnum.Buy ? 1 : -1;
-
-      const result = Number(
-        (slPrice / currentPrice - 1) *
-          position.investmentAmount *
-          position.multiplier *
-          direction +
-          Math.abs(
-            quotesStore.quotes[position.instrument].bid.c -
-              quotesStore.quotes[position.instrument].ask.c
-          ).toFixed(positionInstrument()?.digits)
-      );
-      return result.toFixed(2);
-    },
-    [
-      currentPriceAsk,
-      currentPriceBid,
-      position,
-      positionInstrument,
-      postitionStopOut,
-    ]
-  );
+  const { sl, tp, isToppingUpActive } = watch();
 
   const challengeStopOutBySlValue = useCallback(
     (stopLoss) => {
-      if (!hasValue(stopLoss)) {
-        return;
-      }
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
-          SLTPstore.toggleToppingUp(stopLoss > postitionStopOut());
+          setValue(
+            'isToppingUpActive',
+            `${
+              stopLoss >
+              SLTPstore.positionStopOut(
+                position.investmentAmount,
+                position.instrument
+              )
+            }`
+          );
           break;
 
         case TpSlTypeEnum.Price:
-          const soValue = +positionStopOutByPrice(stopLoss);
-          SLTPstore.toggleToppingUp(
-            soValue <= 0 && Math.abs(soValue) > postitionStopOut()
+          const soValue = SLTPstore.positionStopOutByPrice({
+            instrumentId: position.instrument,
+            investmentAmount: position.investmentAmount,
+            multiplier: position.multiplier,
+            operation: position.operation,
+            slPrice: stopLoss,
+          });
+          setValue(
+            'isToppingUpActive',
+            `${
+              soValue <= 0 &&
+              Math.abs(soValue) >
+                SLTPstore.positionStopOut(
+                  position.investmentAmount,
+                  position.instrument
+                )
+            }`
           );
           break;
 
@@ -975,35 +918,62 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           break;
       }
     },
-    [SLTPstore.slType]
+    [SLTPstore.slType, position.investmentAmount]
   );
-  const { sl: stopLoss, tp } = watch();
 
   const challengeStopOutByToppingUp = useCallback(
     (isToppingUp: boolean) => {
-      if (!hasValue(stopLoss)) {
-        return;
-      }
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
           // TODO: think refactor
           if (
-            (stopLoss! > postitionStopOut() && !isToppingUp) ||
-            (stopLoss! <= postitionStopOut() && isToppingUp)
+            (hasValue(sl) &&
+              sl >
+                SLTPstore.positionStopOut(
+                  position.investmentAmount,
+                  position.instrument
+                ) &&
+              !isToppingUp) ||
+            (hasValue(sl) &&
+              sl <=
+                SLTPstore.positionStopOut(
+                  position.investmentAmount,
+                  position.instrument
+                ) &&
+              isToppingUp)
           ) {
             setValue('sl', undefined);
           }
-
           break;
 
         case TpSlTypeEnum.Price:
-          const soValue = +positionStopOutByPrice(stopLoss!);
+          const soValue = SLTPstore.positionStopOutByPrice({
+            instrumentId: position.instrument,
+            investmentAmount: position.investmentAmount,
+            multiplier: position.multiplier,
+            operation: position.operation,
+            slPrice: sl || 0,
+          });
           if (isToppingUp) {
-            if (soValue <= 0 && Math.abs(soValue) > postitionStopOut()) {
+            if (
+              soValue <= 0 &&
+              Math.abs(soValue) >
+                SLTPstore.positionStopOut(
+                  position.investmentAmount,
+                  position.instrument
+                )
+            ) {
               setValue('sl', undefined);
             }
           } else {
-            if (soValue <= 0 && Math.abs(soValue) <= postitionStopOut()) {
+            if (
+              soValue <= 0 &&
+              Math.abs(soValue) <=
+                SLTPstore.positionStopOut(
+                  position.investmentAmount,
+                  position.instrument
+                )
+            ) {
               setValue('sl', undefined);
             }
           }
@@ -1013,8 +983,20 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           break;
       }
     },
-    [SLTPstore.slType, stopLoss]
+    [SLTPstore.slType, sl, position]
   );
+
+  useEffect(() => {
+    if (hasValue(sl)) {
+      challengeStopOutBySlValue(sl);
+    }
+  }, [sl]);
+
+  useEffect(() => {
+    if (hasValue(isToppingUpActive)) {
+      challengeStopOutByToppingUp(JSON.parse(isToppingUpActive));
+    }
+  }, [isToppingUpActive]);
 
   const methodsForForm = {
     errors,
@@ -1044,11 +1026,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               : ''
           }
         >
-          <IsToppingUpWrapper
-            challengeStopOutBySlValue={challengeStopOutBySlValue}
-            challengeStopOutByToppingUp={challengeStopOutByToppingUp}
-            stopLoss={stopLoss}
-          ></IsToppingUpWrapper>
           <InstrumentInfoWrapperForBorder
             justifyContent="space-between"
             padding="0 0 8px 0"
@@ -1234,6 +1211,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       slType={position.slType}
                       isToppingUp={position.isToppingUpActive}
                       instrumentId={position.instrument}
+                      positionIdMarker={`position${position.id}`}
                       // active={
                       //   tradingViewStore.activePopup &&
                       //   position.id === quotesStore.selectedPosition.id
@@ -1256,7 +1234,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                           fontSize="12px"
                           lineHeight="14px"
                           color={
-                            hasValue(stopLoss)
+                            hasValue(sl)
                               ? '#fffccc'
                               : 'rgba(255, 255, 255, 0.6)'
                           }

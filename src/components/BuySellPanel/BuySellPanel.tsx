@@ -23,7 +23,7 @@ import ConfirmationPopup from './ConfirmationPopup';
 import { keyframes } from '@emotion/core';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
-import { observer, Observer } from 'mobx-react-lite';
+import { Observer } from 'mobx-react-lite';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import BadRequestPopup from '../BadRequestPopup';
@@ -42,7 +42,6 @@ import {
 import hasValue from '../../helpers/hasValue';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 import OpenPricePopup from './OpenPricePopup';
-import IsToppingUpWrapper from '../IsToppingUpWrapper';
 
 // TODO: too much code, refactor
 
@@ -146,32 +145,28 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               return value !== 0 || value === null;
             }
           )
-          .when([Fields.TAKE_PROFIT_TYPE], {
-            is: (tpType) =>
-              operation === AskBidEnum.Buy && tpType === TpSlTypeEnum.Price,
-            then: yup
-              .number()
-              .test(
-                Fields.TAKE_PROFIT,
-                `${t('Error message')}: ${t(
-                  'This level is higher or lower than the one currently allowed'
-                )}`,
-                (value) => value > currentPriceAsk()
-              ),
-          })
-          .when([Fields.TAKE_PROFIT_TYPE], {
-            is: (operation, tpType) =>
-              operation === AskBidEnum.Sell && tpType === TpSlTypeEnum.Price,
-            then: yup
-              .number()
-              .test(
-                Fields.TAKE_PROFIT,
-                `${t('Error message')}: ${t(
-                  'This level is higher or lower than the one currently allowed'
-                )}`,
-                (value) => value < currentPriceBid()
-              ),
-          }),
+          .test(
+            Fields.TAKE_PROFIT,
+            `${t('Error message')}: ${t(
+              'This level is higher or lower than the one currently allowed'
+            )}`,
+            (value) => {
+              if (SLTPstore.tpType === TpSlTypeEnum.Price) {
+                switch (operation) {
+                  case AskBidEnum.Buy:
+                    return value > currentPriceAsk();
+                  case AskBidEnum.Sell:
+                    return value < currentPriceBid();
+
+                  default:
+                    return true;
+                }
+              }
+
+              return true;
+            }
+          ),
+
         sl: yup
           .number()
           .test(Fields.STOP_LOSS, t('Stop Loss can not be zero'), (value) => {
@@ -184,26 +179,23 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             )}`,
             (value) => {
               if (SLTPstore.slType === TpSlTypeEnum.Price) {
-                return value < currentPriceAsk();
+                switch (operation) {
+                  case AskBidEnum.Buy:
+                    return value < currentPriceAsk();
+                  case AskBidEnum.Sell:
+                    return value > currentPriceBid();
+
+                  default:
+                    return true;
+                }
               }
-              return true;
-            }
-          )
-          .test(
-            Fields.STOP_LOSS,
-            `${t('Error message')}: ${t(
-              'This level is higher or lower than the one currently allowed'
-            )}`,
-            (value) => {
-              if (SLTPstore.slType === TpSlTypeEnum.Price) {
-                return value > currentPriceBid();
-              }
+
               return true;
             }
           ),
         openPrice: yup.number(),
+        isToppingUpActive: yup.string().required(),
       }),
-
     [
       instrument,
       currentPriceBid,
@@ -234,6 +226,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           instrumentId: instrument.id,
           processId: getProcessId(),
           multiplier,
+          isToppingUpActive: JSON.parse(values.isToppingUpActive),
         };
         try {
           const response = await API.openPendingOrder(modelToSubmit);
@@ -262,7 +255,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 response.order?.multiplier || modelToSubmit.multiplier
               }`,
             });
-            setValue('openPrice', '');
+            setValue('openPrice', undefined);
             mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
               [mixapanelProps.AMOUNT]: response.order.investmentAmount,
               [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -283,7 +276,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               [mixapanelProps.SL_VALUE]:
                 response.order.sl !== null ? Math.abs(response.order.sl) : null,
               [mixapanelProps.TP_VALUE]: response.order.tp,
-              [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
+              [mixapanelProps.SAVE_POSITION]: `${response.order.isToppingUpActive}`,
               [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
               [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
               [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -314,7 +307,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                   ? Math.abs(modelToSubmit.sl)
                   : null,
               [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
-              [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
+              [mixapanelProps.SAVE_POSITION]: `${modelToSubmit.isToppingUpActive}`,
               [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
               [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
               [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -342,7 +335,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           instrumentId: instrument.id,
           processId: getProcessId(),
           multiplier,
-          isToppingUpActive: SLTPstore.isToppingUpActive,
+          isToppingUpActive: JSON.parse(values.isToppingUpActive),
         };
         try {
           const response = await API.openPosition(modelToSubmit);
@@ -394,7 +387,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                   ? Math.abs(response.position.sl)
                   : null,
               [mixapanelProps.TP_VALUE]: response.position.tp,
-              [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
+              [mixapanelProps.SAVE_POSITION]: `${response.position.isToppingUpActive}`,
               [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
               [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
               [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -427,7 +420,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                   ? Math.abs(modelToSubmit.sl)
                   : null,
               [mixapanelProps.TP_VALUE]: modelToSubmit.tp,
-              [mixapanelProps.SAVE_POSITION]: `${SLTPstore.isToppingUpActive}`,
+              [mixapanelProps.SAVE_POSITION]: `${modelToSubmit.isToppingUpActive}`,
               [mixapanelProps.AVAILABLE_BALANCE]: availableBalance,
               [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccount?.id || '',
               [mixapanelProps.ACCOUNT_TYPE]: mainAppStore.activeAccount?.isLive
@@ -455,45 +448,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     ]
   );
 
-  /**
-   *  Stop Out max level
-   */
-  const postitionStopOut = useCallback(
-    (invest = 0) => {
-      const instrumentPercentSL = (instrument?.stopOutPercent || 95) / 100;
-      return +(invest * instrumentPercentSL).toFixed(2);
-    },
-    [instrument]
-  );
-
-  /**
-   *  Stop Out max level by price SL
-   */
-  const positionStopOutByPrice = useCallback(
-    (slPrice: number) => {
-      const { investmentAmount } = getValues();
-      let currentPrice, so_level, so_percent, direction, isBuy;
-      isBuy = operation === AskBidEnum.Buy;
-      currentPrice = isBuy ? currentPriceBid() : currentPriceAsk();
-      so_level = -1 * postitionStopOut(investmentAmount);
-      so_percent = (instrument.stopOutPercent || 0) / 100;
-      direction = operation === AskBidEnum.Buy ? 1 : -1;
-
-      const result = Number(
-        (slPrice / currentPrice - 1) *
-          investmentAmount *
-          multiplier *
-          direction +
-          Math.abs(
-            quotesStore.quotes[instrument.id].bid.c -
-              quotesStore.quotes[instrument.id].ask.c
-          ).toFixed(instrument.digits)
-      );
-      return result.toFixed(2);
-    },
-    [currentPriceAsk, currentPriceBid, operation, multiplier]
-  );
-
   const {
     register,
     handleSubmit,
@@ -508,9 +462,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
     mode: 'onSubmit',
+    defaultValues: {
+      isToppingUpActive: JSON.stringify(false),
+    },
   });
 
-  const { investmentAmount } = watch();
+  const { investmentAmount, sl, isToppingUpActive } = watch();
 
   useEffect(() => {
     reset();
@@ -673,17 +630,34 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     (stopLoss) => {
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
-          SLTPstore.toggleToppingUp(
-            stopLoss > postitionStopOut(investmentAmount)
+          setValue(
+            'isToppingUpActive',
+            `${
+              stopLoss >
+              SLTPstore.positionStopOut(investmentAmount, instrument.id)
+            }`
           );
           break;
 
         case TpSlTypeEnum.Price:
-          const soValue = +positionStopOutByPrice(stopLoss);
-          SLTPstore.toggleToppingUp(
-            soValue <= 0 &&
-              Math.abs(soValue) > postitionStopOut(investmentAmount)
-          );
+          if (operation !== null) {
+            const soValue = SLTPstore.positionStopOutByPrice({
+              instrumentId: instrument.id,
+              slPrice: stopLoss,
+              investmentAmount: investmentAmount,
+              multiplier: multiplier,
+              operation: operation,
+            });
+            setValue(
+              'isToppingUpActive',
+              `${
+                soValue <= 0 &&
+                Math.abs(soValue) >
+                  SLTPstore.positionStopOut(investmentAmount, instrument.id)
+              }`
+            );
+          }
+
           break;
 
         default:
@@ -692,45 +666,59 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     },
     [SLTPstore.slType, investmentAmount]
   );
-  const stopLoss: number = watch(Fields.STOP_LOSS);
-
   const challengeStopOutByToppingUp = useCallback(
     (isToppingUp: boolean) => {
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
           // TODO: think refactor
           if (
-            (stopLoss > postitionStopOut(investmentAmount) && !isToppingUp) ||
-            (stopLoss <= postitionStopOut(investmentAmount) && isToppingUp)
+            (hasValue(sl) &&
+              sl > SLTPstore.positionStopOut(investmentAmount, instrument.id) &&
+              !isToppingUp) ||
+            (hasValue(sl) &&
+              sl <=
+                SLTPstore.positionStopOut(investmentAmount, instrument.id) &&
+              isToppingUp)
           ) {
             setValue('sl', undefined);
           }
           break;
 
         case TpSlTypeEnum.Price:
-          const soValue = +positionStopOutByPrice(stopLoss);
-          if (isToppingUp) {
-            if (
-              soValue <= 0 &&
-              Math.abs(soValue) > postitionStopOut(investmentAmount)
-            ) {
-              setValue('sl', undefined);
-            }
-          } else {
-            if (
-              soValue <= 0 &&
-              Math.abs(soValue) <= postitionStopOut(investmentAmount)
-            ) {
-              setValue('sl', undefined);
+          if (operation !== null) {
+            const soValue = SLTPstore.positionStopOutByPrice({
+              instrumentId: instrument.id,
+              slPrice: sl || 0,
+              investmentAmount: investmentAmount,
+              multiplier: multiplier,
+              operation: operation,
+            });
+            if (isToppingUp) {
+              if (
+                soValue <= 0 &&
+                Math.abs(soValue) >
+                  SLTPstore.positionStopOut(investmentAmount, instrument.id)
+              ) {
+                setValue('sl', undefined);
+              }
+            } else {
+              if (
+                soValue <= 0 &&
+                Math.abs(soValue) <=
+                  SLTPstore.positionStopOut(investmentAmount, instrument.id)
+              ) {
+                setValue('sl', undefined);
+              }
             }
           }
+
           break;
 
         default:
           break;
       }
     },
-    [SLTPstore.slType, stopLoss, investmentAmount]
+    [SLTPstore.slType, sl, investmentAmount]
   );
 
   useEffect(() => {
@@ -745,6 +733,18 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       keyEvent.preventDefault();
     }
   };
+
+  useEffect(() => {
+    if (hasValue(sl)) {
+      challengeStopOutBySlValue(sl!);
+    }
+  }, [sl]);
+
+  useEffect(() => {
+    if (hasValue(isToppingUpActive)) {
+      challengeStopOutByToppingUp(JSON.parse(isToppingUpActive));
+    }
+  }, [isToppingUpActive]);
 
   const methods = {
     watch,
@@ -761,11 +761,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   return (
     <FlexContainer padding="16px" flexDirection="column">
-      <IsToppingUpWrapper
-        challengeStopOutByToppingUp={challengeStopOutByToppingUp}
-        challengeStopOutBySlValue={challengeStopOutBySlValue}
-        stopLoss={stopLoss}
-      ></IsToppingUpWrapper>
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>

@@ -17,6 +17,7 @@ interface Props {
   slType: TpSlTypeEnum | null;
   instrumentId: string;
   isToppingUp?: boolean;
+  positionIdMarker: string;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -28,7 +29,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       tpType,
       slType,
       instrumentId,
-      isToppingUp,
+      positionIdMarker,
     },
     ref
   ) => {
@@ -39,7 +40,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     const [on, toggle] = useState(false);
     const [isTop, setIsTop] = useState(true);
 
-    const { handleSubmit, errors } = useFormContext<FormValues>();
+    const { handleSubmit } = useFormContext<FormValues>();
 
     const [popupPosition, setPopupPosition] = useState({
       top: 0,
@@ -80,7 +81,6 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         SLTPstore.setTpType(tpType ?? TpSlTypeEnum.Currency);
         SLTPstore.setSlType(slType ?? TpSlTypeEnum.Currency);
         SLTPstore.setInstrumentId(instrumentId);
-        SLTPstore.toggleToppingUp(isToppingUp || false);
       }
     }, [on]);
 
@@ -90,6 +90,12 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }, []);
+
+    const submitForm = () => {
+      handleSubmit(handleSumbitMethod)().then(() => {
+        toggle(false);
+      });
+    };
 
     return (
       <FlexContainer ref={wrapperRef}>
@@ -111,11 +117,16 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
             bottom={isTop ? 'auto' : '20px'}
             zIndex="101"
           >
-            <SetAutoclose isDisabled={isDisabled} toggle={toggle} isActive={on}>
+            <SetAutoclose
+              isDisabled={isDisabled}
+              toggle={toggle}
+              isActive={on}
+              radioGroup={positionIdMarker}
+            >
               <ButtonApply
                 type="button"
                 disabled={isDisabled}
-                onClick={handleSubmit(handleSumbitMethod)}
+                onClick={submitForm}
               >
                 {t('Apply')}
               </ButtonApply>

@@ -1,1 +1,2 @@
-export default (value: any) => value !== null && value !== undefined;
+export default <T>(val?: T | null): val is T =>
+  val !== null && val !== undefined;

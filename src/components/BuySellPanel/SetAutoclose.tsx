@@ -16,7 +16,6 @@ import ColorsPallete from '../../styles/colorPallete';
 import { getProcessId } from '../../helpers/getProcessId';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
-import TopingUpCheck from './TopingUpCheck';
 import Fields from '../../constants/fields';
 import { ConnectForm } from './ConnectForm';
 import hasValue from '../../helpers/hasValue';
@@ -28,10 +27,11 @@ interface Props {
   isDisabled?: boolean;
   toggle: (arg0: boolean) => void;
   isActive: boolean;
+  radioGroup: string;
 }
 
 const SetAutoclose: FC<Props> = observer(
-  ({ isDisabled, toggle, children, isActive }) => {
+  ({ isDisabled, toggle, children, isActive, radioGroup }) => {
     const { t } = useTranslation();
 
     const { instrumentsStore, SLTPstore } = useStores();
@@ -100,15 +100,11 @@ const SetAutoclose: FC<Props> = observer(
       toggle(false);
     };
 
-    const handleRemoveTp = (
-      setValue: (arg0: string, arg1: any) => void
-    ) => () => {
+    const handleRemoveTp = (setValue: (arg0: any, arg1: any) => void) => () => {
       setValue('tp', undefined);
     };
 
-    const handleRemoveSl = (
-      setValue: (arg0: string, arg1: any) => void
-    ) => () => {
+    const handleRemoveSl = (setValue: (arg0: any, arg1: any) => void) => () => {
       setValue('sl', undefined);
     };
 
@@ -346,7 +342,44 @@ const SetAutoclose: FC<Props> = observer(
                         </Observer>
                       </InformationPopup>
                     </FlexContainer>
-                    <TopingUpCheck />
+                    <FlexContainer
+                      backgroundColor="#2A2C33"
+                      borderRadius="4px"
+                      overflow="hidden"
+                    >
+                      <RadioLabel>
+                        <RadioInput
+                          type="radio"
+                          name={Fields.IS_TOPPING_UP}
+                          ref={register}
+                          value="false"
+                          radioGroup={radioGroup}
+                        />
+                        <PrimaryTextSpan
+                          fontSize="14px"
+                          fontWeight="bold"
+                          color="rgba(196, 196, 196, 0.5)"
+                        >
+                          {t('Off')}
+                        </PrimaryTextSpan>
+                      </RadioLabel>
+                      <RadioLabel>
+                        <RadioInput
+                          type="radio"
+                          name={Fields.IS_TOPPING_UP}
+                          ref={register}
+                          radioGroup={radioGroup}
+                          value="true"
+                        />
+                        <PrimaryTextSpan
+                          fontSize="14px"
+                          fontWeight="bold"
+                          color="rgba(196, 196, 196, 0.5)"
+                        >
+                          {t('On')}
+                        </PrimaryTextSpan>
+                      </RadioLabel>
+                    </FlexContainer>
                   </FlexContainer>
                 )}
                 {!isDisabled ? children : null}
@@ -424,4 +457,31 @@ const PlusSign = styled.span`
 
 const CloseValueButtonWrapper = styled(FlexContainer)`
   transform: translateY(-50%);
+`;
+
+const RadioInput = styled.input`
+  display: none;
+  & + span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    color: rgba(196, 196, 196, 0.5);
+  }
+
+  &:checked + span {
+    color: #1c1f26;
+    background-color: #fffccc;
+  }
+`;
+
+const RadioLabel = styled.label`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 36px;
+  border-radius: 4px;
+  width: 50%;
+  margin: 0;
 `;
