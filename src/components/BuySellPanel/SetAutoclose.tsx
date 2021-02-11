@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { ChangeEvent, FC, MouseEvent } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -28,10 +28,11 @@ interface Props {
   toggle: (arg0: boolean) => void;
   isActive: boolean;
   radioGroup: string;
+  handleClickToppingUp?: (e: MouseEvent<HTMLInputElement>) => void;
 }
 
 const SetAutoclose: FC<Props> = observer(
-  ({ isDisabled, toggle, children, isActive, radioGroup }) => {
+  ({ isDisabled, toggle, children, isActive, radioGroup, handleClickToppingUp }) => {
     const { t } = useTranslation();
 
     const { instrumentsStore, SLTPstore } = useStores();
@@ -354,6 +355,7 @@ const SetAutoclose: FC<Props> = observer(
                           ref={register}
                           value="false"
                           radioGroup={radioGroup}
+                          onClick={handleClickToppingUp}
                         />
                         <PrimaryTextSpan
                           fontSize="14px"
@@ -370,6 +372,7 @@ const SetAutoclose: FC<Props> = observer(
                           ref={register}
                           radioGroup={radioGroup}
                           value="true"
+                          onClick={handleClickToppingUp}
                         />
                         <PrimaryTextSpan
                           fontSize="14px"
