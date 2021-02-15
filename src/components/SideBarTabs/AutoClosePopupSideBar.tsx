@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, forwardRef, FC } from 'react';
+import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -8,6 +8,7 @@ import { useStores } from '../../hooks/useStores';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useFormContext } from 'react-hook-form';
 import { FormValues } from '../../types/Positions';
+import { autorun } from 'mobx';
 
 interface Props {
   children: React.ReactNode;
@@ -16,8 +17,7 @@ interface Props {
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
   instrumentId: string;
-  isToppingUp?: boolean;
-  positionIdMarker: string;
+  positionId: number;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -25,23 +25,22 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     {
       children,
       isDisabled,
-      isToppingUp,
       handleSumbitMethod,
       tpType,
       slType,
       instrumentId,
-      positionIdMarker,
+      positionId,
     },
     ref
   ) => {
     const { t } = useTranslation();
 
-    const { SLTPstore } = useStores();
+    const { SLTPstore, tradingViewStore, quotesStore } = useStores();
 
     const [on, toggle] = useState(false);
     const [isTop, setIsTop] = useState(true);
 
-    const { handleSubmit } = useFormContext<FormValues>();
+    const { handleSubmit, trigger } = useFormContext<FormValues>();
 
     const [popupPosition, setPopupPosition] = useState({
       top: 0,
@@ -92,11 +91,27 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       };
     }, []);
 
-    const submitForm = () => {
-      handleSubmit(handleSumbitMethod)().then(() => {
-        toggle(false);
-      });
+    const submitForm = async () => {
+      try {
+        const isValid = await trigger();
+        if (isValid) {
+          await handleSubmit(handleSumbitMethod)();
+          toggle(false);
+        }
+      } catch (error) {}
     };
+
+    useEffect(() => {
+      const disposer = autorun(() => {
+        if (
+          tradingViewStore.activePopup &&
+          quotesStore.selectedPositionId === positionId
+        ) {
+          toggle(true);
+        }
+      });
+      return disposer;
+    }, []);
 
     return (
       <FlexContainer ref={wrapperRef}>
@@ -118,13 +133,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
             bottom={isTop ? 'auto' : '20px'}
             zIndex="101"
           >
-            <SetAutoclose
-              isDisabled={false}
-              toggle={toggle}
-              isActive={isToppingUp || false}
-              radioGroup={positionIdMarker}
-
-            >
+            <SetAutoclose isDisabled={isDisabled} toggle={toggle} isActive={on}>
               <ButtonApply
                 type="button"
                 disabled={isDisabled}

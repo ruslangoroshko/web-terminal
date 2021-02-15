@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, MouseEvent } from 'react';
+import React, { FC, MouseEvent } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -27,13 +27,10 @@ interface Props {
   isDisabled?: boolean;
   toggle: (arg0: boolean) => void;
   isActive: boolean;
-  radioGroup: string;
-  onClickToppingUp?: (e: MouseEvent<HTMLInputElement>) => void;
-  onChangeToppingUp?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const SetAutoclose: FC<Props> = observer(
-  ({ isDisabled, toggle, children, isActive, radioGroup, onClickToppingUp, onChangeToppingUp }) => {
+  ({ isDisabled, toggle, children, isActive }) => {
     const { t } = useTranslation();
 
     const { instrumentsStore, SLTPstore } = useStores();
@@ -110,17 +107,29 @@ const SetAutoclose: FC<Props> = observer(
       setValue('sl', undefined);
     };
 
+    const handelFalseRadioClick = (
+      setValue: (arg0: any, arg1: any) => void
+    ) => () => {
+      setValue(Fields.IS_TOPPING_UP, false);
+    };
+
+    const handelTrueRadioClick = (
+      setValue: (arg0: any, arg1: any) => void
+    ) => () => {
+      setValue(Fields.IS_TOPPING_UP, true);
+    };
+
     return (
-      <Wrapper
-        position="relative"
-        padding="16px"
-        flexDirection="column"
-        width="252px"
-      >
-        <ConnectForm>
-          {({ register, setValue, errors, watch }) => {
-            const { tp, sl } = watch();
-            return (
+      <ConnectForm>
+        {({ register, setValue, errors, watch, clearErrors }) => {
+          const { sl, tp, isToppingUpActive } = watch();
+          return (
+            <Wrapper
+              position="relative"
+              padding="16px"
+              flexDirection="column"
+              width="252px"
+            >
               <>
                 <ButtonClose type="button" onClick={handleToggle}>
                   <SvgIcon
@@ -211,6 +220,7 @@ const SetAutoclose: FC<Props> = observer(
                         </CloseValueButtonWrapper>
                       )}
                       <PnLTypeDropdown
+                        clearErrors={clearErrors}
                         dropdownType="tp"
                         isDisabled={isDisabled}
                       ></PnLTypeDropdown>
@@ -296,6 +306,7 @@ const SetAutoclose: FC<Props> = observer(
                         </CloseValueButtonWrapper>
                       )}
                       <PnLTypeDropdown
+                        clearErrors={clearErrors}
                         dropdownType="sl"
                         isDisabled={isDisabled}
                       ></PnLTypeDropdown>
@@ -349,51 +360,32 @@ const SetAutoclose: FC<Props> = observer(
                       borderRadius="4px"
                       overflow="hidden"
                     >
-                      <RadioLabel>
-                        <RadioInput
-                          type="radio"
-                          name={Fields.IS_TOPPING_UP}
-                          ref={register}
-                          value="false"
-                          radioGroup={radioGroup}
-                          onClick={onClickToppingUp}
-                          onChange={onChangeToppingUp}
-                        />
-                        <PrimaryTextSpan
-                          fontSize="14px"
-                          fontWeight="bold"
-                          color="rgba(196, 196, 196, 0.5)"
-                        >
-                          {t('Off')}
-                        </PrimaryTextSpan>
-                      </RadioLabel>
-                      <RadioLabel>
-                        <RadioInput
-                          type="radio"
-                          name={Fields.IS_TOPPING_UP}
-                          ref={register}
-                          radioGroup={radioGroup}
-                          value="true"
-                          onClick={onClickToppingUp}
-                          onChange={onChangeToppingUp}
-                        />
-                        <PrimaryTextSpan
-                          fontSize="14px"
-                          fontWeight="bold"
-                          color="rgba(196, 196, 196, 0.5)"
-                        >
-                          {t('On')}
-                        </PrimaryTextSpan>
-                      </RadioLabel>
+                      <RadioInput
+                        type="checkbox"
+                        ref={register}
+                        name={Fields.IS_TOPPING_UP}
+                      />
+                      <PseudoRadio
+                        isChecked={!isToppingUpActive}
+                        onClick={handelFalseRadioClick(setValue)}
+                      >
+                        {t('Off')}
+                      </PseudoRadio>
+                      <PseudoRadio
+                        isChecked={isToppingUpActive}
+                        onClick={handelTrueRadioClick(setValue)}
+                      >
+                        {t('On')}
+                      </PseudoRadio>
                     </FlexContainer>
                   </FlexContainer>
                 )}
                 {!isDisabled ? children : null}
               </>
-            );
-          }}
-        </ConnectForm>
-      </Wrapper>
+            </Wrapper>
+          );
+        }}
+      </ConnectForm>
     );
   }
 );
@@ -467,18 +459,34 @@ const CloseValueButtonWrapper = styled(FlexContainer)`
 
 const RadioInput = styled.input`
   display: none;
-  & + span {
+  & ~ .check-on {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 100%;
     color: rgba(196, 196, 196, 0.5);
+    background-color: transparent;
   }
 
-  &:checked + span {
+  & + .check-off {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
     color: #1c1f26;
     background-color: #fffccc;
+  }
+
+  &:checked ~ .check-on {
+    color: #1c1f26;
+    background-color: #fffccc;
+  }
+
+  &:checked + .check-off {
+    color: rgba(196, 196, 196, 0.5);
+    background-color: transparent;
   }
 `;
 
@@ -488,6 +496,20 @@ const RadioLabel = styled.label`
   align-items: center;
   min-height: 36px;
   border-radius: 4px;
-  width: 50%;
+  width: 100%;
   margin: 0;
+`;
+
+const PseudoRadio = styled.div<{ isChecked: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 0;
+  width: 100%;
+  height: 100%;
+  color: ${(props) =>
+    props.isChecked ? '#1c1f26' : 'rgba(196, 196, 196, 0.5)'};
+  background-color: ${(props) => (props.isChecked ? '#fffccc' : 'transparent')};
 `;
