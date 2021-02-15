@@ -122,7 +122,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           .test(
             Fields.TAKE_PROFIT,
             t('Take profit level should be higher than the current P/L'),
-            (value) => value === null || value > PnL()
+            (value) => {
+              if (!hasValue(value)) {
+                return true;
+              }
+              return value === null || value > PnL();
+            }
           )
           .test(
             Fields.TAKE_PROFIT,
@@ -181,7 +186,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           .test(
             Fields.STOP_LOSS,
             t('Stop loss level should be lower than the current P/L'),
-            (value) => -1 * Math.abs(value) < PnL()
+            (value) => {
+              if (!hasValue(value)) {
+                return true;
+              }
+              return -1 * Math.abs(value) < PnL();
+            }
           ),
         isToppingUpActive: yup.boolean(),
         investmentAmount: yup.number(),
