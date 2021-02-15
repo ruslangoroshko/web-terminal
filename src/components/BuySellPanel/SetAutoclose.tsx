@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, MouseEvent } from 'react';
+import React, { FC, MouseEvent } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -22,17 +22,17 @@ import hasValue from '../../helpers/hasValue';
 import { Observer, observer } from 'mobx-react-lite';
 import setValueAsNullIfEmptyAndNegative from '../../helpers/setValueAsNullIfEmptyAndNegative';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
+import { Controller } from 'react-hook-form';
 
 interface Props {
   isDisabled?: boolean;
   toggle: (arg0: boolean) => void;
   isActive: boolean;
-  radioGroup: string;
   handleClickToppingUp?: (e: MouseEvent<HTMLInputElement>) => void;
 }
 
 const SetAutoclose: FC<Props> = observer(
-  ({ isDisabled, toggle, children, isActive, radioGroup, handleClickToppingUp }) => {
+  ({ isDisabled, toggle, children, isActive }) => {
     const { t } = useTranslation();
 
     const { instrumentsStore, SLTPstore } = useStores();
@@ -343,46 +343,51 @@ const SetAutoclose: FC<Props> = observer(
                         </Observer>
                       </InformationPopup>
                     </FlexContainer>
-                    <FlexContainer
-                      backgroundColor="#2A2C33"
-                      borderRadius="4px"
-                      overflow="hidden"
-                    >
-                      <RadioLabel>
-                        <RadioInput
-                          type="radio"
-                          name={Fields.IS_TOPPING_UP}
-                          ref={register}
-                          value="false"
-                          radioGroup={radioGroup}
-                          onClick={handleClickToppingUp}
-                        />
-                        <PrimaryTextSpan
-                          fontSize="14px"
-                          fontWeight="bold"
-                          color="rgba(196, 196, 196, 0.5)"
+                    <Controller
+                      name={Fields.IS_TOPPING_UP}
+                      render={(field) => (
+                        <FlexContainer
+                          backgroundColor="#2A2C33"
+                          borderRadius="4px"
+                          overflow="hidden"
                         >
-                          {t('Off')}
-                        </PrimaryTextSpan>
-                      </RadioLabel>
-                      <RadioLabel>
-                        <RadioInput
-                          type="radio"
-                          name={Fields.IS_TOPPING_UP}
-                          ref={register}
-                          radioGroup={radioGroup}
-                          value="true"
-                          onClick={handleClickToppingUp}
-                        />
-                        <PrimaryTextSpan
-                          fontSize="14px"
-                          fontWeight="bold"
-                          color="rgba(196, 196, 196, 0.5)"
-                        >
-                          {t('On')}
-                        </PrimaryTextSpan>
-                      </RadioLabel>
-                    </FlexContainer>
+                          <RadioLabel>
+                            <RadioInput
+                              type="radio"
+                              {...field}
+                              checked={!field.value}
+                              onChange={(e) => {
+                                field.onChange(e.target.checked);
+                              }}
+                            />
+                            <PrimaryTextSpan
+                              fontSize="14px"
+                              fontWeight="bold"
+                              color="rgba(196, 196, 196, 0.5)"
+                            >
+                              {t('Off')}
+                            </PrimaryTextSpan>
+                          </RadioLabel>
+                          <RadioLabel>
+                            <RadioInput
+                              type="radio"
+                              {...field}
+                              checked={field.value}
+                              onChange={(e) => {
+                                field.onChange(!e.target.checked);
+                              }}
+                            />
+                            <PrimaryTextSpan
+                              fontSize="14px"
+                              fontWeight="bold"
+                              color="rgba(196, 196, 196, 0.5)"
+                            >
+                              {t('On')}
+                            </PrimaryTextSpan>
+                          </RadioLabel>
+                        </FlexContainer>
+                      )}
+                    ></Controller>
                   </FlexContainer>
                 )}
                 {!isDisabled ? children : null}

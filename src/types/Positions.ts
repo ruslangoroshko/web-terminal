@@ -36,7 +36,7 @@ export interface FormValues {
   tp?: number;
   sl?: number;
   openPrice?: number;
-  isToppingUpActive: string;
+  isToppingUpActive: boolean;
 }
 
 export interface OpenPositionResponseDTO {

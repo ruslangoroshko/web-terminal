@@ -194,7 +194,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             }
           ),
         openPrice: yup.number(),
-        isToppingUpActive: yup.string().required(),
+        isToppingUpActive: yup.boolean().required(),
       }),
     [
       instrument,
@@ -226,7 +226,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           instrumentId: instrument.id,
           processId: getProcessId(),
           multiplier,
-          isToppingUpActive: JSON.parse(values.isToppingUpActive),
+          isToppingUpActive: values.isToppingUpActive,
         };
         try {
           const response = await API.openPendingOrder(modelToSubmit);
@@ -335,7 +335,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           instrumentId: instrument.id,
           processId: getProcessId(),
           multiplier,
-          isToppingUpActive: JSON.parse(values.isToppingUpActive),
+          isToppingUpActive: values.isToppingUpActive,
         };
         try {
           const response = await API.openPosition(modelToSubmit);
@@ -463,7 +463,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     resolver: yupResolver(validationSchema()),
     mode: 'onSubmit',
     defaultValues: {
-      isToppingUpActive: JSON.stringify(false),
+      isToppingUpActive: false,
     },
   });
 
@@ -632,10 +632,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         case TpSlTypeEnum.Currency:
           setValue(
             'isToppingUpActive',
-            `${
-              stopLoss >
+            stopLoss >
               SLTPstore.positionStopOut(investmentAmount, instrument.id)
-            }`
           );
           break;
 
@@ -650,11 +648,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             });
             setValue(
               'isToppingUpActive',
-              `${
-                soValue <= 0 &&
+              soValue <= 0 &&
                 Math.abs(soValue) >
                   SLTPstore.positionStopOut(investmentAmount, instrument.id)
-              }`
             );
           }
 
@@ -735,16 +731,16 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   useEffect(() => {
-    console.log(sl)
     if (hasValue(sl)) {
-      
+      console.log('useEffect sl', sl);
       challengeStopOutBySlValue(sl!);
     }
   }, [sl]);
 
   useEffect(() => {
     if (hasValue(isToppingUpActive)) {
-      challengeStopOutByToppingUp(JSON.parse(isToppingUpActive));
+      console.log('useEffect isToppingUpActive', isToppingUpActive);
+      challengeStopOutByToppingUp(isToppingUpActive);
     }
   }, [isToppingUpActive]);
 

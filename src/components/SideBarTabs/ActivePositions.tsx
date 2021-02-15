@@ -381,7 +381,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             positionId: position.id,
             investmentAmount: position.investmentAmount,
             processId: getProcessId(),
-            isToppingUpActive: JSON.parse(values.isToppingUpActive),
+            isToppingUpActive: values.isToppingUpActive,
           }
         : {
             ...values,
@@ -401,7 +401,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               quotesStore.selectedPosition?.multiplier || position.multiplier,
             operation:
               quotesStore.selectedPosition?.operation || position.operation,
-            isToppingUpActive: JSON.parse(values.isToppingUpActive),
+            isToppingUpActive: values.isToppingUpActive,
           };
 
       try {
@@ -533,7 +533,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       tp: position.tp ?? undefined,
       sl: hasValue(position.sl) ? Math.abs(position.sl!) : undefined,
       investmentAmount: position.investmentAmount,
-      isToppingUpActive: JSON.stringify(position.isToppingUpActive),
+      isToppingUpActive: position.isToppingUpActive,
     },
   });
 
@@ -773,7 +773,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       const objectToSend: FormValues = {
         tp: quotesStore.selectedPosition.tp ?? undefined,
         investmentAmount: quotesStore.selectedPosition.investmentAmount,
-        isToppingUpActive: `${position.isToppingUpActive}`,
+        isToppingUpActive: position.isToppingUpActive,
       };
       SLTPstore.toggleClosedByChart(true);
       quotesStore.selectedPosition.sl = null;
@@ -793,7 +793,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           ? Math.abs(quotesStore.selectedPosition.sl!)
           : undefined,
         investmentAmount: quotesStore.selectedPosition.investmentAmount,
-        isToppingUpActive: `${position.isToppingUpActive}`,
+        isToppingUpActive: position.isToppingUpActive,
       };
       quotesStore.selectedPosition.tp = null;
       quotesStore.selectedPosition.tpType = null;
@@ -883,13 +883,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         case TpSlTypeEnum.Currency:
           setValue(
             'isToppingUpActive',
-            `${
-              stopLoss >
+            stopLoss >
               SLTPstore.positionStopOut(
                 position.investmentAmount,
                 position.instrument
               )
-            }`
           );
           break;
 
@@ -903,14 +901,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           });
           setValue(
             'isToppingUpActive',
-            `${
-              soValue <= 0 &&
+            soValue <= 0 &&
               Math.abs(soValue) >
                 SLTPstore.positionStopOut(
                   position.investmentAmount,
                   position.instrument
                 )
-            }`
           );
           break;
 
@@ -926,6 +922,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
           // TODO: think refactor
+
+          console.log(isToppingUp);
           if (
             (hasValue(sl) &&
               sl >
@@ -994,7 +992,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   useEffect(() => {
     if (hasValue(isToppingUpActive)) {
-      challengeStopOutByToppingUp(JSON.parse(isToppingUpActive));
+      challengeStopOutByToppingUp(isToppingUpActive);
     }
   }, [isToppingUpActive]);
 

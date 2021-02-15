@@ -1,4 +1,12 @@
-import React, { useState, useRef, useEffect, FC, ChangeEvent, MouseEvent, useCallback } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  FC,
+  ChangeEvent,
+  MouseEvent,
+  useCallback,
+} from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -27,9 +35,14 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
 
-  const { setValue, clearErrors, errors, getValues, trigger } = useFormContext<
-    FormValues
-  >();
+  const {
+    setValue,
+    clearErrors,
+    errors,
+    getValues,
+    trigger,
+    watch,
+  } = useFormContext<FormValues>();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -94,16 +107,20 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
     }`;
   };
 
-  const { sl, tp } = useWatch({});
+  const { sl, tp } = watch();
 
-
-  const handleClickToppingUp = () => (e: MouseEvent<HTMLInputElement>) => {
-    const { investmentAmount, isToppingUpActive  } = getValues()
-    if (isToppingUpActive === 'false') {
+  const handleClickToppingUp = () => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { investmentAmount } = getValues();
+    if (!e.target.checked) {
       SLTPstore.setTpType(TpSlTypeEnum.Currency);
-      setValue('sl', `${SLTPstore.positionStopOut(investmentAmount, instrumentId)}`)
+      setValue(
+        'sl',
+        `${SLTPstore.positionStopOut(investmentAmount, instrumentId)}`
+      );
     }
-  }
+  };
 
   const handleApplySetAutoClose = () => {
     trigger();
@@ -124,7 +141,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
         <ButtonAutoClosePurchase
           onClick={handleToggle}
           type="button"
-          hasValues={!!(sl || tp)}
+          hasValues={hasValue(sl) || hasValue(tp)}
         >
           <FlexContainer flexDirection="column" alignItems="center">
             {!on && (hasValue(sl) || hasValue(tp)) ? (
@@ -185,7 +202,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
         right="100%"
         visibilityProp={on ? 'visible' : 'hidden'}
       >
-        <SetAutoclose toggle={toggle} isActive={on} radioGroup="formBuySell" handleClickToppingUp={handleClickToppingUp()}>
+        <SetAutoclose toggle={toggle} isActive={on} >
           <ButtonApply type="button" onClick={handleApplySetAutoClose}>
             {t('Apply')}
           </ButtonApply>
