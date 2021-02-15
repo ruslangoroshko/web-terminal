@@ -1,12 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  FC,
-  ChangeEvent,
-  MouseEvent,
-  useCallback,
-} from 'react';
+import React, { useState, useRef, useEffect, FC } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -21,7 +13,7 @@ import { SecondaryButton } from '../../styles/Buttons';
 import SvgIcon from '../SvgIcon';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import hasValue from '../../helpers/hasValue';
 import { FormValues } from '../../types/Positions';
 import { Observer } from 'mobx-react-lite';
@@ -202,7 +194,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
         right="100%"
         visibilityProp={on ? 'visible' : 'hidden'}
       >
-        <SetAutoclose toggle={toggle} isActive={on} >
+        <SetAutoclose toggle={toggle} isActive={on}>
           <ButtonApply type="button" onClick={handleApplySetAutoClose}>
             {t('Apply')}
           </ButtonApply>

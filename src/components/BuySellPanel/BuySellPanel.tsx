@@ -243,6 +243,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             reset();
             setOperation(null);
             setValue('investmentAmount', values.investmentAmount);
+            SLTPstore.setSlType(TpSlTypeEnum.Currency);
+            SLTPstore.setTpType(TpSlTypeEnum.Currency);
             API.setKeyValue({
               key: mainAppStore.activeAccount?.isLive
                 ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
