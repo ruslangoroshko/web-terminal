@@ -30,7 +30,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     const [on, toggle] = useState(false);
     const [isTop, setIsTop] = useState(true);
 
-    const { handleSubmit } = useFormContext<FormValues>();
+    const { handleSubmit, trigger } = useFormContext<FormValues>();
 
     const [popupPosition, setPopupPosition] = useState({
       top: 0,
@@ -81,10 +81,14 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       };
     }, []);
 
-    const submitForm = () => {
-      handleSubmit(handleSumbitMethod)().then(() => {
-        toggle(false);
-      });
+    const submitForm = async () => {
+      try {
+        const isValid = await trigger();
+        if (isValid) {
+          await handleSubmit(handleSumbitMethod)();
+          toggle(false);
+        }
+      } catch (error) {}
     };
 
     return (

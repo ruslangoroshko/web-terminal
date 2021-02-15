@@ -177,6 +177,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
               return true;
             }
+          )
+          .test(
+            Fields.STOP_LOSS,
+            t('Stop loss level should be lower than the current P/L'),
+            (value) => -1 * Math.abs(value) < PnL()
           ),
         isToppingUpActive: yup.boolean(),
         investmentAmount: yup.number(),
