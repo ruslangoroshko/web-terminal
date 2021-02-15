@@ -25,6 +25,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     {
       children,
       isDisabled,
+      isToppingUp,
       handleSumbitMethod,
       tpType,
       slType,

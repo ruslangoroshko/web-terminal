@@ -732,14 +732,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     if (hasValue(sl)) {
-      console.log('useEffect sl', sl);
       challengeStopOutBySlValue(sl!);
     }
   }, [sl]);
 
   useEffect(() => {
     if (hasValue(isToppingUpActive)) {
-      console.log('useEffect isToppingUpActive', isToppingUpActive);
       challengeStopOutByToppingUp(isToppingUpActive);
     }
   }, [isToppingUpActive]);

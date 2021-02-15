@@ -28,7 +28,6 @@ interface Props {
   isDisabled?: boolean;
   toggle: (arg0: boolean) => void;
   isActive: boolean;
-  handleClickToppingUp?: (e: MouseEvent<HTMLInputElement>) => void;
 }
 
 const SetAutoclose: FC<Props> = observer(
