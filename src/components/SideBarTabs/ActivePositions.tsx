@@ -96,7 +96,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   const validationSchema = useCallback(
     () =>
-      yup.object().shape({
+      yup.object().shape<FormValues>({
         tp: yup
           .number()
           .test(
@@ -154,6 +154,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               return true;
             }
           ),
+        isToppingUpActive: yup.boolean(),
+        investmentAmount: yup.number(),
       }),
     [
       position,
@@ -528,6 +530,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     ...otherMethods
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
+    mode: 'onSubmit',
     reValidateMode: 'onSubmit',
     defaultValues: {
       tp: position.tp ?? undefined,
@@ -922,8 +925,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
           // TODO: think refactor
-
-          console.log(isToppingUp);
           if (
             (hasValue(sl) &&
               sl >
@@ -1207,13 +1208,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       handleSumbitMethod={updateSLTP}
                       tpType={position.tpType}
                       slType={position.slType}
-                      isToppingUp={position.isToppingUpActive}
                       instrumentId={position.instrument}
-                      positionIdMarker={`position${position.id}`}
-                      // active={
-                      //   tradingViewStore.activePopup &&
-                      //   position.id === quotesStore.selectedPosition.id
-                      // }
                     >
                       <SetSLTPButton>
                         <PrimaryTextSpan

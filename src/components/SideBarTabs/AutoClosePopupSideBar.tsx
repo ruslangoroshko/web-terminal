@@ -16,22 +16,11 @@ interface Props {
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
   instrumentId: string;
-  isToppingUp?: boolean;
-  positionIdMarker: string;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
   (
-    {
-      children,
-      isDisabled,
-      isToppingUp,
-      handleSumbitMethod,
-      tpType,
-      slType,
-      instrumentId,
-      positionIdMarker,
-    },
+    { children, isDisabled, handleSumbitMethod, tpType, slType, instrumentId },
     ref
   ) => {
     const { t } = useTranslation();

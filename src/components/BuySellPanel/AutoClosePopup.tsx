@@ -101,24 +101,12 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
 
   const { sl, tp } = watch();
 
-  const handleClickToppingUp = () => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { investmentAmount } = getValues();
-    if (!e.target.checked) {
-      SLTPstore.setTpType(TpSlTypeEnum.Currency);
-      setValue(
-        'sl',
-        `${SLTPstore.positionStopOut(investmentAmount, instrumentId)}`
-      );
-    }
-  };
-
   const handleApplySetAutoClose = () => {
-    trigger();
-    if (!Object.keys(errors).length) {
-      toggle(false);
-    }
+    trigger().then(() => {
+      if (!Object.keys(errors).length) {
+        toggle(false);
+      }
+    });
   };
 
   useEffect(() => {

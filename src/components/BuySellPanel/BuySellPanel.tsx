@@ -151,6 +151,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               'This level is higher or lower than the one currently allowed'
             )}`,
             (value) => {
+              if (!hasValue(value)) {
+                return true;
+              }
               if (SLTPstore.tpType === TpSlTypeEnum.Price) {
                 switch (operation) {
                   case AskBidEnum.Buy:
@@ -178,6 +181,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               'This level is higher or lower than the one currently allowed'
             )}`,
             (value) => {
+              if (!hasValue(value)) {
+                return true;
+              }
               if (SLTPstore.slType === TpSlTypeEnum.Price) {
                 switch (operation) {
                   case AskBidEnum.Buy:
@@ -464,6 +470,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
     mode: 'onSubmit',
+    reValidateMode: 'onSubmit',
     defaultValues: {
       isToppingUpActive: false,
     },
@@ -756,6 +763,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     formState,
     ...otherMethods,
   };
+
+  console.log(errors);
 
   return (
     <FlexContainer padding="16px" flexDirection="column">
