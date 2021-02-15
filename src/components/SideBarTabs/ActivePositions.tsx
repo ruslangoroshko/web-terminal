@@ -121,6 +121,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           )
           .test(
             Fields.TAKE_PROFIT,
+            t('Take profit level should be higher than the current P/L'),
+            (value) => value === null || value > PnL()
+          )
+          .test(
+            Fields.TAKE_PROFIT,
             `${t('Error message')}: ${t(
               'This level is higher or lower than the one currently allowed'
             )}`,
@@ -129,18 +134,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 return true;
               }
               if (SLTPstore.tpType === TpSlTypeEnum.Price) {
-                switch (position.operation) {
-                  case AskBidEnum.Buy:
-                    return value > currentPriceAsk();
-                  case AskBidEnum.Sell:
-                    return value < currentPriceBid();
-
-                  default:
-                    return true;
-                }
-              }
-
-              if (SLTPstore.tpType === TpSlTypeEnum.Currency) {
                 switch (position.operation) {
                   case AskBidEnum.Buy:
                     return value > currentPriceAsk();
@@ -299,8 +292,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     }
     return 0;
   };
-
-  
 
   const closePosition = (closeFrom: string) => async () => {
     try {
