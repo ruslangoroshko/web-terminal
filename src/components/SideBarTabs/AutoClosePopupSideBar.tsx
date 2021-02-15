@@ -25,6 +25,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     {
       children,
       isDisabled,
+      isToppingUp,
       handleSumbitMethod,
       tpType,
       slType,
@@ -118,10 +119,11 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
             zIndex="101"
           >
             <SetAutoclose
-              isDisabled={isDisabled}
+              isDisabled={false}
               toggle={toggle}
-              isActive={on}
+              isActive={isToppingUp || false}
               radioGroup={positionIdMarker}
+
             >
               <ButtonApply
                 type="button"

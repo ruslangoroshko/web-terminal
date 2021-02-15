@@ -736,7 +736,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     if (hasValue(sl)) {
-      challengeStopOutBySlValue(sl!);
+      challengeStopOutBySlValue(sl);
     }
   }, [sl]);
 

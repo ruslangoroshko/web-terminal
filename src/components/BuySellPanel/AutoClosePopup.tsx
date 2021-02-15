@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, FC } from 'react';
+import React, { useState, useRef, useEffect, FC, ChangeEvent, MouseEvent, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -63,7 +63,6 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -97,11 +96,14 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
 
   const { sl, tp } = useWatch({});
 
-  useEffect(() => {
-    SLTPstore.setSlType(TpSlTypeEnum.Currency);
-    SLTPstore.setTpType(TpSlTypeEnum.Currency);
-    SLTPstore.setInstrumentId(instrumentId);
-  }, []);
+
+  const handleClickToppingUp = () => (e: MouseEvent<HTMLInputElement>) => {
+    const { investmentAmount, isToppingUpActive  } = getValues()
+    if (isToppingUpActive === 'false') {
+      SLTPstore.setTpType(TpSlTypeEnum.Currency);
+      setValue('sl', `${SLTPstore.positionStopOut(investmentAmount, instrumentId)}`)
+    }
+  }
 
   const handleApplySetAutoClose = () => {
     trigger();
@@ -109,6 +111,12 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
       toggle(false);
     }
   };
+
+  useEffect(() => {
+    SLTPstore.setSlType(TpSlTypeEnum.Currency);
+    SLTPstore.setTpType(TpSlTypeEnum.Currency);
+    SLTPstore.setInstrumentId(instrumentId);
+  }, []);
 
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
@@ -177,7 +185,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
         right="100%"
         visibilityProp={on ? 'visible' : 'hidden'}
       >
-        <SetAutoclose toggle={toggle} isActive={on} radioGroup="formBuySell">
+        <SetAutoclose toggle={toggle} isActive={on} radioGroup="formBuySell" onClickToppingUp={handleClickToppingUp()}>
           <ButtonApply type="button" onClick={handleApplySetAutoClose}>
             {t('Apply')}
           </ButtonApply>
