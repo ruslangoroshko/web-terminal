@@ -6,6 +6,7 @@ import {
   ListForEN,
   ListForPL,
   ListForES,
+  ListForDE,
 } from '../../constants/listOfLanguages';
 import { ObjectKeys } from '../../helpers/objectKeys';
 import styled from '@emotion/styled';
@@ -29,9 +30,12 @@ const ListOfCountries = observer(() => {
       case CountriesEnum.PL:
         setList(ListForPL);
         break;
-      // case CountriesEnum.ES:
-      //   setList(ListForES);
-      //   break;
+      case CountriesEnum.ES:
+        setList(ListForES);
+        break;
+      case CountriesEnum.DE:
+        setList(ListForDE);
+        break;
       default:
         break;
     }
@@ -44,7 +48,7 @@ const ListOfCountries = observer(() => {
       flexDirection="column"
       width="200px"
     >
-      {ObjectKeys(list).map(key => (
+      {ObjectKeys(list).map((key) => (
         <CountryListItemWrapper key={key}>
           <ButtonItem
             onClick={changeCountry(key)}
@@ -82,6 +86,6 @@ const CountryListItem = styled(PrimaryTextSpan)`
 
 const ButtonItem = styled(ButtonWithoutStyles)<{ isActive: boolean }>`
   > span {
-    color: ${props => props.isActive && '#fffccc'};
+    color: ${(props) => props.isActive && '#fffccc'};
   }
 `;
