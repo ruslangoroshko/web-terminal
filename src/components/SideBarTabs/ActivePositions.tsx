@@ -1226,6 +1226,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       tpType={position.tpType}
                       slType={position.slType}
                       instrumentId={position.instrument}
+                      positionId={position.id}
                     >
                       <SetSLTPButton>
                         <PrimaryTextSpan

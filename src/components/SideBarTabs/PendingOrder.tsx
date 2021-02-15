@@ -189,6 +189,7 @@ const PendingOrder: FC<Props> = (props) => {
                     tpType={pendingOrder.tpType}
                     slType={pendingOrder.slType}
                     instrumentId={pendingOrder.instrument}
+                    positionId={pendingOrder.id}
                   >
                     <SvgIcon
                       {...IconSettings}

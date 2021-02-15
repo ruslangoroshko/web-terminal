@@ -8,6 +8,7 @@ import { useStores } from '../../hooks/useStores';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useFormContext } from 'react-hook-form';
 import { FormValues } from '../../types/Positions';
+import { autorun } from 'mobx';
 
 interface Props {
   children: React.ReactNode;
@@ -16,16 +17,25 @@ interface Props {
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
   instrumentId: string;
+  positionId: number;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
   (
-    { children, isDisabled, handleSumbitMethod, tpType, slType, instrumentId },
+    {
+      children,
+      isDisabled,
+      handleSumbitMethod,
+      tpType,
+      slType,
+      instrumentId,
+      positionId,
+    },
     ref
   ) => {
     const { t } = useTranslation();
 
-    const { SLTPstore } = useStores();
+    const { SLTPstore, tradingViewStore, quotesStore } = useStores();
 
     const [on, toggle] = useState(false);
     const [isTop, setIsTop] = useState(true);
@@ -90,6 +100,18 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         }
       } catch (error) {}
     };
+
+    useEffect(() => {
+      const disposer = autorun(() => {
+        if (
+          tradingViewStore.activePopup &&
+          quotesStore.selectedPositionId === positionId
+        ) {
+          toggle(true);
+        }
+      });
+      return disposer;
+    }, []);
 
     return (
       <FlexContainer ref={wrapperRef}>
