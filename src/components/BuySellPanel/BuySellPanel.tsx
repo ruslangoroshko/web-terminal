@@ -764,8 +764,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     ...otherMethods,
   };
 
-  console.log(errors);
-
   return (
     <FlexContainer padding="16px" flexDirection="column">
       <Observer>
@@ -925,19 +923,21 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </InformationPopup>
           </FlexContainer>
           <FlexContainer position="relative" flexDirection="column">
-            {!setAutoCloseWrapperRef.current &&
-              ((formState.touched.sl && errors.sl) ||
-                (formState.touched.tp && errors.tp)) && (
-                <ErropPopup
-                  textColor="#fffccc"
-                  bgColor={ColorsPallete.RAZZMATAZZ}
-                  classNameTooltip={'investmentAmount'}
-                  direction="left"
-                >
-                  {errors.sl?.message || errors.tp?.message}
-                </ErropPopup>
-              )}
-            <AutoClosePopup instrumentId={instrument.id}></AutoClosePopup>
+            <AutoClosePopup instrumentId={instrument.id}>
+              <>
+                {((formState.touched.sl && errors.sl) ||
+                  (formState.touched.tp && errors.tp)) && (
+                  <ErropPopup
+                    textColor="#fffccc"
+                    bgColor={ColorsPallete.RAZZMATAZZ}
+                    classNameTooltip="investmentAmount"
+                    direction="left"
+                  >
+                    {errors.sl?.message || errors.tp?.message}
+                  </ErropPopup>
+                )}
+              </>
+            </AutoClosePopup>
           </FlexContainer>
 
           <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

@@ -22,7 +22,7 @@ interface Props {
   instrumentId: string;
 }
 
-const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
+const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
   const { mainAppStore, SLTPstore } = useStores();
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
@@ -60,6 +60,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
     setValue('sl', undefined);
     SLTPstore.setTpType(TpSlTypeEnum.Currency);
     SLTPstore.setSlType(TpSlTypeEnum.Currency);
+    clearErrors();
   };
 
   const handleClose = () => {
@@ -116,79 +117,82 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
   }, []);
 
   return (
-    <FlexContainer position="relative" ref={wrapperRef}>
-      <FlexContainer width="100%" position="relative">
-        <ButtonAutoClosePurchase
-          onClick={handleToggle}
-          type="button"
-          hasValues={hasValue(sl) || hasValue(tp)}
+    <>
+      {!on && children}
+      <FlexContainer position="relative" ref={wrapperRef}>
+        <FlexContainer width="100%" position="relative">
+          <ButtonAutoClosePurchase
+            onClick={handleToggle}
+            type="button"
+            hasValues={hasValue(sl) || hasValue(tp)}
+          >
+            <FlexContainer flexDirection="column" alignItems="center">
+              {!on && (hasValue(sl) || hasValue(tp)) ? (
+                <FlexContainer
+                  alignItems="center"
+                  padding="0 20px 0 0"
+                  width="100%"
+                  flexWrap="wrap"
+                >
+                  <Observer>
+                    {() => (
+                      <>
+                        <PrimaryTextSpan
+                          overflow="hidden"
+                          marginRight="4px"
+                          textOverflow="ellipsis"
+                          whiteSpace="nowrap"
+                          title={renderTPValue(SLTPstore.tpType)}
+                          color="#fffccc"
+                          fontSize="14px"
+                        >
+                          {renderTPValue(SLTPstore.tpType)}
+                        </PrimaryTextSpan>
+                        <PrimaryTextSpan
+                          overflow="hidden"
+                          textOverflow="ellipsis"
+                          whiteSpace="nowrap"
+                          title={renderSLValue(SLTPstore.slType)}
+                          color="#fffccc"
+                          fontSize="14px"
+                        >
+                          {renderSLValue(SLTPstore.slType)}
+                        </PrimaryTextSpan>
+                      </>
+                    )}
+                  </Observer>
+                </FlexContainer>
+              ) : (
+                <PrimaryTextParagraph color="#fffccc" fontSize="14px">
+                  {t('Set')}
+                </PrimaryTextParagraph>
+              )}
+            </FlexContainer>
+          </ButtonAutoClosePurchase>
+          {!on && (hasValue(sl) || hasValue(tp)) && (
+            <ClearSLTPButton type="button" onClick={clearSLTP(setValue)}>
+              <SvgIcon
+                {...IconClose}
+                fillColor="rgba(255,255,255,0.4)"
+                hoverFillColor="#00FFDD"
+              />
+            </ClearSLTPButton>
+          )}
+        </FlexContainer>
+        <FlexContainer
+          position="absolute"
+          top="20px"
+          right="100%"
+          visibilityProp={on ? 'visible' : 'hidden'}
         >
-          <FlexContainer flexDirection="column" alignItems="center">
-            {!on && (hasValue(sl) || hasValue(tp)) ? (
-              <FlexContainer
-                alignItems="center"
-                padding="0 20px 0 0"
-                width="100%"
-                flexWrap="wrap"
-              >
-                <Observer>
-                  {() => (
-                    <>
-                      <PrimaryTextSpan
-                        overflow="hidden"
-                        marginRight="4px"
-                        textOverflow="ellipsis"
-                        whiteSpace="nowrap"
-                        title={renderTPValue(SLTPstore.tpType)}
-                        color="#fffccc"
-                        fontSize="14px"
-                      >
-                        {renderTPValue(SLTPstore.tpType)}
-                      </PrimaryTextSpan>
-                      <PrimaryTextSpan
-                        overflow="hidden"
-                        textOverflow="ellipsis"
-                        whiteSpace="nowrap"
-                        title={renderSLValue(SLTPstore.slType)}
-                        color="#fffccc"
-                        fontSize="14px"
-                      >
-                        {renderSLValue(SLTPstore.slType)}
-                      </PrimaryTextSpan>
-                    </>
-                  )}
-                </Observer>
-              </FlexContainer>
-            ) : (
-              <PrimaryTextParagraph color="#fffccc" fontSize="14px">
-                {t('Set')}
-              </PrimaryTextParagraph>
-            )}
-          </FlexContainer>
-        </ButtonAutoClosePurchase>
-        {!on && (hasValue(sl) || hasValue(tp)) && (
-          <ClearSLTPButton type="button" onClick={clearSLTP(setValue)}>
-            <SvgIcon
-              {...IconClose}
-              fillColor="rgba(255,255,255,0.4)"
-              hoverFillColor="#00FFDD"
-            />
-          </ClearSLTPButton>
-        )}
+          <SetAutoclose toggle={toggle} isActive={on}>
+            <ButtonApply type="button" onClick={handleApplySetAutoClose}>
+              {t('Apply')}
+            </ButtonApply>
+          </SetAutoclose>
+        </FlexContainer>
       </FlexContainer>
-      <FlexContainer
-        position="absolute"
-        top="20px"
-        right="100%"
-        visibilityProp={on ? 'visible' : 'hidden'}
-      >
-        <SetAutoclose toggle={toggle} isActive={on}>
-          <ButtonApply type="button" onClick={handleApplySetAutoClose}>
-            {t('Apply')}
-          </ButtonApply>
-        </SetAutoclose>
-      </FlexContainer>
-    </FlexContainer>
+    </>
   );
 };
 

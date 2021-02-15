@@ -121,7 +121,7 @@ const SetAutoclose: FC<Props> = observer(
 
     return (
       <ConnectForm>
-        {({ register, setValue, errors, watch }) => {
+        {({ register, setValue, errors, watch, clearErrors }) => {
           const { sl, tp, isToppingUpActive } = watch();
           return (
             <Wrapper
@@ -220,6 +220,7 @@ const SetAutoclose: FC<Props> = observer(
                         </CloseValueButtonWrapper>
                       )}
                       <PnLTypeDropdown
+                        clearErrors={clearErrors}
                         dropdownType="tp"
                         isDisabled={isDisabled}
                       ></PnLTypeDropdown>
@@ -305,6 +306,7 @@ const SetAutoclose: FC<Props> = observer(
                         </CloseValueButtonWrapper>
                       )}
                       <PnLTypeDropdown
+                        clearErrors={clearErrors}
                         dropdownType="sl"
                         isDisabled={isDisabled}
                       ></PnLTypeDropdown>
