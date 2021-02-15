@@ -28,11 +28,12 @@ interface Props {
   toggle: (arg0: boolean) => void;
   isActive: boolean;
   radioGroup: string;
-  handleClickToppingUp?: (e: MouseEvent<HTMLInputElement>) => void;
+  onClickToppingUp?: (e: MouseEvent<HTMLInputElement>) => void;
+  onChangeToppingUp?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const SetAutoclose: FC<Props> = observer(
-  ({ isDisabled, toggle, children, isActive, radioGroup, handleClickToppingUp }) => {
+  ({ isDisabled, toggle, children, isActive, radioGroup, onClickToppingUp, onChangeToppingUp }) => {
     const { t } = useTranslation();
 
     const { instrumentsStore, SLTPstore } = useStores();
@@ -355,7 +356,8 @@ const SetAutoclose: FC<Props> = observer(
                           ref={register}
                           value="false"
                           radioGroup={radioGroup}
-                          onClick={handleClickToppingUp}
+                          onClick={onClickToppingUp}
+                          onChange={onChangeToppingUp}
                         />
                         <PrimaryTextSpan
                           fontSize="14px"
@@ -372,7 +374,8 @@ const SetAutoclose: FC<Props> = observer(
                           ref={register}
                           radioGroup={radioGroup}
                           value="true"
-                          onClick={handleClickToppingUp}
+                          onClick={onClickToppingUp}
+                          onChange={onChangeToppingUp}
                         />
                         <PrimaryTextSpan
                           fontSize="14px"

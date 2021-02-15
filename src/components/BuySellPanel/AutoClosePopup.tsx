@@ -185,7 +185,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId }) => {
         right="100%"
         visibilityProp={on ? 'visible' : 'hidden'}
       >
-        <SetAutoclose toggle={toggle} isActive={on} radioGroup="formBuySell" handleClickToppingUp={handleClickToppingUp()}>
+        <SetAutoclose toggle={toggle} isActive={on} radioGroup="formBuySell" onClickToppingUp={handleClickToppingUp()}>
           <ButtonApply type="button" onClick={handleApplySetAutoClose}>
             {t('Apply')}
           </ButtonApply>
