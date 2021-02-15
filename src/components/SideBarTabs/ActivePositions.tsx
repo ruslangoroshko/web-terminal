@@ -94,6 +94,19 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     [quotesStore.quotes[position.instrument], position.instrument]
   );
 
+  const PnL = useCallback(
+    () =>
+      calculateFloatingProfitAndLoss({
+        investment: position.investmentAmount,
+        multiplier: position.multiplier,
+        costs: position.swap + position.commission,
+        side: isBuy ? 1 : -1,
+        currentPrice: isBuy ? currentPriceBid() : currentPriceAsk(),
+        openPrice: position.openPrice,
+      }),
+    [currentPriceBid, currentPriceAsk, position]
+  );
+
   const validationSchema = useCallback(
     () =>
       yup.object().shape<FormValues>({
@@ -112,7 +125,22 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               'This level is higher or lower than the one currently allowed'
             )}`,
             (value) => {
+              if (!hasValue(value)) {
+                return true;
+              }
               if (SLTPstore.tpType === TpSlTypeEnum.Price) {
+                switch (position.operation) {
+                  case AskBidEnum.Buy:
+                    return value > currentPriceAsk();
+                  case AskBidEnum.Sell:
+                    return value < currentPriceBid();
+
+                  default:
+                    return true;
+                }
+              }
+
+              if (SLTPstore.tpType === TpSlTypeEnum.Currency) {
                 switch (position.operation) {
                   case AskBidEnum.Buy:
                     return value > currentPriceAsk();
@@ -139,6 +167,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               'This level is higher or lower than the one currently allowed'
             )}`,
             (value) => {
+              if (!hasValue(value)) {
+                return true;
+              }
               if (SLTPstore.slType === TpSlTypeEnum.Price) {
                 switch (position.operation) {
                   case AskBidEnum.Buy:
@@ -163,6 +194,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       currentPriceAsk,
       SLTPstore.slType,
       SLTPstore.tpType,
+      PnL,
     ]
   );
 
@@ -268,18 +300,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     return 0;
   };
 
-  const PnL = useCallback(
-    () =>
-      calculateFloatingProfitAndLoss({
-        investment: position.investmentAmount,
-        multiplier: position.multiplier,
-        costs: position.swap + position.commission,
-        side: isBuy ? 1 : -1,
-        currentPrice: isBuy ? currentPriceBid() : currentPriceAsk(),
-        openPrice: position.openPrice,
-      }),
-    [currentPriceBid, currentPriceAsk, position]
-  );
+  
 
   const closePosition = (closeFrom: string) => async () => {
     try {
