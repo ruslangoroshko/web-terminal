@@ -22,12 +22,6 @@ const ListOfCountries = observer(() => {
     mainAppStore.setLanguage(newLang);
   };
 
-  const sortedList = useCallback(
-    (country: CountriesEnum) => {
-    },
-    [list]
-  );
-
   useEffect(() => {
     switch (mainAppStore.lang) {
       case CountriesEnum.EN:
@@ -46,6 +40,8 @@ const ListOfCountries = observer(() => {
         break;
     }
   }, []);
+
+
   return (
     <FlexContainer
       backgroundColor="#1C1F26"
@@ -54,7 +50,7 @@ const ListOfCountries = observer(() => {
       flexDirection="column"
       width="200px"
     >
-      {ObjectKeys(list).map((key) => (
+      {ObjectKeys(list).sort().map((key) => (
         <CountryListItemWrapper key={key}>
           <ButtonItem
             onClick={changeCountry(key)}
