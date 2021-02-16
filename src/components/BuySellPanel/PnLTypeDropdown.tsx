@@ -17,9 +17,10 @@ import { observer } from 'mobx-react-lite';
 interface Props {
   dropdownType: 'sl' | 'tp';
   isDisabled?: boolean;
+  clearErrors: () => void;
 }
 
-const PnLTypeDropdown: FC<Props> = observer(({ dropdownType, isDisabled }) => {
+const PnLTypeDropdown: FC<Props> = observer(({ dropdownType, isDisabled, clearErrors }) => {
   const { t } = useTranslation();
   const { SLTPstore } = useStores();
 
@@ -30,10 +31,12 @@ const PnLTypeDropdown: FC<Props> = observer(({ dropdownType, isDisabled }) => {
     switch (dropdownType) {
       case 'sl':
         SLTPstore.setSlType(autoClose);
+        clearErrors();
         break;
 
       case 'tp':
         SLTPstore.setTpType(autoClose);
+        clearErrors();
         break;
 
       default:

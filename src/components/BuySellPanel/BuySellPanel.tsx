@@ -151,6 +151,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               'This level is higher or lower than the one currently allowed'
             )}`,
             (value) => {
+              if (!hasValue(value)) {
+                return true;
+              }
               if (SLTPstore.tpType === TpSlTypeEnum.Price) {
                 switch (operation) {
                   case AskBidEnum.Buy:
@@ -178,6 +181,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               'This level is higher or lower than the one currently allowed'
             )}`,
             (value) => {
+              if (!hasValue(value)) {
+                return true;
+              }
               if (SLTPstore.slType === TpSlTypeEnum.Price) {
                 switch (operation) {
                   case AskBidEnum.Buy:
@@ -194,7 +200,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             }
           ),
         openPrice: yup.number(),
-        isToppingUpActive: yup.string().required(),
+        isToppingUpActive: yup.boolean().required(),
       }),
     [
       instrument,
@@ -226,7 +232,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           instrumentId: instrument.id,
           processId: getProcessId(),
           multiplier,
-          isToppingUpActive: JSON.parse(values.isToppingUpActive),
+          isToppingUpActive: values.isToppingUpActive,
         };
         try {
           const response = await API.openPendingOrder(modelToSubmit);
@@ -243,6 +249,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             reset();
             setOperation(null);
             setValue('investmentAmount', values.investmentAmount);
+            SLTPstore.setSlType(TpSlTypeEnum.Currency);
+            SLTPstore.setTpType(TpSlTypeEnum.Currency);
             API.setKeyValue({
               key: mainAppStore.activeAccount?.isLive
                 ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
@@ -335,7 +343,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           instrumentId: instrument.id,
           processId: getProcessId(),
           multiplier,
-          isToppingUpActive: JSON.parse(values.isToppingUpActive),
+          isToppingUpActive: values.isToppingUpActive,
         };
         try {
           const response = await API.openPosition(modelToSubmit);
@@ -462,8 +470,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
     mode: 'onSubmit',
+    reValidateMode: 'onSubmit',
     defaultValues: {
-      isToppingUpActive: JSON.stringify(false),
+      isToppingUpActive: false,
     },
   });
 
@@ -632,10 +641,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         case TpSlTypeEnum.Currency:
           setValue(
             'isToppingUpActive',
-            `${
-              stopLoss >
+            stopLoss >
               SLTPstore.positionStopOut(investmentAmount, instrument.id)
-            }`
           );
           break;
 
@@ -650,11 +657,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             });
             setValue(
               'isToppingUpActive',
-              `${
-                soValue <= 0 &&
+              soValue <= 0 &&
                 Math.abs(soValue) >
                   SLTPstore.positionStopOut(investmentAmount, instrument.id)
-              }`
             );
           }
 
@@ -736,13 +741,13 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     if (hasValue(sl)) {
-      challengeStopOutBySlValue(sl);
+      challengeStopOutBySlValue(sl!);
     }
   }, [sl]);
 
   useEffect(() => {
     if (hasValue(isToppingUpActive)) {
-      challengeStopOutByToppingUp(JSON.parse(isToppingUpActive));
+      challengeStopOutByToppingUp(isToppingUpActive);
     }
   }, [isToppingUpActive]);
 
@@ -918,19 +923,21 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </InformationPopup>
           </FlexContainer>
           <FlexContainer position="relative" flexDirection="column">
-            {!setAutoCloseWrapperRef.current &&
-              ((formState.touched.sl && errors.sl) ||
-                (formState.touched.tp && errors.tp)) && (
-                <ErropPopup
-                  textColor="#fffccc"
-                  bgColor={ColorsPallete.RAZZMATAZZ}
-                  classNameTooltip={'investmentAmount'}
-                  direction="left"
-                >
-                  {errors.sl?.message || errors.tp?.message}
-                </ErropPopup>
-              )}
-            <AutoClosePopup instrumentId={instrument.id}></AutoClosePopup>
+            <AutoClosePopup instrumentId={instrument.id}>
+              <>
+                {((formState.touched.sl && errors.sl) ||
+                  (formState.touched.tp && errors.tp)) && (
+                  <ErropPopup
+                    textColor="#fffccc"
+                    bgColor={ColorsPallete.RAZZMATAZZ}
+                    classNameTooltip="investmentAmount"
+                    direction="left"
+                  >
+                    {errors.sl?.message || errors.tp?.message}
+                  </ErropPopup>
+                )}
+              </>
+            </AutoClosePopup>
           </FlexContainer>
 
           <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

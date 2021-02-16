@@ -48,7 +48,7 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
   };
 
   const handleClickOutside = (e: any) => {
-    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target) && on) {
       setValue('openPrice', undefined);
       toggle(false);
     }
