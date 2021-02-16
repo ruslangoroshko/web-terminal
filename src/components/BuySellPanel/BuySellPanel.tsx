@@ -113,18 +113,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           )
           .test(
             Fields.INVEST_AMOUNT,
-            `${t('Minimum trade volume')} $${
-              instrument.minOperationVolume
-            }. ${t('Please increase your trade amount or multiplier')}.`,
-            function (value) {
-              if (value !== null) {
-                return value !== 0;
-              }
-              return true;
-            }
-          )
-          .test(
-            Fields.INVEST_AMOUNT,
             `${t('Maximum trade volume')} $${
               instrument.maxOperationVolume
             }. ${t('Please decrease your trade amount or multiplier')}.`,
@@ -469,8 +457,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     ...otherMethods
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
-    mode: 'onSubmit',
-    reValidateMode: 'onSubmit',
+    mode: 'onChange',
     defaultValues: {
       isToppingUpActive: false,
     },
