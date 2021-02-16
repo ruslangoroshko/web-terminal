@@ -18,10 +18,9 @@ const WithdrawPagePopup = () => {
         justifyContent="space-between"
         alignItems="center"
       >
-        <FlexContainer>
+        <FlexContainer padding="0 50px 0 0">
           <PrimaryTextSpan fontSize="14px" color="#ffffff" lineHeight="20px">
-            {t('Withdrawal request can only be submitted when all of KYC')}
-            <br />
+            {t('Withdrawal request can only be submitted when all of KYC')}{' '}
             {t(
               'documents have been approved and the account is Fully Verified'
             )}

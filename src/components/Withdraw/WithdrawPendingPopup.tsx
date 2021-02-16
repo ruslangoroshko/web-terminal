@@ -44,9 +44,8 @@ const WithdrawPendingPopup = () => {
           <PrimaryTextSpan fontSize="14px" color="#ffffff" lineHeight="20px">
             {t('Our Customer support will contact you via')} &nbsp;
             <PrimaryTextSpan color="#FFFCCC">
-              {userEmail || 'your@email.com'}
+              {userEmail || 'your@email.com'}{' '}
             </PrimaryTextSpan>
-            <br />
             {t('to confirm and proceed with your withdrawal request.')}{' '}
             {t(
               'Please be note, that you can submit only one withdrawal request at a time'
