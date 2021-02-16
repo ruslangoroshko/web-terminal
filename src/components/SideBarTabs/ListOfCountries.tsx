@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { useStores } from '../../hooks/useStores';
 import { CountriesEnum } from '../../enums/CountriesEnum';
@@ -21,6 +21,12 @@ const ListOfCountries = observer(() => {
   const changeCountry = (newLang: CountriesEnum) => () => {
     mainAppStore.setLanguage(newLang);
   };
+
+  const sortedList = useCallback(
+    (country: CountriesEnum) => {
+    },
+    [list]
+  );
 
   useEffect(() => {
     switch (mainAppStore.lang) {
