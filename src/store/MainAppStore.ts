@@ -52,8 +52,9 @@ import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
 import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
 import { polandLocalsList } from '../constants/polandLocalsList';
-import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
+import { languagesList } from '../constants/languagesList';
 import { PositionModelWSDTO } from '../types/Positions';
+import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 
 interface MainAppStoreProps {
   token: string;
@@ -137,11 +138,9 @@ export class MainAppStore implements MainAppStoreProps {
     // @ts-ignore
     this.lang =
       localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
-      (window.navigator.language &&
-      polandLocalsList.includes(
-        window.navigator.language.slice(0, 2).toLowerCase()
-      )
-        ? CountriesEnum.PL
+      ((window.navigator.language &&
+        languagesList.includes(window.navigator.language.slice(0, 2).toLowerCase()))
+        ? window.navigator.language.slice(0, 2).toLowerCase()
         : CountriesEnum.EN);
     injectInerceptors(this);
   }
