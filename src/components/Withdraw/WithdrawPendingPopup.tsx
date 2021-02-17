@@ -40,7 +40,7 @@ const WithdrawPendingPopup = () => {
         justifyContent="space-between"
         alignItems="center"
       >
-        <FlexContainer>
+        <FlexContainer padding="0 40px 0 0">
           <PrimaryTextSpan fontSize="14px" color="#ffffff" lineHeight="20px">
             {t('Our Customer support will contact you via')} &nbsp;
             <PrimaryTextSpan color="#FFFCCC">
