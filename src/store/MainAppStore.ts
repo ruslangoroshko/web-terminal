@@ -53,6 +53,8 @@ import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
 import { polandLocalsList } from '../constants/polandLocalsList';
 import { languagesList } from '../constants/languagesList';
+import { PositionModelWSDTO } from '../types/Positions';
+import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 
 interface MainAppStoreProps {
   token: string;
