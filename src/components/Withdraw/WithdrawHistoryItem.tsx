@@ -107,7 +107,7 @@ const WithdrawHistoryItem = (props: Props) => {
             color={selectStatusColor(data?.status || 0)}
             whiteSpace="nowrap"
           >
-            {WithdrawHistoryStatusName[data?.status || 0]}
+            {t(`${WithdrawHistoryStatusName[data?.status || 0]}`)}
           </PrimaryTextSpan>
         </FlexContainer>
       </Td>
