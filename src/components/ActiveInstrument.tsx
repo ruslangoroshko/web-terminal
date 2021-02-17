@@ -126,6 +126,6 @@ const ActiveInstrument: FC<Props> = props => {
 export default ActiveInstrument;
 
 const LabelWrapper = styled.div`
-  width: 22px;
+  min-width: 22px;
   margin-right: 8px;
 `;

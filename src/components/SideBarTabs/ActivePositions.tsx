@@ -141,9 +141,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               if (SLTPstore.tpType === TpSlTypeEnum.Price) {
                 switch (position.operation) {
                   case AskBidEnum.Buy:
-                    return value > currentPriceAsk();
+                    return value < currentPriceAsk();
                   case AskBidEnum.Sell:
-                    return value < currentPriceBid();
+                    return value > currentPriceBid();
 
                   default:
                     return true;
@@ -171,9 +171,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               if (SLTPstore.slType === TpSlTypeEnum.Price) {
                 switch (position.operation) {
                   case AskBidEnum.Buy:
-                    return value < currentPriceAsk();
+                    return value > currentPriceAsk();
                   case AskBidEnum.Sell:
-                    return value > currentPriceBid();
+                    return value < currentPriceBid();
 
                   default:
                     return true;

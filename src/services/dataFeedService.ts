@@ -128,7 +128,6 @@ class DataFeedService implements IBasicDataFeed {
           case supportedResolutions['1 minute']:
           case supportedResolutions['5 minutes']:
             this.nextTimeTries = this.nextTimeTries + 1;
-            console.log(this.nextTimeTries);
 
             if (this.nextTimeTries > 50) {
               onResult(bars, {

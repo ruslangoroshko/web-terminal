@@ -469,8 +469,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     ...otherMethods
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
-    mode: 'onSubmit',
-    reValidateMode: 'onSubmit',
+    mode: 'onChange',
     defaultValues: {
       isToppingUpActive: false,
     },
@@ -636,7 +635,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const challengeStopOutBySlValue = useCallback(
-    (stopLoss) => {
+    (stopLoss, investmentAmount) => {
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
           setValue(
@@ -741,9 +740,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     if (hasValue(sl)) {
-      challengeStopOutBySlValue(sl!);
+      challengeStopOutBySlValue(sl, investmentAmount);
     }
-  }, [sl]);
+  }, [sl, investmentAmount]);
 
   useEffect(() => {
     if (hasValue(isToppingUpActive)) {
