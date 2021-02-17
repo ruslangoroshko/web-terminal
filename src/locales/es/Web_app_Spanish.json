@@ -350,7 +350,6 @@
     "Max 49 symbols": "Máximo 49 símbolos",
     "Cardholder name is invalid": "El nombre del titular no es válido",
     "Open Price can not be zero": "El precio de apertura no puede ser cero",
-    "Auto-increase trade amount": "Aumento automático del importe de la operación",
     "On": "Encendido",
     "Off": "Apagado",
     "If the loss for a position reaches": "Si la pérdida de una posición alcanza",
@@ -361,5 +360,10 @@
     "Save position from market noise": "",
     "an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least": "",
     "all previously reserved funds are returned to your balance.": "",
-    "Your account is blocked. We've detected suspicious activity on your account. This block will expire in 15 min.": ""
+    "Your account is blocked. We've detected suspicious activity on your account. This block will expire in 15 min.": "",
+    "Phone number is invalid": "",
+    "Withdrawal request has been created successfully": "",
+    "You have to sign in to the platform to create a withdrawal request": "",
+    "You already have one active withdrawal request": "",
+    "Technical Error": ""
 }
