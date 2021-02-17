@@ -158,7 +158,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
               <InformationPopup
                 classNameTooltip={`trading_history_${id}`}
                 bgColor="#000"
-                width="200px"
+                width="250px"
                 direction="bottomLeft"
                 needScroll={needScroll}
               >
