@@ -53,7 +53,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
   const popupWrapperRef = useRef<HTMLDivElement>(null);
   const instrumentRef = useRef<HTMLDivElement>(document.createElement("div"));
 
-  const { instrumentsStore, tradingViewStore } = useStores();
+  const { instrumentsStore, tradingViewStore, mainAppStore } = useStores();
 
   const switchInstrument = (e: any) => {
     localStorage.setItem(LOCAL_HISTORY_POSITION, `${props.tradingHistoryItem.id}`);
@@ -66,7 +66,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
   };
 
   useEffect(() => {
-    const lastPendingActive = localStorage.getItem(LOCAL_HISTORY_POSITION);
+    const lastPendingActive = mainAppStore.paramsPortfolioHistory || localStorage.getItem(LOCAL_HISTORY_POSITION);
     if (!!lastPendingActive && props.tradingHistoryItem.id === parseFloat(lastPendingActive)) {
       setTimeout(() => {
         instrumentRef.current.scrollIntoView();

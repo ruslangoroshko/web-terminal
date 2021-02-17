@@ -118,6 +118,18 @@ export class MainAppStore implements MainAppStoreProps {
   signUpFlag: boolean = false;
   lpLoginFlag: boolean = false;
 
+  paramsAsset: string | null = null;
+  paramsMarkets: string | null = null;
+  paramsPortfolioTab: string | null = null;
+  paramsPortfolioActive: string | null = null;
+  paramsPortfolioOrder: string | null = null;
+  paramsPortfolioHistory: string | null = null;
+  paramsWithdraw: boolean = false;
+  paramsBalanceHistory: boolean = false;
+  paramsDeposit: boolean = false;
+  paramsSettings: boolean = false;
+  paramsKYC: boolean = false;
+
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
   connectTimeOut = '';
@@ -312,7 +324,7 @@ export class MainAppStore implements MainAppStoreProps {
           if (response.data.length) {
             const lastMarketTab = localStorage.getItem(LOCAL_MARKET_TABS);
             this.rootStore.instrumentsStore.setActiveInstrumentGroupId(
-              lastMarketTab || response.data[0].id
+              this.paramsMarkets || lastMarketTab || response.data[0].id
             );
           }
         }
@@ -538,6 +550,19 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.dateRangeStore.setDropdownValueType(ShowDatesDropdownEnum.Week);
     this.rootStore.dateRangeStore.setStartDate(moment().subtract(1, 'weeks'));
     this.rootStore.tabsStore.setPortfolioTab(PortfolioTabEnum.Portfolio);
+    if (this.activeAccount) {
+      this.setParamsAsset(null);
+      this.setParamsMarkets(null);
+      this.setParamsPortfolioActive(null);
+      this.setParamsPortfolioOrder(null);
+      this.setParamsPortfolioHistory(null);
+      this.setParamsPortfolioTab(null);
+      this.setParamsWithdraw(false);
+      this.setParamsBalanceHistory(false);
+      this.setParamsDeposit(false);
+      this.setParamsSettings(false);
+      this.setParamsKYC(false);
+    }
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
     this.setActiveAccountId('');
   };
@@ -614,5 +639,61 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setAccounts = (accounts: AccountModelWebSocketDTO[]) => {
     this.accounts = accounts;
+  };
+
+  @action
+  setParamsAsset = (params: string | null) => {
+    this.paramsAsset = params;
+  };
+
+  @action
+  setParamsMarkets = (params: string | null) => {
+    this.paramsMarkets = params;
+  };
+
+  @action
+  setParamsPortfolioTab = (params: string | null) => {
+    this.paramsPortfolioTab = params;
+  };
+
+  @action
+  setParamsPortfolioActive = (params: string | null) => {
+    this.paramsPortfolioActive = params;
+  };
+
+  @action
+  setParamsPortfolioOrder = (params: string | null) => {
+    this.paramsPortfolioOrder = params;
+  };
+
+  @action
+  setParamsPortfolioHistory = (params: string | null) => {
+    this.paramsPortfolioHistory = params;
+  };
+
+  @action
+  setParamsWithdraw = (params: boolean) => {
+    console.log(params);
+    this.paramsWithdraw = params;
+  };
+
+  @action
+  setParamsBalanceHistory = (params: boolean) => {
+    this.paramsBalanceHistory = params;
+  };
+
+  @action
+  setParamsDeposit = (params: boolean) => {
+    this.paramsDeposit = params;
+  };
+
+  @action
+  setParamsSettings = (params: boolean) => {
+    this.paramsSettings = params;
+  };
+
+  @action
+  setParamsKYC = (params: boolean) => {
+    this.paramsKYC = params;
   };
 }

@@ -21,7 +21,8 @@ import DepositPopupWrapper from '../components/DepositPopup/DepositPopupWrapper'
 import DepositPaymentResultPopup from '../components/DepositPopup/DepositPaymentResultPopup/DepositPaymentResultPopup';
 import { LOCAL_STORAGE_SIDEBAR } from '../constants/global';
 import NotificationPopup from '../components/NotificationPopup';
-import testIds from '../constants/testIds';
+import { useHistory } from 'react-router-dom';
+import Page from '../constants/Pages';
 
 interface Props {}
 
@@ -93,9 +94,10 @@ const RenderExpandedTabByType = observer(() => {
   }
 });
 
-const AuthorizedContainer: FC<Props> = (props) => {
+const AuthorizedContainer: FC<Props> = observer((props) => {
   const { children } = props;
   const { tabsStore, mainAppStore, notificationStore } = useStores();
+  const { push } = useHistory();
 
   useEffect(() => {
     const wasOpen = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
@@ -103,6 +105,49 @@ const AuthorizedContainer: FC<Props> = (props) => {
       tabsStore.setSideBarType(parseInt(wasOpen));
     }
   }, []);
+
+  useEffect(() => {
+    if (mainAppStore.paramsDeposit) {
+      push(Page.DEPOSIT_POPUP);
+    } else if (mainAppStore.paramsSettings) {
+      push(Page.ACCOUNT_SEQURITY);
+    } else if (mainAppStore.paramsBalanceHistory) {
+      push(Page.ACCOUNT_BALANCE_HISTORY);
+    } else if (mainAppStore.paramsKYC) {
+      push(Page.PROOF_OF_IDENTITY);
+    } else if (mainAppStore.paramsWithdraw) {
+      push(Page.ACCOUNT_WITHDRAW);
+    }
+    if (mainAppStore.paramsPortfolioTab) {
+      switch (mainAppStore.paramsPortfolioTab) {
+        case 'active':
+          tabsStore.setSideBarType(SideBarTabType.Portfolio);
+          tabsStore.setPortfolioTab(PortfolioTabEnum.Portfolio);
+          break;
+        case 'pending':
+          tabsStore.setSideBarType(SideBarTabType.Portfolio);
+          tabsStore.setPortfolioTab(PortfolioTabEnum.Orders);
+          break;
+        case 'history':
+          tabsStore.setSideBarType(SideBarTabType.History);
+          break;
+        default:
+          return;
+      }
+    }
+    if (mainAppStore.paramsMarkets) {
+      tabsStore.setSideBarType(SideBarTabType.Markets);
+    }
+  }, [
+    mainAppStore.activeAccount,
+    mainAppStore.paramsMarkets,
+    mainAppStore.paramsPortfolioTab,
+    mainAppStore.paramsWithdraw,
+    mainAppStore.paramsKYC,
+    mainAppStore.paramsBalanceHistory,
+    mainAppStore.paramsSettings,
+    mainAppStore.paramsDeposit
+  ]);
 
   return (
     <FlexContainer
@@ -183,7 +228,7 @@ const AuthorizedContainer: FC<Props> = (props) => {
       </FlexContainer>
     </FlexContainer>
   );
-};
+});
 export default AuthorizedContainer;
 
 const TabsLayoutWrapper = styled(FlexContainer)<

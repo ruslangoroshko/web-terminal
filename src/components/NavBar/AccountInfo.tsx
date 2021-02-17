@@ -97,6 +97,17 @@ const AccountInfo: FC<Props> = observer((props) => {
     dateRangeStore.setDropdownValueType(ShowDatesDropdownEnum.Week);
     dateRangeStore.setStartDate(moment().subtract(1, 'weeks'));
     tabsStore.setPortfolioTab(PortfolioTabEnum.Portfolio);
+    mainAppStore.setParamsAsset(null);
+    mainAppStore.setParamsMarkets(null);
+    mainAppStore.setParamsPortfolioActive(null);
+    mainAppStore.setParamsPortfolioOrder(null);
+    mainAppStore.setParamsPortfolioHistory(null);
+    mainAppStore.setParamsPortfolioTab(null);
+    mainAppStore.setParamsWithdraw(false);
+    mainAppStore.setParamsBalanceHistory(false);
+    mainAppStore.setParamsDeposit(false);
+    mainAppStore.setParamsSettings(false);
+    mainAppStore.setParamsKYC(false);
     toggle();
     push(Page.DASHBOARD);
 
