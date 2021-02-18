@@ -38,7 +38,7 @@ const SingIn = observer(() => {
       .string()
       .required(t(validationInputTexts.REQUIRED_FIELD))
       .min(8, t(validationInputTexts.PASSWORD_MIN_CHARACTERS))
-      .max(40, t(validationInputTexts.PASSWORD_MAX_CHARACTERS)),
+      .max(31, t(validationInputTexts.PASSWORD_MAX_CHARACTERS)),
   });
 
   const initialValues: UserAuthenticate = {
@@ -141,7 +141,7 @@ const SingIn = observer(() => {
                     labelText={t('Email')}
                     value={value}
                     id={Fields.EMAIL}
-                    hasError={!!(isTouched && errors.email)}
+                    hasError={!!(invalid && errors.email)}
                     errorText={errors.email?.message}
                     datae2eId={e2eTests.SING_IN_USERNAME}
                   ></LabelInput>
@@ -168,7 +168,7 @@ const SingIn = observer(() => {
                     value={value}
                     id={Fields.PASSWORD}
                     type="password"
-                    hasError={!!(isTouched && errors.password)}
+                    hasError={!!(invalid && errors.password)}
                     errorText={errors.password?.message}
                     datae2eId={e2eTests.SING_IN_PASSWORD}
                   ></LabelInput>
