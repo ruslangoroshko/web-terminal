@@ -8,6 +8,7 @@ import {
   UpdateSLTP,
   OpenPositionModel,
   OpenPendingOrder,
+  UpdateToppingUp,
 } from '../types/Positions';
 import API_LIST from './apiList';
 import { AccountModelDTO } from '../types/AccountsTypes';
@@ -193,6 +194,16 @@ class API {
     );
     return response.data;
   };
+
+  updateToppingUp = async (position: UpdateToppingUp) => {
+    const formData = this.convertParamsToFormData(position);
+    const response = await axios.post<OpenPositionResponseDTO>(
+      `${API_STRING}${API_LIST.POSITIONS.UPDATE_TOPPING_UP}`,
+      formData
+    );
+    return response.data;
+  };
+
 
   confirmEmail = async (link: string, authUrl: string) => {
     const response = await axios.post<{ result: OperationApiResponseCodes }>(

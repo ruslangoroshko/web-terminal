@@ -439,12 +439,23 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       try {
         const response = await API.updateSLTP(valuesToSubmit);
         if (response.result === OperationApiResponseCodes.Ok) {
+          try {
+            if (valuesToSubmit.isToppingUpActive !== position.isToppingUpActive)
+              await API.updateToppingUp({
+                processId: getProcessId(),
+                accountId: valuesToSubmit.accountId,
+                isToppingUpActive: valuesToSubmit.isToppingUpActive,
+                positionId: valuesToSubmit.positionId,
+              });
+          } catch (error) {}
+
           if (quotesStore.selectedPosition?.id === position.id) {
             checkSL(SLTPstore.slType, valuesToSubmit.sl);
             checkTP(SLTPstore.tpType, valuesToSubmit.tp);
           }
           reset({
             investmentAmount: response.position.investmentAmount,
+            isToppingUpActive: valuesToSubmit.isToppingUpActive,
             tp: response.position.tp ?? undefined,
             sl: hasValue(response.position.sl)
               ? Math.abs(response.position.sl!)

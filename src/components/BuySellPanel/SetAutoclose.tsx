@@ -1,4 +1,4 @@
-import React, { FC, MouseEvent } from 'react';
+import React, { FC } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -99,12 +99,12 @@ const SetAutoclose: FC<Props> = observer(
       toggle(false);
     };
 
-    const handleRemoveTp = (setValue: (arg0: any, arg1: any) => void) => () => {
-      setValue('tp', undefined);
+    const handleRemoveTp = (setValue: any) => () => {
+      setValue('tp', undefined, { shouldValidate: true });
     };
 
-    const handleRemoveSl = (setValue: (arg0: any, arg1: any) => void) => () => {
-      setValue('sl', undefined);
+    const handleRemoveSl = (setValue: any) => () => {
+      setValue('sl', undefined, { shouldValidate: true });
     };
 
     const handelFalseRadioClick = (
