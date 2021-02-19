@@ -67,8 +67,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const { t } = useTranslation();
 
-  const setAutoCloseWrapperRef = useRef<HTMLDivElement>(null);
-
   const [isLoading, setLoading] = useState(true);
   const [operation, setOperation] = useState<AskBidEnum | null>(null);
   const [multiplier, setMultiplier] = useState(instrument.multiplier[0]);
@@ -469,7 +467,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     ...otherMethods
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
-    mode: 'onChange',
+    mode: 'onBlur',
+    // reValidateMode: 'onBlur',
     defaultValues: {
       isToppingUpActive: false,
     },

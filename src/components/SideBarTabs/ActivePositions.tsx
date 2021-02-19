@@ -190,7 +190,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               if (!hasValue(value)) {
                 return true;
               }
-              return -1 * Math.abs(value) < PnL();
+              if (SLTPstore.slType === TpSlTypeEnum.Currency) {
+                return -1 * Math.abs(value) < PnL();
+              }
+              return true;
             }
           ),
         isToppingUpActive: yup.boolean(),
@@ -557,8 +560,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     ...otherMethods
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
-    mode: 'onSubmit',
-    reValidateMode: 'onSubmit',
+    mode: 'onBlur',
     defaultValues: {
       tp: position.tp ?? undefined,
       sl: hasValue(position.sl) ? Math.abs(position.sl!) : undefined,
