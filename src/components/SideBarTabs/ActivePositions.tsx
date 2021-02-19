@@ -942,6 +942,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             multiplier: position.multiplier,
             operation: position.operation,
             slPrice: stopLoss,
+            commission: position.swap + position.commission,
           });
           setValue(
             'isToppingUpActive',
@@ -993,6 +994,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             multiplier: position.multiplier,
             operation: position.operation,
             slPrice: sl || 0,
+            commission: position.swap + position.commission,
           });
           if (isToppingUp) {
             if (
