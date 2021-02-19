@@ -88,3 +88,10 @@ export interface UpdateSLTP {
   slType: TpSlTypeEnum | null;
   isToppingUpActive: boolean;
 }
+
+export interface UpdateToppingUp {
+  processId: string;
+  accountId: string;
+  positionId: number;
+  isToppingUpActive: boolean;
+}
