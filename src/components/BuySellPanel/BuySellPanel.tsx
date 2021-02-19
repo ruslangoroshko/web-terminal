@@ -652,6 +652,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               investmentAmount: investmentAmount,
               multiplier: multiplier,
               operation: operation,
+              commission: 0,
             });
             setValue(
               'isToppingUpActive',
@@ -695,6 +696,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               investmentAmount: investmentAmount,
               multiplier: multiplier,
               operation: operation,
+              commission: 0,
             });
             if (isToppingUp) {
               if (
