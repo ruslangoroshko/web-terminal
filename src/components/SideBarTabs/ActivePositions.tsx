@@ -455,6 +455,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           }
           reset({
             investmentAmount: response.position.investmentAmount,
+            isToppingUpActive: valuesToSubmit.isToppingUpActive,
             tp: response.position.tp ?? undefined,
             sl: hasValue(response.position.sl)
               ? Math.abs(response.position.sl!)
