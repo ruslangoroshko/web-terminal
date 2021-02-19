@@ -15,11 +15,21 @@ import BadRequestPopup from './BadRequestPopup';
 import HashLocation from '../constants/hashLocation';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
+import mixapanelProps from '../constants/mixpanelProps';
 
 function DemoRealPopup() {
   const { push } = useHistory();
-  const { mainAppStore, badRequestPopupStore, depositFundsStore } = useStores();
+  const { mainAppStore, badRequestPopupStore } = useStores();
   const { t } = useTranslation();
+
+  const sendMixpanelEvents = (demoRealFunds: 'real' | 'demo') => {
+    mixpanel.track(mixpanelEvents.DEMO_REAL_WELCOME, {
+      [mixapanelProps.DEMO_REAL_FUNDS]: demoRealFunds,
+    });
+  };
+
   const selectDemoAccount = async () => {
     const acc = mainAppStore.accounts.find(item => !item.isLive);
     if (acc) {
@@ -33,6 +43,7 @@ function DemoRealPopup() {
         });
         mainAppStore.setActiveAccount(acc);
         mainAppStore.isDemoRealPopup = false;
+        sendMixpanelEvents('demo');
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
@@ -53,6 +64,7 @@ function DemoRealPopup() {
         });
         mainAppStore.setActiveAccount(acc);
         mainAppStore.isDemoRealPopup = false;
+        sendMixpanelEvents('real');
         push(`/${HashLocation.Deposit}`);
       } catch (error) {
         badRequestPopupStore.openModal();
