@@ -115,7 +115,7 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
   const { openPrice } = watch();
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
-      {hasValue(openPrice) ? (
+      {hasValue(openPrice) && !on ? (
         <FlexContainer position="relative" width="100%">
           <ButtonAutoClosePurchase
             onClick={handleToggle}
@@ -146,114 +146,116 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
           </PrimaryTextSpan>
         </ButtonAutoClosePurchase>
       )}
-      {on && (
-        <SetPriceWrapper position="absolute" bottom="0px" right="100%">
-          <Wrapper
-            position="relative"
-            padding="16px"
-            flexDirection="column"
-            width="200px"
+      <SetPriceWrapper
+        position="absolute"
+        bottom="0px"
+        right="100%"
+        display={on ? 'flex' : 'none'}
+      >
+        <Wrapper
+          position="relative"
+          padding="16px"
+          flexDirection="column"
+          width="200px"
+        >
+          <ButtonClose type="button" onClick={handleToggle}>
+            <SvgIcon
+              {...IconClose}
+              fillColor="rgba(255, 255, 255, 0.6)"
+              hoverFillColor="#00FFDD"
+            ></SvgIcon>
+          </ButtonClose>
+          <PrimaryTextParagraph marginBottom="16px">
+            {t('Purchase at')}
+          </PrimaryTextParagraph>
+          <FlexContainer
+            margin="0 0 6px 0"
+            alignItems="center"
+            justifyContent="space-between"
           >
-            <ButtonClose type="button" onClick={handleToggle}>
-              <SvgIcon
-                {...IconClose}
-                fillColor="rgba(255, 255, 255, 0.6)"
-                hoverFillColor="#00FFDD"
-              ></SvgIcon>
-            </ButtonClose>
-            <PrimaryTextParagraph marginBottom="16px">
-              {t('Purchase at')}
-            </PrimaryTextParagraph>
-            <FlexContainer
-              margin="0 0 6px 0"
-              alignItems="center"
-              justifyContent="space-between"
+            <PrimaryTextSpan
+              fontSize="11px"
+              lineHeight="12px"
+              color="rgba(255, 255, 255, 0.3)"
+              textTransform="uppercase"
             >
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                color="rgba(255, 255, 255, 0.3)"
-                textTransform="uppercase"
-              >
-                {t('When Price is')}
+              {t('When Price is')}
+            </PrimaryTextSpan>
+            <InformationPopup
+              bgColor="#000000"
+              classNameTooltip="autoclose"
+              width="212px"
+              direction="left"
+            >
+              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                {t(
+                  'When the position reached the specified take profit or stop loss level, the position will be closed automatically.'
+                )}
               </PrimaryTextSpan>
-              <InformationPopup
-                bgColor="#000000"
-                classNameTooltip="autoclose"
-                width="212px"
+            </InformationPopup>
+          </FlexContainer>
+          <InputWrapper
+            margin="0 0 16px 0"
+            height="32px"
+            width="100%"
+            position="relative"
+            justifyContent="space-between"
+          >
+            {errors.openPrice && (
+              <ErropPopup
+                textColor="#fffccc"
+                bgColor={ColorsPallete.RAZZMATAZZ}
+                classNameTooltip={Fields.OPEN_PRICE}
                 direction="left"
               >
-                <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {t(
-                    'When the position reached the specified take profit or stop loss level, the position will be closed automatically.'
+                {errors.openPrice.message}
+              </ErropPopup>
+            )}
+            <InputPnL
+              onBeforeInput={handleBeforeInput}
+              name={Fields.OPEN_PRICE}
+              placeholder={t('Non Set')}
+              ref={register({ setValueAs: setValueAsNullIfEmpty })}
+            ></InputPnL>
+          </InputWrapper>
+          <FlexContainer
+            justifyContent="space-between"
+            alignItems="center"
+            margin="0 0 16px 0"
+          >
+            <PrimaryTextSpan
+              color="rgba(255, 255, 255, 0.3)"
+              fontSize="11px"
+              lineHeight="12px"
+            >
+              {t('Current price')}
+            </PrimaryTextSpan>
+            <Observer>
+              {() => (
+                <ButtonWithoutStyles
+                  type="button"
+                  onClick={setCurrentPrice(
+                    quotesStore.quotes[instrumentId]?.bid.c.toFixed(digits) ||
+                      ''
                   )}
-                </PrimaryTextSpan>
-              </InformationPopup>
-            </FlexContainer>
-            <InputWrapper
-              margin="0 0 16px 0"
-              height="32px"
-              width="100%"
-              position="relative"
-              justifyContent="space-between"
-            >
-              {errors.openPrice && (
-                <ErropPopup
-                  textColor="#fffccc"
-                  bgColor={ColorsPallete.RAZZMATAZZ}
-                  classNameTooltip={Fields.OPEN_PRICE}
-                  direction="left"
                 >
-                  {errors.openPrice.message}
-                </ErropPopup>
-              )}
-
-              <InputPnL
-                onBeforeInput={handleBeforeInput}
-                name={Fields.OPEN_PRICE}
-                placeholder={t('Non Set')}
-                ref={register({ setValueAs: setValueAsNullIfEmpty })}
-              ></InputPnL>
-            </InputWrapper>
-            <FlexContainer
-              justifyContent="space-between"
-              alignItems="center"
-              margin="0 0 16px 0"
-            >
-              <PrimaryTextSpan
-                color="rgba(255, 255, 255, 0.3)"
-                fontSize="11px"
-                lineHeight="12px"
-              >
-                {t('Current price')}
-              </PrimaryTextSpan>
-              <Observer>
-                {() => (
-                  <ButtonWithoutStyles
-                    type="button"
-                    onClick={setCurrentPrice(
-                      quotesStore.quotes[instrumentId]?.bid.c.toFixed(digits) ||
-                        ''
-                    )}
+                  <PrimaryTextSpan
+                    textDecoration="underline"
+                    color="rgba(255, 255, 255, 0.8)"
+                    fontSize="11px"
+                    lineHeight="12px"
                   >
-                    <PrimaryTextSpan
-                      textDecoration="underline"
-                      color="rgba(255, 255, 255, 0.8)"
-                      fontSize="11px"
-                      lineHeight="12px"
-                    >
-                      {quotesStore.quotes[instrumentId]?.bid.c.toFixed(digits)}
-                    </PrimaryTextSpan>
-                  </ButtonWithoutStyles>
-                )}
-              </Observer>
-            </FlexContainer>
-            <ButtonApply type="button" onClick={applyOpenPrice(errors)}>
-              {t('Apply')}
-            </ButtonApply>
-          </Wrapper>
-        </SetPriceWrapper>
-      )}
+                    {quotesStore.quotes[instrumentId]?.bid.c.toFixed(digits)}
+                  </PrimaryTextSpan>
+                </ButtonWithoutStyles>
+              )}
+            </Observer>
+          </FlexContainer>
+          <ButtonApply type="button" onClick={applyOpenPrice(errors)}>
+            {t('Apply')}
+          </ButtonApply>
+        </Wrapper>
+      </SetPriceWrapper>
     </FlexContainer>
   );
 };
