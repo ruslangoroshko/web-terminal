@@ -50,7 +50,8 @@ function LanguageButton() {
             color="#1C1F26"
             textTransform="uppercase"
           >
-            {ListForEN[mainAppStore.lang].shortName}
+            {ListForEN[mainAppStore.lang] &&
+              ListForEN[mainAppStore.lang].shortName}
           </PrimaryTextSpan>
         )}
       </Observer>

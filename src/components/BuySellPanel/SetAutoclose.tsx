@@ -121,7 +121,7 @@ const SetAutoclose: FC<Props> = observer(
 
     return (
       <ConnectForm>
-        {({ register, setValue, errors, watch, clearErrors }) => {
+        {({ register, setValue, errors, watch, clearErrors, formState }) => {
           const { sl, tp, isToppingUpActive } = watch();
           return (
             <Wrapper
@@ -180,7 +180,7 @@ const SetAutoclose: FC<Props> = observer(
                       width="100%"
                       position="relative"
                     >
-                      {isActive && errors.tp && (
+                      {isActive && formState.touched.tp && errors.tp && (
                         <ErropPopup
                           textColor="#fffccc"
                           bgColor={ColorsPallete.RAZZMATAZZ}
@@ -266,7 +266,7 @@ const SetAutoclose: FC<Props> = observer(
                       width="100%"
                       position="relative"
                     >
-                      {isActive && errors.sl && (
+                      {isActive && formState.touched.sl && errors.sl && (
                         <ErropPopup
                           textColor="#fffccc"
                           bgColor={ColorsPallete.RAZZMATAZZ}
