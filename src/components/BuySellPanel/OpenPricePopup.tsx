@@ -1,11 +1,4 @@
-import React, {
-  ChangeEvent,
-  useState,
-  useRef,
-  useEffect,
-  FC,
-  useMemo,
-} from 'react';
+import React, { useState, useRef, useEffect, FC } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
@@ -49,7 +42,6 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-      setValue('openPrice', undefined);
       toggle(false);
     }
   };
