@@ -64,6 +64,8 @@ export class SLTPStore implements ContextProps {
       (this.rootStore.instrumentsStore.instruments.find(
         (item) => item.instrumentItem.id === instrumentId
       )?.instrumentItem.stopOutPercent || 95) / 100;
+    console.log('_getPostitionStopOut', invest * instrumentPercentSL);
+
     return +(invest * instrumentPercentSL).toFixed(2);
   };
 
@@ -112,6 +114,8 @@ export class SLTPStore implements ContextProps {
     const result =
       (slPrice / currentPrice - 1) * investmentAmount * multiplier * direction +
       commission;
+
+    console.log('positionStopOutByPrice', result);
 
     return +result.toFixed(2);
   };
