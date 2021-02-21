@@ -123,6 +123,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             Fields.TAKE_PROFIT,
             t('Take profit level should be higher than the current P/L'),
             (value) => {
+              if (!hasValue(value)) {
+                return true;
+              }
               if (SLTPstore.tpType === TpSlTypeEnum.Currency) {
                 return value === null || value > PnL();
               }
@@ -135,6 +138,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               'This level is higher or lower than the one currently allowed'
             )}`,
             (value) => {
+              if (!hasValue(value)) {
+                return true;
+              }
               if (SLTPstore.tpType === TpSlTypeEnum.Price) {
                 switch (position.operation) {
                   case AskBidEnum.Sell:
@@ -992,8 +998,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             slPrice: sl || 0,
             commission: position.swap + position.commission,
           });
-          if (isToppingUp) {
+          if (!isToppingUp) {
             if (
+              hasValue(sl) &&
               soValue <= 0 &&
               Math.abs(soValue) >
                 SLTPstore.positionStopOut(
@@ -1005,6 +1012,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             }
           } else {
             if (
+              hasValue(sl) &&
               soValue <= 0 &&
               Math.abs(soValue) <=
                 SLTPstore.positionStopOut(
