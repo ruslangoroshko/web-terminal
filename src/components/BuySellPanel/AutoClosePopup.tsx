@@ -111,10 +111,12 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
   };
 
   useEffect(() => {
-    SLTPstore.setSlType(TpSlTypeEnum.Currency);
-    SLTPstore.setTpType(TpSlTypeEnum.Currency);
-    SLTPstore.setInstrumentId(instrumentId);
-  }, []);
+    if (on) {
+      SLTPstore.setSlType(TpSlTypeEnum.Currency);
+      SLTPstore.setTpType(TpSlTypeEnum.Currency);
+      SLTPstore.setInstrumentId(instrumentId);
+    }
+  }, [on]);
 
   return (
     <>
