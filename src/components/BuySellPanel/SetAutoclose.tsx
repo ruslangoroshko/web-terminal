@@ -119,6 +119,15 @@ const SetAutoclose: FC<Props> = observer(
       setValue(Fields.IS_TOPPING_UP, true);
     };
 
+    const handleChangeInput = (
+      setValue: any,
+      field: string,
+      clearErrors: any
+    ) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      clearErrors();
+      setValue(field, e.target.value);
+    };
+
     return (
       <ConnectForm>
         {({ register, setValue, errors, watch, clearErrors, formState }) => {
@@ -199,6 +208,11 @@ const SetAutoclose: FC<Props> = observer(
                         ref={register({
                           setValueAs: setValueAsNullIfEmpty,
                         })}
+                        onChange={handleChangeInput(
+                          setValue,
+                          Fields.TAKE_PROFIT,
+                          clearErrors
+                        )}
                         name={Fields.TAKE_PROFIT}
                         disabled={isDisabled}
                       ></InputPnL>
@@ -286,6 +300,11 @@ const SetAutoclose: FC<Props> = observer(
                         ref={register({
                           setValueAs: setValueAsNullIfEmptyAndNegative,
                         })}
+                        onChange={handleChangeInput(
+                          setValue,
+                          Fields.STOP_LOSS,
+                          clearErrors
+                        )}
                         disabled={isDisabled}
                       ></InputPnL>
                       {hasValue(sl) && !isDisabled && (
