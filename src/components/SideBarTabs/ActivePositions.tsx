@@ -123,9 +123,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             Fields.TAKE_PROFIT,
             t('Take profit level should be higher than the current P/L'),
             (value) => {
-              if (!hasValue(value)) {
-                return true;
-              }
+            
               return value === null || value > PnL();
             }
           )
@@ -151,7 +149,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 }
               }
 
-              return true;
+              return false;
             }
           ),
 
