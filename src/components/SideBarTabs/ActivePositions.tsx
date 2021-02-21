@@ -574,10 +574,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     ...otherMethods
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
-    mode: 'onBlur',
+    mode: 'onSubmit',
     defaultValues: {
       tp: position.tp ?? undefined,
-      sl: hasValue(position.sl) ? Math.abs(position.sl!) : undefined,
+      sl: hasValue(position.sl) ? Math.abs(position.sl) : undefined,
       investmentAmount: position.investmentAmount,
       isToppingUpActive: position.isToppingUpActive,
     },
