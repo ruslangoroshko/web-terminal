@@ -139,76 +139,79 @@ const PortfolioExpanded: FC<Props> = () => {
           <FlexContainer flexDirection="column" justifyContent="center">
             <TableGrid columnsCount={9} maxHeight="calc(100vh - 235px)">
               <Th>
-                <PrimaryTextSpan
+                <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
                   textTransform="uppercase"
                 >
                   {t('Asset Name')}
-                </PrimaryTextSpan>
+                </HeaderTitleItem>
               </Th>
               <Th>
-                <PrimaryTextSpan
+                <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
                   textTransform="uppercase"
                 >
                   {t('Open price')}
-                </PrimaryTextSpan>
+                </HeaderTitleItem>
               </Th>
               <Th>
-                <PrimaryTextSpan
+                <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
                   textTransform="uppercase"
                 >
                   {t('Time Opened')}
-                </PrimaryTextSpan>
+                </HeaderTitleItem>
               </Th>
               <Th justifyContent="flex-end">
-                <PrimaryTextSpan
+                <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
                   textTransform="uppercase"
                 >
                   {t('Investment')}
-                </PrimaryTextSpan>
+                </HeaderTitleItem>
               </Th>
               <Th justifyContent="flex-end">
-                <PrimaryTextSpan
+                <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
                   textTransform="uppercase"
+                  textAlign="center"
                 >
                   {t('Profit/loss')}
-                </PrimaryTextSpan>
+                </HeaderTitleItem>
               </Th>
               <Th justifyContent="flex-end">
-                <PrimaryTextSpan
+                <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
                   textTransform="uppercase"
                 >
                   {t('Equity')}
-                </PrimaryTextSpan>
+                </HeaderTitleItem>
               </Th>
               <Th justifyContent="center">
-                <PrimaryTextSpan
+                <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
                   textTransform="uppercase"
+                  textAlign="center"
                 >
                   {t('Take Profit')}
-                </PrimaryTextSpan>
+                </HeaderTitleItem>
               </Th>
               <Th justifyContent="center">
-                <PrimaryTextSpan
+                <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
                   textTransform="uppercase"
+                  textAlign="center"
                 >
                   {t('Stop Loss')}
-                </PrimaryTextSpan>
+                </HeaderTitleItem>
               </Th>
               <Th></Th>
               <Observer>
@@ -255,6 +258,10 @@ const PortfolioExpanded: FC<Props> = () => {
 };
 
 export default PortfolioExpanded;
+
+const HeaderTitleItem = styled(PrimaryTextSpan)`
+  word-break: break-word;
+`;
 
 const PortfolioWrapper = styled(FlexContainer)`
   background: radial-gradient(

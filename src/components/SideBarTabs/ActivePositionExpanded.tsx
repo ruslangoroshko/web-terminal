@@ -270,7 +270,7 @@ function ActivePositionExpanded(props: Props) {
           <InformationPopup
             classNameTooltip={`position_expaned_${position.id}`}
             bgColor="#000"
-            width="200px"
+            width="250px"
             direction="left"
           >
             <FlexContainer flexDirection="column" width="100%">

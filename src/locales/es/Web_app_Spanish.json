@@ -114,7 +114,7 @@
     "Total Equity": "Total de la equidad",
     "You haven't opened any positions yet": "Todavía no ha abierto ninguna posición",
     "Time Opened": "Tiempo de apertura",
-    "Profit/loss": "Beneficios/pérdidas",
+    "Profit/loss": "Beneficios / pérdidas",
     "Trading History": "Historial de operaciones",
     "Show": "Mostrar",
     "There is no trading history": "No hay historial de operaciones",
@@ -366,6 +366,6 @@
     "You have to sign in to the platform to create a withdrawal request": "Tiene que iniciar sesión en la plataforma para crear una solicitud de retiro",
     "You already have one active withdrawal request": "Ya tiene una solicitud de retiro activa",
     "Technical Error": "Error técnico",
-    "Take Profit can not be zero": "",
-    "Stop Loss can not be zero": ""
+    "Take Profit can not be zero": "El nivel de toma de beneficios está demasiado cerca del precio actual",
+    "Stop Loss can not be zero": "El nivel de Stop Loss no puede ser cero"
 }
