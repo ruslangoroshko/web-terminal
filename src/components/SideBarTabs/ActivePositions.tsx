@@ -1038,7 +1038,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     if (hasValue(sl)) {
       challengeStopOutBySlValue(sl);
     }
-  }, [sl]);
+  }, [sl, SLTPstore.slType]);
 
   useEffect(() => {
     if (hasValue(isToppingUpActive)) {
