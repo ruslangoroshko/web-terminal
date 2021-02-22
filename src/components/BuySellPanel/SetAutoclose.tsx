@@ -124,7 +124,7 @@ const SetAutoclose: FC<Props> = observer(
       field: string,
       clearErrors: any
     ) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      clearErrors();
+      clearErrors(field);
       setValue(field, e.target.value);
     };
 
