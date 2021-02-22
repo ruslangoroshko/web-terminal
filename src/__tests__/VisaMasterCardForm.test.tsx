@@ -19,6 +19,8 @@ const cvv = process.env.TEST_CARD_CVV || '837';
 const expirationDate = process.env.TEST_CARD_EXPIRE || '2024-09';
 const cardHolder = process.env.TEST_CARDHOLDER || 'Testing Name';
 
+jest.setTimeout(15000);
+
 jest.mock('react-router-dom', () => ({
   useHistory: () => ({
     push: jest.fn(),
