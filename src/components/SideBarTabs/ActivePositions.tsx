@@ -171,7 +171,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               if (!hasValue(value)) {
                 return true;
               }
-              if (SLTPstore.slType === TpSlTypeEnum.Currency) {
+              if (SLTPstore.slType === TpSlTypeEnum.Price) {
                 switch (position.operation) {
                   case AskBidEnum.Sell:
                     return value > currentPriceAsk();
