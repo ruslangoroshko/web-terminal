@@ -179,7 +179,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
           <InformationPopup
             classNameTooltip={`position_expaned_${id}`}
             bgColor="#000"
-            width="200px"
+            width="250px"
             direction="left"
           >
             <FlexContainer flexDirection="column" width="100%">
