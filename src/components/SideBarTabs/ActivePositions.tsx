@@ -596,6 +596,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         e.preventDefault();
       } else {
         try {
+          tradingViewStore.toggleMovedPositionPopup(false);
           tradingViewStore.clearActivePositionLine();
           quotesStore.setSelectedPositionId(position.id);
           localStorage.setItem(LOCAL_POSITION, `${position.id}`);

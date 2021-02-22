@@ -468,6 +468,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
     mode: 'onSubmit',
+    shouldFocusError: false,
     defaultValues: {
       isToppingUpActive: false,
     },
@@ -531,7 +532,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       : investmentAmount < 1
       ? 0
       : (investmentAmount - 1).toFixed(PRECISION_USD);
-
     if (newValue <= MAX_INPUT_VALUE) {
       setValue('investmentAmount', newValue);
     }
@@ -616,7 +616,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       // TODO: research typings
       // @ts-ignore
       !investAmountRef.current?.contains(e.relatedTarget) &&
-      !getValues('investmentAmount')
+      (!getValues('investmentAmount') &&
+        getValues('investmentAmount') !== 0)
     ) {
       setValue(
         'investmentAmount',

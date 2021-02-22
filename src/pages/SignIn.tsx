@@ -168,6 +168,7 @@ const SingIn = observer(() => {
                     value={value}
                     id={Fields.PASSWORD}
                     type="password"
+                    // TODO Here isTouched is works for email field
                     hasError={!!(invalid && errors.password)}
                     errorText={errors.password?.message}
                     datae2eId={e2eTests.SING_IN_PASSWORD}
