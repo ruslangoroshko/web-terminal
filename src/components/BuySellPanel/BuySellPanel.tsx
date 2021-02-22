@@ -468,6 +468,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
     mode: 'onSubmit',
+    shouldFocusError: false,
     defaultValues: {
       isToppingUpActive: false,
     },
