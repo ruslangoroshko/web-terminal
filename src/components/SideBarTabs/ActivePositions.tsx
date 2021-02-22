@@ -126,7 +126,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               if (!hasValue(value)) {
                 return true;
               }
-              return value === null || value > PnL();
+              if (SLTPstore.tpType === TpSlTypeEnum.Currency) {
+                return value === null || value > PnL();
+              }
+              return true;
             }
           )
           .test(
@@ -138,8 +141,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               if (!hasValue(value)) {
                 return true;
               }
-
-              if (SLTPstore.tpType === TpSlTypeEnum.Currency) {
+              if (SLTPstore.tpType === TpSlTypeEnum.Price) {
                 switch (position.operation) {
                   case AskBidEnum.Sell:
                     return value < currentPriceAsk();
@@ -169,7 +171,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               if (!hasValue(value)) {
                 return true;
               }
-              if (SLTPstore.slType === TpSlTypeEnum.Currency) {
+              if (SLTPstore.slType === TpSlTypeEnum.Price) {
                 switch (position.operation) {
                   case AskBidEnum.Sell:
                     return value > currentPriceAsk();
@@ -462,6 +464,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               ? Math.abs(response.position.sl!)
               : undefined,
           });
+          SLTPstore.setTpType(TpSlTypeEnum.Currency);
+          SLTPstore.setSlType(TpSlTypeEnum.Currency);
           quotesStore.setSelectedPositionId(position.id);
           mixpanel.track(mixpanelEvents.EDIT_SLTP, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
@@ -572,10 +576,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     ...otherMethods
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
-    mode: 'onBlur',
+    mode: 'onSubmit',
     defaultValues: {
       tp: position.tp ?? undefined,
-      sl: hasValue(position.sl) ? Math.abs(position.sl!) : undefined,
+      sl: hasValue(position.sl) ? Math.abs(position.sl) : undefined,
       investmentAmount: position.investmentAmount,
       isToppingUpActive: position.isToppingUpActive,
     },
@@ -943,6 +947,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             multiplier: position.multiplier,
             operation: position.operation,
             slPrice: stopLoss,
+            commission: position.swap + position.commission,
           });
           setValue(
             'isToppingUpActive',
@@ -994,9 +999,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             multiplier: position.multiplier,
             operation: position.operation,
             slPrice: sl || 0,
+            commission: position.swap + position.commission,
           });
-          if (isToppingUp) {
+          if (!isToppingUp) {
             if (
+              hasValue(sl) &&
               soValue <= 0 &&
               Math.abs(soValue) >
                 SLTPstore.positionStopOut(
@@ -1008,6 +1015,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             }
           } else {
             if (
+              hasValue(sl) &&
               soValue <= 0 &&
               Math.abs(soValue) <=
                 SLTPstore.positionStopOut(
@@ -1031,7 +1039,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     if (hasValue(sl)) {
       challengeStopOutBySlValue(sl);
     }
-  }, [sl]);
+  }, [sl, SLTPstore.slType]);
 
   useEffect(() => {
     if (hasValue(isToppingUpActive)) {

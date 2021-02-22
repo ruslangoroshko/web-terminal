@@ -155,6 +155,13 @@ const VisaMasterCardForm = () => {
     }
   };
 
+  const onBeforeCardHolderNameInput = (e: any) => {
+    if (!e.data.match(/^[a-z .~`'-]+$/)) {
+      e.preventDefault();
+      return;
+    }
+  }
+
   const handleSubmitForm = async (values: any) => {
     setLoading(true);
     let parts = values.expirationDate.split('/');
@@ -511,6 +518,7 @@ const VisaMasterCardForm = () => {
               value={values.fullName}
               onChange={handleChangeFullname}
               onBlur={handleBlurFullname}
+              onBeforeInput={onBeforeCardHolderNameInput}
               name="fullName"
               id="fullName"
               data-testid={testIds.VISAMASTERFORM_CARDHOLDER_NAME}

@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import Toggle from '../Toggle';
 import { css } from '@emotion/core';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
@@ -13,11 +12,12 @@ import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
 import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
+import Fields from '../../constants/fields';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
   isDisabled?: boolean;
-  clearErrors: () => void;
+  clearErrors: any;
 }
 
 const PnLTypeDropdown: FC<Props> = observer(
@@ -32,12 +32,12 @@ const PnLTypeDropdown: FC<Props> = observer(
       switch (dropdownType) {
         case 'sl':
           SLTPstore.setSlType(autoClose);
-          clearErrors();
+          clearErrors(Fields.STOP_LOSS);
           break;
 
         case 'tp':
           SLTPstore.setTpType(autoClose);
-          clearErrors();
+          clearErrors(Fields.TAKE_PROFIT);
           break;
 
         default:
@@ -66,9 +66,9 @@ const PnLTypeDropdown: FC<Props> = observer(
     const [on, toggle] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const handleToggle = ( ) => {
-      toggle(!on)
-    }
+    const handleToggle = () => {
+      toggle(!on);
+    };
     const handleClickOutside = (e: any) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         toggle(false);

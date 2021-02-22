@@ -467,8 +467,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     ...otherMethods
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema()),
-    mode: 'onBlur',
-    reValidateMode: 'onBlur',
+    mode: 'onSubmit',
     defaultValues: {
       isToppingUpActive: false,
     },
@@ -652,6 +651,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               investmentAmount: investmentAmount,
               multiplier: multiplier,
               operation: operation,
+              commission: 0,
             });
             setValue(
               'isToppingUpActive',
@@ -695,6 +695,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               investmentAmount: investmentAmount,
               multiplier: multiplier,
               operation: operation,
+              commission: 0,
             });
             if (isToppingUp) {
               if (

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, FC } from 'react';
+import React, { useState, useRef, useEffect, FC, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -110,11 +110,22 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
     });
   };
 
+  const resetTpSlTypes = useCallback(() => {
+    if (!hasValue(sl)) {
+      SLTPstore.setSlType(TpSlTypeEnum.Currency);
+    }
+
+    if (!hasValue(tp)) {
+      SLTPstore.setTpType(TpSlTypeEnum.Currency);
+    }
+  }, [sl, tp]);
+
   useEffect(() => {
-    SLTPstore.setSlType(TpSlTypeEnum.Currency);
-    SLTPstore.setTpType(TpSlTypeEnum.Currency);
-    SLTPstore.setInstrumentId(instrumentId);
-  }, []);
+    if (on) {
+      resetTpSlTypes();
+      SLTPstore.setInstrumentId(instrumentId);
+    }
+  }, [on]);
 
   return (
     <>

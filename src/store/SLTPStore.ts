@@ -16,6 +16,7 @@ type PricePosStopOut = {
   operation: AskBidEnum;
   instrumentId: string;
   multiplier: number;
+  commission: number;
 };
 
 export class SLTPStore implements ContextProps {
@@ -63,6 +64,8 @@ export class SLTPStore implements ContextProps {
       (this.rootStore.instrumentsStore.instruments.find(
         (item) => item.instrumentItem.id === instrumentId
       )?.instrumentItem.stopOutPercent || 95) / 100;
+    console.log('_getPostitionStopOut', invest * instrumentPercentSL);
+
     return +(invest * instrumentPercentSL).toFixed(2);
   };
 
@@ -86,30 +89,34 @@ export class SLTPStore implements ContextProps {
     operation,
     instrumentId,
     multiplier,
+    commission,
   }: PricePosStopOut) => {
-    let currentPrice, so_level, so_percent, direction, isBuy;
-    isBuy = operation === AskBidEnum.Buy;
-    currentPrice = isBuy
+    const isBuy = operation === AskBidEnum.Buy;
+    const direction = operation === AskBidEnum.Buy ? 1 : -1;
+
+    const currentPrice = isBuy
       ? this.getCurrentPriceAsk(instrumentId)
       : this.getCurrentPriceBid(instrumentId);
-    so_level = -1 * this.positionStopOut(investmentAmount, instrumentId);
-    so_percent =
-      (this.rootStore.instrumentsStore.instruments.find(
-        (item) => item.instrumentItem.id === instrumentId
-      )?.instrumentItem.stopOutPercent || 0) / 100;
-    direction = operation === AskBidEnum.Buy ? 1 : -1;
 
-    const result = Number(
+    // const so_level = -1 * this.positionStopOut(investmentAmount, instrumentId);
+
+    // const so_percent =
+    //   (this.rootStore.instrumentsStore.instruments.find(
+    //     (item) => item.instrumentItem.id === instrumentId
+    //   )?.instrumentItem.stopOutPercent || 0) / 100;
+
+    // const commissions = this.rootStore.instrumentsStore.instruments.find(
+    //   (item) => item.instrumentItem.id === instrumentId
+    // )?.instrumentItem.
+
+    //(SL RATE / Current Price - 1) * Investment * Multiplier * Direction + Commissions
+
+    const result =
       (slPrice / currentPrice - 1) * investmentAmount * multiplier * direction +
-        Math.abs(
-          this.getCurrentPriceBid(instrumentId) -
-            this.getCurrentPriceAsk(instrumentId)
-        ).toFixed(
-          this.rootStore.instrumentsStore.instruments.find(
-            (item) => item.instrumentItem.id === instrumentId
-          )?.instrumentItem.digits || 2
-        )
-    );
+      commission;
+
+    console.log('positionStopOutByPrice', result);
+
     return +result.toFixed(2);
   };
 
