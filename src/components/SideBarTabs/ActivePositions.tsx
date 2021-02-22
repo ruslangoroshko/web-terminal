@@ -930,6 +930,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     (stopLoss) => {
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
+          console.log(
+            'positionStopOut Currency',
+            SLTPstore.positionStopOut(
+              position.investmentAmount,
+              position.instrument
+            ),
+            'sl',
+            stopLoss
+          );
           setValue(
             'isToppingUpActive',
             stopLoss >
@@ -949,6 +958,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             slPrice: stopLoss,
             commission: position.swap + position.commission,
           });
+          console.log(
+            'positionStopOut Currency',
+            soValue,
+            'sl',
+            stopLoss
+          );
           setValue(
             'isToppingUpActive',
             soValue <= 0 &&
@@ -972,6 +987,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
           // TODO: think refactor
+          console.log(
+            'positionStopOut Currency',
+            SLTPstore.positionStopOut(
+              position.investmentAmount,
+              position.instrument
+            ),
+            'sl',
+            sl
+          );
           if (
             (hasValue(sl) &&
               sl >
@@ -993,6 +1017,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           break;
 
         case TpSlTypeEnum.Price:
+          console.log(
+            'positionStopOut Price',
+            SLTPstore.positionStopOut(
+              position.investmentAmount,
+              position.instrument
+            ),
+            'sl',
+            sl
+          );
           const soValue = SLTPstore.positionStopOutByPrice({
             instrumentId: position.instrument,
             investmentAmount: position.investmentAmount,
