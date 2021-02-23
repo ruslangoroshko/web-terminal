@@ -930,6 +930,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     (stopLoss) => {
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
+          const isBuy = position.operation === AskBidEnum.Buy;
+          const direction = position.operation === AskBidEnum.Buy ? 1 : -1;
+
+          const currentPrice = isBuy
+            ? SLTPstore.getCurrentPriceAsk(position.instrument)
+            : SLTPstore.getCurrentPriceBid(position.instrument);
           console.log(
             'positionStopOut Currency',
             SLTPstore.positionStopOut(
@@ -937,7 +943,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               position.instrument
             ),
             'sl',
-            stopLoss
+            stopLoss,
+            'SL RATE',
+            //SL Rate = ($SL - commission) *(current price -1)/ Investment * Multiplier * Direction
+            (((stopLoss - (position.swap + position.commission)) *
+              (currentPrice - 1)) /
+              position.investmentAmount) *
+              position.multiplier *
+              direction
           );
           setValue(
             'isToppingUpActive',
@@ -958,12 +971,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             slPrice: stopLoss,
             commission: position.swap + position.commission,
           });
-          console.log(
-            'positionStopOut Price',
-            soValue,
-            'sl',
-            stopLoss
-          );
+          console.log('positionStopOut Price', soValue, 'sl', stopLoss);
           setValue(
             'isToppingUpActive',
             soValue <= 0 &&
@@ -979,7 +987,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           break;
       }
     },
-    [SLTPstore.slType, position.investmentAmount]
+    [SLTPstore.slType, position]
   );
 
   const challengeStopOutByToppingUp = useCallback(
@@ -1017,15 +1025,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           break;
 
         case TpSlTypeEnum.Price:
-          console.log(
-            'positionStopOut Price',
-            SLTPstore.positionStopOut(
-              position.investmentAmount,
-              position.instrument
-            ),
-            'sl',
-            sl
-          );
           const soValue = SLTPstore.positionStopOutByPrice({
             instrumentId: position.instrument,
             investmentAmount: position.investmentAmount,
@@ -1034,6 +1033,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             slPrice: sl || 0,
             commission: position.swap + position.commission,
           });
+          console.log('positionStopOut Price', soValue, 'sl', sl);
           if (!isToppingUp) {
             if (
               hasValue(sl) &&
