@@ -971,7 +971,17 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             slPrice: stopLoss,
             commission: position.swap + position.commission,
           });
-          console.log('positionStopOut Price', soValue, 'sl', stopLoss);
+          console.log(
+            'positionStopOut Price',
+            soValue,
+            'sl',
+            stopLoss,
+            'stopout',
+            SLTPstore.positionStopOut(
+              position.investmentAmount,
+              position.instrument
+            )
+          );
           setValue(
             'isToppingUpActive',
             soValue <= 0 &&
