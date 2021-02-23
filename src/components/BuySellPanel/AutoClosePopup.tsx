@@ -17,6 +17,7 @@ import { useFormContext } from 'react-hook-form';
 import hasValue from '../../helpers/hasValue';
 import { FormValues } from '../../types/Positions';
 import { Observer } from 'mobx-react-lite';
+import Fields from '../../constants/fields';
 
 interface Props {
   instrumentId: string;
@@ -34,6 +35,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
     getValues,
     trigger,
     watch,
+    formState,
   } = useFormContext<FormValues>();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -47,10 +49,10 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-      if (on) {
-        setValue('tp', undefined);
-        setValue('sl', undefined);
-      }
+      setValue('tp', undefined);
+      setValue('sl', undefined);
+      clearErrors('tp');
+      clearErrors('sl');
       handleClose();
     }
   };
@@ -68,11 +70,15 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    if (on) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [on]);
 
   const renderTPValue = (tpType: TpSlTypeEnum) => {
     const { tp } = getValues();

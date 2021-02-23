@@ -948,12 +948,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             'sl',
             stopLoss,
             'SL RATE',
-            //SL Rate = ($SL - commission) *(current price -1)/ Investment * Multiplier * Direction
-            (((stopLoss - (position.swap + position.commission)) *
-              (currentPrice - 1)) /
-              position.investmentAmount) *
-              position.multiplier *
-              direction
+            //SL Rate = Current Price + ($SL - Comission) * Сurrent Price /Invest amount *direction*multiplier
+            currentPrice +
+              ((stopLoss - (position.swap + position.commission)) *
+                currentPrice) /
+                (position.investmentAmount * direction * position.multiplier)
           );
           setValue(
             'isToppingUpActive',
@@ -1083,12 +1082,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
   );
 
   const needReject = useCallback(() => {
-    const isSlNull = getValues(Fields.STOP_LOSS) === undefined &&
-      position.sl === null;
-    const isTpNull = getValues(Fields.TAKE_PROFIT) === undefined &&
-      position.tp === null;
-    const isToppingUpNull = !getValues(Fields.IS_TOPPING_UP) &&
-      !position.isToppingUpActive;
+    const isSlNull =
+      getValues(Fields.STOP_LOSS) === undefined && position.sl === null;
+    const isTpNull =
+      getValues(Fields.TAKE_PROFIT) === undefined && position.tp === null;
+    const isToppingUpNull =
+      !getValues(Fields.IS_TOPPING_UP) && !position.isToppingUpActive;
     return isSlNull && isTpNull && isToppingUpNull;
   }, [position]);
 
