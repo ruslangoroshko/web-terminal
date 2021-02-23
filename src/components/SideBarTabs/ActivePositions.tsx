@@ -402,6 +402,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   const updateSLTP = useCallback(
     async (values: FormValues) => {
+      if (needReject()) {
+        return false;
+      }
       const valuesToSubmit: UpdateSLTP = !SLTPstore.closedByChart
         ? {
             ...values,
@@ -1067,6 +1070,16 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     },
     [SLTPstore.slType, sl, position]
   );
+
+  const needReject = useCallback(() => {
+    const isSlNull = getValues(Fields.STOP_LOSS) === undefined &&
+      position.sl === null;
+    const isTpNull = getValues(Fields.TAKE_PROFIT) === undefined &&
+      position.tp === null;
+    const isToppingUpNull = !getValues(Fields.IS_TOPPING_UP) &&
+      !position.isToppingUpActive;
+    return isSlNull && isTpNull && isToppingUpNull;
+  }, [position]);
 
   useEffect(() => {
     if (hasValue(sl)) {
