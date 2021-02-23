@@ -959,7 +959,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             commission: position.swap + position.commission,
           });
           console.log(
-            'positionStopOut Currency',
+            'positionStopOut Price',
             soValue,
             'sl',
             stopLoss
