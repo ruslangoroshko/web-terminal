@@ -928,14 +928,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   const challengeStopOutBySlValue = useCallback(
     (stopLoss) => {
+      const isBuy = position.operation === AskBidEnum.Buy;
+      const direction = position.operation === AskBidEnum.Buy ? 1 : -1;
+
+      const currentPrice = isBuy
+        ? SLTPstore.getCurrentPriceAsk(position.instrument)
+        : SLTPstore.getCurrentPriceBid(position.instrument);
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
-          const isBuy = position.operation === AskBidEnum.Buy;
-          const direction = position.operation === AskBidEnum.Buy ? 1 : -1;
-
-          const currentPrice = isBuy
-            ? SLTPstore.getCurrentPriceAsk(position.instrument)
-            : SLTPstore.getCurrentPriceBid(position.instrument);
           console.log(
             'positionStopOut Currency',
             SLTPstore.positionStopOut(
@@ -976,11 +976,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             soValue,
             'sl',
             stopLoss,
-            'stopout',
-            SLTPstore.positionStopOut(
-              position.investmentAmount,
-              position.instrument
-            )
+            'SL $ ',
+            (stopLoss / currentPrice - 1) *
+              position.investmentAmount *
+              position.multiplier *
+              direction +
+              (position.swap + position.commission)
           );
           setValue(
             'isToppingUpActive',
