@@ -32,7 +32,14 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
 
   const { t } = useTranslation();
 
-  const { setValue, register, errors, watch } = useFormContext<FormValues>();
+  const {
+    setValue,
+    register,
+    errors,
+    watch,
+    trigger,
+    clearErrors
+  } = useFormContext<FormValues>();
 
   const { quotesStore, instrumentsStore, mainAppStore } = useStores();
 
@@ -42,17 +49,22 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      setValue('openPrice', undefined);
+      clearErrors('openPrice');
       toggle(false);
     }
   };
 
   const applyOpenPrice = (errors: any) => () => {
-    if (!Object.keys(errors).length) {
-      toggle(false);
-    }
+    trigger().then(() => {
+      if (!Object.keys(errors).length) {
+        toggle(false);
+      }
+    });
   };
 
   const handleBeforeInput = (e: any) => {
+    clearErrors('openPrice');
     const currTargetValue = e.currentTarget.value;
 
     if (!e.data.match(/^[0-9.,]*$/g)) {
@@ -94,6 +106,12 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
       e.preventDefault();
       return;
     }
+  };
+
+  const handleClosePopup = () => {
+    setValue('openPrice', undefined);
+    clearErrors('openPrice');
+    handleToggle();
   };
 
   const clearOpenPrice = () => {
@@ -158,7 +176,7 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
           flexDirection="column"
           width="200px"
         >
-          <ButtonClose type="button" onClick={handleToggle}>
+          <ButtonClose type="button" onClick={handleClosePopup}>
             <SvgIcon
               {...IconClose}
               fillColor="rgba(255, 255, 255, 0.6)"
