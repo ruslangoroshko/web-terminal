@@ -491,7 +491,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 ? Math.abs(response.position.sl)
                 : null,
             [mixapanelProps.TP_VALUE]: response.position.tp,
-            [mixapanelProps.SAVE_POSITION]: `${response.position.isToppingUpActive}`,
+            [mixapanelProps.SAVE_POSITION]: `${valuesToSubmit.isToppingUpActive}`,
             [mixapanelProps.AVAILABLE_BALANCE]:
               mainAppStore.activeAccount?.balance || 0,
             [mixapanelProps.ACCOUNT_ID]: mainAppStore.activeAccountId,
