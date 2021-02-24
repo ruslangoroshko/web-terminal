@@ -94,8 +94,8 @@ export class SLTPStore implements ContextProps {
     const direction = operation === AskBidEnum.Buy ? 1 : -1;
 
     const currentPrice = isBuy
-      ? this.getCurrentPriceAsk(instrumentId)
-      : this.getCurrentPriceBid(instrumentId);
+      ? this.getCurrentPriceBid(instrumentId)
+      : this.getCurrentPriceAsk(instrumentId);
 
     // const so_level = -1 * this.positionStopOut(investmentAmount, instrumentId);
 
