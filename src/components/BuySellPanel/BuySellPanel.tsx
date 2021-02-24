@@ -197,7 +197,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               return true;
             }
           ),
-        openPrice: yup.number(),
+        openPrice: yup
+          .number()
+          .test(Fields.STOP_LOSS, t('Open Price can not be zero'), (value) => {
+            return value !== 0 || value === null;
+          }),
         isToppingUpActive: yup.boolean().required(),
       }),
     [
