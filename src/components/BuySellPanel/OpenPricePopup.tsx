@@ -123,12 +123,16 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    if (on) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [on]);
 
   const { openPrice } = watch();
   return (
