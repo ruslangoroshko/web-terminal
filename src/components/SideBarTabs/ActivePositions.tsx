@@ -935,8 +935,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       const direction = position.operation === AskBidEnum.Buy ? 1 : -1;
 
       const currentPrice = isBuy
-        ? SLTPstore.getCurrentPriceAsk(position.instrument)
-        : SLTPstore.getCurrentPriceBid(position.instrument);
+        ? SLTPstore.getCurrentPriceBid(position.instrument)
+        : SLTPstore.getCurrentPriceAsk(position.instrument);
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
           console.log(
