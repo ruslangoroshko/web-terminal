@@ -780,6 +780,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             )
           : tradingViewStore.activeOrderLinePositionSL?.getPrice();
       tradingViewStore.toggleMovedPositionPopup(true);
+      SLTPstore.toggleCloseOpenPrice(true);
       checkSL(position.slType, newPosition);
       SLTPstore.setSlType(position.slType ?? TpSlTypeEnum.Currency);
       setValue('sl', newPosition);
@@ -807,6 +808,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             )
           : tradingViewStore.activeOrderLinePositionTP?.getPrice();
       tradingViewStore.toggleMovedPositionPopup(true);
+      SLTPstore.toggleCloseOpenPrice(true);
       checkTP(position.tpType, newPosition);
       SLTPstore.setTpType(position.tpType ?? TpSlTypeEnum.Currency);
       setValue('tp', newPosition);

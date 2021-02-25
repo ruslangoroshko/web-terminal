@@ -25,6 +25,7 @@ export class SLTPStore implements ContextProps {
   closedByChart: boolean = false;
   instrumentId: string = '';
   rootStore: RootStore;
+  closeOpenPrice: boolean = false;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -42,6 +43,11 @@ export class SLTPStore implements ContextProps {
   @action
   toggleClosedByChart = (value: boolean) => {
     this.closedByChart = value;
+  };
+
+  @action
+  toggleCloseOpenPrice = (value: boolean) => {
+    this.closeOpenPrice = value;
   };
 
   @action
