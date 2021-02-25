@@ -9,7 +9,7 @@ import {
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
 import { useStores } from '../../hooks/useStores';
-import { Observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import Fields from '../../constants/fields';
 import { SecondaryButton } from '../../styles/Buttons';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,7 @@ interface Props {
   digits: number;
 }
 
-const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
+const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
   const [on, toggle] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -41,7 +41,12 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
     clearErrors
   } = useFormContext<FormValues>();
 
-  const { quotesStore, instrumentsStore, mainAppStore } = useStores();
+  const {
+    quotesStore,
+    instrumentsStore,
+    mainAppStore,
+    SLTPstore
+  } = useStores();
 
   const handleToggle = () => {
     toggle(!on);
@@ -108,6 +113,11 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
     }
   };
 
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    clearErrors('openPrice');
+    setValue('openPrice', e.target.value);
+  };
+
   const handleClosePopup = () => {
     setValue('openPrice', undefined);
     clearErrors('openPrice');
@@ -133,6 +143,15 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [on]);
+
+  useEffect(() => {
+    if (on && SLTPstore.closeOpenPrice) {
+      setValue('openPrice', undefined);
+      clearErrors('openPrice');
+      handleToggle();
+      SLTPstore.toggleCloseOpenPrice(false);
+    }
+  }, [on, SLTPstore.closeOpenPrice]);
 
   const { openPrice } = watch();
   return (
@@ -235,6 +254,7 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
             )}
             <InputPnL
               onBeforeInput={handleBeforeInput}
+              onChange={handleChangeInput}
               name={Fields.OPEN_PRICE}
               placeholder={t('Non Set')}
               ref={register({ setValueAs: setValueAsNullIfEmpty })}
@@ -280,7 +300,7 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
       </SetPriceWrapper>
     </FlexContainer>
   );
-};
+});
 
 export default OpenPricePopup;
 

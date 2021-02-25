@@ -54,6 +54,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     const handleToggle = () => {
       toggle(!on);
+      SLTPstore.toggleCloseOpenPrice(false);
       const {
         top,
         left,
@@ -71,6 +72,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     };
 
     const handleClickOutside = (e: any) => {
+      SLTPstore.toggleCloseOpenPrice(false);
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         toggle(false);
       }
@@ -85,6 +87,10 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     }, [on]);
 
     useEffect(() => {
+      SLTPstore.toggleCloseOpenPrice(true);
+    }, []);
+
+    useEffect(() => {
       document.addEventListener('mousedown', handleClickOutside);
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
@@ -92,6 +98,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     }, []);
 
     const submitForm = async () => {
+      SLTPstore.toggleCloseOpenPrice(false);
       try {
         const isValid = await trigger();
         if (isValid) {
