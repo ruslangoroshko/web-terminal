@@ -17,7 +17,6 @@ import { useFormContext } from 'react-hook-form';
 import hasValue from '../../helpers/hasValue';
 import { FormValues } from '../../types/Positions';
 import { Observer } from 'mobx-react-lite';
-import Fields from '../../constants/fields';
 
 interface Props {
   instrumentId: string;
@@ -31,28 +30,38 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
   const {
     setValue,
     clearErrors,
-    errors,
     getValues,
     trigger,
     watch,
     formState,
+    reset,
   } = useFormContext<FormValues>();
+  const valuesWatch = watch();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleToggle = () => {
     toggle(!on);
-    if (!on) {
-      clearErrors(['tp', 'sl']);
-    }
   };
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-      setValue('tp', undefined);
-      setValue('sl', undefined);
-      clearErrors('tp');
-      clearErrors('sl');
+      e.preventDefault();
+      let { sl, tp, ...otherValues } = valuesWatch;
+      const isTpExist = !!formState.dirtyFields.tp && formState.touched.tp;
+      const isSlExist = !!formState.dirtyFields.sl && formState.touched.sl;
+      reset(otherValues, { dirtyFields: true, touched: true, isDirty: true });
+      if (isTpExist) {
+        setValue('tp', tp, {
+          shouldDirty: true,
+        });
+      }
+      if (isSlExist) {
+        setValue('sl', sl, {
+          shouldDirty: true,
+        });
+      }
+
       handleClose();
     }
   };
@@ -106,25 +115,23 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
     }`;
   };
 
-  const { sl, tp } = watch();
-
   const handleApplySetAutoClose = () => {
-    trigger().then(() => {
-      if (!Object.keys(errors).length) {
+    trigger(['sl', 'tp']).then((isValid) => {
+      if (isValid) {
         toggle(false);
       }
     });
   };
 
   const resetTpSlTypes = useCallback(() => {
-    if (!hasValue(sl)) {
+    if (!hasValue(valuesWatch.sl)) {
       SLTPstore.setSlType(TpSlTypeEnum.Currency);
     }
 
-    if (!hasValue(tp)) {
+    if (!hasValue(valuesWatch.tp)) {
       SLTPstore.setTpType(TpSlTypeEnum.Currency);
     }
-  }, [sl, tp]);
+  }, [valuesWatch]);
 
   useEffect(() => {
     if (on) {
@@ -136,15 +143,15 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
   return (
     <>
       {!on && children}
-      <FlexContainer position="relative" ref={wrapperRef}>
+      <FlexContainer position="relative">
         <FlexContainer width="100%" position="relative">
           <ButtonAutoClosePurchase
-            onClick={handleToggle}
+            onMouseDown={handleToggle}
             type="button"
-            hasValues={hasValue(sl) || hasValue(tp)}
+            hasValues={hasValue(valuesWatch.sl) || hasValue(valuesWatch.tp)}
           >
             <FlexContainer flexDirection="column" alignItems="center">
-              {!on && (hasValue(sl) || hasValue(tp)) ? (
+              {!on && (hasValue(valuesWatch.sl) || hasValue(valuesWatch.tp)) ? (
                 <FlexContainer
                   alignItems="center"
                   padding="0 20px 0 0"
@@ -186,7 +193,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
               )}
             </FlexContainer>
           </ButtonAutoClosePurchase>
-          {!on && (hasValue(sl) || hasValue(tp)) && (
+          {!on && (hasValue(valuesWatch.sl) || hasValue(valuesWatch.tp)) && (
             <ClearSLTPButton type="button" onClick={clearSLTP(setValue)}>
               <SvgIcon
                 {...IconClose}
@@ -197,6 +204,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
           )}
         </FlexContainer>
         <FlexContainer
+          ref={wrapperRef}
           position="absolute"
           top="20px"
           right="100%"
