@@ -236,7 +236,7 @@ export class MainAppStore implements MainAppStoreProps {
     connection.on(
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
-        this.setActiveAccountId(response.data.id);
+        // this.setActiveAccountId(response.data.id);
 
         this.setAccounts(
           this.accounts.map((account) =>
