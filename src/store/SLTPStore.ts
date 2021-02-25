@@ -1,4 +1,4 @@
-import { observable, action, makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import { AskBidEnum } from '../enums/AskBid';
 import { TpSlTypeEnum } from '../enums/TpSlTypeEnum';
 import { RootStore } from './RootStore';
@@ -17,6 +17,7 @@ type PricePosStopOut = {
   instrumentId: string;
   multiplier: number;
   commission: number;
+  isNewOrder?: boolean;
 };
 
 export class SLTPStore implements ContextProps {
@@ -89,13 +90,21 @@ export class SLTPStore implements ContextProps {
     instrumentId,
     multiplier,
     commission,
+    isNewOrder,
   }: PricePosStopOut) => {
     const isBuy = operation === AskBidEnum.Buy;
     const direction = operation === AskBidEnum.Buy ? 1 : -1;
 
-    const currentPrice = isBuy
-      ? this.getCurrentPriceBid(instrumentId)
-      : this.getCurrentPriceAsk(instrumentId);
+    let currentPrice = 0;
+    if (isNewOrder) {
+      currentPrice = isBuy
+        ? this.getCurrentPriceAsk(instrumentId)
+        : this.getCurrentPriceBid(instrumentId);
+    } else {
+      currentPrice = isBuy
+        ? this.getCurrentPriceBid(instrumentId)
+        : this.getCurrentPriceAsk(instrumentId);
+    }
 
     // const so_level = -1 * this.positionStopOut(investmentAmount, instrumentId);
 

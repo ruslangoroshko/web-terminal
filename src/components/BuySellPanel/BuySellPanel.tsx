@@ -546,10 +546,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     setOperation(null);
   };
 
-  const openConfirmBuyingPopup = (operationType: AskBidEnum) => () => {
-    setOperation(operationType);
-  };
-
   const [investedAmountDropdown, toggleInvestemAmountDropdown] = useState(
     false
   );
@@ -621,8 +617,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       // TODO: research typings
       // @ts-ignore
       !investAmountRef.current?.contains(e.relatedTarget) &&
-      (!getValues('investmentAmount') &&
-        getValues('investmentAmount') !== 0)
+      !getValues('investmentAmount') &&
+      getValues('investmentAmount') !== 0
     ) {
       setValue(
         'investmentAmount',
@@ -658,6 +654,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               multiplier: multiplier,
               operation: operation,
               commission: 0,
+              isNewOrder: true,
             });
             setValue(
               'isToppingUpActive',
@@ -702,6 +699,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               multiplier: multiplier,
               operation: operation,
               commission: 0,
+              isNewOrder: true,
             });
             if (isToppingUp) {
               if (
@@ -731,6 +729,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     [SLTPstore.slType, sl, investmentAmount]
   );
 
+  const openConfirmBuyingPopup = (operationType: AskBidEnum) => () => {
+    setOperation(operationType);
+  };
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -751,10 +753,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   }, [sl, investmentAmount]);
 
   useEffect(() => {
-    if (hasValue(isToppingUpActive)) {
+    if (hasValue(isToppingUpActive) && operation !== null) {
       challengeStopOutByToppingUp(isToppingUpActive);
     }
-  }, [isToppingUpActive]);
+  }, [isToppingUpActive, operation]);
 
   const methods = {
     watch,
