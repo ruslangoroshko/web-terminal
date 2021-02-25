@@ -670,7 +670,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           break;
       }
     },
-    [SLTPstore.slType, investmentAmount]
+    [SLTPstore.slType, investmentAmount, operation]
   );
   const challengeStopOutByToppingUp = useCallback(
     (isToppingUp: boolean) => {
@@ -690,37 +690,37 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           }
           break;
 
-        case TpSlTypeEnum.Price:
-          if (operation !== null) {
-            const soValue = SLTPstore.positionStopOutByPrice({
-              instrumentId: instrument.id,
-              slPrice: sl || 0,
-              investmentAmount: investmentAmount,
-              multiplier: multiplier,
-              operation: operation,
-              commission: 0,
-              isNewOrder: true,
-            });
-            if (isToppingUp) {
-              if (
-                soValue <= 0 &&
-                Math.abs(soValue) >
-                  SLTPstore.positionStopOut(investmentAmount, instrument.id)
-              ) {
-                setValue('sl', undefined);
-              }
-            } else {
-              if (
-                soValue <= 0 &&
-                Math.abs(soValue) <=
-                  SLTPstore.positionStopOut(investmentAmount, instrument.id)
-              ) {
-                setValue('sl', undefined);
-              }
-            }
-          }
+        // case TpSlTypeEnum.Price:
+        //   if (operation !== null) {
+        //     const soValue = SLTPstore.positionStopOutByPrice({
+        //       instrumentId: instrument.id,
+        //       slPrice: sl || 0,
+        //       investmentAmount: investmentAmount,
+        //       multiplier: multiplier,
+        //       operation: operation,
+        //       commission: 0,
+        //       isNewOrder: true,
+        //     });
+        //     if (isToppingUp) {
+        //       if (
+        //         soValue <= 0 &&
+        //         Math.abs(soValue) >
+        //           SLTPstore.positionStopOut(investmentAmount, instrument.id)
+        //       ) {
+        //         setValue('sl', undefined);
+        //       }
+        //     } else {
+        //       if (
+        //         soValue <= 0 &&
+        //         Math.abs(soValue) <=
+        //           SLTPstore.positionStopOut(investmentAmount, instrument.id)
+        //       ) {
+        //         setValue('sl', undefined);
+        //       }
+        //     }
+        //   }
 
-          break;
+        //   break;
 
         default:
           break;
@@ -750,13 +750,13 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     if (hasValue(sl)) {
       challengeStopOutBySlValue(sl, investmentAmount);
     }
-  }, [sl, investmentAmount]);
+  }, [sl, investmentAmount, operation]);
 
   useEffect(() => {
-    if (hasValue(isToppingUpActive) && operation !== null) {
+    if (hasValue(isToppingUpActive)) {
       challengeStopOutByToppingUp(isToppingUpActive);
     }
-  }, [isToppingUpActive, operation]);
+  }, [isToppingUpActive]);
 
   const methods = {
     watch,
