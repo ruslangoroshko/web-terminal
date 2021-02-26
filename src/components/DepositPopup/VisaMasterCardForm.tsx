@@ -242,7 +242,7 @@ const VisaMasterCardForm = () => {
     setFieldValue('fullName', values.fullName.trim());
   };
   const handleChangeFullname = (e: any) => {
-    setFieldValue('fullName', e.target.value.trimLeft());
+    setFieldValue('fullName', e.target.value.trimLeft().replace(/\s+/g, ' '));
   };
 
   const handleBeforeInputChange = (e: any) => {
