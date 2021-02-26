@@ -71,9 +71,6 @@ const SingIn = observer(() => {
           [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
           [mixapanelProps.PLATFORMS_USED]: 'web',
         });
-        mixpanel.track(mixpanelEvents.LOGIN_VIEW, {
-          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
-        });
       }
     } catch (error) {
       badRequestPopupStore.openModal();
