@@ -80,38 +80,41 @@ function UserProfileButton() {
         if (!response.data.phone) {
           fetchAdditionalFields();
         }
-        mainAppStore.signUpFlag
-          ? mixpanel.alias(response.data.id)
-          : mixpanel.identify(response.data.id);
-        mixpanel.people.set({
-          [mixapanelProps.PHONE]: response.data.phone || '',
-          [mixapanelProps.EMAIL]: response.data.email || '',
-          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
-          [mixapanelProps.TRADER_ID]: response.data.id || '',
-          [mixapanelProps.FIRST_NAME]: response.data.firstName || '',
-          [mixapanelProps.KYC_STATUS]: KYCStatus[response.data.kyc],
-          [mixapanelProps.LAST_NAME]: response.data.lastName || '',
-        });
-        mixpanel.people.union({
-          [mixapanelProps.PLATFORMS_USED]: 'web',
-          [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
-        });
-
-        if (mainAppStore.lpLoginFlag) {
-          mixpanel.track(mixpanelEvents.SIGN_UP, {
-            [mixapanelProps.BRAND_NAME]:
-            mainAppStore.initModel.brandProperty,
+        const setMixpanelEvents = async () => {
+          mainAppStore.signUpFlag
+            ? await mixpanel.alias(response.data.id)
+            : await mixpanel.identify(response.data.id);
+          mixpanel.people.set({
+            [mixapanelProps.PHONE]: response.data.phone || '',
+            [mixapanelProps.EMAIL]: response.data.email || '',
+            [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
+            [mixapanelProps.TRADER_ID]: response.data.id || '',
+            [mixapanelProps.FIRST_NAME]: response.data.firstName || '',
+            [mixapanelProps.KYC_STATUS]: KYCStatus[response.data.kyc],
+            [mixapanelProps.LAST_NAME]: response.data.lastName || '',
           });
-        }
+          mixpanel.people.union({
+            [mixapanelProps.PLATFORMS_USED]: 'web',
+            [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
+          });
 
-        mainAppStore.setSignUpFlag(false);
-        mainAppStore.setLpLoginFlag(false);
-        mainAppStore.setProfileStatus(response.data.kyc);
-        mainAppStore.setProfilePhone(response.data.phone || '');
-        mainAppStore.setProfileName(!!response.data.firstName && !!response.data.lastName
-          ? `${response.data.firstName} ${response.data.lastName}`
-          : '');
-        mainAppStore.setProfileEmail(response.data.email || '');
+          if (mainAppStore.lpLoginFlag) {
+            mixpanel.track(mixpanelEvents.SIGN_UP, {
+              [mixapanelProps.BRAND_NAME]:
+              mainAppStore.initModel.brandProperty,
+            });
+          }
+
+          mainAppStore.setSignUpFlag(false);
+          mainAppStore.setLpLoginFlag(false);
+          mainAppStore.setProfileStatus(response.data.kyc);
+          mainAppStore.setProfilePhone(response.data.phone || '');
+          mainAppStore.setProfileName(!!response.data.firstName && !!response.data.lastName
+            ? `${response.data.firstName} ${response.data.lastName}`
+            : '');
+          mainAppStore.setProfileEmail(response.data.email || '');
+        };
+        setMixpanelEvents();
       } catch (error) {}
     }
     fetchPersonalData();
