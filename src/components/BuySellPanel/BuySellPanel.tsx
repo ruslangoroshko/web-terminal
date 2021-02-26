@@ -907,15 +907,18 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             flexWrap="wrap"
             margin="0 0 4px 0"
             alignItems="center"
+            flexDirection="row"
           >
-            <PrimaryTextSpan
-              fontSize="11px"
-              lineHeight="12px"
-              textTransform="uppercase"
-              color="rgba(255, 255, 255, 0.3)"
-            >
-              {t('Autoclose')}
-            </PrimaryTextSpan>
+            <FlexContainer width="calc(100% - 20px)">
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                textTransform="uppercase"
+                color="rgba(255, 255, 255, 0.3)"
+              >
+                {t('Autoclose')}
+              </PrimaryTextSpan>
+            </FlexContainer>
             <InformationPopup
               bgColor="#000000"
               classNameTooltip="autoclose"
