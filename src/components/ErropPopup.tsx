@@ -15,7 +15,7 @@ const ErropPopup: FC<Props> = props => {
 
   return (
     <TooltipWrapper
-      width="220px"
+      width="232px"
       padding="12px"
       position="absolute"
       top="8px"
