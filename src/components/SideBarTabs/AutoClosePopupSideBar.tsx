@@ -84,7 +84,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         SLTPstore.setSlType(slType ?? TpSlTypeEnum.Currency);
         SLTPstore.setInstrumentId(instrumentId);
       }
-    }, [on]);
+    }, [on, tpType, slType]);
 
     useEffect(() => {
       SLTPstore.toggleCloseOpenPrice(true);

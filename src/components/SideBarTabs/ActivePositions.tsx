@@ -565,6 +565,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       SLTPstore.slType,
       SLTPstore.tpType,
       SLTPstore.closedByChart,
+      quotesStore.selectedPositionId,
     ]
   );
 
