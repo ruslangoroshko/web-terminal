@@ -816,16 +816,17 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             alignItems="center"
             zIndex="100"
           >
-            {formState.touched.investmentAmount && errors.investmentAmount && (
-              <ErropPopup
-                textColor="#fffccc"
-                bgColor={ColorsPallete.RAZZMATAZZ}
-                classNameTooltip={'investmentAmount'}
-                direction="left"
-              >
-                {errors.investmentAmount.message}
-              </ErropPopup>
-            )}
+            {(formState.touched.investmentAmount || operation !== null) &&
+              errors.investmentAmount && (
+                <ErropPopup
+                  textColor="#fffccc"
+                  bgColor={ColorsPallete.RAZZMATAZZ}
+                  classNameTooltip={'investmentAmount'}
+                  direction="left"
+                >
+                  {errors.investmentAmount.message}
+                </ErropPopup>
+              )}
             <PrimaryTextSpan fontWeight="bold" marginRight="2px">
               {mainAppStore.activeAccount?.symbol}
             </PrimaryTextSpan>
