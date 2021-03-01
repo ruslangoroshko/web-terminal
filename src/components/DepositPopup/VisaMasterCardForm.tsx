@@ -58,7 +58,7 @@ const VisaMasterCardForm = () => {
       .required(t('Required field'))
       .trim()
       .test('fullName', t('Cardholder name is invalid'), (value) => {
-        return /^[a-z .~`'-]+$/i.test(value);
+        return /^[a-zA-Z .~`'-]+$/i.test(value);
       })
       .test(
         'fullName',
@@ -156,7 +156,7 @@ const VisaMasterCardForm = () => {
   };
 
   const onBeforeCardHolderNameInput = (e: any) => {
-    if (!e.data.match(/^[a-z .~`'-]+$/)) {
+    if (!e.data.match(/^[a-zA-Z .~`'-]+$/)) {
       e.preventDefault();
       return;
     }
