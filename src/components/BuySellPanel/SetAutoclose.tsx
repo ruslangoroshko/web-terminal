@@ -367,7 +367,7 @@ const SetAutoclose: FC<Props> = observer(
                                     SLTPstore.instrumentId
                                 )?.instrumentItem.stopOutPercent
                               }%, ${t(
-                                'an additional 20% of the original investment amount is reserved from your balance to keep your position open.'
+                                'an additional 20% of the original investment amount is reserved from your balance to keep your position open'
                               )}`}
                             </PrimaryTextSpan>
                           )}
