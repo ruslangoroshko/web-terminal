@@ -138,7 +138,7 @@ const SetAutoclose: FC<Props> = observer(
 
     return (
       <ConnectForm>
-        {({ register, setValue, errors, watch, clearErrors, formState }) => {
+        {({ register, setValue, errors, watch, clearErrors }) => {
           const { sl, tp, isToppingUpActive } = watch();
           return (
             <Wrapper
