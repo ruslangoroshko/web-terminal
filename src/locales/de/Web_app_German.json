@@ -358,7 +358,6 @@
     "By user": "Durch Händler",
     "Stop Out": "Stop Out\n",
     "Save position from market noise": "Position vor Marktstörungen schützen\n",
-    "an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least": "werden weitere 20 % des ursprünglichen Investitionsbetrags von Ihrem Guthaben reserviert, um Ihre Position vor der Schließung zu bewahren. Wenn die Position einen weiteren Verlust erleidet, wird Ihr verfügbares Guthaben immer wieder um 20% reduziert. Sobald die Position auf mindestens",
     "all previously reserved funds are returned to your balance.": "werden alle zuvor vorbehaltenen Mittel auf Ihr Konto zurückgebucht.\n",
     "Your account is blocked. We've detected suspicious activity on your account. This block will expire in 15 min.": "Ihr Konto ist gesperrt. Wir haben verdächtige Aktivitäten auf Ihrem Konto entdeckt. Diese Sperre läuft in 15 min ab.",
     "Phone number is invalid": "Telefonnummer ist ungültig",
@@ -367,5 +366,6 @@
     "You already have one active withdrawal request": "Sie haben bereits eine aktive Auszahlungsanfrage\n",
     "Technical Error": "Technischer Fehler\n",
     "Take Profit can not be zero": "Take Profit kann nicht Null sein",
-    "Stop Loss can not be zero": "Stop Loss kann nicht Null sein\n"
+    "Stop Loss can not be zero": "Stop Loss kann nicht Null sein\n",
+    "an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least": "werden zusätzlich 20% des ursprünglichen Investitionsbetrages von Ihrem Guthaben reserviert, um Ihre Position vor der Schließung zu bewahren. Wenn die Position einen weiteren Verlust verzeichnet, wird Ihr verfügbares Guthaben immer wieder um 20% reduziert. Sobald die Position auf Minimum ansteigt,"
 }
