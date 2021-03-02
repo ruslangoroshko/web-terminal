@@ -197,7 +197,7 @@ const SetAutoclose: FC<Props> = observer(
                       width="100%"
                       position="relative"
                     >
-                      {isActive && formState.touched.tp && errors.tp && (
+                      {isActive && errors.tp && (
                         <ErropPopup
                           textColor="#fffccc"
                           bgColor={ColorsPallete.RAZZMATAZZ}
@@ -288,7 +288,7 @@ const SetAutoclose: FC<Props> = observer(
                       width="100%"
                       position="relative"
                     >
-                      {isActive && formState.touched.sl && errors.sl && (
+                      {isActive && errors.sl && (
                         <ErropPopup
                           textColor="#fffccc"
                           bgColor={ColorsPallete.RAZZMATAZZ}
