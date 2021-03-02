@@ -1084,6 +1084,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     [SLTPstore.slType, sl, position]
   );
 
+  const handleResetLines = () => {
+    checkSL(SLTPstore.slType, sl || null);
+    checkTP(SLTPstore.tpType, tp || null);
+  };
+
   const needReject = useCallback(() => {
     const isSlNull =
       getValues(Fields.STOP_LOSS) === undefined && position.sl === null;
@@ -1319,6 +1324,14 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       slType={position.slType}
                       instrumentId={position.instrument}
                       positionId={position.id}
+                      parentRef={instrumentRef}
+                      changeValue={setValue}
+                      valuesWatch={{
+                        sl,
+                        tp
+                      }}
+                      formState={formState}
+                      handleResetLines={handleResetLines}
                     >
                       <SetSLTPButton>
                         <PrimaryTextSpan
