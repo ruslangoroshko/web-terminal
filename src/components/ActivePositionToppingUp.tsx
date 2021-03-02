@@ -18,6 +18,7 @@ const ActivePositionToppingUp: FC<Props> = observer(
     isToppingUpActive,
   }) => {
     const { SLTPstore } = useStores();
+    
     useEffect(() => {
       if (hasValue(sl)) {
         challengeStopOutBySlValue(sl);

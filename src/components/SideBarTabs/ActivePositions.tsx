@@ -1090,6 +1090,16 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     checkTP(SLTPstore.tpType, tp || null);
   };
 
+  const resetFormStateToInitial = () => {
+    reset({
+      investmentAmount: position.investmentAmount,
+      isToppingUpActive: position.isToppingUpActive,
+      openPrice: position.openPrice,
+      sl: hasValue(position.sl) ? Math.abs(position.sl) : undefined,
+      tp: position.tp ?? undefined,
+    });
+  };
+
   const needReject = useCallback(() => {
     const isSlNull =
       getValues(Fields.STOP_LOSS) === undefined && position.sl === null;
@@ -1319,14 +1329,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       slType={position.slType}
                       instrumentId={position.instrument}
                       positionId={position.id}
-                      parentRef={instrumentRef}
-                      changeValue={setValue}
-                      valuesWatch={{
-                        sl,
-                        tp
-                      }}
-                      formState={formState}
                       handleResetLines={handleResetLines}
+                      resetFormStateToInitial={resetFormStateToInitial}
                     >
                       <SetSLTPButton>
                         <PrimaryTextSpan
