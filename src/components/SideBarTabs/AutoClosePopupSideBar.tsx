@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, forwardRef } from 'react';
+import React, { useState, useRef, useEffect, forwardRef, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -40,7 +40,9 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     const [on, toggle] = useState(false);
     const [isTop, setIsTop] = useState(true);
 
-    const { handleSubmit, trigger } = useFormContext<FormValues>();
+    const { handleSubmit, trigger, reset, watch } = useFormContext<
+      FormValues
+    >();
 
     const [popupPosition, setPopupPosition] = useState({
       top: 0,
@@ -70,13 +72,20 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         setIsTop(false);
       }
     };
+    const values = watch();
 
-    const handleClickOutside = (e: any) => {
-      SLTPstore.toggleCloseOpenPrice(false);
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-        toggle(false);
-      }
-    };
+    const handleClickOutside = useCallback(
+      (e: any) => {
+        SLTPstore.toggleCloseOpenPrice(false);
+        if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+          reset({
+            ...values,
+          });
+          toggle(false);
+        }
+      },
+      [on],
+    );
 
     useEffect(() => {
       if (on) {
@@ -91,12 +100,16 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     }, []);
 
     useEffect(() => {
-      document.addEventListener('mousedown', handleClickOutside);
+      if (on) {
+        document.addEventListener('mousedown', handleClickOutside);
+      } else {
+        document.removeEventListener('mousedown', handleClickOutside);
+      }
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
       };
-    }, []);
-
+    }, [on]);
+    
     const submitForm = async () => {
       SLTPstore.toggleCloseOpenPrice(false);
       try {

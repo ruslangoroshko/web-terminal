@@ -44,6 +44,7 @@ import { LOCAL_POSITION } from '../../constants/global';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import hasValue from '../../helpers/hasValue';
+import ActivePositionToppingUp from '../ActivePositionToppingUp';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -1094,18 +1095,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     return isSlNull && isTpNull && isToppingUpNull;
   }, [position]);
 
-  useEffect(() => {
-    if (hasValue(sl)) {
-      challengeStopOutBySlValue(sl);
-    }
-  }, [sl, SLTPstore.slType]);
-
-  useEffect(() => {
-    if (hasValue(isToppingUpActive)) {
-      challengeStopOutByToppingUp(isToppingUpActive);
-    }
-  }, [isToppingUpActive]);
-
   const methodsForForm = {
     errors,
     getValues,
@@ -1134,6 +1123,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               : ''
           }
         >
+          <ActivePositionToppingUp
+            isToppingUpActive={isToppingUpActive}
+            sl={sl}
+            challengeStopOutBySlValue={challengeStopOutBySlValue}
+            challengeStopOutByToppingUp={challengeStopOutByToppingUp}
+          ></ActivePositionToppingUp>
           <InstrumentInfoWrapperForBorder
             justifyContent="space-between"
             padding="0 0 8px 0"
