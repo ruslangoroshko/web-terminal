@@ -766,6 +766,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   const onMoveSL = useCallback(async () => {
     tradingViewStore.toggleMovedPositionPopup(false);
+    resetFormStateToInitial();
     if (
       tradingViewStore.activeOrderLinePositionSL &&
       quotesStore.selectedPosition
@@ -793,6 +794,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
   ]);
 
   const onMoveTP = useCallback(async () => {
+    resetFormStateToInitial();
     tradingViewStore.toggleMovedPositionPopup(false);
     if (
       tradingViewStore.activeOrderLinePositionTP &&
@@ -1098,6 +1100,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       sl: hasValue(position.sl) ? Math.abs(position.sl) : undefined,
       tp: position.tp ?? undefined,
     });
+    SLTPstore.setTpType(TpSlTypeEnum.Currency);
+    SLTPstore.setSlType(TpSlTypeEnum.Currency);
   };
 
   const needReject = useCallback(() => {
