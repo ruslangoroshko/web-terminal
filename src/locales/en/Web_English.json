@@ -367,5 +367,7 @@
     "Technical Error": "Technical Error",
     "Phone number is invalid": "Phone number is invalid",
     "Take Profit can not be zero": "Take Profit can not be zero",
-    "Stop Loss can not be zero": "Stop Loss can not be zero"
+    "Stop Loss can not be zero": "Stop Loss can not be zero",
+    "The position is not found": "The position is not found",
+    "User not found": "User not found"
 }
