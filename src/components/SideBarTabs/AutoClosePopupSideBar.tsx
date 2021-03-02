@@ -1,4 +1,11 @@
-import React, { useState, useRef, useEffect, forwardRef, useCallback } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  forwardRef,
+  RefObject,
+  useCallback,
+} from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -18,6 +25,15 @@ interface Props {
   slType: TpSlTypeEnum | null;
   instrumentId: string;
   positionId: number;
+  parentRef?: RefObject<HTMLDivElement> | null;
+  changeValue?: (arg0: any, arg1: any, arg2: any) => void;
+  valuesWatch?: {
+    sl?: number;
+    tp?: number;
+  };
+  // TODO check types
+  formState?: any;
+  handleResetLines?: () => void;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -30,6 +46,11 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       slType,
       instrumentId,
       positionId,
+      parentRef,
+      changeValue,
+      valuesWatch,
+      formState,
+      handleResetLines,
     },
     ref
   ) => {
@@ -53,6 +74,26 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     });
 
     const wrapperRef = useRef<HTMLDivElement>(null);
+
+    const handleResetValues = () => {
+      if (changeValue && valuesWatch) {
+        const isTpExist = !!formState.dirtyFields.tp && formState.touched.tp;
+        const isSlExist = !!formState.dirtyFields.sl && formState.touched.sl;
+        if (isTpExist) {
+          changeValue('tp', valuesWatch.tp, {
+            shouldDirty: true,
+          });
+        }
+        if (isSlExist) {
+          changeValue('sl', valuesWatch.sl, {
+            shouldDirty: true,
+          });
+        }
+        if (handleResetLines) {
+          handleResetLines();
+        }
+      }
+    };
 
     const handleToggle = () => {
       toggle(!on);
@@ -82,10 +123,17 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
             ...values,
           });
           toggle(false);
+          tradingViewStore.toggleMovedPositionPopup(false);
+          handleResetValues();
         }
       },
-      [on],
+      [on]
     );
+    const handleClosePopup = (value: boolean) => {
+      toggle(value);
+      handleResetValues();
+      tradingViewStore.toggleMovedPositionPopup(false);
+    };
 
     useEffect(() => {
       if (on) {
@@ -109,7 +157,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }, [on]);
-    
+
     const submitForm = async () => {
       SLTPstore.toggleCloseOpenPrice(false);
       try {
@@ -117,6 +165,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         if (isValid) {
           await handleSubmit(handleSumbitMethod)();
           toggle(false);
+          tradingViewStore.toggleMovedPositionPopup(false);
         }
       } catch (error) {}
     };
@@ -153,7 +202,11 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
             bottom={isTop ? 'auto' : '20px'}
             zIndex="101"
           >
-            <SetAutoclose isDisabled={isDisabled} toggle={toggle} isActive={on}>
+            <SetAutoclose
+              isDisabled={isDisabled}
+              toggle={handleClosePopup}
+              isActive={on}
+            >
               <ButtonApply
                 type="button"
                 disabled={isDisabled}
