@@ -362,7 +362,7 @@ const SetAutoclose: FC<Props> = observer(
                       <InformationPopup
                         classNameTooltip="autoclose-loss"
                         bgColor="#000"
-                        width="200px"
+                        width="260px"
                         direction="left"
                       >
                         <PrimaryTextSpan color="#fffccc" fontSize="12px">
