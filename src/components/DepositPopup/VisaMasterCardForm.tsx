@@ -71,7 +71,7 @@ const VisaMasterCardForm = () => {
             ?.trim()
             .split(' ')
             .filter((item: string) => item);
-          return !!(value[0] && value[1]);
+          return !!(value[0] && value[1] && value[0].length <= 24 && value[1].length <= 24);
         }
         return false;
       }),
@@ -229,7 +229,7 @@ const VisaMasterCardForm = () => {
     onSubmit: handleSubmitForm,
     validationSchema,
     validateOnBlur: true,
-    validateOnChange: true,
+    validateOnChange: false,
   });
 
   const handleChangeAmount = (e: any) => {

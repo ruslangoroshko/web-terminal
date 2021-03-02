@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -127,6 +127,14 @@ const SetAutoclose: FC<Props> = observer(
       clearErrors(field);
       setValue(field, e.target.value);
     };
+
+    const stopOutPercent = useCallback(() => {
+      return (
+        instrumentsStore.instruments.find(
+          (inst) => inst.instrumentItem.id === SLTPstore.instrumentId
+        )?.instrumentItem.stopOutPercent || 0
+      );
+    }, [instrumentsStore]);
 
     return (
       <ConnectForm>
@@ -349,7 +357,7 @@ const SetAutoclose: FC<Props> = observer(
                         color="rgba(255, 255, 255, 0.3)"
                         textTransform="uppercase"
                       >
-                        {t('Auto-increase trade amount')}
+                        {t('Save position from market noise')}
                       </PrimaryTextSpan>
                       <InformationPopup
                         classNameTooltip="autoclose-loss"
@@ -357,21 +365,15 @@ const SetAutoclose: FC<Props> = observer(
                         width="200px"
                         direction="left"
                       >
-                        <Observer>
-                          {() => (
-                            <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                              {`${t('If the loss for a position reaches')} ${
-                                instrumentsStore.instruments.find(
-                                  (inst) =>
-                                    inst.instrumentItem.id ===
-                                    SLTPstore.instrumentId
-                                )?.instrumentItem.stopOutPercent
-                              }%, ${t(
-                                'an additional 20% of the original investment amount is reserved from your balance to keep your position open'
-                              )}`}
-                            </PrimaryTextSpan>
-                          )}
-                        </Observer>
+                        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                          {`${t(
+                            'If the loss for a position reaches'
+                          )} ${stopOutPercent()}%, ${t(
+                            'an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least'
+                          )} ${stopOutPercent()}%, ${t(
+                            'all previously reserved funds are returned to your balance.'
+                          )}`}
+                        </PrimaryTextSpan>
                       </InformationPopup>
                     </FlexContainer>
                     <FlexContainer
