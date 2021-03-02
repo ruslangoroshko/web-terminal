@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, forwardRef, RefObject } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  forwardRef,
+  useCallback,
+} from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -18,15 +24,8 @@ interface Props {
   slType: TpSlTypeEnum | null;
   instrumentId: string;
   positionId: number;
-  parentRef?: RefObject<HTMLDivElement> | null;
-  changeValue?: (arg0: any, arg1: any, arg2: any) => void,
-  valuesWatch?: {
-    sl?: number,
-    tp?: number
-  },
-  // TODO check types
-  formState?: any,
-  handleResetLines?: () => void
+  handleResetLines?: () => void;
+  resetFormStateToInitial?: () => void;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -39,11 +38,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       slType,
       instrumentId,
       positionId,
-      parentRef,
-      changeValue,
-      valuesWatch,
-      formState,
-      handleResetLines
+      handleResetLines,
+      resetFormStateToInitial,
     },
     ref
   ) => {
@@ -54,7 +50,9 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     const [on, toggle] = useState(false);
     const [isTop, setIsTop] = useState(true);
 
-    const { handleSubmit, trigger } = useFormContext<FormValues>();
+    const { handleSubmit, trigger, reset, watch } = useFormContext<
+      FormValues
+    >();
 
     const [popupPosition, setPopupPosition] = useState({
       top: 0,
@@ -66,25 +64,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const handleResetValues = () => {
-      if (changeValue && valuesWatch) {
-        const isTpExist = !!formState.dirtyFields.tp && formState.touched.tp;
-        const isSlExist = !!formState.dirtyFields.sl && formState.touched.sl;
-        if (isTpExist) {
-          changeValue('tp', valuesWatch.tp, {
-            shouldDirty: true,
-          });
-        }
-        if (isSlExist) {
-          changeValue('sl', valuesWatch.sl, {
-            shouldDirty: true,
-          });
-        }
-        if (handleResetLines) {
-          handleResetLines();
-        }
-      }
-    };
+    const valuesWatch = watch();
 
     const handleToggle = () => {
       toggle(!on);
@@ -105,22 +85,32 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       }
     };
 
+    const handleClickOutside = useCallback(
+      (e: any) => {
+        SLTPstore.toggleCloseOpenPrice(false);
+        if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+          if (resetFormStateToInitial) {
+            resetFormStateToInitial();
+          }
+          if (handleResetLines) {
+            handleResetLines();
+          }
+          tradingViewStore.toggleMovedPositionPopup(false);
+          toggle(false);
+        }
+      },
+      [on]
+    );
+
     const handleClosePopup = (value: boolean) => {
       toggle(value);
-      handleResetValues();
-      tradingViewStore.toggleMovedPositionPopup(false);
-    };
-
-    const handleClickOutside = (e: any) => {
-      SLTPstore.toggleCloseOpenPrice(false);
-      if (wrapperRef.current &&
-        !wrapperRef.current.contains(e.target) &&
-        !parentRef?.current?.contains(e.target)
-      ) {
-        toggle(false);
-        tradingViewStore.toggleMovedPositionPopup(false);
-        handleResetValues();
+      if (resetFormStateToInitial) {
+        resetFormStateToInitial();
       }
+      if (handleResetLines) {
+        handleResetLines();
+      }
+      tradingViewStore.toggleMovedPositionPopup(false);
     };
 
     useEffect(() => {
@@ -190,7 +180,11 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
             bottom={isTop ? 'auto' : '20px'}
             zIndex="101"
           >
-            <SetAutoclose isDisabled={isDisabled} toggle={handleClosePopup} isActive={on}>
+            <SetAutoclose
+              isDisabled={isDisabled}
+              toggle={handleClosePopup}
+              isActive={on}
+            >
               <ButtonApply
                 type="button"
                 disabled={isDisabled}

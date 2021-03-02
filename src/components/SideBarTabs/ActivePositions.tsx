@@ -44,6 +44,7 @@ import { LOCAL_POSITION } from '../../constants/global';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import hasValue from '../../helpers/hasValue';
+import ActivePositionToppingUp from '../ActivePositionToppingUp';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -1089,6 +1090,16 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     checkTP(SLTPstore.tpType, tp || null);
   };
 
+  const resetFormStateToInitial = () => {
+    reset({
+      investmentAmount: position.investmentAmount,
+      isToppingUpActive: position.isToppingUpActive,
+      openPrice: position.openPrice,
+      sl: hasValue(position.sl) ? Math.abs(position.sl) : undefined,
+      tp: position.tp ?? undefined,
+    });
+  };
+
   const needReject = useCallback(() => {
     const isSlNull =
       getValues(Fields.STOP_LOSS) === undefined && position.sl === null;
@@ -1098,18 +1109,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       !getValues(Fields.IS_TOPPING_UP) && !position.isToppingUpActive;
     return isSlNull && isTpNull && isToppingUpNull;
   }, [position]);
-
-  useEffect(() => {
-    if (hasValue(sl)) {
-      challengeStopOutBySlValue(sl);
-    }
-  }, [sl, SLTPstore.slType]);
-
-  useEffect(() => {
-    if (hasValue(isToppingUpActive)) {
-      challengeStopOutByToppingUp(isToppingUpActive);
-    }
-  }, [isToppingUpActive]);
 
   const methodsForForm = {
     errors,
@@ -1139,6 +1138,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               : ''
           }
         >
+          <ActivePositionToppingUp
+            isToppingUpActive={isToppingUpActive}
+            sl={sl}
+            challengeStopOutBySlValue={challengeStopOutBySlValue}
+            challengeStopOutByToppingUp={challengeStopOutByToppingUp}
+          ></ActivePositionToppingUp>
           <InstrumentInfoWrapperForBorder
             justifyContent="space-between"
             padding="0 0 8px 0"
@@ -1324,14 +1329,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       slType={position.slType}
                       instrumentId={position.instrument}
                       positionId={position.id}
-                      parentRef={instrumentRef}
-                      changeValue={setValue}
-                      valuesWatch={{
-                        sl,
-                        tp
-                      }}
-                      formState={formState}
                       handleResetLines={handleResetLines}
+                      resetFormStateToInitial={resetFormStateToInitial}
                     >
                       <SetSLTPButton>
                         <PrimaryTextSpan
