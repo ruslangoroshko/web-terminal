@@ -10,7 +10,7 @@ interface Props {
   direction: 'right' | 'left';
 }
 
-const ErropPopup: FC<Props> = props => {
+const ErropPopup: FC<Props> = (props) => {
   const { bgColor, textColor, classNameTooltip, children, direction } = props;
 
   return (
@@ -39,8 +39,8 @@ const TooltipWrapper = styled(FlexContainer)<
 >`
   visibility: visible;
   opacity: 1;
-  box-shadow: 0px 12px 24px ${props => props.backgroundColor}40,
-    0px 6px 12px ${props => props.backgroundColor}40;
+  box-shadow: 0px 12px 24px ${(props) => props.backgroundColor}40,
+    0px 6px 12px ${(props) => props.backgroundColor}40;
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-radius: 2px 0 2px 2px;
@@ -52,7 +52,7 @@ const TooltipWrapper = styled(FlexContainer)<
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: ${props => props.backgroundColor};
+    background-color: ${(props) => props.backgroundColor};
     opacity: 0.2;
   }
 
@@ -60,14 +60,14 @@ const TooltipWrapper = styled(FlexContainer)<
     content: '';
     position: absolute;
     top: 0;
-    right: ${props => (props.direction === 'left' ? '-7px' : 'auto')};
-    left: ${props => (props.direction === 'left' ? 'auto' : '-7px')};
+    right: ${(props) => (props.direction === 'left' ? '-7px' : 'auto')};
+    left: ${(props) => (props.direction === 'left' ? 'auto' : '-7px')};
     width: 0;
     height: 0;
-    transform: ${props => props.direction === 'right' && 'rotate(180deg)'};
+    transform: ${(props) => props.direction === 'right' && 'rotate(180deg)'};
     border-style: solid;
     border-width: 7px 0 7px 8px;
     border-color: transparent transparent transparent
-      ${props => props.backgroundColor};
+      ${(props) => props.backgroundColor};
   }
 `;
