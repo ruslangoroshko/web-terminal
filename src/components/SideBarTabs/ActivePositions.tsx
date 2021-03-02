@@ -468,8 +468,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               ? Math.abs(response.position.sl!)
               : undefined,
           });
-          SLTPstore.setTpType(TpSlTypeEnum.Currency);
-          SLTPstore.setSlType(TpSlTypeEnum.Currency);
+          SLTPstore.setTpType(
+            response.position.tpType ?? TpSlTypeEnum.Currency
+          );
+          SLTPstore.setSlType(
+            response.position.slType ?? TpSlTypeEnum.Currency
+          );
           quotesStore.setSelectedPositionId(position.id);
           mixpanel.track(mixpanelEvents.EDIT_SLTP, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
