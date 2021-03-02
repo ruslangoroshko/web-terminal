@@ -770,7 +770,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   const onMoveSL = useCallback(async () => {
     tradingViewStore.toggleMovedPositionPopup(false);
-    resetFormStateToInitial();
     if (
       tradingViewStore.activeOrderLinePositionSL &&
       quotesStore.selectedPosition
@@ -789,16 +788,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       tradingViewStore.toggleMovedPositionPopup(true);
       SLTPstore.toggleCloseOpenPrice(true);
       checkSL(position.slType, newPosition);
-      SLTPstore.setSlType(position.slType ?? TpSlTypeEnum.Currency);
       setValue('sl', newPosition);
     }
   }, [
     tradingViewStore.activeOrderLinePositionSL,
     quotesStore.selectedPosition,
+    position.slType,
   ]);
 
   const onMoveTP = useCallback(async () => {
-    resetFormStateToInitial();
     tradingViewStore.toggleMovedPositionPopup(false);
     if (
       tradingViewStore.activeOrderLinePositionTP &&
@@ -818,12 +816,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       tradingViewStore.toggleMovedPositionPopup(true);
       SLTPstore.toggleCloseOpenPrice(true);
       checkTP(position.tpType, newPosition);
-      SLTPstore.setTpType(position.tpType ?? TpSlTypeEnum.Currency);
       setValue('tp', newPosition);
     }
   }, [
     tradingViewStore.activeOrderLinePositionTP,
     quotesStore.selectedPosition,
+    position.tpType,
   ]);
 
   const removeSLChart = useCallback(async () => {
@@ -1096,7 +1094,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     checkTP(SLTPstore.tpType, tp || null);
   };
 
-  const resetFormStateToInitial = () => {
+  const resetFormStateToInitial = useCallback(() => {
     reset({
       investmentAmount: position.investmentAmount,
       isToppingUpActive: position.isToppingUpActive,
@@ -1106,7 +1104,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     });
     SLTPstore.setTpType(position.tpType ?? TpSlTypeEnum.Currency);
     SLTPstore.setSlType(position.slType ?? TpSlTypeEnum.Currency);
-  };
+  }, [position]);
 
   const needReject = useCallback(() => {
     const isSlNull =
