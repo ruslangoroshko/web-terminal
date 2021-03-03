@@ -50,9 +50,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     const [on, toggle] = useState(false);
     const [isTop, setIsTop] = useState(true);
 
-    const { handleSubmit, trigger, reset, watch } = useFormContext<
-      FormValues
-    >();
+    const { handleSubmit, trigger } = useFormContext<FormValues>();
 
     const [popupPosition, setPopupPosition] = useState({
       top: 0,
@@ -64,8 +62,6 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
 
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const valuesWatch = watch();
-
     const handleToggle = () => {
       toggle(!on);
       SLTPstore.toggleCloseOpenPrice(false);
@@ -75,7 +71,6 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         width,
         bottom,
         height,
-
         // @ts-ignore
       } = ref.current.getBoundingClientRect();
       setPopupPosition({ top, left, width, bottom, height });
@@ -110,6 +105,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       if (handleResetLines) {
         handleResetLines();
       }
+      SLTPstore.toggleCloseOpenPrice(false);
       tradingViewStore.toggleMovedPositionPopup(false);
     };
 
