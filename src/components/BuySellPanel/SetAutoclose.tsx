@@ -245,6 +245,7 @@ const SetAutoclose: FC<Props> = observer(
                         clearErrors={clearErrors}
                         dropdownType="tp"
                         isDisabled={isDisabled}
+                        setValue={setValue}
                       ></PnLTypeDropdown>
                     </InputWrapper>
                   )}
@@ -336,6 +337,7 @@ const SetAutoclose: FC<Props> = observer(
                         clearErrors={clearErrors}
                         dropdownType="sl"
                         isDisabled={isDisabled}
+                        setValue={setValue}
                       ></PnLTypeDropdown>
                     </InputWrapper>
                   )}

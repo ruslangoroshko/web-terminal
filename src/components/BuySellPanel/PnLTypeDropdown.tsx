@@ -18,10 +18,11 @@ interface Props {
   dropdownType: 'sl' | 'tp';
   isDisabled?: boolean;
   clearErrors: any;
+  setValue: any;
 }
 
 const PnLTypeDropdown: FC<Props> = observer(
-  ({ dropdownType, isDisabled, clearErrors }) => {
+  ({ dropdownType, isDisabled, clearErrors, setValue }) => {
     const { t } = useTranslation();
     const { SLTPstore } = useStores();
 
@@ -32,11 +33,15 @@ const PnLTypeDropdown: FC<Props> = observer(
       switch (dropdownType) {
         case 'sl':
           SLTPstore.setSlType(autoClose);
+          setValue(Fields.STOP_LOSS, undefined);
+          setValue(Fields.IS_TOPPING_UP, false);
           clearErrors(Fields.STOP_LOSS);
           break;
 
         case 'tp':
           SLTPstore.setTpType(autoClose);
+          setValue(Fields.TAKE_PROFIT, undefined);
+          setValue(Fields.IS_TOPPING_UP, false);
           clearErrors(Fields.TAKE_PROFIT);
           break;
 
