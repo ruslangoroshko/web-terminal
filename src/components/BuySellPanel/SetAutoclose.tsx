@@ -105,6 +105,7 @@ const SetAutoclose: FC<Props> = observer(
 
     const handleRemoveSl = (setValue: any) => () => {
       setValue('sl', undefined, { shouldValidate: true });
+      setValue(Fields.STOP_LOSS, false);
     };
 
     const handelFalseRadioClick = (
