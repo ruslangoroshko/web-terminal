@@ -224,6 +224,7 @@ const VisaMasterCardForm = () => {
     handleChange,
     errors,
     isSubmitting,
+    setFieldError
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
@@ -243,6 +244,7 @@ const VisaMasterCardForm = () => {
   };
   const handleChangeFullname = (e: any) => {
     setFieldValue('fullName', e.target.value.trimLeft().replace(/\s+/g, ' '));
+    setFieldError('fullName', undefined);
   };
 
   const handleBeforeInputChange = (e: any) => {
@@ -256,7 +258,13 @@ const VisaMasterCardForm = () => {
     }
   };
 
+  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setFieldError(e.target.name, undefined);
+    handleChange(e);
+  };
+
   const handleChangeExpireDate = (e: ChangeEvent<HTMLInputElement>) => {
+    setFieldError(e.target.name, undefined);
     handleChange(e);
   };
 
@@ -379,7 +387,7 @@ const VisaMasterCardForm = () => {
                 /\d/,
               ]}
               onChange={(e) => e.preventDefault()}
-              onInput={handleChange}
+              onInput={handleChangeInput}
               autoComplete="cc-number"
               value={values.cardNumber}
               name="cardNumber"
@@ -473,7 +481,7 @@ const VisaMasterCardForm = () => {
                 placeholder="***"
                 mask="999"
                 value={values.cvv}
-                onChange={handleChange}
+                onChange={handleChangeInput}
                 name="cvv"
                 id="cvv"
                 data-testid={testIds.VISAMASTERFORM_CVV}
