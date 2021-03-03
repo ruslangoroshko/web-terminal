@@ -1090,8 +1090,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
   );
 
   const handleResetLines = () => {
-    checkSL(SLTPstore.slType, sl || null);
-    checkTP(SLTPstore.tpType, tp || null);
+    checkSL(position.slType, position.sl || null);
+    checkTP(position.tpType, position.tp || null);
   };
 
   const resetFormStateToInitial = useCallback(() => {
