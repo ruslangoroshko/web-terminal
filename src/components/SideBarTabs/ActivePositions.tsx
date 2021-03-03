@@ -775,7 +775,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       quotesStore.selectedPosition
     ) {
       const newPosition =
-        position.slType === TpSlTypeEnum.Currency
+        SLTPstore.slType === TpSlTypeEnum.Currency
           ? parseFloat(
               Math.abs(
                 getNewPricing(
@@ -787,13 +787,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           : tradingViewStore.activeOrderLinePositionSL?.getPrice();
       tradingViewStore.toggleMovedPositionPopup(true);
       SLTPstore.toggleCloseOpenPrice(true);
-      checkSL(position.slType, newPosition);
+      checkSL(SLTPstore.slType, newPosition);
       setValue('sl', newPosition);
     }
   }, [
     tradingViewStore.activeOrderLinePositionSL,
     quotesStore.selectedPosition,
-    position.slType,
+    SLTPstore.slType,
   ]);
 
   const onMoveTP = useCallback(async () => {
@@ -803,7 +803,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       quotesStore.selectedPosition
     ) {
       const newPosition =
-        position.tpType === TpSlTypeEnum.Currency
+        SLTPstore.tpType === TpSlTypeEnum.Currency
           ? parseFloat(
               Math.abs(
                 getNewPricing(
@@ -815,13 +815,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           : tradingViewStore.activeOrderLinePositionTP?.getPrice();
       tradingViewStore.toggleMovedPositionPopup(true);
       SLTPstore.toggleCloseOpenPrice(true);
-      checkTP(position.tpType, newPosition);
+      checkTP(SLTPstore.tpType, newPosition);
       setValue('tp', newPosition);
     }
   }, [
     tradingViewStore.activeOrderLinePositionTP,
     quotesStore.selectedPosition,
-    position.tpType,
+    SLTPstore.tpType,
   ]);
 
   const removeSLChart = useCallback(async () => {
