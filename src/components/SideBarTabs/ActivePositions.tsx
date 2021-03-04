@@ -1149,6 +1149,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             sl={sl}
             challengeStopOutBySlValue={challengeStopOutBySlValue}
             challengeStopOutByToppingUp={challengeStopOutByToppingUp}
+            setValue={setValue}
           ></ActivePositionToppingUp>
           <InstrumentInfoWrapperForBorder
             justifyContent="space-between"
