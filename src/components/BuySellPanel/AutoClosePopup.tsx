@@ -16,13 +16,13 @@ import { useTranslation } from 'react-i18next';
 import { useFormContext } from 'react-hook-form';
 import hasValue from '../../helpers/hasValue';
 import { FormValues } from '../../types/Positions';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 
 interface Props {
   instrumentId: string;
 }
 
-const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
+const AutoClosePopup: FC<Props> = observer(({ instrumentId, children }) => {
   const { mainAppStore, SLTPstore } = useStores();
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
@@ -123,19 +123,22 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
     });
   };
 
+  const resetValues = useCallback(() => {
+    if (!hasValue(valuesWatch.sl)) {
+      SLTPstore.setSlTypeNewOrder(TpSlTypeEnum.Currency);
+    }
+
+    if (!hasValue(valuesWatch.tp)) {
+      SLTPstore.setTpTypeNewOrder(TpSlTypeEnum.Currency);
+    }
+  }, [valuesWatch]);
+
   useEffect(() => {
     if (on) {
-      console.log(valuesWatch)
-      if (!hasValue(valuesWatch.sl)) {
-        SLTPstore.setSlTypeNewOrder(TpSlTypeEnum.Currency);
-      }
-
-      if (!hasValue(valuesWatch.tp)) {
-        SLTPstore.setTpTypeNewOrder(TpSlTypeEnum.Currency);
-      }
+      resetValues();
       SLTPstore.setInstrumentIdNewOrder(instrumentId);
     }
-  }, [on, valuesWatch]);
+  }, [on]);
 
   return (
     <>
@@ -216,7 +219,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
       </FlexContainer>
     </>
   );
-};
+});
 
 export default AutoClosePopup;
 
