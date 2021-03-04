@@ -61,6 +61,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     });
 
     const wrapperRef = useRef<HTMLDivElement>(null);
+    const popupRef = useRef<HTMLDivElement>(null);
 
     const handleToggle = () => {
       toggle(true);
@@ -74,7 +75,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         // @ts-ignore
       } = ref.current.getBoundingClientRect();
       setPopupPosition({ top, left, width, bottom, height });
-      const rect = wrapperRef.current?.getBoundingClientRect();
+      const rect = popupRef.current?.getBoundingClientRect();
       if (rect && window.innerHeight - rect.top - 325 <= 0) {
         setIsTop(false);
       }
@@ -111,11 +112,9 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     };
 
     useEffect(() => {
-      if (on) {
-        SLTPstore.setTpType(tpType ?? TpSlTypeEnum.Currency);
-        SLTPstore.setSlType(slType ?? TpSlTypeEnum.Currency);
-        SLTPstore.setInstrumentId(instrumentId);
-      }
+      SLTPstore.setTpType(tpType ?? TpSlTypeEnum.Currency);
+      SLTPstore.setSlType(slType ?? TpSlTypeEnum.Currency);
+      SLTPstore.setInstrumentId(instrumentId);
     }, [on, tpType, slType]);
 
     useEffect(() => {
@@ -158,7 +157,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     }, []);
 
     return (
-      <FlexContainer>
+      <FlexContainer ref={popupRef}>
         <ButtonWithoutStyles type="button" onMouseDown={handleToggle}>
           {children}
         </ButtonWithoutStyles>
