@@ -152,7 +152,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               if (!hasValue(value)) {
                 return true;
               }
-              if (SLTPstore.tpType === TpSlTypeEnum.Price) {
+              if (SLTPstore.tpTypeNewOrder === TpSlTypeEnum.Price) {
                 switch (operation) {
                   case AskBidEnum.Buy:
                     return value > currentPriceAsk();
@@ -182,7 +182,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               if (!hasValue(value)) {
                 return true;
               }
-              if (SLTPstore.slType === TpSlTypeEnum.Price) {
+              if (SLTPstore.slTypeNewOrder === TpSlTypeEnum.Price) {
                 switch (operation) {
                   case AskBidEnum.Buy:
                     return value < currentPriceAsk();
@@ -210,8 +210,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       currentPriceAsk,
       mainAppStore.activeAccount,
       operation,
-      SLTPstore.slType,
-      SLTPstore.tpType,
+      SLTPstore.slTypeNewOrder,
+      SLTPstore.tpTypeNewOrder,
       multiplier,
     ]
   );
@@ -228,8 +228,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           operation: operation ?? AskBidEnum.Buy,
           openPrice: values.openPrice || 0,
           investmentAmount: values.investmentAmount,
-          tpType: hasValue(values.tp) ? SLTPstore.tpType : null,
-          slType: hasValue(values.sl) ? SLTPstore.slType : null,
+          tpType: hasValue(values.tp) ? SLTPstore.tpTypeNewOrder : null,
+          slType: hasValue(values.sl) ? SLTPstore.slTypeNewOrder : null,
           accountId: mainAppStore.activeAccountId,
           instrumentId: instrument.id,
           processId: getProcessId(),
@@ -251,8 +251,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             reset();
             setOperation(null);
             setValue('investmentAmount', values.investmentAmount);
-            SLTPstore.setSlType(TpSlTypeEnum.Currency);
-            SLTPstore.setTpType(TpSlTypeEnum.Currency);
+            SLTPstore.setSlTypeNewOrder(TpSlTypeEnum.Currency);
+            SLTPstore.setTpTypeNewOrder(TpSlTypeEnum.Currency);
             API.setKeyValue({
               key: mainAppStore.activeAccount?.isLive
                 ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
@@ -339,8 +339,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           sl: values.sl ?? null,
           operation: operation ?? AskBidEnum.Buy,
           investmentAmount: values.investmentAmount,
-          tpType: hasValue(values.tp) ? SLTPstore.tpType : null,
-          slType: hasValue(values.sl) ? SLTPstore.slType : null,
+          tpType: hasValue(values.tp) ? SLTPstore.tpTypeNewOrder : null,
+          slType: hasValue(values.sl) ? SLTPstore.slTypeNewOrder : null,
           accountId: mainAppStore.activeAccountId,
           instrumentId: instrument.id,
           processId: getProcessId(),
@@ -448,8 +448,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       }
     },
     [
-      SLTPstore.tpType,
-      SLTPstore.slType,
+      SLTPstore.tpTypeNewOrder,
+      SLTPstore.slTypeNewOrder,
       operation,
       multiplier,
       instrument,
@@ -483,9 +483,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     reset();
-    SLTPstore.setInstrumentId(instrument.id);
-    SLTPstore.setSlType(TpSlTypeEnum.Currency);
-    SLTPstore.setTpType(TpSlTypeEnum.Currency);
+    SLTPstore.setInstrumentIdNewOrder(instrument.id);
+    SLTPstore.setSlTypeNewOrder(TpSlTypeEnum.Currency);
+    SLTPstore.setTpTypeNewOrder(TpSlTypeEnum.Currency);
   }, [mainAppStore.activeAccountId, instrument.id]);
 
   useEffect(() => {
@@ -636,7 +636,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const challengeStopOutBySlValue = useCallback(
     (stopLoss, investmentAmount) => {
-      switch (SLTPstore.slType) {
+      switch (SLTPstore.slTypeNewOrder) {
         case TpSlTypeEnum.Currency:
           setValue(
             'isToppingUpActive',
@@ -670,11 +670,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           break;
       }
     },
-    [SLTPstore.slType, investmentAmount, operation]
+    [SLTPstore.slTypeNewOrder, investmentAmount, operation]
   );
   const challengeStopOutByToppingUp = useCallback(
     (isToppingUp: boolean) => {
-      switch (SLTPstore.slType) {
+      switch (SLTPstore.slTypeNewOrder) {
         case TpSlTypeEnum.Currency:
           // TODO: think refactor
           if (
@@ -726,7 +726,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           break;
       }
     },
-    [SLTPstore.slType, sl, investmentAmount]
+    [SLTPstore.slTypeNewOrder, sl, investmentAmount]
   );
 
   const openConfirmBuyingPopup = (operationType: AskBidEnum) => () => {

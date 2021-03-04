@@ -25,8 +25,11 @@ export class SLTPStore implements ContextProps {
   slType: TpSlTypeEnum = TpSlTypeEnum.Currency;
   closedByChart: boolean = false;
   instrumentId: string = '';
+  instrumentIdNewOrder: string = '';
   rootStore: RootStore;
   closeOpenPrice: boolean = false;
+  tpTypeNewOrder: TpSlTypeEnum = TpSlTypeEnum.Currency;
+  slTypeNewOrder: TpSlTypeEnum = TpSlTypeEnum.Currency;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -62,8 +65,23 @@ export class SLTPStore implements ContextProps {
   };
 
   @action
+  setTpTypeNewOrder = (tpType: TpSlTypeEnum) => {
+    this.tpTypeNewOrder = tpType;
+  };
+
+  @action
+  setSlTypeNewOrder = (slType: TpSlTypeEnum) => {
+    this.slTypeNewOrder = slType;
+  };
+
+  @action
   setInstrumentId = (instrumentId: string) => {
     this.instrumentId = instrumentId;
+  };
+
+  @action
+  setInstrumentIdNewOrder = (instrumentId: string) => {
+    this.instrumentIdNewOrder = instrumentId;
   };
 
   private _getPostitionStopOut = (invest = 0, instrumentId: string) => {

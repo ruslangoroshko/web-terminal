@@ -69,8 +69,8 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
   const clearSLTP = (setValue: any) => () => {
     setValue('tp', undefined);
     setValue('sl', undefined);
-    SLTPstore.setTpType(TpSlTypeEnum.Currency);
-    SLTPstore.setSlType(TpSlTypeEnum.Currency);
+    SLTPstore.setTpTypeNewOrder(TpSlTypeEnum.Currency);
+    SLTPstore.setSlTypeNewOrder(TpSlTypeEnum.Currency);
     clearErrors();
   };
 
@@ -123,22 +123,19 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
     });
   };
 
-  const resetTpSlTypes = useCallback(() => {
-    if (!hasValue(valuesWatch.sl)) {
-      SLTPstore.setSlType(TpSlTypeEnum.Currency);
-    }
-
-    if (!hasValue(valuesWatch.tp)) {
-      SLTPstore.setTpType(TpSlTypeEnum.Currency);
-    }
-  }, [valuesWatch]);
-
   useEffect(() => {
     if (on) {
-      resetTpSlTypes();
-      SLTPstore.setInstrumentId(instrumentId);
+      console.log(valuesWatch)
+      if (!hasValue(valuesWatch.sl)) {
+        SLTPstore.setSlTypeNewOrder(TpSlTypeEnum.Currency);
+      }
+
+      if (!hasValue(valuesWatch.tp)) {
+        SLTPstore.setTpTypeNewOrder(TpSlTypeEnum.Currency);
+      }
+      SLTPstore.setInstrumentIdNewOrder(instrumentId);
     }
-  }, [on]);
+  }, [on, valuesWatch]);
 
   return (
     <>
@@ -166,21 +163,21 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
                           marginRight="4px"
                           textOverflow="ellipsis"
                           whiteSpace="nowrap"
-                          title={renderTPValue(SLTPstore.tpType)}
+                          title={renderTPValue(SLTPstore.tpTypeNewOrder)}
                           color="#fffccc"
                           fontSize="14px"
                         >
-                          {renderTPValue(SLTPstore.tpType)}
+                          {renderTPValue(SLTPstore.tpTypeNewOrder)}
                         </PrimaryTextSpan>
                         <PrimaryTextSpan
                           overflow="hidden"
                           textOverflow="ellipsis"
                           whiteSpace="nowrap"
-                          title={renderSLValue(SLTPstore.slType)}
+                          title={renderSLValue(SLTPstore.slTypeNewOrder)}
                           color="#fffccc"
                           fontSize="14px"
                         >
-                          {renderSLValue(SLTPstore.slType)}
+                          {renderSLValue(SLTPstore.slTypeNewOrder)}
                         </PrimaryTextSpan>
                       </>
                     )}
@@ -210,7 +207,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
           right="100%"
           visibilityProp={on ? 'visible' : 'hidden'}
         >
-          <SetAutoclose toggle={toggle} isActive={on}>
+          <SetAutoclose toggle={toggle} isActive={on} isNewOrder={on}>
             <ButtonApply type="button" onClick={handleApplySetAutoClose}>
               {t('Apply')}
             </ButtonApply>

@@ -1102,8 +1102,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       sl: hasValue(position.sl) ? Math.abs(position.sl) : undefined,
       tp: position.tp ?? undefined,
     });
-    SLTPstore.setTpType(position.tpType ?? TpSlTypeEnum.Currency);
-    SLTPstore.setSlType(position.slType ?? TpSlTypeEnum.Currency);
+    // SLTPstore.setTpType(position.tpType ?? TpSlTypeEnum.Currency);
+    // SLTPstore.setSlType(position.slType ?? TpSlTypeEnum.Currency);
   }, [position]);
 
   const needReject = useCallback(() => {

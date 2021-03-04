@@ -27,10 +27,11 @@ interface Props {
   isDisabled?: boolean;
   toggle: (arg0: boolean) => void;
   isActive: boolean;
+  isNewOrder?: boolean;
 }
 
 const SetAutoclose: FC<Props> = observer(
-  ({ isDisabled, toggle, children, isActive }) => {
+  ({ isDisabled, toggle, children, isActive, isNewOrder }) => {
     const { t } = useTranslation();
 
     const { instrumentsStore, SLTPstore } = useStores();
@@ -46,7 +47,9 @@ const SetAutoclose: FC<Props> = observer(
         case TpSlTypeEnum.Price:
           PRECISION =
             instrumentsStore.instruments.find(
-              (item) => item.instrumentItem.id === SLTPstore.instrumentId
+              (item) =>
+                item.instrumentItem.id ===
+                SLTPstore[isNewOrder ? 'instrumentIdNewOrder' : 'instrumentId']
             )?.instrumentItem.digits || 2;
           break;
 
@@ -132,7 +135,9 @@ const SetAutoclose: FC<Props> = observer(
     const stopOutPercent = useCallback(() => {
       return (
         instrumentsStore.instruments.find(
-          (inst) => inst.instrumentItem.id === SLTPstore.instrumentId
+          (inst) =>
+            inst.instrumentItem.id ===
+            SLTPstore[isNewOrder ? 'instrumentIdNewOrder' : 'instrumentId']
         )?.instrumentItem.stopOutPercent || 0
       );
     }, [instrumentsStore]);
@@ -189,7 +194,8 @@ const SetAutoclose: FC<Props> = observer(
                   {() => (
                     <InputWrapper
                       padding={
-                        SLTPstore.tpType === TpSlTypeEnum.Price
+                        SLTPstore[isNewOrder ? 'tpTypeNewOrder' : 'tpType'] ===
+                        TpSlTypeEnum.Price
                           ? '0 0 0 8px'
                           : '0 0 0 22px'
                       }
@@ -208,11 +214,12 @@ const SetAutoclose: FC<Props> = observer(
                           {errors.tp.message}
                         </ErropPopup>
                       )}
-                      {SLTPstore.tpType !== TpSlTypeEnum.Price && (
-                        <PlusSign>+</PlusSign>
-                      )}
+                      {SLTPstore[isNewOrder ? 'tpTypeNewOrder' : 'tpType'] !==
+                        TpSlTypeEnum.Price && <PlusSign>+</PlusSign>}
                       <InputPnL
-                        onBeforeInput={handleBeforeInput(SLTPstore.tpType)}
+                        onBeforeInput={handleBeforeInput(
+                          SLTPstore[isNewOrder ? 'tpTypeNewOrder' : 'tpType']
+                        )}
                         placeholder={t('Non Set')}
                         ref={register({
                           setValueAs: setValueAsNullIfEmpty,
@@ -247,6 +254,8 @@ const SetAutoclose: FC<Props> = observer(
                         dropdownType="tp"
                         isDisabled={isDisabled}
                         setValue={setValue}
+                        isNewOrder={isNewOrder}
+
                       ></PnLTypeDropdown>
                     </InputWrapper>
                   )}
@@ -281,7 +290,8 @@ const SetAutoclose: FC<Props> = observer(
                   {() => (
                     <InputWrapper
                       padding={
-                        SLTPstore.slType === TpSlTypeEnum.Price
+                        SLTPstore[isNewOrder ? 'slTypeNewOrder' : 'slType'] ===
+                        TpSlTypeEnum.Price
                           ? '0 0 0 8px'
                           : '0 0 0 22px'
                       }
@@ -300,11 +310,12 @@ const SetAutoclose: FC<Props> = observer(
                           {errors.sl.message}
                         </ErropPopup>
                       )}
-                      {SLTPstore.slType !== TpSlTypeEnum.Price && (
-                        <PlusSign>-</PlusSign>
-                      )}
+                      {SLTPstore[isNewOrder ? 'slTypeNewOrder' : 'slType'] !==
+                        TpSlTypeEnum.Price && <PlusSign>-</PlusSign>}
                       <InputPnL
-                        onBeforeInput={handleBeforeInput(SLTPstore.slType)}
+                        onBeforeInput={handleBeforeInput(
+                          SLTPstore[isNewOrder ? 'slTypeNewOrder' : 'slType']
+                        )}
                         placeholder={t('Non Set')}
                         name={Fields.STOP_LOSS}
                         ref={register({
@@ -339,6 +350,7 @@ const SetAutoclose: FC<Props> = observer(
                         dropdownType="sl"
                         isDisabled={isDisabled}
                         setValue={setValue}
+                        isNewOrder={isNewOrder}
                       ></PnLTypeDropdown>
                     </InputWrapper>
                   )}

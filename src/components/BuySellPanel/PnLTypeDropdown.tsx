@@ -11,7 +11,7 @@ import autoCloseTypes from '../../constants/autoCloseTypes';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
 import { useStores } from '../../hooks/useStores';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import Fields from '../../constants/fields';
 
 interface Props {
@@ -19,27 +19,27 @@ interface Props {
   isDisabled?: boolean;
   clearErrors: any;
   setValue: any;
+  isNewOrder?: boolean;
 }
 
 const PnLTypeDropdown: FC<Props> = observer(
-  ({ dropdownType, isDisabled, clearErrors, setValue }) => {
+  ({ dropdownType, isDisabled, clearErrors, setValue, isNewOrder }) => {
     const { t } = useTranslation();
     const { SLTPstore } = useStores();
-
     const handleAutoClose = (
       autoClose: TpSlTypeEnum,
       toggle: (arg0: boolean) => void
     ) => () => {
       switch (dropdownType) {
         case 'sl':
-          SLTPstore.setSlType(autoClose);
+          SLTPstore[isNewOrder ? 'setSlTypeNewOrder' : 'setSlType'](autoClose);
           setValue(Fields.STOP_LOSS, undefined);
           setValue(Fields.IS_TOPPING_UP, false);
           clearErrors(Fields.STOP_LOSS);
           break;
 
         case 'tp':
-          SLTPstore.setTpType(autoClose);
+          SLTPstore[isNewOrder ? 'setTpTypeNewOrder' : 'setTpType'](autoClose);
           setValue(Fields.TAKE_PROFIT, undefined);
           clearErrors(Fields.TAKE_PROFIT);
           break;
@@ -52,20 +52,24 @@ const PnLTypeDropdown: FC<Props> = observer(
 
     const availableAutoCloseTypes = [TpSlTypeEnum.Currency, TpSlTypeEnum.Price];
 
-    const renderSymbol = useCallback(() => {
+    const renderSymbol = () => {
       switch (dropdownType) {
         case 'sl':
-          return autoCloseTypes[SLTPstore.slType ?? TpSlTypeEnum.Currency]
-            .symbol;
+          return autoCloseTypes[
+            SLTPstore[isNewOrder ? 'slTypeNewOrder' : 'slType'] ??
+              TpSlTypeEnum.Currency
+          ].symbol;
 
         case 'tp':
-          return autoCloseTypes[SLTPstore.tpType ?? TpSlTypeEnum.Currency]
-            .symbol;
+          return autoCloseTypes[
+            SLTPstore[isNewOrder ? 'tpTypeNewOrder' : 'tpType'] ??
+              TpSlTypeEnum.Currency
+          ].symbol;
 
         default:
           return '';
       }
-    }, [SLTPstore.tpType, SLTPstore.slType]);
+    };
 
     const [on, toggle] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -94,9 +98,15 @@ const PnLTypeDropdown: FC<Props> = observer(
           type="button"
           disabled={isDisabled}
         >
-          <PrimaryTextSpan color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}>
-            {renderSymbol()}
-          </PrimaryTextSpan>
+          <Observer>
+            {() => (
+              <PrimaryTextSpan
+                color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
+              >
+                {renderSymbol()}
+              </PrimaryTextSpan>
+            )}
+          </Observer>
           <SvgIcon
             {...IconShevronDown}
             fillColor="rgba(255, 255, 255, 0.5)"
