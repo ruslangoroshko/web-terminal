@@ -63,7 +63,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     const handleToggle = () => {
-      toggle(!on);
+      toggle(true);
       SLTPstore.toggleCloseOpenPrice(false);
       const {
         top,
@@ -84,6 +84,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       (e: any) => {
         SLTPstore.toggleCloseOpenPrice(false);
         if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+          e.preventDefault();
           if (resetFormStateToInitial) {
             resetFormStateToInitial();
           }
@@ -157,12 +158,13 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     }, []);
 
     return (
-      <FlexContainer ref={wrapperRef}>
-        <ButtonWithoutStyles type="button" onClick={handleToggle}>
+      <FlexContainer>
+        <ButtonWithoutStyles type="button" onMouseDown={handleToggle}>
           {children}
         </ButtonWithoutStyles>
         {on && (
           <FlexContainer
+            ref={wrapperRef}
             position="absolute"
             // FIXME: think about this stupid sheet
             top={
