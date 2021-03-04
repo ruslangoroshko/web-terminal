@@ -41,7 +41,6 @@ const PnLTypeDropdown: FC<Props> = observer(
         case 'tp':
           SLTPstore.setTpType(autoClose);
           setValue(Fields.TAKE_PROFIT, undefined);
-          setValue(Fields.IS_TOPPING_UP, false);
           clearErrors(Fields.TAKE_PROFIT);
           break;
 
