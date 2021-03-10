@@ -9,6 +9,7 @@ import Topics from '../constants/websocketTopics';
 import { BidAskModelWSDTO } from '../types/BidAsk';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
 import historyProvider from './historyProvider';
+import { supportedResolutions } from '../constants/supportedTimeScales';
 
 // keep track of subscriptions
 
@@ -70,7 +71,6 @@ class StreamingService {
         const _lastBar = updateBar(bar, subscriptionRecord);
         subscriptionRecord.listener(_lastBar);
         subscriptionRecord.lastBar = _lastBar;
-       
       }
     );
   }
@@ -92,7 +92,8 @@ class StreamingService {
 
     this._subscribers[listenerGuid] = {
       resetCasheCallback: onResetCacheNeededCallback,
-      lastBar: historyProvider.history[`${symbolInfo.name}${resolution}`].lastBar,
+      lastBar:
+        historyProvider.history[`${symbolInfo.name}${resolution}`].lastBar,
       listener: newDataCallback,
       resolution: resolution,
       symbolInfo: symbolInfo,
@@ -111,22 +112,51 @@ export default StreamingService;
 
 // Take a single trade, and subscription record, return updated bar
 function updateBar(bar: Bar, { lastBar, resolution }: DataSubscriber) {
-  let resolutionNumber = +resolution;
-  if (resolution.includes('D')) {
-    // 1 day in minutes === 1440
-    resolutionNumber = 1440;
-  } else if (resolution.includes('W')) {
-    // 1 week in minutes === 10080
-    resolutionNumber = 10080;
-  }
-  const coeff = resolutionNumber * 60;
-
-  const rounded = bar.time || Math.floor(bar.time / coeff) * coeff;
-  let _lastBar = {} as Bar;
   const MINUTE = 60000;
-  if (rounded > lastBar.time + MINUTE) {
-    // create a new candle, use last close as open **PERSONAL CHOICE**
-    _lastBar = { ...bar, time: rounded };
+
+  let time = MINUTE;
+
+  switch (resolution) {
+    case supportedResolutions['1 minute']:
+      break;
+
+    case supportedResolutions['5 minutes']:
+      time = 5 * MINUTE;
+      break;
+
+    case supportedResolutions['30 minutes']:
+      time = 30 * MINUTE;
+      break;
+
+    case supportedResolutions['1 hour']:
+      time = 60 * MINUTE;
+      break;
+
+    case supportedResolutions['4 hours']:
+      time = 4 * 60 * MINUTE;
+      break;
+
+    case supportedResolutions['1 day']:
+      time = 24 * 60 * MINUTE;
+      break;
+
+    case supportedResolutions['1 week']:
+      time = 7 * 24 * 60 * MINUTE;
+
+      break;
+
+    case supportedResolutions['1 month']:
+      time = 30 * 24 * 60 * MINUTE;
+
+      break;
+
+    default:
+      break;
+  }
+
+  let _lastBar = {} as Bar;
+  if (bar.time > lastBar.time + time) {
+    _lastBar = { ...bar };
   } else {
     // update lastBar candle!
     if (bar.low < lastBar.low) {
