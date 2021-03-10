@@ -35,7 +35,7 @@ const TradingHistory: FC = observer(() => {
       const checkNumber = dataStart ? !parseInt(dataStart) : true;
       try {
         const response = await API.getPositionsHistory({
-          accountId: mainAppStore.activeAccount!.id,
+          accountId: mainAppStore.activeAccountId,
           startDate: moment(
             (checkIsNaN && checkNumber) || !dataStart
               ? dateRangeStore.startDate
@@ -86,7 +86,7 @@ const TradingHistory: FC = observer(() => {
       } catch (error) {}
     },
     [
-      mainAppStore.activeAccount?.id,
+      mainAppStore.activeAccountId,
       dateRangeStore.startDate,
       dateRangeStore.endDate,
       historyStore.positionsHistoryReport,
@@ -94,7 +94,7 @@ const TradingHistory: FC = observer(() => {
   );
 
   useEffect(() => {
-    if (mainAppStore.activeAccount) {
+    if (mainAppStore.activeAccountId) {
       let checkScroll: boolean = false;
       const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
       const neededData: string | null = localStorage.getItem(
@@ -137,7 +137,7 @@ const TradingHistory: FC = observer(() => {
         positionsHistory: [],
       });
     };
-  }, [mainAppStore.activeAccount]);
+  }, [mainAppStore.activeAccountId]);
 
   return (
     <PortfolioWrapper flexDirection="column" height="100%">

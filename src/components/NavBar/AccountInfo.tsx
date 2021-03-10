@@ -66,7 +66,7 @@ const AccountInfo: FC<Props> = observer((props) => {
 
   const { t } = useTranslation();
 
-  const isActiveAccount = mainAppStore.activeAccount?.id === account.id;
+  const isActiveAccount = mainAppStore.activeAccountId === account.id;
 
   const handleSwitch = () => {
     mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
