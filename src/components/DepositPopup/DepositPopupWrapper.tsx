@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
@@ -23,25 +23,38 @@ import mixpanelEvents from '../../constants/mixpanelEvents';
 
 import BitcoinForm from './BitcoinForm';
 import VisaMasterCardForm from './VisaMasterCardForm';
+import ElectronicFundsTransfer from './ElectronicFundsTransfer';
 
 import CardIcon from '../../assets/svg/payments/icon-card.svg';
 import BitcoinIcon from '../../assets/svg/payments/icon-bitcoin.svg';
+import SwiffyIcon from '../../assets/images/icon-swiffy.png';
 
 import MastercardIdCheckImage from '../../assets/images/mastercard-id-check.png';
 import SslCertifiedImage from '../../assets/images/ssl-certified.png';
 import VisaSecureImage from '../../assets/images/visa-secure.png';
 import NotificationPopup from '../NotificationPopup';
+import { GetSupportedPaymentSystems } from '../../types/DepositTypes';
+import API from '../../helpers/API';
+import { GetSupportedPaymentSystemsStatuses } from '../../enums/GetSupportedPaymentSystemsStatuses';
 
 const depositList = [
   {
     id: DepositTypeEnum.VisaMaster,
     name: 'Visa / Mastercard',
     icon: CardIcon,
+    show: true,
   },
   {
     id: DepositTypeEnum.Bitcoin,
     name: 'Bitcoin',
     icon: BitcoinIcon,
+    show: true,
+  },
+  {
+    id: DepositTypeEnum.ElectronicFundsTransfer,
+    name: 'Electronic Funds Transfer',
+    icon: SwiffyIcon,
+    show: false,
   },
 ];
 
@@ -70,6 +83,9 @@ const DepositPopupInner: FC = () => {
     notificationStore,
   } = useStores();
 
+  // TODO adding type
+  const [usedPaymentSystems, setUsedPaymentSystems] = useState(depositList);
+
   const setActiveDepositType = (depositType: DepositTypeEnum) => () => {
     depositFundsStore.setActiveDepositType(depositType);
   };
@@ -86,6 +102,9 @@ const DepositPopupInner: FC = () => {
       case DepositTypeEnum.Bitcoin:
         return <BitcoinForm />;
 
+      case DepositTypeEnum.ElectronicFundsTransfer:
+        return <ElectronicFundsTransfer />;
+
       default:
         return null;
     }
@@ -94,6 +113,31 @@ const DepositPopupInner: FC = () => {
   useEffect(() => {
     notificationStore.resetNotification();
     mixpanel.track(mixpanelEvents.DEPOSIT_LIST_VIEW);
+  }, []);
+
+  useEffect(() => {
+    async function checkSupportedSystems() {
+      try {
+        const response: GetSupportedPaymentSystems = await API.getSupportedSystems();
+        if (response.status === GetSupportedPaymentSystemsStatuses.Success) {
+          response.data.supportedPaymentSystems.forEach((paymentSystem) => {
+            if (paymentSystem.paymentSystemType === DepositTypeEnum.ElectronicFundsTransfer) {
+              const newRoutes = depositList.map((usedPayment) => {
+                if (usedPayment.id === DepositTypeEnum.ElectronicFundsTransfer) {
+                  return {
+                    ...usedPayment,
+                    show: true,
+                  }
+                }
+                return usedPayment;
+              });
+              setUsedPaymentSystems(newRoutes);
+            }
+          });
+        }
+      } catch (error) {}
+    }
+    checkSupportedSystems();
   }, []);
 
   return (
@@ -188,49 +232,59 @@ const DepositPopupInner: FC = () => {
                 justifyContent="space-between"
                 flex="auto"
               >
-                <FlexContainer flexDirection="column">
+                <FlexContainer marginBottom="50px" flexDirection="column">
                   <Observer>
                     {() => (
                       <>
-                        {depositList.map((item) => (
-                          <PaymentMethodItem
-                            key={item.id}
-                            isActive={
-                              depositFundsStore.activeDepositType === item.id
-                            }
-                            onClick={setActiveDepositType(item.id)}
-                          >
-                            <FlexContainer marginRight="8px">
-                              <SvgIcon
-                                {...item.icon}
-                                fillColor={
-                                  depositFundsStore.activeDepositType ===
-                                  item.id
-                                    ? '#fffccc'
-                                    : 'rgba(196, 196, 196, 0.5)'
-                                }
-                              ></SvgIcon>
-                            </FlexContainer>
-                            <FlexContainer flexDirection="column">
-                              <PrimaryTextSpan
-                                fontSize="12px"
-                                color={
-                                  depositFundsStore.activeDepositType ===
-                                  item.id
-                                    ? '#fffccc'
-                                    : 'rgba(196, 196, 196, 0.5)'
-                                }
-                              >
-                                {t(`${item.name}`)}
-                              </PrimaryTextSpan>
-                              <PrimaryTextSpan
-                                fontSize="12px"
-                                color="rgba(255,255,255,0.4)"
-                              >
-                                {t('Instantly')}
-                              </PrimaryTextSpan>
-                            </FlexContainer>
-                          </PaymentMethodItem>
+                        {usedPaymentSystems.map((item) => (
+                          <>
+                            {item.show && <PaymentMethodItem
+                              key={item.id}
+                              isActive={
+                                depositFundsStore.activeDepositType === item.id
+                              }
+                              onClick={setActiveDepositType(item.id)}
+                            >
+                              <FlexContainer marginRight="8px">
+                                {item.id === DepositTypeEnum.ElectronicFundsTransfer
+                                  ? <PaymentIcon isActive={
+                                    depositFundsStore.activeDepositType === item.id
+                                  }>
+                                    <ImageBadge src={SwiffyIcon} width={32}></ImageBadge>
+                                  </PaymentIcon>
+                                  : <SvgIcon
+                                    {...item.icon}
+                                    fillColor={
+                                      depositFundsStore.activeDepositType ===
+                                      item.id
+                                        ? '#fffccc'
+                                        : 'rgba(196, 196, 196, 0.5)'
+                                    }
+                                  ></SvgIcon>}
+                              </FlexContainer>
+                              <FlexContainer flexDirection="column">
+                                <PrimaryTextSpan
+                                  fontSize="12px"
+                                  color={
+                                    depositFundsStore.activeDepositType ===
+                                    item.id
+                                      ? '#fffccc'
+                                      : 'rgba(196, 196, 196, 0.5)'
+                                  }
+                                >
+                                  {t(`${item.name}`)}
+                                </PrimaryTextSpan>
+                                <PrimaryTextSpan
+                                  fontSize="12px"
+                                  color="rgba(255,255,255,0.4)"
+                                >
+                                  {item.id === DepositTypeEnum.ElectronicFundsTransfer
+                                    ? t('ABSA, Nedbank, Capitec, FNB, Standard, Investec')
+                                    : t('Instantly')}
+                                </PrimaryTextSpan>
+                              </FlexContainer>
+                            </PaymentMethodItem>}
+                          </>
                         ))}
                       </>
                     )}
@@ -316,4 +370,13 @@ const ModalBackground = styled(FlexContainer)`
     background-color: rgba(37, 38, 54, 0.8);
     backdrop-filter: blur(12px);
   }
+`;
+
+const PaymentIcon = styled(FlexContainer)<{ isActive: boolean }>`
+  background-color: ${(props) => (props.isActive ? '#fffccc' : 'rgba(196, 196, 196, 0.5)')};
+  border-radius: 3px;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 24px;
 `;

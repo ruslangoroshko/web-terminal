@@ -37,6 +37,8 @@ const API_LIST = {
     CREATE: '/Create',
     GET_CRYPTO_WALLET: '/GetCryptoWallet',
     CREATE_INVOICE: '/CreatePciDssInvoice',
+    CREATE_INVOICE_SWIFFY: '/v1/deposit/swiffy/invoice',
+    CHECK_PAYMENT_SYSTEMS: '/supported-payment-systems',
   },
   INIT: {
     GET: '/init/',
