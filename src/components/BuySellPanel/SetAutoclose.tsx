@@ -132,16 +132,6 @@ const SetAutoclose: FC<Props> = observer(
       setValue(field, e.target.value);
     };
 
-    const stopOutPercent = useCallback(() => {
-      return (
-        instrumentsStore.instruments.find(
-          (inst) =>
-            inst.instrumentItem.id ===
-            SLTPstore[isNewOrder ? 'instrumentIdNewOrder' : 'instrumentId']
-        )?.instrumentItem.stopOutPercent || 0
-      );
-    }, [instrumentsStore]);
-
     return (
       <ConnectForm>
         {({ register, setValue, errors, watch, clearErrors }) => {
@@ -255,7 +245,6 @@ const SetAutoclose: FC<Props> = observer(
                         isDisabled={isDisabled}
                         setValue={setValue}
                         isNewOrder={isNewOrder}
-
                       ></PnLTypeDropdown>
                     </InputWrapper>
                   )}
@@ -380,15 +369,37 @@ const SetAutoclose: FC<Props> = observer(
                         width="260px"
                         direction="left"
                       >
-                        <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                          {`${t(
-                            'If the loss for a position reaches'
-                          )} ${stopOutPercent()}%, ${t(
-                            'an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least'
-                          )} ${stopOutPercent()}%, ${t(
-                            'all previously reserved funds are returned to your balance.'
-                          )}`}
-                        </PrimaryTextSpan>
+                        <Observer>
+                          {() => (
+                            <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                              {`${t('If the loss for a position reaches')} ${
+                                instrumentsStore.instruments.find(
+                                  (inst) =>
+                                    inst.instrumentItem.id ===
+                                    SLTPstore[
+                                      isNewOrder
+                                        ? 'instrumentIdNewOrder'
+                                        : 'instrumentId'
+                                    ]
+                                )?.instrumentItem.stopOutPercent || 0
+                              }%, ${t(
+                                'an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least'
+                              )} ${
+                                instrumentsStore.instruments.find(
+                                  (inst) =>
+                                    inst.instrumentItem.id ===
+                                    SLTPstore[
+                                      isNewOrder
+                                        ? 'instrumentIdNewOrder'
+                                        : 'instrumentId'
+                                    ]
+                                )?.instrumentItem.stopOutPercent || 0
+                              }%, ${t(
+                                'all previously reserved funds are returned to your balance.'
+                              )}`}
+                            </PrimaryTextSpan>
+                          )}
+                        </Observer>
                       </InformationPopup>
                     </FlexContainer>
                     <FlexContainer
