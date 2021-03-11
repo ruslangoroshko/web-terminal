@@ -68,7 +68,7 @@ class StreamingService {
           return;
         }
 
-        const _lastBar = updateBar(bar, subscriptionRecord);
+        const _lastBar = this._updateBar(bar, subscriptionRecord);
         subscriptionRecord.listener(_lastBar);
         subscriptionRecord.lastBar = _lastBar;
       }
@@ -105,71 +105,68 @@ class StreamingService {
     console.log(`DataPulseProvider: unsubscribed for #${listenerGuid}`);
   };
 
-  _updateBar = () => {};
+  _updateBar = (bar: Bar, { lastBar, resolution }: DataSubscriber) => {
+    const MINUTE = 60000;
+    console.log('_updateBar resolution', resolution)
+    let time = MINUTE;
+
+    switch (resolution) {
+      case supportedResolutions['1 minute']:
+        break;
+
+      case supportedResolutions['5 minutes']:
+        time = 5 * MINUTE;
+        break;
+
+      case supportedResolutions['30 minutes']:
+        time = 30 * MINUTE;
+        break;
+
+      case supportedResolutions['1 hour']:
+        time = 60 * MINUTE;
+        break;
+
+      case supportedResolutions['4 hours']:
+        time = 4 * 60 * MINUTE;
+        break;
+
+      case supportedResolutions['1 day']:
+        time = 24 * 60 * MINUTE;
+        break;
+
+      case supportedResolutions['1 week']:
+        time = 7 * 24 * 60 * MINUTE;
+
+        break;
+
+      case supportedResolutions['1 month']:
+        time = 30 * 24 * 60 * MINUTE;
+
+        break;
+
+      default:
+        break;
+    }
+
+    let _lastBar = {} as Bar;
+    if (bar.time > lastBar.time + time) {
+      _lastBar = { ...bar };
+    } else {
+      // update lastBar candle!
+      if (bar.low < lastBar.low) {
+        lastBar.low = bar.low;
+      }
+
+      if (bar.high > lastBar.high) {
+        lastBar.high = bar.high;
+      }
+
+      lastBar.close = bar.close;
+
+      _lastBar = { ...lastBar };
+    }
+    return _lastBar;
+  };
 }
 
 export default StreamingService;
-
-// Take a single trade, and subscription record, return updated bar
-function updateBar(bar: Bar, { lastBar, resolution }: DataSubscriber) {
-  const MINUTE = 60000;
-
-  let time = MINUTE;
-
-  switch (resolution) {
-    case supportedResolutions['1 minute']:
-      break;
-
-    case supportedResolutions['5 minutes']:
-      time = 5 * MINUTE;
-      break;
-
-    case supportedResolutions['30 minutes']:
-      time = 30 * MINUTE;
-      break;
-
-    case supportedResolutions['1 hour']:
-      time = 60 * MINUTE;
-      break;
-
-    case supportedResolutions['4 hours']:
-      time = 4 * 60 * MINUTE;
-      break;
-
-    case supportedResolutions['1 day']:
-      time = 24 * 60 * MINUTE;
-      break;
-
-    case supportedResolutions['1 week']:
-      time = 7 * 24 * 60 * MINUTE;
-
-      break;
-
-    case supportedResolutions['1 month']:
-      time = 30 * 24 * 60 * MINUTE;
-
-      break;
-
-    default:
-      break;
-  }
-
-  let _lastBar = {} as Bar;
-  if (bar.time > lastBar.time + time) {
-    _lastBar = { ...bar };
-  } else {
-    // update lastBar candle!
-    if (bar.low < lastBar.low) {
-      lastBar.low = bar.low;
-    }
-
-    if (bar.high > lastBar.high) {
-      lastBar.high = bar.high;
-    }
-
-    lastBar.close = bar.close;
-
-    _lastBar = { ...lastBar };
-  }
-  return _lastBar;
-}

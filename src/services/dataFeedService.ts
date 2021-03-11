@@ -48,9 +48,6 @@ class DataFeedService implements IBasicDataFeed {
     this.stream = new StreamingService(this.activeSession, instrumentId);
     this.instruments = instruments;
     this.nextTimeTries = 0;
-    console.log(Object.values(
-      supportedResolutions
-    ))
   }
 
   onReady = (callback: OnReadyCallback) => {
@@ -87,8 +84,6 @@ class DataFeedService implements IBasicDataFeed {
       has_intraday: true,
       intraday_multipliers: [
         supportedResolutions['1 minute'],
-        supportedResolutions['5 minutes'],
-        supportedResolutions['30 minutes'],
         supportedResolutions['1 hour'],
       ],
       has_weekly_and_monthly: true,
@@ -115,7 +110,6 @@ class DataFeedService implements IBasicDataFeed {
     onResult: HistoryCallback,
     onError: ErrorCallback
   ) => {
-    console.log(symbolInfo)
     try {
       const bars = await historyProvider.getBars(
         resolution,
