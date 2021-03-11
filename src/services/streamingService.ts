@@ -4,11 +4,12 @@ import {
   SubscribeBarsCallback,
   Bar,
 } from '../vendor/charting_library/charting_library';
-import historyProvider from './historyProvider';
 import { HubConnection } from '@aspnet/signalr';
 import Topics from '../constants/websocketTopics';
 import { BidAskModelWSDTO } from '../types/BidAsk';
 import { ResponseFromWebsocket } from '../types/ResponseFromWebsocket';
+import historyProvider from './historyProvider';
+import { supportedResolutions } from '../constants/supportedTimeScales';
 
 // keep track of subscriptions
 
@@ -20,9 +21,22 @@ interface Subscription {
   listenerGuid: string;
 }
 
+interface DataSubscriber {
+  symbolInfo: LibrarySymbolInfo;
+  resolution: string;
+  lastBar: Bar;
+  listener: SubscribeBarsCallback;
+  resetCasheCallback: () => void;
+}
+
+interface DataSubscribers {
+  [guid: string]: DataSubscriber;
+}
+
 class StreamingService {
   activeConnection: HubConnection;
   subscriptions: Subscription[] = [];
+  _subscribers: DataSubscribers = {};
   currentBarGuid?: string;
   instrumentId: string;
 
@@ -32,8 +46,14 @@ class StreamingService {
     this.activeConnection.on(
       Topics.BID_ASK,
       (response: ResponseFromWebsocket<BidAskModelWSDTO[]>) => {
-        const tick = response.data.find(item => item.id === this.instrumentId);
-        if (!tick) {
+        if (!this.currentBarGuid) {
+          return;
+        }
+        const subscriptionRecord = this._subscribers[this.currentBarGuid];
+        const tick = response.data.find(
+          (item) => item.id === this.instrumentId
+        );
+        if (!tick || !subscriptionRecord) {
           return;
         }
         const bar: Bar = {
@@ -43,90 +63,110 @@ class StreamingService {
           open: tick.bid.o,
           time: tick.dt,
         };
-        const sub = this.subscriptions.find(
-          e => e.listenerGuid === this.currentBarGuid
-        );
-        if (sub) {
-          // disregard the initial catchup snapshot of trades for already closed candles
-          if (bar.time < sub.lastBar.time) {
-            return;
-          }
 
-          const _lastBar = updateBar(bar, sub);
-          // send the most recent bar back to TV's realtimeUpdate callback
-          sub.onTick(_lastBar);
-          // update our own record of lastBar
-          sub.lastBar = _lastBar;
+        if (bar.time < subscriptionRecord.lastBar.time) {
+          return;
         }
+
+        const _lastBar = this._updateBar(bar, subscriptionRecord);
+        subscriptionRecord.listener(_lastBar);
+        subscriptionRecord.lastBar = _lastBar;
       }
     );
   }
   subscribeBars = (
     symbolInfo: LibrarySymbolInfo,
     resolution: ResolutionString,
-    onTick: SubscribeBarsCallback,
+    newDataCallback: SubscribeBarsCallback,
     listenerGuid: string,
     onResetCacheNeededCallback: () => void
   ) => {
-    this.currentBarGuid = listenerGuid;
-    this.instrumentId = symbolInfo.name;
-    const currentSubscriptionBar = {
-      symbolInfo,
-      resolution,
-      onTick,
-      lastBar: historyProvider.history[`${symbolInfo.name}${resolution}`]
-        ? historyProvider.history[`${symbolInfo.name}${resolution}`].lastBar
-        : { time: 0 },
-      listenerGuid,
-    };
-
-    this.subscriptions.push(currentSubscriptionBar);
-  };
-
-  unsubscribeBars = (uid: string) => {
-    const subIndex = this.subscriptions.findIndex(e => e.listenerGuid === uid);
-    console.log('unsubscribed');
-    if (subIndex === -1) {
+    if (this._subscribers.hasOwnProperty(listenerGuid)) {
+      console.log(
+        `DataPulseProvider: already has subscriber with id=${listenerGuid}`
+      );
       return;
     }
+    this.currentBarGuid = listenerGuid;
+    this.instrumentId = symbolInfo.name;
 
-    this.subscriptions.splice(subIndex, 1);
+    this._subscribers[listenerGuid] = {
+      resetCasheCallback: onResetCacheNeededCallback,
+      lastBar:
+        historyProvider.history[`${symbolInfo.name}${resolution}`].lastBar,
+      listener: newDataCallback,
+      resolution: resolution,
+      symbolInfo: symbolInfo,
+    };
+  };
+
+  unsubscribeBars = (listenerGuid: string) => {
+    delete this._subscribers[listenerGuid];
+    console.log(`DataPulseProvider: unsubscribed for #${listenerGuid}`);
+  };
+
+  _updateBar = (bar: Bar, { lastBar, resolution }: DataSubscriber) => {
+    const MINUTE = 60000;
+    console.log('_updateBar resolution', resolution)
+    let time = MINUTE;
+
+    switch (resolution) {
+      case supportedResolutions['1 minute']:
+        break;
+
+      case supportedResolutions['5 minutes']:
+        time = 5 * MINUTE;
+        break;
+
+      case supportedResolutions['30 minutes']:
+        time = 30 * MINUTE;
+        break;
+
+      case supportedResolutions['1 hour']:
+        time = 60 * MINUTE;
+        break;
+
+      case supportedResolutions['4 hours']:
+        time = 4 * 60 * MINUTE;
+        break;
+
+      case supportedResolutions['1 day']:
+        time = 24 * 60 * MINUTE;
+        break;
+
+      case supportedResolutions['1 week']:
+        time = 7 * 24 * 60 * MINUTE;
+
+        break;
+
+      case supportedResolutions['1 month']:
+        time = 30 * 24 * 60 * MINUTE;
+
+        break;
+
+      default:
+        break;
+    }
+
+    let _lastBar = {} as Bar;
+    if (bar.time > lastBar.time + time) {
+      _lastBar = { ...bar };
+    } else {
+      // update lastBar candle!
+      if (bar.low < lastBar.low) {
+        lastBar.low = bar.low;
+      }
+
+      if (bar.high > lastBar.high) {
+        lastBar.high = bar.high;
+      }
+
+      lastBar.close = bar.close;
+
+      _lastBar = { ...lastBar };
+    }
+    return _lastBar;
   };
 }
 
 export default StreamingService;
-
-// Take a single trade, and subscription record, return updated bar
-function updateBar(bar: Bar, { lastBar, resolution }: Subscription) {
-  let resolutionNumber = +resolution;
-  if (resolution.includes('D')) {
-    // 1 day in minutes === 1440
-    resolutionNumber = 1440;
-  } else if (resolution.includes('W')) {
-    // 1 week in minutes === 10080
-    resolutionNumber = 10080;
-  }
-  const coeff = resolutionNumber * 60;
-
-  const rounded = bar.time || Math.floor(bar.time / coeff) * coeff;
-  let _lastBar = {} as Bar;
-  const MINUTE = 60000;
-  if (rounded > lastBar.time + MINUTE) {
-    // create a new candle, use last close as open **PERSONAL CHOICE**
-    _lastBar = { ...bar, time: rounded };
-  } else {
-    // update lastBar candle!
-    if (bar.low < lastBar.low) {
-      lastBar.low = bar.low;
-    }
-
-    if (bar.high > lastBar.high) {
-      lastBar.high = bar.high;
-    }
-
-    lastBar.close = bar.close;
-
-    _lastBar = { ...lastBar };
-  }
-  return _lastBar;
-}
