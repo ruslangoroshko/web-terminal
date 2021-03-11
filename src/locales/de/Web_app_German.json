@@ -369,5 +369,5 @@
     "Stop Loss can not be zero": "Stop Loss kann nicht Null sein\n",
     "The position is not found": "Die Position wurde nicht gefunden",
     "User not found": "Benutzer nicht gefunden",
-    "an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least": "werden zusätzlich 20% des ursprünglichen Investitionsbetrages von Ihrem Guthaben reserviert, um Ihre Position vor der Schließung zu bewahren. Wenn die Position einen weiteren Verlust verzeichnet, wird Ihr verfügbares Guthaben immer wieder um 20% reduziert. Sobald die Position auf Minimum ansteigt,"
+    "an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least": "werden zusätzlich 30% des ursprünglichen Investitionsbetrages von Ihrem Guthaben reserviert, um Ihre Position vor der Schließung zu bewahren. Wenn die Position einen weiteren Verlust verzeichnet, wird Ihr verfügbares Guthaben immer wieder um 30% reduziert. Sobald die Position auf Minimum ansteigt,"
 }
