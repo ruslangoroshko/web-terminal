@@ -48,6 +48,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
       ? getChartTypeByLabel(localType)
       : SeriesStyle.Area;
     const widgetOptions: ChartingLibraryWidgetOptions = {
+      debug: true,
       symbol: instrumentId,
       datafeed: new DataFeedService(
         mainAppStore.activeSession!,
