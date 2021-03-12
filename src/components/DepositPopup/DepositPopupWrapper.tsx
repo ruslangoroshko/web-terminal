@@ -113,6 +113,9 @@ const DepositPopupInner: FC = () => {
   useEffect(() => {
     notificationStore.resetNotification();
     mixpanel.track(mixpanelEvents.DEPOSIT_LIST_VIEW);
+    return () => {
+      depositFundsStore.setActiveDepositType(DepositTypeEnum.VisaMaster);
+    }
   }, []);
 
   useEffect(() => {
