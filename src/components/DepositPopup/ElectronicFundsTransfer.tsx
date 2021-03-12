@@ -52,16 +52,41 @@ const ElectronicFundsTransfer = () => {
 
   const investOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
+
+    if (!e.data.match(/^[0-9.]*$/g)) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!currTargetValue && [',', '.'].includes(e.data)) {
+      e.preventDefault();
+      return;
+    }
+
     if ([',', '.'].includes(e.data)) {
+      if (
+        !currTargetValue ||
+        (currTargetValue && currTargetValue.includes('.'))
+      ) {
+        e.preventDefault();
+        return;
+      }
+    }
+    // see another regex
+    const regex = /^[0-9]{1,15}([.][0-9]{1,2})?$/;
+    const splittedValue =
+      currTargetValue.substring(0, e.currentTarget.selectionStart) +
+      e.data +
+      currTargetValue.substring(e.currentTarget.selectionStart);
+    if (
+      currTargetValue &&
+      ![',', '.'].includes(e.data) &&
+      !splittedValue.match(regex)
+    ) {
       e.preventDefault();
       return;
     }
-    if (!e.data.match(/^\d|\.|\,/)) {
-      e.preventDefault();
-      return;
-    }
-    const regex = /^[0-9]{1,15}/;
-    if (e.data.length > 1 && !currTargetValue.match(regex)) {
+    if (e.data.length > 1 && !splittedValue.match(regex)) {
       e.preventDefault();
       return;
     }
@@ -74,7 +99,7 @@ const ElectronicFundsTransfer = () => {
       ...values,
       amount: +values.amount,
       processId: getProcessId(),
-      accountId: mainAppStore.activeAccountId
+      accountId: mainAppStore.accounts.find((acc) => acc.isLive)?.id || ''
     };
 
     try {
@@ -134,7 +159,7 @@ const ElectronicFundsTransfer = () => {
   });
 
   const handleChangeAmount = (e: any) => {
-    if (e.target.value.length === 15) {
+    if (e.target.value.length === 19) {
       return;
     }
     handleChange(e);
