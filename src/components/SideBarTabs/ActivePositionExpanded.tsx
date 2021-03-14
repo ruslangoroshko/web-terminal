@@ -325,7 +325,7 @@ function ActivePositionExpanded(props: Props) {
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
                 >
-                  {t('Topping up amount')}
+                  {t('Insurance amount')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {mainAppStore.activeAccount?.symbol}
