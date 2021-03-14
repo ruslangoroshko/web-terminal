@@ -47,6 +47,7 @@ export interface OpenPositionResponseDTO {
 export interface PositionModelWSDTO {
   id: number;
   investmentAmount: number;
+  reservedFundsForToppingUp: number;
   openPrice: number;
   openDate: number;
   instrument: string;

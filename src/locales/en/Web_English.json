@@ -370,5 +370,6 @@
     "Stop Loss can not be zero": "Stop Loss can not be zero",
     "The position is not found": "The position is not found",
     "User not found": "User not found",
-    "ABSA, Nedbank, Capitec, FNB, Standard, Investec": "ABSA, Nedbank, Capitec, FNB, Standard, Investec"
+    "ABSA, Nedbank, Capitec, FNB, Standard, Investec": "ABSA, Nedbank, Capitec, FNB, Standard, Investec",
+    "Insurance amount": "Insurance amount"
 }
