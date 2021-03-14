@@ -121,10 +121,12 @@ function ActivePositionExpanded(props: Props) {
         });
       }
 
-      notificationStore.setNotification(t(
-        apiResponseCodeMessages[response.result]
-      ));
-      notificationStore.setIsSuccessfull(response.result === OperationApiResponseCodes.Ok);
+      notificationStore.setNotification(
+        t(apiResponseCodeMessages[response.result])
+      );
+      notificationStore.setIsSuccessfull(
+        response.result === OperationApiResponseCodes.Ok
+      );
       notificationStore.openNotification();
     } catch (error) {}
   };
@@ -316,6 +318,18 @@ function ActivePositionExpanded(props: Props) {
                   {getNumberSign(position.swap)}
                   {mainAppStore.activeAccount?.symbol}
                   {Math.abs(position.swap).toFixed(2)}
+                </PrimaryTextSpan>
+              </FlexContainer>
+              <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
+                <PrimaryTextSpan
+                  color="rgba(255, 255, 255, 0.4)"
+                  fontSize="12px"
+                >
+                  {t('Insurance amount')}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  {mainAppStore.activeAccount?.symbol}
+                  {Math.abs(position.reservedFundsForToppingUp).toFixed(2)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between">
