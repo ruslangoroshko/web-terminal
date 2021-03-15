@@ -35,6 +35,7 @@ import PreloaderButtonMask from '../PreloaderButtonMask';
 import Page from '../../constants/Pages';
 import testIds from '../../constants/testIds';
 import e2eTests from '../../constants/e2eTests';
+import Fields from '../../constants/fields';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -140,16 +141,41 @@ const VisaMasterCardForm = () => {
 
   const investOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
+
+    if (!e.data.match(/^[0-9.,]*$/g)) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!currTargetValue && [',', '.'].includes(e.data)) {
+      e.preventDefault();
+      return;
+    }
+
     if ([',', '.'].includes(e.data)) {
+      if (
+        !currTargetValue ||
+        (currTargetValue && currTargetValue.includes('.'))
+      ) {
+        e.preventDefault();
+        return;
+      }
+    }
+    // see another regex
+    const regex = /^[0-9]{1,15}([.,][0-9]{1,2})?$/;
+    const splittedValue =
+      currTargetValue.substring(0, e.currentTarget.selectionStart) +
+      e.data +
+      currTargetValue.substring(e.currentTarget.selectionStart);
+    if (
+      currTargetValue &&
+      ![',', '.'].includes(e.data) &&
+      !splittedValue.match(regex)
+    ) {
       e.preventDefault();
       return;
     }
-    if (!e.data.match(/^\d|\.|\,/)) {
-      e.preventDefault();
-      return;
-    }
-    const regex = /^[0-9]{1,15}/;
-    if (e.data.length > 1 && !currTargetValue.match(regex)) {
+    if (e.data.length > 1 && !splittedValue.match(regex)) {
       e.preventDefault();
       return;
     }
@@ -234,9 +260,11 @@ const VisaMasterCardForm = () => {
   });
 
   const handleChangeAmount = (e: any) => {
-    if (e.target.value.length === 15) {
+    setFieldError(Fields.AMOUNT, undefined);
+    if (e.target.value.length === 19) {
       return;
     }
+    e.currentTarget.value = e.currentTarget.value.replace(/,/g, '.');
     handleChange(e);
   };
   const handleBlurFullname = () => {
@@ -311,6 +339,7 @@ const VisaMasterCardForm = () => {
               onBeforeInput={investOnBeforeInputHandler}
               name="amount"
               id="amount"
+              autoComplete="off"
               data-testid={testIds.VISAMASTERFORM_AMOUNT}
               data-e2e-id={e2eTests.DEPOSIT_AMOUNT}
             />
@@ -328,7 +357,7 @@ const VisaMasterCardForm = () => {
           {placeholderValues.map((item) => (
             <AmountPlaceholder
               key={item}
-              isActive={item === values.amount}
+              isActive={parseFloat(item.toString()) === parseFloat(values.amount.toString())}
               value={item}
               currencySymbol={`${mainAppStore.activeAccount?.symbol}`}
               handleClick={() => {

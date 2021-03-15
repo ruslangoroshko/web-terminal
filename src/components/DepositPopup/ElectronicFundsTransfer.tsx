@@ -27,6 +27,7 @@ import { DepositRequestStatusEnum } from '../../enums/DepositRequestStatusEnum';
 import PreloaderButtonMask from '../PreloaderButtonMask';
 import Page from '../../constants/Pages';
 import { getProcessId } from '../../helpers/getProcessId';
+import Fields from '../../constants/fields';
 
 const ElectronicFundsTransfer = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -53,7 +54,7 @@ const ElectronicFundsTransfer = () => {
   const investOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
 
-    if (!e.data.match(/^[0-9.]*$/g)) {
+    if (!e.data.match(/^[0-9.,]*$/g)) {
       e.preventDefault();
       return;
     }
@@ -73,7 +74,7 @@ const ElectronicFundsTransfer = () => {
       }
     }
     // see another regex
-    const regex = /^[0-9]{1,15}([.][0-9]{1,2})?$/;
+    const regex = /^[0-9]{1,15}([.,][0-9]{1,2})?$/;
     const splittedValue =
       currTargetValue.substring(0, e.currentTarget.selectionStart) +
       e.data +
@@ -150,6 +151,7 @@ const ElectronicFundsTransfer = () => {
     handleChange,
     errors,
     isSubmitting,
+    setFieldError
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
@@ -159,9 +161,11 @@ const ElectronicFundsTransfer = () => {
   });
 
   const handleChangeAmount = (e: any) => {
+    setFieldError(Fields.AMOUNT, undefined);
     if (e.target.value.length === 19) {
       return;
     }
+    e.currentTarget.value = e.currentTarget.value.replace(/,/g, '.');
     handleChange(e);
   };
 
@@ -181,56 +185,59 @@ const ElectronicFundsTransfer = () => {
   }, []);
 
   return (
-    <FlexContainer flexDirection="column" padding="32px 0 0 68px">
+    <FlexContainer flexDirection="column" padding="32px 0 0 68px" height="100%">
       <CustomForm autoComplete="on" noValidate onSubmit={handleSubmit}>
         <FlexContainer flexDirection="column">
-          <PrimaryTextParagraph
-            textTransform="uppercase"
-            fontSize="11px"
-            color="rgba(255,255,255,0.3)"
-            marginBottom="6px"
-          >
-            {t('Amount')}
-          </PrimaryTextParagraph>
+          <FlexContainer flexDirection="column">
+            <PrimaryTextParagraph
+              textTransform="uppercase"
+              fontSize="11px"
+              color="rgba(255,255,255,0.3)"
+              marginBottom="6px"
+            >
+              {t('Amount')}
+            </PrimaryTextParagraph>
 
-          <FlexContainer
-            borderRadius="4px"
-            border="1px solid #FFFCCC"
-            backgroundColor="#292C33"
-            marginBottom="10px"
-            maxHeight="48px"
-            alignItems="center"
-            position="relative"
-          >
-            <Input
-              value={values.amount}
-              onChange={handleChangeAmount}
-              onBeforeInput={investOnBeforeInputHandler}
-              name="amount"
-              id="amount"
-            />
-            {errors.amount && <ErrorText>{errors.amount}</ErrorText>}
-            <CurrencyDropdown
-              disabled={true}
-              width="80px"
-              handleSelectCurrency={setCurrency}
-              selectedCurrency={currency}
-            ></CurrencyDropdown>
+            <FlexContainer
+              borderRadius="4px"
+              border="1px solid #FFFCCC"
+              backgroundColor="#292C33"
+              marginBottom="10px"
+              maxHeight="48px"
+              alignItems="center"
+              position="relative"
+            >
+              <Input
+                value={values.amount}
+                onChange={handleChangeAmount}
+                onBeforeInput={investOnBeforeInputHandler}
+                name="amount"
+                id="amount"
+                autoComplete="off"
+              />
+              {errors.amount && <ErrorText>{errors.amount}</ErrorText>}
+              <CurrencyDropdown
+                disabled={true}
+                width="80px"
+                handleSelectCurrency={setCurrency}
+                selectedCurrency={currency}
+              ></CurrencyDropdown>
+            </FlexContainer>
           </FlexContainer>
-        </FlexContainer>
 
-        <FlexContainer marginBottom="60px">
-          {placeholderValues.map((item) => (
-            <AmountPlaceholder
-              key={item}
-              isActive={item === values.amount}
-              value={item}
-              currencySymbol={`${mainAppStore.activeAccount?.symbol}`}
-              handleClick={() => {
-                setFieldValue('amount', item);
-              }}
-            />
-          ))}
+          <FlexContainer marginBottom="60px">
+            {placeholderValues.map((item) => (
+              <AmountPlaceholder
+                key={item}
+                isActive={parseFloat(item.toString()) === parseFloat(values.amount.toString())}
+                value={item}
+                currencySymbol={`${mainAppStore.activeAccount?.symbol}`}
+                handleClick={() => {
+                  setFieldValue('amount', item);
+                }}
+              />
+            ))}
+          </FlexContainer>
         </FlexContainer>
 
         <FlexContainer
@@ -273,6 +280,11 @@ export default ElectronicFundsTransfer;
 
 const CustomForm = styled.form`
   margin-bottom: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const Input = styled.input`
