@@ -10,6 +10,7 @@ const Fields = {
   STOP_LOSS: 'sl',
   STOP_LOSS_TYPE: 'slType',
   INVEST_AMOUNT: 'investmentAmount',
+  AMOUNT: 'amount',
   INSTRUMNENT_ID: 'instrumentId',
   OPEN_PRICE: 'openPrice',
   COUNTRY_OF_CITIENZENSHIP: 'countryOfCitizenship',

@@ -85,6 +85,7 @@ const DepositPopupInner: FC = () => {
 
   // TODO adding type
   const [usedPaymentSystems, setUsedPaymentSystems] = useState(depositList);
+  const [loading, setLoading] = useState(true);
 
   const setActiveDepositType = (depositType: DepositTypeEnum) => () => {
     depositFundsStore.setActiveDepositType(depositType);
@@ -135,6 +136,7 @@ const DepositPopupInner: FC = () => {
                 return usedPayment;
               });
               setUsedPaymentSystems(newRoutes);
+              setLoading(false);
             }
           });
         }
@@ -142,6 +144,10 @@ const DepositPopupInner: FC = () => {
     }
     checkSupportedSystems();
   }, []);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <Modal>
@@ -172,7 +178,11 @@ const DepositPopupInner: FC = () => {
         justifyContent="center"
         zIndex="1001"
       >
-        <DepositModalWrap flexDirection="column" width="752px">
+        <DepositModalWrap
+          flexDirection="column"
+          width="752px"
+          height="calc(100vh - 60px)"
+        >
           <Observer>
             {() => (
               <>
