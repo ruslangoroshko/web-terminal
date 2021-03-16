@@ -225,7 +225,7 @@ const ElectronicFundsTransfer = () => {
             </FlexContainer>
           </FlexContainer>
 
-          <FlexContainer marginBottom="60px">
+          <FlexContainer marginBottom="30px">
             {placeholderValues.map((item) => (
               <AmountPlaceholder
                 key={item}
@@ -280,11 +280,6 @@ export default ElectronicFundsTransfer;
 
 const CustomForm = styled.form`
   margin-bottom: 0;
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-  justify-content: space-between;
 `;
 
 const Input = styled.input`
