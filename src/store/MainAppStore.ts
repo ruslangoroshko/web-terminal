@@ -411,6 +411,11 @@ export class MainAppStore implements MainAppStoreProps {
   };
 
   @action
+  setIsDemoReal = (value: boolean) => {
+    this.isDemoRealPopup = value;
+  };
+
+  @action
   setLpLoginFlag = (value: boolean) => {
     this.lpLoginFlag = value;
   };
