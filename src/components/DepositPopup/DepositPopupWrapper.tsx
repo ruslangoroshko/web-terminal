@@ -37,6 +37,7 @@ import { GetSupportedPaymentSystems } from '../../types/DepositTypes';
 import API from '../../helpers/API';
 import { GetSupportedPaymentSystemsStatuses } from '../../enums/GetSupportedPaymentSystemsStatuses';
 import depositResponseMessages from '../../constants/depositResponseMessages';
+import { keyframes } from '@emotion/core';
 
 const depositList = [
   {
@@ -223,7 +224,13 @@ const DepositPopupInner: FC = () => {
             )}
           </Observer>
 
-          <FlexContainer position="relative" flexDirection="column" flex="auto">
+          <FlexContainer
+            position="relative"
+            flexDirection="column"
+            flex="auto"
+            height="100%"
+            overflow="hidden"
+          >
             <HeaderDepositPopup position="relative">
               <FlexContainer
                 position="absolute"
@@ -250,7 +257,10 @@ const DepositPopupInner: FC = () => {
               </FlexContainer>
             </HeaderDepositPopup>
 
-            <FlexContainer flex="auto">
+            <FlexContainer
+              flex="auto"
+              height="calc(100% - 60px)"
+            >
               <FlexContainer
                 padding="32px"
                 flexDirection="column"
@@ -334,6 +344,7 @@ const DepositPopupInner: FC = () => {
                 padding="0 40px 20px 0"
                 width="calc(100% - 292px)"
                 position="relative"
+                overflow="auto"
                 //minHeight="688px"
               >
                 <Observer>{() => <>{renderDepositType()}</>}</Observer>
@@ -348,11 +359,22 @@ const DepositPopupInner: FC = () => {
 
 export default DepositPopupWrapper;
 
+const translateAnimationIn = keyframes`
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+`;
+
 const DepositModalWrap = styled(FlexContainer)`
   background: #1c1f26;
   border: 1px solid rgba(169, 171, 173, 0.1);
   box-shadow: 0px 34px 44px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
+  animation: ${translateAnimationIn} 0.5s ease;
   //min-height: 688px;
 `;
 
