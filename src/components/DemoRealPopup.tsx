@@ -42,7 +42,7 @@ function DemoRealPopup() {
           [Fields.ACCOUNT_ID]: acc.id,
         });
         mainAppStore.setActiveAccount(acc);
-        mainAppStore.isDemoRealPopup = false;
+        mainAppStore.setIsDemoReal(false);
         sendMixpanelEvents('demo');
       } catch (error) {
         badRequestPopupStore.openModal();
@@ -63,9 +63,11 @@ function DemoRealPopup() {
           [Fields.ACCOUNT_ID]: acc.id,
         });
         mainAppStore.setActiveAccount(acc);
-        mainAppStore.isDemoRealPopup = false;
-        sendMixpanelEvents('real');
         push(`/${HashLocation.Deposit}`);
+        sendMixpanelEvents('real');
+        setTimeout(() => {
+          mainAppStore.setIsDemoReal(false);
+        }, 500);
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
