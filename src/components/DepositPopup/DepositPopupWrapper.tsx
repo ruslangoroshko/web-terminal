@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import Page from '../../constants/Pages';
 import { useStores } from '../../hooks/useStores';
 import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
@@ -36,6 +36,7 @@ import NotificationPopup from '../NotificationPopup';
 import { GetSupportedPaymentSystems } from '../../types/DepositTypes';
 import API from '../../helpers/API';
 import { GetSupportedPaymentSystemsStatuses } from '../../enums/GetSupportedPaymentSystemsStatuses';
+import depositResponseMessages from '../../constants/depositResponseMessages';
 
 const depositList = [
   {
@@ -91,6 +92,7 @@ const DepositPopupInner: FC = () => {
     depositFundsStore.setActiveDepositType(depositType);
   };
   const { t } = useTranslation();
+  const { push } = useHistory();
 
   const renderDepositType = () => {
     switch (depositFundsStore.activeDepositType) {
@@ -123,6 +125,7 @@ const DepositPopupInner: FC = () => {
     async function checkSupportedSystems() {
       try {
         const response: GetSupportedPaymentSystems = await API.getSupportedSystems();
+        // TODO change to switch case
         if (response.status === GetSupportedPaymentSystemsStatuses.Success) {
           response.data.supportedPaymentSystems.forEach((paymentSystem) => {
             if (paymentSystem.paymentSystemType === DepositTypeEnum.ElectronicFundsTransfer) {
@@ -136,11 +139,21 @@ const DepositPopupInner: FC = () => {
                 return usedPayment;
               });
               setUsedPaymentSystems(newRoutes);
-              setLoading(false);
             }
           });
+          setLoading(false);
+        } else {
+          notificationStore.setIsSuccessfull(false);
+          notificationStore.setNotification(t(
+            depositResponseMessages[response.status]
+          ));
+          notificationStore.openNotification();
+          setLoading(false);
         }
-      } catch (error) {}
+      } catch (error) {
+        setLoading(false);
+        push(Page.DEPOSIT_POPUP);
+      }
     }
     checkSupportedSystems();
   }, []);

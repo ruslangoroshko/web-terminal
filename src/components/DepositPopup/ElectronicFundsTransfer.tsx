@@ -180,7 +180,7 @@ const ElectronicFundsTransfer = () => {
 
   useEffect(() => {
     mixpanel.track(mixpanelEvents.DEPOSIT_METHOD_VIEW, {
-      [mixapanelProps.DEPOSIT_METHOD]: depositMethod.BANK_CARD,
+      [mixapanelProps.DEPOSIT_METHOD]: depositMethod.ELECTRONIC_FUNDS_TRANSFER,
     });
   }, []);
 
