@@ -250,9 +250,8 @@ const DepositPopupInner: FC = () => {
                     {() => (
                       <>
                         {usedPaymentSystems.map((item) => (
-                          <>
+                          <React.Fragment key={item.id}>
                             {item.show && <PaymentMethodItem
-                              key={item.id}
                               isActive={
                                 depositFundsStore.activeDepositType === item.id
                               }
@@ -297,7 +296,7 @@ const DepositPopupInner: FC = () => {
                                 </PrimaryTextSpan>
                               </FlexContainer>
                             </PaymentMethodItem>}
-                          </>
+                          </React.Fragment>
                         ))}
                       </>
                     )}
