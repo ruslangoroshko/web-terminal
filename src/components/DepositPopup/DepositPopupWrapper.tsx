@@ -38,19 +38,26 @@ import API from '../../helpers/API';
 import { GetSupportedPaymentSystemsStatuses } from '../../enums/GetSupportedPaymentSystemsStatuses';
 import depositResponseMessages from '../../constants/depositResponseMessages';
 import { keyframes } from '@emotion/core';
+import Directa from './Directa';
 
 const depositList = [
   {
     id: DepositTypeEnum.VisaMaster,
     name: 'Visa / Mastercard',
     icon: CardIcon,
-    show: true,
+    show: false,
+  },
+  {
+    id: DepositTypeEnum.Directa,
+    name: 'Bank Cards / Alternative Payment Methods',
+    icon: CardIcon,
+    show: false,
   },
   {
     id: DepositTypeEnum.Bitcoin,
     name: 'Bitcoin',
     icon: BitcoinIcon,
-    show: true,
+    show: false,
   },
   {
     id: DepositTypeEnum.ElectronicFundsTransfer,
@@ -109,6 +116,9 @@ const DepositPopupInner: FC = () => {
       case DepositTypeEnum.ElectronicFundsTransfer:
         return <ElectronicFundsTransfer />;
 
+      case DepositTypeEnum.Directa:
+        return <Directa />;
+
       default:
         return null;
     }
@@ -128,20 +138,16 @@ const DepositPopupInner: FC = () => {
         const response: GetSupportedPaymentSystems = await API.getSupportedSystems();
         // TODO change to switch case
         if (response.status === GetSupportedPaymentSystemsStatuses.Success) {
-          response.data.supportedPaymentSystems.forEach((paymentSystem) => {
-            if (paymentSystem.paymentSystemType === DepositTypeEnum.ElectronicFundsTransfer) {
-              const newRoutes = depositList.map((usedPayment) => {
-                if (usedPayment.id === DepositTypeEnum.ElectronicFundsTransfer) {
-                  return {
-                    ...usedPayment,
-                    show: true,
-                  }
-                }
-                return usedPayment;
-              });
-              setUsedPaymentSystems(newRoutes);
-            }
+          const newRoutes = depositList.map((usedPayment) => {
+            const returnedPayment = usedPayment;
+            response.data.supportedPaymentSystems.forEach((paymentSystem) => {
+              if (usedPayment.id === paymentSystem.paymentSystemType) {
+                returnedPayment.show = true;
+              }
+            });
+            return returnedPayment;
           });
+          setUsedPaymentSystems(newRoutes);
           setLoading(false);
         } else {
           notificationStore.setIsSuccessfull(false);

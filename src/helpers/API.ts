@@ -50,6 +50,8 @@ import {
   CreateDepositInvoiceDTO,
   CreateElectronicFundsInvoiceParams,
   CreateElectronicFundsInvoiceDTO,
+  CreateDirectaInvoiceParams,
+  CreateDirectaInvoiceDTO,
 } from '../types/DepositTypes';
 import { InitModel } from '../types/InitAppTypes';
 import {
@@ -357,12 +359,21 @@ class API {
     return response.data;
   };
 
-
   createElectronicTransferInvoice = async (
     params: CreateElectronicFundsInvoiceParams
   ) => {
     const response = await axios.post<CreateElectronicFundsInvoiceDTO>(
       `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_SWIFFY}`,
+      params
+    );
+    return response.data;
+  };
+
+  createDirectaInvoice = async (
+    params: CreateDirectaInvoiceParams
+  ) => {
+    const response = await axios.post<CreateDirectaInvoiceDTO>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_DIRECTA}`,
       params
     );
     return response.data;
