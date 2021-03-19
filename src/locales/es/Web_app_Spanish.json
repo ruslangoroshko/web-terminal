@@ -370,5 +370,6 @@
     "The position is not found": "La posición no se encuentra",
     "User not found": "Usuario no encontrado",
     "an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least": "un 30% adicional de la cantidad de inversión original se reservará de su saldo para evitar que su posición se cierre. Si la posición tiene una pérdida adicional, su saldo disponible se reduce un 30% una y otra vez. Una vez que la posición se eleva a al menos",
+    "ABSA, Nedbank, Capitec, FNB, Standard, Investec": "ABSA, Nedbank, Capitec, FNB, Standard, Investec",
     "Bank Cards / Alternative Payment Methods": "Tarjetas bancarias / métodos de pago alternativos"
 }
