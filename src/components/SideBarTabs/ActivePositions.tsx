@@ -1278,6 +1278,23 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                         {Math.abs(position.swap).toFixed(2)}
                       </PrimaryTextSpan>
                     </FlexContainer>
+
+                    <FlexContainer
+                      justifyContent="space-between"
+                      margin="0 0 8px 0"
+                    >
+                      <PrimaryTextSpan
+                        color="rgba(255, 255, 255, 0.4)"
+                        fontSize="12px"
+                      >
+                        {t('Insurance amount')}
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        {mainAppStore.activeAccount?.symbol}
+                        {Math.abs(position.reservedFundsForToppingUp).toFixed(2)}
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+
                     <FlexContainer justifyContent="space-between">
                       <PrimaryTextSpan
                         color="rgba(255, 255, 255, 0.4)"

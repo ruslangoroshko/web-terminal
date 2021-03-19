@@ -21,6 +21,7 @@ const ChartIntervalTimeScale: FC<Props> = observer(() => {
   const handleChangeResolution = (
     newInterval: SupportedIntervalsType
   ) => () => {
+    debugger
     let from = moment();
     let newResolutionKey: SupportedResolutionsType = '1 minute';
     switch (newInterval) {
@@ -71,18 +72,22 @@ const ChartIntervalTimeScale: FC<Props> = observer(() => {
       interval: newInterval,
     };
     if (newResolutionKey === instrumentsStore.activeInstrument?.resolution) {
-      tradingViewStore.tradingWidget?.chart().setVisibleRange({
+      tradingViewStore.tradingWidget?.activeChart().setVisibleRange({
         from: from.valueOf(),
         to: moment().valueOf(),
       });
     } else {
       newActiveInstrument.resolution = newResolutionKey;
       tradingViewStore.tradingWidget
-        ?.chart()
+        ?.activeChart()
         .setResolution(
           supportedResolutions[newResolutionKey] as ResolutionString,
           () => {
-            tradingViewStore.tradingWidget?.chart().setVisibleRange({
+            console.log(
+              'resolution has changed',
+              supportedResolutions[newResolutionKey]
+            );
+            tradingViewStore.tradingWidget?.activeChart().setVisibleRange({
               from: from.valueOf(),
               to: moment().valueOf(),
             });

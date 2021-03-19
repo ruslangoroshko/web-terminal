@@ -28,10 +28,14 @@ const ChartResolutionsDropdown: FC<Props> = (props) => {
     resolutionKey: SupportedResolutionsType
   ) => () => {
     tradingViewStore.tradingWidget
-      ?.chart()
+      ?.activeChart()
       .setResolution(
         supportedResolutions[resolutionKey] as ResolutionString,
         () => {
+          console.log(
+            '***** resolution has changed to ',
+            supportedResolutions[resolutionKey]
+          );
           if (instrumentsStore.activeInstrument) {
             instrumentsStore.editActiveInstrument({
               ...instrumentsStore.activeInstrument,
