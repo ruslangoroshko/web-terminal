@@ -48,11 +48,23 @@ export interface CreateElectronicFundsInvoiceParams {
   processId: string;
 }
 
+export interface CreateDirectaInvoiceParams {
+  amount: number;
+  accountId: string;
+  processId: string;
+}
+
 export interface CreateElectronicFundsInvoiceDTO {
   data: {
     redirectLink: string
   };
-  // TODO Change enum
+  status: DepositRequestStatusEnum;
+}
+
+export interface CreateDirectaInvoiceDTO {
+  data: {
+    redirectLink: string
+  };
   status: DepositRequestStatusEnum;
 }
 
