@@ -119,19 +119,6 @@ const DepositPopupInner: FC = () => {
       case DepositTypeEnum.Directa:
         return <Directa />;
 
-      case DepositTypeEnum.Undefined:
-        return <FlexContainer
-          width="100%"
-          height="100%"
-          alignItems="center"
-          justifyContent="center"
-          marginBottom="50px"
-        >
-          <InfoText>
-            {t('Sorry! The service isn\'t available in your region.')}
-          </InfoText>
-        </FlexContainer>;
-
       default:
         return null;
     }
@@ -149,7 +136,6 @@ const DepositPopupInner: FC = () => {
     async function checkSupportedSystems() {
       try {
         const response: GetSupportedPaymentSystems = await API.getSupportedSystems();
-        // TODO change to switch case
         if (response.status === GetSupportedPaymentSystemsStatuses.Success) {
           const newRoutes = depositList.map((usedPayment) => {
             const returnedPayment = usedPayment;
@@ -283,7 +269,24 @@ const DepositPopupInner: FC = () => {
             <FlexContainer
               flex="auto"
               height="calc(100% - 60px)"
+              position="relative"
             >
+              {depositFundsStore.activeDepositType === DepositTypeEnum.Undefined &&
+                <FlexContainer
+                  width="100%"
+                  height="100%"
+                  alignItems="center"
+                  justifyContent="center"
+                  padding="0 0 70px"
+                  position="absolute"
+                  top="0"
+                  left="0"
+                >
+                  <InfoText>
+                    {t('Sorry! The service isn\'t available in your region.')}
+                  </InfoText>
+                </FlexContainer>
+              }
               <FlexContainer
                 padding="32px"
                 flexDirection="column"
@@ -452,7 +455,7 @@ const PaymentIcon = styled(FlexContainer)<{ isActive: boolean }>`
 `;
 
 const InfoText = styled.span`
-  font-size: 13px;
+  font-size: 20px;
   line-height: 16px;
   text-align: center;
   color: rgba(255, 255, 255, 0.4);
