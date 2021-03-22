@@ -371,5 +371,6 @@
     "The position is not found": "The position is not found",
     "User not found": "User not found",
     "ABSA, Nedbank, Capitec, FNB, Standard, Investec": "ABSA, Nedbank, Capitec, FNB, Standard, Investec",
-    "Bank Cards / Alternative Payment Methods": "Bank Cards / Alternative Payment Methods"
+    "Bank Cards / Alternative Payment Methods": "Bank Cards / Alternative Payment Methods",
+    "Sorry! The service isn't available in your region.": "Sorry! The service isn't available in your region."
 }

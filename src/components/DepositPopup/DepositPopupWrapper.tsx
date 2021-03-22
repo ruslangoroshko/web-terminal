@@ -119,6 +119,19 @@ const DepositPopupInner: FC = () => {
       case DepositTypeEnum.Directa:
         return <Directa />;
 
+      case DepositTypeEnum.Undefined:
+        return <FlexContainer
+          width="100%"
+          height="100%"
+          alignItems="center"
+          justifyContent="center"
+          marginBottom="50px"
+        >
+          <InfoText>
+            {t('Sorry! The service isn\'t available in your region.')}
+          </InfoText>
+        </FlexContainer>;
+
       default:
         return null;
     }
@@ -128,7 +141,7 @@ const DepositPopupInner: FC = () => {
     notificationStore.resetNotification();
     mixpanel.track(mixpanelEvents.DEPOSIT_LIST_VIEW);
     return () => {
-      depositFundsStore.setActiveDepositType(DepositTypeEnum.VisaMaster);
+      depositFundsStore.setActiveDepositType(DepositTypeEnum.Undefined);
     }
   }, []);
 
@@ -147,6 +160,10 @@ const DepositPopupInner: FC = () => {
             });
             return returnedPayment;
           });
+          depositFundsStore.setActiveDepositType(
+            newRoutes.filter(item => item.show)[0].id ||
+            DepositTypeEnum.Undefined
+          );
           setUsedPaymentSystems(newRoutes);
           setLoading(false);
         } else {
@@ -432,4 +449,11 @@ const PaymentIcon = styled(FlexContainer)<{ isActive: boolean }>`
   justify-content: center;
   width: 32px;
   height: 24px;
+`;
+
+const InfoText = styled.span`
+  font-size: 13px;
+  line-height: 16px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
 `;
