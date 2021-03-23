@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
@@ -124,6 +124,12 @@ const DepositPopupInner: FC = () => {
     }
   };
 
+  const resetDepositList = useCallback(() => {
+    depositList.forEach((item) => {
+      item.show = false;
+    })
+  }, depositList);
+
   useEffect(() => {
     notificationStore.resetNotification();
     mixpanel.track(mixpanelEvents.DEPOSIT_LIST_VIEW);
@@ -133,6 +139,7 @@ const DepositPopupInner: FC = () => {
   }, []);
 
   useEffect(() => {
+    resetDepositList();
     async function checkSupportedSystems() {
       try {
         const response: GetSupportedPaymentSystems = await API.getSupportedSystems();
