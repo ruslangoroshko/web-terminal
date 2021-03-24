@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import styled from '@emotion/styled';
 import SuccessImage from '../../../assets/images/success.png';
 
@@ -7,16 +7,22 @@ import { FlexContainer } from '../../../styles/FlexContainer';
 import { useHistory } from 'react-router-dom';
 import Pages from '../../../constants/Pages';
 import { useTranslation } from 'react-i18next';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../../../constants/mixpanelEvents';
 
 interface Props {
   amount: number;
   currencySymbol?: string;
 }
 
-const DepositPaymentSuccess: FC<Props> = props => {
+const DepositPaymentSuccess: FC<Props> = (props) => {
   const { amount, currencySymbol } = props;
   const { push } = useHistory();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.DEPOSIT_PAGE_SUCCESS);
+  }, []);
 
   return (
     <>

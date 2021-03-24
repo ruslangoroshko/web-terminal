@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import styled from '@emotion/styled';
 
 import FailImage from '../../../assets/images/fail.png';
@@ -8,10 +8,17 @@ import { useHistory } from 'react-router-dom';
 import Pages from '../../../constants/Pages';
 import HashLocation from '../../../constants/hashLocation';
 import { useTranslation } from 'react-i18next';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../../../constants/mixpanelEvents';
 
 const DepositPaymentFail: FC = () => {
   const { push } = useHistory();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    mixpanel.track(mixpanelEvents.DEPOSIT_PAGE_FAILED);
+  }, []);
+
   return (
     <>
       <FlexContainer
