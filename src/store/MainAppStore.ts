@@ -55,6 +55,7 @@ import { polandLocalsList } from '../constants/polandLocalsList';
 import { languagesList } from '../constants/languagesList';
 import { PositionModelWSDTO } from '../types/Positions';
 import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
+import { BrandEnum } from '../constants/brandingLinksTranslate';
 
 interface MainAppStoreProps {
   token: string;
@@ -86,7 +87,7 @@ export class MainAppStore implements MainAppStoreProps {
     androidAppLink: '',
     brandCopyrights: '',
     brandName: '',
-    brandProperty: '',
+    brandProperty: BrandEnum.Monfex,
     faqUrl: '',
     withdrawFaqUrl: '',
     favicon: '',
