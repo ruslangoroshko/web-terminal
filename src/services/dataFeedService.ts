@@ -87,6 +87,7 @@ class DataFeedService implements IBasicDataFeed {
         supportedResolutions['1 hour'],
       ],
       has_weekly_and_monthly: true,
+      has_daily: true,
       has_no_volume: true,
       has_empty_bars: false,
       supported_resolutions: Object.values(
@@ -198,6 +199,12 @@ class DataFeedService implements IBasicDataFeed {
       //     resolutionBack: 'D' as ResolutionBackValues,
       //     intervalBack: 1,
       //   };
+
+      case supportedResolutions['1 week']:
+        return {
+          resolutionBack: 'D' as ResolutionBackValues,
+          intervalBack: 14,
+        };
 
       case supportedResolutions['1 month']:
         return {

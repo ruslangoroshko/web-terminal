@@ -7,7 +7,7 @@ export const supportedResolutions = {
   '1 hour': '60',
   '4 hours': '240',
   '1 day': '1D',
-  '1 week': '1W',
+  '1 week': '7D',
   '1 month': '1M',
 };
 
