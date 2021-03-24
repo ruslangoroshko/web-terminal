@@ -71,7 +71,7 @@ class DataFeedService implements IBasicDataFeed {
       listed_exchange: '',
       name: symbolName,
       description: '',
-      type: 'stock',
+      type: 'forex',
       session: '24x7',
       timezone: 'Etc/UTC',
       ticker: symbolName,
@@ -127,22 +127,16 @@ class DataFeedService implements IBasicDataFeed {
         switch (resolution) {
           case supportedResolutions['1 minute']:
           case supportedResolutions['5 minutes']:
+          case supportedResolutions['1 hour']:
+          case supportedResolutions['4 hours']:
             this.nextTimeTries = this.nextTimeTries + 1;
             console.log(this.nextTimeTries);
-
-            if (this.nextTimeTries > 50) {
-              onResult(bars, {
-                noData: true,
-              });
-              this.nextTimeTries = 0;
-            } else {
-              onResult(bars, {
-                noData: true,
-                nextTime: moment(rangeStartDate * 1000)
-                  .subtract(this.nextTimeTries, 'hours')
-                  .valueOf(),
-              });
-            }
+            onResult(bars, {
+              noData: true,
+              nextTime: moment(rangeStartDate * 1000)
+                .subtract(this.nextTimeTries, 'hour')
+                .valueOf(),
+            });
 
             break;
 
@@ -173,9 +167,7 @@ class DataFeedService implements IBasicDataFeed {
     );
   };
   unsubscribeBars = (subscriberUID: string) => {
-    const uid = subscriberUID.split(' ')[1];
-
-    this.stream.unsubscribeBars(uid);
+    this.stream.unsubscribeBars(subscriberUID);
   };
   calculateHistoryDepth = (
     resolution: ResolutionString,

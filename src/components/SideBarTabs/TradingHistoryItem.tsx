@@ -41,6 +41,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
       operation,
       profit,
       swap: swaps,
+      reservedFundsForToppingUp
     },
     currencySymbol,
     needScroll,
@@ -158,7 +159,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
               <InformationPopup
                 classNameTooltip={`trading_history_${id}`}
                 bgColor="#000"
-                width="200px"
+                width="250px"
                 direction="bottomLeft"
                 needScroll={needScroll}
               >
@@ -252,6 +253,21 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
                       {Math.abs(swaps).toFixed(2)}
                     </PrimaryTextSpan>
                   </FlexContainer>
+                  <FlexContainer
+                      justifyContent="space-between"
+                      margin="0 0 8px 0"
+                    >
+                      <PrimaryTextSpan
+                        color="rgba(255, 255, 255, 0.4)"
+                        fontSize="12px"
+                      >
+                        {t('Insurance amount')}
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        {'$'}
+                        {Math.abs(reservedFundsForToppingUp).toFixed(2)}
+                      </PrimaryTextSpan>
+                    </FlexContainer>
                   <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
                     <PrimaryTextSpan
                       color="rgba(255, 255, 255, 0.4)"

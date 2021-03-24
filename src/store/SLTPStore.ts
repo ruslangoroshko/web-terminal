@@ -1,4 +1,4 @@
-import { observable, action, makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import { AskBidEnum } from '../enums/AskBid';
 import { TpSlTypeEnum } from '../enums/TpSlTypeEnum';
 import { RootStore } from './RootStore';
@@ -16,6 +16,8 @@ type PricePosStopOut = {
   operation: AskBidEnum;
   instrumentId: string;
   multiplier: number;
+  commission: number;
+  isNewOrder?: boolean;
 };
 
 export class SLTPStore implements ContextProps {
@@ -23,7 +25,11 @@ export class SLTPStore implements ContextProps {
   slType: TpSlTypeEnum = TpSlTypeEnum.Currency;
   closedByChart: boolean = false;
   instrumentId: string = '';
+  instrumentIdNewOrder: string = '';
   rootStore: RootStore;
+  closeOpenPrice: boolean = false;
+  tpTypeNewOrder: TpSlTypeEnum = TpSlTypeEnum.Currency;
+  slTypeNewOrder: TpSlTypeEnum = TpSlTypeEnum.Currency;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -44,6 +50,11 @@ export class SLTPStore implements ContextProps {
   };
 
   @action
+  toggleCloseOpenPrice = (value: boolean) => {
+    this.closeOpenPrice = value;
+  };
+
+  @action
   setTpType = (tpType: TpSlTypeEnum) => {
     this.tpType = tpType;
   };
@@ -54,8 +65,23 @@ export class SLTPStore implements ContextProps {
   };
 
   @action
+  setTpTypeNewOrder = (tpType: TpSlTypeEnum) => {
+    this.tpTypeNewOrder = tpType;
+  };
+
+  @action
+  setSlTypeNewOrder = (slType: TpSlTypeEnum) => {
+    this.slTypeNewOrder = slType;
+  };
+
+  @action
   setInstrumentId = (instrumentId: string) => {
     this.instrumentId = instrumentId;
+  };
+
+  @action
+  setInstrumentIdNewOrder = (instrumentId: string) => {
+    this.instrumentIdNewOrder = instrumentId;
   };
 
   private _getPostitionStopOut = (invest = 0, instrumentId: string) => {
@@ -63,6 +89,7 @@ export class SLTPStore implements ContextProps {
       (this.rootStore.instrumentsStore.instruments.find(
         (item) => item.instrumentItem.id === instrumentId
       )?.instrumentItem.stopOutPercent || 95) / 100;
+
     return +(invest * instrumentPercentSL).toFixed(2);
   };
 
@@ -86,30 +113,40 @@ export class SLTPStore implements ContextProps {
     operation,
     instrumentId,
     multiplier,
+    commission,
+    isNewOrder,
   }: PricePosStopOut) => {
-    let currentPrice, so_level, so_percent, direction, isBuy;
-    isBuy = operation === AskBidEnum.Buy;
-    currentPrice = isBuy
-      ? this.getCurrentPriceAsk(instrumentId)
-      : this.getCurrentPriceBid(instrumentId);
-    so_level = -1 * this.positionStopOut(investmentAmount, instrumentId);
-    so_percent =
-      (this.rootStore.instrumentsStore.instruments.find(
-        (item) => item.instrumentItem.id === instrumentId
-      )?.instrumentItem.stopOutPercent || 0) / 100;
-    direction = operation === AskBidEnum.Buy ? 1 : -1;
+    const isBuy = operation === AskBidEnum.Buy;
+    const direction = operation === AskBidEnum.Buy ? 1 : -1;
 
-    const result = Number(
+    let currentPrice = 0;
+    if (isNewOrder) {
+      currentPrice = isBuy
+        ? this.getCurrentPriceAsk(instrumentId)
+        : this.getCurrentPriceBid(instrumentId);
+    } else {
+      currentPrice = isBuy
+        ? this.getCurrentPriceBid(instrumentId)
+        : this.getCurrentPriceAsk(instrumentId);
+    }
+
+    // const so_level = -1 * this.positionStopOut(investmentAmount, instrumentId);
+
+    // const so_percent =
+    //   (this.rootStore.instrumentsStore.instruments.find(
+    //     (item) => item.instrumentItem.id === instrumentId
+    //   )?.instrumentItem.stopOutPercent || 0) / 100;
+
+    // const commissions = this.rootStore.instrumentsStore.instruments.find(
+    //   (item) => item.instrumentItem.id === instrumentId
+    // )?.instrumentItem.
+
+    //(SL RATE / Current Price - 1) * Investment * Multiplier * Direction + Commissions
+
+    const result =
       (slPrice / currentPrice - 1) * investmentAmount * multiplier * direction +
-        Math.abs(
-          this.getCurrentPriceBid(instrumentId) -
-            this.getCurrentPriceAsk(instrumentId)
-        ).toFixed(
-          this.rootStore.instrumentsStore.instruments.find(
-            (item) => item.instrumentItem.id === instrumentId
-          )?.instrumentItem.digits || 2
-        )
-    );
+      commission;
+
     return +result.toFixed(2);
   };
 

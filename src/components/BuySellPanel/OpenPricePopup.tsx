@@ -1,11 +1,4 @@
-import React, {
-  ChangeEvent,
-  useState,
-  useRef,
-  useEffect,
-  FC,
-  useMemo,
-} from 'react';
+import React, { useState, useRef, useEffect, FC } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
@@ -16,7 +9,7 @@ import {
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
 import { useStores } from '../../hooks/useStores';
-import { Observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import Fields from '../../constants/fields';
 import { SecondaryButton } from '../../styles/Buttons';
 import { useTranslation } from 'react-i18next';
@@ -25,42 +18,58 @@ import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
 import { useFormContext } from 'react-hook-form';
 import { FormValues } from '../../types/Positions';
-import { ConnectForm } from './ConnectForm';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
+import hasValue from '../../helpers/hasValue';
 
 interface Props {
   instrumentId: string;
   digits: number;
 }
 
-const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
+const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
   const [on, toggle] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation();
 
-  const { setValue, register, errors, watch } = useFormContext<FormValues>();
+  const {
+    setValue,
+    register,
+    errors,
+    watch,
+    trigger,
+    clearErrors
+  } = useFormContext<FormValues>();
 
-  const { quotesStore, instrumentsStore, mainAppStore } = useStores();
+  const {
+    quotesStore,
+    instrumentsStore,
+    mainAppStore,
+    SLTPstore
+  } = useStores();
 
   const handleToggle = () => {
     toggle(!on);
   };
 
   const handleClickOutside = (e: any) => {
-    if (wrapperRef.current && !wrapperRef.current.contains(e.target) && on) {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
       setValue('openPrice', undefined);
+      clearErrors('openPrice');
       toggle(false);
     }
   };
 
   const applyOpenPrice = (errors: any) => () => {
-    if (!Object.keys(errors).length) {
-      toggle(false);
-    }
+    trigger().then(() => {
+      if (!Object.keys(errors).length) {
+        toggle(false);
+      }
+    });
   };
 
   const handleBeforeInput = (e: any) => {
+    clearErrors('openPrice');
     const currTargetValue = e.currentTarget.value;
 
     if (!e.data.match(/^[0-9.,]*$/g)) {
@@ -104,6 +113,17 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
     }
   };
 
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    clearErrors('openPrice');
+    setValue('openPrice', e.target.value);
+  };
+
+  const handleClosePopup = () => {
+    setValue('openPrice', undefined);
+    clearErrors('openPrice');
+    handleToggle();
+  };
+
   const clearOpenPrice = () => {
     setValue('openPrice', null);
   };
@@ -113,22 +133,35 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    if (on) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [on]);
+
+  useEffect(() => {
+    if (on && SLTPstore.closeOpenPrice) {
+      setValue('openPrice', undefined);
+      clearErrors('openPrice');
+      handleToggle();
+      SLTPstore.toggleCloseOpenPrice(false);
+    }
+  }, [on, SLTPstore.closeOpenPrice]);
 
   const { openPrice } = watch();
   return (
     <FlexContainer position="relative" ref={wrapperRef}>
-      {openPrice ? (
+      {hasValue(openPrice) && !on ? (
         <FlexContainer position="relative" width="100%">
           <ButtonAutoClosePurchase
             onClick={handleToggle}
             type="button"
-            hasPrice={!!(openPrice || openPrice === 0)}
+            hasPrice={true}
           >
             <PrimaryTextSpan color="#fffccc" fontSize="14px">
               {mainAppStore.activeAccount?.symbol}
@@ -147,7 +180,7 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
         <ButtonAutoClosePurchase
           onClick={handleToggle}
           type="button"
-          hasPrice={!!openPrice}
+          hasPrice={false}
         >
           <PrimaryTextSpan color="#fffccc" fontSize="14px">
             {t('Set Price')}
@@ -158,7 +191,7 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
         position="absolute"
         bottom="0px"
         right="100%"
-        visibilityProp={on ? 'visible' : 'hidden'}
+        display={on ? 'flex' : 'none'}
       >
         <Wrapper
           position="relative"
@@ -166,7 +199,7 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
           flexDirection="column"
           width="200px"
         >
-          <ButtonClose type="button" onClick={handleToggle}>
+          <ButtonClose type="button" onClick={handleClosePopup}>
             <SvgIcon
               {...IconClose}
               fillColor="rgba(255, 255, 255, 0.6)"
@@ -219,9 +252,9 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
                 {errors.openPrice.message}
               </ErropPopup>
             )}
-
             <InputPnL
               onBeforeInput={handleBeforeInput}
+              onChange={handleChangeInput}
               name={Fields.OPEN_PRICE}
               placeholder={t('Non Set')}
               ref={register({ setValueAs: setValueAsNullIfEmpty })}
@@ -267,7 +300,7 @@ const OpenPricePopup: FC<Props> = ({ instrumentId, digits }) => {
       </SetPriceWrapper>
     </FlexContainer>
   );
-};
+});
 
 export default OpenPricePopup;
 

@@ -1,7 +1,9 @@
 const depositMethod = {
-  BANK_CARD: 'bank card',
-  BITCOIN: 'bitcoin',
+  BANK_CARD: 'BANK_CARDS',
+  BITCOIN: 'BTC',
   WIRE_TRANSFER: 'wire_transfer',
+  ELECTRONIC_FUNDS_TRANSFER: 'Swiffy',
+  DIRECTA: 'Directa',
 };
 
 Object.freeze(depositMethod);

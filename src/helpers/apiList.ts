@@ -3,6 +3,7 @@ const API_LIST = {
     OPEN: '/api/v1/Positions/Open',
     CLOSE: '/api/v1/Positions/Close',
     UPDATE_SL_TP: '/api/v1/Positions/UpdateTpSl',
+    UPDATE_TOPPING_UP: '/api/v1/Positions/UpdateToppingUp',
   },
   ACCOUNTS: {
     GET_ACCOUNTS: '/api/v1/Accounts',
@@ -36,6 +37,9 @@ const API_LIST = {
     CREATE: '/Create',
     GET_CRYPTO_WALLET: '/GetCryptoWallet',
     CREATE_INVOICE: '/CreatePciDssInvoice',
+    CREATE_INVOICE_SWIFFY: '/swiffy/invoice',
+    CREATE_INVOICE_DIRECTA: '/directa/invoice',
+    CHECK_PAYMENT_SYSTEMS: '/supported-payment-systems',
   },
   INIT: {
     GET: '/init/',
@@ -43,8 +47,8 @@ const API_LIST = {
   WITHWRAWAL: {
     CREATE: '/withdrawal/create',
     HISTORY: '/withdrawal/history',
-    CANCEL: '/withdrawal/cancel'
-  }
+    CANCEL: '/withdrawal/cancel',
+  },
 };
 
 Object.freeze(API_LIST);

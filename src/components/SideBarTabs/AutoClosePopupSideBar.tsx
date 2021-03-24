@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, forwardRef } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  forwardRef,
+  useCallback,
+} from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SetAutoclose from '../BuySellPanel/SetAutoclose';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -18,6 +24,8 @@ interface Props {
   slType: TpSlTypeEnum | null;
   instrumentId: string;
   positionId: number;
+  handleResetLines?: () => void;
+  resetFormStateToInitial?: () => void;
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -30,6 +38,8 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       slType,
       instrumentId,
       positionId,
+      handleResetLines,
+      resetFormStateToInitial,
     },
     ref
   ) => {
@@ -51,29 +61,54 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     });
 
     const wrapperRef = useRef<HTMLDivElement>(null);
+    const popupRef = useRef<HTMLDivElement>(null);
 
     const handleToggle = () => {
-      toggle(!on);
+      toggle(true);
+      SLTPstore.toggleCloseOpenPrice(false);
       const {
         top,
         left,
         width,
         bottom,
         height,
-
         // @ts-ignore
       } = ref.current.getBoundingClientRect();
       setPopupPosition({ top, left, width, bottom, height });
-      const rect = wrapperRef.current?.getBoundingClientRect();
+      const rect = popupRef.current?.getBoundingClientRect();
       if (rect && window.innerHeight - rect.top - 325 <= 0) {
         setIsTop(false);
       }
     };
 
-    const handleClickOutside = (e: any) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-        toggle(false);
+    const handleClickOutside = useCallback(
+      (e: any) => {
+        SLTPstore.toggleCloseOpenPrice(false);
+        if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+          e.preventDefault();
+          if (resetFormStateToInitial) {
+            resetFormStateToInitial();
+          }
+          if (handleResetLines) {
+            handleResetLines();
+          }
+          tradingViewStore.toggleMovedPositionPopup(false);
+          toggle(false);
+        }
+      },
+      [on]
+    );
+
+    const handleClosePopup = (value: boolean) => {
+      toggle(value);
+      if (resetFormStateToInitial) {
+        resetFormStateToInitial();
       }
+      if (handleResetLines) {
+        handleResetLines();
+      }
+      SLTPstore.toggleCloseOpenPrice(false);
+      tradingViewStore.toggleMovedPositionPopup(false);
     };
 
     useEffect(() => {
@@ -82,21 +117,31 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
         SLTPstore.setSlType(slType ?? TpSlTypeEnum.Currency);
         SLTPstore.setInstrumentId(instrumentId);
       }
-    }, [on]);
+    }, [on, tpType, slType]);
 
     useEffect(() => {
-      document.addEventListener('mousedown', handleClickOutside);
+      SLTPstore.toggleCloseOpenPrice(true);
+    }, []);
+
+    useEffect(() => {
+      if (on) {
+        document.addEventListener('mousedown', handleClickOutside);
+      } else {
+        document.removeEventListener('mousedown', handleClickOutside);
+      }
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
       };
-    }, []);
+    }, [on]);
 
     const submitForm = async () => {
+      SLTPstore.toggleCloseOpenPrice(false);
       try {
         const isValid = await trigger();
         if (isValid) {
           await handleSubmit(handleSumbitMethod)();
           toggle(false);
+          tradingViewStore.toggleMovedPositionPopup(false);
         }
       } catch (error) {}
     };
@@ -114,12 +159,13 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
     }, []);
 
     return (
-      <FlexContainer ref={wrapperRef}>
-        <ButtonWithoutStyles type="button" onClick={handleToggle}>
+      <FlexContainer ref={popupRef}>
+        <ButtonWithoutStyles type="button" onMouseDown={handleToggle}>
           {children}
         </ButtonWithoutStyles>
         {on && (
           <FlexContainer
+            ref={wrapperRef}
             position="absolute"
             // FIXME: think about this stupid sheet
             top={
@@ -133,7 +179,11 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
             bottom={isTop ? 'auto' : '20px'}
             zIndex="101"
           >
-            <SetAutoclose isDisabled={isDisabled} toggle={toggle} isActive={on}>
+            <SetAutoclose
+              isDisabled={isDisabled}
+              toggle={handleClosePopup}
+              isActive={on}
+            >
               <ButtonApply
                 type="button"
                 disabled={isDisabled}

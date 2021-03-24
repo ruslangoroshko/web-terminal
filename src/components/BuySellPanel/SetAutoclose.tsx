@@ -1,4 +1,4 @@
-import React, { FC, MouseEvent } from 'react';
+import React, { FC, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -27,10 +27,11 @@ interface Props {
   isDisabled?: boolean;
   toggle: (arg0: boolean) => void;
   isActive: boolean;
+  isNewOrder?: boolean;
 }
 
 const SetAutoclose: FC<Props> = observer(
-  ({ isDisabled, toggle, children, isActive }) => {
+  ({ isDisabled, toggle, children, isActive, isNewOrder }) => {
     const { t } = useTranslation();
 
     const { instrumentsStore, SLTPstore } = useStores();
@@ -46,7 +47,9 @@ const SetAutoclose: FC<Props> = observer(
         case TpSlTypeEnum.Price:
           PRECISION =
             instrumentsStore.instruments.find(
-              (item) => item.instrumentItem.id === SLTPstore.instrumentId
+              (item) =>
+                item.instrumentItem.id ===
+                SLTPstore[isNewOrder ? 'instrumentIdNewOrder' : 'instrumentId']
             )?.instrumentItem.digits || 2;
           break;
 
@@ -99,12 +102,13 @@ const SetAutoclose: FC<Props> = observer(
       toggle(false);
     };
 
-    const handleRemoveTp = (setValue: (arg0: any, arg1: any) => void) => () => {
-      setValue('tp', undefined);
+    const handleRemoveTp = (setValue: any) => () => {
+      setValue('tp', undefined, { shouldValidate: true });
     };
 
-    const handleRemoveSl = (setValue: (arg0: any, arg1: any) => void) => () => {
-      setValue('sl', undefined);
+    const handleRemoveSl = (setValue: any) => () => {
+      setValue('sl', undefined, { shouldValidate: true });
+      setValue(Fields.IS_TOPPING_UP, false);
     };
 
     const handelFalseRadioClick = (
@@ -117,6 +121,15 @@ const SetAutoclose: FC<Props> = observer(
       setValue: (arg0: any, arg1: any) => void
     ) => () => {
       setValue(Fields.IS_TOPPING_UP, true);
+    };
+
+    const handleChangeInput = (
+      setValue: any,
+      field: string,
+      clearErrors: any
+    ) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      clearErrors(field);
+      setValue(field, e.target.value);
     };
 
     return (
@@ -171,7 +184,8 @@ const SetAutoclose: FC<Props> = observer(
                   {() => (
                     <InputWrapper
                       padding={
-                        SLTPstore.tpType === TpSlTypeEnum.Price
+                        SLTPstore[isNewOrder ? 'tpTypeNewOrder' : 'tpType'] ===
+                        TpSlTypeEnum.Price
                           ? '0 0 0 8px'
                           : '0 0 0 22px'
                       }
@@ -190,15 +204,21 @@ const SetAutoclose: FC<Props> = observer(
                           {errors.tp.message}
                         </ErropPopup>
                       )}
-                      {SLTPstore.tpType !== TpSlTypeEnum.Price && (
-                        <PlusSign>+</PlusSign>
-                      )}
+                      {SLTPstore[isNewOrder ? 'tpTypeNewOrder' : 'tpType'] !==
+                        TpSlTypeEnum.Price && <PlusSign>+</PlusSign>}
                       <InputPnL
-                        onBeforeInput={handleBeforeInput(SLTPstore.tpType)}
+                        onBeforeInput={handleBeforeInput(
+                          SLTPstore[isNewOrder ? 'tpTypeNewOrder' : 'tpType']
+                        )}
                         placeholder={t('Non Set')}
                         ref={register({
                           setValueAs: setValueAsNullIfEmpty,
                         })}
+                        onChange={handleChangeInput(
+                          setValue,
+                          Fields.TAKE_PROFIT,
+                          clearErrors
+                        )}
                         name={Fields.TAKE_PROFIT}
                         disabled={isDisabled}
                       ></InputPnL>
@@ -223,6 +243,8 @@ const SetAutoclose: FC<Props> = observer(
                         clearErrors={clearErrors}
                         dropdownType="tp"
                         isDisabled={isDisabled}
+                        setValue={setValue}
+                        isNewOrder={isNewOrder}
                       ></PnLTypeDropdown>
                     </InputWrapper>
                   )}
@@ -257,7 +279,8 @@ const SetAutoclose: FC<Props> = observer(
                   {() => (
                     <InputWrapper
                       padding={
-                        SLTPstore.slType === TpSlTypeEnum.Price
+                        SLTPstore[isNewOrder ? 'slTypeNewOrder' : 'slType'] ===
+                        TpSlTypeEnum.Price
                           ? '0 0 0 8px'
                           : '0 0 0 22px'
                       }
@@ -276,16 +299,22 @@ const SetAutoclose: FC<Props> = observer(
                           {errors.sl.message}
                         </ErropPopup>
                       )}
-                      {SLTPstore.slType !== TpSlTypeEnum.Price && (
-                        <PlusSign>-</PlusSign>
-                      )}
+                      {SLTPstore[isNewOrder ? 'slTypeNewOrder' : 'slType'] !==
+                        TpSlTypeEnum.Price && <PlusSign>-</PlusSign>}
                       <InputPnL
-                        onBeforeInput={handleBeforeInput(SLTPstore.slType)}
+                        onBeforeInput={handleBeforeInput(
+                          SLTPstore[isNewOrder ? 'slTypeNewOrder' : 'slType']
+                        )}
                         placeholder={t('Non Set')}
                         name={Fields.STOP_LOSS}
                         ref={register({
                           setValueAs: setValueAsNullIfEmptyAndNegative,
                         })}
+                        onChange={handleChangeInput(
+                          setValue,
+                          Fields.STOP_LOSS,
+                          clearErrors
+                        )}
                         disabled={isDisabled}
                       ></InputPnL>
                       {hasValue(sl) && !isDisabled && (
@@ -309,6 +338,8 @@ const SetAutoclose: FC<Props> = observer(
                         clearErrors={clearErrors}
                         dropdownType="sl"
                         isDisabled={isDisabled}
+                        setValue={setValue}
+                        isNewOrder={isNewOrder}
                       ></PnLTypeDropdown>
                     </InputWrapper>
                   )}
@@ -330,12 +361,12 @@ const SetAutoclose: FC<Props> = observer(
                         color="rgba(255, 255, 255, 0.3)"
                         textTransform="uppercase"
                       >
-                        {t('Auto-increase trade amount')}
+                        {t('Save position from market noise')}
                       </PrimaryTextSpan>
                       <InformationPopup
                         classNameTooltip="autoclose-loss"
                         bgColor="#000"
-                        width="200px"
+                        width="260px"
                         direction="left"
                       >
                         <Observer>
@@ -345,10 +376,26 @@ const SetAutoclose: FC<Props> = observer(
                                 instrumentsStore.instruments.find(
                                   (inst) =>
                                     inst.instrumentItem.id ===
-                                    SLTPstore.instrumentId
-                                )?.instrumentItem.stopOutPercent
+                                    SLTPstore[
+                                      isNewOrder
+                                        ? 'instrumentIdNewOrder'
+                                        : 'instrumentId'
+                                    ]
+                                )?.instrumentItem.stopOutPercent || 0
                               }%, ${t(
-                                'an additional 20% of the original investment amount is reserved from your balance to keep your position open.'
+                                'an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least'
+                              )} ${
+                                instrumentsStore.instruments.find(
+                                  (inst) =>
+                                    inst.instrumentItem.id ===
+                                    SLTPstore[
+                                      isNewOrder
+                                        ? 'instrumentIdNewOrder'
+                                        : 'instrumentId'
+                                    ]
+                                )?.instrumentItem.stopOutPercent || 0
+                              }%, ${t(
+                                'all previously reserved funds are returned to your balance.'
                               )}`}
                             </PrimaryTextSpan>
                           )}

@@ -37,7 +37,7 @@ const TradingHistoryExpanded: FC = () => {
   const fetchPositionsHistory = useCallback(
     async (isScrolling = false) => {
       const response = await API.getPositionsHistory({
-        accountId: mainAppStore.activeAccount!.id,
+        accountId: mainAppStore.activeAccountId,
         startDate: dateRangeStore.startDate.valueOf(),
         endDate: dateRangeStore.endDate.valueOf(),
         page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
@@ -60,7 +60,7 @@ const TradingHistoryExpanded: FC = () => {
       });
     },
     [
-      mainAppStore.activeAccount?.id,
+      mainAppStore.activeAccountId,
       dateRangeStore.startDate,
       dateRangeStore.endDate,
       historyStore.positionsHistoryReport,
@@ -68,7 +68,7 @@ const TradingHistoryExpanded: FC = () => {
   );
 
   useEffect(() => {
-    if (mainAppStore.activeAccount && tabsStore.isTabExpanded) {
+    if (mainAppStore.activeAccountId && tabsStore.isTabExpanded) {
       let checkScroll: boolean = false;
       const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
       const neededData: string | null = mainAppStore.paramsPortfolioHistory || localStorage.getItem(
@@ -115,7 +115,7 @@ const TradingHistoryExpanded: FC = () => {
         positionsHistory: [],
       });
     };
-  }, [mainAppStore.activeAccount]);
+  }, [mainAppStore.activeAccountId]);
 
   return (
     <TradingHistoryExpandedWrapper

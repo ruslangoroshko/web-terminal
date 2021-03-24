@@ -105,7 +105,6 @@ module.exports = (env, argv) => {
         meta: {
           viewport: 'width=device-width, initial-scale=1.0',
         },
-        title: 'Hello world - Shadi',
         captcha: JSON.stringify(
           'https://www.google.com/recaptcha/api.js?render=' +
             (['production', 'none'].includes(argv.mode)

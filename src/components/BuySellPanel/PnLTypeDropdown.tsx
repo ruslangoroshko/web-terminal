@@ -1,7 +1,6 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
-import Toggle from '../Toggle';
 import { css } from '@emotion/core';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
@@ -12,111 +11,143 @@ import autoCloseTypes from '../../constants/autoCloseTypes';
 import { TpSlTypeEnum } from '../../enums/TpSlTypeEnum';
 import { useTranslation } from 'react-i18next';
 import { useStores } from '../../hooks/useStores';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
+import Fields from '../../constants/fields';
 
 interface Props {
   dropdownType: 'sl' | 'tp';
   isDisabled?: boolean;
-  clearErrors: () => void;
+  clearErrors: any;
+  setValue: any;
+  isNewOrder?: boolean;
 }
 
-const PnLTypeDropdown: FC<Props> = observer(({ dropdownType, isDisabled, clearErrors }) => {
-  const { t } = useTranslation();
-  const { SLTPstore } = useStores();
+const PnLTypeDropdown: FC<Props> = observer(
+  ({ dropdownType, isDisabled, clearErrors, setValue, isNewOrder }) => {
+    const { t } = useTranslation();
+    const { SLTPstore } = useStores();
+    const handleAutoClose = (
+      autoClose: TpSlTypeEnum,
+      toggle: (arg0: boolean) => void
+    ) => () => {
+      switch (dropdownType) {
+        case 'sl':
+          SLTPstore[isNewOrder ? 'setSlTypeNewOrder' : 'setSlType'](autoClose);
+          setValue(Fields.STOP_LOSS, undefined);
+          setValue(Fields.IS_TOPPING_UP, false);
+          clearErrors(Fields.STOP_LOSS);
+          break;
 
-  const handleAutoClose = (
-    autoClose: TpSlTypeEnum,
-    toggle: () => void
-  ) => () => {
-    switch (dropdownType) {
-      case 'sl':
-        SLTPstore.setSlType(autoClose);
-        clearErrors();
-        break;
+        case 'tp':
+          SLTPstore[isNewOrder ? 'setTpTypeNewOrder' : 'setTpType'](autoClose);
+          setValue(Fields.TAKE_PROFIT, undefined);
+          clearErrors(Fields.TAKE_PROFIT);
+          break;
 
-      case 'tp':
-        SLTPstore.setTpType(autoClose);
-        clearErrors();
-        break;
+        default:
+          break;
+      }
+      toggle(false);
+    };
 
-      default:
-        break;
-    }
-    toggle();
-  };
+    const availableAutoCloseTypes = [TpSlTypeEnum.Currency, TpSlTypeEnum.Price];
 
-  const availableAutoCloseTypes = [TpSlTypeEnum.Currency, TpSlTypeEnum.Price];
+    const renderSymbol = () => {
+      switch (dropdownType) {
+        case 'sl':
+          return autoCloseTypes[
+            SLTPstore[isNewOrder ? 'slTypeNewOrder' : 'slType'] ??
+              TpSlTypeEnum.Currency
+          ].symbol;
 
-  const renderSymbol = useCallback(() => {
-    switch (dropdownType) {
-      case 'sl':
-        return autoCloseTypes[SLTPstore.slType ?? TpSlTypeEnum.Currency].symbol;
+        case 'tp':
+          return autoCloseTypes[
+            SLTPstore[isNewOrder ? 'tpTypeNewOrder' : 'tpType'] ??
+              TpSlTypeEnum.Currency
+          ].symbol;
 
-      case 'tp':
-        return autoCloseTypes[SLTPstore.tpType ?? TpSlTypeEnum.Currency].symbol;
+        default:
+          return '';
+      }
+    };
 
-      default:
-        return '';
-    }
-  }, [SLTPstore.tpType, SLTPstore.slType]);
+    const [on, toggle] = useState(false);
+    const wrapperRef = useRef<HTMLDivElement>(null);
 
-  return (
-    <Toggle>
-      {({ on, toggle }) => (
-        <FlexContainer position="relative" alignItems="center">
-          <DropdownButton
-            isActive={on}
-            onClick={toggle}
-            type="button"
-            disabled={isDisabled}
+    const handleToggle = () => {
+      toggle(!on);
+    };
+    const handleClickOutside = (e: any) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        toggle(false);
+      }
+    };
+
+    useEffect(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
+
+    return (
+      <FlexContainer position="relative" alignItems="center" ref={wrapperRef}>
+        <DropdownButton
+          isActive={on}
+          onClick={handleToggle}
+          type="button"
+          disabled={isDisabled}
+        >
+          <Observer>
+            {() => (
+              <PrimaryTextSpan
+                color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
+              >
+                {renderSymbol()}
+              </PrimaryTextSpan>
+            )}
+          </Observer>
+          <SvgIcon
+            {...IconShevronDown}
+            fillColor="rgba(255, 255, 255, 0.5)"
+          ></SvgIcon>
+        </DropdownButton>
+        {on && (
+          <ProfitPercentPriceWrapper
+            width="112px"
+            backgroundColor="#000"
+            padding="8px 8px 0"
+            position="absolute"
+            top="100%"
+            right="0"
+            flexDirection="column"
           >
-            <PrimaryTextSpan
-              color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
-            >
-              {renderSymbol()}
-            </PrimaryTextSpan>
-            <SvgIcon
-              {...IconShevronDown}
-              fillColor="rgba(255, 255, 255, 0.5)"
-            ></SvgIcon>
-          </DropdownButton>
-          {on && (
-            <ProfitPercentPriceWrapper
-              width="112px"
-              backgroundColor="#000"
-              padding="8px 8px 0"
-              position="absolute"
-              top="100%"
-              right="0"
-              flexDirection="column"
-            >
-              {availableAutoCloseTypes.map((key) => (
-                <ProfitPercentPrice
-                  key={key}
-                  justifyContent="space-between"
-                  padding="0 8px 8px 4px"
-                  margin="0 0 8px 0"
-                  onClick={handleAutoClose(key, toggle)}
+            {availableAutoCloseTypes.map((key) => (
+              <ProfitPercentPrice
+                key={key}
+                justifyContent="space-between"
+                padding="0 8px 8px 4px"
+                margin="0 0 8px 0"
+                onClick={handleAutoClose(key, toggle)}
+              >
+                <PrimaryTextSpan
+                  fontSize="12px"
+                  lineHeight="14px"
+                  color="rgba(255, 255, 255, 0.5)"
                 >
-                  <PrimaryTextSpan
-                    fontSize="12px"
-                    lineHeight="14px"
-                    color="rgba(255, 255, 255, 0.5)"
-                  >
-                    {t(autoCloseTypes[key].name)}
-                  </PrimaryTextSpan>
-                  <PrimaryTextSpan fontSize="12px" lineHeight="14px">
-                    {autoCloseTypes[key].symbol}
-                  </PrimaryTextSpan>
-                </ProfitPercentPrice>
-              ))}
-            </ProfitPercentPriceWrapper>
-          )}
-        </FlexContainer>
-      )}
-    </Toggle>
-  );
-});
+                  {t(autoCloseTypes[key].name)}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan fontSize="12px" lineHeight="14px">
+                  {autoCloseTypes[key].symbol}
+                </PrimaryTextSpan>
+              </ProfitPercentPrice>
+            ))}
+          </ProfitPercentPriceWrapper>
+        )}
+      </FlexContainer>
+    );
+  }
+);
 
 export default PnLTypeDropdown;
 

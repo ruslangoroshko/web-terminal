@@ -67,8 +67,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const { t } = useTranslation();
 
-  const setAutoCloseWrapperRef = useRef<HTMLDivElement>(null);
-
   const [isLoading, setLoading] = useState(true);
   const [operation, setOperation] = useState<AskBidEnum | null>(null);
   const [multiplier, setMultiplier] = useState(instrument.multiplier[0]);
@@ -154,7 +152,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               if (!hasValue(value)) {
                 return true;
               }
-              if (SLTPstore.tpType === TpSlTypeEnum.Price) {
+              if (SLTPstore.tpTypeNewOrder === TpSlTypeEnum.Price) {
                 switch (operation) {
                   case AskBidEnum.Buy:
                     return value > currentPriceAsk();
@@ -184,7 +182,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               if (!hasValue(value)) {
                 return true;
               }
-              if (SLTPstore.slType === TpSlTypeEnum.Price) {
+              if (SLTPstore.slTypeNewOrder === TpSlTypeEnum.Price) {
                 switch (operation) {
                   case AskBidEnum.Buy:
                     return value < currentPriceAsk();
@@ -199,7 +197,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               return true;
             }
           ),
-        openPrice: yup.number(),
+        openPrice: yup
+          .number()
+          .test(Fields.STOP_LOSS, t('Open Price can not be zero'), (value) => {
+            return value !== 0 || value === null;
+          }),
         isToppingUpActive: yup.boolean().required(),
       }),
     [
@@ -208,8 +210,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       currentPriceAsk,
       mainAppStore.activeAccount,
       operation,
-      SLTPstore.slType,
-      SLTPstore.tpType,
+      SLTPstore.slTypeNewOrder,
+      SLTPstore.tpTypeNewOrder,
       multiplier,
     ]
   );
@@ -226,8 +228,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           operation: operation ?? AskBidEnum.Buy,
           openPrice: values.openPrice || 0,
           investmentAmount: values.investmentAmount,
-          tpType: hasValue(values.tp) ? SLTPstore.tpType : null,
-          slType: hasValue(values.sl) ? SLTPstore.slType : null,
+          tpType: hasValue(values.tp) ? SLTPstore.tpTypeNewOrder : null,
+          slType: hasValue(values.sl) ? SLTPstore.slTypeNewOrder : null,
           accountId: mainAppStore.activeAccountId,
           instrumentId: instrument.id,
           processId: getProcessId(),
@@ -249,8 +251,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             reset();
             setOperation(null);
             setValue('investmentAmount', values.investmentAmount);
-            SLTPstore.setSlType(TpSlTypeEnum.Currency);
-            SLTPstore.setTpType(TpSlTypeEnum.Currency);
+            SLTPstore.setSlTypeNewOrder(TpSlTypeEnum.Currency);
+            SLTPstore.setTpTypeNewOrder(TpSlTypeEnum.Currency);
             API.setKeyValue({
               key: mainAppStore.activeAccount?.isLive
                 ? KeysInApi.DEFAULT_INVEST_AMOUNT_REAL
@@ -337,8 +339,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           sl: values.sl ?? null,
           operation: operation ?? AskBidEnum.Buy,
           investmentAmount: values.investmentAmount,
-          tpType: hasValue(values.tp) ? SLTPstore.tpType : null,
-          slType: hasValue(values.sl) ? SLTPstore.slType : null,
+          tpType: hasValue(values.tp) ? SLTPstore.tpTypeNewOrder : null,
+          slType: hasValue(values.sl) ? SLTPstore.slTypeNewOrder : null,
           accountId: mainAppStore.activeAccountId,
           instrumentId: instrument.id,
           processId: getProcessId(),
@@ -446,8 +448,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       }
     },
     [
-      SLTPstore.tpType,
-      SLTPstore.slType,
+      SLTPstore.tpTypeNewOrder,
+      SLTPstore.slTypeNewOrder,
       operation,
       multiplier,
       instrument,
@@ -471,6 +473,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     resolver: yupResolver(validationSchema()),
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
+    shouldFocusError: false,
     defaultValues: {
       isToppingUpActive: false,
     },
@@ -480,9 +483,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     reset();
-    SLTPstore.setInstrumentId(instrument.id);
-    SLTPstore.setSlType(TpSlTypeEnum.Currency);
-    SLTPstore.setTpType(TpSlTypeEnum.Currency);
+    SLTPstore.setInstrumentIdNewOrder(instrument.id);
+    SLTPstore.setSlTypeNewOrder(TpSlTypeEnum.Currency);
+    SLTPstore.setTpTypeNewOrder(TpSlTypeEnum.Currency);
   }, [mainAppStore.activeAccountId, instrument.id]);
 
   useEffect(() => {
@@ -534,7 +537,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       : investmentAmount < 1
       ? 0
       : (investmentAmount - 1).toFixed(PRECISION_USD);
-
     if (newValue <= MAX_INPUT_VALUE) {
       setValue('investmentAmount', newValue);
     }
@@ -542,10 +544,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   const closePopup = () => {
     setOperation(null);
-  };
-
-  const openConfirmBuyingPopup = (operationType: AskBidEnum) => () => {
-    setOperation(operationType);
   };
 
   const [investedAmountDropdown, toggleInvestemAmountDropdown] = useState(
@@ -619,7 +617,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       // TODO: research typings
       // @ts-ignore
       !investAmountRef.current?.contains(e.relatedTarget) &&
-      !getValues('investmentAmount')
+      !getValues('investmentAmount') &&
+      getValues('investmentAmount') !== 0
     ) {
       setValue(
         'investmentAmount',
@@ -636,8 +635,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   const challengeStopOutBySlValue = useCallback(
-    (stopLoss) => {
-      switch (SLTPstore.slType) {
+    (stopLoss, investmentAmount) => {
+      switch (SLTPstore.slTypeNewOrder) {
         case TpSlTypeEnum.Currency:
           setValue(
             'isToppingUpActive',
@@ -654,6 +653,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               investmentAmount: investmentAmount,
               multiplier: multiplier,
               operation: operation,
+              commission: 0,
+              isNewOrder: true,
             });
             setValue(
               'isToppingUpActive',
@@ -669,11 +670,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           break;
       }
     },
-    [SLTPstore.slType, investmentAmount]
+    [SLTPstore.slTypeNewOrder, investmentAmount, operation]
   );
   const challengeStopOutByToppingUp = useCallback(
     (isToppingUp: boolean) => {
-      switch (SLTPstore.slType) {
+      switch (SLTPstore.slTypeNewOrder) {
         case TpSlTypeEnum.Currency:
           // TODO: think refactor
           if (
@@ -689,42 +690,48 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           }
           break;
 
-        case TpSlTypeEnum.Price:
-          if (operation !== null) {
-            const soValue = SLTPstore.positionStopOutByPrice({
-              instrumentId: instrument.id,
-              slPrice: sl || 0,
-              investmentAmount: investmentAmount,
-              multiplier: multiplier,
-              operation: operation,
-            });
-            if (isToppingUp) {
-              if (
-                soValue <= 0 &&
-                Math.abs(soValue) >
-                  SLTPstore.positionStopOut(investmentAmount, instrument.id)
-              ) {
-                setValue('sl', undefined);
-              }
-            } else {
-              if (
-                soValue <= 0 &&
-                Math.abs(soValue) <=
-                  SLTPstore.positionStopOut(investmentAmount, instrument.id)
-              ) {
-                setValue('sl', undefined);
-              }
-            }
-          }
+        // case TpSlTypeEnum.Price:
+        //   if (operation !== null) {
+        //     const soValue = SLTPstore.positionStopOutByPrice({
+        //       instrumentId: instrument.id,
+        //       slPrice: sl || 0,
+        //       investmentAmount: investmentAmount,
+        //       multiplier: multiplier,
+        //       operation: operation,
+        //       commission: 0,
+        //       isNewOrder: true,
+        //     });
+        //     if (isToppingUp) {
+        //       if (
+        //         soValue <= 0 &&
+        //         Math.abs(soValue) >
+        //           SLTPstore.positionStopOut(investmentAmount, instrument.id)
+        //       ) {
+        //         setValue('sl', undefined);
+        //       }
+        //     } else {
+        //       if (
+        //         soValue <= 0 &&
+        //         Math.abs(soValue) <=
+        //           SLTPstore.positionStopOut(investmentAmount, instrument.id)
+        //       ) {
+        //         setValue('sl', undefined);
+        //       }
+        //     }
+        //   }
 
-          break;
+        //   break;
 
         default:
           break;
       }
     },
-    [SLTPstore.slType, sl, investmentAmount]
+    [SLTPstore.slTypeNewOrder, sl, investmentAmount]
   );
+
+  const openConfirmBuyingPopup = (operationType: AskBidEnum) => () => {
+    setOperation(operationType);
+  };
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -741,9 +748,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     if (hasValue(sl)) {
-      challengeStopOutBySlValue(sl!);
+      challengeStopOutBySlValue(sl, investmentAmount);
     }
-  }, [sl]);
+  }, [sl, investmentAmount, operation]);
 
   useEffect(() => {
     if (hasValue(isToppingUpActive)) {
@@ -809,16 +816,17 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             alignItems="center"
             zIndex="100"
           >
-            {formState.touched.investmentAmount && errors.investmentAmount && (
-              <ErropPopup
-                textColor="#fffccc"
-                bgColor={ColorsPallete.RAZZMATAZZ}
-                classNameTooltip={'investmentAmount'}
-                direction="left"
-              >
-                {errors.investmentAmount.message}
-              </ErropPopup>
-            )}
+            {(formState.touched.investmentAmount || operation !== null) &&
+              errors.investmentAmount && (
+                <ErropPopup
+                  textColor="#fffccc"
+                  bgColor={ColorsPallete.RAZZMATAZZ}
+                  classNameTooltip={'investmentAmount'}
+                  direction="left"
+                >
+                  {errors.investmentAmount.message}
+                </ErropPopup>
+              )}
             <PrimaryTextSpan fontWeight="bold" marginRight="2px">
               {mainAppStore.activeAccount?.symbol}
             </PrimaryTextSpan>
@@ -900,15 +908,18 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             flexWrap="wrap"
             margin="0 0 4px 0"
             alignItems="center"
+            flexDirection="row"
           >
-            <PrimaryTextSpan
-              fontSize="11px"
-              lineHeight="12px"
-              textTransform="uppercase"
-              color="rgba(255, 255, 255, 0.3)"
-            >
-              {t('Autoclose')}
-            </PrimaryTextSpan>
+            <FlexContainer width="calc(100% - 20px)">
+              <PrimaryTextSpan
+                fontSize="11px"
+                lineHeight="12px"
+                textTransform="uppercase"
+                color="rgba(255, 255, 255, 0.3)"
+              >
+                {t('Autoclose')}
+              </PrimaryTextSpan>
+            </FlexContainer>
             <InformationPopup
               bgColor="#000000"
               classNameTooltip="autoclose"

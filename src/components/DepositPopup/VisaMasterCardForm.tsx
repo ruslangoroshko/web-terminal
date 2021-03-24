@@ -35,6 +35,7 @@ import PreloaderButtonMask from '../PreloaderButtonMask';
 import Page from '../../constants/Pages';
 import testIds from '../../constants/testIds';
 import e2eTests from '../../constants/e2eTests';
+import Fields from '../../constants/fields';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -58,7 +59,7 @@ const VisaMasterCardForm = () => {
       .required(t('Required field'))
       .trim()
       .test('fullName', t('Cardholder name is invalid'), (value) => {
-        return /^[a-z .~`'-]+$/i.test(value);
+        return /^[a-zA-Z .~`'-]+$/i.test(value);
       })
       .test(
         'fullName',
@@ -71,7 +72,7 @@ const VisaMasterCardForm = () => {
             ?.trim()
             .split(' ')
             .filter((item: string) => item);
-          return !!(value[0] && value[1]);
+          return !!(value[0] && value[1] && value[0].length <= 24 && value[1].length <= 24);
         }
         return false;
       }),
@@ -140,20 +141,52 @@ const VisaMasterCardForm = () => {
 
   const investOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
+
+    if (!e.data.match(/^[0-9.,]*$/g)) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!currTargetValue && [',', '.'].includes(e.data)) {
+      e.preventDefault();
+      return;
+    }
+
     if ([',', '.'].includes(e.data)) {
+      if (
+        !currTargetValue ||
+        (currTargetValue && currTargetValue.includes('.'))
+      ) {
+        e.preventDefault();
+        return;
+      }
+    }
+    // see another regex
+    const regex = /^[0-9]{1,15}([.,][0-9]{1,2})?$/;
+    const splittedValue =
+      currTargetValue.substring(0, e.currentTarget.selectionStart) +
+      e.data +
+      currTargetValue.substring(e.currentTarget.selectionStart);
+    if (
+      currTargetValue &&
+      ![',', '.'].includes(e.data) &&
+      !splittedValue.match(regex)
+    ) {
       e.preventDefault();
       return;
     }
-    if (!e.data.match(/^\d|\.|\,/)) {
-      e.preventDefault();
-      return;
-    }
-    const regex = /^[0-9]{1,15}/;
-    if (e.data.length > 1 && !currTargetValue.match(regex)) {
+    if (e.data.length > 1 && !splittedValue.match(regex)) {
       e.preventDefault();
       return;
     }
   };
+
+  const onBeforeCardHolderNameInput = (e: any) => {
+    if (!e.data.match(/^[a-zA-Z .~`'-]+$/)) {
+      e.preventDefault();
+      return;
+    }
+  }
 
   const handleSubmitForm = async (values: any) => {
     setLoading(true);
@@ -217,25 +250,29 @@ const VisaMasterCardForm = () => {
     handleChange,
     errors,
     isSubmitting,
+    setFieldError
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
     validationSchema,
     validateOnBlur: true,
-    validateOnChange: true,
+    validateOnChange: false,
   });
 
   const handleChangeAmount = (e: any) => {
-    if (e.target.value.length === 15) {
+    setFieldError(Fields.AMOUNT, undefined);
+    if (e.target.value.length === 19) {
       return;
     }
+    e.currentTarget.value = e.currentTarget.value.replace(/,/g, '.');
     handleChange(e);
   };
   const handleBlurFullname = () => {
     setFieldValue('fullName', values.fullName.trim());
   };
   const handleChangeFullname = (e: any) => {
-    setFieldValue('fullName', e.target.value.trimLeft());
+    setFieldValue('fullName', e.target.value.trimLeft().replace(/\s+/g, ' '));
+    setFieldError('fullName', undefined);
   };
 
   const handleBeforeInputChange = (e: any) => {
@@ -249,7 +286,13 @@ const VisaMasterCardForm = () => {
     }
   };
 
+  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setFieldError(e.target.name, undefined);
+    handleChange(e);
+  };
+
   const handleChangeExpireDate = (e: ChangeEvent<HTMLInputElement>) => {
+    setFieldError(e.target.name, undefined);
     handleChange(e);
   };
 
@@ -296,6 +339,7 @@ const VisaMasterCardForm = () => {
               onBeforeInput={investOnBeforeInputHandler}
               name="amount"
               id="amount"
+              autoComplete="off"
               data-testid={testIds.VISAMASTERFORM_AMOUNT}
               data-e2e-id={e2eTests.DEPOSIT_AMOUNT}
             />
@@ -313,7 +357,7 @@ const VisaMasterCardForm = () => {
           {placeholderValues.map((item) => (
             <AmountPlaceholder
               key={item}
-              isActive={item === values.amount}
+              isActive={parseFloat(item.toString()) === parseFloat(values.amount.toString())}
               value={item}
               currencySymbol={`${mainAppStore.activeAccount?.symbol}`}
               handleClick={() => {
@@ -372,7 +416,7 @@ const VisaMasterCardForm = () => {
                 /\d/,
               ]}
               onChange={(e) => e.preventDefault()}
-              onInput={handleChange}
+              onInput={handleChangeInput}
               autoComplete="cc-number"
               value={values.cardNumber}
               name="cardNumber"
@@ -466,7 +510,7 @@ const VisaMasterCardForm = () => {
                 placeholder="***"
                 mask="999"
                 value={values.cvv}
-                onChange={handleChange}
+                onChange={handleChangeInput}
                 name="cvv"
                 id="cvv"
                 data-testid={testIds.VISAMASTERFORM_CVV}
@@ -511,6 +555,7 @@ const VisaMasterCardForm = () => {
               value={values.fullName}
               onChange={handleChangeFullname}
               onBlur={handleBlurFullname}
+              onBeforeInput={onBeforeCardHolderNameInput}
               name="fullName"
               id="fullName"
               data-testid={testIds.VISAMASTERFORM_CARDHOLDER_NAME}

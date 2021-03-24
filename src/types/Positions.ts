@@ -47,6 +47,7 @@ export interface OpenPositionResponseDTO {
 export interface PositionModelWSDTO {
   id: number;
   investmentAmount: number;
+  reservedFundsForToppingUp: number;
   openPrice: number;
   openDate: number;
   instrument: string;
@@ -86,5 +87,12 @@ export interface UpdateSLTP {
   sl: number | null;
   tpType: TpSlTypeEnum | null;
   slType: TpSlTypeEnum | null;
+  isToppingUpActive: boolean;
+}
+
+export interface UpdateToppingUp {
+  processId: string;
+  accountId: string;
+  positionId: number;
   isToppingUpActive: boolean;
 }

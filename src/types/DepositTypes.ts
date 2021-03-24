@@ -1,5 +1,7 @@
-import { DepositApiResponseCodes } from './../enums/DepositApiResponseCodes';
+import { DepositApiResponseCodes } from '../enums/DepositApiResponseCodes';
 import { DepositRequestStatusEnum } from '../enums/DepositRequestStatusEnum';
+import { GetSupportedPaymentSystemsStatuses } from '../enums/GetSupportedPaymentSystemsStatuses';
+import { SupportedPaymentSystem } from './SupportedPaymentSystem';
 
 export interface CreateDepositParams {
   paymentMethod: string;
@@ -38,4 +40,37 @@ export interface CreateDepositInvoiceParams {
 export interface CreateDepositInvoiceDTO {
   secureLink: string;
   status: DepositRequestStatusEnum;
+}
+
+export interface CreateElectronicFundsInvoiceParams {
+  amount: number;
+  accountId: string;
+  processId: string;
+}
+
+export interface CreateDirectaInvoiceParams {
+  amount: number;
+  accountId: string;
+  processId: string;
+}
+
+export interface CreateElectronicFundsInvoiceDTO {
+  data: {
+    redirectLink: string
+  };
+  status: DepositRequestStatusEnum;
+}
+
+export interface CreateDirectaInvoiceDTO {
+  data: {
+    redirectLink: string
+  };
+  status: DepositRequestStatusEnum;
+}
+
+export interface GetSupportedPaymentSystems {
+  status: GetSupportedPaymentSystemsStatuses;
+  data: {
+    supportedPaymentSystems: SupportedPaymentSystem[]
+  };
 }

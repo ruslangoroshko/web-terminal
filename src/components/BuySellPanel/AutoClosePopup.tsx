@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, FC } from 'react';
+import React, { useState, useRef, useEffect, FC, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -16,13 +16,13 @@ import { useTranslation } from 'react-i18next';
 import { useFormContext } from 'react-hook-form';
 import hasValue from '../../helpers/hasValue';
 import { FormValues } from '../../types/Positions';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 
 interface Props {
   instrumentId: string;
 }
 
-const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
+const AutoClosePopup: FC<Props> = observer(({ instrumentId, children }) => {
   const { mainAppStore, SLTPstore } = useStores();
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
@@ -30,27 +30,38 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
   const {
     setValue,
     clearErrors,
-    errors,
     getValues,
     trigger,
     watch,
+    formState,
+    reset,
   } = useFormContext<FormValues>();
+  const valuesWatch = watch();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleToggle = () => {
     toggle(!on);
-    if (!on) {
-      clearErrors(['tp', 'sl']);
-    }
   };
 
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-      if (on) {
-        setValue('tp', undefined);
-        setValue('sl', undefined);
+      e.preventDefault();
+      let { sl, tp, ...otherValues } = valuesWatch;
+      const isTpExist = !!formState.dirtyFields.tp && formState.touched.tp;
+      const isSlExist = !!formState.dirtyFields.sl && formState.touched.sl;
+      reset(otherValues, { dirtyFields: true, touched: true, isDirty: true });
+      if (isTpExist) {
+        setValue('tp', tp, {
+          shouldDirty: true,
+        });
       }
+      if (isSlExist) {
+        setValue('sl', sl, {
+          shouldDirty: true,
+        });
+      }
+
       handleClose();
     }
   };
@@ -58,8 +69,8 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
   const clearSLTP = (setValue: any) => () => {
     setValue('tp', undefined);
     setValue('sl', undefined);
-    SLTPstore.setTpType(TpSlTypeEnum.Currency);
-    SLTPstore.setSlType(TpSlTypeEnum.Currency);
+    SLTPstore.setTpTypeNewOrder(TpSlTypeEnum.Currency);
+    SLTPstore.setSlTypeNewOrder(TpSlTypeEnum.Currency);
     clearErrors();
   };
 
@@ -68,11 +79,15 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    if (on) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [on]);
 
   const renderTPValue = (tpType: TpSlTypeEnum) => {
     const { tp } = getValues();
@@ -100,34 +115,43 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
     }`;
   };
 
-  const { sl, tp } = watch();
-
   const handleApplySetAutoClose = () => {
-    trigger().then(() => {
-      if (!Object.keys(errors).length) {
+    trigger(['sl', 'tp']).then((isValid) => {
+      if (isValid) {
         toggle(false);
       }
     });
   };
 
+  const resetValues = useCallback(() => {
+    if (!hasValue(valuesWatch.sl)) {
+      SLTPstore.setSlTypeNewOrder(TpSlTypeEnum.Currency);
+    }
+
+    if (!hasValue(valuesWatch.tp)) {
+      SLTPstore.setTpTypeNewOrder(TpSlTypeEnum.Currency);
+    }
+  }, [valuesWatch]);
+
   useEffect(() => {
-    SLTPstore.setSlType(TpSlTypeEnum.Currency);
-    SLTPstore.setTpType(TpSlTypeEnum.Currency);
-    SLTPstore.setInstrumentId(instrumentId);
-  }, []);
+    if (on) {
+      resetValues();
+      SLTPstore.setInstrumentIdNewOrder(instrumentId);
+    }
+  }, [on]);
 
   return (
     <>
       {!on && children}
-      <FlexContainer position="relative" ref={wrapperRef}>
+      <FlexContainer position="relative">
         <FlexContainer width="100%" position="relative">
           <ButtonAutoClosePurchase
-            onClick={handleToggle}
+            onMouseDown={handleToggle}
             type="button"
-            hasValues={hasValue(sl) || hasValue(tp)}
+            hasValues={hasValue(valuesWatch.sl) || hasValue(valuesWatch.tp)}
           >
             <FlexContainer flexDirection="column" alignItems="center">
-              {!on && (hasValue(sl) || hasValue(tp)) ? (
+              {!on && (hasValue(valuesWatch.sl) || hasValue(valuesWatch.tp)) ? (
                 <FlexContainer
                   alignItems="center"
                   padding="0 20px 0 0"
@@ -142,21 +166,21 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
                           marginRight="4px"
                           textOverflow="ellipsis"
                           whiteSpace="nowrap"
-                          title={renderTPValue(SLTPstore.tpType)}
+                          title={renderTPValue(SLTPstore.tpTypeNewOrder)}
                           color="#fffccc"
                           fontSize="14px"
                         >
-                          {renderTPValue(SLTPstore.tpType)}
+                          {renderTPValue(SLTPstore.tpTypeNewOrder)}
                         </PrimaryTextSpan>
                         <PrimaryTextSpan
                           overflow="hidden"
                           textOverflow="ellipsis"
                           whiteSpace="nowrap"
-                          title={renderSLValue(SLTPstore.slType)}
+                          title={renderSLValue(SLTPstore.slTypeNewOrder)}
                           color="#fffccc"
                           fontSize="14px"
                         >
-                          {renderSLValue(SLTPstore.slType)}
+                          {renderSLValue(SLTPstore.slTypeNewOrder)}
                         </PrimaryTextSpan>
                       </>
                     )}
@@ -169,7 +193,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
               )}
             </FlexContainer>
           </ButtonAutoClosePurchase>
-          {!on && (hasValue(sl) || hasValue(tp)) && (
+          {!on && (hasValue(valuesWatch.sl) || hasValue(valuesWatch.tp)) && (
             <ClearSLTPButton type="button" onClick={clearSLTP(setValue)}>
               <SvgIcon
                 {...IconClose}
@@ -180,12 +204,13 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
           )}
         </FlexContainer>
         <FlexContainer
+          ref={wrapperRef}
           position="absolute"
           top="20px"
           right="100%"
           visibilityProp={on ? 'visible' : 'hidden'}
         >
-          <SetAutoclose toggle={toggle} isActive={on}>
+          <SetAutoclose toggle={toggle} isActive={on} isNewOrder={on}>
             <ButtonApply type="button" onClick={handleApplySetAutoClose}>
               {t('Apply')}
             </ButtonApply>
@@ -194,7 +219,7 @@ const AutoClosePopup: FC<Props> = ({ instrumentId, children }) => {
       </FlexContainer>
     </>
   );
-};
+});
 
 export default AutoClosePopup;
 

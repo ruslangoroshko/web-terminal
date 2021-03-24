@@ -8,6 +8,7 @@ import {
   UpdateSLTP,
   OpenPositionModel,
   OpenPendingOrder,
+  UpdateToppingUp,
 } from '../types/Positions';
 import API_LIST from './apiList';
 import { AccountModelDTO } from '../types/AccountsTypes';
@@ -47,6 +48,10 @@ import {
   DepositCreateDTO,
   CreateDepositInvoiceParams,
   CreateDepositInvoiceDTO,
+  CreateElectronicFundsInvoiceParams,
+  CreateElectronicFundsInvoiceDTO,
+  CreateDirectaInvoiceParams,
+  CreateDirectaInvoiceDTO,
 } from '../types/DepositTypes';
 import { InitModel } from '../types/InitAppTypes';
 import {
@@ -193,6 +198,16 @@ class API {
     );
     return response.data;
   };
+
+  updateToppingUp = async (position: UpdateToppingUp) => {
+    const formData = this.convertParamsToFormData(position);
+    const response = await axios.post<OpenPositionResponseDTO>(
+      `${API_STRING}${API_LIST.POSITIONS.UPDATE_TOPPING_UP}`,
+      formData
+    );
+    return response.data;
+  };
+
 
   confirmEmail = async (link: string, authUrl: string) => {
     const response = await axios.post<{ result: OperationApiResponseCodes }>(
@@ -341,6 +356,31 @@ class API {
       `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE}`,
       params
     );
+    return response.data;
+  };
+
+  createElectronicTransferInvoice = async (
+    params: CreateElectronicFundsInvoiceParams
+  ) => {
+    const response = await axios.post<CreateElectronicFundsInvoiceDTO>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_SWIFFY}`,
+      params
+    );
+    return response.data;
+  };
+
+  createDirectaInvoice = async (
+    params: CreateDirectaInvoiceParams
+  ) => {
+    const response = await axios.post<CreateDirectaInvoiceDTO>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_DIRECTA}`,
+      params
+    );
+    return response.data;
+  };
+
+  getSupportedSystems = async () => {
+    const response = await axios.get(`${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CHECK_PAYMENT_SYSTEMS}`);
     return response.data;
   };
 
