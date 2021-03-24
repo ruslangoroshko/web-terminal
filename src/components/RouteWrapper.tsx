@@ -1,10 +1,12 @@
-import React, { FunctionComponent, FC } from 'react';
+import React, { FunctionComponent, FC, useEffect } from 'react';
 import { Route, Redirect } from 'react-router';
 import Page from '../constants/Pages';
 import { RouteLayoutType } from '../constants/routesList';
 import { observer } from 'mobx-react-lite';
 import { useStores } from '../hooks/useStores';
 import { LOCAL_STORAGE_IS_NEW_USER } from '../constants/global';
+import { unparsingSearchUrl } from '../helpers/unparsingSearchUrl';
+import { useLocation } from 'react-router-dom';
 
 interface IProps {
   component: FunctionComponent<any>;
@@ -16,7 +18,26 @@ type Props = IProps;
 const RouteWrapper: FC<Props> = observer((props) => {
   const { component: Component, layoutType, ...otherProps } = props;
   const { mainAppStore } = useStores();
+  const location = useLocation();
   const isOldUser = localStorage.getItem(LOCAL_STORAGE_IS_NEW_USER);
+
+  useEffect(() => {
+    if (location.search.length > 0) {
+      const params = new URLSearchParams(location.search);
+      const unParsedData = unparsingSearchUrl(params);
+      mainAppStore.setParamsAsset(unParsedData.paramsAsset);
+      mainAppStore.setParamsMarkets(unParsedData.paramsMarkets);
+      mainAppStore.setParamsPortfolioActive(unParsedData.paramsPortfolioActive);
+      mainAppStore.setParamsPortfolioOrder(unParsedData.paramsPortfolioOrder);
+      mainAppStore.setParamsPortfolioHistory(unParsedData.paramsPortfolioHistory);
+      mainAppStore.setParamsPortfolioTab(unParsedData.paramsPortfolioTab);
+      mainAppStore.setParamsWithdraw(unParsedData.paramsWithdraw);
+      mainAppStore.setParamsBalanceHistory(unParsedData.paramsBalanceHistory);
+      mainAppStore.setParamsDeposit(unParsedData.paramsDeposit);
+      mainAppStore.setParamsSettings(unParsedData.paramsSettings);
+      mainAppStore.setParamsKYC(unParsedData.paramsKYC);
+    }
+  }, []);
 
   if (layoutType !== RouteLayoutType.Public) {
     if (mainAppStore.isAuthorized && layoutType === RouteLayoutType.SignFlow) {

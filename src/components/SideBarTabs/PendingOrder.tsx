@@ -68,7 +68,7 @@ const PendingOrder: FC<Props> = (props) => {
   }, [pendingOrder]);
 
   useEffect(() => {
-    const lastPendingActive = localStorage.getItem(LOCAL_PENDING_POSITION);
+    const lastPendingActive = mainAppStore.paramsPortfolioOrder || localStorage.getItem(LOCAL_PENDING_POSITION);
     if (
       !!lastPendingActive &&
       pendingOrder.id === parseFloat(lastPendingActive)

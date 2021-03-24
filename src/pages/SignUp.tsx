@@ -33,6 +33,7 @@ import LabelInputMasked from '../components/LabelInputMasked';
 import { parsePhoneNumber, getExampleNumber } from 'libphonenumber-js/min';
 import examples from 'libphonenumber-js/examples.mobile.json';
 import { fromAlpha3ToAlpha2Code } from '../helpers/fromAlpha3ToAlpha2Code';
+import { brandingLinksTranslate } from '../constants/brandingLinksTranslate';
 
 function SignUp() {
   const { t } = useTranslation();
@@ -433,14 +434,14 @@ function SignUp() {
                 <PrimaryTextSpan color="rgba(255,255,255,0.6)" fontSize="12px">
                   {t('I’m 18 years old, and agree to')}&nbsp;
                   <CustomCheckboxLinkExternal
-                    href={mainAppStore.initModel.termsUrl}
+                    href={t(`${brandingLinksTranslate[mainAppStore.initModel.brandProperty].termsCondition}`)}
                     target="_blank"
                   >
                     {t('Terms & Conditions')}
                   </CustomCheckboxLinkExternal>
                   &nbsp; {t('and')}&nbsp;
                   <CustomCheckboxLinkExternal
-                    href={mainAppStore.initModel.policyUrl}
+                    href={t(`${brandingLinksTranslate[mainAppStore.initModel.brandProperty].privacyPolicy}`)}
                     target="_blank"
                   >
                     {t('Privacy Policy')}

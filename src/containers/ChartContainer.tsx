@@ -41,14 +41,13 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
     markersOnChartStore,
     instrumentsStore,
   } = useStores();
-  
+
   useEffect(() => {
     const localType = localStorage.getItem(LOCAL_CHART_TYPE);
     const currentType = localType
       ? getChartTypeByLabel(localType)
       : SeriesStyle.Area;
     const widgetOptions: ChartingLibraryWidgetOptions = {
-      debug: true,
       symbol: instrumentId,
       datafeed: new DataFeedService(
         mainAppStore.activeSession!,
@@ -102,7 +101,11 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         'mainSeriesProperties.candleStyle.wickDownColor': '#622243',
         'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false,
         'mainSeriesProperties.areaStyle.priceSource': 'close',
-        'paneProperties.axisProperties.autoScale': false,
+        'mainSeriesProperties.priceAxisProperties.autoScale': true,
+        'mainSeriesProperties.priceAxisProperties.autoScaleDisabled': false,
+        'mainSeriesProperties.priceAxisProperties.percentage': false,
+        'mainSeriesProperties.priceAxisProperties.percentageDisabled': false,
+        'mainSeriesProperties.priceAxisProperties.logDisabled': true,
         'paneProperties.vertGridProperties.color': 'rgba(255, 255, 255, 0.08)',
         'paneProperties.vertGridProperties.style': LineStyles.LINESTYLE_DOTTED,
         'paneProperties.horzGridProperties.color': 'rgba(255, 255, 255, 0.08)',

@@ -10,6 +10,7 @@ import { useStores } from '../hooks/useStores';
 import { useTranslation } from 'react-i18next';
 import { Observer } from 'mobx-react-lite';
 import LanguageButton from './NavBar/LanguageButton';
+import { brandingLinksTranslate } from '../constants/brandingLinksTranslate';
 
 interface Props {}
 
@@ -101,7 +102,7 @@ const SignFlowLayout: FC<Props> = (props) => {
                 >
                   {t('Support')}
                 </LinkItem>
-                <LinkItem href={mainAppStore.initModel.faqUrl} target="_blank">
+                <LinkItem href={t(`${brandingLinksTranslate[mainAppStore.initModel.brandProperty].faq}`)} target="_blank">
                   {t('FAQ')}
                 </LinkItem>
                 <LinkItem
