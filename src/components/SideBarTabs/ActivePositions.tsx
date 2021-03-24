@@ -909,7 +909,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       },
       { delay: 100 }
     );
-    const lastPosition = localStorage.getItem(LOCAL_POSITION);
+    const lastPosition = mainAppStore.paramsPortfolioActive || localStorage.getItem(LOCAL_POSITION);
     if (lastPosition && position.id === +lastPosition) {
       instrumentRef.current.scrollIntoView();
     }
@@ -927,7 +927,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   useEffect(() => {
     if (ready) {
-      const lastPosition = localStorage.getItem(LOCAL_POSITION);
+      const lastPosition = mainAppStore.paramsPortfolioActive || localStorage.getItem(LOCAL_POSITION);
       if (lastPosition && position.id === +lastPosition) {
         instrumentRef.current.scrollIntoView();
         setInstrumentActive(false);
@@ -1138,7 +1138,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           minHeight="79px"
           className={
             quotesStore.selectedPositionId === position.id ||
-            parseInt(localStorage.getItem(LOCAL_POSITION) || '0') ===
+            (parseInt(localStorage.getItem(LOCAL_POSITION) || '0') ===
+              position.id
+              ? 'active'
+              : '') ||
+            parseInt(mainAppStore.paramsPortfolioActive || '0') ===
               position.id
               ? 'active'
               : ''

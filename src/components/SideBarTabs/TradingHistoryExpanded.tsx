@@ -71,7 +71,7 @@ const TradingHistoryExpanded: FC = () => {
     if (mainAppStore.activeAccountId && tabsStore.isTabExpanded) {
       let checkScroll: boolean = false;
       const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
-      const neededData: string | null = localStorage.getItem(
+      const neededData: string | null = mainAppStore.paramsPortfolioHistory || localStorage.getItem(
         LOCAL_HISTORY_POSITION
       );
       const neededPage: string | null = localStorage.getItem(
