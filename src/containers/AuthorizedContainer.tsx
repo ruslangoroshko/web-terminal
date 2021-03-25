@@ -107,16 +107,21 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
   }, []);
 
   useEffect(() => {
+    // TODO Think about realization
     if (mainAppStore.paramsDeposit) {
       push(Page.DEPOSIT_POPUP);
     } else if (mainAppStore.paramsSettings) {
       push(Page.ACCOUNT_SEQURITY);
+      mainAppStore.setParamsSettings(false);
     } else if (mainAppStore.paramsBalanceHistory) {
       push(Page.ACCOUNT_BALANCE_HISTORY);
+      mainAppStore.setParamsBalanceHistory(false);
     } else if (mainAppStore.paramsKYC) {
       push(Page.PROOF_OF_IDENTITY);
+      mainAppStore.setParamsKYC(false);
     } else if (mainAppStore.paramsWithdraw) {
       push(Page.ACCOUNT_WITHDRAW);
+      mainAppStore.setParamsWithdraw(false);
     }
     if (mainAppStore.paramsPortfolioTab) {
       switch (mainAppStore.paramsPortfolioTab) {
@@ -128,12 +133,23 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
           tabsStore.setSideBarType(SideBarTabType.Portfolio);
           tabsStore.setPortfolioTab(PortfolioTabEnum.Orders);
           break;
-        case 'history':
+        case 'closed':
           tabsStore.setSideBarType(SideBarTabType.History);
           break;
         default:
           return;
       }
+    }
+    if (mainAppStore.paramsPortfolioActive) {
+      tabsStore.setSideBarType(SideBarTabType.Portfolio);
+      tabsStore.setPortfolioTab(PortfolioTabEnum.Portfolio);
+    }
+    if (mainAppStore.paramsPortfolioOrder) {
+      tabsStore.setSideBarType(SideBarTabType.Portfolio);
+      tabsStore.setPortfolioTab(PortfolioTabEnum.Orders);
+    }
+    if (mainAppStore.paramsPortfolioHistory) {
+      tabsStore.setSideBarType(SideBarTabType.History);
     }
     if (mainAppStore.paramsMarkets) {
       tabsStore.setSideBarType(SideBarTabType.Markets);
@@ -146,7 +162,10 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
     mainAppStore.paramsKYC,
     mainAppStore.paramsBalanceHistory,
     mainAppStore.paramsSettings,
-    mainAppStore.paramsDeposit
+    mainAppStore.paramsDeposit,
+    mainAppStore.paramsPortfolioActive,
+    mainAppStore.paramsPortfolioHistory,
+    mainAppStore.paramsPortfolioOrder
   ]);
 
   return (
