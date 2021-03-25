@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { useStores } from '../../hooks/useStores';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import SvgIcon from '../SvgIcon';
 import IconStar from '../../assets/svg/icon-star.svg';
 import InstrumentMarkets from './InstrumentMarkets';
@@ -14,8 +14,12 @@ import SortByDropdown from '../SortByDropdown';
 import { useTranslation } from 'react-i18next';
 import { LOCAL_MARKET_TABS } from '../../constants/global';
 
-function Markets() {
-  const { instrumentsStore, sortingStore } = useStores();
+const Markets = observer(() => {
+  const {
+    instrumentsStore,
+    sortingStore,
+    mainAppStore
+  } = useStores();
 
   const setActiveInstrumentGroup = (groupId: string) => () => {
     localStorage.setItem(LOCAL_MARKET_TABS, groupId);
@@ -33,6 +37,23 @@ function Markets() {
   };
 
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (
+      mainAppStore.paramsMarkets &&
+      instrumentsStore.instrumentGroups.length > 0
+    ) {
+      const instrumentId = instrumentsStore.instrumentGroups
+        .find(
+          (item) => item.name === mainAppStore.paramsMarkets
+        )?.id || mainAppStore.paramsMarkets;
+      instrumentsStore.setActiveInstrumentGroupId(instrumentId);
+      mainAppStore.setParamsMarkets(null);
+    }
+  }, [
+    mainAppStore.paramsMarkets,
+    instrumentsStore.instrumentGroups
+  ]);
 
   return (
     <FlexContainer flexDirection="column" height="100%">
@@ -171,7 +192,7 @@ function Markets() {
       </Observer>
     </FlexContainer>
   );
-}
+});
 
 export default Markets;
 

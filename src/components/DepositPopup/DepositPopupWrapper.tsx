@@ -125,6 +125,7 @@ const DepositPopupInner: FC = () => {
   };
 
   const resetDepositList = useCallback(() => {
+    mainAppStore.setParamsDeposit(false);
     depositList.forEach((item) => {
       item.show = false;
     })
