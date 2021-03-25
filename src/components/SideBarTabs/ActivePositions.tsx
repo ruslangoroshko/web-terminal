@@ -909,7 +909,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       },
       { delay: 100 }
     );
-    const lastPosition = mainAppStore.paramsPortfolioActive || localStorage.getItem(LOCAL_POSITION);
+    const lastPosition =
+      mainAppStore.paramsPortfolioActive ||
+      localStorage.getItem(LOCAL_POSITION);
     if (lastPosition && position.id === +lastPosition) {
       instrumentRef.current.scrollIntoView();
     }
@@ -927,7 +929,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   useEffect(() => {
     if (ready) {
-      const lastPosition = mainAppStore.paramsPortfolioActive || localStorage.getItem(LOCAL_POSITION);
+      const lastPosition =
+        mainAppStore.paramsPortfolioActive ||
+        localStorage.getItem(LOCAL_POSITION);
       if (lastPosition && position.id === +lastPosition) {
         instrumentRef.current.scrollIntoView();
         setInstrumentActive(false);
@@ -1139,11 +1143,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           className={
             quotesStore.selectedPositionId === position.id ||
             (parseInt(localStorage.getItem(LOCAL_POSITION) || '0') ===
-              position.id
+            position.id
               ? 'active'
               : '') ||
-            parseInt(mainAppStore.paramsPortfolioActive || '0') ===
-              position.id
+            parseInt(mainAppStore.paramsPortfolioActive || '0') === position.id
               ? 'active'
               : ''
           }
@@ -1283,21 +1286,25 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       </PrimaryTextSpan>
                     </FlexContainer>
 
-                    <FlexContainer
-                      justifyContent="space-between"
-                      margin="0 0 8px 0"
-                    >
-                      <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
-                        fontSize="12px"
+                    {position.reservedFundsForToppingUp !== 0 && (
+                      <FlexContainer
+                        justifyContent="space-between"
+                        margin="0 0 8px 0"
                       >
-                        {t('Insurance amount')}
-                      </PrimaryTextSpan>
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                        {mainAppStore.activeAccount?.symbol}
-                        {Math.abs(position.reservedFundsForToppingUp).toFixed(2)}
-                      </PrimaryTextSpan>
-                    </FlexContainer>
+                        <PrimaryTextSpan
+                          color="rgba(255, 255, 255, 0.4)"
+                          fontSize="12px"
+                        >
+                          {t('Insurance amount')}
+                        </PrimaryTextSpan>
+                        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                          {mainAppStore.activeAccount?.symbol}
+                          {Math.abs(position.reservedFundsForToppingUp).toFixed(
+                            2
+                          )}
+                        </PrimaryTextSpan>
+                      </FlexContainer>
+                    )}
 
                     <FlexContainer justifyContent="space-between">
                       <PrimaryTextSpan
