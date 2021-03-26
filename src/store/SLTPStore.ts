@@ -18,6 +18,7 @@ type PricePosStopOut = {
   multiplier: number;
   commission: number;
   isNewOrder?: boolean;
+  openPrice?: number;
 };
 
 export class SLTPStore implements ContextProps {
@@ -115,6 +116,7 @@ export class SLTPStore implements ContextProps {
     multiplier,
     commission,
     isNewOrder,
+    openPrice,
   }: PricePosStopOut) => {
     const isBuy = operation === AskBidEnum.Buy;
     const direction = operation === AskBidEnum.Buy ? 1 : -1;
@@ -125,9 +127,7 @@ export class SLTPStore implements ContextProps {
         ? this.getCurrentPriceAsk(instrumentId)
         : this.getCurrentPriceBid(instrumentId);
     } else {
-      currentPrice = isBuy
-        ? this.getCurrentPriceBid(instrumentId)
-        : this.getCurrentPriceAsk(instrumentId);
+      currentPrice = openPrice || 0; 
     }
 
     // const so_level = -1 * this.positionStopOut(investmentAmount, instrumentId);
@@ -146,6 +146,8 @@ export class SLTPStore implements ContextProps {
     const result =
       (slPrice / currentPrice - 1) * investmentAmount * multiplier * direction +
       commission;
+
+    console.log(+result.toFixed(2));
 
     return +result.toFixed(2);
   };
