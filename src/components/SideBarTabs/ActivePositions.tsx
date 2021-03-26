@@ -978,6 +978,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
         case TpSlTypeEnum.Price:
           const soValue = SLTPstore.positionStopOutByPrice({
+            openPrice: position.openPrice,
             instrumentId: position.instrument,
             investmentAmount: position.investmentAmount,
             multiplier: position.multiplier,
