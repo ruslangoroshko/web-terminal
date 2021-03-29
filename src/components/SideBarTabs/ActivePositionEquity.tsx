@@ -52,7 +52,7 @@ const ActivePositionEquity: FC<Props> = ({ position }) => {
       fontSize="14px"
     >
       {mainAppStore.activeAccount?.symbol}
-      {(statePnL + position.investmentAmount).toFixed(2)}
+      {Math.abs(statePnL + position.investmentAmount).toFixed(2)}
     </QuoteText>
   ) : null;
 };
