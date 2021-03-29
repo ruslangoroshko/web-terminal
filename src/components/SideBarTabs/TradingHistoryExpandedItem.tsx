@@ -170,8 +170,9 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
       <Td justifyContent="flex-end" alignItems="center">
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <QuoteText isGrowth={profit + investmentAmount > 0} fontSize="14px">
+            {getNumberSign(equity)}
             {currencySymbol}
-            {equity.toFixed(2)}
+            {Math.abs(equity).toFixed(2)}
           </QuoteText>
         </FlexContainer>
       </Td>
@@ -225,8 +226,9 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
                   {t('Equity')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  {getNumberSign(equity)}
                   {currencySymbol}
-                  {equity.toFixed(2)}
+                  {Math.abs(equity).toFixed(2)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
