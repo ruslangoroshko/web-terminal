@@ -95,12 +95,16 @@ const DepositPopupInner: FC = () => {
   // TODO adding type
   const [usedPaymentSystems, setUsedPaymentSystems] = useState(depositList);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
+  const { push } = useHistory();
 
   const setActiveDepositType = (depositType: DepositTypeEnum) => () => {
     depositFundsStore.setActiveDepositType(depositType);
   };
-  const { t } = useTranslation();
-  const { push } = useHistory();
+  const handleCLoseDeposit = () => {
+    push(Page.DASHBOARD);
+    depositFundsStore.togglePopup();
+  };
 
   const renderDepositType = () => {
     switch (depositFundsStore.activeDepositType) {
@@ -255,7 +259,7 @@ const DepositPopupInner: FC = () => {
                 top="22px"
                 zIndex="300"
               >
-                <ButtonWithoutStyles onClick={depositFundsStore.togglePopup}>
+                <ButtonWithoutStyles onClick={handleCLoseDeposit}>
                   <SvgIcon
                     {...IconClose}
                     fillColor="rgba(255, 255, 255, 0.6)"

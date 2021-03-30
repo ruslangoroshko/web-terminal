@@ -1,15 +1,17 @@
+import URLParams from '../constants/URLParams';
+
 export const unparsingSearchUrl = (searchUrl: URLSearchParams) => {
   return {
-    paramsAsset: searchUrl.get('asset'),
-    paramsMarkets: searchUrl.get('markets'),
-    paramsPortfolioTab: searchUrl.get('portfolio'),
-    paramsPortfolioActive: searchUrl.get('portfolioActive'),
-    paramsPortfolioOrder: searchUrl.get('portfolioPending'),
-    paramsPortfolioHistory: searchUrl.get('portfolioClosed'),
-    paramsWithdraw: searchUrl.get('withdraw') !== null,
-    paramsBalanceHistory: searchUrl.get('balanceHistory') !== null,
-    paramsDeposit: searchUrl.get('deposit') !== null,
-    paramsSettings: searchUrl.get('settings') !== null,
-    paramsKYC: searchUrl.get('KYC') !== null
+    paramsAsset: searchUrl.get(URLParams.ASSET),
+    paramsMarkets: searchUrl.get(URLParams.MARKETS),
+    paramsPortfolioTab: searchUrl.get(URLParams.PORTFOLIO),
+    paramsPortfolioActive: searchUrl.get(URLParams.PORTFOLIO_ACTIVE),
+    paramsPortfolioOrder: searchUrl.get(URLParams.PORTFOLIO_PENDING),
+    paramsPortfolioHistory: searchUrl.get(URLParams.PORTFOLIO_CLOSED),
+    paramsWithdraw: searchUrl.get(URLParams.WITHDRAW) !== null,
+    paramsBalanceHistory: searchUrl.get(URLParams.BALANCE_HISTORY) !== null,
+    paramsDeposit: searchUrl.get(URLParams.DEPOSIT) !== null,
+    paramsSettings: searchUrl.get(URLParams.SETTINGS) !== null,
+    paramsKYC: searchUrl.get(URLParams.KYC) !== null
   };
 };

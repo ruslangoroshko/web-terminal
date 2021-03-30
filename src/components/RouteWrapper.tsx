@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { useStores } from '../hooks/useStores';
 import { LOCAL_STORAGE_IS_NEW_USER } from '../constants/global';
 import { unparsingSearchUrl } from '../helpers/unparsingSearchUrl';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 
 interface IProps {
   component: FunctionComponent<any>;
@@ -19,6 +19,7 @@ const RouteWrapper: FC<Props> = observer((props) => {
   const { component: Component, layoutType, ...otherProps } = props;
   const { mainAppStore } = useStores();
   const location = useLocation();
+  const { push } = useHistory();
   const isOldUser = localStorage.getItem(LOCAL_STORAGE_IS_NEW_USER);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ const RouteWrapper: FC<Props> = observer((props) => {
       mainAppStore.setParamsDeposit(unParsedData.paramsDeposit);
       mainAppStore.setParamsSettings(unParsedData.paramsSettings);
       mainAppStore.setParamsKYC(unParsedData.paramsKYC);
+      push(Page.DASHBOARD);
     }
   }, []);
 

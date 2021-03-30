@@ -19,7 +19,7 @@ import OrdersExpanded from '../components/SideBarTabs/OrdersExpanded';
 import Markets from '../components/SideBarTabs/Markets';
 import DepositPopupWrapper from '../components/DepositPopup/DepositPopupWrapper';
 import DepositPaymentResultPopup from '../components/DepositPopup/DepositPaymentResultPopup/DepositPaymentResultPopup';
-import { LOCAL_STORAGE_SIDEBAR } from '../constants/global';
+import { LOCAL_PORTFOLIO_TABS, LOCAL_STORAGE_SIDEBAR } from '../constants/global';
 import NotificationPopup from '../components/NotificationPopup';
 import { useHistory } from 'react-router-dom';
 import Page from '../constants/Pages';
@@ -143,10 +143,12 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
     if (mainAppStore.paramsPortfolioActive) {
       tabsStore.setSideBarType(SideBarTabType.Portfolio);
       tabsStore.setPortfolioTab(PortfolioTabEnum.Portfolio);
+      localStorage.removeItem(LOCAL_PORTFOLIO_TABS);
     }
     if (mainAppStore.paramsPortfolioOrder) {
       tabsStore.setSideBarType(SideBarTabType.Portfolio);
       tabsStore.setPortfolioTab(PortfolioTabEnum.Orders);
+      localStorage.removeItem(LOCAL_PORTFOLIO_TABS);
     }
     if (mainAppStore.paramsPortfolioHistory) {
       tabsStore.setSideBarType(SideBarTabType.History);

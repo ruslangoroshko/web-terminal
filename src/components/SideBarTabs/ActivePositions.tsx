@@ -912,6 +912,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     const lastPosition =
       mainAppStore.paramsPortfolioActive ||
       localStorage.getItem(LOCAL_POSITION);
+    if (mainAppStore.paramsPortfolioActive) {
+      localStorage.removeItem(LOCAL_POSITION);
+    }
     if (lastPosition && position.id === +lastPosition) {
       instrumentRef.current.scrollIntoView();
     }
