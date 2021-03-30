@@ -172,7 +172,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
           <QuoteText isGrowth={profit + investmentAmount > 0} fontSize="14px">
             {getNumberSign(equity)}
             {currencySymbol}
-            {Math.abs(equity).toFixed(2)}
+            {Math.abs(equity)}
           </QuoteText>
         </FlexContainer>
       </Td>

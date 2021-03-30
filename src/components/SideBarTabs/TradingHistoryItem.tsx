@@ -269,7 +269,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
                       <PrimaryTextSpan color="#fffccc" fontSize="12px">
                         {getNumberSign(equity)}
                         {currencySymbol}
-                        {Math.abs(equity).toFixed(2)}
+                        {Math.abs(equity)}
                       </PrimaryTextSpan>
                     </FlexContainer>
                     <FlexContainer
