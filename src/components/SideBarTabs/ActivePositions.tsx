@@ -680,10 +680,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   const checkSL = (slType: number | null, sl: number | null) => {
     const slText: string = sl
-      ? `STOP LOSS -$${
+      ? `STOP LOSS ${
           slType === TpSlTypeEnum.Price
-            ? Math.abs(getNewPricing(sl, 'sl')).toFixed(2)
-            : Math.abs(sl)
+            ? `${getNumberSign(getNewPricing(sl, 'sl'))}${mainAppStore.activeAccount?.symbol}${Math.abs(getNewPricing(sl, 'sl')).toFixed(2)}`
+            : `-${Math.abs(sl)}`
         }`
       : '';
     if (sl && !tradingViewStore.activeOrderLinePositionSL) {
