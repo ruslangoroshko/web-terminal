@@ -73,6 +73,9 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
     const lastPendingActive =
       mainAppStore.paramsPortfolioHistory ||
       localStorage.getItem(LOCAL_HISTORY_POSITION);
+    if (mainAppStore.paramsPortfolioHistory) {
+      localStorage.removeItem(LOCAL_HISTORY_POSITION);
+    }
     if (
       !!lastPendingActive &&
       props.tradingHistoryItem.id === parseFloat(lastPendingActive)

@@ -96,6 +96,12 @@ const TradingHistory: FC = observer(() => {
   useEffect(() => {
     if (mainAppStore.activeAccountId) {
       let checkScroll: boolean = false;
+      if (mainAppStore.paramsPortfolioHistory) {
+        localStorage.removeItem(LOCAL_HISTORY_TIME);
+        localStorage.removeItem(LOCAL_HISTORY_POSITION);
+        localStorage.removeItem(LOCAL_HISTORY_PAGE);
+        localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
+      }
       const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
       const neededData: string | null = mainAppStore.paramsPortfolioHistory || localStorage.getItem(
         LOCAL_HISTORY_POSITION
