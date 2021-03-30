@@ -12,6 +12,7 @@ import NetworkErrorPopup from './components/NetworkErrorPopup';
 import SocketErrorPopup from './components/SocketErrorPopup';
 import { useTranslation } from 'react-i18next';
 import { autorun } from 'mobx';
+import { logger } from './helpers/ConsoleLoggerTool';
 
 const MainApp: FC = () => {
   const { mainAppStore } = useStores();
