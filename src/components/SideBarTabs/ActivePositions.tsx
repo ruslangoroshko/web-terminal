@@ -683,7 +683,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       ? `STOP LOSS ${
           slType === TpSlTypeEnum.Price
             ? `${getNumberSign(getNewPricing(sl, 'sl'))}${mainAppStore.activeAccount?.symbol}${Math.abs(getNewPricing(sl, 'sl')).toFixed(2)}`
-            : `-${Math.abs(sl)}`
+            : `-${mainAppStore.activeAccount?.symbol}${Math.abs(sl)}`
         }`
       : '';
     if (sl && !tradingViewStore.activeOrderLinePositionSL) {
@@ -725,10 +725,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   const checkTP = (tpType: number | null, tp: number | null) => {
     const tpText: string = tp
-      ? `TAKE PROFIT +$${
+      ? `TAKE PROFIT ${
           tpType === TpSlTypeEnum.Price
-            ? Math.abs(getNewPricing(tp, 'tp')).toFixed(2)
-            : Math.abs(tp)
+            ? `${getNumberSign(getNewPricing(tp, 'tp'))}${mainAppStore.activeAccount?.symbol}${Math.abs(getNewPricing(tp, 'tp')).toFixed(2)}`
+            : `+${mainAppStore.activeAccount?.symbol}${Math.abs(tp)}`
         }`
       : '';
     if (tp && !tradingViewStore.activeOrderLinePositionTP) {
