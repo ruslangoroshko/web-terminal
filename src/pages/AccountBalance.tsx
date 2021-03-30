@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 import Helmet from 'react-helmet';
 import DatePickerAccountBalanceDropdown from '../components/DatePickerAccountBalanceDropdown';
 import NotificationPopup from '../components/NotificationPopup';
+import { NullLogger } from '@aspnet/signalr';
 
 const AccountBalance = () => {
   const {
@@ -46,7 +47,6 @@ const AccountBalance = () => {
   const fetchBalanceHistory = useCallback(
     async (isScrolling = false) => {
       setIsLoading(true);
-
       try {
         const response = await API.getBalanceHistory({
           // FIXME: typings
