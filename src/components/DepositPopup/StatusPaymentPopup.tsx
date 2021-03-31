@@ -17,6 +17,9 @@ import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
 import CloseIcon from '../../assets/svg/icon-close.svg';
 import { useTranslation } from 'react-i18next';
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../../constants/mixpanelEvents';
+import { logger } from '../../helpers/ConsoleLoggerTool';
 
 interface Props {
   status: string;
@@ -40,6 +43,8 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
   const renderSuccessFail = () => {
     switch (status) {
       case paymentStatuses.SUCCESS:
+        mixpanel.track(mixpanelEvents.DEPOSIT_PAGE_SUCCESS);
+
         return (
           <FlexContainer
             flexDirection="column"
@@ -84,6 +89,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
         );
 
       case paymentStatuses.FAILED:
+        mixpanel.track(mixpanelEvents.DEPOSIT_PAGE_FAILED);
         return (
           <FlexContainer
             flexDirection="column"
