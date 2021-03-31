@@ -110,18 +110,6 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
     // TODO Think about realization
     if (mainAppStore.paramsDeposit) {
       push(Page.DEPOSIT_POPUP);
-    } else if (mainAppStore.paramsSettings) {
-      push(Page.ACCOUNT_SEQURITY);
-      mainAppStore.setParamsSettings(false);
-    } else if (mainAppStore.paramsBalanceHistory) {
-      push(Page.ACCOUNT_BALANCE_HISTORY);
-      mainAppStore.setParamsBalanceHistory(false);
-    } else if (mainAppStore.paramsKYC) {
-      push(Page.PROOF_OF_IDENTITY);
-      mainAppStore.setParamsKYC(false);
-    } else if (mainAppStore.paramsWithdraw) {
-      push(Page.ACCOUNT_WITHDRAW);
-      mainAppStore.setParamsWithdraw(false);
     }
     if (mainAppStore.paramsPortfolioTab) {
       switch (mainAppStore.paramsPortfolioTab) {
@@ -160,10 +148,6 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
     mainAppStore.activeAccount,
     mainAppStore.paramsMarkets,
     mainAppStore.paramsPortfolioTab,
-    mainAppStore.paramsWithdraw,
-    mainAppStore.paramsKYC,
-    mainAppStore.paramsBalanceHistory,
-    mainAppStore.paramsSettings,
     mainAppStore.paramsDeposit,
     mainAppStore.paramsPortfolioActive,
     mainAppStore.paramsPortfolioHistory,

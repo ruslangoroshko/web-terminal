@@ -126,11 +126,7 @@ export class MainAppStore implements MainAppStoreProps {
   paramsPortfolioActive: string | null = null;
   paramsPortfolioOrder: string | null = null;
   paramsPortfolioHistory: string | null | undefined = undefined;
-  paramsWithdraw: boolean = false;
-  paramsBalanceHistory: boolean = false;
   paramsDeposit: boolean = false;
-  paramsSettings: boolean = false;
-  paramsKYC: boolean = false;
 
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
@@ -562,11 +558,7 @@ export class MainAppStore implements MainAppStoreProps {
       this.setParamsPortfolioOrder(null);
       this.setParamsPortfolioHistory(null);
       this.setParamsPortfolioTab(null);
-      this.setParamsWithdraw(false);
-      this.setParamsBalanceHistory(false);
       this.setParamsDeposit(false);
-      this.setParamsSettings(false);
-      this.setParamsKYC(false);
     }
     delete Axios.defaults.headers[RequestHeaders.AUTHORIZATION];
     this.setActiveAccountId('');
@@ -677,28 +669,7 @@ export class MainAppStore implements MainAppStoreProps {
   };
 
   @action
-  setParamsWithdraw = (params: boolean) => {
-    console.log(params);
-    this.paramsWithdraw = params;
-  };
-
-  @action
-  setParamsBalanceHistory = (params: boolean) => {
-    this.paramsBalanceHistory = params;
-  };
-
-  @action
   setParamsDeposit = (params: boolean) => {
     this.paramsDeposit = params;
-  };
-
-  @action
-  setParamsSettings = (params: boolean) => {
-    this.paramsSettings = params;
-  };
-
-  @action
-  setParamsKYC = (params: boolean) => {
-    this.paramsKYC = params;
   };
 }
