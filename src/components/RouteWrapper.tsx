@@ -37,7 +37,11 @@ const RouteWrapper: FC<Props> = observer((props) => {
       mainAppStore.setParamsDeposit(unParsedData.paramsDeposit);
       mainAppStore.setParamsSettings(unParsedData.paramsSettings);
       mainAppStore.setParamsKYC(unParsedData.paramsKYC);
-      push(Page.DASHBOARD);
+      if (unParsedData.status === null) {
+        push(Page.DASHBOARD);
+      }
+    } else {
+      mainAppStore.setParamsPortfolioHistory(null);
     }
   }, []);
 
