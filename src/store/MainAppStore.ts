@@ -125,7 +125,7 @@ export class MainAppStore implements MainAppStoreProps {
   paramsPortfolioTab: string | null = null;
   paramsPortfolioActive: string | null = null;
   paramsPortfolioOrder: string | null = null;
-  paramsPortfolioHistory: string | null = null;
+  paramsPortfolioHistory: string | null | undefined = undefined;
   paramsWithdraw: boolean = false;
   paramsBalanceHistory: boolean = false;
   paramsDeposit: boolean = false;
@@ -672,7 +672,7 @@ export class MainAppStore implements MainAppStoreProps {
   };
 
   @action
-  setParamsPortfolioHistory = (params: string | null) => {
+  setParamsPortfolioHistory = (params: string | null | undefined) => {
     this.paramsPortfolioHistory = params;
   };
 

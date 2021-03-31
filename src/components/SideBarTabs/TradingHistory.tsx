@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useCallback } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
@@ -20,6 +20,7 @@ import {
   LOCAL_HISTORY_TIME,
 } from '../../constants/global';
 import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
+import { ShowDatesDropdownEnum } from '../../enums/ShowDatesDropdownEnum';
 
 const TradingHistory: FC = observer(() => {
   const { tabsStore, mainAppStore, historyStore, dateRangeStore } = useStores();
@@ -94,7 +95,10 @@ const TradingHistory: FC = observer(() => {
   );
 
   useEffect(() => {
-    if (mainAppStore.activeAccountId) {
+    if (
+      mainAppStore.activeAccountId &&
+      mainAppStore.paramsPortfolioHistory !== undefined
+    ) {
       let checkScroll: boolean = false;
       if (mainAppStore.paramsPortfolioHistory) {
         localStorage.removeItem(LOCAL_HISTORY_TIME);
@@ -124,12 +128,16 @@ const TradingHistory: FC = observer(() => {
           }
         }
       }
-      if (neededRange) {
-        dateRangeStore.setDropdownValueType(parseInt(neededRange));
-      }
-      if (dataStart) {
-        dateRangeStore.setStartDate(moment(dataStart));
-      }
+      dateRangeStore.setDropdownValueType(
+        neededRange
+          ? parseInt(neededRange)
+          : ShowDatesDropdownEnum.Week
+      );
+      dateRangeStore.setStartDate(
+        dataStart
+          ? moment(dataStart)
+          : moment().subtract(1, 'w')
+      );
       if (!checkScroll) {
         fetchPositionsHistory().finally(() => {
           setIsLoading(false);
@@ -143,7 +151,7 @@ const TradingHistory: FC = observer(() => {
         positionsHistory: [],
       });
     };
-  }, [mainAppStore.activeAccountId]);
+  }, [mainAppStore.activeAccountId, mainAppStore.paramsPortfolioHistory]);
 
   return (
     <PortfolioWrapper flexDirection="column" height="100%">

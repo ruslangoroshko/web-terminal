@@ -10,6 +10,7 @@ const URLParams = {
   DEPOSIT: 'deposit',
   SETTINGS: 'settings',
   KYC: 'KYC',
+  STATUS: 'status',
 };
 
 Object.freeze(URLParams);

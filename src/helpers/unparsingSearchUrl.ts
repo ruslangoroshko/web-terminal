@@ -12,6 +12,7 @@ export const unparsingSearchUrl = (searchUrl: URLSearchParams) => {
     paramsBalanceHistory: searchUrl.get(URLParams.BALANCE_HISTORY) !== null,
     paramsDeposit: searchUrl.get(URLParams.DEPOSIT) !== null,
     paramsSettings: searchUrl.get(URLParams.SETTINGS) !== null,
-    paramsKYC: searchUrl.get(URLParams.KYC) !== null
+    paramsKYC: searchUrl.get(URLParams.KYC) !== null,
+    status: searchUrl.get(URLParams.STATUS),
   };
 };
