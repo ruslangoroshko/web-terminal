@@ -51,7 +51,11 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
         });
 
         instrumentsStore.setActiveInstrumentsIds(response);
-        const lastActive = mainAppStore.paramsAsset || localStorage.getItem(LOCAL_INSTRUMENT_ACTIVE);
+        const checkAvailable = mainAppStore.paramsAsset || localStorage.getItem(LOCAL_INSTRUMENT_ACTIVE);
+        const lastActive = checkAvailable &&
+          response.includes(checkAvailable)
+            ? checkAvailable
+            : false;
         await instrumentsStore.switchInstrument(
           lastActive ||
             response[0] ||

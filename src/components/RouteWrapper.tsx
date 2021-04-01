@@ -23,7 +23,7 @@ const RouteWrapper: FC<Props> = observer((props) => {
   const isOldUser = localStorage.getItem(LOCAL_STORAGE_IS_NEW_USER);
 
   useEffect(() => {
-    if (location.search.length > 0) {
+    if (location.search.length > 0 && mainAppStore.isAuthorized) {
       const params = new URLSearchParams(location.search);
       const unParsedData = unparsingSearchUrl(params);
       mainAppStore.setParamsAsset(unParsedData.paramsAsset);
