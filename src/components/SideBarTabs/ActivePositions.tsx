@@ -45,6 +45,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import hasValue from '../../helpers/hasValue';
 import ActivePositionToppingUp from '../ActivePositionToppingUp';
+import { SortByProfitEnum } from '../../enums/SortByProfitEnum';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -74,6 +75,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     markersOnChartStore,
     tradingViewStore,
     SLTPstore,
+    sortingStore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -914,6 +916,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       localStorage.getItem(LOCAL_POSITION);
     if (mainAppStore.paramsPortfolioActive) {
       localStorage.setItem(LOCAL_POSITION, mainAppStore.paramsPortfolioActive);
+      sortingStore.setActivePositionsSortBy(SortByProfitEnum.NewFirstAsc);
       mainAppStore.setParamsPortfolioActive(null);
     }
     if (lastPosition && position.id === +lastPosition) {

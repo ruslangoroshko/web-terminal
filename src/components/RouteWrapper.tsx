@@ -33,7 +33,7 @@ const RouteWrapper: FC<Props> = observer((props) => {
       mainAppStore.setParamsPortfolioHistory(unParsedData.paramsPortfolioHistory);
       mainAppStore.setParamsPortfolioTab(unParsedData.paramsPortfolioTab);
       mainAppStore.setParamsDeposit(unParsedData.paramsDeposit);
-      if (unParsedData.status === null) {
+      if (unParsedData.status === null && mainAppStore.isAuthorized) {
         push(Page.DASHBOARD);
       }
     } else {
@@ -48,6 +48,7 @@ const RouteWrapper: FC<Props> = observer((props) => {
       !mainAppStore.isAuthorized &&
       [RouteLayoutType.Authorized, RouteLayoutType.KYC].includes(layoutType)
     ) {
+      console.log(layoutType);
       return <Redirect to={isOldUser ? Page.SIGN_IN : Page.SIGN_UP} />;
     }
   }
