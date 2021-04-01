@@ -22,6 +22,7 @@ import { Observer } from 'mobx-react-lite';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FormValues } from '../../types/Positions';
 import hasValue from '../../helpers/hasValue';
+import { SortByPendingOrdersEnum } from '../../enums/SortByPendingOrdersEnum';
 
 interface Props {
   pendingOrder: PendingOrderWSDTO;
@@ -35,7 +36,12 @@ const PendingOrder: FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const { mainAppStore, instrumentsStore, tradingViewStore } = useStores();
+  const {
+    mainAppStore,
+    instrumentsStore,
+    tradingViewStore,
+    sortingStore,
+  } = useStores();
   const clickableWrapperRef = useRef<HTMLDivElement>(null);
 
   const instrumentRef = useRef<HTMLDivElement>(document.createElement('div'));
@@ -70,7 +76,8 @@ const PendingOrder: FC<Props> = (props) => {
   useEffect(() => {
     const lastPendingActive = mainAppStore.paramsPortfolioOrder || localStorage.getItem(LOCAL_PENDING_POSITION);
     if (mainAppStore.paramsPortfolioOrder) {
-      localStorage.removeItem(LOCAL_PENDING_POSITION);
+      localStorage.setItem(LOCAL_PENDING_POSITION, mainAppStore.paramsPortfolioOrder);
+      sortingStore.setPendingOrdersSortBy(SortByPendingOrdersEnum.NewFirstAsc);
     }
     if (
       !!lastPendingActive &&

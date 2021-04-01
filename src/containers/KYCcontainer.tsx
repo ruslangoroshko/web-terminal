@@ -1,10 +1,20 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import NavBar from '../components/NavBar/NavBar';
 import StepsContainter from '../components/KYC/StepsContainter';
+import { useStores } from '../hooks/useStores';
+import { observer } from 'mobx-react-lite';
 
-const KYCcontainer: FC = props => {
+const KYCcontainer: FC = observer(props => {
   const { children } = props;
+  const { mainAppStore } = useStores();
+  const [showNavBar, setShowNavBar] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (mainAppStore.activeAccount) {
+      setShowNavBar(true);
+    }
+  }, [mainAppStore.activeAccount]);
 
   return (
     <FlexContainer
@@ -13,7 +23,7 @@ const KYCcontainer: FC = props => {
       position="relative"
       flexDirection="column"
     >
-      <NavBar></NavBar>
+      {showNavBar && <NavBar></NavBar>}
       <FlexContainer
         min-height="calc(100vh - 48px)"
         height="100%"
@@ -24,5 +34,5 @@ const KYCcontainer: FC = props => {
       </FlexContainer>
     </FlexContainer>
   );
-};
+});
 export default KYCcontainer;
