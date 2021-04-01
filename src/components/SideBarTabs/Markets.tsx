@@ -46,7 +46,7 @@ const Markets = observer(() => {
       const instrumentId = instrumentsStore.instrumentGroups
         .find(
           (item) => item.name === mainAppStore.paramsMarkets
-        )?.id || mainAppStore.paramsMarkets;
+        )?.id || instrumentsStore.instrumentGroups[0].id;
       instrumentsStore.setActiveInstrumentGroupId(instrumentId);
       mainAppStore.setParamsMarkets(null);
     }
@@ -197,6 +197,7 @@ const Markets = observer(() => {
 export default Markets;
 
 const MarketButtonsWrapper = styled(FlexContainer)`
+  overflow-x: auto;
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;
 
