@@ -40,7 +40,7 @@ import { IOrderLineAdapter } from '../../vendor/charting_library/charting_librar
 import { autorun } from 'mobx';
 import { Observer } from 'mobx-react-lite';
 import mixpanelValues from '../../constants/mixpanelValues';
-import { LOCAL_POSITION } from '../../constants/global';
+import { LOCAL_POSITION, LOCAL_POSITION_SORT } from '../../constants/global';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import hasValue from '../../helpers/hasValue';
@@ -917,6 +917,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     if (mainAppStore.paramsPortfolioActive) {
       localStorage.setItem(LOCAL_POSITION, mainAppStore.paramsPortfolioActive);
       sortingStore.setActivePositionsSortBy(SortByProfitEnum.NewFirstAsc);
+      localStorage.setItem(LOCAL_POSITION_SORT, `${SortByProfitEnum.NewFirstAsc}`);
       mainAppStore.setParamsPortfolioActive(null);
     }
     if (lastPosition && position.id === +lastPosition) {

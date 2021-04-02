@@ -17,7 +17,7 @@ import { PendingOrderWSDTO } from '../../types/PendingOrdersTypes';
 import ImageContainer from '../ImageContainer';
 import { useTranslation } from 'react-i18next';
 import useInstrumentPrecision from '../../hooks/useInstrumentPrecision';
-import { LOCAL_PENDING_POSITION } from '../../constants/global';
+import { LOCAL_PENDING_POSITION, LOCAL_PENDING_POSITION_SORT } from '../../constants/global';
 import { Observer } from 'mobx-react-lite';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FormValues } from '../../types/Positions';
@@ -78,6 +78,7 @@ const PendingOrder: FC<Props> = (props) => {
     if (mainAppStore.paramsPortfolioOrder) {
       localStorage.setItem(LOCAL_PENDING_POSITION, mainAppStore.paramsPortfolioOrder);
       sortingStore.setPendingOrdersSortBy(SortByPendingOrdersEnum.NewFirstAsc);
+      localStorage.setItem(LOCAL_PENDING_POSITION_SORT, `${SortByPendingOrdersEnum.NewFirstAsc}`);
     }
     if (
       !!lastPendingActive &&
