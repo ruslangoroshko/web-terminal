@@ -915,13 +915,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       mainAppStore.paramsPortfolioActive ||
       localStorage.getItem(LOCAL_POSITION);
     if (mainAppStore.paramsPortfolioActive) {
-      localStorage.setItem(LOCAL_POSITION, mainAppStore.paramsPortfolioActive);
       sortingStore.setActivePositionsSortBy(SortByProfitEnum.NewFirstAsc);
       localStorage.setItem(LOCAL_POSITION_SORT, `${SortByProfitEnum.NewFirstAsc}`);
+      localStorage.setItem(LOCAL_POSITION, mainAppStore.paramsPortfolioActive);
       mainAppStore.setParamsPortfolioActive(null);
     }
     if (lastPosition && position.id === +lastPosition) {
-      instrumentRef.current.scrollIntoView();
+      setTimeout(() => {
+        instrumentRef.current.scrollIntoView();
+      }, 0);
     }
     return () => {
       disposer();
@@ -941,7 +943,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         mainAppStore.paramsPortfolioActive ||
         localStorage.getItem(LOCAL_POSITION);
       if (lastPosition && position.id === +lastPosition) {
-        instrumentRef.current.scrollIntoView();
+        setTimeout(() => {
+          instrumentRef.current.scrollIntoView();
+        }, 0);
         setInstrumentActive(false);
       }
     }

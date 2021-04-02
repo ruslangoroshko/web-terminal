@@ -23,7 +23,7 @@ const RouteWrapper: FC<Props> = observer((props) => {
   const isOldUser = localStorage.getItem(LOCAL_STORAGE_IS_NEW_USER);
 
   useEffect(() => {
-    if (location.search.length > 0 && mainAppStore.isAuthorized) {
+    if (location.search.length > 0) {
       const params = new URLSearchParams(location.search);
       const unParsedData = unparsingSearchUrl(params);
       mainAppStore.setParamsAsset(unParsedData.paramsAsset);
@@ -32,7 +32,9 @@ const RouteWrapper: FC<Props> = observer((props) => {
       mainAppStore.setParamsPortfolioOrder(unParsedData.paramsPortfolioOrder);
       mainAppStore.setParamsPortfolioHistory(unParsedData.paramsPortfolioHistory);
       mainAppStore.setParamsPortfolioTab(unParsedData.paramsPortfolioTab);
-      mainAppStore.setParamsDeposit(unParsedData.paramsDeposit);
+      if (mainAppStore.isAuthorized) {
+        mainAppStore.setParamsDeposit(unParsedData.paramsDeposit);
+      }
       if (unParsedData.status === null && mainAppStore.isAuthorized) {
         push(Page.DASHBOARD);
       }
