@@ -199,6 +199,17 @@ export default Markets;
 const MarketButtonsWrapper = styled(FlexContainer)`
   overflow-x: auto;
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  ::-webkit-scrollbar {
+    height: 6px;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+  }
+  ::-webkit-scrollbar-thumb:horizontal {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
 `;
 
 const MarketButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
