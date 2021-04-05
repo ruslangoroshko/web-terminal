@@ -267,9 +267,9 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
                         {t('Equity')}
                       </PrimaryTextSpan>
                       <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                        {getNumberSign(equity)}
+                        {getNumberSign(+equity.toFixed(2))}
                         {currencySymbol}
-                        {Math.abs(equity)}
+                        {Math.abs(equity).toFixed(2)}
                       </PrimaryTextSpan>
                     </FlexContainer>
                     <FlexContainer

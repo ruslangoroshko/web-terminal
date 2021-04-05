@@ -226,7 +226,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
                   {t('Equity')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {getNumberSign(equity)}
+                  {getNumberSign(+equity.toFixed(2))}
                   {currencySymbol}
                   {Math.abs(equity).toFixed(2)}
                 </PrimaryTextSpan>
