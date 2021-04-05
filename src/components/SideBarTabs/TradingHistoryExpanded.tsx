@@ -212,7 +212,7 @@ const TradingHistoryExpanded: FC = () => {
                   {t('Profit/loss')}
                 </PrimaryTextSpan>
               </Th>
-              <Th justifyContent="flex-end">
+              <Th justifyContent="center">
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"

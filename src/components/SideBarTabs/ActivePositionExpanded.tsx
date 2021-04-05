@@ -209,7 +209,7 @@ function ActivePositionExpanded(props: Props) {
           ></ActivePositionPnLPercent>
         </FlexContainer>
       </Td>
-      <Td justifyContent="flex-end" alignItems="center">
+      <Td justifyContent="center" alignItems="center">
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <ActivePositionEquity position={position}></ActivePositionEquity>
         </FlexContainer>

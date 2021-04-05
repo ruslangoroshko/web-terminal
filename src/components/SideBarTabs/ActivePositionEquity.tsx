@@ -5,6 +5,7 @@ import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfi
 import { autorun } from 'mobx';
 import { QuoteText } from '../../styles/TextsElements';
 import { PositionModelWSDTO } from '../../types/Positions';
+import { getNumberSign } from '../../helpers/getNumberSign';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -51,6 +52,7 @@ const ActivePositionEquity: FC<Props> = ({ position }) => {
       isGrowth={statePnL + position.investmentAmount > 0}
       fontSize="14px"
     >
+      {getNumberSign(+(statePnL + position.investmentAmount).toFixed(2))}
       {mainAppStore.activeAccount?.symbol}
       {Math.abs(statePnL + position.investmentAmount).toFixed(2)}
     </QuoteText>

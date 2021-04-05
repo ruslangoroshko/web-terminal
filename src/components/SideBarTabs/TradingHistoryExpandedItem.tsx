@@ -167,12 +167,12 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
           </Observer>
         </FlexContainer>
       </Td>
-      <Td justifyContent="flex-end" alignItems="center">
+      <Td justifyContent="center" alignItems="center">
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <QuoteText isGrowth={profit + investmentAmount > 0} fontSize="14px">
-            {getNumberSign(equity)}
+            {getNumberSign(+equity.toFixed(2))}
             {currencySymbol}
-            {Math.abs(equity)}
+            {Math.abs(equity).toFixed(2)}
           </QuoteText>
         </FlexContainer>
       </Td>

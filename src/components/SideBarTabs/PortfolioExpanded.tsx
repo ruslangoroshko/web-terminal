@@ -184,7 +184,7 @@ const PortfolioExpanded: FC<Props> = () => {
                   {t('Profit/loss')}
                 </HeaderTitleItem>
               </Th>
-              <Th justifyContent="flex-end">
+              <Th justifyContent="center">
                 <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="11px"
