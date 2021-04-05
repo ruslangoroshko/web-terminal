@@ -9,6 +9,7 @@ import {
 import paymentStatuses from '../../constants/paymentStatuses';
 import SuccessImage from '../../assets/images/success.png';
 import FailedImage from '../../assets/images/fail.png';
+import PendingImage from '../../assets/svg/icon-attention.svg';
 import { PrimaryButton } from '../../styles/Buttons';
 import { useHistory } from 'react-router-dom';
 import { useStores } from '../../hooks/useStores';
@@ -151,7 +152,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 alignItems="center"
                 justifyContent="center"
               >
-                <Image src={FailedImage}></Image>
+                <SvgIcon {...PendingImage} fillColor="#FDFD57"/>
               </FlexContainer>
               <PrimaryTextParagraph
                 fontSize="20px"
@@ -160,15 +161,33 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
               >
                 {t('Pending')}
               </PrimaryTextParagraph>
-              <PrimaryTextSpan
-                fontSize="13px"
-                color="rgba(255, 255, 255, 0.4)"
-                textAlign="center"
-              >
-                {t('Something went wrong.')}
-                <br />
-                {t('Try again or use another payment method.')}
-              </PrimaryTextSpan>
+              <FlexContainer flexDirection="column" padding="16px">
+                <PrimaryTextSpan
+                  fontSize="13px"
+                  color="rgba(255, 255, 255, 0.4)"
+                  textAlign="center"
+                  marginBottom="12px"
+                >
+                  {t('Thank you for your transaction')}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan
+                  fontSize="13px"
+                  color="rgba(255, 255, 255, 0.4)"
+                  textAlign="center"
+                  marginBottom="12px"
+                >
+                  {t(
+                    'Please note, that it is now being processed and it might take up to 2 business days'
+                  )}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan
+                  fontSize="13px"
+                  color="rgba(255, 255, 255, 0.4)"
+                  textAlign="center"
+                >
+                  {t('You will receive an update to your e-mail')}
+                </PrimaryTextSpan>
+              </FlexContainer>
             </FlexContainer>
             <PrimaryButton onClick={backToDeposit} width="100%" padding="20px">
               <PrimaryTextSpan
