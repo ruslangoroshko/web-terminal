@@ -135,6 +135,53 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
           </FlexContainer>
         );
 
+      case paymentStatuses.PENDING:
+        mixpanel.track(mixpanelEvents.DEPOSIT_PAGE_PENDING);
+        return (
+          <FlexContainer
+            flexDirection="column"
+            justifyContent="space-between"
+            height="100%"
+            width="100%"
+          >
+            <FlexContainer flexDirection="column" alignItems="center">
+              <FlexContainer
+                width="138px"
+                marginBottom="40px"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Image src={FailedImage}></Image>
+              </FlexContainer>
+              <PrimaryTextParagraph
+                fontSize="20px"
+                color="#fff"
+                marginBottom="8px"
+              >
+                {t('Pending')}
+              </PrimaryTextParagraph>
+              <PrimaryTextSpan
+                fontSize="13px"
+                color="rgba(255, 255, 255, 0.4)"
+                textAlign="center"
+              >
+                {t('Something went wrong.')}
+                <br />
+                {t('Try again or use another payment method.')}
+              </PrimaryTextSpan>
+            </FlexContainer>
+            <PrimaryButton onClick={backToDeposit} width="100%" padding="20px">
+              <PrimaryTextSpan
+                fontWeight="bold"
+                fontSize="16px"
+                color="#252636"
+              >
+                {t('Back to Deposit')}
+              </PrimaryTextSpan>
+            </PrimaryButton>
+          </FlexContainer>
+        );
+
       default:
         return null;
     }

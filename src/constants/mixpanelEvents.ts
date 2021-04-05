@@ -34,6 +34,7 @@ const mixpanelEvents = {
   DEPOSIT_METHOD_VIEW: 'deposit method view',
   DEPOSIT_PAGE_FAILED: 'deposit failed page',
   DEPOSIT_PAGE_SUCCESS: 'deposit success page ',
+  DEPOSIT_PAGE_PENDING: 'deposit pending page',
   DEPOSIT_FAILED: 'deposit failed',
   CLOSE_ORDER: 'close order',
   CLOSE_ORDER_FAILED: 'close order failed',
