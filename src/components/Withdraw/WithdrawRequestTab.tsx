@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { WithdrawalHistoryResponseStatus } from '../../enums/WithdrawalHistoryResponseStatus';
 import API from '../../helpers/API';
 import { WithdrawalStatusesEnum } from '../../enums/WithdrawalStatusesEnum';
+import { brandingLinksTranslate } from '../../constants/brandingLinksTranslate';
 
 const WithdrawRequestTab = observer(() => {
   const { mainAppStore, withdrawalStore, notificationStore } = useStores();
@@ -274,7 +275,7 @@ const WithdrawRequestTab = observer(() => {
           </FlexContainer>
           <FlexContainer>
             <ButtonOpenFaq
-              href={mainAppStore.initModel.withdrawFaqUrl}
+              href={t(`${brandingLinksTranslate[mainAppStore.initModel.brandProperty].faq}`)}
               target="blank"
             >
               <PrimaryTextSpan
