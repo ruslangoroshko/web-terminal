@@ -152,7 +152,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 alignItems="center"
                 justifyContent="center"
               >
-                <SvgIcon {...PendingImage} fillColor="#FDFD57"/>
+                <SvgIcon {...PendingImage} fillColor="#fffccc"/>
               </FlexContainer>
               <PrimaryTextParagraph
                 fontSize="20px"
