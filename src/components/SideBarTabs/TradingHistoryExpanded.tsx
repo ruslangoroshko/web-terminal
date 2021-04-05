@@ -68,8 +68,18 @@ const TradingHistoryExpanded: FC = () => {
   );
 
   useEffect(() => {
-    if (mainAppStore.activeAccountId && tabsStore.isTabExpanded) {
+    if (
+      mainAppStore.activeAccountId &&
+      tabsStore.isTabExpanded &&
+      mainAppStore.paramsPortfolioHistory !== undefined
+    ) {
       let checkScroll: boolean = false;
+      if (mainAppStore.paramsPortfolioHistory) {
+        localStorage.removeItem(LOCAL_HISTORY_TIME);
+        localStorage.removeItem(LOCAL_HISTORY_POSITION);
+        localStorage.removeItem(LOCAL_HISTORY_PAGE);
+        localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
+      }
       const dataStart: string | null = localStorage.getItem(LOCAL_HISTORY_TIME);
       const neededData: string | null = mainAppStore.paramsPortfolioHistory || localStorage.getItem(
         LOCAL_HISTORY_POSITION
@@ -115,7 +125,10 @@ const TradingHistoryExpanded: FC = () => {
         positionsHistory: [],
       });
     };
-  }, [mainAppStore.activeAccountId]);
+  }, [
+    mainAppStore.activeAccountId,
+    mainAppStore.paramsPortfolioHistory
+  ]);
 
   return (
     <TradingHistoryExpandedWrapper

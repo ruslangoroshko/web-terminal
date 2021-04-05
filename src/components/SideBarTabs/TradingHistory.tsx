@@ -151,7 +151,10 @@ const TradingHistory: FC = observer(() => {
         positionsHistory: [],
       });
     };
-  }, [mainAppStore.activeAccountId, mainAppStore.paramsPortfolioHistory]);
+  }, [
+    mainAppStore.activeAccountId,
+    mainAppStore.paramsPortfolioHistory
+  ]);
 
   return (
     <PortfolioWrapper flexDirection="column" height="100%">

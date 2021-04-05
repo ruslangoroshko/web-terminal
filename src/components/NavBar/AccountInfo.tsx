@@ -101,7 +101,7 @@ const AccountInfo: FC<Props> = observer((props) => {
     mainAppStore.setParamsMarkets(null);
     mainAppStore.setParamsPortfolioActive(null);
     mainAppStore.setParamsPortfolioOrder(null);
-    mainAppStore.setParamsPortfolioHistory(undefined);
+    mainAppStore.setParamsPortfolioHistory(null);
     mainAppStore.setParamsPortfolioTab(null);
     mainAppStore.setParamsDeposit(false);
     toggle();
