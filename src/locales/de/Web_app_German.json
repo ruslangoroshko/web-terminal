@@ -382,5 +382,8 @@
     "FAQ_HP": "https://handelpro.com/how-it-works/",
     "FAQ_M": "https://www.monfex.com/de/faq",
     "Bank Cards / Alternative Payment Methods": "Bankkarten / Alternative Zahlungsarten",
-    "Sorry! The service isn't available in your region.": "Sorry! The service isn't available in your region."
+    "Sorry! The service isn't available in your region.": "Entschuldigung! Der Dienst ist in Ihrer Region nicht verfügbar.",
+    "Thank you for your transaction": "Vielen Dank für Ihre Transaktion",
+    "Please note, that it is now being processed and it might take up to 2 business days": "Bitte beachten Sie, die Bearbeitung kann bis zu 2 Werktagen in Anspruch nehmen",
+    "You will receive an update to your e-mail": "Sie erhalten ein Update auf Ihre E-Mail"
 }
