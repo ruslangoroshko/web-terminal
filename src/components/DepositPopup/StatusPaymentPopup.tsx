@@ -9,6 +9,7 @@ import {
 import paymentStatuses from '../../constants/paymentStatuses';
 import SuccessImage from '../../assets/images/success.png';
 import FailedImage from '../../assets/images/fail.png';
+import PendingImage from '../../assets/svg/icon-attention.svg';
 import { PrimaryButton } from '../../styles/Buttons';
 import { useHistory } from 'react-router-dom';
 import { useStores } from '../../hooks/useStores';
@@ -122,6 +123,71 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 <br />
                 {t('Try again or use another payment method.')}
               </PrimaryTextSpan>
+            </FlexContainer>
+            <PrimaryButton onClick={backToDeposit} width="100%" padding="20px">
+              <PrimaryTextSpan
+                fontWeight="bold"
+                fontSize="16px"
+                color="#252636"
+              >
+                {t('Back to Deposit')}
+              </PrimaryTextSpan>
+            </PrimaryButton>
+          </FlexContainer>
+        );
+
+      case paymentStatuses.PENDING:
+        mixpanel.track(mixpanelEvents.DEPOSIT_PAGE_PENDING);
+        return (
+          <FlexContainer
+            flexDirection="column"
+            justifyContent="space-between"
+            height="100%"
+            width="100%"
+          >
+            <FlexContainer flexDirection="column" alignItems="center">
+              <FlexContainer
+                width="138px"
+                marginBottom="40px"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <SvgIcon {...PendingImage} fillColor="#fffccc"/>
+              </FlexContainer>
+              <PrimaryTextParagraph
+                fontSize="20px"
+                color="#fff"
+                marginBottom="8px"
+              >
+                {t('Pending')}
+              </PrimaryTextParagraph>
+              <FlexContainer flexDirection="column" padding="16px">
+                <PrimaryTextSpan
+                  fontSize="13px"
+                  color="rgba(255, 255, 255, 0.4)"
+                  textAlign="center"
+                  marginBottom="12px"
+                >
+                  {t('Thank you for your transaction')}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan
+                  fontSize="13px"
+                  color="rgba(255, 255, 255, 0.4)"
+                  textAlign="center"
+                  marginBottom="12px"
+                >
+                  {t(
+                    'Please note, that it is now being processed and it might take up to 2 business days'
+                  )}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan
+                  fontSize="13px"
+                  color="rgba(255, 255, 255, 0.4)"
+                  textAlign="center"
+                >
+                  {t('You will receive an update to your e-mail')}
+                </PrimaryTextSpan>
+              </FlexContainer>
             </FlexContainer>
             <PrimaryButton onClick={backToDeposit} width="100%" padding="20px">
               <PrimaryTextSpan
