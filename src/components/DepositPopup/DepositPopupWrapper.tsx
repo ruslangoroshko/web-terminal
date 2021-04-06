@@ -57,7 +57,7 @@ const depositList = [
 
   {
     id: DepositTypeEnum.PayRetailers,
-    name: 'Local Bank Cards / Online Transfers Cash Payments',
+    name: 'Local Bank Cards',
     icon: CardIcon,
     show: false,
   },
@@ -145,6 +145,18 @@ const DepositPopupInner: FC = () => {
       item.show = false;
     });
   }, depositList);
+
+  const getDescriptionByMethod = (id: DepositTypeEnum) => {
+    switch (id) {
+      case DepositTypeEnum.ElectronicFundsTransfer:
+        return 'ABSA, Nedbank, Capitec, FNB, Standard, Investec';
+      case DepositTypeEnum.PayRetailers:
+        return 'Online Transfers Cash Payments';
+
+      default:
+        return 'Instantly';
+    }
+  };
 
   useEffect(() => {
     notificationStore.resetNotification();
@@ -374,12 +386,7 @@ const DepositPopupInner: FC = () => {
                                     fontSize="12px"
                                     color="rgba(255,255,255,0.4)"
                                   >
-                                    {item.id ===
-                                    DepositTypeEnum.ElectronicFundsTransfer
-                                      ? t(
-                                          'ABSA, Nedbank, Capitec, FNB, Standard, Investec'
-                                        )
-                                      : t('Instantly')}
+                                    {t(getDescriptionByMethod(item.id))}
                                   </PrimaryTextSpan>
                                 </FlexContainer>
                               </PaymentMethodItem>
