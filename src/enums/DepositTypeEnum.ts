@@ -4,5 +4,7 @@ export enum DepositTypeEnum {
   BankTransfer,
   Bitcoin,
   ElectronicFundsTransfer,
-  Directa
+  Directa,
+  Volt,
+  PayRetailers
 }
