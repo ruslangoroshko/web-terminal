@@ -1,3 +1,4 @@
+import { CreatePayRetailersInvoiceParams, CreatePayRetailersInvoiceDTO } from './../types/DepositTypes';
 import { WithdrawalHistoryResponseStatus } from './../enums/WithdrawalHistoryResponseStatus';
 import { RefreshToken, RefreshTokenDTO } from './../types/RefreshToken';
 import axios from 'axios';
@@ -375,6 +376,16 @@ class API {
   ) => {
     const response = await axios.post<CreateDirectaInvoiceDTO>(
       `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_DIRECTA}`,
+      params
+    );
+    return response.data;
+  };
+
+  createPayRetailersInvoice = async (
+    params: CreatePayRetailersInvoiceParams
+  ) => {
+    const response = await axios.post<CreatePayRetailersInvoiceDTO>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_PAY_RETAILERS}`,
       params
     );
     return response.data;

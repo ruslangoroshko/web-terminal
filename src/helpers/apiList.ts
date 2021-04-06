@@ -39,6 +39,7 @@ const API_LIST = {
     CREATE_INVOICE: '/CreatePciDssInvoice',
     CREATE_INVOICE_SWIFFY: '/swiffy/invoice',
     CREATE_INVOICE_DIRECTA: '/directa/invoice',
+    CREATE_INVOICE_PAY_RETAILERS: '/payretailers/invoice',
     CHECK_PAYMENT_SYSTEMS: '/supported-payment-systems',
   },
   INIT: {
