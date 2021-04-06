@@ -29,7 +29,7 @@ import Page from '../../constants/Pages';
 import { getProcessId } from '../../helpers/getProcessId';
 import Fields from '../../constants/fields';
 
-const Directa = () => {
+const PayRetailers = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
   const [loading, setLoading] = useState(false);
 
@@ -104,7 +104,7 @@ const Directa = () => {
     };
 
     try {
-      const result = await API.createDirectaInvoice(params);
+      const result = await API.createPayRetailersInvoice(params);
 
       switch (result.status) {
         case DepositRequestStatusEnum.Success:
@@ -180,7 +180,7 @@ const Directa = () => {
 
   useEffect(() => {
     mixpanel.track(mixpanelEvents.DEPOSIT_METHOD_VIEW, {
-      [mixapanelProps.DEPOSIT_METHOD]: depositMethod.DIRECTA,
+      [mixapanelProps.DEPOSIT_METHOD]: depositMethod.PAY_RETAILS,
     });
   }, []);
 
@@ -276,7 +276,7 @@ const Directa = () => {
   );
 };
 
-export default Directa;
+export default PayRetailers;
 
 const CustomForm = styled.form`
   margin-bottom: 0;
