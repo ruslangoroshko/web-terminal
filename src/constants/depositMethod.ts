@@ -4,7 +4,7 @@ const depositMethod = {
   WIRE_TRANSFER: 'wire_transfer',
   ELECTRONIC_FUNDS_TRANSFER: 'Swiffy',
   DIRECTA: 'Directa',
-  PAY_RETAILS: 'PayRetails'
+  PAY_RETAILS: 'PayRetailers'
 };
 
 Object.freeze(depositMethod);
