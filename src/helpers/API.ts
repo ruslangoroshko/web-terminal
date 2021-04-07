@@ -1,4 +1,4 @@
-import { CreatePayRetailersInvoiceParams, CreatePayRetailersInvoiceDTO } from './../types/DepositTypes';
+import { CreatePayRetailersInvoiceParams, CreatePayRetailersInvoiceDTO, CreateVoltInvoiceDTO, CreateVoltInvoiceParams } from './../types/DepositTypes';
 import { WithdrawalHistoryResponseStatus } from './../enums/WithdrawalHistoryResponseStatus';
 import { RefreshToken, RefreshTokenDTO } from './../types/RefreshToken';
 import axios from 'axios';
@@ -386,6 +386,16 @@ class API {
   ) => {
     const response = await axios.post<CreatePayRetailersInvoiceDTO>(
       `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_PAY_RETAILERS}`,
+      params
+    );
+    return response.data;
+  };
+
+  createVoltInvoice = async (
+    params: CreateVoltInvoiceParams
+  ) => {
+    const response = await axios.post<CreateVoltInvoiceDTO>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_VOLT}`,
       params
     );
     return response.data;

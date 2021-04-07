@@ -40,6 +40,7 @@ import depositResponseMessages from '../../constants/depositResponseMessages';
 import { keyframes } from '@emotion/core';
 import Directa from './Directa';
 import PayRetailers from './PayRetailers';
+import Volt from './Volt';
 
 const depositList = [
   {
@@ -58,6 +59,12 @@ const depositList = [
   {
     id: DepositTypeEnum.PayRetailers,
     name: 'Local Bank Cards',
+    icon: CardIcon,
+    show: false,
+  },
+  {
+    id: DepositTypeEnum.Volt,
+    name: 'Bank Transfers',
     icon: CardIcon,
     show: false,
   },
@@ -119,9 +126,6 @@ const DepositPopupInner: FC = () => {
       case DepositTypeEnum.VisaMaster:
         return <VisaMasterCardForm />;
 
-      // case DepositTypeEnum.BankTransfer:
-      //   return <BankTransferForm />;
-
       case DepositTypeEnum.Bitcoin:
         return <BitcoinForm />;
 
@@ -133,6 +137,9 @@ const DepositPopupInner: FC = () => {
 
       case DepositTypeEnum.PayRetailers:
         return <PayRetailers />;
+      
+      case DepositTypeEnum.Volt:
+        return <Volt />;
 
       default:
         return null;
@@ -152,7 +159,8 @@ const DepositPopupInner: FC = () => {
         return 'ABSA, Nedbank, Capitec, FNB, Standard, Investec';
       case DepositTypeEnum.PayRetailers:
         return 'Online Transfers Cash Payments';
-
+      case DepositTypeEnum.Volt:
+        return 'Few hours';
       default:
         return 'Instantly';
     }

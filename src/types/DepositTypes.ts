@@ -81,6 +81,18 @@ export interface CreatePayRetailersInvoiceDTO {
   status: DepositRequestStatusEnum;
 }
 
+export interface CreateVoltInvoiceParams {
+  amount: number;
+  accountId: string;
+  processId: string;
+}
+export interface CreateVoltInvoiceDTO {
+  data: {
+    redirectLink: string
+  };
+  status: DepositRequestStatusEnum;
+}
+
 export interface GetSupportedPaymentSystems {
   status: GetSupportedPaymentSystemsStatuses;
   data: {
