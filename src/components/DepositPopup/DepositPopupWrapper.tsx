@@ -47,12 +47,14 @@ const depositList = [
     name: 'Visa / Mastercard',
     icon: CardIcon,
     show: false,
+    order: 0,
   },
   {
     id: DepositTypeEnum.Directa,
     name: 'Bank Cards / Alternative Payment Methods',
     icon: CardIcon,
     show: false,
+    order: 0,
   },
 
   {
@@ -60,18 +62,21 @@ const depositList = [
     name: 'Local Bank Cards',
     icon: CardIcon,
     show: false,
+    order: 0,
   },
   {
     id: DepositTypeEnum.Bitcoin,
     name: 'Bitcoin',
     icon: BitcoinIcon,
     show: false,
+    order: 0,
   },
   {
     id: DepositTypeEnum.ElectronicFundsTransfer,
     name: 'Electronic Funds Transfer',
     icon: SwiffyIcon,
     show: false,
+    order: 0,
   },
 ];
 
@@ -174,9 +179,10 @@ const DepositPopupInner: FC = () => {
         if (response.status === GetSupportedPaymentSystemsStatuses.Success) {
           const newRoutes = depositList.map((usedPayment) => {
             const returnedPayment = usedPayment;
-            response.data.supportedPaymentSystems.forEach((paymentSystem) => {
+            response.data.supportedPaymentSystems.forEach((paymentSystem, index) => {
               if (usedPayment.id === paymentSystem.paymentSystemType) {
                 returnedPayment.show = true;
+                returnedPayment.order = index;
               }
             });
             return returnedPayment;
@@ -334,7 +340,9 @@ const DepositPopupInner: FC = () => {
                   <Observer>
                     {() => (
                       <>
-                        {usedPaymentSystems.map((item) => (
+                        {usedPaymentSystems
+                          .sort((a, b) => (a.order || 0) - (b.order || 0))
+                          .map((item) => (
                           <React.Fragment key={item.id}>
                             {item.show && (
                               <PaymentMethodItem
