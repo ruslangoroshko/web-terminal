@@ -189,7 +189,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 </PrimaryTextSpan>
               </FlexContainer>
             </FlexContainer>
-            <PrimaryButton onClick={backToDeposit} width="100%" padding="20px">
+            <PrimaryButton onClick={backToDashboard} width="100%" padding="20px">
               <PrimaryTextSpan
                 fontWeight="bold"
                 fontSize="16px"
