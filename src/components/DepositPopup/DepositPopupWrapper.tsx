@@ -28,6 +28,7 @@ import ElectronicFundsTransfer from './ElectronicFundsTransfer';
 import CardIcon from '../../assets/svg/payments/icon-card.svg';
 import BitcoinIcon from '../../assets/svg/payments/icon-bitcoin.svg';
 import SwiffyIcon from '../../assets/images/icon-swiffy.png';
+import BankTransferIcon from '../../assets/svg/icon-deposit-bank.svg';
 
 import MastercardIdCheckImage from '../../assets/images/mastercard-id-check.png';
 import SslCertifiedImage from '../../assets/images/ssl-certified.png';
@@ -68,7 +69,7 @@ const depositList = [
   {
     id: DepositTypeEnum.Volt,
     name: 'Bank Transfers',
-    icon: CardIcon,
+    icon: BankTransferIcon,
     show: false,
   },
   {
@@ -377,6 +378,7 @@ const DepositPopupInner: FC = () => {
                                   ) : (
                                     <SvgIcon
                                       {...item.icon}
+                                      width={32}
                                       fillColor={
                                         depositFundsStore.activeDepositType ===
                                         item.id
@@ -485,6 +487,7 @@ const PaymentMethodItem = styled(FlexContainer)<{ isActive: boolean }>`
   border-radius: 4px;
   transition: all 0.2s ease;
   padding: 16px;
+  align-items: center;
 
   &:hover {
     background: #292c33;

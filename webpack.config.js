@@ -122,7 +122,7 @@ module.exports = (env, argv) => {
           : JSON.stringify('http://localhost:5679'),
         API_DEPOSIT_STRING: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('/deposit')
-          : JSON.stringify('http://localhost:5680/deposit'),
+          : JSON.stringify('http://localhost:5682/deposit'),
         API_WITHDRAWAL_STRING: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('')
           : JSON.stringify('http://localhost:5681'),
