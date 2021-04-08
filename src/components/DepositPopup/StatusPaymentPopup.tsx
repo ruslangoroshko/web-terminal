@@ -56,6 +56,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
             <FlexContainer flexDirection="column" alignItems="center">
               <FlexContainer
                 width="138px"
+                height="138px"
                 marginBottom="40px"
                 alignItems="center"
                 justifyContent="center"
@@ -101,6 +102,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
             <FlexContainer flexDirection="column" alignItems="center">
               <FlexContainer
                 width="138px"
+                height="138px"
                 marginBottom="40px"
                 alignItems="center"
                 justifyContent="center"
@@ -151,6 +153,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 marginBottom="40px"
                 alignItems="center"
                 justifyContent="center"
+                height="138px"
               >
                 <Image src={PendingImage}></Image>
               </FlexContainer>
