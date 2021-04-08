@@ -110,7 +110,7 @@ function ProfileDropdown() {
             color={getStatusLabel('color')}
             fontWeight={500}
           >
-            {mainAppStore.activeAccount?.achievementStatus}
+            {mainAppStore.activeAccount?.achievementStatus === AchievementStatus.PLATINUM ? AchievementStatus.VIP : mainAppStore.activeAccount?.achievementStatus}
           </PrimaryTextSpan>
         </StatusLabel>
       )}
