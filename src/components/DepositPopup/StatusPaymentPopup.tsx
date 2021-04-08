@@ -9,7 +9,7 @@ import {
 import paymentStatuses from '../../constants/paymentStatuses';
 import SuccessImage from '../../assets/images/success.png';
 import FailedImage from '../../assets/images/fail.png';
-import PendingImage from '../../assets/svg/icon-attention.svg';
+import PendingImage from '../../assets/images/icon-attention.png';
 import { PrimaryButton } from '../../styles/Buttons';
 import { useHistory } from 'react-router-dom';
 import { useStores } from '../../hooks/useStores';
@@ -152,7 +152,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 alignItems="center"
                 justifyContent="center"
               >
-                <SvgIcon {...PendingImage} fillColor="#fffccc"/>
+                <Image src={PendingImage}></Image>
               </FlexContainer>
               <PrimaryTextParagraph
                 fontSize="20px"
@@ -161,7 +161,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
               >
                 {t('Pending')}
               </PrimaryTextParagraph>
-              <FlexContainer flexDirection="column" padding="16px">
+              <FlexContainer flexDirection="column" padding="8px">
                 <PrimaryTextSpan
                   fontSize="13px"
                   color="rgba(255, 255, 255, 0.4)"
@@ -195,7 +195,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 fontSize="16px"
                 color="#252636"
               >
-                {t('Back to Deposit')}
+                {t('Back to Trading')}
               </PrimaryTextSpan>
             </PrimaryButton>
           </FlexContainer>
