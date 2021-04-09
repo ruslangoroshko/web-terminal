@@ -18,14 +18,16 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import e2eTests from '../constants/e2eTests';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react-lite';
 
-function ProfileDropdown() {
+const ProfileDropdown = observer(() => {
   const { mainAppStore, depositFundsStore, tabsStore } = useStores();
   const { t } = useTranslation();
 
   const getStatusLabel = useCallback(
     (type?: string) => {
-      const key = mainAppStore.activeAccount?.achievementStatus;
+      const key = mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus;
       switch (key) {
         case AchievementStatus.SILVER:
           return type === 'color' ? '#C5DDF1' : SilverBG;
@@ -37,7 +39,7 @@ function ProfileDropdown() {
           return type === 'color' ? '#C5DDF1' : SilverBG;
       }
     },
-    [mainAppStore.activeAccount]
+    [mainAppStore.accounts]
   );
 
   const renderStatusLabel = () => {
@@ -88,12 +90,9 @@ function ProfileDropdown() {
       border="1px solid rgba(169, 171, 173, 0.1)"
       boxShadow="0px 34px 44px rgba(0, 0, 0, 0.25)"
     >
-      {(mainAppStore.activeAccount?.achievementStatus ===
-        AchievementStatus.GOLD ||
-        mainAppStore.activeAccount?.achievementStatus ===
-          AchievementStatus.SILVER ||
-        mainAppStore.activeAccount?.achievementStatus ===
-          AchievementStatus.PLATINUM) && (
+      {(mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus === AchievementStatus.GOLD ||
+        mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus === AchievementStatus.SILVER ||
+        mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus === AchievementStatus.PLATINUM) && (
         <StatusLabel
           width="124px"
           height="24px"
@@ -110,7 +109,9 @@ function ProfileDropdown() {
             color={getStatusLabel('color')}
             fontWeight={500}
           >
-            {mainAppStore.activeAccount?.achievementStatus === AchievementStatus.PLATINUM ? AchievementStatus.VIP : mainAppStore.activeAccount?.achievementStatus}
+            {mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus === AchievementStatus.PLATINUM
+              ? AchievementStatus.VIP
+              : mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus}
           </PrimaryTextSpan>
         </StatusLabel>
       )}
@@ -191,16 +192,6 @@ function ProfileDropdown() {
           </PrimaryTextSpan>
         </CustomeNavLink>
       </FlexContainer>
-      {/* <FlexContainer margin="0 0 16px">
-        <PrimaryTextSpan fontSize="12px" color="#fffccc">
-          Settings
-        </PrimaryTextSpan>
-      </FlexContainer> */}
-      {/* <FlexContainer>
-        <PrimaryTextSpan fontSize="12px" color="#fffccc">
-          Historical quotes
-        </PrimaryTextSpan>
-      </FlexContainer> */}
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={handleLogoutClick}>
           <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
@@ -210,7 +201,7 @@ function ProfileDropdown() {
       </FlexContainer>
     </FlexContainer>
   );
-}
+});
 
 export default ProfileDropdown;
 
