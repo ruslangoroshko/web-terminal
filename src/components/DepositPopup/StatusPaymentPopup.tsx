@@ -31,8 +31,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
   const { depositFundsStore } = useStores();
 
   const backToDeposit = () => {
-    push(Page.DASHBOARD);
-    depositFundsStore.togglePopup();
+    push(Page.DEPOSIT_POPUP);
   };
 
   const backToDashboard = () => {
@@ -84,7 +83,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 fontSize="16px"
                 color="#252636"
               >
-                {t('Trade now')}
+                {t('Back to Trading')}
               </PrimaryTextSpan>
             </PrimaryButton>
           </FlexContainer>
