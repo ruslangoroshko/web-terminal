@@ -201,9 +201,9 @@ const AccountBalance = () => {
                 balanceHistoryReport.page * balanceHistoryReport.pageSize
               }
             >
-              {balanceHistoryReport.balanceHistory.map((item, index) => (
+              {balanceHistoryReport.balanceHistory.map((item) => (
                 <BalanceHistoryItem
-                  key={item.createdAt + index}
+                  key={item.description}
                   balanceHistoryItem={item}
                 />
               ))}
