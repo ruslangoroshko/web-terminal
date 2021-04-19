@@ -49,9 +49,9 @@ const EquityPnL: FC<Props> = ({ position }) => {
 
   return statePnL !== null ? (
     <PrimaryTextSpan color="#fffccc" fontSize="12px">
-      {getNumberSign(+(statePnL + position.investmentAmount).toFixed(2))}
+      {getNumberSign(+(statePnL + position.investmentAmount + position.reservedFundsForToppingUp).toFixed(2))}
       {mainAppStore.activeAccount?.symbol}
-      {Math.abs(statePnL + position.investmentAmount).toFixed(2)}
+      {Math.abs(statePnL + position.investmentAmount + position.reservedFundsForToppingUp).toFixed(2)}
     </PrimaryTextSpan>
   ) : null;
 };

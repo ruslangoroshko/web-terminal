@@ -6,6 +6,7 @@ import { autorun } from 'mobx';
 import { QuoteText } from '../../styles/TextsElements';
 import { PositionModelWSDTO } from '../../types/Positions';
 import { getNumberSign } from '../../helpers/getNumberSign';
+import { logger } from '../../helpers/ConsoleLoggerTool';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -52,9 +53,9 @@ const ActivePositionEquity: FC<Props> = ({ position }) => {
       isGrowth={statePnL + position.investmentAmount > 0}
       fontSize="14px"
     >
-      {getNumberSign(+(statePnL + position.investmentAmount).toFixed(2))}
+      {getNumberSign(+(statePnL + position.investmentAmount + position.reservedFundsForToppingUp).toFixed(2))}
       {mainAppStore.activeAccount?.symbol}
-      {Math.abs(statePnL + position.investmentAmount).toFixed(2)}
+      {Math.abs(statePnL + position.investmentAmount + position.reservedFundsForToppingUp).toFixed(2)}
     </QuoteText>
   ) : null;
 };
