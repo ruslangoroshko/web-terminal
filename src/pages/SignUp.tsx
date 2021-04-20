@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { FormikHelpers, useFormik } from 'formik';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
@@ -202,10 +202,11 @@ function SignUp() {
     validationSchema: validationSchema(),
     validateOnBlur: false,
     enableReinitialize: true,
-    validateOnChange: true,
+    validateOnChange: false,
   });
 
   const handleChangeCountry = (setFieldValue: any) => (country: Country) => {
+    setFieldError(Fields.PHONE, undefined);
     setFieldValue(Fields.PHONE, country.dial);
     const phoneNumber = getExampleNumber(
       fromAlpha3ToAlpha2Code(country.id),
@@ -249,6 +250,11 @@ function SignUp() {
       setValitdateAssigments(true);
       setFieldError(Fields.USER_AGREEMENT, '');
     }
+  };
+
+  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    handleChange(e);
+    setFieldError(e.target.name, undefined);
   };
 
   useEffect(() => {
@@ -355,7 +361,7 @@ function SignUp() {
               margin="0 0 16px 0"
             >
               <LabelInput
-                onChange={handleChange}
+                onChange={handleChangeInput}
                 name={Fields.EMAIL}
                 labelText={t('Email')}
                 value={values.email || ''}
@@ -382,6 +388,7 @@ function SignUp() {
                     mask={dialMask}
                     labelText={t('Phone')}
                     {...getFieldProps(Fields.PHONE)}
+                    onChange={handleChangeInput}
                     id={Fields.PHONE}
                     hasError={!!(touched.phone && errors.phone)}
                     errorText={errors.phone}
@@ -395,7 +402,7 @@ function SignUp() {
               margin="0 0 16px 0"
             >
               <LabelInput
-                onChange={handleChange}
+                onChange={handleChangeInput}
                 name={Fields.PASSWORD}
                 labelText={t('Password')}
                 value={values.password || ''}
@@ -412,7 +419,7 @@ function SignUp() {
               margin="0 0 16px 0"
             >
               <LabelInput
-                onChange={handleChange}
+                onChange={handleChangeInput}
                 labelText={t('Repeat Password')}
                 value={values.repeatPassword || ''}
                 id={Fields.REPEAT_PASSWORD}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { UserAuthenticate } from '../types/UserInfo';
@@ -53,9 +53,7 @@ const SingIn = observer(() => {
     try {
       const result = await mainAppStore.signIn(credentials);
       if (result !== OperationApiResponseCodes.Ok) {
-        notificationStore.setNotification(t(
-          apiResponseCodeMessages[result]
-        ));
+        notificationStore.setNotification(t(apiResponseCodeMessages[result]));
         notificationStore.setIsSuccessfull(false);
         notificationStore.openNotification();
         mainAppStore.setInitLoading(false);
@@ -79,13 +77,14 @@ const SingIn = observer(() => {
     }
   };
 
-  const { handleSubmit, control, errors, formState } = useForm<
+  const { handleSubmit, control, errors, formState, clearErrors } = useForm<
     UserAuthenticate
   >({
     resolver: yupResolver(validationSchema),
     shouldFocusError: true,
     mode: 'onSubmit',
     defaultValues: initialValues,
+    reValidateMode: 'onSubmit',
   });
 
   useEffect(() => {
@@ -132,7 +131,10 @@ const SingIn = observer(() => {
                 ) => (
                   <LabelInput
                     ref={ref}
-                    onChange={onChange}
+                    onChange={(e) => {
+                      clearErrors("email");
+                      onChange(e)
+                    }}
                     onBlur={onBlur}
                     name={name}
                     labelText={t('Email')}
@@ -160,7 +162,10 @@ const SingIn = observer(() => {
                   <LabelInput
                     ref={ref}
                     name={name}
-                    onChange={onChange}
+                    onChange={(e) => {
+                      clearErrors("password");
+                      onChange(e)
+                    }}
                     labelText={t('Password')}
                     value={value}
                     id={Fields.PASSWORD}
