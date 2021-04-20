@@ -36,6 +36,8 @@ import Page from '../../constants/Pages';
 import testIds from '../../constants/testIds';
 import e2eTests from '../../constants/e2eTests';
 import Fields from '../../constants/fields';
+import NumberFormat, { NumberFormatValues } from 'react-number-format';
+import { InputMaskedCustom } from '../../styles/FormControls';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -72,7 +74,12 @@ const VisaMasterCardForm = () => {
             ?.trim()
             .split(' ')
             .filter((item: string) => item);
-          return !!(value[0] && value[1] && value[0].length <= 24 && value[1].length <= 24);
+          return !!(
+            value[0] &&
+            value[1] &&
+            value[0].length <= 24 &&
+            value[1].length <= 24
+          );
         }
         return false;
       }),
@@ -186,7 +193,7 @@ const VisaMasterCardForm = () => {
       e.preventDefault();
       return;
     }
-  }
+  };
 
   const handleSubmitForm = async (values: any) => {
     setLoading(true);
@@ -225,9 +232,9 @@ const VisaMasterCardForm = () => {
 
         default:
           notificationStore.setIsSuccessfull(false);
-          notificationStore.setNotification(t(
-            depositResponseMessages[result.status]
-          ));
+          notificationStore.setNotification(
+            t(depositResponseMessages[result.status])
+          );
           notificationStore.openNotification();
           mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
             [mixapanelProps.ERROR_TEXT]: result.status,
@@ -250,12 +257,12 @@ const VisaMasterCardForm = () => {
     handleChange,
     errors,
     isSubmitting,
-    setFieldError
+    setFieldError,
   } = useFormik({
     initialValues,
     onSubmit: handleSubmitForm,
     validationSchema,
-    validateOnBlur: true,
+    validateOnBlur: false,
     validateOnChange: false,
   });
 
@@ -294,6 +301,11 @@ const VisaMasterCardForm = () => {
   const handleChangeExpireDate = (e: ChangeEvent<HTMLInputElement>) => {
     setFieldError(e.target.name, undefined);
     handleChange(e);
+  };
+
+  const handleChangeFormated = (field: string) => (val: NumberFormatValues) => {
+    setFieldValue(field, val.value);
+    setFieldError(field, undefined);
   };
 
   const handlerClickSubmit = async () => {
@@ -357,7 +369,10 @@ const VisaMasterCardForm = () => {
           {placeholderValues.map((item) => (
             <AmountPlaceholder
               key={item}
-              isActive={parseFloat(item.toString()) === parseFloat(values.amount.toString())}
+              isActive={
+                parseFloat(item.toString()) ===
+                parseFloat(values.amount.toString())
+              }
               value={item}
               currencySymbol={`${mainAppStore.activeAccount?.symbol}`}
               handleClick={() => {
@@ -389,42 +404,20 @@ const VisaMasterCardForm = () => {
             alignItems="center"
             position="relative"
           >
-            <CustomInputMask
-              // TODO: shouldForwardProp
-              // @ts-ignore
-              maskPlaceholder={''}
+            <NumberFormat
+              mask={' '}
+              format="#### #### #### ####"
               placeholder="1234 5678 9012 3456"
-              mask={[
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                ' ',
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                ' ',
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                ' ',
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-              ]}
-              onChange={handleChangeInput}
-              autoComplete="cc-number"
-              value={values.cardNumber}
+              defaultValue={values.cardNumber}
+              onValueChange={handleChangeFormated('cardNumber')}
               name="cardNumber"
               id="cardNumber"
-              data-testid={testIds.VISAMASTERFORM_CARD}
+              inputMode="numeric"
+              autoComplete="cc-number"
+              customInput={InputMaskedCustom}
               className={`input-border ${
-                !!(touched.cardNumber && errors.cardNumber) && 'error'
+                !!(touched.cvv && errors.cvv) && 'error'
               }`}
-              data-e2e-id={e2eTests.DEPOSIT_CARD}
             />
             {touched.cardNumber && errors.cardNumber && (
               <ErrorInputLabel>
