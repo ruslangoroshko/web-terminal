@@ -389,5 +389,9 @@
     "Local Bank Cards": "Local Bank Cards",
     "Online Transfers Cash Payments": "Online Transfers Cash Payments",
     "Bank Transfers": "Bank Transfers",
-    "Few hours": "Few hours"
+    "Few hours": "Few hours",
+    "Cancel Take profit level?": "Cancel Take profit level?",
+    "Cancel Stop loss level?": "Cancel Stop loss level?",
+    "Cancel SL": "Cancel SL",
+    "Cancel TP": "Cancel TP"
 }

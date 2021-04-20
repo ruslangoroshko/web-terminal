@@ -642,10 +642,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                   closePosition(mixpanelValues.CHART),
                   true
                 );
-                tradingViewStore.setConfirmText('Close position?');
+                tradingViewStore.setConfirmText(`${t('Close position')}?`);
                 tradingViewStore.toggleActivePositionPopup(true);
               })
-              .setCancelTooltip('Close position')
+              .setCancelTooltip(t('Close position'))
               .setLineStyle(1)
               .setLineWidth(2)
               .setText(
@@ -698,10 +698,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           .onMove(onMoveSL)
           .onCancel('', function () {
             tradingViewStore.setApplyHandler(removeSLChart);
-            tradingViewStore.setConfirmText('Cancel Stop loss level?');
+            tradingViewStore.setConfirmText(t('Cancel Stop loss level?'));
             tradingViewStore.toggleActivePositionPopup(true);
           })
-          .setCancelTooltip('Cancel SL')
+          .setCancelTooltip(t('Cancel SL'))
           .setText(slText)
           .setQuantity('')
           .setPrice(getActualPricing(sl, 'sl', slType))
@@ -743,11 +743,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           .onMove(onMoveTP)
           .onCancel('', function () {
             tradingViewStore.setApplyHandler(removeTPChart);
-            tradingViewStore.setConfirmText('Cancel Take profit level?');
+            tradingViewStore.setConfirmText(t('Cancel Take profit level?'));
             tradingViewStore.toggleActivePositionPopup(true);
           })
           .setQuantity('')
-          .setCancelTooltip('Cancel TP')
+          .setCancelTooltip(t('Cancel TP'))
           .setText(tpText)
           .setPrice(getActualPricing(tp, 'tp', tpType))
           .setExtendLeft(false)
