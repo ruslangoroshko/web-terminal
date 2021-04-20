@@ -415,8 +415,7 @@ const VisaMasterCardForm = () => {
                 /\d/,
                 /\d/,
               ]}
-              onChange={(e) => e.preventDefault()}
-              onInput={handleChangeInput}
+              onChange={handleChangeInput}
               autoComplete="cc-number"
               value={values.cardNumber}
               name="cardNumber"
