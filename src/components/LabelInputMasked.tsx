@@ -59,7 +59,7 @@ const LabelInputMasked: FC<Props> = (props) => {
         autoComplete={autoComplete}
       ></Input>
       <Label>{labelText}</Label>
-      {hasError && focused && (
+      {hasError && (
         <ErropPopup
           textColor="#fffccc"
           bgColor="#ED145B"
