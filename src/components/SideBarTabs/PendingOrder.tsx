@@ -153,7 +153,7 @@ const PendingOrder: FC<Props> = (props) => {
               marginRight="4px"
               width="100%"
             >
-              <FlexContainer>
+              <FlexContainer marginBottom={pendingOrder.openPrice.toFixed(+precision).length >= 12 ? "2px" : ""}>
                 <FlexContainer marginRight="4px">
                   <SvgIcon
                     {...Icon}
@@ -168,7 +168,7 @@ const PendingOrder: FC<Props> = (props) => {
                   {isBuy ? t('Buy') : t('Sell')}
                 </PrimaryTextSpan>
               </FlexContainer>
-              <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
+              <PrimaryTextSpan fontSize={pendingOrder.openPrice.toFixed(+precision).length >= 12 ? "8px" : "10px"} color="rgba(255, 255, 255, 0.5)">
                 {t('at')} {pendingOrder.openPrice.toFixed(+precision)}
               </PrimaryTextSpan>
             </FlexContainer>
