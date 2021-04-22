@@ -42,6 +42,7 @@ import { keyframes } from '@emotion/core';
 import Directa from './Directa';
 import PayRetailers from './PayRetailers';
 import Volt from './Volt';
+import LoaderForComponents from '../LoaderForComponents';
 
 const depositList = [
   {
@@ -143,7 +144,7 @@ const DepositPopupInner: FC = () => {
 
       case DepositTypeEnum.PayRetailers:
         return <PayRetailers />;
-      
+
       case DepositTypeEnum.Volt:
         return <Volt />;
 
@@ -188,12 +189,14 @@ const DepositPopupInner: FC = () => {
         if (response.status === GetSupportedPaymentSystemsStatuses.Success) {
           const newRoutes = depositList.map((usedPayment) => {
             const returnedPayment = usedPayment;
-            response.data.supportedPaymentSystems.forEach((paymentSystem, index) => {
-              if (usedPayment.id === paymentSystem.paymentSystemType) {
-                returnedPayment.show = true;
-                returnedPayment.order = index;
+            response.data.supportedPaymentSystems.forEach(
+              (paymentSystem, index) => {
+                if (usedPayment.id === paymentSystem.paymentSystemType) {
+                  returnedPayment.show = true;
+                  returnedPayment.order = index;
+                }
               }
-            });
+            );
             return returnedPayment;
           });
           depositFundsStore.setActiveDepositType(
@@ -218,9 +221,9 @@ const DepositPopupInner: FC = () => {
     checkSupportedSystems();
   }, []);
 
-  if (loading) {
-    return null;
-  }
+  // if (loading) {
+  //   return null;
+  // }
 
   return (
     <Modal>
@@ -321,23 +324,26 @@ const DepositPopupInner: FC = () => {
               height="calc(100% - 60px)"
               position="relative"
             >
-              {depositFundsStore.activeDepositType ===
-                DepositTypeEnum.Undefined && (
-                <FlexContainer
-                  width="100%"
-                  height="100%"
-                  alignItems="center"
-                  justifyContent="center"
-                  padding="0 0 70px"
-                  position="absolute"
-                  top="0"
-                  left="0"
-                >
-                  <InfoText>
-                    {t("Sorry! The service isn't available in your region.")}
-                  </InfoText>
-                </FlexContainer>
-              )}
+              {loading && <LoaderForComponents isLoading={loading} />}
+
+              {!loading &&
+                depositFundsStore.activeDepositType ===
+                  DepositTypeEnum.Undefined && (
+                  <FlexContainer
+                    width="100%"
+                    height="100%"
+                    alignItems="center"
+                    justifyContent="center"
+                    padding="0 0 70px"
+                    position="absolute"
+                    top="0"
+                    left="0"
+                  >
+                    <InfoText>
+                      {t("Sorry! The service isn't available in your region.")}
+                    </InfoText>
+                  </FlexContainer>
+                )}
               <FlexContainer
                 padding="32px"
                 flexDirection="column"
@@ -352,65 +358,65 @@ const DepositPopupInner: FC = () => {
                         {usedPaymentSystems
                           .sort((a, b) => (a.order || 0) - (b.order || 0))
                           .map((item) => (
-                          <React.Fragment key={item.id}>
-                            {item.show && (
-                              <PaymentMethodItem
-                                isActive={
-                                  depositFundsStore.activeDepositType ===
-                                  item.id
-                                }
-                                onClick={setActiveDepositType(item.id)}
-                              >
-                                <FlexContainer marginRight="8px">
-                                  {item.id ===
-                                  DepositTypeEnum.ElectronicFundsTransfer ? (
-                                    <PaymentIcon
-                                      isActive={
-                                        depositFundsStore.activeDepositType ===
-                                        item.id
-                                      }
-                                    >
-                                      <ImageBadge
-                                        src={SwiffyIcon}
+                            <React.Fragment key={item.id}>
+                              {item.show && (
+                                <PaymentMethodItem
+                                  isActive={
+                                    depositFundsStore.activeDepositType ===
+                                    item.id
+                                  }
+                                  onClick={setActiveDepositType(item.id)}
+                                >
+                                  <FlexContainer marginRight="8px">
+                                    {item.id ===
+                                    DepositTypeEnum.ElectronicFundsTransfer ? (
+                                      <PaymentIcon
+                                        isActive={
+                                          depositFundsStore.activeDepositType ===
+                                          item.id
+                                        }
+                                      >
+                                        <ImageBadge
+                                          src={SwiffyIcon}
+                                          width={32}
+                                        ></ImageBadge>
+                                      </PaymentIcon>
+                                    ) : (
+                                      <SvgIcon
+                                        {...item.icon}
                                         width={32}
-                                      ></ImageBadge>
-                                    </PaymentIcon>
-                                  ) : (
-                                    <SvgIcon
-                                      {...item.icon}
-                                      width={32}
-                                      fillColor={
+                                        fillColor={
+                                          depositFundsStore.activeDepositType ===
+                                          item.id
+                                            ? '#fffccc'
+                                            : 'rgba(196, 196, 196, 0.5)'
+                                        }
+                                      ></SvgIcon>
+                                    )}
+                                  </FlexContainer>
+                                  <FlexContainer flexDirection="column">
+                                    <PrimaryTextSpan
+                                      fontSize="12px"
+                                      color={
                                         depositFundsStore.activeDepositType ===
                                         item.id
                                           ? '#fffccc'
                                           : 'rgba(196, 196, 196, 0.5)'
                                       }
-                                    ></SvgIcon>
-                                  )}
-                                </FlexContainer>
-                                <FlexContainer flexDirection="column">
-                                  <PrimaryTextSpan
-                                    fontSize="12px"
-                                    color={
-                                      depositFundsStore.activeDepositType ===
-                                      item.id
-                                        ? '#fffccc'
-                                        : 'rgba(196, 196, 196, 0.5)'
-                                    }
-                                  >
-                                    {t(`${item.name}`)}
-                                  </PrimaryTextSpan>
-                                  <PrimaryTextSpan
-                                    fontSize="12px"
-                                    color="rgba(255,255,255,0.4)"
-                                  >
-                                    {t(getDescriptionByMethod(item.id))}
-                                  </PrimaryTextSpan>
-                                </FlexContainer>
-                              </PaymentMethodItem>
-                            )}
-                          </React.Fragment>
-                        ))}
+                                    >
+                                      {t(`${item.name}`)}
+                                    </PrimaryTextSpan>
+                                    <PrimaryTextSpan
+                                      fontSize="12px"
+                                      color="rgba(255,255,255,0.4)"
+                                    >
+                                      {t(getDescriptionByMethod(item.id))}
+                                    </PrimaryTextSpan>
+                                  </FlexContainer>
+                                </PaymentMethodItem>
+                              )}
+                            </React.Fragment>
+                          ))}
                       </>
                     )}
                   </Observer>
@@ -464,7 +470,7 @@ const DepositModalWrap = styled(FlexContainer)`
   border: 1px solid rgba(169, 171, 173, 0.1);
   box-shadow: 0px 34px 44px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
-  animation: ${translateAnimationIn} 0.5s ease;
+  animation: ${translateAnimationIn} 0.3s ease;
   //min-height: 688px;
 `;
 
