@@ -204,15 +204,14 @@ const DepositPopupInner: FC = () => {
               DepositTypeEnum.Undefined
           );
           setUsedPaymentSystems(newRoutes);
-          setLoading(false);
         } else {
           notificationStore.setIsSuccessfull(false);
           notificationStore.setNotification(
             t(depositResponseMessages[response.status])
           );
           notificationStore.openNotification();
-          setLoading(false);
         }
+        setLoading(false);
       } catch (error) {
         setLoading(false);
         push(Page.DEPOSIT_POPUP);
@@ -220,10 +219,6 @@ const DepositPopupInner: FC = () => {
     }
     checkSupportedSystems();
   }, []);
-
-  // if (loading) {
-  //   return null;
-  // }
 
   return (
     <Modal>
