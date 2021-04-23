@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, useRef, createRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import {
   PrimaryTextParagraph,
@@ -38,13 +38,13 @@ import e2eTests from '../../constants/e2eTests';
 import Fields from '../../constants/fields';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { InputMaskedCustom } from '../../styles/FormControls';
+import { logger } from '../../helpers/ConsoleLoggerTool';
 
 const VisaMasterCardForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
   const [loading, setLoading] = useState(false);
 
   const isMozilla = navigator.userAgent.indexOf('Mozilla') !== -1;
-
   const placeholderValues = [250, 500, 1000];
 
   const { t } = useTranslation();
@@ -304,8 +304,9 @@ const VisaMasterCardForm = () => {
   };
 
   const handleChangeFormated = (field: string) => (val: NumberFormatValues) => {
-    setFieldValue(field, val.value);
+    setFieldValue(field, val.formattedValue);
     setFieldError(field, undefined);
+    field
   };
 
   const handlerClickSubmit = async () => {

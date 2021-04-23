@@ -168,7 +168,7 @@ const PendingOrder: FC<Props> = (props) => {
                   {isBuy ? t('Buy') : t('Sell')}
                 </PrimaryTextSpan>
               </FlexContainer>
-              <PrimaryTextSpan fontSize={pendingOrder.openPrice.toFixed(+precision).length >= 12 ? "8px" : "10px"} color="rgba(255, 255, 255, 0.5)">
+              <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
                 {t('at')} {pendingOrder.openPrice.toFixed(+precision)}
               </PrimaryTextSpan>
             </FlexContainer>
