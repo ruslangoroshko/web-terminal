@@ -409,7 +409,7 @@ const VisaMasterCardForm = () => {
               mask={' '}
               format="#### #### #### ####"
               placeholder="1234 5678 9012 3456"
-              defaultValue={values.cardNumber}
+              value={values.cardNumber}
               onValueChange={handleChangeFormated('cardNumber')}
               name="cardNumber"
               id="cardNumber"

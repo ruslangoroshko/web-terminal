@@ -151,9 +151,9 @@ const PendingOrder: FC<Props> = (props) => {
             <FlexContainer
               flexDirection="column"
               marginRight="4px"
-              width="100%"
+              minWidth="90px"
             >
-              <FlexContainer marginBottom={pendingOrder.openPrice.toFixed(+precision).length >= 12 ? "2px" : ""}>
+              <FlexContainer>
                 <FlexContainer marginRight="4px">
                   <SvgIcon
                     {...Icon}
@@ -176,7 +176,7 @@ const PendingOrder: FC<Props> = (props) => {
               flexDirection="column"
               marginRight="8px"
               alignItems="flex-end"
-              minWidth="52px"
+              minWidth="70px"
             >
               <PrimaryTextSpan
                 color="#fffccc"
@@ -184,7 +184,8 @@ const PendingOrder: FC<Props> = (props) => {
                 marginBottom="4px"
               >
                 {currencySymbol}
-                {pendingOrder.investmentAmount.toFixed(2)}
+                1000000.00
+                {/* {pendingOrder.investmentAmount.toFixed(2)} */}
               </PrimaryTextSpan>
               <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.5)">
                 &times;{pendingOrder.multiplier}

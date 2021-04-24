@@ -55,7 +55,7 @@ export default ResizableContainer;
 const RelativeWrapper = styled(FlexContainer)<
   FlexContainerProps & { isActive?: boolean }
 >`
-  max-width: ${props => (props.isActive ? '352px' : '0')};
+  max-width: ${props => (props.isActive ? '360px' : '0')};
   transition: max-width 0.2s ease-in;
   backface-visibility: hidden;
   will-change: max-width, width;
