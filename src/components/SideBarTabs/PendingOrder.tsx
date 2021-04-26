@@ -23,6 +23,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { FormValues } from '../../types/Positions';
 import hasValue from '../../helpers/hasValue';
 import { SortByPendingOrdersEnum } from '../../enums/SortByPendingOrdersEnum';
+import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
+import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
 
 interface Props {
   pendingOrder: PendingOrderWSDTO;
@@ -41,17 +43,36 @@ const PendingOrder: FC<Props> = (props) => {
     instrumentsStore,
     tradingViewStore,
     sortingStore,
+    notificationStore
   } = useStores();
   const clickableWrapperRef = useRef<HTMLDivElement>(null);
 
   const instrumentRef = useRef<HTMLDivElement>(document.createElement('div'));
   const { precision } = useInstrumentPrecision(pendingOrder.instrument);
-  const handleCloseOrder = () => {
-    return API.removePendingOrder({
-      accountId: mainAppStore.activeAccount!.id,
-      orderId: pendingOrder.id,
-      processId: getProcessId(),
-    });
+  
+  const handleCloseOrder = async () => {
+    try {
+      const response = await API.removePendingOrder({
+        accountId: mainAppStore.activeAccount!.id,
+        orderId: pendingOrder.id,
+        processId: getProcessId(),
+      });
+
+      if (response.result === OperationApiResponseCodes.Ok) {
+        notificationStore.setNotification(
+          t('The order has been closed successfully')
+        );
+        notificationStore.setIsSuccessfull(true);
+        notificationStore.openNotification();
+      } 
+      if (response.result !== OperationApiResponseCodes.Ok) {
+        notificationStore.setNotification(
+          t(apiResponseCodeMessages[response.result])
+        );
+        notificationStore.setIsSuccessfull(false);
+        notificationStore.openNotification();
+      }
+    } catch (error) {}
   };
 
   const switchInstrument = (e: any) => {
