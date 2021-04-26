@@ -482,6 +482,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   const { investmentAmount, sl, isToppingUpActive } = watch();
 
   useEffect(() => {
+    clearErrors();
+  }, [mainAppStore.activeAccount, mainAppStore.activeAccount?.balance]);
+
+  useEffect(() => {
     reset();
     SLTPstore.setInstrumentIdNewOrder(instrument.id);
     SLTPstore.setSlTypeNewOrder(TpSlTypeEnum.Currency);
