@@ -1413,6 +1413,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                   buttonLabel={`${t('Close')}`}
                   ref={instrumentRef}
                   confirmText={`${t('Close position')}?`}
+                  beClosed={
+                    tradingViewStore.activePositionPopup ||
+                    SLTPstore.closeOpenPrice
+                  }
                   isButton
                 ></ClosePositionPopup>
               </FlexContainer>

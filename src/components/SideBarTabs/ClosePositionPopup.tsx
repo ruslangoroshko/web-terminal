@@ -15,6 +15,7 @@ interface Props {
   isButton?: boolean;
   alignPopup?: 'left' | 'right';
   buttonLabel: string;
+  beClosed?: boolean;
 }
 
 const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -24,6 +25,7 @@ const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
     confirmText,
     alignPopup = 'left',
     buttonLabel,
+    beClosed
   } = props;
 
   const [on, toggle] = useState(false);
@@ -56,6 +58,10 @@ const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
       toggle(false);
     }
   };
+
+  useEffect(() => {
+    toggle(false);
+  }, [beClosed])
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);

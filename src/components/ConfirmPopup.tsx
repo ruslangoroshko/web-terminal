@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import styled from '@emotion/styled';
@@ -23,6 +23,14 @@ const ConfirmPopup: FC<Props> = ({ toggle, applyHandler, confirmText }) => {
   const handleClose = () => {
     toggle(false);
   };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClose);
+    return () => {
+      document.removeEventListener('mousedown', handleClose);
+    };
+  });
+
   return (
     <FlexContainer
       width="300px"

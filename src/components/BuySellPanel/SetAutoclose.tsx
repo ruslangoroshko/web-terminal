@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import SvgIcon from '../SvgIcon';
 import {
@@ -34,7 +34,11 @@ const SetAutoclose: FC<Props> = observer(
   ({ isDisabled, toggle, children, isActive, isNewOrder }) => {
     const { t } = useTranslation();
 
-    const { instrumentsStore, SLTPstore } = useStores();
+    const {
+      instrumentsStore,
+      SLTPstore,
+      tradingViewStore
+    } = useStores();
 
     const handleBeforeInput = (fieldType: TpSlTypeEnum | null) => (e: any) => {
       let PRECISION = 2;
@@ -131,6 +135,10 @@ const SetAutoclose: FC<Props> = observer(
       clearErrors(field);
       setValue(field, e.target.value);
     };
+
+    useEffect(() => {
+      tradingViewStore.toggleActivePositionPopup(false);
+    }, []);
 
     return (
       <ConnectForm>
