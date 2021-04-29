@@ -295,7 +295,7 @@ const VisaMasterCardForm = () => {
 
   const hadleBeforeInputCardNumber = (e: any) => {
     const value = e.data;
-    if (value.length === 16) {
+    if (value.toString().split(' ').join('').length === 16) {
       const cardNumber = value.toString().replace(/\d{4,5}?(?=...)/g, '$& ');
       setFieldValue(e.target.name, cardNumber);
       return e.preventDefault();
