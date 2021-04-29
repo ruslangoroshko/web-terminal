@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent, useRef, createRef } from 'react';
+import React, { useState, useEffect, ChangeEvent, useRef, createRef, FormEvent } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import {
   PrimaryTextParagraph,
@@ -293,6 +293,15 @@ const VisaMasterCardForm = () => {
     }
   };
 
+  const hadleBeforeInputCardNumber = (e: any) => {
+    const value = e.data;
+    if (value.length === 16) {
+      const cardNumber = value.toString().replace(/\d{4,5}?(?=...)/g, '$& ');
+      setFieldValue(e.target.name, cardNumber);
+      return e.preventDefault();
+    }
+  }
+
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     setFieldError(e.target.name, undefined);
     handleChange(e);
@@ -410,6 +419,7 @@ const VisaMasterCardForm = () => {
               format="#### #### #### ####"
               placeholder="1234 5678 9012 3456"
               value={values.cardNumber}
+              onBeforeInput={hadleBeforeInputCardNumber}
               onValueChange={handleChangeFormated('cardNumber')}
               name="cardNumber"
               id="cardNumber"
