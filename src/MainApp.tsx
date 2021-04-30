@@ -34,9 +34,6 @@ const MainApp: FC = () => {
       <NetworkErrorPopup />
       <SocketErrorPopup />
       <Helmet>
-        <title>{`${mainAppStore.initModel.brandName} ${t(
-          !mainAppStore.isPromoAccount ? 'trading platform' : ''
-        )}`}</title>
         <link rel="shortcut icon" href={mainAppStore.initModel.favicon} />
         <script
           src={`https://www.google.com/recaptcha/api.js?render=${mainAppStore.initModel.recaptchaToken}`}

@@ -71,7 +71,7 @@ const Dashboard: FC = observer(() => {
       <Helmet>
         <title>
           {`${mainAppStore.initModel.brandName} ${t(
-            !mainAppStore.isPromoAccount ? 'trading platform' : ''
+            !mainAppStore.isPromoAccount && !mainAppStore.isInitLoading ? 'trading platform' : ''
           )}`}
         </title>
       </Helmet>
