@@ -36,19 +36,22 @@ const AccountNavPanel = () => {
         <CustomNavLink to={Page.ACCOUNT_SEQURITY} activeClassName="active">
           <AccountLinkSpan color="#fffccc">{t('Security')}</AccountLinkSpan>
         </CustomNavLink>
+        {!mainAppStore.isPromoAccount && (
+          <>
+            <CustomNavLink
+              to={Page.ACCOUNT_BALANCE_HISTORY}
+              activeClassName="active"
+            >
+              <AccountLinkSpan color="#fffccc">
+                {t('Balance history')}
+              </AccountLinkSpan>
+            </CustomNavLink>
 
-        <CustomNavLink
-          to={Page.ACCOUNT_BALANCE_HISTORY}
-          activeClassName="active"
-        >
-          <AccountLinkSpan color="#fffccc">
-            {t('Balance history')}
-          </AccountLinkSpan>
-        </CustomNavLink>
-
-        <CustomNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="active">
-          <AccountLinkSpan color="#fffccc">{t('Withdraw')}</AccountLinkSpan>
-        </CustomNavLink>
+            <CustomNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="active">
+              <AccountLinkSpan color="#fffccc">{t('Withdraw')}</AccountLinkSpan>
+            </CustomNavLink>
+          </>
+        )}
       </FlexContainer>
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={handleLogoutClick}>

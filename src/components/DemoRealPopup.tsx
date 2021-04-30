@@ -31,7 +31,7 @@ function DemoRealPopup() {
   };
 
   const selectDemoAccount = async () => {
-    const acc = mainAppStore.accounts.find(item => !item.isLive);
+    const acc = mainAppStore.accounts.find((item) => !item.isLive);
     if (acc) {
       try {
         await API.setKeyValue({
@@ -52,7 +52,7 @@ function DemoRealPopup() {
   };
 
   const selectRealAccount = async () => {
-    const acc = mainAppStore.accounts.find(item => item.isLive);
+    const acc = mainAppStore.accounts.find((item) => item.isLive);
     if (acc) {
       try {
         await API.setKeyValue({
@@ -130,11 +130,17 @@ function DemoRealPopup() {
                   {t('Practice on Demo')}
                 </PrimaryTextSpan>
               </DemoButton>
-              <RealButton onClick={handleInvestReal}>
-                <PrimaryTextSpan fontSize="14px" fontWeight="bold" color="#000">
-                  {t('Invest Real funds')}
-                </PrimaryTextSpan>
-              </RealButton>
+              {!mainAppStore.isPromoAccount && (
+                <RealButton onClick={handleInvestReal}>
+                  <PrimaryTextSpan
+                    fontSize="14px"
+                    fontWeight="bold"
+                    color="#000"
+                  >
+                    {t('Invest Real funds')}
+                  </PrimaryTextSpan>
+                </RealButton>
+              )}
             </FlexContainer>
           </FlexContainer>
         </BackgroundWrapperLayout>

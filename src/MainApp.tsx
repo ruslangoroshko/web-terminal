@@ -35,7 +35,7 @@ const MainApp: FC = () => {
       <SocketErrorPopup />
       <Helmet>
         <title>{`${mainAppStore.initModel.brandName} ${t(
-          'trading platform'
+          !mainAppStore.isPromoAccount ? 'trading platform' : ''
         )}`}</title>
         <link rel="shortcut icon" href={mainAppStore.initModel.favicon} />
         <script

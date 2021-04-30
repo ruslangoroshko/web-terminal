@@ -32,18 +32,17 @@ const AccountSwitcherDropdown = observer(() => {
   };
 
   useEffect(() => {
-    if (mainAppStore.activeAccount?.balance !== undefined &&
-        accountId === mainAppStore.activeAccount.id) {
-      animateValue(
-        balance,
-        mainAppStore.activeAccount.balance
-      );
+    if (
+      mainAppStore.activeAccount?.balance !== undefined &&
+      accountId === mainAppStore.activeAccount.id
+    ) {
+      animateValue(balance, mainAppStore.activeAccount.balance);
     }
   }, [mainAppStore.activeAccount, mainAppStore.activeAccount?.balance]);
 
   useEffect(() => {
     if (mainAppStore.activeAccount?.balance !== undefined) {
-      setAccountId(mainAppStore.activeAccount.id)
+      setAccountId(mainAppStore.activeAccount.id);
       setBalance(mainAppStore.activeAccount.balance);
     }
   }, [mainAppStore.activeAccount]);
@@ -106,21 +105,23 @@ const AccountSwitcherDropdown = observer(() => {
                   <AccountTotal />
                 </FlexContainer>
               </FlexContainer>
-              <FlexContainer
-                justifyContent="center"
-                alignItems="center"
-                padding="6px"
-              >
-                <SvgIcon
-                  {...IconShevron}
-                  fillColor="rgba(255, 255, 255, 0.6)"
-                  width={6}
-                  height={4}
-                />
-              </FlexContainer>
+              {!mainAppStore.isPromoAccount && (
+                <FlexContainer
+                  justifyContent="center"
+                  alignItems="center"
+                  padding="6px"
+                >
+                  <SvgIcon
+                    {...IconShevron}
+                    fillColor="rgba(255, 255, 255, 0.6)"
+                    width={6}
+                    height={4}
+                  />
+                </FlexContainer>
+              )}
             </FlexContainer>
           </ButtonSwitcher>
-          {on && (
+          {!mainAppStore.isPromoAccount && on && (
             <FlexContainer
               backgroundColor="rgba(21, 22, 25, 0.9)"
               position="fixed"
@@ -129,10 +130,9 @@ const AccountSwitcherDropdown = observer(() => {
               width="100vw"
               height="100vh"
               zIndex="198"
-            >
-            </FlexContainer>
+            ></FlexContainer>
           )}
-          {on && (
+          {!mainAppStore.isPromoAccount && on && (
             <Observer>
               {() => (
                 <FlexContainer

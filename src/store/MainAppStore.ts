@@ -56,6 +56,7 @@ import { languagesList } from '../constants/languagesList';
 import { PositionModelWSDTO } from '../types/Positions';
 import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { BrandEnum } from '../constants/brandingLinksTranslate';
+import { logger } from '../helpers/ConsoleLoggerTool';
 
 interface MainAppStoreProps {
   token: string;
@@ -75,6 +76,7 @@ interface MainAppStoreProps {
   initModel: InitModel;
   lang: CountriesEnum;
   activeAccountId: string;
+  isPromoAccount: boolean;
 }
 
 // TODO: think about application initialization
@@ -127,6 +129,8 @@ export class MainAppStore implements MainAppStoreProps {
   paramsPortfolioOrder: string | null = null;
   paramsPortfolioHistory: string | null | undefined = undefined;
   paramsDeposit: boolean = false;
+
+  isPromoAccount = false;
 
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
@@ -391,9 +395,18 @@ export class MainAppStore implements MainAppStoreProps {
 
   getActiveAccount = async () => {
     try {
+      const activeAccountTarget = await API.getKeyValue(
+        KeysInApi.ACTIVE_ACCOUNT_TARGET
+      );
+
+      if (activeAccountTarget === "facebook") {
+        this.isPromoAccount = true;
+      }
+
       const activeAccountId = await API.getKeyValue(
         KeysInApi.ACTIVE_ACCOUNT_ID
       );
+      
       const activeAccount = this.accounts.find(
         (item) => item.id === activeAccountId
       );

@@ -35,9 +35,13 @@ const NavBar = observer(() => {
         <FlexContainer alignItems="center" margin="0 20px 0 0">
           <AccountSwitcherDropdown></AccountSwitcherDropdown>
         </FlexContainer>
-        <FlexContainer margin="0 20px 0 0">
-          <DepositButton />
-        </FlexContainer>
+
+        {!mainAppStore.isPromoAccount && (
+          <FlexContainer margin="0 20px 0 0">
+            <DepositButton />
+          </FlexContainer>
+        )}
+
         <UserProfileButton></UserProfileButton>
         <NavBarButtonsWrapper>
           <LanguageButton></LanguageButton>
