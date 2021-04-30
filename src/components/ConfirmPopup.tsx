@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import styled from '@emotion/styled';
@@ -23,11 +23,18 @@ const ConfirmPopup: FC<Props> = ({ toggle, applyHandler, confirmText }) => {
   const handleClose = () => {
     toggle(false);
   };
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (e: any) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      toggle(false);
+    }
+  };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClose);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClose);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   });
 
@@ -39,6 +46,7 @@ const ConfirmPopup: FC<Props> = ({ toggle, applyHandler, confirmText }) => {
       borderRadius="4px"
       backgroundColor="#1C2026"
       flexDirection="column"
+      ref={wrapperRef}
     >
       <FlexContainer position="absolute" right="16px" top="16px">
         <ButtonWithoutStyles onClick={handleClose}>
