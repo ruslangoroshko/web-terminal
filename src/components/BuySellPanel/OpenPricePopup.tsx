@@ -399,6 +399,14 @@ const ButtonAutoClosePurchase = styled(SecondaryButton)<{
   display: flex;
   justify-content: ${(props) => (props.hasPrice ? 'space-between' : 'center')};
   align-items: center;
+
+  &:active, &:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.24) !important;
+  }
 `;
 
 const ClearOpenPriceButton = styled(ButtonWithoutStyles)`

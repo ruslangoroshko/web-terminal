@@ -85,18 +85,24 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       yup.object().shape<FormValues>({
         investmentAmount: yup
           .number()
-          .test(
-            Fields.INVEST_AMOUNT,
-            `${t('Insufficient funds to open a position. You have only')} $${
-              mainAppStore.activeAccount?.balance
-            }`,
-            (value) => {
-              if (value) {
-                return value <= (mainAppStore.activeAccount?.balance || 0);
-              }
-              return true;
-            }
-          )
+          .when(['openPrice'], {
+            is: (val) => isNaN(val),
+            then: yup
+              .number()
+              .test(
+                Fields.INVEST_AMOUNT,
+                `${t(
+                  'Insufficient funds to open a position. You have only'
+                )} $${mainAppStore.activeAccount?.balance}`,
+                (value) => {
+                  if (value) {
+                    return value <= (mainAppStore.activeAccount?.balance || 0);
+                  }
+                  return true;
+                }
+              ),
+          })
+
           .test(
             Fields.INVEST_AMOUNT,
             `${t('Minimum trade volume')} $${

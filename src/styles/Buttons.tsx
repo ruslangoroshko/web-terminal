@@ -39,12 +39,12 @@ export const SecondaryButton = styled(ButtonWithoutStyles)`
   border-radius: 4px;
   transition: background-color 0.2s ease;
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.24);
-  }
-
   &:focus {
     background-color: rgba(0, 0, 0, 0.24);
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.24);
   }
 
   &:disabled {
