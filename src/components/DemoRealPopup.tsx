@@ -125,7 +125,7 @@ function DemoRealPopup() {
               {t('You Have Been Successfully Registered')}
             </PrimaryTextParagraph>
             <FlexContainer justifyContent="space-between">
-              <DemoButton onClick={selectDemoAccount}>
+              <DemoButton onClick={selectDemoAccount} isSingle={mainAppStore.isPromoAccount}>
                 <PrimaryTextSpan fontSize="14px" fontWeight="bold" color="#fff">
                   {t('Practice on Demo')}
                 </PrimaryTextSpan>
@@ -151,15 +151,14 @@ function DemoRealPopup() {
 
 export default DemoRealPopup;
 
-const DemoButton = styled(ButtonWithoutStyles)`
+const DemoButton = styled(ButtonWithoutStyles)<{isSingle: boolean;}>`
   border-radius: 4px;
   background-color: #ff0764;
   width: 200px;
   height: 40px;
-  margin-right: 30px;
   transition: all 0.2s ease;
   will-change: background-color;
-
+  margin-right: ${props => props.isSingle ? '' : '30px'};
   &:hover {
     background-color: #ff557e;
   }
