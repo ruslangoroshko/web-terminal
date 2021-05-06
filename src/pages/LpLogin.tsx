@@ -5,9 +5,10 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import Page from '../constants/Pages';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
+import { CountriesEnum } from '../enums/CountriesEnum';
 
 interface QueryParams {
-  lang: string;
+  lang: CountriesEnum;
   token: string;
   page?: 'withdrawal' | 'deposit';
 }
@@ -52,9 +53,11 @@ const LpLogin = observer(() => {
       }
     }
     fetchLpLogin();
-    const pageLang = pageParams.get('lang');
+    const pageLang: CountriesEnum = pageParams.get('lang')?.toLowerCase() as CountriesEnum || CountriesEnum.EN;
+    console.log(pageLang)
     if (pageLang) {
       i18n.changeLanguage(pageLang);
+      mainAppStore.setLanguage(pageLang);
     }
   }, []);
 
