@@ -1,16 +1,18 @@
 import React, { FC, useEffect } from 'react';
 import routesList, { RouteLayoutType } from '../constants/routesList';
 import RouteWrapper from '../components/RouteWrapper';
-import { useLocation, matchPath, Switch } from 'react-router-dom';
+import { useLocation, matchPath, Switch, useHistory } from 'react-router-dom';
 import AuthorizedContainer from '../containers/AuthorizedContainer';
 import { FlexContainer } from '../styles/FlexContainer';
 import KYCcontainer from '../containers/KYCcontainer';
 import { useStores } from '../hooks/useStores';
 import LoaderFullscreen from '../components/LoaderFullscreen';
 import { Observer } from 'mobx-react-lite';
+import Page from '../constants/Pages';
 
 const RoutingLayout: FC = () => {
   const location = useLocation();
+  const { push } = useHistory()
   const { mainAppStore } = useStores();
 
   const allRoutes = routesList.map((route) => (
@@ -25,6 +27,8 @@ const RoutingLayout: FC = () => {
 
   if (currentRoute) {
     layoutType = currentRoute.layoutType;
+  } else {
+    push(Page.DASHBOARD)
   }
 
   switch (layoutType) {

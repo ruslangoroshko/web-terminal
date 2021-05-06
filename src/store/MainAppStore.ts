@@ -151,8 +151,10 @@ export class MainAppStore implements MainAppStoreProps {
     // @ts-ignore
     this.lang =
       localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
-      ((window.navigator.language &&
-        languagesList.includes(window.navigator.language.slice(0, 2).toLowerCase()))
+      (window.navigator.language &&
+      languagesList.includes(
+        window.navigator.language.slice(0, 2).toLowerCase()
+      )
         ? window.navigator.language.slice(0, 2).toLowerCase()
         : CountriesEnum.EN);
     injectInerceptors(this);
@@ -250,7 +252,8 @@ export class MainAppStore implements MainAppStoreProps {
       Topics.UPDATE_ACCOUNT,
       (response: ResponseFromWebsocket<AccountModelWebSocketDTO>) => {
         // this.setActiveAccountId(response.data.id);
-        const isCurrentAcc = this.activeAccount?.id === response.data.id ? response.data : null;
+        const isCurrentAcc =
+          this.activeAccount?.id === response.data.id ? response.data : null;
         if (isCurrentAcc !== null) {
           this.setActiveAccount(isCurrentAcc);
         }
@@ -398,22 +401,18 @@ export class MainAppStore implements MainAppStoreProps {
       const activeAccountTarget = await API.getKeyValue(
         KeysInApi.ACTIVE_ACCOUNT_TARGET
       );
-      let loadAccount = true;
-      if (activeAccountTarget === "facebook") {
+
+      if (activeAccountTarget === 'facebook') {
         this.isPromoAccount = true;
-        loadAccount = false;
       }
 
       let activeAccount;
-      if (loadAccount) {
-        const activeAccountId = await API.getKeyValue(
-          KeysInApi.ACTIVE_ACCOUNT_ID
-        );
-        activeAccount = this.accounts.find(
-          (item) => item.id === activeAccountId
-        );
-      }
-      
+
+      const activeAccountId = await API.getKeyValue(
+        KeysInApi.ACTIVE_ACCOUNT_ID
+      );
+      activeAccount = this.accounts.find((item) => item.id === activeAccountId);
+
       if (activeAccount) {
         this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: activeAccount.id,
@@ -566,9 +565,15 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.tradingViewStore.setSelectedHistory(undefined);
     this.rootStore.quotesStore.setSelectedPositionId(null);
     this.rootStore.withdrawalStore.setHistory(null);
-    this.rootStore.sortingStore.setActivePositionsSortBy(SortByProfitEnum.NewFirstAsc);
-    this.rootStore.sortingStore.setPendingOrdersSortBy(SortByPendingOrdersEnum.NewFirstAsc);
-    this.rootStore.dateRangeStore.setDropdownValueType(ShowDatesDropdownEnum.Week);
+    this.rootStore.sortingStore.setActivePositionsSortBy(
+      SortByProfitEnum.NewFirstAsc
+    );
+    this.rootStore.sortingStore.setPendingOrdersSortBy(
+      SortByPendingOrdersEnum.NewFirstAsc
+    );
+    this.rootStore.dateRangeStore.setDropdownValueType(
+      ShowDatesDropdownEnum.Week
+    );
     this.rootStore.dateRangeStore.setStartDate(moment().subtract(1, 'weeks'));
     this.rootStore.tabsStore.setPortfolioTab(PortfolioTabEnum.Portfolio);
     if (this.activeAccount) {

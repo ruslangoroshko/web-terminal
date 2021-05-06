@@ -19,9 +19,12 @@ import OrdersExpanded from '../components/SideBarTabs/OrdersExpanded';
 import Markets from '../components/SideBarTabs/Markets';
 import DepositPopupWrapper from '../components/DepositPopup/DepositPopupWrapper';
 import DepositPaymentResultPopup from '../components/DepositPopup/DepositPaymentResultPopup/DepositPaymentResultPopup';
-import { LOCAL_PORTFOLIO_TABS, LOCAL_STORAGE_SIDEBAR } from '../constants/global';
+import {
+  LOCAL_PORTFOLIO_TABS,
+  LOCAL_STORAGE_SIDEBAR,
+} from '../constants/global';
 import NotificationPopup from '../components/NotificationPopup';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import Page from '../constants/Pages';
 
 interface Props {}
@@ -99,6 +102,23 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
   const { tabsStore, mainAppStore, notificationStore } = useStores();
   const { push } = useHistory();
 
+  const hidenPromoPageList = useRouteMatch([
+    Page.ACCOUNT_WITHDRAW,
+    Page.DEPOSIT_POPUP,
+    Page.ACCOUNT_DEPOSIT,
+    Page.ACCOUNT_BALANCE_HISTORY,
+    Page.PROOF_OF_IDENTITY,
+  ]);
+
+  const isHiddenPromoPage = hidenPromoPageList?.isExact;
+  
+
+  useEffect(() =>{
+    if (mainAppStore.isPromoAccount && isHiddenPromoPage) {
+      push(Page.DASHBOARD);
+    }
+  }, [mainAppStore.isPromoAccount])
+
   useEffect(() => {
     const wasOpen = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
     if (wasOpen) {
@@ -151,7 +171,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
     mainAppStore.paramsDeposit,
     mainAppStore.paramsPortfolioActive,
     mainAppStore.paramsPortfolioHistory,
-    mainAppStore.paramsPortfolioOrder
+    mainAppStore.paramsPortfolioOrder,
   ]);
 
   return (
@@ -186,7 +206,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
       <Observer>
         {() => (
           <>
-            {mainAppStore.activeAccount && (
+            {!mainAppStore.isPromoAccount && mainAppStore.activeAccount && (
               <>
                 <DepositPaymentResultPopup />
                 <DepositPopupWrapper />

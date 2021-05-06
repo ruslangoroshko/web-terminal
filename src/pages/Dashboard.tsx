@@ -44,7 +44,7 @@ const Dashboard: FC = observer(() => {
     if (location.search) {
       const params = new URLSearchParams(location.search);
       const status = params.get('status');
-      if (status) {
+      if (!mainAppStore.isPromoAccount && status) {
         setPaymentStatus(status);
         if (status === 'failed') {
           mixpanel.track(mixpanelEvents.DEPOSIT_FAILED);
