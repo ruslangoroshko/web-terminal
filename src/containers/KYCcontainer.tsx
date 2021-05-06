@@ -4,12 +4,20 @@ import NavBar from '../components/NavBar/NavBar';
 import StepsContainter from '../components/KYC/StepsContainter';
 import { useStores } from '../hooks/useStores';
 import { observer } from 'mobx-react-lite';
+import { useHistory } from 'react-router';
+import Page from '../constants/Pages';
 
-const KYCcontainer: FC = observer(props => {
+const KYCcontainer: FC = observer((props) => {
   const { children } = props;
   const { mainAppStore } = useStores();
+  const { push } = useHistory();
   const [showNavBar, setShowNavBar] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (mainAppStore.isPromoAccount) {
+      push(Page.DASHBOARD);
+    }
+  }, [mainAppStore.isPromoAccount]);
   useEffect(() => {
     if (mainAppStore.activeAccount) {
       setShowNavBar(true);
