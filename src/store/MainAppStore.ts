@@ -554,6 +554,7 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_HISTORY_TIME);
     localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
     localStorage.removeItem(LOCAL_HISTORY_PAGE);
+    this.isPromoAccount = false;
     this.setInitLoading(false);
     this.setIsLoading(false);
     this.token = '';
