@@ -505,6 +505,9 @@ export class MainAppStore implements MainAppStoreProps {
       this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
       mixpanel.track(mixpanelEvents.LOGIN);
+
+      //  we should sign out current user if logined anotger user
+      document.location.reload();
     }
 
     if (
