@@ -321,9 +321,19 @@ const VisaMasterCardForm = () => {
   };
 
   const handleChangeFormated = (field: string) => (val: NumberFormatValues) => {
-    setFieldValue(field, val.formattedValue);
+    if (field === 'cardNumber') {
+      if (val.value.toString().split(' ').join('').length === 16) {
+        const cardNumber = val.value.toString().replace(/\d{4,5}?(?=...)/g, '$& ');
+        setFieldValue(field, cardNumber);
+      } else {
+        setFieldValue(field, val.formattedValue);
+      }
+    } else {
+      setFieldValue(field, val.formattedValue);
+    }
+    
     setFieldError(field, undefined);
-    field
+    
   };
 
   const handlerClickSubmit = async () => {
