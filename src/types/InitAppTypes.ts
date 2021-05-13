@@ -19,4 +19,5 @@ export interface InitModel {
   favicon: string;
   mixpanelToken: string;
   recaptchaToken: string;
+  miscUrl: string;
 }

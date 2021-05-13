@@ -18,6 +18,7 @@ const Page = {
   ACCOUNT_HISTORY_QUOTES: '/account-history-quotes',
   PAYMENTS: '/payments/:status',
   DEPOSIT_POPUP: '/#deposit',
+  ONBOARDING: '/onboarding',
 
   ABOUT_US: 'https://www.monfex.com/why-us',
   FAQ: '#',

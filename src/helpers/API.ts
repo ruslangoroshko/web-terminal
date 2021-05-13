@@ -63,6 +63,7 @@ import {
 import { ListForEN } from '../constants/listOfLanguages';
 import { PendingOrderResponseDTO } from '../types/PendingOrdersTypes';
 import { BrandEnum } from '../constants/brandingLinksTranslate';
+import { OnBoardingInfo } from '../types/OnBoardingTypes';
 
 class API {
   convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -517,6 +518,13 @@ class API {
       country: string;
       dial: string;
     }>(`${API_AUTH_STRING || authUrl}${AUTH_API_LIST.COMMON.GEOLOCATION_INFO}`);
+    return response.data;
+  };
+
+  getOnBoardingInfoByStep = async (stepNumber: number, deviceType: number, miscUrl: string) => {
+    const response = await axios.get<OnBoardingInfo>(
+      `${API_MISC_STRING || miscUrl}${API_LIST.ONBOARDING.STEPS}/${stepNumber}?deviceTypeId=${deviceType}`
+    );
     return response.data;
   };
 }

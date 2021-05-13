@@ -10,8 +10,9 @@ import PhoneVerification from '../pages/PhoneVerification';
 import ProofOfIdentity from '../pages/ProofOfIdentity';
 import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
-import Withdraw from "../pages/Withdraw";
+import Withdraw from '../pages/Withdraw';
 import LpLogin from '../pages/LpLogin';
+import Onboarding from '../pages/Onboarding';
 
 
 export enum RouteLayoutType {
@@ -99,18 +100,27 @@ const routesList = [
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.KYC,
-  },  {
+  },
+  {
     component: PhoneVerification,
     path: Page.PHONE_VERIFICATION,
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.KYC,
-  },  {
+  },
+  {
     component: ProofOfIdentity,
     path: Page.PROOF_OF_IDENTITY,
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.KYC,
+  },
+  {
+    component: Onboarding,
+    path: Page.ONBOARDING,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.Public,
   },
 ];
 

@@ -38,6 +38,7 @@ declare const API_STRING: string;
 declare const API_DEPOSIT_STRING: string;
 declare const API_WITHDRAWAL_STRING: string;
 declare const API_AUTH_STRING: string;
+declare const API_MISC_STRING: string;
 declare const CHARTING_LIBRARY_PATH: string;
 declare const IS_LIVE: string;
 declare const BUILD_VERSION: string;

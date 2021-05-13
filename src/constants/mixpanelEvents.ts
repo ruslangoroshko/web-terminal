@@ -50,6 +50,7 @@ const mixpanelEvents = {
   EDIT_SLTP: 'edit sltp',
   EDIT_SLTP_FAILED: 'edit sltp failed',
   DEMO_REAL_WELCOME: 'demo real welcome',
+  ONBOARDING: 'onboarding1',
 };
 
 Object.freeze(mixpanelEvents);

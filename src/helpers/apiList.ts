@@ -51,6 +51,9 @@ const API_LIST = {
     HISTORY: '/withdrawal/history',
     CANCEL: '/withdrawal/cancel',
   },
+  ONBOARDING: {
+    STEPS: '/api/v1/OnboardingSteps'
+  }
 };
 
 Object.freeze(API_LIST);
