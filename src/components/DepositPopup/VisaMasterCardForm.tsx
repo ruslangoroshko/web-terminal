@@ -306,7 +306,7 @@ const VisaMasterCardForm = () => {
       setFieldValue(e.target.name, cardNumber);
       numberCardInputRef?.current?.focus();
       console.log(numberCardInputRef?.current);
-      return e.preventDefault();
+      return cardNumber;
     }
   }
 
