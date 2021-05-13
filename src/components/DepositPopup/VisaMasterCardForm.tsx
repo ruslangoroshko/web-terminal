@@ -1,4 +1,11 @@
-import React, { useState, useEffect, ChangeEvent, useRef, createRef, FormEvent } from 'react';
+import React, {
+  useState,
+  useEffect,
+  ChangeEvent,
+  useRef,
+  createRef,
+  FormEvent,
+} from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import {
   PrimaryTextParagraph,
@@ -297,18 +304,13 @@ const VisaMasterCardForm = () => {
   };
 
   const hadleBeforeInputCardNumber = (e: any) => {
-    
     const value = e.data;
-    logger(`newvalue ${value}`)
     if (value.toString().split(' ').join('').length === 16) {
       const cardNumber = value.toString().replace(/\d{4,5}?(?=...)/g, '$& ');
-      logger(`new number ${cardNumber}`)
       setFieldValue(e.target.name, cardNumber);
-      numberCardInputRef?.current?.focus();
-      console.log(numberCardInputRef?.current);
       return cardNumber;
     }
-  }
+  };
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     setFieldError(e.target.name, undefined);
@@ -321,21 +323,8 @@ const VisaMasterCardForm = () => {
   };
 
   const handleChangeFormated = (field: string) => (val: NumberFormatValues) => {
-    if (field === 'cardNumber') {
-      if (val.value.toString().split(' ').join('').length === 16) {
-        const cardNumber = val.value.toString().replace(/\d{4,5}?(?=...)/g, '$& ');
-        setFieldValue(field, cardNumber);
-        numberCardInputRef?.current?.focus();
-        console.log('change number card')
-      } else {
-        setFieldValue(field, val.formattedValue);
-      }
-    } else {
-      setFieldValue(field, val.formattedValue);
-    }
-    
+    setFieldValue(field, val.formattedValue);
     setFieldError(field, undefined);
-    
   };
 
   const handlerClickSubmit = async () => {
@@ -441,10 +430,10 @@ const VisaMasterCardForm = () => {
               value={values.cardNumber}
               onBeforeInput={hadleBeforeInputCardNumber}
               onValueChange={handleChangeFormated('cardNumber')}
+              displayType={'text'}
               name="cardNumber"
               id="cardNumber"
               inputMode="numeric"
-              getInputRef={numberCardInputRef}
               autoComplete="cc-number"
               customInput={InputMaskedCustom}
               className={`input-border ${
@@ -489,6 +478,7 @@ const VisaMasterCardForm = () => {
                 onBeforeInput={handleBeforeInputChange}
                 value={values.expirationDate}
                 onChange={handleChangeExpireDate}
+                autocomplete="cc-exp"
                 //maxLength={5}
                 name="expirationDate"
                 id="expirationDate"
