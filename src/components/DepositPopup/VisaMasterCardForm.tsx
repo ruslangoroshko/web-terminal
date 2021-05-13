@@ -49,6 +49,9 @@ const VisaMasterCardForm = () => {
 
   const { t } = useTranslation();
   const { push } = useHistory();
+
+  const numberCardInputRef = useRef<HTMLInputElement>(null);
+
   const validationSchema = yup.object().shape({
     amount: yup
       .number()
@@ -294,10 +297,15 @@ const VisaMasterCardForm = () => {
   };
 
   const hadleBeforeInputCardNumber = (e: any) => {
+    
     const value = e.data;
+    logger(`newvalue ${value}`)
     if (value.toString().split(' ').join('').length === 16) {
       const cardNumber = value.toString().replace(/\d{4,5}?(?=...)/g, '$& ');
+      logger(`new number ${cardNumber}`)
       setFieldValue(e.target.name, cardNumber);
+      numberCardInputRef?.current?.focus();
+      console.log(numberCardInputRef?.current);
       return e.preventDefault();
     }
   }
@@ -424,6 +432,7 @@ const VisaMasterCardForm = () => {
               name="cardNumber"
               id="cardNumber"
               inputMode="numeric"
+              getInputRef={numberCardInputRef}
               autoComplete="cc-number"
               customInput={InputMaskedCustom}
               className={`input-border ${
