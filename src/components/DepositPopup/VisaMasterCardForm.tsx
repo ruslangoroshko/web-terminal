@@ -325,6 +325,8 @@ const VisaMasterCardForm = () => {
       if (val.value.toString().split(' ').join('').length === 16) {
         const cardNumber = val.value.toString().replace(/\d{4,5}?(?=...)/g, '$& ');
         setFieldValue(field, cardNumber);
+        numberCardInputRef?.current?.focus();
+        console.log('change number card')
       } else {
         setFieldValue(field, val.formattedValue);
       }
