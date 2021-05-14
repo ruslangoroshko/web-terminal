@@ -312,6 +312,11 @@ const VisaMasterCardForm = () => {
     }
   };
 
+  const handleFocusCardNumber = (e: any) => {
+    console.log('focus found');
+    e.target.setSelectionRange(19, 19);
+  };
+
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     setFieldError(e.target.name, undefined);
     handleChange(e);
@@ -429,8 +434,9 @@ const VisaMasterCardForm = () => {
               placeholder="1234 5678 9012 3456"
               value={values.cardNumber}
               onBeforeInput={hadleBeforeInputCardNumber}
+              onFocus={handleFocusCardNumber}
               onValueChange={handleChangeFormated('cardNumber')}
-              displayType={'text'}
+              // displayType={'text'}
               name="cardNumber"
               id="cardNumber"
               inputMode="numeric"
@@ -478,7 +484,7 @@ const VisaMasterCardForm = () => {
                 onBeforeInput={handleBeforeInputChange}
                 value={values.expirationDate}
                 onChange={handleChangeExpireDate}
-                autocomplete="cc-exp"
+                autoComplete="cc-exp"
                 //maxLength={5}
                 name="expirationDate"
                 id="expirationDate"
