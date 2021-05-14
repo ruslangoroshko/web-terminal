@@ -44,7 +44,7 @@ const TradingHistory: FC = observer(() => {
               ? parseInt(dataStart)
               : dataStart
           ).valueOf(),
-          endDate: moment().valueOf(),
+          endDate: moment().valueOf() + 1000,
           page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
           pageSize: 20,
         });
