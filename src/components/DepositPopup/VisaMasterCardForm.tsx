@@ -314,7 +314,9 @@ const VisaMasterCardForm = () => {
 
   const handleFocusCardNumber = (e: any) => {
     console.log('focus found');
-    e.target.setSelectionRange(19, 19);
+    setTimeout(() => {
+      e.target.setSelectionRange(19, 19);
+    }, 500);
   };
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
