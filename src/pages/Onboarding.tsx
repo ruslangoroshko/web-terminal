@@ -160,6 +160,13 @@ const Onboarding = () => {
     });
   }, []);
 
+  useEffect(() => {
+    // TODO: Нужно перенести это в контейнер 
+    if (mainAppStore.isPromoAccount) {
+      push(Page.DASHBOARD)
+    }
+  }, [mainAppStore.isPromoAccount]);
+
   if (loading || actualStepInfo === null ) {
     return <LoaderForComponents isLoading={loading} />;
   }
