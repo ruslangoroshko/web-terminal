@@ -31,7 +31,13 @@ interface Props {
 }
 
 const SetAutoclose: FC<Props> = observer(
-  ({ isDisabled, toggle, children, isActive, isNewOrder }) => {
+  ({
+     isDisabled,
+     toggle,
+     children,
+     isActive,
+     isNewOrder
+  }) => {
     const { t } = useTranslation();
 
     const {

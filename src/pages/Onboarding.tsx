@@ -71,12 +71,19 @@ const Onboarding = () => {
   };
 
   const closeOnBoarding = () => {
-    if (actualStepInfo?.data.totalSteps) {
+    if (
+      actualStepInfo?.data.totalSteps &&
+      actualStepInfo?.data.totalSteps !== actualStep
+    ) {
       mixpanel.track(mixpanelEvents.ONBOARDING, {
         [mixapanelProps.ONBOARDING_VALUE]: `close${actualStep}`,
       });
-      setActualStep(actualStepInfo?.data.totalSteps);
       getInfoByStep(actualStepInfo?.data.totalSteps);
+    } else {
+      mixpanel.track(mixpanelEvents.ONBOARDING, {
+        [mixapanelProps.ONBOARDING_VALUE]: `close${actualStep}`,
+      });
+      push(Page.DASHBOARD);
     }
   };
 
@@ -199,7 +206,10 @@ const Onboarding = () => {
         />
       </FlexContainer>
       {!actualStepInfo?.data.fullScreen &&
-        <>
+        <BottomWrapper
+          justifyContent="center"
+          flexDirection="column"
+        >
           <FlexContainer
             width="100%"
             alignItems="center"
@@ -253,7 +263,7 @@ const Onboarding = () => {
               </PrimaryTextSpan>
             </OnboardingButton>)}
           </FlexContainer>
-        </>
+        </BottomWrapper>
       }
     </FlexContainer>
   );
@@ -290,11 +300,17 @@ const PageTitle = styled(PrimaryTextSpan)`
 `;
 
 const translateAnimationIn = keyframes`
-    from {
+    0% {
       transform: translateY(150px);
       opacity: 0;
     }
-    to {
+    
+    50% {
+      transform: translateY(150px);
+      opacity: 0;
+    }
+    
+    100% {
       transform: translateY(0);
       opacity: 1;
     }
@@ -312,10 +328,13 @@ const buttonAnimation = keyframes`
 const BottomWrapper = styled(FlexContainer)`
   opacity: 1;
   transform: translateY(0);
-  animation: ${translateAnimationIn} 0.5s ease;
+  animation: ${translateAnimationIn} 1s ease;
 `;
 
 const OnboardingButton = styled(PrimaryButton)<{ isDemo: boolean }>`
   animation: ${(props) => !props.isDemo && buttonAnimation} 2s ease;
-  background-color: ${(props) => props.isDemo && 'transparent'}
+  background-color: ${(props) => props.isDemo && 'transparent'};
+  &:hover {
+    background-color: ${(props) => props.isDemo && 'transparent'};
+  }
 `;

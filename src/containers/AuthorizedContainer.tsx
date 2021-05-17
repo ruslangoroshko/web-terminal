@@ -108,6 +108,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
     Page.ACCOUNT_DEPOSIT,
     Page.ACCOUNT_BALANCE_HISTORY,
     Page.PROOF_OF_IDENTITY,
+    Page.ONBOARDING,
   ]);
 
   const isHiddenPromoPage = hidenPromoPageList?.isExact;

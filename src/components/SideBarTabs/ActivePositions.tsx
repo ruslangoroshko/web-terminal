@@ -684,7 +684,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     const slText: string = sl
       ? `STOP LOSS ${
           slType === TpSlTypeEnum.Price
-            ? `${getNumberSign(getNewPricing(sl, 'sl'))}${mainAppStore.activeAccount?.symbol}${Math.abs(getNewPricing(sl, 'sl')).toFixed(2)}`
+            ? `${
+                  getNumberSign(
+                    getNewPricing(sl, 'sl')
+                  )
+                }${
+                  mainAppStore.activeAccount?.symbol
+                }${
+                  Math.abs(getNewPricing(sl, 'sl')).toFixed(2)
+                }`
             : `-${mainAppStore.activeAccount?.symbol}${Math.abs(sl)}`
         }`
       : '';
