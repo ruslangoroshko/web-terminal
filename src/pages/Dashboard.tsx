@@ -85,11 +85,11 @@ const Dashboard: FC = observer(() => {
         )}
       </Observer>
 
-      <Observer>
-        {() => (
-          <>{mainAppStore.isDemoRealPopup && <DemoRealPopup></DemoRealPopup>}</>
-        )}
-      </Observer>
+      {/*<Observer>*/}
+      {/*  {() => (*/}
+      {/*    <>{mainAppStore.isDemoRealPopup && <DemoRealPopup></DemoRealPopup>}</>*/}
+      {/*  )}*/}
+      {/*</Observer>*/}
       {!!paymentStatus && (
         <StatusPaymentPopup status={paymentStatus}></StatusPaymentPopup>
       )}

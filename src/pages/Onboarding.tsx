@@ -282,8 +282,8 @@ const BackButton = styled(ButtonWithoutStyles)`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   z-index: 1;
   position: absolute;
   top: 12px;
