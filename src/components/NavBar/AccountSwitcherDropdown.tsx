@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { FlexContainer } from '../../styles/FlexContainer';
 import Toggle from '../Toggle';
@@ -11,6 +11,8 @@ import { observer, Observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import AccountTotal from './AccountTotal';
 import styled from '@emotion/styled';
+import { moneyFormat } from '../../helpers/moneyFormat';
+import { logger } from '../../helpers/ConsoleLoggerTool';
 
 const AccountSwitcherDropdown = observer(() => {
   const { mainAppStore } = useStores();
@@ -64,7 +66,7 @@ const AccountSwitcherDropdown = observer(() => {
                         fontSize="16px"
                       >
                         {mainAppStore.activeAccount?.symbol}
-                        {balance.toFixed(2)}
+                        {moneyFormat(balance)}
                       </PrimaryTextSpan>
                     )}
                   </Observer>
@@ -137,7 +139,7 @@ const AccountSwitcherDropdown = observer(() => {
               {() => (
                 <FlexContainer
                   position="absolute"
-                  top="100%"
+                  top="calc(100% + 8px)"
                   right="0"
                   flexDirection="column"
                   zIndex="200"

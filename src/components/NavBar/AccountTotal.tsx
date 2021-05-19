@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useStores } from '../../hooks/useStores';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { autorun } from 'mobx';
+import { moneyFormat } from '../../helpers/moneyFormat';
 
 const AccountTotal = () => {
   const { mainAppStore, quotesStore } = useStores();
@@ -20,7 +21,7 @@ const AccountTotal = () => {
   return (
     <PrimaryTextSpan fontSize="11px" color="#fffccc">
       {mainAppStore.activeAccount?.symbol}
-      {total.toFixed(2)}
+      {moneyFormat(total)}
     </PrimaryTextSpan>
   );
 };
