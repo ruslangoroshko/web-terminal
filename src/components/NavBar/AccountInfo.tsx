@@ -155,116 +155,118 @@ const AccountInfo: FC<Props> = observer((props) => {
       flexDirection="column"
       isActive={isActiveAccount}
       padding="16px 44px 16px 16px"
-      width="970px"
+      minWidth="900px"
       position="relative"
       onClick={isActiveAccount ? toggle : handleSwitch}
     >
       <FlexContainer>
-        <FlexContainer alignItems="flex-end">
-          <FlexContainer
-            backgroundColor={isActiveAccount ? '#fffccc' : '#C4C4C4'}
-            alignItems="center"
-            justifyContent="center"
-            width="40px"
-            height="40px"
-            borderRadius="50%"
-            marginRight="10px"
-          >
+        <FlexContainer alignItems="flex-end" width="calc(100% - 268px)">
+          <FlexContainer flex="1">
             <FlexContainer
-              width="16px"
-              height="16px"
-              borderRadius="50%"
-              backgroundColor="#2A2D38"
+              backgroundColor={isActiveAccount ? '#fffccc' : '#C4C4C4'}
               alignItems="center"
               justifyContent="center"
+              width="40px"
+              height="40px"
+              borderRadius="50%"
+              marginRight="10px"
             >
-              <PrimaryTextSpan
-                fontSize="14px"
-                color={isActiveAccount ? '#fffccc' : '#C4C4C4'}
-              >
-                {account.symbol}
-              </PrimaryTextSpan>
-            </FlexContainer>
-          </FlexContainer>
-          <FlexContainer
-            flexDirection="column"
-            marginRight="45px"
-            width="125px"
-          >
-            <FlexContainer marginBottom="4px">
-              <PrimaryTextSpan
-                fontSize="20px"
-                fontWeight={700}
-                color={isActiveAccount ? '#fffccc' : 'rgba(255, 255, 255, 0.4)'}
-                marginRight="6px"
-                className={
-                  isActiveAccount ? 'account_total_active' : 'account_total'
-                }
-              >
-                {account.symbol}
-                {isActiveAccount
-                  ? moneyFormatPart(total).int
-                  : moneyFormatPart(account.balance).int}
-
-                <PrimaryTextSpan
-                  fontWeight={700}
-                  fontSize="14px"
-                  color={
-                    isActiveAccount ? '#fffccc' : 'rgba(255, 255, 255, 0.4)'
-                  }
-                >
-                  .
-                  {isActiveAccount
-                    ? moneyFormatPart(total).decimal
-                    : moneyFormatPart(account.balance).decimal}
-                </PrimaryTextSpan>
-              </PrimaryTextSpan>
               <FlexContainer
-                borderRadius="3px"
-                backgroundColor={
-                  isActiveAccount ? '#FFFCCC' : 'rgba(196, 196, 196, 0.5)'
-                }
-                padding="3px 10px"
+                width="16px"
+                height="16px"
+                borderRadius="50%"
+                backgroundColor="#2A2D38"
                 alignItems="center"
                 justifyContent="center"
               >
                 <PrimaryTextSpan
-                  fontSize="8px"
-                  color="1C1F26"
-                  textTransform="uppercase"
+                  fontSize="14px"
+                  color={isActiveAccount ? '#fffccc' : '#C4C4C4'}
                 >
-                  {account.isLive ? t('Real') : t('Demo')}
+                  {account.symbol}
                 </PrimaryTextSpan>
               </FlexContainer>
             </FlexContainer>
-            <AccountId
-              className={
-                isActiveAccount ? 'account_total_active' : 'account_total'
-              }
-              fontSize="10px"
-              color="rgba(255, 255, 255, 0.4)"
-              textTransform="uppercase"
+            <FlexContainer
+              flexDirection="column"
+              marginRight="45px"
+              width="125px"
             >
-              {account.id}
-              <ButtonWithoutStyles
-                onClick={(e) => handleCopyText(e, account.id)}
+              <FlexContainer marginBottom="4px">
+                <PrimaryTextSpan
+                  fontSize="20px"
+                  fontWeight={700}
+                  color={
+                    isActiveAccount ? '#fffccc' : 'rgba(255, 255, 255, 0.4)'
+                  }
+                  marginRight="6px"
+                  className={
+                    isActiveAccount ? 'account_total_active' : 'account_total'
+                  }
+                >
+                  {account.symbol}
+                  {isActiveAccount
+                    ? moneyFormatPart(total).int
+                    : moneyFormatPart(account.balance).int}
+
+                  <PrimaryTextSpan
+                    fontWeight={700}
+                    fontSize="14px"
+                    color={
+                      isActiveAccount ? '#fffccc' : 'rgba(255, 255, 255, 0.4)'
+                    }
+                  >
+                    .
+                    {isActiveAccount
+                      ? moneyFormatPart(total).decimal
+                      : moneyFormatPart(account.balance).decimal}
+                  </PrimaryTextSpan>
+                </PrimaryTextSpan>
+                <FlexContainer
+                  borderRadius="3px"
+                  backgroundColor={
+                    isActiveAccount ? '#FFFCCC' : 'rgba(196, 196, 196, 0.5)'
+                  }
+                  padding="3px 10px"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <PrimaryTextSpan
+                    fontSize="8px"
+                    color="1C1F26"
+                    textTransform="uppercase"
+                  >
+                    {account.isLive ? t('Real') : t('Demo')}
+                  </PrimaryTextSpan>
+                </FlexContainer>
+              </FlexContainer>
+              <AccountId
+                className={
+                  isActiveAccount ? 'account_total_active' : 'account_total'
+                }
+                fontSize="10px"
+                color="rgba(255, 255, 255, 0.4)"
+                textTransform="uppercase"
               >
-                <SvgIcon
-                  {...CopyIcon}
-                  width="12px"
-                  height="12px"
-                  fillColor="#ffffff"
-                />
-              </ButtonWithoutStyles>
-            </AccountId>
+                {account.id}
+                <ButtonWithoutStyles
+                  onClick={(e) => handleCopyText(e, account.id)}
+                >
+                  <SvgIcon
+                    {...CopyIcon}
+                    width="12px"
+                    height="12px"
+                    fillColor="#ffffff"
+                  />
+                </ButtonWithoutStyles>
+              </AccountId>
+            </FlexContainer>
           </FlexContainer>
+
           {isActiveAccount && (
-            <>
-              <FlexContainer
-                width="75px"
-                margin="0 22px 0 0"
-                flexDirection="column"
-              >
+            <FlexContainer alignItems="flex-end" flex="2" justifyContent="space-around">
+              {/* 1 */}
+              <FlexContainer flexDirection="column">
                 <PrimaryTextSpan
                   fontSize="14px"
                   color="#fffccc"
@@ -285,11 +287,9 @@ const AccountInfo: FC<Props> = observer((props) => {
                   {t('Invested')}
                 </PrimaryTextParagraph>
               </FlexContainer>
-              <FlexContainer
-                width="84px"
-                margin="0 24px 0 0"
-                flexDirection="column"
-              >
+
+              {/* 2 */}
+              <FlexContainer flexDirection="column">
                 <QuoteText
                   fontSize="14px"
                   isGrowth={profit >= 0}
@@ -310,7 +310,9 @@ const AccountInfo: FC<Props> = observer((props) => {
                   {t('Profit')}
                 </PrimaryTextParagraph>
               </FlexContainer>
-              <FlexContainer width="84px" flexDirection="column">
+
+              {/* 3 */}
+              <FlexContainer flexDirection="column">
                 <PrimaryTextSpan
                   fontSize="14px"
                   color="#fffccc"
@@ -330,63 +332,74 @@ const AccountInfo: FC<Props> = observer((props) => {
                   {t('Available')}
                 </PrimaryTextParagraph>
               </FlexContainer>
-            </>
+
+              {account.bonus && account.isLive && isActiveAccount && (
+                <FlexContainer
+                  height="32px"
+                  width="1px"
+                  background="rgba(255, 255, 255, 0.2)"
+                />
+              )}
+
+              {account.bonus && account.isLive && isActiveAccount && (
+                <FlexContainer flexDirection="column" marginRight="12px">
+                  <PrimaryTextSpan
+                    fontSize="14px"
+                    color="#fffccc"
+                    //marginBottom="4px"
+                  >
+                    {account.symbol}
+                    {moneyFormatPart(account.bonus).int}
+
+                    <PrimaryTextSpan fontSize="10px" color="#fffccc">
+                      .{moneyFormatPart(account.bonus).decimal}
+                    </PrimaryTextSpan>
+                  </PrimaryTextSpan>
+
+                  <FlexContainer alignItems="flex-end">
+                    <PrimaryTextParagraph
+                      fontSize="10px"
+                      textTransform="uppercase"
+                      color="rgba(255, 255, 255, 0.4)"
+                      marginRight="4px"
+                    >
+                      {t('Bonus')}
+                    </PrimaryTextParagraph>
+                    <InformationPopup
+                      bgColor="#000000"
+                      classNameTooltip="autoclose"
+                      width="212px"
+                      direction="right"
+                    >
+                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        {t(
+                          'There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.'
+                        )}
+                      </PrimaryTextSpan>
+                    </InformationPopup>
+                  </FlexContainer>
+                </FlexContainer>
+              )}
+            </FlexContainer>
           )}
         </FlexContainer>
+
         {account.isLive && isActiveAccount && (
-          <FlexContainer alignItems="flex-end">
-            <FlexContainer
-              height="100%"
-              width="1px"
-              background="rgba(255, 255, 255, 0.2)"
-              marginRight="12px"
-            />
-            <FlexContainer flexDirection="column">
-              <PrimaryTextSpan
-                fontSize="14px"
-                color="#fffccc"
-                marginBottom="4px"
-              >
-                {account.symbol}
-                {moneyFormatPart(100000).int}
-
-                <PrimaryTextSpan fontSize="10px" color="#fffccc">
-                  .{moneyFormatPart(100000).decimal}
-                </PrimaryTextSpan>
-              </PrimaryTextSpan>
-
-              <FlexContainer alignItems="flex-end">
-                <PrimaryTextParagraph
-                  fontSize="10px"
-                  textTransform="uppercase"
-                  color="rgba(255, 255, 255, 0.4)"
-                  marginRight="4px"
-                >
-                  {t('Bonus')}
-                </PrimaryTextParagraph>
-                <InformationPopup
-                  bgColor="#000000"
-                  classNameTooltip="autoclose"
-                  width="212px"
-                  direction="right"
-                >
-                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                    {t(
-                      'When the position reached the specified take profit or stop loss level, the position will be closed automatically.'
-                    )}
-                  </PrimaryTextSpan>
-                </InformationPopup>
-              </FlexContainer>
-            </FlexContainer>
-
+          <FlexContainer alignItems="flex-end" width="268px">
             <DepositButton onClick={depositFundsStore.togglePopup}>
-              <PrimaryTextSpan fontWeight="bold">
+              <PrimaryTextSpan fontWeight="bold" color="#000000">
                 {t('Deposit')}
               </PrimaryTextSpan>
             </DepositButton>
 
             <WithdrawButton onClick={() => {}}>
-
+              <PrimaryTextSpan
+                fontSize="14px"
+                color={isActiveAccount ? '#fffccc' : 'rgba(196, 196, 196, 0.5)'}
+                fontWeight="bold"
+              >
+                {t('Withdraw')}
+              </PrimaryTextSpan>
             </WithdrawButton>
           </FlexContainer>
         )}
@@ -434,14 +447,15 @@ const AccountWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
 
 const WithdrawButton = styled(SecondaryButton)`
   padding: 8px 16px;
-  width: 144px;
+  width: 128px;
   height: 40px;
 `;
 
 const DepositButton = styled(PrimaryButton)`
   padding: 8px 16px;
-  width: 144px;
+  width: 128px;
   height: 40px;
+  margin-right: 12px;
 `;
 
 const AccountId = styled(PrimaryTextSpan)`

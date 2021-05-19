@@ -6,6 +6,7 @@ export class WithdrawalStore {
   history: WithdrawalHistoryModel[] | null = null;
   activeTab: number = 0;
   pendingPopup: boolean = false;
+  showBonusPopup: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -19,6 +20,15 @@ export class WithdrawalStore {
   @action
   closePendingPopup = () => {
     this.pendingPopup = false;
+  };
+
+  @action
+  setBonusPopup = () => {
+    this.showBonusPopup = true;
+  };
+  @action
+  closeBonusPopup = () => {
+    this.showBonusPopup = false;
   };
 
   @action
