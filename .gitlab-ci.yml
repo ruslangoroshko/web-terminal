@@ -186,13 +186,12 @@ lock-image:
   image: mcr.microsoft.com/azure-cli:latest
   tags: [monfex]
   variables:
-    ver: ${BUILD_VERSION}
-  #   GIT_STRATEGY: none
+    GIT_STRATEGY: none
   services:
     - docker:dind
   before_script:
     - az login --service-principal --username $AZ_SERVICE_PRINCIPAL_LOGIN --password $AZ_SERVICE_PRINCIPAL_PASSWORD --tenant $AZ_SERVICE_PRINCIPAL_TENANT
   script:
-    - az acr repository update --name $DOCKER_CONTAINER_REGISTRY_NAME --image ${DOCKER_IMAGE_TAG}:$ver --write-enabled false
+    - az acr repository update --name $DOCKER_CONTAINER_REGISTRY_NAME --image ${DOCKER_IMAGE_TAG} --write-enabled false
   only:
     - master
