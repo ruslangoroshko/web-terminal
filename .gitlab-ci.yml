@@ -18,6 +18,7 @@ stages:
   - build
   - publish
   - publish-kubernetes
+  - lock-image
 
 prebuild-test:
   stage: test
@@ -41,7 +42,7 @@ prebuild-prod:
     - npm i
     - npm test
   only:
-    - master
+    # - master
     - uat
 
 build-dev:
@@ -83,7 +84,7 @@ build-master:
     paths:
       - ${BUILD_FOLDER}
   only:
-    - master
+    # - master
     - uat
 
 publish-uat:
@@ -175,7 +176,23 @@ publish-kubernetes-uat:
     - kubectl config use-context $K8S_UAT_CONTEXT
   script:
 #    - kubectl delete pods -l app=${KUBERNETES_APP_TEST_SELECTOR_NAME} --namespace=$KUBERNETES_TEST_NAMESPACE
-    - kubectl set image deployments/${KUBERNETES_APP_TEST_SELECTOR_NAME} ${KUBERNETES_APP_TEST_SELECTOR_NAME}=$DOCKER_REGISTRY_HOST/${DOCKER_IMAGE_TAG}- --namespace=$KUBERNETES_TEST_NAMESPACE
+    - kubectl set image deployments/${KUBERNETES_APP_TEST_SELECTOR_NAME} ${KUBERNETES_APP_TEST_SELECTOR_NAME}=$DOCKER_REGISTRY_HOST/${DOCKER_IMAGE_TAG} --namespace=$KUBERNETES_TEST_NAMESPACE
     - kubectl patch deployment ${KUBERNETES_APP_TEST_SELECTOR_NAME} -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"date\":\"`date +'%s'`\"}}}}}" --namespace=$KUBERNETES_TEST_NAMESPACE
   only:
     - uat
+
+lock-image:
+  stage: lock-image
+  image: mcr.microsoft.com/azure-cli:latest
+  tags: [monfex]
+  variables:
+    ver: ${BUILD_VERSION}
+  #   GIT_STRATEGY: none
+  services:
+    - docker:dind
+  before_script:
+    - az login --service-principal --username $AZ_SERVICE_PRINCIPAL_LOGIN --password $AZ_SERVICE_PRINCIPAL_PASSWORD --tenant $AZ_SERVICE_PRINCIPAL_TENANT
+  script:
+    - az acr repository update --name $DOCKER_CONTAINER_REGISTRY_NAME --image ${DOCKER_IMAGE_TAG}:$ver --write-enabled false
+  only:
+    - master
