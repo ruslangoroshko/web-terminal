@@ -70,6 +70,18 @@ build-test:
   only:
     - test
 
+build-uat:
+  stage: build
+  image: node:14.6.0
+  script:
+    - npm i
+    - npm run buildTest
+  artifacts:
+    paths:
+      - ${BUILD_FOLDER}
+  only:
+    - uat
+
 
 build-master:
   stage: build
