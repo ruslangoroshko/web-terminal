@@ -41,7 +41,7 @@ prebuild-prod:
     - npm i
     - npm test
   only:
-    - master
+    # - master
     - uat
 
 build-dev:
@@ -83,7 +83,7 @@ build-master:
     paths:
       - ${BUILD_FOLDER}
   only:
-    - master
+    # - master
     - uat
 
 publish-uat:
