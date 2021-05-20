@@ -137,6 +137,10 @@ const AccountInfo: FC<Props> = observer((props) => {
     notificationStore.openNotificationGlobal();
   };
 
+  const pushToWithdrawal = () => () => {
+    push(Page.ACCOUNT_WITHDRAW);
+  }
+
   useEffect(() => {
     const disposer = autorun(
       () => {
@@ -392,7 +396,7 @@ const AccountInfo: FC<Props> = observer((props) => {
               </PrimaryTextSpan>
             </DepositButton>
 
-            <WithdrawButton onClick={() => {}}>
+            <WithdrawButton onClick={pushToWithdrawal()}>
               <PrimaryTextSpan
                 fontSize="14px"
                 color={isActiveAccount ? '#fffccc' : 'rgba(196, 196, 196, 0.5)'}
