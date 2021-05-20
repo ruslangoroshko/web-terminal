@@ -199,7 +199,7 @@ publish-kubernetes-uat:
   services:
     - docker:dind
   before_script:
-    - kubectl config use-context $KUBERNETES_TEST_CONTEXT
+    - kubectl config use-context $KUBERNETES_UAT_CONTEXT
   script:
 #    - kubectl delete pods -l app=${KUBERNETES_APP_TEST_SELECTOR_NAME} --namespace=$KUBERNETES_TEST_NAMESPACE
     - kubectl set image deployments/${KUBERNETES_APP_UAT_SELECTOR_NAME} ${KUBERNETES_APP_UAT_SELECTOR_NAME}=$DOCKER_REGISTRY_HOST/${DOCKER_IMAGE_TAG}-${CI_COMMIT_REF_NAME}-${CI_PIPELINE_ID} --namespace=$KUBERNETES_UAT_NAMESPACE
