@@ -13,6 +13,8 @@ import { WithdrawalHistoryResponseStatus } from '../../../enums/WithdrawalHistor
 import { WithdrawalTabsEnum } from '../../../enums/WithdrawalTabsEnum';
 import { useTranslation } from 'react-i18next';
 import withdrawalResponseMessages from '../../../constants/withdrawalResponseMessages';
+import { Observer } from 'mobx-react-lite';
+import ConfirmWithdawBonusPopUp from './ConfirmWithdawBonusPopUp';
 
 interface RequestValues {
   amount: number;
@@ -104,6 +106,7 @@ const WithdrawFormBitcoin = () => {
     validateForm,
     handleChange,
     handleSubmit,
+    submitForm,
     errors,
     touched,
     isSubmitting,
@@ -180,7 +183,21 @@ const WithdrawFormBitcoin = () => {
     if (curErrorsKeys.length) {
       const el = document.getElementById(curErrorsKeys[0]);
       if (el) el.focus();
+    } 
+    submitForm();
+  };
+
+  const handleClickWithdraw = () => {
+    const bonus = mainAppStore.accounts.find(acc => acc.isLive)?.bonus || 0;
+    if (bonus > 0) {
+      withdrawalStore.setBonusPopup();
+    } else {
+      handlerClickSubmit();
     }
+  };
+
+  const handleToggleConfirmBonusPopup = () => {
+    withdrawalStore.closeBonusPopup();
   };
 
   useEffect(() => {
@@ -190,6 +207,19 @@ const WithdrawFormBitcoin = () => {
 
   return (
     <CustomForm noValidate onSubmit={handleSubmit}>
+      <Observer>
+        {() => (
+          <>
+            {withdrawalStore.showBonusPopup && (
+              <ConfirmWithdawBonusPopUp
+                toggle={handleToggleConfirmBonusPopup}
+                applyHandler={handlerClickSubmit}
+              />
+            )}
+          </>
+        )}
+      </Observer>
+      
       <FlexContainer flexDirection="column" width="340px">
         <FlexContainer
           margin="0 0 6px 0"
@@ -265,8 +295,8 @@ const WithdrawFormBitcoin = () => {
         <WithdrawButton
           width="160px"
           padding="12px"
-          type="submit"
-          onClick={handlerClickSubmit}
+          type="button"
+          onClick={handleClickWithdraw}
           disabled={dissabled}
         >
           <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
