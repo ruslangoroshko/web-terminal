@@ -129,6 +129,23 @@ publish-test:
   only:
     - test
 
+publish-uat:
+  stage: publish
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay
+  script:
+    - ls ${BUILD_FOLDER}
+    - ls
+    - echo "$DOCKER_LOGIN"
+    - echo "$DOCKER_PASSWORD" | docker login $DOCKER_REGISTRY_HOST --username $DOCKER_LOGIN --password-stdin
+    - docker build --build-arg BUILD_VERSION=${BUILD_VERSION} -t $DOCKER_REGISTRY_HOST/${DOCKER_IMAGE_TAG}-${CI_COMMIT_REF_NAME}-${CI_PIPELINE_ID} .
+    - docker push $DOCKER_REGISTRY_HOST/${DOCKER_IMAGE_TAG}-${CI_COMMIT_REF_NAME}-${CI_PIPELINE_ID}
+  image: docker:latest
+  only:
+    - uat
+
 publish-dev:
   stage: publish
   tags: [monfex]
