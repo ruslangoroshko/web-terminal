@@ -337,7 +337,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                 </PrimaryTextParagraph>
               </FlexContainer>
 
-              {account.bonus && account.isLive && isActiveAccount && (
+              {account.bonus > 0 && account.isLive && isActiveAccount && (
                 <FlexContainer
                   height="32px"
                   width="1px"
@@ -345,7 +345,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                 />
               )}
 
-              {account.bonus && account.isLive && isActiveAccount && (
+              {account.bonus > 0 && account.isLive && isActiveAccount && (
                 <FlexContainer flexDirection="column" marginRight="12px">
                   <PrimaryTextSpan
                     fontSize="14px"
