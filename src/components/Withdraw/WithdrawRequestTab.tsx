@@ -100,7 +100,7 @@ const WithdrawRequestTab = observer(() => {
               color="rgba(255,255,255,0.4)"
               marginBottom="8px"
             >
-              {t('Available')}
+              {t('Withdrawable')}
             </PrimaryTextSpan>
             <FlexContainer height="28px" alignItems="flex-end">
               <PrimaryTextSpan
@@ -110,14 +110,14 @@ const WithdrawRequestTab = observer(() => {
                 color="#FFFCCC"
               >
                 {getAccount()?.symbol}
-                {moneyFormatPart(getAccount()?.balance || 0).int}
+                {moneyFormatPart((mainAppStore.realAcc?.balance || 0) - (mainAppStore.realAcc?.bonus || 0)).int}
                 <PrimaryTextSpan
                   textTransform="uppercase"
                   fontSize="14px"
                   fontWeight="bold"
                   color="#FFFCCC"
                 >
-                  .{moneyFormatPart(getAccount()?.balance || 0).decimal}
+                  .{moneyFormatPart((mainAppStore.realAcc?.balance || 0) - (mainAppStore.realAcc?.bonus || 0)).decimal}
                 </PrimaryTextSpan>
               </PrimaryTextSpan>
             </FlexContainer>
@@ -139,7 +139,7 @@ const WithdrawRequestTab = observer(() => {
                     color="rgba(255,255,255,0.4)"
                     marginRight="4px"
                   >
-                    {t('Bounus')}
+                    {t('Bonus')}
                   </PrimaryTextSpan>
                   <InformationPopup
                     bgColor="#000000"
