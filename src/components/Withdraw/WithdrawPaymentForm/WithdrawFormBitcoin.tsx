@@ -44,7 +44,7 @@ const WithdrawFormBitcoin = () => {
           .max(
             (mainAppStore.realAcc?.balance || 0) -
               (mainAppStore.realAcc?.bonus || 0),
-            `${t('max')}: ${moneyFormat(
+            `${t('max')}: $${moneyFormat(
               (mainAppStore.realAcc?.balance || 0) -
                 (mainAppStore.realAcc?.bonus || 0)
             )}`
