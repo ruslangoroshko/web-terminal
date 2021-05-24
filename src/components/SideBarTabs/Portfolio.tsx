@@ -20,13 +20,20 @@ import PortfolioTotalProfit from './PortfolioTotalProfit';
 import PortfolioTotalEquity from './PortfolioTotalEquity';
 import {
   LOCAL_PORTFOLIO_TABS,
-  LOCAL_POSITION_SORT
+  LOCAL_POSITION_SORT,
 } from '../../constants/global';
+import { moneyFormatPart } from '../../helpers/moneyFormat';
 
 interface Props {}
 
 const Portfolio: FC<Props> = () => {
-  const { sortingStore, mainAppStore, tabsStore, quotesStore, tradingViewStore } = useStores();
+  const {
+    sortingStore,
+    mainAppStore,
+    tabsStore,
+    quotesStore,
+    tradingViewStore,
+  } = useStores();
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
     localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
@@ -92,7 +99,7 @@ const Portfolio: FC<Props> = () => {
           >
             {t('Total Profit')}
           </PrimaryTextParagraph>
-          <PortfolioTotalProfit></PortfolioTotalProfit>
+          <PortfolioTotalProfit />
           <FlexContainer>
             <FlexContainer flexDirection="column" margin="0 38px 20px 0">
               <PrimaryTextParagraph
@@ -111,7 +118,14 @@ const Portfolio: FC<Props> = () => {
                     fontWeight="bold"
                   >
                     {mainAppStore.activeAccount?.symbol}
-                    {quotesStore.invest.toFixed(2)}
+                    {moneyFormatPart(quotesStore.invest).int}
+                    <PrimaryTextSpan
+                      fontSize="10px"
+                      lineHeight="16px"
+                      fontWeight="bold"
+                    >
+                      .{moneyFormatPart(quotesStore.invest).decimal}
+                    </PrimaryTextSpan>
                   </PrimaryTextSpan>
                 )}
               </Observer>
@@ -125,7 +139,7 @@ const Portfolio: FC<Props> = () => {
               >
                 {t('Total Equity')}
               </PrimaryTextParagraph>
-              <PortfolioTotalEquity></PortfolioTotalEquity>
+              <PortfolioTotalEquity />
             </FlexContainer>
           </FlexContainer>
         </FlexContainer>
@@ -142,34 +156,40 @@ const Portfolio: FC<Props> = () => {
         >
           {t('Sort by')}:
         </PrimaryTextSpan>
-        <Observer>{
-          () => <SortByDropdown
-            selectedLabel={t(
-              sortByDropdownProfitLabels[sortingStore.activePositionsSortBy]
-            )}
-            opened={on}
-            toggle={handleToggle}
-          >
-            {Object.entries(sortByDropdownProfitLabels).map(([key, value]) => (
-              <DropdownItemText
-                color="#fffccc"
-                fontSize="12px"
-                key={key}
-                onClick={handleChangeSorting(+key)}
-                whiteSpace="nowrap"
-              >
-                {t(value)}
-              </DropdownItemText>
-            ))}
-          </SortByDropdown>
-        }</Observer>
+        <Observer>
+          {() => (
+            <SortByDropdown
+              selectedLabel={t(
+                sortByDropdownProfitLabels[sortingStore.activePositionsSortBy]
+              )}
+              opened={on}
+              toggle={handleToggle}
+            >
+              {Object.entries(sortByDropdownProfitLabels).map(
+                ([key, value]) => (
+                  <DropdownItemText
+                    color="#fffccc"
+                    fontSize="12px"
+                    key={key}
+                    onClick={handleChangeSorting(+key)}
+                    whiteSpace="nowrap"
+                  >
+                    {t(value)}
+                  </DropdownItemText>
+                )
+              )}
+            </SortByDropdown>
+          )}
+        </Observer>
       </SortByWrapper>
       <Observer>
         {() => (
           <ActivePositionsWrapper flexDirection="column">
             {quotesStore.sortedActivePositions.map((item, index) => (
               <ActivePositionsPortfolioTab
-                needScroll={index >= quotesStore.sortedActivePositions.length - 2}
+                needScroll={
+                  index >= quotesStore.sortedActivePositions.length - 2
+                }
                 ready={tradingViewStore.tradingWidgetReady}
                 key={item.id}
                 position={item}

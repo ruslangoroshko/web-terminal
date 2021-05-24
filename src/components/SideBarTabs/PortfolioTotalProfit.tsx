@@ -3,6 +3,7 @@ import { useStores } from '../../hooks/useStores';
 import { QuoteText } from '../../styles/TextsElements';
 import { getNumberSign } from '../../helpers/getNumberSign';
 import { autorun, reaction } from 'mobx';
+import { moneyFormatPart } from '../../helpers/moneyFormat';
 
 const PortfolioTotalProfit = () => {
   const { quotesStore, mainAppStore } = useStores();
@@ -28,7 +29,16 @@ const PortfolioTotalProfit = () => {
     >
       {getNumberSign(profit)}
       {mainAppStore.activeAccount?.symbol}
-      {Math.abs(profit).toFixed(2)}
+      {moneyFormatPart(Math.abs(profit)).int}
+
+      <QuoteText
+        isGrowth={profit >= 0}
+        fontSize="14px"
+        lineHeight="28px"
+        fontWeight="bold"
+      >
+        .{moneyFormatPart(Math.abs(profit)).decimal}
+      </QuoteText>
     </QuoteText>
   );
 };
