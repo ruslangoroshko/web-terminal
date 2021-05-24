@@ -71,11 +71,17 @@ export class QuotesStore implements IQuotesStore {
     );
   }
 
+  get totalReservedFoundsForToppingUp() {
+    let value: number = 0;
+    this.activePositions.map((pos) => value += pos.reservedFundsForToppingUp);
+    return value;
+  }
+
   get total() {
     return (
       this.profit +
       (this.rootStore.mainAppStore.activeAccount?.balance || 0) +
-      this.invest
+      this.invest + this.totalReservedFoundsForToppingUp
     );
   }
 
