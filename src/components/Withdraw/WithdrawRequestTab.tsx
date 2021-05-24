@@ -123,7 +123,7 @@ const WithdrawRequestTab = observer(() => {
             </FlexContainer>
           </FlexContainer>
 
-          {getAccount()?.bonus && (
+          {Number(getAccount()?.bonus) > 0 && (
             <>
               <FlexContainer
                 height="50px"
