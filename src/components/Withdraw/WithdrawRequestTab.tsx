@@ -61,7 +61,7 @@ const WithdrawRequestTab = observer(() => {
         }
       } catch (error) {}
     };
-    // initHistoryList();
+    initHistoryList();
   }, []);
 
   useEffect(() => {
