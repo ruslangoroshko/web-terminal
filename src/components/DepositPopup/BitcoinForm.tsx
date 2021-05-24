@@ -53,14 +53,16 @@ const BitcoinForm: FC = () => {
           accountId:
             mainAppStore.accounts.find((item) => item.isLive)?.id || '',
         });
+
         if (response.status === DepositApiResponseCodes.Success) {
           setBitcoinWalletString(response.walletAddress);
-          setLoading(false);
         } else {
-          badRequestPopupStore.setMessage(t('Technical error'));
-          badRequestPopupStore.openModal();
-          setLoading(false);
+          notificationStore.setNotification(t('Technical error'));
+          notificationStore.setIsSuccessfull(false);
+          notificationStore.openNotification();
         }
+        
+        setLoading(false);
       } catch (error) {
         badRequestPopupStore.setMessage(error);
         badRequestPopupStore.openModal();
