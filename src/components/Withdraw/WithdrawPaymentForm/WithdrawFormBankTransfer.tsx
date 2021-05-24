@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, ChangeEvent } from 'react';
 import * as yup from 'yup';
 import styled from '@emotion/styled';
 import { PrimaryButton } from '../../../styles/Buttons';
@@ -17,6 +17,7 @@ import ConfirmPopup from '../../ConfirmPopup';
 import Modal from '../../Modal';
 import ConfirmWithdawBonusPopUp from './ConfirmWithdawBonusPopUp';
 import { Observer } from 'mobx-react-lite';
+import { moneyFormat } from '../../../helpers/moneyFormat';
 
 interface RequestValues {
   amount: number;
@@ -41,10 +42,8 @@ const WithdrawFormBankTransfer = () => {
           .number()
           .min(10, `${t('min')}: $10`)
           .max(
-            mainAppStore.accounts.find((item) => item.isLive)?.balance || 0,
-            `${t('max')}: ${mainAppStore.accounts
-              .find((item) => item.isLive)
-              ?.balance.toFixed(2)}`
+            ((mainAppStore.realAcc?.balance || 0) - (mainAppStore.realAcc?.bonus || 0)),
+            `${t('max')}: ${moneyFormat((mainAppStore.realAcc?.balance || 0) - (mainAppStore.realAcc?.bonus || 0))}`
           ),
         details: yup
           .string()
@@ -99,6 +98,7 @@ const WithdrawFormBankTransfer = () => {
   const {
     values,
     setFieldError,
+    setErrors,
     setFieldValue,
     setSubmitting,
     validateForm,
@@ -112,26 +112,16 @@ const WithdrawFormBankTransfer = () => {
     initialValues,
     onSubmit: handleSubmitForm,
     validationSchema,
-    validateOnBlur: true,
-    validateOnChange: true,
+    validateOnBlur: false,
+    validateOnChange: false,
   });
 
   const handleChangeAmount = (e: any) => {
     let filteredValue: any = e.target.value.replace(',', '.');
     setFieldValue('amount', filteredValue);
+    setFieldError('amount', undefined);
   };
 
-  const handleBlurAmount = () => {
-    let amount = values.amount.toString().replace(/,/g, '');
-    amount = parseFloat(amount || '0')
-      .toLocaleString('en-US', {
-        style: 'decimal',
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-      })
-      .replace(/,/g, '');
-    setFieldValue('amount', amount);
-  };
   const amountOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
 
@@ -174,28 +164,35 @@ const WithdrawFormBankTransfer = () => {
     }
   };
 
-  const textOnBeforeInputHandler = () => {};
-
+  
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
     const curErrorsKeys = Object.keys(curErrors);
     if (curErrorsKeys.length) {
+      setErrors(curErrors);
       const el = document.getElementById(curErrorsKeys[0]);
       if (el) el.focus();
-    } 
-    submitForm();
-  };
-
-  const handleClickWithdraw = () => {
+      return;
+    }
     const bonus = mainAppStore.accounts.find(acc => acc.isLive)?.bonus || 0;
     if (bonus > 0) {
       withdrawalStore.setBonusPopup();
     } else {
-      handlerClickSubmit();
+      submitForm();
     }
   };
 
-  const handleToggleConfirmBonusPopup = () => {
+  
+  const handleChangeFiled = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setFieldValue(e.target.name, e.target.value);
+    setFieldError(e.target.name, undefined);
+  };
+
+  const handleToggleBonus = (arg: boolean) => {
+    withdrawalStore.closeBonusPopup();
+  }
+  const handleConfirm = () => {
+    submitForm();
     withdrawalStore.closeBonusPopup();
   };
 
@@ -210,8 +207,8 @@ const WithdrawFormBankTransfer = () => {
           <>
             {withdrawalStore.showBonusPopup && (
               <ConfirmWithdawBonusPopUp
-                toggle={handleToggleConfirmBonusPopup}
-                applyHandler={handlerClickSubmit}
+                toggle={handleToggleBonus}
+                applyHandler={handleConfirm}
               />
             )}
           </>
@@ -251,7 +248,7 @@ const WithdrawFormBankTransfer = () => {
             type="text"
           />
 
-          {touched.amount && errors.amount && (
+          {errors.amount && (
             <ErrorText>{errors.amount}</ErrorText>
           )}
         </InputWrapper>
@@ -280,12 +277,11 @@ const WithdrawFormBankTransfer = () => {
           <InputFieldText
             name="details"
             id="details"
-            onBeforeInput={textOnBeforeInputHandler}
-            onChange={handleChange}
+            onChange={handleChangeFiled}
             value={values.details}
           />
         </InputWrapper>
-        {touched.details && errors.details && (
+        {errors.details && (
           <ErrorLineText>{errors.details}</ErrorLineText>
         )}
 
@@ -293,7 +289,7 @@ const WithdrawFormBankTransfer = () => {
           width="160px"
           padding="12px"
           type="button"
-          onClick={handleClickWithdraw}
+          onClick={handlerClickSubmit}
           disabled={dissabled}
         >
           <PrimaryTextSpan color="#1c2026" fontWeight="bold" fontSize="14px">
