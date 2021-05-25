@@ -40,13 +40,11 @@ const WithdrawFormBitcoin = () => {
       yup.object().shape<RequestValues>({
         amount: yup
           .number()
-          .min(10, `${t('min')}: $10`)
+          .min(10, `${t('min')}: $10.00`)
           .max(
-            (mainAppStore.realAcc?.balance || 0) -
-              (mainAppStore.realAcc?.bonus || 0),
+            mainAppStore.realAcc?.freeToWithdrawal || 0,
             `${t('max')}: $${moneyFormat(
-              (mainAppStore.realAcc?.balance || 0) -
-                (mainAppStore.realAcc?.bonus || 0)
+              mainAppStore.realAcc?.freeToWithdrawal || 0
             )}`
           ),
 
