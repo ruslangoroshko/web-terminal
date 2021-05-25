@@ -40,16 +40,15 @@ const ClosePositionPopup = forwardRef<HTMLDivElement, Props>((props, ref) => {
 
   const handleToggle = () => {
     toggle(!on);
-    
-
-   // const { top, left, width } = ref?.current.getBoundingClientRect();
+    // @ts-ignore
+    const { top, left, width } = ref.current.getBoundingClientRect();
 
     const rect = wrapperRef.current?.getBoundingClientRect();
-    
+
     if (rect && window.innerHeight - rect.top - 150 <= 0) {
       setIsTop(false);
     }
-    //setPopupPosition({ top, left, width });
+    setPopupPosition({ top, left, width });
   };
 
   const handleClickOutside = (e: any) => {

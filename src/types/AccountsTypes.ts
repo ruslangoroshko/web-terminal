@@ -18,6 +18,7 @@ export interface AccountModelWebSocketDTO {
   isLive: boolean;
   timestamp: number;
   achievementStatus: string;
+  freeToWithdrawal: number;
   investAmount: [
     {
       amount: number;

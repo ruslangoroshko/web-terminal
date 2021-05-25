@@ -40,10 +40,12 @@ const WithdrawFormBankTransfer = () => {
       yup.object().shape<RequestValues>({
         amount: yup
           .number()
-          .min(10, `${t('min')}: $10`)
+          .min(10, `${t('min')}: $10.00`)
           .max(
-            ((mainAppStore.realAcc?.balance || 0) - (mainAppStore.realAcc?.bonus || 0)),
-            `${t('max')}: $${moneyFormat((mainAppStore.realAcc?.balance || 0) - (mainAppStore.realAcc?.bonus || 0))}`
+            mainAppStore.realAcc?.freeToWithdrawal || 0,
+            `${t('max')}: $${moneyFormat(
+              mainAppStore.realAcc?.freeToWithdrawal || 0
+            )}`
           ),
         details: yup
           .string()
@@ -164,7 +166,6 @@ const WithdrawFormBankTransfer = () => {
     }
   };
 
-  
   const handlerClickSubmit = async () => {
     const curErrors = await validateForm();
     const curErrorsKeys = Object.keys(curErrors);
@@ -174,7 +175,7 @@ const WithdrawFormBankTransfer = () => {
       if (el) el.focus();
       return;
     }
-    const bonus = mainAppStore.accounts.find(acc => acc.isLive)?.bonus || 0;
+    const bonus = mainAppStore.accounts.find((acc) => acc.isLive)?.bonus || 0;
     if (bonus > 0) {
       withdrawalStore.setBonusPopup();
     } else {
@@ -182,7 +183,6 @@ const WithdrawFormBankTransfer = () => {
     }
   };
 
-  
   const handleChangeFiled = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setFieldValue(e.target.name, e.target.value);
     setFieldError(e.target.name, undefined);
@@ -190,7 +190,7 @@ const WithdrawFormBankTransfer = () => {
 
   const handleToggleBonus = (arg: boolean) => {
     withdrawalStore.closeBonusPopup();
-  }
+  };
   const handleConfirm = () => {
     submitForm();
     withdrawalStore.closeBonusPopup();
@@ -248,9 +248,7 @@ const WithdrawFormBankTransfer = () => {
             type="text"
           />
 
-          {errors.amount && (
-            <ErrorText>{errors.amount}</ErrorText>
-          )}
+          {errors.amount && <ErrorText>{errors.amount}</ErrorText>}
         </InputWrapper>
 
         <FlexContainer
@@ -281,9 +279,7 @@ const WithdrawFormBankTransfer = () => {
             value={values.details}
           />
         </InputWrapper>
-        {errors.details && (
-          <ErrorLineText>{errors.details}</ErrorLineText>
-        )}
+        {errors.details && <ErrorLineText>{errors.details}</ErrorLineText>}
 
         <WithdrawButton
           width="160px"
