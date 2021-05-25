@@ -10,7 +10,10 @@ import { AccountModelWebSocketDTO } from '../../types/AccountsTypes';
 import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import { PrimaryButton, SecondaryButton } from '../../styles/Buttons';
-import { getNumberSign, getNumberSignNegative } from '../../helpers/getNumberSign';
+import {
+  getNumberSign,
+  getNumberSignNegative,
+} from '../../helpers/getNumberSign';
 import Topics from '../../constants/websocketTopics';
 import Fields from '../../constants/fields';
 import { useHistory } from 'react-router-dom';
@@ -139,7 +142,7 @@ const AccountInfo: FC<Props> = observer((props) => {
 
   const pushToWithdrawal = () => () => {
     push(Page.ACCOUNT_WITHDRAW);
-  }
+  };
 
   useEffect(() => {
     const disposer = autorun(
@@ -208,8 +211,8 @@ const AccountInfo: FC<Props> = observer((props) => {
                     isActiveAccount ? 'account_total_active' : 'account_total'
                   }
                 >
-                  {account.symbol}
                   {isActiveAccount && getNumberSignNegative(total)}
+                  {account.symbol}
                   {isActiveAccount
                     ? moneyFormatPart(Math.abs(total)).int
                     : moneyFormatPart(account.balance).int}
@@ -269,7 +272,11 @@ const AccountInfo: FC<Props> = observer((props) => {
           </FlexContainer>
 
           {isActiveAccount && (
-            <FlexContainer alignItems="flex-end" flex="2" justifyContent="space-around">
+            <FlexContainer
+              alignItems="flex-end"
+              flex="2"
+              justifyContent="space-around"
+            >
               {/* 1 */}
               <FlexContainer flexDirection="column">
                 <PrimaryTextSpan
