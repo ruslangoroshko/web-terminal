@@ -3,14 +3,16 @@ import { useStores } from '../../hooks/useStores';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { moneyFormat, moneyFormatPart } from '../../helpers/moneyFormat';
 import useAccount from '../../hooks/useAccount';
+import { getNumberSignNegative } from '../../helpers/getNumberSign';
 
 const AccountTotal = () => {
   const { mainAppStore } = useStores();
   const { total } = useAccount();
   return (
     <PrimaryTextSpan fontSize="11px" color="#fffccc">
+      {getNumberSignNegative(total)}
       {mainAppStore.activeAccount?.symbol}
-      {moneyFormatPart(total).full}
+      {moneyFormatPart(Math.abs(total)).full}
     </PrimaryTextSpan>
   );
 };
