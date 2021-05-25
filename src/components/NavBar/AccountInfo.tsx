@@ -10,7 +10,7 @@ import { AccountModelWebSocketDTO } from '../../types/AccountsTypes';
 import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import { PrimaryButton, SecondaryButton } from '../../styles/Buttons';
-import { getNumberSign } from '../../helpers/getNumberSign';
+import { getNumberSign, getNumberSignNegative } from '../../helpers/getNumberSign';
 import Topics from '../../constants/websocketTopics';
 import Fields from '../../constants/fields';
 import { useHistory } from 'react-router-dom';
@@ -209,8 +209,9 @@ const AccountInfo: FC<Props> = observer((props) => {
                   }
                 >
                   {account.symbol}
+                  {isActiveAccount && getNumberSignNegative(total)}
                   {isActiveAccount
-                    ? moneyFormatPart(total).int
+                    ? moneyFormatPart(Math.abs(total)).int
                     : moneyFormatPart(account.balance).int}
 
                   <PrimaryTextSpan
@@ -222,7 +223,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                   >
                     .
                     {isActiveAccount
-                      ? moneyFormatPart(total).decimal
+                      ? moneyFormatPart(Math.abs(total)).decimal
                       : moneyFormatPart(account.balance).decimal}
                   </PrimaryTextSpan>
                 </PrimaryTextSpan>
