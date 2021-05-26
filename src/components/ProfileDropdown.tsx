@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import Page from '../constants/Pages';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +24,7 @@ import { observer } from 'mobx-react-lite';
 const ProfileDropdown = observer(() => {
   const { mainAppStore, depositFundsStore, tabsStore } = useStores();
   const { t } = useTranslation();
+  const { push } = useHistory()
 
   const getStatusLabel = useCallback(
     (type?: string) => {
@@ -172,7 +173,7 @@ const ProfileDropdown = observer(() => {
         </CustomeNavLink>
       </FlexContainer>
       <FlexContainer margin="0 0 12px">
-        <DepositButtonWrapper onClick={depositFundsStore.togglePopup}>
+        <DepositButtonWrapper onClick={() => push(Page.DEPOSIT_POPUP)}>
           <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
             {t('Deposit')}
           </PrimaryTextSpan>

@@ -398,7 +398,7 @@ const AccountInfo: FC<Props> = observer((props) => {
 
         {account.isLive && isActiveAccount && (
           <FlexContainer alignItems="flex-end" width="268px">
-            <DepositButton onClick={depositFundsStore.togglePopup}>
+            <DepositButton onClick={() => push(Page.DEPOSIT_POPUP)}>
               <PrimaryTextSpan fontWeight="bold" color="#000000">
                 {t('Deposit')}
               </PrimaryTextSpan>
