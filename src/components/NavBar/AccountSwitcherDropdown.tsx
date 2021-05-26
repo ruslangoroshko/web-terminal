@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { FlexContainer } from '../../styles/FlexContainer';
 import Toggle from '../Toggle';
@@ -11,6 +11,8 @@ import { observer, Observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import AccountTotal from './AccountTotal';
 import styled from '@emotion/styled';
+import { moneyFormat, moneyFormatPart } from '../../helpers/moneyFormat';
+import { logger } from '../../helpers/ConsoleLoggerTool';
 
 const AccountSwitcherDropdown = observer(() => {
   const { mainAppStore } = useStores();
@@ -32,18 +34,17 @@ const AccountSwitcherDropdown = observer(() => {
   };
 
   useEffect(() => {
-    if (mainAppStore.activeAccount?.balance !== undefined &&
-        accountId === mainAppStore.activeAccount.id) {
-      animateValue(
-        balance,
-        mainAppStore.activeAccount.balance
-      );
+    if (
+      mainAppStore.activeAccount?.balance !== undefined &&
+      accountId === mainAppStore.activeAccount.id
+    ) {
+      animateValue(balance, mainAppStore.activeAccount.balance);
     }
   }, [mainAppStore.activeAccount, mainAppStore.activeAccount?.balance]);
 
   useEffect(() => {
     if (mainAppStore.activeAccount?.balance !== undefined) {
-      setAccountId(mainAppStore.activeAccount.id)
+      setAccountId(mainAppStore.activeAccount.id);
       setBalance(mainAppStore.activeAccount.balance);
     }
   }, [mainAppStore.activeAccount]);
@@ -64,7 +65,7 @@ const AccountSwitcherDropdown = observer(() => {
                         fontSize="16px"
                       >
                         {mainAppStore.activeAccount?.symbol}
-                        {balance.toFixed(2)}
+                        {moneyFormatPart(balance).full}
                       </PrimaryTextSpan>
                     )}
                   </Observer>
@@ -129,15 +130,14 @@ const AccountSwitcherDropdown = observer(() => {
               width="100vw"
               height="100vh"
               zIndex="198"
-            >
-            </FlexContainer>
+            ></FlexContainer>
           )}
           {on && (
             <Observer>
               {() => (
                 <FlexContainer
                   position="absolute"
-                  top="100%"
+                  top="calc(100% + 8px)"
                   right="0"
                   flexDirection="column"
                   zIndex="200"

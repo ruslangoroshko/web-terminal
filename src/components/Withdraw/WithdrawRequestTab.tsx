@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
@@ -27,10 +27,14 @@ import { WithdrawalHistoryResponseStatus } from '../../enums/WithdrawalHistoryRe
 import API from '../../helpers/API';
 import { WithdrawalStatusesEnum } from '../../enums/WithdrawalStatusesEnum';
 import { brandingLinksTranslate } from '../../constants/brandingLinksTranslate';
+import { moneyFormatPart } from '../../helpers/moneyFormat';
+import useAccount from '../../hooks/useAccount';
+import InformationPopup from '../InformationPopup';
 
 const WithdrawRequestTab = observer(() => {
   const { mainAppStore, withdrawalStore, notificationStore } = useStores();
   const requestWrapper = useRef(document.createElement('div'));
+  const { total } = useAccount();
 
   const [paymentMeyhod, setPaymentMethod] = useState(
     WithdrawalTypesEnum.BankTransfer
@@ -68,6 +72,10 @@ const WithdrawRequestTab = observer(() => {
 
   const { t } = useTranslation();
 
+  const getAccount = useCallback(() => {
+    return mainAppStore.accounts.find((item) => item.isLive);
+  }, [mainAppStore.accounts]);
+
   return (
     <RequestTabWrap
       flexDirection="column"
@@ -83,34 +91,99 @@ const WithdrawRequestTab = observer(() => {
       {withdrawalStore.pendingPopup && <WithdrawPendingPopup />}
       <PaymentButtonsWrapper flexDirection="column" marginBottom="16px">
         <FlexContainer marginBottom="48px">
-          <FlexContainer flexDirection="column" width="180px">
+          
+
+          <FlexContainer flexDirection="column" marginRight="36px">
             <PrimaryTextSpan
               textTransform="uppercase"
               fontSize="12px"
               color="rgba(255,255,255,0.4)"
               marginBottom="8px"
             >
-              {t('Available')}
+              {t('Withdrawable')}
             </PrimaryTextSpan>
-            <PrimaryTextSpan
-              textTransform="uppercase"
-              fontSize="24px"
-              fontWeight="bold"
-              color="#FFFCCC"
-            >
-              {mainAppStore.accounts.find((item) => item.isLive)?.symbol}
-              {mainAppStore.accounts
-                .find((item) => item.isLive)
-                ?.balance.toFixed(2)}
-            </PrimaryTextSpan>
+            <FlexContainer height="28px" alignItems="flex-end">
+              <PrimaryTextSpan
+                textTransform="uppercase"
+                fontSize="24px"
+                fontWeight="bold"
+                color="#FFFCCC"
+              >
+                {getAccount()?.symbol}
+                {moneyFormatPart((mainAppStore.realAcc?.balance || 0) - (mainAppStore.realAcc?.bonus || 0)).int}
+                <PrimaryTextSpan
+                  textTransform="uppercase"
+                  fontSize="14px"
+                  fontWeight="bold"
+                  color="#FFFCCC"
+                >
+                  .{moneyFormatPart((mainAppStore.realAcc?.balance || 0) - (mainAppStore.realAcc?.bonus || 0)).decimal}
+                </PrimaryTextSpan>
+              </PrimaryTextSpan>
+            </FlexContainer>
           </FlexContainer>
+
+          {Number(getAccount()?.bonus) > 0 && (
+            <>
+              <FlexContainer
+                height="50px"
+                width="1px"
+                background="rgba(255, 255, 255, 0.2)"
+                marginRight="36px"
+              />
+              <FlexContainer flexDirection="column" justifyContent="space-between">
+                <FlexContainer alignItems="center">
+                  <PrimaryTextSpan
+                    textTransform="uppercase"
+                    fontSize="12px"
+                    color="rgba(255,255,255,0.4)"
+                    marginRight="4px"
+                  >
+                    {t('Bonus')}
+                  </PrimaryTextSpan>
+                  <InformationPopup
+                    bgColor="#000000"
+                    classNameTooltip="autoclose"
+                    width="212px"
+                    direction="right"
+                  >
+                    <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      {t(
+                        'There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.'
+                      )}
+                    </PrimaryTextSpan>
+                  </InformationPopup>
+                </FlexContainer>
+
+                <FlexContainer height="28px" alignItems="flex-end">
+                  <PrimaryTextSpan
+                    textTransform="uppercase"
+                    fontSize="14px"
+                    fontWeight="bold"
+                    color="#FFFCCC"
+                  >
+                    {getAccount()?.symbol}
+                    {moneyFormatPart(getAccount()?.bonus || 0).int}
+                    <PrimaryTextSpan
+                      textTransform="uppercase"
+                      fontSize="10px"
+                      fontWeight="bold"
+                      color="#FFFCCC"
+                    >
+                      .{moneyFormatPart(getAccount()?.bonus || 0).decimal}
+                    </PrimaryTextSpan>
+                  </PrimaryTextSpan>
+                </FlexContainer>
+              </FlexContainer>
+            </>
+          )}
         </FlexContainer>
 
         <PaymentButtonsWrapper flexDirection="column">
           <PaymentButtonsWrapper flexDirection="column">
-            {mainAppStore.profileEmail && mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified && (
-              <WithdrawPagePopup />
-            )}
+            {mainAppStore.profileEmail &&
+              mainAppStore.profileStatus ===
+                PersonalDataKYCEnum.NotVerified && <WithdrawPagePopup />}
             <PrimaryTextSpan
               textTransform="uppercase"
               fontSize="12px"
@@ -275,7 +348,12 @@ const WithdrawRequestTab = observer(() => {
           </FlexContainer>
           <FlexContainer>
             <ButtonOpenFaq
-              href={t(`${brandingLinksTranslate[mainAppStore.initModel.brandProperty].faq}`)}
+              href={t(
+                `${
+                  brandingLinksTranslate[mainAppStore.initModel.brandProperty]
+                    .faq
+                }`
+              )}
               target="blank"
             >
               <PrimaryTextSpan

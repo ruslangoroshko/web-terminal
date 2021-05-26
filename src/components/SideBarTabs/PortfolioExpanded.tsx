@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import PortfolioTotalProfit from './PortfolioTotalProfit';
 import PortfolioTotalEquity from './PortfolioTotalEquity';
 import { LOCAL_PORTFOLIO_TABS } from '../../constants/global';
+import { moneyFormatPart } from '../../helpers/moneyFormat';
 
 interface Props {}
 
@@ -114,7 +115,15 @@ const PortfolioExpanded: FC<Props> = () => {
                       color="#fffccc"
                     >
                       {mainAppStore.activeAccount?.symbol}
-                      {quotesStore.invest.toFixed(2)}
+                      {moneyFormatPart(quotesStore.invest).int}
+                      <PrimaryTextSpan
+                        fontSize="10px"
+                        lineHeight="16px"
+                        fontWeight="bold"
+                        color="#fffccc"
+                      >
+                        .{moneyFormatPart(quotesStore.invest).decimal}
+                      </PrimaryTextSpan>
                     </PrimaryTextSpan>
                   )}
                 </Observer>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import styled from '@emotion/styled';
@@ -13,6 +13,9 @@ import { WithdrawalHistoryResponseStatus } from '../../../enums/WithdrawalHistor
 import { WithdrawalTabsEnum } from '../../../enums/WithdrawalTabsEnum';
 import { useTranslation } from 'react-i18next';
 import withdrawalResponseMessages from '../../../constants/withdrawalResponseMessages';
+import { Observer } from 'mobx-react-lite';
+import ConfirmWithdawBonusPopUp from './ConfirmWithdawBonusPopUp';
+import { moneyFormat } from '../../../helpers/moneyFormat';
 
 interface RequestValues {
   amount: number;
@@ -37,14 +40,12 @@ const WithdrawFormBitcoin = () => {
       yup.object().shape<RequestValues>({
         amount: yup
           .number()
-          .min(10, `${t('min')}: $10`)
+          .min(10, `${t('min')}: $10.00`)
           .max(
-            mainAppStore.activeAccount?.balance || 0,
-            `${t('max')}: ${
-              mainAppStore.accounts
-                .find((item) => item.isLive)
-                ?.balance.toFixed(2) || 0
-            }`
+            mainAppStore.realAcc?.freeToWithdrawal || 0,
+            `${t('max')}: $${moneyFormat(
+              mainAppStore.realAcc?.freeToWithdrawal || 0
+            )}`
           ),
 
         bitcoinAdress: yup
@@ -90,9 +91,9 @@ const WithdrawFormBitcoin = () => {
         withdrawalStore.setPendingPopup();
       }
 
-      notificationStore.setNotification(t(
-        withdrawalResponseMessages[result.status]
-      ));
+      notificationStore.setNotification(
+        t(withdrawalResponseMessages[result.status])
+      );
       notificationStore.openNotification();
     } catch (error) {}
   };
@@ -100,10 +101,12 @@ const WithdrawFormBitcoin = () => {
   const {
     values,
     setFieldError,
+    setErrors,
     setFieldValue,
     validateForm,
     handleChange,
     handleSubmit,
+    submitForm,
     errors,
     touched,
     isSubmitting,
@@ -112,26 +115,16 @@ const WithdrawFormBitcoin = () => {
     initialValues,
     onSubmit: handleSubmitForm,
     validationSchema,
-    validateOnBlur: true,
-    validateOnChange: true,
+    validateOnBlur: false,
+    validateOnChange: false,
   });
 
   const handleChangeAmount = (e: any) => {
     let filteredValue: any = e.target.value.replace(',', '.');
     setFieldValue('amount', filteredValue);
+    setFieldError('amount', undefined);
   };
 
-  const handleBlurAmount = () => {
-    let amount = values.amount.toString().replace(/,/g, '');
-    amount = parseFloat(amount || '0')
-      .toLocaleString('en-US', {
-        style: 'decimal',
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-      })
-      .replace(/,/g, '');
-    setFieldValue('amount', amount);
-  };
   const amountOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
 
@@ -178,9 +171,30 @@ const WithdrawFormBitcoin = () => {
     const curErrors = await validateForm();
     const curErrorsKeys = Object.keys(curErrors);
     if (curErrorsKeys.length) {
+      setErrors(curErrors);
       const el = document.getElementById(curErrorsKeys[0]);
       if (el) el.focus();
+      return;
     }
+    const bonus = mainAppStore.realAcc?.bonus || 0;
+    if (bonus > 0) {
+      withdrawalStore.setBonusPopup();
+    } else {
+      submitForm();
+    }
+  };
+
+  const handleChangeFiled = (e: ChangeEvent<HTMLInputElement>) => {
+    setFieldValue(e.target.name, e.target.value);
+    setFieldError(e.target.name, undefined);
+  };
+
+  const handleToggleBonus = (arg: boolean) => {
+    withdrawalStore.closeBonusPopup();
+  };
+  const handleConfirm = () => {
+    submitForm();
+    withdrawalStore.closeBonusPopup();
   };
 
   useEffect(() => {
@@ -190,6 +204,19 @@ const WithdrawFormBitcoin = () => {
 
   return (
     <CustomForm noValidate onSubmit={handleSubmit}>
+      <Observer>
+        {() => (
+          <>
+            {withdrawalStore.showBonusPopup && (
+              <ConfirmWithdawBonusPopUp
+                toggle={handleToggleBonus}
+                applyHandler={handleConfirm}
+              />
+            )}
+          </>
+        )}
+      </Observer>
+
       <FlexContainer flexDirection="column" width="340px">
         <FlexContainer
           margin="0 0 6px 0"
@@ -223,9 +250,7 @@ const WithdrawFormBitcoin = () => {
             type="text"
           />
 
-          {touched.amount && errors.amount && (
-            <ErrorText>{errors.amount}</ErrorText>
-          )}
+          {errors.amount && <ErrorText>{errors.amount}</ErrorText>}
         </InputWrapper>
 
         <FlexContainer
@@ -253,19 +278,19 @@ const WithdrawFormBitcoin = () => {
           <InputField
             name="bitcoinAdress"
             id="bitcoinAdress"
-            onChange={handleChange}
+            onChange={handleChangeFiled}
             value={values.bitcoinAdress}
             type="text"
           ></InputField>
         </InputWrapper>
-        {touched.bitcoinAdress && errors.bitcoinAdress && (
+        {errors.bitcoinAdress && (
           <ErrorLineText>{errors.bitcoinAdress}</ErrorLineText>
         )}
 
         <WithdrawButton
           width="160px"
           padding="12px"
-          type="submit"
+          type="button"
           onClick={handlerClickSubmit}
           disabled={dissabled}
         >
