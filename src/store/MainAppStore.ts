@@ -659,6 +659,10 @@ export class MainAppStore implements MainAppStoreProps {
     return this.accounts.find((item) => item.id === this.activeAccountId);
   }
 
+  get realAcc() {
+    return this.accounts.find(acc => acc.isLive);
+  }
+
   @action
   setActiveAccountId = (activeAccountId: AccountModelWebSocketDTO['id']) => {
     this.activeAccountId = activeAccountId;

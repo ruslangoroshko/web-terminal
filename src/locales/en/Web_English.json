@@ -393,5 +393,9 @@
     "Cancel Take profit level?": "Cancel Take profit level?",
     "Cancel Stop loss level?": "Cancel Stop loss level?",
     "Cancel SL": "Cancel SL",
-    "Cancel TP": "Cancel TP"
+    "Cancel TP": "Cancel TP",
+    "Bonus": "Bonus",
+    "There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.": "There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.",
+    "When you withdraw your funds, the bonus will be deducted from your account.": "When you withdraw your funds, the bonus will be deducted from your account.",
+    "Withdrawable": "Withdrawable"
 }

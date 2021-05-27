@@ -11,12 +11,14 @@ export interface AccountModelDTO {
 export interface AccountModelWebSocketDTO {
   id: string;
   balance: number;
+  bonus: number;
   currency: string;
   digits: number;
   symbol: string;
   isLive: boolean;
   timestamp: number;
   achievementStatus: string;
+  freeToWithdrawal: number;
   investAmount: [
     {
       amount: number;

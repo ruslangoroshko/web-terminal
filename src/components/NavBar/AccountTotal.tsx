@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useStores } from '../../hooks/useStores';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
-import { autorun } from 'mobx';
+import { moneyFormat, moneyFormatPart } from '../../helpers/moneyFormat';
+import useAccount from '../../hooks/useAccount';
+import { getNumberSignNegative } from '../../helpers/getNumberSign';
 
 const AccountTotal = () => {
-  const { mainAppStore, quotesStore } = useStores();
-  const [total, setTotal] = useState(quotesStore.total);
-
-  useEffect(
-    () =>
-      autorun(
-        () => {
-          setTotal(quotesStore.total);
-        },
-        { delay: 1000 }
-      ),
-    []
-  );
+  const { mainAppStore } = useStores();
+  const { total } = useAccount();
   return (
     <PrimaryTextSpan fontSize="11px" color="#fffccc">
+      {getNumberSignNegative(total)}
       {mainAppStore.activeAccount?.symbol}
-      {total.toFixed(2)}
+      {moneyFormatPart(Math.abs(total)).full}
     </PrimaryTextSpan>
   );
 };
