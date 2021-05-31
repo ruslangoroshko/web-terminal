@@ -77,6 +77,7 @@ interface MainAppStoreProps {
   lang: CountriesEnum;
   activeAccountId: string;
   isPromoAccount: boolean;
+  websocketConnectionTries: number;
 }
 
 // TODO: think about application initialization
@@ -122,6 +123,7 @@ export class MainAppStore implements MainAppStoreProps {
   activeAccountId: string = '';
   signUpFlag: boolean = false;
   lpLoginFlag: boolean = false;
+  websocketConnectionTries = 0;
 
   paramsAsset: string | null = null;
   paramsMarkets: string | null = null;
@@ -309,8 +311,18 @@ export class MainAppStore implements MainAppStoreProps {
     );
 
     connection.onclose((error) => {
-      this.rootStore.badRequestPopupStore.setSocket(true);
-      this.socketError = true;
+      if (this.websocketConnectionTries < 3) {
+        this.websocketConnectionTries = this.websocketConnectionTries + 1; // TODO: mobx strange behavior with i++;
+        this.handleInitConnection();
+      } else {
+        window.location.reload();
+        return;
+      }
+
+      //this.socketError = true;
+      this.isLoading = false;
+      this.isInitLoading = false;
+
       console.log('websocket error: ', error);
       console.log('=====/=====');
     });
