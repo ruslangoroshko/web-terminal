@@ -13,6 +13,7 @@ import { sortByMarketsLabels } from '../../constants/sortByDropdownValues';
 import SortByDropdown from '../SortByDropdown';
 import { useTranslation } from 'react-i18next';
 import { LOCAL_MARKET_TABS } from '../../constants/global';
+import { InstrumentGroupWSDTO } from '../../types/InstrumentsTypes';
 
 const Markets = observer(() => {
   const {
@@ -70,7 +71,7 @@ const Markets = observer(() => {
         <Observer>
           {() => (
             <>
-              {instrumentsStore.instrumentGroups.map((item) => (
+              {instrumentsStore.instrumentGroups.sort((a: InstrumentGroupWSDTO, b: InstrumentGroupWSDTO) => a.weight - b.weight).map((item) => (
                 <MarketButton
                   key={item.id}
                   isActive={
