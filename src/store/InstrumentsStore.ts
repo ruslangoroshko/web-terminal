@@ -93,7 +93,7 @@ export class InstrumentsStore implements ContextProps {
 
   @action
   setInstrumentGroups = (newInstrumentGroups: InstrumentGroupWSDTO[]) => {
-    this.instrumentGroups = newInstrumentGroups;
+    this.instrumentGroups = newInstrumentGroups.sort((a: InstrumentGroupWSDTO, b: InstrumentGroupWSDTO) => a.weight - b.weight);
   };
 
   @action
