@@ -53,12 +53,12 @@ const LpLogin = observer(() => {
       }
     }
     fetchLpLogin();
-    const pageLang: CountriesEnum = pageParams.get('lang')?.toLowerCase() as CountriesEnum || CountriesEnum.EN;
-    console.log(pageLang)
-    if (pageLang) {
-      i18n.changeLanguage(pageLang);
-      mainAppStore.setLanguage(pageLang);
-    }
+    const pageLang: CountriesEnum =
+      (pageParams.get('lang')?.toLowerCase() as CountriesEnum) ||
+      CountriesEnum.EN;
+
+    i18n.changeLanguage(pageLang);
+    mainAppStore.setLanguage(pageLang);
   }, []);
 
   return <div></div>;

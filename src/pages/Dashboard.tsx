@@ -71,7 +71,9 @@ const Dashboard: FC = observer(() => {
       <Helmet>
         <title>
           {`${mainAppStore.initModel.brandName} ${t(
-            !mainAppStore.isPromoAccount && !mainAppStore.isInitLoading ? 'trading platform' : ''
+            !mainAppStore.isPromoAccount && !mainAppStore.isInitLoading
+              ? 'trading platform'
+              : ''
           )}`}
         </title>
       </Helmet>
@@ -85,11 +87,11 @@ const Dashboard: FC = observer(() => {
         )}
       </Observer>
 
-      {/*<Observer>*/}
-      {/*  {() => (*/}
-      {/*    <>{mainAppStore.isDemoRealPopup && <DemoRealPopup></DemoRealPopup>}</>*/}
-      {/*  )}*/}
-      {/*</Observer>*/}
+      <Observer>
+        {() => (
+          <>{mainAppStore.isDemoRealPopup && !mainAppStore.isOnboarding && !mainAppStore.isPromoAccount && <DemoRealPopup></DemoRealPopup>}</>
+        )}
+      </Observer>
       {!!paymentStatus && (
         <StatusPaymentPopup status={paymentStatus}></StatusPaymentPopup>
       )}

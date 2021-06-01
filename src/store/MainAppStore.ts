@@ -72,6 +72,7 @@ interface MainAppStoreProps {
   setActiveAccount: (acc: AccountModelWebSocketDTO) => void;
   profileStatus: PersonalDataKYCEnum;
   isDemoRealPopup: boolean;
+  isOnboarding: boolean;
   signalRReconnectTimeOut: string;
   initModel: InitModel;
   lang: CountriesEnum;
@@ -104,11 +105,12 @@ export class MainAppStore implements MainAppStoreProps {
     authUrl: '',
     mixpanelToken: '582507549d28c813188211a0d15ec940',
     recaptchaToken: '',
-    miscUrl: 'https://trading-api-misc-test.mnftx.biz'
+    miscUrl: 'https://trading-api-misc-test.mnftx.biz',
   };
   isLoading = true;
   isInitLoading = true;
   isDemoRealPopup = false;
+  isOnboarding = false;
   isAuthorized = false;
   activeSession?: HubConnection;
   accounts: AccountModelWebSocketDTO[] = [];
@@ -410,34 +412,47 @@ export class MainAppStore implements MainAppStoreProps {
     }
   };
 
+  @action
+  checkOnboardingShow = async () => {
+    try {
+      //
+      const onBoardingKey = await API.getKeyValue(KeysInApi.SHOW_ONBOARDING);
+      const showOnboarding = onBoardingKey === 'true';
+      if (showOnboarding) {
+        this.isOnboarding = true;
+      }
+      //
+    } catch (error) {}
+  };
+
   getActiveAccount = async () => {
     try {
+      await this.checkOnboardingShow();
+
       const activeAccountTarget = await API.getKeyValue(
         KeysInApi.ACTIVE_ACCOUNT_TARGET
       );
-
       if (activeAccountTarget === 'facebook') {
         this.isPromoAccount = true;
       }
 
-      let activeAccount;
-
       const activeAccountId = await API.getKeyValue(
         KeysInApi.ACTIVE_ACCOUNT_ID
       );
-      activeAccount = this.accounts.find((item) => item.id === activeAccountId);
+      const activeAccount =
+        this.accounts.find((acc) => acc.id === activeAccountId) ||
+        this.accounts.find((acc) => !acc.isLive);
+
 
       if (activeAccount) {
         this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: activeAccount.id,
         });
-
         if (this.activeAccountId !== activeAccount.id) {
           this.setActiveAccountId(activeAccount.id);
         }
-      } else {
-        this.isDemoRealPopup = true;
       }
+      
       this.setInitLoading(false);
       this.setIsLoading(false);
     } catch (error) {
@@ -445,6 +460,27 @@ export class MainAppStore implements MainAppStoreProps {
       this.rootStore.badRequestPopupStore.setMessage(error);
       this.rootStore.badRequestPopupStore.openModal();
     }
+  };
+
+  @action
+  addTriggerShowOnboarding = async () => {
+    try {
+      API.setKeyValue({
+        key: KeysInApi.SHOW_ONBOARDING,
+        value: true,
+      });
+    } catch (error) {}
+  };
+
+  @action
+  addTriggerDissableOnboarding = async () => {
+    this.isOnboarding = false;
+    try {
+      API.setKeyValue({
+        key: KeysInApi.SHOW_ONBOARDING,
+        value: false,
+      });
+    } catch (error) {}
   };
 
   @action
@@ -672,7 +708,7 @@ export class MainAppStore implements MainAppStoreProps {
   }
 
   get realAcc() {
-    return this.accounts.find(acc => acc.isLive);
+    return this.accounts.find((acc) => acc.isLive);
   }
 
   @action

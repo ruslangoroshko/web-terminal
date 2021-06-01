@@ -166,7 +166,7 @@ class API {
     return response.data;
   };
 
-  setKeyValue = async (params: { key: string; value: string }) => {
+  setKeyValue = async (params: { key: string; value: string | boolean }) => {
     const formData = this.convertParamsToFormData(params);
     const response = await axios.post<void>(
       `${API_STRING}${API_LIST.KEY_VALUE.POST}`,

@@ -150,6 +150,7 @@ function SignUp() {
                     [mixapanelProps.BRAND_NAME]:
                       mainAppStore.initModel.brandProperty,
                   });
+                  mainAppStore.addTriggerShowOnboarding();
                   push(Page.ONBOARDING);
                 }
               } catch (error) {
