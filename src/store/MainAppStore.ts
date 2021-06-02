@@ -105,7 +105,7 @@ export class MainAppStore implements MainAppStoreProps {
     authUrl: '',
     mixpanelToken: '582507549d28c813188211a0d15ec940',
     recaptchaToken: '',
-    miscUrl: '',
+    miscUrl: 'https://trading-api-test.mnftx.biz/misc',
   };
   isLoading = true;
   isInitLoading = true;
@@ -182,8 +182,8 @@ export class MainAppStore implements MainAppStoreProps {
         IS_LIVE &&
         this.initModel.tradingUrl &&
         config.url &&
-        !config.url.includes('auth/') &&
-        !config.url.includes('misc')
+        !config.url.includes('auth/') 
+        // && !config.url.includes('misc')
       ) {
         if (config.url.includes('://')) {
           const arrayOfSubpath = config.url.split('://')[1].split('/');
