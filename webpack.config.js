@@ -127,7 +127,7 @@ module.exports = (env, argv) => {
           ? JSON.stringify('')
           : JSON.stringify('http://localhost:5681'),
         API_MISC_STRING: ['production', 'none'].includes(argv.mode)
-          ? JSON.stringify('')
+          ? JSON.stringify('/misc')
           : JSON.stringify('http://trading-api:5678/misc'),
         CHARTING_LIBRARY_PATH: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('./charting_library/')

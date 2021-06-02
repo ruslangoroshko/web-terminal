@@ -105,7 +105,7 @@ export class MainAppStore implements MainAppStoreProps {
     authUrl: '',
     mixpanelToken: '582507549d28c813188211a0d15ec940',
     recaptchaToken: '',
-    miscUrl: 'https://trading-api-misc-test.mnftx.biz',
+    miscUrl: '',
   };
   isLoading = true;
   isInitLoading = true;
