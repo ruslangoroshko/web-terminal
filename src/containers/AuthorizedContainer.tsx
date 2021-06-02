@@ -112,13 +112,12 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
   ]);
 
   const isHiddenPromoPage = hidenPromoPageList?.isExact;
-  
 
-  useEffect(() =>{
+  useEffect(() => {
     if (mainAppStore.isPromoAccount && isHiddenPromoPage) {
       push(Page.DASHBOARD);
     }
-  }, [mainAppStore.isPromoAccount])
+  }, [mainAppStore.isPromoAccount]);
 
   useEffect(() => {
     const wasOpen = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
@@ -173,6 +172,20 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
     mainAppStore.paramsPortfolioActive,
     mainAppStore.paramsPortfolioHistory,
     mainAppStore.paramsPortfolioOrder,
+  ]);
+
+  useEffect(() => {
+    if (
+      mainAppStore.isOnboarding &&
+      !mainAppStore.isPromoAccount &&
+      !mainAppStore.isDemoRealPopup
+    ) {
+      push(Page.ONBOARDING);
+    }
+  }, [
+    mainAppStore.isOnboarding,
+    mainAppStore.isPromoAccount,
+    mainAppStore.isDemoRealPopup,
   ]);
 
   return (
