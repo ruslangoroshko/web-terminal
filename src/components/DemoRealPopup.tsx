@@ -42,6 +42,7 @@ function DemoRealPopup() {
           [Fields.ACCOUNT_ID]: acc.id,
         });
         mainAppStore.setActiveAccount(acc);
+        mainAppStore.addTriggerDissableOnboarding();
         mainAppStore.setIsDemoReal(false);
         sendMixpanelEvents('demo');
       } catch (error) {
@@ -63,6 +64,7 @@ function DemoRealPopup() {
           [Fields.ACCOUNT_ID]: acc.id,
         });
         mainAppStore.setActiveAccount(acc);
+        mainAppStore.addTriggerDissableOnboarding();
         push(`/${HashLocation.Deposit}`);
         sendMixpanelEvents('real');
         setTimeout(() => {
