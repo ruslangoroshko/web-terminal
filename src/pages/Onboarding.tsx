@@ -160,12 +160,21 @@ const Onboarding = () => {
     }
   };
 
-  useEffect(() => {
-    getInfoByStep(1);
-    mixpanel.track(mixpanelEvents.ONBOARDING, {
-      [mixapanelProps.ONBOARDING_VALUE]: 'start1',
-    });
-  }, []);
+
+  const isOnboardingAvailable = async () => {
+    //
+    const isAvailable = await mainAppStore.checkOnboardingShow();
+    if (!isAvailable) {
+      push(Page.DASHBOARD);
+    } else {
+      // init OB
+      getInfoByStep(1);
+      mixpanel.track(mixpanelEvents.ONBOARDING, {
+        [mixapanelProps.ONBOARDING_VALUE]: 'start1',
+      });
+      //
+    }
+  };
 
   useEffect(() => {
     // TODO: Нужно перенести это в контейнер
@@ -175,6 +184,10 @@ const Onboarding = () => {
       push(Page.DASHBOARD);
     }
   }, [mainAppStore.isPromoAccount]);
+
+  useEffect(() => {
+    isOnboardingAvailable();
+  }, []);
 
   if (loading || actualStepInfo === null) {
     return <LoaderForComponents isLoading={loading} />;

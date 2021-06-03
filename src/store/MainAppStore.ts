@@ -421,8 +421,11 @@ export class MainAppStore implements MainAppStoreProps {
       if (showOnboarding) {
         this.isOnboarding = true;
       }
+      return showOnboarding;
       //
-    } catch (error) {}
+    } catch (error) {
+      return false;
+    }
   };
 
   getActiveAccount = async () => {
