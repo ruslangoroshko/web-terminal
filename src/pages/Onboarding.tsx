@@ -23,6 +23,7 @@ import SvgIcon from '../components/SvgIcon';
 import IconClose from '../assets/svg/icon-close.svg';
 import { keyframes } from '@emotion/core';
 import { OnBoardingResponseEnum } from '../enums/OnBoardingRsponseEnum';
+import HashLocation from '../constants/hashLocation';
 
 const Onboarding = () => {
   const { t } = useTranslation();
@@ -140,7 +141,9 @@ const Onboarding = () => {
         });
         mainAppStore.addTriggerDissableOnboarding();
         mainAppStore.isOnboarding = false;
-        push(Page.DEPOSIT_POPUP);
+        // mainAppStore.handleInitConnection();
+        
+        push(`/${HashLocation.Deposit}`);
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
