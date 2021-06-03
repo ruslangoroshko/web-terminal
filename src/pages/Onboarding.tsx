@@ -127,15 +127,11 @@ const Onboarding = () => {
     const acc = mainAppStore.accounts.find((item) => item.isLive);
     if (acc) {
       try {
-        await API.setKeyValue({
-          key: KeysInApi.ACTIVE_ACCOUNT_ID,
-          value: acc.id,
-        });
+        
         mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: acc.id,
         });
         mainAppStore.setActiveAccount(acc);
-        mainAppStore.isLoading = true;
         mixpanel.track(mixpanelEvents.ONBOARDING, {
           [mixapanelProps.ONBOARDING_VALUE]: `real${actualStep}`,
         });
@@ -143,7 +139,7 @@ const Onboarding = () => {
         mainAppStore.isOnboarding = false;
         // mainAppStore.handleInitConnection();
         
-        push(`/${HashLocation.Deposit}`);
+        push(Page.DEPOSIT_POPUP);
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
