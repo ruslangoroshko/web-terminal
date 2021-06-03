@@ -127,7 +127,6 @@ const Onboarding = () => {
     const acc = mainAppStore.accounts.find((item) => item.isLive);
     if (acc) {
       try {
-        
         mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: acc.id,
         });
@@ -138,8 +137,9 @@ const Onboarding = () => {
         mainAppStore.addTriggerDissableOnboarding();
         mainAppStore.isOnboarding = false;
         // mainAppStore.handleInitConnection();
-        
+
         push(Page.DEPOSIT_POPUP);
+        document.location.reload();
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
