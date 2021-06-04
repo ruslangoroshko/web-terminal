@@ -215,7 +215,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
         </Observer>
       </FlexContainer>
       <Observer>
-        {() => <>{mainAppStore.isAuthorized && <NavBar></NavBar>}</>}
+        {() => <>{mainAppStore.isAuthorized && !mainAppStore.isOnboarding && <NavBar></NavBar>}</>}
       </Observer>
       <Observer>
         {() => (
@@ -232,7 +232,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
 
       <FlexContainer height="calc(100% - 48px)">
         <Observer>
-          {() => <>{mainAppStore.isAuthorized && <SideBar></SideBar>}</>}
+          {() => <>{mainAppStore.isAuthorized && !mainAppStore.isOnboarding && <SideBar></SideBar>}</>}
         </Observer>
         <SideBarAndPageContentWrapper width="100%">
           <Observer>

@@ -199,6 +199,7 @@ const Onboarding = () => {
       justifyContent="space-between"
       width="100%"
       height="100%"
+      background="#1c1f26"
     >
       <PageHeaderWrap>
         <BackButton onClick={closeOnBoarding}>
@@ -275,9 +276,9 @@ const Onboarding = () => {
           >
             {actualStepInfo?.data.buttons.map((button) => (
               <OnboardingButton
-                padding="12px"
+                padding="18px 12px"
                 type="button"
-                width="320px"
+                width="344px"
                 onClick={actionByType(button.action)}
                 isDemo={button.action === ButtonActionType.Demo}
                 key={`${button.action}_${actualStep}`}

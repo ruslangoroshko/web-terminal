@@ -120,7 +120,7 @@ const routesList = [
     path: Page.ONBOARDING,
     exact: true,
     strict: true,
-    layoutType: RouteLayoutType.Public,
+    layoutType: RouteLayoutType.Authorized,
   },
 ];
 
