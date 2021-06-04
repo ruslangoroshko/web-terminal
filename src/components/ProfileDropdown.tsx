@@ -19,12 +19,12 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import e2eTests from '../constants/e2eTests';
 import { observable } from 'mobx';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 
 const ProfileDropdown = observer(() => {
   const { mainAppStore, depositFundsStore, tabsStore } = useStores();
   const { t } = useTranslation();
-  const { push } = useHistory()
+  const { push } = useHistory();
 
   const getStatusLabel = useCallback(
     (type?: string) => {
@@ -92,36 +92,37 @@ const ProfileDropdown = observer(() => {
       border="1px solid rgba(169, 171, 173, 0.1)"
       boxShadow="0px 34px 44px rgba(0, 0, 0, 0.25)"
     >
-      {(mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
-        AchievementStatus.GOLD ||
-        mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
-          AchievementStatus.SILVER ||
-        mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
-          AchievementStatus.PLATINUM) && (
-        <StatusLabel
-          width="124px"
-          height="24px"
-          padding="5px"
-          borderRadius="0 0 12px 12px"
-          alignItems="center"
-          justifyContent="center"
-          margin="0 auto"
-          background={`url(${getStatusLabel()})`}
-        >
-          <PrimaryTextSpan
-            fontSize="12px"
-            textTransform="uppercase"
-            color={getStatusLabel('color')}
-            fontWeight={500}
+      {!mainAppStore.isPromoAccount &&
+        (mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
+          AchievementStatus.GOLD ||
+          mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
+            AchievementStatus.SILVER ||
+          mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
+            AchievementStatus.PLATINUM) && (
+          <StatusLabel
+            width="124px"
+            height="24px"
+            padding="5px"
+            borderRadius="0 0 12px 12px"
+            alignItems="center"
+            justifyContent="center"
+            margin="0 auto"
+            background={`url(${getStatusLabel()})`}
           >
-            {mainAppStore.accounts.find((acc) => acc.isLive)
-              ?.achievementStatus === AchievementStatus.PLATINUM
-              ? AchievementStatus.VIP
-              : mainAppStore.accounts.find((acc) => acc.isLive)
-                  ?.achievementStatus}
-          </PrimaryTextSpan>
-        </StatusLabel>
-      )}
+            <PrimaryTextSpan
+              fontSize="12px"
+              textTransform="uppercase"
+              color={getStatusLabel('color')}
+              fontWeight={500}
+            >
+              {mainAppStore.accounts.find((acc) => acc.isLive)
+                ?.achievementStatus === AchievementStatus.PLATINUM
+                ? AchievementStatus.VIP
+                : mainAppStore.accounts.find((acc) => acc.isLive)
+                    ?.achievementStatus}
+            </PrimaryTextSpan>
+          </StatusLabel>
+        )}
       <FlexWithBottomBorder
         flexDirection="column"
         padding="0 0 18px"
@@ -178,27 +179,36 @@ const ProfileDropdown = observer(() => {
           </PrimaryTextSpan>
         </CustomeNavLink>
       </FlexContainer>
-      <FlexContainer margin="0 0 12px">
-        <DepositButtonWrapper onClick={() => push(Page.DEPOSIT_POPUP)}>
-          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
-            {t('Deposit')}
-          </PrimaryTextSpan>
-        </DepositButtonWrapper>
-      </FlexContainer>
-      <FlexContainer margin="0 0 12px">
-        <CustomeNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="is-active">
-          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
-            {t('Withdraw')}
-          </PrimaryTextSpan>
-        </CustomeNavLink>
-      </FlexContainer>
-      <FlexContainer margin="0 0 12px">
-        <CustomeNavLink to={Page.ACCOUNT_BALANCE_HISTORY}>
-          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
-            {t('Balance history')}
-          </PrimaryTextSpan>
-        </CustomeNavLink>
-      </FlexContainer>
+
+      {!mainAppStore.isPromoAccount && (
+        <>
+          <FlexContainer margin="0 0 12px">
+            <DepositButtonWrapper onClick={() => push(Page.DEPOSIT_POPUP)}>
+              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+                {t('Deposit')}
+              </PrimaryTextSpan>
+            </DepositButtonWrapper>
+          </FlexContainer>
+          <FlexContainer margin="0 0 12px">
+            <CustomeNavLink
+              to={Page.ACCOUNT_WITHDRAW}
+              activeClassName="is-active"
+            >
+              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+                {t('Withdraw')}
+              </PrimaryTextSpan>
+            </CustomeNavLink>
+          </FlexContainer>
+          <FlexContainer margin="0 0 12px">
+            <CustomeNavLink to={Page.ACCOUNT_BALANCE_HISTORY}>
+              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+                {t('Balance history')}
+              </PrimaryTextSpan>
+            </CustomeNavLink>
+          </FlexContainer>
+        </>
+      )}
+
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={handleLogoutClick}>
           <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
