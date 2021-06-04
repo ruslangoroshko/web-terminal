@@ -57,7 +57,7 @@ const WithdrawHistoryItem = (props: Props) => {
   };
 
   return (
-    <DisplayContents>
+    <DisplayContents ref={instrumentRef}>
       <Td>
         <FlexContainer alignItems="center">
           <PrimaryTextSpan
