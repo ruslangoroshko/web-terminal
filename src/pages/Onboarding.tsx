@@ -193,7 +193,11 @@ const Onboarding = () => {
   return (
     <FlexContainer
       flexDirection="column"
-      justifyContent="space-between"
+      justifyContent={
+        actualStepInfo?.data.fullScreen
+          ? 'flex-start'
+          : 'space-between'
+      }
       width="100%"
       height="100%"
       background="#1c1f26"
