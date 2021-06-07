@@ -3,6 +3,8 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { MainAppStore } from '../store/MainAppStore';
 import RequestHeaders from '../constants/headers';
+import Page from '../constants/Pages';
+import API_LIST from '../helpers/apiList';
 
 const injectInerceptors = (mainAppStore: MainAppStore) => {
   // for multiple requests
@@ -47,10 +49,13 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       }
 
       const originalRequest = error.config;
-
+      
       switch (error.response?.status) {
         case 400:
         case 500:
+          if (error.response?.config?.url.includes(API_LIST.ONBOARDING.STEPS)) {
+            break;
+          }
           function requestAgain() {
             mainAppStore.rootStore.badRequestPopupStore.setMessage(
               error.response?.statusText || 'error'
