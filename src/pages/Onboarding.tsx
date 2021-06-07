@@ -136,10 +136,7 @@ const Onboarding = () => {
         });
         mainAppStore.addTriggerDissableOnboarding();
         mainAppStore.isOnboarding = false;
-        // mainAppStore.handleInitConnection();
-
         push(Page.DEPOSIT_POPUP);
-        document.location.reload();
       } catch (error) {
         badRequestPopupStore.openModal();
         badRequestPopupStore.setMessage(error);
