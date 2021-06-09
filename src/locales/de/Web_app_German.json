@@ -390,8 +390,8 @@
     "Online Transfers Cash Payments": "Online-Überweisungen Bargeld-Zahlungen",
     "Bank Transfers": "Banküberweisungen",
     "Few hours": "Wenige Stunden",
-    "Cancel Take profit level?": "Take-Profit-Level stornieren?",
-    "Cancel Stop loss level?": "Stop-Loss-Level stornieren?",
-    "Cancel SL": "SL stornieren",
-    "Cancel TP": "TP stornieren"
+    "Bonus": "Bonus",
+    "There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.": "Es gibt keine Möglichkeit, den Bonus abzuheben. Aber dies ist ein zusätzlicher Betrag auf Ihrem Konto. Die Profite, die Sie mit Bonusgeld machen, können Sie jederzeit abheben.",
+    "When you withdraw your funds, the bonus will be deducted from your account.": "Wenn Sie Ihr Geld abheben, wird der Bonus von Ihrem Konto abgezogen.",
+    "Withdrawable": "Auszahlung"
 }
