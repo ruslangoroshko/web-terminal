@@ -49,13 +49,14 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       }
 
       const originalRequest = error.config;
-      
+      if (error.response?.config?.url.includes(API_LIST.ONBOARDING.STEPS)) {
+        return Promise.reject(error);
+      }
+
       switch (error.response?.status) {
         case 400:
         case 500:
-          if (error.response?.config?.url.includes(API_LIST.ONBOARDING.STEPS)) {
-            break;
-          }
+          
           function requestAgain() {
             mainAppStore.rootStore.badRequestPopupStore.setMessage(
               error.response?.statusText || 'error'
