@@ -633,6 +633,10 @@ export class MainAppStore implements MainAppStoreProps {
     );
     this.rootStore.dateRangeStore.setStartDate(moment().subtract(1, 'weeks'));
     this.rootStore.tabsStore.setPortfolioTab(PortfolioTabEnum.Portfolio);
+    this.activeSession?.stop().then(() => {
+      this.socketError = false;
+      this.rootStore.badRequestPopupStore.setSocket(false);
+    });
     if (this.activeAccount) {
       this.setParamsAsset(null);
       this.setParamsMarkets(null);
