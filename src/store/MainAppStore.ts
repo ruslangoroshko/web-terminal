@@ -313,12 +313,14 @@ export class MainAppStore implements MainAppStoreProps {
     );
 
     connection.onclose((error) => {
-      if (this.websocketConnectionTries < 3) {
-        this.websocketConnectionTries = this.websocketConnectionTries + 1; // TODO: mobx strange behavior with i++;
-        this.handleInitConnection();
-      } else {
-        window.location.reload();
-        return;
+      if (error) {
+        if (this.websocketConnectionTries < 3) {
+          this.websocketConnectionTries = this.websocketConnectionTries + 1; // TODO: mobx strange behavior with i++;
+          this.handleInitConnection();
+        } else {
+          window.location.reload();
+          return;
+        }
       }
 
       //this.socketError = true;
