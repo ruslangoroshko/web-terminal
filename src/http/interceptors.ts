@@ -5,6 +5,11 @@ import { MainAppStore } from '../store/MainAppStore';
 import RequestHeaders from '../constants/headers';
 import Page from '../constants/Pages';
 import API_LIST from '../helpers/apiList';
+import { DebugTypes } from '../types/DebugTypes';
+import debugLevel from '../constants/debugConstants';
+import { getProcessId } from '../helpers/getProcessId';
+import { getCircularReplacer } from '../helpers/getCircularReplacer';
+import API from '../helpers/API';
 
 const injectInerceptors = (mainAppStore: MainAppStore) => {
   // for multiple requests
@@ -46,6 +51,16 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           axios.request(error.config);
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
         }, +mainAppStore.connectTimeOut);
+      }
+
+      if (mainAppStore.isAuthorized && error.response?.status !== 401) {
+        const params: DebugTypes = {
+          level: debugLevel.TRANSPORT,
+          processId: getProcessId(),
+          message: error.response?.message || 'unknown error',
+          jsonLogObject: JSON.stringify(mainAppStore.rootStore, getCircularReplacer()),
+        };
+        API.postDebug(params, API_STRING);
       }
 
       const originalRequest = error.config;

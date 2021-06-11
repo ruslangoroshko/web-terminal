@@ -53,7 +53,10 @@ const API_LIST = {
   },
   ONBOARDING: {
     STEPS: '/v1/OnboardingSteps'
-  }
+  },
+  DEBUG: {
+    POST: '/api/Debug/ClientLog',
+  },
 };
 
 Object.freeze(API_LIST);
