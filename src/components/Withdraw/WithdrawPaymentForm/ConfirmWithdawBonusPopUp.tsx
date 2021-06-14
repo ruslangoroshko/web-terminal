@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlexContainer } from '../../../styles/FlexContainer';
 import ConfirmPopup from '../../ConfirmPopup';
 import Modal from '../../Modal';
@@ -8,13 +9,19 @@ interface IConfirmWithdawBonusPopUpProps {
   toggle: (arg: boolean) => void;
   applyHandler: () => void;
 }
-const ConfirmWithdawBonusPopUp = ({toggle, applyHandler}: IConfirmWithdawBonusPopUpProps) => {
+const ConfirmWithdawBonusPopUp = ({
+  toggle,
+  applyHandler,
+}: IConfirmWithdawBonusPopUpProps) => {
+  const { t } = useTranslation();
   return (
     <Modal>
       <ConfirmationWrap>
         <ConfirmPopup
           applyHandler={applyHandler}
-          confirmText="When you withdraw your funds, the bonus will be deducted from your account."
+          confirmText={`${t(
+            'When you withdraw your funds, the bonus will be deducted from your account.'
+          )}`}
           toggle={toggle}
         />
       </ConfirmationWrap>
