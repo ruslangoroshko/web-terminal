@@ -16,9 +16,6 @@ export const getStatesSnapshot = (mainAppStore: any) => {
             instrumentGroups: mainAppStore.rootStore.instrumentsStore.instrumentGroups,
             activeInstruments: mainAppStore.rootStore.instrumentsStore.activeInstruments,
         },
-        markersOnChartStore: {
-            activeMarkers: mainAppStore.rootStore.markersOnChartStore.activeMarkers,
-        },
         quotesStore: {
             quotes: mainAppStore.rootStore.quotesStore.quotes,
             activePositions: mainAppStore.rootStore.quotesStore.activePositions,
@@ -34,5 +31,6 @@ export const getStatesSnapshot = (mainAppStore: any) => {
             history: mainAppStore.rootStore.withdrawalStore.history,
         }
     };
+    console.log(allStates);
     return allStates;
 };
