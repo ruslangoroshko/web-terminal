@@ -31,6 +31,5 @@ export const getStatesSnapshot = (mainAppStore: any) => {
             history: mainAppStore.rootStore.withdrawalStore.history,
         }
     };
-    console.log(allStates);
     return allStates;
 };
