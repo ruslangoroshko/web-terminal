@@ -83,10 +83,16 @@ class API {
   };
 
   clientRequestOptions: AxiosRequestConfig = {
-    timeoutErrorMessage: `${requestOptions.TIMEOUT}.${requestOptions.CLIENT}`,
+    timeoutErrorMessage: requestOptions.TIMEOUT,
+    data: {
+      initBy: requestOptions.CLIENT
+    }
   };
   backgroundRequestOptions: AxiosRequestConfig = {
-    timeoutErrorMessage: `${requestOptions.TIMEOUT}.${requestOptions.BACKGROUND}`,
+    timeoutErrorMessage: requestOptions.TIMEOUT,
+    data: {
+      initBy: requestOptions.BACKGROUND
+    }
   };
 
   //
@@ -299,6 +305,7 @@ class API {
     return response.data;
   };
 
+  
   // -------------------
 
   //
@@ -603,7 +610,24 @@ class API {
     );
     return response.data;
   };
+
+  
   // -------------------
+
+  testBGrequest = async () => {
+    const response = await axios.get(
+      `http://localhost:5000`,
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+  testClinetrequest = async () => {
+    const response = await axios.get(
+      `http://localhost:5000`,
+      this.clientRequestOptions
+    );
+    return response.data;
+  };
 }
 
 export default new API();

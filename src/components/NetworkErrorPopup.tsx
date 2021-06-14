@@ -5,9 +5,9 @@ import { keyframes } from '@emotion/core';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import { useStores } from '../hooks/useStores';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 
-const NetworkErrorPopup = () => {
+const NetworkErrorPopup = observer(() => {
   const { badRequestPopupStore, mainAppStore } = useStores();
   const [show, setShow] = useState(false);
   const [shouldRender, setRender] = useState(false);
@@ -30,10 +30,11 @@ const NetworkErrorPopup = () => {
   };
 
   useEffect(() => {
+    setShow(badRequestPopupStore.isNetwork);
     setTimeout(() => {
-      setRender(show);
+      setRender(badRequestPopupStore.isNetwork);
     }, 500);
-  }, [show]);
+  }, [badRequestPopupStore.isNetwork]);
 
   useEffect(() => {
     window.addEventListener('offline', handleLostConnection);
@@ -88,7 +89,7 @@ const NetworkErrorPopup = () => {
       </ModalWrap>
     </Modal>
   );
-};
+});
 
 export default NetworkErrorPopup;
 

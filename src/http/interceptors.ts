@@ -5,6 +5,25 @@ import { MainAppStore } from '../store/MainAppStore';
 import RequestHeaders from '../constants/headers';
 import Page from '../constants/Pages';
 import API_LIST from '../helpers/apiList';
+import requestOptions from '../constants/requestOptions';
+import { logger } from '../helpers/ConsoleLoggerTool';
+
+
+const repeatRequest = (error: any, mainAppStore: MainAppStore) => {
+  axios.request(error.config);
+  mainAppStore.requestReconnectCounter += 1;
+  logger(mainAppStore.requestReconnectCounter) 
+
+  if (mainAppStore.requestReconnectCounter > 3) {
+    mainAppStore.rootStore.badRequestPopupStore.setRecconect(); 
+    mainAppStore.rootStore.badRequestPopupStore.setNetwork(true);
+    mainAppStore.rootStore.badRequestPopupStore.initConectionReload();
+  }
+  // setTimeout(() => {
+  //   mainAppStore.rootStore.badRequestPopupStore.setRecconect();  
+  //   mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
+  // }, +mainAppStore.connectTimeOut);
+}
 
 const injectInerceptors = (mainAppStore: MainAppStore) => {
   // for multiple requests
@@ -40,33 +59,38 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     },
 
     async function (error) {
-      if (!error.response?.status) {
-        mainAppStore.rootStore.badRequestPopupStore.setRecconect();
-        setTimeout(() => {
-          axios.request(error.config);
-          mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
-        }, +mainAppStore.connectTimeOut);
-      }
 
-      const originalRequest = error.config;
+      // Dont check onboarding Errors and open Demo/Real popup
       if (error.response?.config?.url.includes(API_LIST.ONBOARDING.STEPS)) {
         return Promise.reject(error);
       }
+      // ---
 
+      let isTimeOutError = error.message === requestOptions.TIMEOUT;
+      let isReconnectedRequest = JSON.parse(error.config.data).initBy === requestOptions.BACKGROUND;
+
+
+      if (isTimeOutError && !isReconnectedRequest) {
+        mainAppStore.rootStore.notificationStore.setNotification('Timeout connection error');
+        mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
+        mainAppStore.rootStore.notificationStore.openNotification();
+      }
+      if (isTimeOutError && isReconnectedRequest) {
+        repeatRequest(error, mainAppStore);
+      }
+
+      const originalRequest = error.config;
+  
       switch (error.response?.status) {
-        case 400:
         case 500:
           
-          function requestAgain() {
-            mainAppStore.rootStore.badRequestPopupStore.setMessage(
-              error.response?.statusText || 'error'
-            );
-            mainAppStore.rootStore.badRequestPopupStore.openModal();
-            mainAppStore.setIsLoading(false);
+          if (isReconnectedRequest) {
+            return repeatRequest(error, mainAppStore);
+          } else {
+            
           }
-          setTimeout(requestAgain, +mainAppStore.connectTimeOut);
-          mainAppStore.setIsLoading(false);
-          break;
+
+          return 
 
         case 401:
           if (mainAppStore.refreshToken && !originalRequest._retry) {

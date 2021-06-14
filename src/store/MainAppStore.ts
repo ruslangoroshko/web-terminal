@@ -79,6 +79,8 @@ interface MainAppStoreProps {
   activeAccountId: string;
   isPromoAccount: boolean;
   websocketConnectionTries: number;
+
+  requestReconnectCounter: number;
 }
 
 // TODO: think about application initialization
@@ -139,7 +141,9 @@ export class MainAppStore implements MainAppStoreProps {
 
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
-  connectTimeOut = '';
+
+  connectTimeOut = 5000;
+  requestReconnectCounter = 0;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -153,6 +157,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.refreshToken =
       localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
+    Axios.defaults.timeout = this.connectTimeOut || 5000
     // @ts-ignore
     this.lang =
       localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
