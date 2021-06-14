@@ -76,6 +76,9 @@ const Onboarding = () => {
   };
 
   const handleChangeStep = (nextStep: number) => () => {
+    mixpanel.track(mixpanelEvents.ONBOARDING, {
+      [mixapanelProps.ONBOARDING_VALUE]: mixpanelEventByStep(),
+    });
     getInfoByStep(nextStep);
   };
 
@@ -87,6 +90,7 @@ const Onboarding = () => {
       mixpanel.track(mixpanelEvents.ONBOARDING, {
         [mixapanelProps.ONBOARDING_VALUE]: `close${actualStep}`,
       });
+      setActualStep(actualStepInfo?.data.totalSteps);
       getInfoByStep(actualStepInfo?.data.totalSteps);
     } else {
       mixpanel.track(mixpanelEvents.ONBOARDING, {
@@ -157,6 +161,20 @@ const Onboarding = () => {
     }
   };
 
+  const mixpanelEventByStep = () => {
+    switch (actualStep) {
+      case 1:
+        return 'start1';
+      case 5:
+        return 'buy5';
+      case 6:
+        return 'sell6';
+      case 7:
+        return 'withdraw7';
+      default:
+        return `next${actualStep}`;
+    }
+  };
 
   const isOnboardingAvailable = async () => {
     //
@@ -166,9 +184,6 @@ const Onboarding = () => {
     } else {
       // init OB
       getInfoByStep(1);
-      mixpanel.track(mixpanelEvents.ONBOARDING, {
-        [mixapanelProps.ONBOARDING_VALUE]: 'start1',
-      });
       //
     }
   };
