@@ -10,6 +10,7 @@ import debugLevel from '../constants/debugConstants';
 import { getProcessId } from '../helpers/getProcessId';
 import { getCircularReplacer } from '../helpers/getCircularReplacer';
 import API from '../helpers/API';
+import { getStatesSnapshot } from '../helpers/getStatesSnapshot';
 
 const injectInerceptors = (mainAppStore: MainAppStore) => {
   // for multiple requests
@@ -55,7 +56,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       if (mainAppStore.isAuthorized && error.response?.status !== 401) {
         const jsonLogObject = {
           error: JSON.stringify(error),
-          snapShot: JSON.stringify(mainAppStore, getCircularReplacer())
+          snapShot: JSON.stringify(getStatesSnapshot(mainAppStore), getCircularReplacer())
         };
         const params: DebugTypes = {
           level: debugLevel.TRANSPORT,

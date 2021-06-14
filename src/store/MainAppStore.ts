@@ -61,6 +61,7 @@ import { DebugTypes } from '../types/DebugTypes';
 import debugLevel from '../constants/debugConstants';
 import { getProcessId } from '../helpers/getProcessId';
 import { getCircularReplacer } from '../helpers/getCircularReplacer';
+import { getStatesSnapshot } from '../helpers/getStatesSnapshot';
 
 interface MainAppStoreProps {
   token: string;
@@ -327,11 +328,15 @@ export class MainAppStore implements MainAppStoreProps {
         }
       }
       if (this.isAuthorized) {
+        const jsonLogObject = {
+          error: JSON.stringify(error),
+          snapShot: JSON.stringify(getStatesSnapshot(this), getCircularReplacer())
+        };
         const params: DebugTypes = {
           level: debugLevel.TRANSPORT,
           processId: getProcessId(),
           message: error?.message || 'unknown error',
-          jsonLogObject: JSON.stringify(this.rootStore, getCircularReplacer()),
+          jsonLogObject: JSON.stringify(jsonLogObject),
         };
         API.postDebug(params, API_STRING);
       }
