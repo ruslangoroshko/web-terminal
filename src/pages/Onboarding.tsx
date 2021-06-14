@@ -163,6 +163,8 @@ const Onboarding = () => {
 
   const mixpanelEventByStep = () => {
     switch (actualStep) {
+      case 1:
+        return 'start1';
       case 5:
         return 'buy5';
       case 6:
@@ -182,9 +184,6 @@ const Onboarding = () => {
     } else {
       // init OB
       getInfoByStep(1);
-      mixpanel.track(mixpanelEvents.ONBOARDING, {
-        [mixapanelProps.ONBOARDING_VALUE]: 'start1',
-      });
       //
     }
   };

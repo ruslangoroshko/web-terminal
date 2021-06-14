@@ -52,13 +52,16 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
         }, +mainAppStore.connectTimeOut);
       }
-
       if (mainAppStore.isAuthorized && error.response?.status !== 401) {
+        const jsonLogObject = {
+          error: JSON.stringify(error),
+          snapShot: JSON.stringify(mainAppStore, getCircularReplacer())
+        };
         const params: DebugTypes = {
           level: debugLevel.TRANSPORT,
           processId: getProcessId(),
-          message: error.response?.message || 'unknown error',
-          jsonLogObject: JSON.stringify(mainAppStore.rootStore, getCircularReplacer()),
+          message: error.response?.statusText || 'unknown error',
+          jsonLogObject: JSON.stringify(jsonLogObject)
         };
         API.postDebug(params, API_STRING);
       }
