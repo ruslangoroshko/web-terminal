@@ -308,7 +308,7 @@ const Onboarding = () => {
                   fontWeight="bold"
                   fontSize="16px"
                 >
-                  {t(button.text)}
+                  {button.text}
                 </PrimaryTextSpan>
               </OnboardingButton>
             ))}
