@@ -13,6 +13,7 @@ const NetworkErrorPopup = observer(() => {
   const [shouldRender, setRender] = useState(false);
 
   const handleLostConnection = () => {
+    badRequestPopupStore.setRecconect()
     badRequestPopupStore.setNetwork(true);
     badRequestPopupStore.initConectionReload();
     setShow(true);
@@ -20,6 +21,7 @@ const NetworkErrorPopup = observer(() => {
 
   const handleSetConnection = () => {
     // TODO: Find out how to make reload using React-Router
+    badRequestPopupStore.stopRecconect()
     window.location.reload();
   };
 
@@ -30,11 +32,11 @@ const NetworkErrorPopup = observer(() => {
   };
 
   useEffect(() => {
-    setShow(badRequestPopupStore.isNetwork);
+    setShow(badRequestPopupStore.isRecconect);
     setTimeout(() => {
-      setRender(badRequestPopupStore.isNetwork);
+      setRender(badRequestPopupStore.isRecconect);
     }, 500);
-  }, [badRequestPopupStore.isNetwork]);
+  }, [badRequestPopupStore.isRecconect]);
 
   useEffect(() => {
     window.addEventListener('offline', handleLostConnection);

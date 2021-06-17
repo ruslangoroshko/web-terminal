@@ -9,19 +9,14 @@ import requestOptions from '../constants/requestOptions';
 import { logger } from '../helpers/ConsoleLoggerTool';
 
 const repeatRequest = (error: any, mainAppStore: MainAppStore) => {
-  axios.request(error.config);
+  
   mainAppStore.requestReconnectCounter += 1;
-  logger(mainAppStore.requestReconnectCounter);
-
   if (mainAppStore.requestReconnectCounter > 3) {
     mainAppStore.rootStore.badRequestPopupStore.setRecconect();
-    mainAppStore.rootStore.badRequestPopupStore.setNetwork(true);
-    mainAppStore.rootStore.badRequestPopupStore.initConectionReload();
   }
-  // setTimeout(() => {
-  //   mainAppStore.rootStore.badRequestPopupStore.setRecconect();
-  //   mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
-  // }, +mainAppStore.connectTimeOut);
+  setTimeout(() => {
+    axios.request(error.config);
+  }, +mainAppStore.connectTimeOut);
 };
 
 const injectInerceptors = (mainAppStore: MainAppStore) => {
@@ -43,6 +38,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
   axios.interceptors.response.use(
     function (config: AxiosResponse) {
+      if (config.data) {
+        mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
+      }
       if (config.data.result === OperationApiResponseCodes.TechnicalError) {
         return Promise.reject(
           apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
@@ -79,21 +77,17 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         return repeatRequest(error, mainAppStore);
       }
 
+      if (!error.response?.status && !isTimeOutError && !isReconnectedRequest) {
+        mainAppStore.rootStore.notificationStore.setNotification(
+          error.message
+        );
+        mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
+        mainAppStore.rootStore.notificationStore.openNotification();
+      }
+
       const originalRequest = error.config;
 
       switch (error.response?.status) {
-        case 500:
-          if (isReconnectedRequest) {
-            return repeatRequest(error, mainAppStore);
-          }
-
-          mainAppStore.rootStore.badRequestPopupStore.setMessage(
-            error.response?.statusText || 'error'
-          );
-          mainAppStore.rootStore.badRequestPopupStore.openModal();
-
-          break;
-
         case 401:
           if (mainAppStore.refreshToken && !originalRequest._retry) {
             if (isRefreshing) {
@@ -147,12 +141,26 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.signOut();
           break;
         }
+        
+        case 500: {
+          if (isReconnectedRequest) {
+            repeatRequest(error, mainAppStore);
+            break;
+          }
+
+          mainAppStore.rootStore.badRequestPopupStore.setMessage(
+            error.response?.statusText || 'error'
+          );
+          mainAppStore.rootStore.badRequestPopupStore.openModal();
+          break;
+        }
+
 
         default:
           break;
       }
 
-      return Promise.reject(error);
+      // return Promise.reject(error);
     }
   );
 };

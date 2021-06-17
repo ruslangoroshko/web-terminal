@@ -535,7 +535,7 @@ export class MainAppStore implements MainAppStoreProps {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.setIsAuthorized(true);
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
-      this.connectTimeOut = response.data.connectionTimeOut;
+      this.connectTimeOut = +response.data.connectionTimeOut;
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);

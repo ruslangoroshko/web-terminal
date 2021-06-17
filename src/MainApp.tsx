@@ -56,6 +56,7 @@ const MainApp: FC = () => {
 
           body {
             background-color: #1c2026;
+            overflow: hidden;
           }
 
           .grecaptcha-badge {

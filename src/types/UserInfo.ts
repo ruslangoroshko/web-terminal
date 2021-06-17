@@ -38,7 +38,7 @@ export interface UserAuthenticateResponse {
   data: {
     token: string;
     tradingUrl: string;
-    connectionTimeOut: number;
+    connectionTimeOut: string;
     reconnectTimeOut: string;
     refreshToken: string;
   };
