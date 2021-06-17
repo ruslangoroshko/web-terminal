@@ -6,7 +6,10 @@ import RequestHeaders from '../constants/headers';
 import Page from '../constants/Pages';
 import API_LIST from '../helpers/apiList';
 import { DebugTypes } from '../types/DebugTypes';
-import debugLevel from '../constants/debugConstants';
+import {
+  debugLevel,
+  doNotSendRequest
+} from '../constants/debugConstants';
 import { getProcessId } from '../helpers/getProcessId';
 import { getCircularReplacer } from '../helpers/getCircularReplacer';
 import API from '../helpers/API';
@@ -56,7 +59,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
         }, +mainAppStore.connectTimeOut);
       }
-      if (mainAppStore.isAuthorized && error.response?.status !== 401) {
+      if (mainAppStore.isAuthorized && !doNotSendRequest.includes(error.response?.status)) {
         const objectToSend = {
           message: error.message,
           name: error.name,

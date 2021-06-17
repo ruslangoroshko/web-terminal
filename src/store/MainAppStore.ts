@@ -58,7 +58,7 @@ import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { BrandEnum } from '../constants/brandingLinksTranslate';
 import { logger } from '../helpers/ConsoleLoggerTool';
 import { DebugTypes } from '../types/DebugTypes';
-import debugLevel from '../constants/debugConstants';
+import { debugLevel } from '../constants/debugConstants';
 import { getProcessId } from '../helpers/getProcessId';
 import { getCircularReplacer } from '../helpers/getCircularReplacer';
 import { getStatesSnapshot } from '../helpers/getStatesSnapshot';
