@@ -39,7 +39,7 @@ const RoutingLayout: FC = () => {
           <Observer>
             {() => (
               <>
-                <Redirect to={location.pathname.replace(/\/+$/, "")} />
+                {!location.search && <Redirect to={location.pathname.replace(/\/+$/, "")} />}
                 {!mainAppStore.isInitLoading && <Switch>{allRoutes}</Switch>}
                 <LoaderFullscreen
                   isLoading={
@@ -55,6 +55,7 @@ const RoutingLayout: FC = () => {
     case RouteLayoutType.SignFlow:
       return (
         <FlexContainer height="100vh" width="100%">
+          {!location.search && <Redirect to={location.pathname.replace(/\/+$/, "")} />}
           <Observer>
             {() => (
               <>
@@ -73,6 +74,7 @@ const RoutingLayout: FC = () => {
     case RouteLayoutType.KYC:
       return (
         <KYCcontainer>
+          {!location.search && <Redirect to={location.pathname.replace(/\/+$/, "")} />}
           <Observer>
             {() => (
               <>
@@ -91,6 +93,7 @@ const RoutingLayout: FC = () => {
     default:
       return (
         <FlexContainer height="100vh" width="100%">
+          {!location.search && <Redirect to={location.pathname.replace(/\/+$/, "")} />}
           <Observer>
             {() => (
               <>
