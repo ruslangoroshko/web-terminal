@@ -1,11 +1,10 @@
-import React, { FC, useEffect, useCallback } from 'react';
+import React, { FC } from 'react';
 import Instrument from './Instrument';
 import { useStores } from '../hooks/useStores';
 import styled from '@emotion/styled';
-import { Observer, observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite';
 import API from '../helpers/API';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
-import { LOCAL_INSTRUMENT_ACTIVE } from '../constants/global';
 
 interface Props {}
 
@@ -34,49 +33,8 @@ const InstrumentsScrollWrapper: FC<Props> = observer(() => {
         indexEl = indexEl ? indexEl - 1 : 0;
         instrumentsStore.switchInstrument(response[indexEl]);
       }
-    } catch (error) {
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
-    }
+    } catch (error) {}
   };
-
-  const fetchFavoriteInstruments = useCallback(async () => {
-    if (mainAppStore.activeAccount) {
-      try {
-        const response = await API.getFavoriteInstrumets({
-          type: mainAppStore.activeAccount?.isLive
-            ? AccountTypeEnum.Live
-            : AccountTypeEnum.Demo,
-          accountId: mainAppStore.activeAccountId,
-        });
-
-        instrumentsStore.setActiveInstrumentsIds(response);
-        const checkAvailable = mainAppStore.paramsAsset || localStorage.getItem(LOCAL_INSTRUMENT_ACTIVE);
-        const lastActive = checkAvailable &&
-          instrumentsStore.instruments.find(instrument => instrument.instrumentItem.id === checkAvailable)
-            ? checkAvailable
-            : false;
-        await instrumentsStore.switchInstrument(
-          lastActive ||
-            response[0] ||
-            instrumentsStore.instruments[0].instrumentItem.id
-        );
-      } catch (error) {
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
-      }
-    }
-  }, [
-    mainAppStore.activeAccountId,
-    mainAppStore.activeAccount,
-    instrumentsStore.instruments,
-  ]);
-
-  useEffect(() => {
-    if (instrumentsStore.instruments.length) {
-      fetchFavoriteInstruments();
-    }
-  }, [instrumentsStore.instruments]);
 
   return (
     <InstrumentsWrapper>

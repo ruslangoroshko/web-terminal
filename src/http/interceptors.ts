@@ -74,7 +74,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         mainAppStore.rootStore.notificationStore.openNotification();
       }
       if (isTimeOutError && isReconnectedRequest) {
-        return repeatRequest(error, mainAppStore);
+        repeatRequest(error, mainAppStore);
       }
 
       if (!error.response?.status && !isTimeOutError && !isReconnectedRequest) {
@@ -160,7 +160,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           break;
       }
 
-      // return Promise.reject(error);
+      return Promise.reject(error);
     }
   );
 };
