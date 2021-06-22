@@ -9,6 +9,7 @@ import { useStores } from '../hooks/useStores';
 import LoaderFullscreen from '../components/LoaderFullscreen';
 import { Observer } from 'mobx-react-lite';
 import Page from '../constants/Pages';
+import { Redirect } from 'react-router-dom';
 
 const RoutingLayout: FC = () => {
   const location = useLocation();
@@ -38,6 +39,7 @@ const RoutingLayout: FC = () => {
           <Observer>
             {() => (
               <>
+                <Redirect to={location.pathname.replace(/\/+$/, "")} />
                 {!mainAppStore.isInitLoading && <Switch>{allRoutes}</Switch>}
                 <LoaderFullscreen
                   isLoading={
