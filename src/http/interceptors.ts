@@ -11,7 +11,7 @@ import { logger } from '../helpers/ConsoleLoggerTool';
 const repeatRequest = (error: any, mainAppStore: MainAppStore) => {
   
   mainAppStore.requestReconnectCounter += 1;
-  if (mainAppStore.requestReconnectCounter > 3) {
+  if (mainAppStore.requestReconnectCounter > 2) {
     mainAppStore.rootStore.badRequestPopupStore.setRecconect();
   }
   setTimeout(() => {

@@ -13,7 +13,7 @@ const NetworkErrorPopup = observer(() => {
   const [shouldRender, setRender] = useState(false);
 
   const handleLostConnection = () => {
-    badRequestPopupStore.setRecconect()
+    badRequestPopupStore.setRecconect();
     badRequestPopupStore.setNetwork(true);
     badRequestPopupStore.initConectionReload();
     setShow(true);
@@ -21,7 +21,7 @@ const NetworkErrorPopup = observer(() => {
 
   const handleSetConnection = () => {
     // TODO: Find out how to make reload using React-Router
-    badRequestPopupStore.stopRecconect()
+    badRequestPopupStore.stopRecconect();
     window.location.reload();
   };
 
@@ -62,14 +62,18 @@ const NetworkErrorPopup = observer(() => {
     <Modal>
       <ModalWrap show={show}>
         <PrimaryTextParagraph color="#ffffff" textAlign="center">
-          There is no Internet connection.
+          {badRequestPopupStore.isRecconect && badRequestPopupStore.isNetwork
+            ? 'There is no Internet connection.'
+            : 'Oooopsss'}
         </PrimaryTextParagraph>
         <PrimaryTextParagraph
           fontSize="12px"
           textAlign="center"
           color="rgba(255, 255, 255, 0.4)"
         >
-          Please make sure you are connected to the Internet.
+          {badRequestPopupStore.isRecconect && badRequestPopupStore.isNetwork
+            ? 'Please make sure you are connected to the Internet.'
+            : 'We are trying to connect to the server'}
         </PrimaryTextParagraph>
 
         <Observer>
