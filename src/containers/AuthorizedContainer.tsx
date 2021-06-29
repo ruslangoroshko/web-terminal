@@ -199,7 +199,6 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
       maxHeight="100vh"
       overflow="hidden"
     >
-      <ReconnectTestBar />
       <HiddenAnchor id="hidden-anchor" target="_blank" />
       <FlexContainer
         position="absolute"

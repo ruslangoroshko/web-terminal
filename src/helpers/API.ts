@@ -613,6 +613,23 @@ class API {
     );
     return response.data;
   };
+
+
+
+  testBGrequest = async () => {
+    const response = await axios.get(
+      `http://localhost:5000`,
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+  testClinetrequest = async () => {
+    const response = await axios.get(
+      `http://localhost:5000`,
+      this.clientRequestOptions
+    );
+    return response.data;
+  };
 }
 
 export default new API();

@@ -51,6 +51,10 @@ const mixpanelEvents = {
   EDIT_SLTP_FAILED: 'edit sltp failed',
   DEMO_REAL_WELCOME: 'demo real welcome',
   ONBOARDING: 'onboarding1',
+  TIMEOUT: 'timeout',
+  SERVER_ERROR_50X: 'server error 50x',
+  SERVER_ERROR_40X: 'server error 40x',
+
 };
 
 Object.freeze(mixpanelEvents);

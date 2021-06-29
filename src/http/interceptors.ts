@@ -6,17 +6,16 @@ import RequestHeaders from '../constants/headers';
 import Page from '../constants/Pages';
 import API_LIST from '../helpers/apiList';
 import { DebugTypes } from '../types/DebugTypes';
-import {
-  debugLevel,
-  doNotSendRequest
-} from '../constants/debugConstants';
+import { debugLevel, doNotSendRequest } from '../constants/debugConstants';
 import { getProcessId } from '../helpers/getProcessId';
 import { getCircularReplacer } from '../helpers/getCircularReplacer';
 import API from '../helpers/API';
 import { getStatesSnapshot } from '../helpers/getStatesSnapshot';
 import requestOptions from '../constants/requestOptions';
 import { logger } from '../helpers/ConsoleLoggerTool';
-
+import mixpanel from 'mixpanel-browser';
+import mixpanelEvents from '../constants/mixpanelEvents';
+import mixapanelProps from '../constants/mixpanelProps';
 
 const repeatRequest = (error: any, mainAppStore: MainAppStore) => {
   mainAppStore.requestReconnectCounter += 1;
@@ -27,7 +26,6 @@ const repeatRequest = (error: any, mainAppStore: MainAppStore) => {
     axios.request(error.config);
   }, +mainAppStore.connectTimeOut);
 };
-
 
 const injectInerceptors = (mainAppStore: MainAppStore) => {
   // for multiple requests
@@ -49,6 +47,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
   axios.interceptors.response.use(
     function (config: AxiosResponse) {
       if (config.data) {
+        mainAppStore.requestReconnectCounter = 0;
         mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
       }
       if (config.data.result === OperationApiResponseCodes.TechnicalError) {
@@ -66,28 +65,37 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     },
 
     async function (error) {
-
-      if (error.response?.config.url.includes('Debug') || error.response?.config?.url.includes(API_LIST.ONBOARDING.STEPS)) {
+      if (
+        error.response?.config.url.includes('Debug') ||
+        error.response?.config?.url.includes(API_LIST.ONBOARDING.STEPS)
+      ) {
         return Promise.reject(error);
       }
 
       // looger
-      if (mainAppStore.isAuthorized && !doNotSendRequest.includes(error.response?.status)) {
+      if (
+        mainAppStore.isAuthorized &&
+        !doNotSendRequest.includes(error.response?.status)
+      ) {
         const objectToSend = {
           message: error.message,
           name: error.name,
           stack: error.stack,
-          status: error.response?.status
+          status: error.response?.status,
         };
         const jsonLogObject = {
           error: JSON.stringify(objectToSend),
-          snapShot: JSON.stringify(getStatesSnapshot(mainAppStore), getCircularReplacer())
+          snapShot: JSON.stringify(
+            getStatesSnapshot(mainAppStore),
+            getCircularReplacer()
+          ),
         };
         const params: DebugTypes = {
           level: debugLevel.TRANSPORT,
           processId: getProcessId(),
-          message: error.response?.statusText || error.message || 'unknown error',
-          jsonLogObject: JSON.stringify(jsonLogObject)
+          message:
+            error.response?.statusText || error.message || 'unknown error',
+          jsonLogObject: JSON.stringify(jsonLogObject),
         };
         API.postDebug(params, API_STRING);
       }
@@ -98,6 +106,31 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       let isReconnectedRequest =
         JSON.parse(error.config.data).initBy === requestOptions.BACKGROUND;
 
+      const urlString = new URL(error.response?.config.url).href;
+
+      // mixpanel 
+      if (isTimeOutError) {
+        mixpanel.track(mixpanelEvents.TIMEOUT, {
+          [mixapanelProps.REQUEST_URL]: urlString,
+        });
+      }
+
+      if (error.response?.status) {
+        if (error.response?.status.toString().includes('50')) {
+          mixpanel.track(mixpanelEvents.SERVER_ERROR_50X, {
+            [mixapanelProps.REQUEST_URL]: urlString,
+            [mixapanelProps.ERROR_TEXT]: error.response?.status
+          });
+        }
+        if (error.response?.status.toString().includes('40')) {
+          mixpanel.track(mixpanelEvents.SERVER_ERROR_40X, {
+            [mixapanelProps.REQUEST_URL]: urlString,
+            [mixapanelProps.ERROR_TEXT]: error.response?.status
+          });
+        }
+      }
+      // --- mixpanel 
+
       if (isTimeOutError && !isReconnectedRequest) {
         mainAppStore.rootStore.notificationStore.setNotification(
           'Timeout connection error'
@@ -105,15 +138,13 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
         mainAppStore.rootStore.notificationStore.openNotification();
       }
-      
+
       if (isTimeOutError && isReconnectedRequest) {
         repeatRequest(error, mainAppStore);
       }
 
       if (!error.response?.status && !isTimeOutError && !isReconnectedRequest) {
-        mainAppStore.rootStore.notificationStore.setNotification(
-          error.message
-        );
+        mainAppStore.rootStore.notificationStore.setNotification(error.message);
         mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
         mainAppStore.rootStore.notificationStore.openNotification();
       }
@@ -174,7 +205,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.signOut();
           break;
         }
-        
+
         case 500: {
           if (isReconnectedRequest) {
             repeatRequest(error, mainAppStore);
@@ -187,7 +218,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.rootStore.badRequestPopupStore.openModal();
           break;
         }
-
 
         default:
           break;
