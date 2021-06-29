@@ -14,6 +14,20 @@ import { getProcessId } from '../helpers/getProcessId';
 import { getCircularReplacer } from '../helpers/getCircularReplacer';
 import API from '../helpers/API';
 import { getStatesSnapshot } from '../helpers/getStatesSnapshot';
+import requestOptions from '../constants/requestOptions';
+import { logger } from '../helpers/ConsoleLoggerTool';
+
+
+const repeatRequest = (error: any, mainAppStore: MainAppStore) => {
+  mainAppStore.requestReconnectCounter += 1;
+  if (mainAppStore.requestReconnectCounter > 2) {
+    mainAppStore.rootStore.badRequestPopupStore.setRecconect();
+  }
+  setTimeout(() => {
+    axios.request(error.config);
+  }, +mainAppStore.connectTimeOut);
+};
+
 
 const injectInerceptors = (mainAppStore: MainAppStore) => {
   // for multiple requests
@@ -34,6 +48,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
   axios.interceptors.response.use(
     function (config: AxiosResponse) {
+      if (config.data) {
+        mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
+      }
       if (config.data.result === OperationApiResponseCodes.TechnicalError) {
         return Promise.reject(
           apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
@@ -49,16 +66,12 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     },
 
     async function (error) {
-      if (error.response?.config.url.includes('Debug')) {
-        return false;
+
+      if (error.response?.config.url.includes('Debug') || error.response?.config?.url.includes(API_LIST.ONBOARDING.STEPS)) {
+        return Promise.reject(error);
       }
-      if (!error.response?.status) {
-        mainAppStore.rootStore.badRequestPopupStore.setRecconect();
-        setTimeout(() => {
-          axios.request(error.config);
-          mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
-        }, +mainAppStore.connectTimeOut);
-      }
+
+      // looger
       if (mainAppStore.isAuthorized && !doNotSendRequest.includes(error.response?.status)) {
         const objectToSend = {
           message: error.message,
@@ -78,27 +91,36 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         };
         API.postDebug(params, API_STRING);
       }
+      // --- looger
 
-      const originalRequest = error.config;
-      if (error.response?.config?.url.includes(API_LIST.ONBOARDING.STEPS)) {
-        return Promise.reject(error);
+      // ---
+      let isTimeOutError = error.message === requestOptions.TIMEOUT;
+      let isReconnectedRequest =
+        JSON.parse(error.config.data).initBy === requestOptions.BACKGROUND;
+
+      if (isTimeOutError && !isReconnectedRequest) {
+        mainAppStore.rootStore.notificationStore.setNotification(
+          'Timeout connection error'
+        );
+        mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
+        mainAppStore.rootStore.notificationStore.openNotification();
+      }
+      
+      if (isTimeOutError && isReconnectedRequest) {
+        repeatRequest(error, mainAppStore);
       }
 
-      switch (error.response?.status) {
-        case 400:
-        case 500:
-          
-          function requestAgain() {
-            mainAppStore.rootStore.badRequestPopupStore.setMessage(
-              error.response?.statusText || 'error'
-            );
-            mainAppStore.rootStore.badRequestPopupStore.openModal();
-            mainAppStore.setIsLoading(false);
-          }
-          setTimeout(requestAgain, +mainAppStore.connectTimeOut);
-          mainAppStore.setIsLoading(false);
-          break;
+      if (!error.response?.status && !isTimeOutError && !isReconnectedRequest) {
+        mainAppStore.rootStore.notificationStore.setNotification(
+          error.message
+        );
+        mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
+        mainAppStore.rootStore.notificationStore.openNotification();
+      }
 
+      const originalRequest = error.config;
+
+      switch (error.response?.status) {
         case 401:
           if (mainAppStore.refreshToken && !originalRequest._retry) {
             if (isRefreshing) {
@@ -152,6 +174,20 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.signOut();
           break;
         }
+        
+        case 500: {
+          if (isReconnectedRequest) {
+            repeatRequest(error, mainAppStore);
+            break;
+          }
+
+          mainAppStore.rootStore.badRequestPopupStore.setMessage(
+            error.response?.statusText || 'error'
+          );
+          mainAppStore.rootStore.badRequestPopupStore.openModal();
+          break;
+        }
+
 
         default:
           break;

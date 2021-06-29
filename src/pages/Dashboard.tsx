@@ -25,6 +25,7 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import ShouldValidatePhonePopup from '../components/ShouldValidatePhonePopup';
 import ConfirmPopup from '../components/ConfirmPopup';
+import FavoriteInstrumetsBar from '../components/FavoriteInstrumetsBar';
 
 const Dashboard: FC = observer(() => {
   const {
@@ -113,23 +114,9 @@ const Dashboard: FC = observer(() => {
         </Observer>
       </FlexContainer>
       <FlexContainer flexDirection="column">
-        <FlexContainer marginBottom="20px" height="40px">
-          <Observer>
-            {() => <InstrumentsScrollWrapper></InstrumentsScrollWrapper>}
-          </Observer>
-          <FlexContainer position="relative" alignItems="center">
-            <Toggle>
-              {({ on, toggle }) => (
-                <>
-                  <AddIntrumentButton onClick={toggle}>
-                    <SvgIcon {...IconAddInstrument} fillColor="#FFFCCC" />
-                  </AddIntrumentButton>
-                  {on && <AddInstrumentsPopup toggle={toggle} />}
-                </>
-              )}
-            </Toggle>
-          </FlexContainer>
-        </FlexContainer>
+        
+      <FavoriteInstrumetsBar />
+
         <Observer>
           {() => (
             <FlexContainer position="relative">
@@ -151,18 +138,18 @@ const Dashboard: FC = observer(() => {
                 <FlexContainer
                   width="100%"
                   height="100%"
-                  maxHeight="calc(100% - 123px)"
+                  maxHeight={`calc(100vh - ${instrumentsStore.activeInstruments.length !== 0 ? '123px' : '83px'})`}
                 >
                   <FlexContainer
                     width="100%"
                     maxWidth="calc(100% - 175px)"
-                    maxHeight="calc(100vh - 175px)"
+                    maxHeight={`calc(100vh - ${instrumentsStore.activeInstruments.length !== 0 ? '175px' : '135px'})`}
                     flexDirection="column"
                   >
                     <ChartWrapper
                       padding="0 0 0 0"
                       height="100%"
-                      maxHeight="calc(100vh - 200px)"
+                      maxHeight={`calc(100vh - ${instrumentsStore.activeInstruments.length !== 0 ? '200px' : '160px'})`}
                       minHeight="445px"
                       position="relative"
                     >
@@ -209,13 +196,7 @@ const Dashboard: FC = observer(() => {
 
 export default Dashboard;
 
-const AddIntrumentButton = styled(ButtonWithoutStyles)`
-  width: 24px;
-  height: 24px;
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-`;
+
 
 const ChartWrapper = styled(FlexContainer)`
   grid-row: 1 / span 1;
