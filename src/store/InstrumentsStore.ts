@@ -255,10 +255,12 @@ export class InstrumentsStore implements ContextProps {
     a: IActiveInstrument,
     b: IActiveInstrument
   ) => {
-    if (a.instrumentItem.name < b.instrumentItem.name) {
+    const nameToDefA = a.instrumentItem.name.toLowerCase();
+    const nameToDefB = b.instrumentItem.name.toLowerCase();
+    if (nameToDefA < nameToDefB) {
       return ascending ? -1 : 1;
     }
-    if (a.instrumentItem.name > b.instrumentItem.name) {
+    if (nameToDefA > nameToDefB) {
       return ascending ? 1 : -1;
     }
     return 0;

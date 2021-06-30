@@ -393,5 +393,16 @@
     "Bonus": "Bonus",
     "There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.": "Es gibt keine Möglichkeit, den Bonus abzuheben. Aber dies ist ein zusätzlicher Betrag auf Ihrem Konto. Die Profite, die Sie mit Bonusgeld machen, können Sie jederzeit abheben.",
     "When you withdraw your funds, the bonus will be deducted from your account.": "Wenn Sie Ihr Geld abheben, wird der Bonus von Ihrem Konto abgezogen.",
-    "Withdrawable": "Auszahlung"
+    "Withdrawable": "Auszahlung",
+    "Cancel Take profit level?": "",
+    "Cancel Stop loss level?": "",
+    "Cancel SL": "",
+    "Cancel TP": "",
+    "Registration from your country is not allowed": "",
+    "AboutUs_M": "https://www.monfex.com/de/why-us",
+    "AboutUs_AM": "https://allianzmarket.com/de/about/",
+    "AboutUs_HP": "https://handelpro.com/about/",
+    "Support_AM": "https://allianzmarket.com/de/contact-us/",
+    "Support_HP": "https://handelpro.com/contact-us/",
+    "Support_M": "https://www.monfex.com/de/contact-us"
 }

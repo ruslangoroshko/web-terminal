@@ -387,10 +387,17 @@
     "Please note, that it is now being processed and it might take up to 2 business days": "Pamiętaj, że zlecenie jest teraz przetwarzane i może to zająć do 2 dni roboczych",
     "You will receive an update to your e-mail": "Otrzymasz powiadomienie na twój adres mailowy",
     "Local Bank Cards": "Karty lokalnych banków",
+    "Online Transfers Cash Payments": "Online przelewy płatności w gotówce ",
     "Bank Transfers": "Przelewy bankowe",
     "Few hours": "Kilka godzin",
     "Bonus": "Bonus",
     "There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.": "Nie ma możliwości wypłaty bonusu. Ale to jest dodatkowa kwota na twoim koncie i kiedy zarobisz wykorzystując ją, jest to coś, co możesz wypłacić.",
     "When you withdraw your funds, the bonus will be deducted from your account.": "Kiedy wypłacisz swoje środki, bonus zostanie potrącony z Twojego konta.",
-    "Withdrawable": "Możliwość wypłaty"
+    "Withdrawable": "Możliwość wypłaty",
+    "AboutUs_M": "https://www.monfex.com/pl/why-us",
+    "AboutUs_AM": "https://allianzmarket.com/pl/about/",
+    "AboutUs_HP": "https://handelpro.com/about/",
+    "Support_AM": "https://allianzmarket.com/pl/contact-us/",
+    "Support_HP": "https://handelpro.com/contact-us/",
+    "Support_M": "https://www.monfex.com/pl/contact-us"
 }
