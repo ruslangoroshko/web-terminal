@@ -97,7 +97,7 @@ const SignFlowLayout: FC<Props> = (props) => {
             {() => (
               <FlexContainer>
                 <LinkItem
-                  href={mainAppStore.initModel.supportUrl}
+                  href={t(`${brandingLinksTranslate[mainAppStore.initModel.brandProperty].support}`)}
                   target="_blank"
                 >
                   {t('Support')}
@@ -106,7 +106,7 @@ const SignFlowLayout: FC<Props> = (props) => {
                   {t('FAQ')}
                 </LinkItem>
                 <LinkItem
-                  href={mainAppStore.initModel.aboutUrl}
+                  href={t(`${brandingLinksTranslate[mainAppStore.initModel.brandProperty].aboutUs}`)}
                   target="_blank"
                 >
                   {t('About us')}
