@@ -147,7 +147,7 @@ export class MainAppStore implements MainAppStoreProps {
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
 
-  connectTimeOut = IS_LIVE ? 5000 : 30000;
+  connectTimeOut = 30000; // 5000;
   requestReconnectCounter = 0;
 
   constructor(rootStore: RootStore) {
@@ -559,7 +559,7 @@ export class MainAppStore implements MainAppStoreProps {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.setIsAuthorized(true);
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
-      this.connectTimeOut = IS_LIVE ? +response.data.connectionTimeOut : 30000;
+      // this.connectTimeOut = +response.data.connectionTimeOut;
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
