@@ -205,19 +205,13 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.signOut();
           break;
         }
-
-        case 500: {
-          if (isReconnectedRequest) {
-            repeatRequest(error, mainAppStore);
-            break;
-          }
-
-          mainAppStore.rootStore.badRequestPopupStore.setMessage(
-            error.response?.statusText || 'error'
-          );
-          mainAppStore.rootStore.badRequestPopupStore.openModal();
+        case 400: 
+          repeatRequest(error, mainAppStore);
           break;
-        }
+        
+        case 500: 
+          repeatRequest(error, mainAppStore);
+          break;
 
         default:
           break;
