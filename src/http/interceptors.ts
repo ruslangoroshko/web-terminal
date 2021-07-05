@@ -106,7 +106,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       let isReconnectedRequest =
         JSON.parse(error.config.data).initBy === requestOptions.BACKGROUND;
 
-      const urlString = new URL(error.response?.config.url).href;
+      const urlString = new URL(error?.config.url).href;
 
       // mixpanel 
       if (isTimeOutError) {

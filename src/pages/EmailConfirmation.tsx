@@ -35,8 +35,6 @@ function EmailConfirmation() {
       })
       .catch((error) => {
         setIsSuccessfull(false);
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
       })
       .finally(() => {
         setIsLoading(false);

@@ -83,8 +83,6 @@ const BankTransferForm = () => {
         badRequestPopupStore.openModal();
       }
     } catch (error) {
-      badRequestPopupStore.setMessage(error);
-      badRequestPopupStore.openModal();
     }
   };
 

@@ -147,7 +147,7 @@ export class MainAppStore implements MainAppStoreProps {
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
 
-  connectTimeOut = 5000;
+  connectTimeOut = 30000; // 5000;
   requestReconnectCounter = 0;
 
   constructor(rootStore: RootStore) {
@@ -162,7 +162,8 @@ export class MainAppStore implements MainAppStoreProps {
     this.refreshToken =
       localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
-    Axios.defaults.timeout = this.connectTimeOut || 5000
+    Axios.defaults.timeout = this.connectTimeOut;
+    
     // @ts-ignore
     this.lang =
       localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
@@ -231,7 +232,7 @@ export class MainAppStore implements MainAppStoreProps {
         this.setInitLoading(false);
         setTimeout(
           connectToWebocket,
-          this.signalRReconnectTimeOut ? +this.signalRReconnectTimeOut : 10000
+          this.signalRReconnectTimeOut ? +this.signalRReconnectTimeOut : 3000
         );
       }
     };
@@ -558,7 +559,7 @@ export class MainAppStore implements MainAppStoreProps {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.setIsAuthorized(true);
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
-      this.connectTimeOut = +response.data.connectionTimeOut;
+      // this.connectTimeOut = +response.data.connectionTimeOut;
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);

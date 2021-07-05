@@ -335,8 +335,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             });
           }
         } catch (error) {
-          badRequestPopupStore.openModal();
-          badRequestPopupStore.setMessage(error);
         }
       } else {
         const modelToSubmit: OpenPositionModel = {
@@ -448,8 +446,6 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             });
           }
         } catch (error) {
-          badRequestPopupStore.openModal();
-          badRequestPopupStore.setMessage(error);
         }
       }
     },

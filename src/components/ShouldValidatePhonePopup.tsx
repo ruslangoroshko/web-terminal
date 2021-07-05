@@ -100,8 +100,6 @@ function ShouldValidatePhonePopup() {
         );
       }
     } catch (error) {
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
     }
   };
 

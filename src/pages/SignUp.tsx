@@ -154,8 +154,6 @@ function SignUp() {
                   push(Page.ONBOARDING);
                 }
               } catch (error) {
-                badRequestPopupStore.openModal();
-                badRequestPopupStore.setMessage(error);
                 setStatus(error);
                 setSubmitting(false);
                 mainAppStore.setInitLoading(false);

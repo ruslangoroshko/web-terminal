@@ -70,8 +70,6 @@ function ForgotPassword() {
 
       setIsLoading(false);
     } catch (error) {
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
       setSubmitting(false);
       setIsLoading(false);
     }

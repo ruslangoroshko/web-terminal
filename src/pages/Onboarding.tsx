@@ -121,8 +121,6 @@ const Onboarding = () => {
         mainAppStore.isOnboarding = false;
         push(Page.DASHBOARD);
       } catch (error) {
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
       }
     }
   };
@@ -142,8 +140,6 @@ const Onboarding = () => {
         mainAppStore.isOnboarding = false;
         push(Page.DEPOSIT_POPUP);
       } catch (error) {
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
       }
     }
   };
