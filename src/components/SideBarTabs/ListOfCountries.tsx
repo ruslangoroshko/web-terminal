@@ -7,6 +7,7 @@ import {
   ListForPL,
   ListForES,
   ListForDE,
+  ListForRU,
 } from '../../constants/listOfLanguages';
 import { ObjectKeys } from '../../helpers/objectKeys';
 import styled from '@emotion/styled';
@@ -35,6 +36,9 @@ const ListOfCountries = observer(() => {
         break;
       case CountriesEnum.DE:
         setList(ListForDE);
+        break;
+      case CountriesEnum.RU:
+        setList(ListForRU);
         break;
       default:
         break;
