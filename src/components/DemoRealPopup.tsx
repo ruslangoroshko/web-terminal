@@ -46,8 +46,6 @@ function DemoRealPopup() {
         mainAppStore.setIsDemoReal(false);
         sendMixpanelEvents('demo');
       } catch (error) {
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
       }
     }
   };
@@ -71,8 +69,6 @@ function DemoRealPopup() {
           mainAppStore.setIsDemoReal(false);
         }, 500);
       } catch (error) {
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
       }
     }
   };

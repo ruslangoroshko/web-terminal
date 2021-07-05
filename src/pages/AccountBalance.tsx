@@ -70,8 +70,6 @@ const AccountBalance = () => {
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
       }
     },
     [

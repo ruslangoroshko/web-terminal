@@ -85,8 +85,6 @@ function ResetPassword(props: Props) {
       }
       setIsLoading(false);
     } catch (error) {
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
       setIsLoading(false);
       setIsSuccessfull(false);
       setNotIsSuccessfull(false);

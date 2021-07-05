@@ -72,8 +72,6 @@ function ProofOfIdentity() {
 
       push(Page.DASHBOARD);
     } catch (error) {
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
     }
   };
 
@@ -101,8 +99,6 @@ function ProofOfIdentity() {
       ]);
       await postPersonalData();
     } catch (error) {
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
       setSubmit(true);
     }
   };

@@ -561,8 +561,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           notificationStore.openNotification();
         }
       } catch (error) {
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
       }
     },
     [

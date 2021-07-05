@@ -135,8 +135,6 @@ function PersonalData() {
         );
         setCountries(response);
       } catch (error) {
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
       }
     }
 
@@ -153,8 +151,6 @@ function PersonalData() {
           }
         }
       } catch (error) {
-        badRequestPopupStore.setMessage(error);
-        badRequestPopupStore.openModal();
       }
     }
     kycStore.setCurrentStep(KYCstepsEnum.PersonalData);
