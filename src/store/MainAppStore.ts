@@ -56,7 +56,6 @@ import { languagesList } from '../constants/languagesList';
 import { PositionModelWSDTO } from '../types/Positions';
 import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { BrandEnum } from '../constants/brandingLinksTranslate';
-import { logger } from '../helpers/ConsoleLoggerTool';
 import { DebugTypes } from '../types/DebugTypes';
 import { debugLevel } from '../constants/debugConstants';
 import { getProcessId } from '../helpers/getProcessId';
@@ -149,6 +148,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   connectTimeOut = 30000; // 5000;
   requestReconnectCounter = 0;
+  signalRReconectCounter = 0;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -163,7 +163,7 @@ export class MainAppStore implements MainAppStoreProps {
       localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
     Axios.defaults.timeout = this.connectTimeOut;
-    
+
     // @ts-ignore
     this.lang =
       localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
@@ -193,8 +193,8 @@ export class MainAppStore implements MainAppStoreProps {
         IS_LIVE &&
         this.initModel.tradingUrl &&
         config.url &&
-        !config.url.includes('auth/') 
-        && !config.url.includes('misc')
+        !config.url.includes('auth/') &&
+        !config.url.includes('misc')
       ) {
         if (config.url.includes('://')) {
           const arrayOfSubpath = config.url.split('://')[1].split('/');
@@ -224,6 +224,7 @@ export class MainAppStore implements MainAppStoreProps {
           await connection.send(Topics.INIT, token);
           this.setIsAuthorized(true);
           this.activeSession = connection;
+          this.pingPongConnection();
         } catch (error) {
           this.setInitLoading(false);
           this.setIsAuthorized(false);
@@ -341,7 +342,10 @@ export class MainAppStore implements MainAppStoreProps {
         };
         const jsonLogObject = {
           error: JSON.stringify(objectToSend),
-          snapShot: JSON.stringify(getStatesSnapshot(this), getCircularReplacer())
+          snapShot: JSON.stringify(
+            getStatesSnapshot(this),
+            getCircularReplacer()
+          ),
         };
         const params: DebugTypes = {
           level: debugLevel.TRANSPORT,
@@ -425,6 +429,13 @@ export class MainAppStore implements MainAppStoreProps {
         }
       }
     );
+
+    connection.on(Topics.PONG, (response: ResponseFromWebsocket<any>) => {
+      if (response.now) {
+        this.signalRReconectCounter = 0;
+        this.rootStore.badRequestPopupStore.stopRecconect();
+      }
+    });
   };
 
   postRefreshToken = async () => {
@@ -441,6 +452,27 @@ export class MainAppStore implements MainAppStoreProps {
       this.setRefreshToken('');
       this.setTokenHandler('');
     }
+  };
+
+  @action
+  socketPing = () => {
+    this.activeSession?.send(Topics.PING);
+  };
+
+  @action
+  pingPongConnection = () => {
+    if (this.signalRReconectCounter >= 2) {
+      this.rootStore.badRequestPopupStore.setRecconect();
+      this.handleInitConnection();
+      return;
+    }
+
+    this.socketPing();
+
+    setTimeout(() => {
+      this.signalRReconectCounter += 1;
+      this.pingPongConnection();
+    }, 3000);
   };
 
   @action
@@ -477,7 +509,6 @@ export class MainAppStore implements MainAppStoreProps {
         this.accounts.find((acc) => acc.id === activeAccountId) ||
         this.accounts.find((acc) => !acc.isLive);
 
-
       if (activeAccount) {
         this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
           [Fields.ACCOUNT_ID]: activeAccount.id,
@@ -486,7 +517,7 @@ export class MainAppStore implements MainAppStoreProps {
           this.setActiveAccountId(activeAccount.id);
         }
       }
-      
+
       this.setInitLoading(false);
       this.setIsLoading(false);
     } catch (error) {
@@ -798,6 +829,6 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   setConnectionTimeout = (timeout: number) => {
-    this.connectTimeOut = 30000 //timeout || 5000;
-  }
+    this.connectTimeOut = 30000; //timeout || 5000;
+  };
 }

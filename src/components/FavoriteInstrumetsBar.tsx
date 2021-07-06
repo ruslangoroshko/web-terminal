@@ -46,6 +46,7 @@ const FavoriteInstrumetsBar = observer(() => {
         );
         mainAppStore.setIsLoading(false);
       } catch (error) {
+        instrumentsStore.setActiveInstrumentsIds(instrumentsStore.instruments.slice(0, 5).map(instr => instr.instrumentItem.id));
         await instrumentsStore.switchInstrument(
           instrumentsStore.instruments[0].instrumentItem.id,
           false
