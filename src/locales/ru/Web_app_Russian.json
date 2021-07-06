@@ -87,7 +87,7 @@
     "at": "на",
     "Opened": "Открыто",
     "Equity": "Капитал",
-    "Overnight fee": "Ночная оплата",
+    "Overnight fee": "Перенос позиции на следующие сутки",
     "Position ID": "ID позиции",
     "Take profit level should be higher than the current P/L": "Уровень Take Profit должен быть выше текущего P/L",
     "Stop loss level should be lower than the current P/L": "Уровень Stop Loss должен быть ниже текущего P/L",
@@ -300,7 +300,7 @@
     "Document number": "Номер документа",
     "Expiry date": "Срок действия",
     "Your signature": "Ваша подпись",
-    "Housing and communal services receipt": "Квитанция за жилищно-коммунальные услуги",
+    "Housing and communal services receipt": "Подтверждение места жительства",
     "The Document that should contain the address of your current residence": "Документ, который должен содержать адрес вашего текущего проживания",
     "Street address": "Адрес",
     "Province": "Провинция",
@@ -404,5 +404,12 @@
     "AboutUs_HP": "https://handelpro.com/about/",
     "Support_AM": "https://allianzmarket.com/ru/contact-us/",
     "Support_HP": "https://handelpro.com/contact-us/",
-    "Support_M": "https://www.monfex.com/ru/contact-us"
+    "Support_M": "https://www.monfex.com/ru/contact-us",
+    "minute": "минута",
+    "minutes": "минут",
+    "hour": "час",
+    "hours": "часа",
+    "day": "день",
+    "month": "месяц",
+    "week": "неделя"
 }
