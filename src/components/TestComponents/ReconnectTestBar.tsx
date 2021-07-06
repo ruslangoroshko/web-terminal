@@ -1,11 +1,13 @@
 import React from 'react';
 import API from '../../helpers/API';
 import { logger } from '../../helpers/ConsoleLoggerTool';
+import { useStores } from '../../hooks/useStores';
 import { PrimaryButton } from '../../styles/Buttons';
 import { FlexContainer } from '../../styles/FlexContainer';
 import Modal from '../Modal';
 
 const ReconnectTestBar = () => {
+  const { mainAppStore } = useStores()
   const handleClickClient = async () => {
     try {
       const response = await API.testClinetrequest();
@@ -18,6 +20,10 @@ const ReconnectTestBar = () => {
       const response = await API.testBGrequest();
       logger(response);
     } catch (error) {}
+  };
+
+  const handleClickPing = async () => {
+    mainAppStore.socketPing();
   };
 
   return (
@@ -39,6 +45,10 @@ const ReconnectTestBar = () => {
 
         <PrimaryButton padding="16px" width="40%" onClick={handleClickBG}>
           Background Req
+        </PrimaryButton>
+
+        <PrimaryButton padding="16px" width="40%" onClick={handleClickPing}>
+          Ping
         </PrimaryButton>
       </FlexContainer>
     </Modal>

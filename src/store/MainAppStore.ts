@@ -149,6 +149,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   connectTimeOut = 30000; // 5000;
   requestReconnectCounter = 0;
+  signalRReconectCounter = 0;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -224,6 +225,7 @@ export class MainAppStore implements MainAppStoreProps {
           await connection.send(Topics.INIT, token);
           this.setIsAuthorized(true);
           this.activeSession = connection;
+          this.pingPongConnection();
         } catch (error) {
           this.setInitLoading(false);
           this.setIsAuthorized(false);
@@ -235,6 +237,8 @@ export class MainAppStore implements MainAppStoreProps {
           this.signalRReconnectTimeOut ? +this.signalRReconnectTimeOut : 3000
         );
       }
+
+      
     };
     connectToWebocket();
 
@@ -425,6 +429,17 @@ export class MainAppStore implements MainAppStoreProps {
         }
       }
     );
+
+    connection.on(
+      Topics.PONG,
+      (response: ResponseFromWebsocket<any>) => {
+        logger(response.now)
+        if (response.now) {
+          this.signalRReconectCounter = 0;
+          this.rootStore.badRequestPopupStore.stopRecconect();
+        }
+      }
+    );
   };
 
   postRefreshToken = async () => {
@@ -442,6 +457,29 @@ export class MainAppStore implements MainAppStoreProps {
       this.setTokenHandler('');
     }
   };
+
+
+  @action
+  socketPing = () => {
+    this.activeSession?.send(Topics.PING);
+  }
+
+  @action 
+  pingPongConnection = () => {
+
+    if (this.signalRReconectCounter >= 2) {
+      this.rootStore.badRequestPopupStore.setRecconect();
+      this.handleInitConnection();
+      return 
+    }
+
+    this.socketPing();
+
+    setTimeout(() => {
+      this.signalRReconectCounter += 1;
+      this.pingPongConnection();
+    }, 3000);
+  }
 
   @action
   checkOnboardingShow = async () => {
@@ -800,4 +838,5 @@ export class MainAppStore implements MainAppStoreProps {
   setConnectionTimeout = (timeout: number) => {
     this.connectTimeOut = 30000 //timeout || 5000;
   }
+
 }
