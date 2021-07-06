@@ -559,7 +559,7 @@ export class MainAppStore implements MainAppStoreProps {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.setIsAuthorized(true);
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
-      // this.connectTimeOut = +response.data.connectionTimeOut;
+      this.setConnectionTimeout(+response.data.connectionTimeOut);
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
@@ -585,6 +585,7 @@ export class MainAppStore implements MainAppStoreProps {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.setIsAuthorized(true);
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
+      this.setConnectionTimeout(+response.data.connectionTimeOut);
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
@@ -612,6 +613,7 @@ export class MainAppStore implements MainAppStoreProps {
     if (response.result === OperationApiResponseCodes.Ok) {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
+      this.setConnectionTimeout(+response.data.connectionTimeOut);
       this.setIsAuthorized(true);
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
@@ -793,4 +795,9 @@ export class MainAppStore implements MainAppStoreProps {
   setParamsDeposit = (params: boolean) => {
     this.paramsDeposit = params;
   };
+
+  @action
+  setConnectionTimeout = (timeout: number) => {
+    this.connectTimeOut = 30000 //timeout || 5000;
+  }
 }

@@ -3,7 +3,6 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { MainAppStore } from '../store/MainAppStore';
 import RequestHeaders from '../constants/headers';
-import Page from '../constants/Pages';
 import API_LIST from '../helpers/apiList';
 import { DebugTypes } from '../types/DebugTypes';
 import { debugLevel, doNotSendRequest } from '../constants/debugConstants';
@@ -18,7 +17,6 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 
 const repeatRequest = (error: any, mainAppStore: MainAppStore) => {
-  console.log('repeat request')
   mainAppStore.requestReconnectCounter += 1;
   if (mainAppStore.requestReconnectCounter > 2) {
     mainAppStore.rootStore.badRequestPopupStore.setRecconect();
@@ -26,6 +24,12 @@ const repeatRequest = (error: any, mainAppStore: MainAppStore) => {
   setTimeout(() => {
     axios.request(error.config);
   }, +mainAppStore.connectTimeOut);
+};
+
+const openNotification = (errorText: string, mainAppStore: MainAppStore) => {
+  mainAppStore.rootStore.notificationStore.setNotification(errorText);
+  mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
+  mainAppStore.rootStore.notificationStore.openNotification();
 };
 
 const injectInerceptors = (mainAppStore: MainAppStore) => {
@@ -110,7 +114,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
       const urlString = new URL(error?.config.url).href;
 
-      // mixpanel 
+      // mixpanel
       if (isTimeOutError) {
         mixpanel.track(mixpanelEvents.TIMEOUT, {
           [mixapanelProps.REQUEST_URL]: urlString,
@@ -121,24 +125,20 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         if (error.response?.status.toString().includes('50')) {
           mixpanel.track(mixpanelEvents.SERVER_ERROR_50X, {
             [mixapanelProps.REQUEST_URL]: urlString,
-            [mixapanelProps.ERROR_TEXT]: error.response?.status
+            [mixapanelProps.ERROR_TEXT]: error.response?.status,
           });
         }
         if (error.response?.status.toString().includes('40')) {
           mixpanel.track(mixpanelEvents.SERVER_ERROR_40X, {
             [mixapanelProps.REQUEST_URL]: urlString,
-            [mixapanelProps.ERROR_TEXT]: error.response?.status
+            [mixapanelProps.ERROR_TEXT]: error.response?.status,
           });
         }
       }
-      // --- mixpanel 
+      // --- mixpanel
 
       if (isTimeOutError && !isReconnectedRequest) {
-        mainAppStore.rootStore.notificationStore.setNotification(
-          'Timeout connection error'
-        );
-        mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
-        mainAppStore.rootStore.notificationStore.openNotification();
+        openNotification('Timeout connection error', mainAppStore);
       }
 
       if (isTimeOutError && isReconnectedRequest) {
@@ -146,9 +146,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       }
 
       if (!error.response?.status && !isTimeOutError && !isReconnectedRequest) {
-        mainAppStore.rootStore.notificationStore.setNotification(error.message);
-        mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
-        mainAppStore.rootStore.notificationStore.openNotification();
+        openNotification(error.message, mainAppStore);
       }
 
       const originalRequest = error.config;
@@ -209,13 +207,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         }
 
         case 400:
-        case 500: 
+        case 500:
           if (isReconnectedRequest) {
             repeatRequest(error, mainAppStore);
           } else {
-            mainAppStore.rootStore.notificationStore.setNotification(error.message);
-            mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
-            mainAppStore.rootStore.notificationStore.openNotification();
+            openNotification(error.message, mainAppStore);
           }
           break;
 
