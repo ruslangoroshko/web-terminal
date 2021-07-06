@@ -138,18 +138,18 @@ const Dashboard: FC = observer(() => {
                 <FlexContainer
                   width="100%"
                   height="100%"
-                  maxHeight={`calc(100vh - ${instrumentsStore.activeInstruments.length !== 0 ? '123px' : '83px'})`}
+                  maxHeight="calc(100vh - 123px)"
                 >
                   <FlexContainer
                     width="100%"
                     maxWidth="calc(100% - 175px)"
-                    maxHeight={`calc(100vh - ${instrumentsStore.activeInstruments.length !== 0 ? '175px' : '135px'})`}
+                    maxHeight="calc(100vh - 175px)"
                     flexDirection="column"
                   >
                     <ChartWrapper
                       padding="0 0 0 0"
                       height="100%"
-                      maxHeight={`calc(100vh - ${instrumentsStore.activeInstruments.length !== 0 ? '200px' : '160px'})`}
+                      maxHeight="calc(100vh - 200px)"
                       minHeight="445px"
                       position="relative"
                     >
