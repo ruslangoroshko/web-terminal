@@ -18,6 +18,7 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 
 const repeatRequest = (error: any, mainAppStore: MainAppStore) => {
+  console.log('repeat request')
   mainAppStore.requestReconnectCounter += 1;
   if (mainAppStore.requestReconnectCounter > 2) {
     mainAppStore.rootStore.badRequestPopupStore.setRecconect();
@@ -205,12 +206,16 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.signOut();
           break;
         }
-        case 400: 
-          repeatRequest(error, mainAppStore);
-          break;
-        
+
+        case 400:
         case 500: 
-          repeatRequest(error, mainAppStore);
+          if (isReconnectedRequest) {
+            repeatRequest(error, mainAppStore);
+          } else {
+            mainAppStore.rootStore.notificationStore.setNotification(error.message);
+            mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
+            mainAppStore.rootStore.notificationStore.openNotification();
+          }
           break;
 
         default:
