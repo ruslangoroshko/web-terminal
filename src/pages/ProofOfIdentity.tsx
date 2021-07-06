@@ -120,7 +120,7 @@ function ProofOfIdentity() {
         alignItems="center"
         backgroundColor="#252636"
         padding="40px 32px"
-        minHeight="900px"
+        minHeight="950px"
       >
         <Observer>
           {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
