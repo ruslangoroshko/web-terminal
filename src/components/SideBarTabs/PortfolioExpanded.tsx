@@ -150,7 +150,7 @@ const PortfolioExpanded: FC<Props> = () => {
               <Th>
                 <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
-                  fontSize="11px"
+                  fontSize="10px"
                   textTransform="uppercase"
                 >
                   {t('Asset Name')}
@@ -159,7 +159,7 @@ const PortfolioExpanded: FC<Props> = () => {
               <Th>
                 <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
-                  fontSize="11px"
+                  fontSize="10px"
                   textTransform="uppercase"
                 >
                   {t('Open price')}
@@ -168,7 +168,7 @@ const PortfolioExpanded: FC<Props> = () => {
               <Th>
                 <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
-                  fontSize="11px"
+                  fontSize="10px"
                   textTransform="uppercase"
                 >
                   {t('Time Opened')}
@@ -177,7 +177,7 @@ const PortfolioExpanded: FC<Props> = () => {
               <Th justifyContent="flex-end">
                 <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
-                  fontSize="11px"
+                  fontSize="10px"
                   textTransform="uppercase"
                 >
                   {t('Investment')}
@@ -186,7 +186,7 @@ const PortfolioExpanded: FC<Props> = () => {
               <Th justifyContent="flex-end">
                 <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
-                  fontSize="11px"
+                  fontSize="10px"
                   textTransform="uppercase"
                   textAlign="center"
                 >
@@ -196,7 +196,7 @@ const PortfolioExpanded: FC<Props> = () => {
               <Th justifyContent="center">
                 <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
-                  fontSize="11px"
+                  fontSize="10px"
                   textTransform="uppercase"
                 >
                   {t('Equity')}
@@ -205,7 +205,7 @@ const PortfolioExpanded: FC<Props> = () => {
               <Th justifyContent="center">
                 <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
-                  fontSize="11px"
+                  fontSize="10px"
                   textTransform="uppercase"
                   textAlign="center"
                 >
@@ -215,7 +215,7 @@ const PortfolioExpanded: FC<Props> = () => {
               <Th justifyContent="center">
                 <HeaderTitleItem
                   color="rgba(255, 255, 255, 0.4)"
-                  fontSize="11px"
+                  fontSize="10px"
                   textTransform="uppercase"
                   textAlign="center"
                 >

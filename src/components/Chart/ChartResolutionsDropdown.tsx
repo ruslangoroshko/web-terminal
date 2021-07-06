@@ -14,11 +14,13 @@ import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import { ObjectKeys } from '../../helpers/objectKeys';
 import { ResolutionString } from '../../vendor/charting_library/charting_library';
+import { useTranslation } from 'react-i18next';
 
 interface Props {}
 
 const ChartResolutionsDropdown: FC<Props> = (props) => {
   const { tradingViewStore, instrumentsStore } = useStores();
+  const { t } = useTranslation();
 
   const [on, toggle] = useState(false);
 
@@ -114,7 +116,7 @@ const ChartResolutionsDropdown: FC<Props> = (props) => {
                       marginBottom="12px"
                       whiteSpace="nowrap"
                     >
-                      {key}
+                      {key.split(' ')[0]} {t(`${key.split(' ')[1]}`)}
                     </PrimaryTextParagraph>
                   </ButtonWithoutStyles>
                 ))}

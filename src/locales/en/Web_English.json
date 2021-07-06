@@ -397,5 +397,13 @@
     "Bonus": "Bonus",
     "There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.": "There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.",
     "When you withdraw your funds, the bonus will be deducted from your account.": "When you withdraw your funds, the bonus will be deducted from your account.",
-    "Withdrawable": "Withdrawable"
+    "Withdrawable": "Withdrawable",
+    "Registration from your country is not allowed": "Registration from your country is not allowed",
+    "minute": "minute",
+    "minutes": "minutes",
+    "hour": "hour",
+    "hours": "hours",
+    "day": "day",
+    "month": "month",
+    "week": "week"
 }
