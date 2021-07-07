@@ -117,8 +117,7 @@ const ChartResolutionsDropdownWrapper = styled(FlexContainer)`
   position: absolute;
   bottom: calc(100% + 8px);
   border-radius: 4px 4px 4px 0;
-  left: 56px;
-  transform: translateX(-50%);
+  left: 0;
   flex-direction: column;
   padding: 12px 12px 0 12px;
   box-shadow: 0px 4px 8px rgba(41, 42, 57, 0.09),

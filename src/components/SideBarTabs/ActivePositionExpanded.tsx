@@ -311,6 +311,11 @@ function ActivePositionExpanded(props: Props) {
                 <PrimaryTextSpan
                   color="rgba(255, 255, 255, 0.4)"
                   fontSize="12px"
+                  textOverflow="ellipsis"
+                  overflow="hidden"
+                  whiteSpace="nowrap"
+                  title={t('Overnight fee')}
+                  marginRight="30px"
                 >
                   {t('Overnight fee')}
                 </PrimaryTextSpan>
