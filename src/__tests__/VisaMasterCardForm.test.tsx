@@ -78,7 +78,7 @@ test('User can make a deposit with card, response status', async () => {
     expirationDate: new Date(expirationDate).getTime(),
     fullName: cardHolder,
     amount: 500,
-    accountId: 'stl00001069usd',
+    accountId: 'stl00000214usd',
   };
   const response = await createDepositInvoice(
     visaCardValues,
