@@ -265,78 +265,61 @@ function SignUp() {
   }, []);
 
   useEffect(() => {
-    let cleanupFunction = false;
     const fetchAdditionalFields = async () => {
       mainAppStore.setIsLoading(true);
       try {
         const response = await API.getAdditionalSignUpFields(
           mainAppStore.initModel.authUrl
         );
-        if (!cleanupFunction) {
-          if (response.length && response.find((item) => item === Fields.PHONE)) {
-            setHasAdditionalField(true);
-          }
-          mainAppStore.setIsLoading(false);
+        if (response.length && response.find((item) => item === Fields.PHONE)) {
+          setHasAdditionalField(true);
         }
+        mainAppStore.setIsLoading(false);
       } catch (error) {
-        if (!cleanupFunction) {
-          mainAppStore.setIsLoading(false);
-        }
+        mainAppStore.setIsLoading(false);
       }
     };
     fetchAdditionalFields();
-    return () => {
-      cleanupFunction = true;
-    };
   }, []);
 
   useEffect(() => {
-    let cleanupFunction = false;
     async function fetchCountries() {
       try {
         const response = await API.getCountries(
           CountriesEnum.EN,
           mainAppStore.initModel.authUrl
         );
-        if (!cleanupFunction) {
-          setCountries(response);
-        }
+        setCountries(response);
       } catch (error) {}
     }
 
     if (hasAdditionalField) {
       fetchCountries();
     }
-    return () => {
-      cleanupFunction = true;
-    };
   }, [hasAdditionalField]);
 
   useEffect(() => {
-    let cleanupFunction = false;
     const fetchGeoLocationInfo = async () => {
       try {
         const response = await API.getGeolocationInfo(
           mainAppStore.initModel.authUrl
         );
-        if (!cleanupFunction) {
-          const country = countries.find((item) => item.id === response.country);
-          if (country) {
-            setFieldValue(Fields.COUNTRY, country.name);
-          }
-          if (response.dial) {
-            const phoneNumber = getExampleNumber(
-              fromAlpha3ToAlpha2Code(response.country),
-              examples
+        const country = countries.find((item) => item.id === response.country);
+        if (country) {
+          setFieldValue(Fields.COUNTRY, country.name);
+        }
+        if (response.dial) {
+          const phoneNumber = getExampleNumber(
+            fromAlpha3ToAlpha2Code(response.country),
+            examples
+          );
+          const mask = phoneNumber?.nationalNumber.replace(/\d/g, '9');
+          if (mask) {
+            setDialMask(`+\\${response.dial.split('').join('\\')}${mask}`);
+          } else {
+            setDialMask(
+              `+\\${response.dial.split('').join('\\')}99999999999999`
             );
-            const mask = phoneNumber?.nationalNumber.replace(/\d/g, '9');
-            if (mask) {
-              setDialMask(`+\\${response.dial.split('').join('\\')}${mask}`);
-            } else {
-              setDialMask(
-                `+\\${response.dial.split('').join('\\')}99999999999999`
-              );
-            }
           }
         }
       } catch (error) {}
@@ -345,9 +328,6 @@ function SignUp() {
     if (countries.length) {
       fetchGeoLocationInfo();
     }
-    return () => {
-      cleanupFunction = true;
-    };
   }, [countries]);
 
   return (
