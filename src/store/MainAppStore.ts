@@ -456,23 +456,31 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   socketPing = () => {
-    this.activeSession?.send(Topics.PING);
+    if (this.activeSession) {
+      this.activeSession?.send(Topics.PING);
+    }
   };
 
   @action
   pingPongConnection = () => {
-    if (this.signalRReconectCounter >= 2) {
-      this.rootStore.badRequestPopupStore.setRecconect();
-      this.handleInitConnection();
-      return;
+    let timer: any;
+
+    if (this.activeSession) {
+      if (this.signalRReconectCounter >= 2) {
+        this.rootStore.badRequestPopupStore.setRecconect();
+        this.handleInitConnection();
+        return;
+      }
+  
+      this.socketPing();
+  
+      timer = setTimeout(() => {
+        this.signalRReconectCounter += 1;
+        this.pingPongConnection();
+      }, 3000);
+    } else {
+      clearTimeout(timer);
     }
-
-    this.socketPing();
-
-    setTimeout(() => {
-      this.signalRReconectCounter += 1;
-      this.pingPongConnection();
-    }, 3000);
   };
 
   @action
