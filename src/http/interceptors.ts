@@ -135,6 +135,8 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           });
         }
       }
+
+
       // --- mixpanel
 
       if (isTimeOutError && !isReconnectedRequest) {
@@ -147,6 +149,21 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
       if (!error.response?.status && !isTimeOutError && !isReconnectedRequest) {
         openNotification(error.message, mainAppStore);
+      }
+
+      if (error.response?.status) {
+        if (
+          (error.response?.status !== 401 &&
+            error.response?.status !== 403 &&
+            error.response?.status.toString().includes('40')) ||
+          error.response?.status.toString().includes('50')
+        ) {
+          if (isReconnectedRequest) {
+            repeatRequest(error, mainAppStore);
+          } else {
+            openNotification(error.message, mainAppStore);
+          }
+        }
       }
 
       const originalRequest = error.config;
@@ -205,15 +222,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.signOut();
           break;
         }
-
-        case 400:
-        case 500:
-          if (isReconnectedRequest) {
-            repeatRequest(error, mainAppStore);
-          } else {
-            openNotification(error.message, mainAppStore);
-          }
-          break;
 
         default:
           break;
