@@ -14,9 +14,9 @@ import RequestHeaders from '../constants/headers';
 
 const API_DEPOSIT_STRING = process.env.TRADING_URL || 'http://localhost:5682';
 const AUTH_URL = process.env.API_AUTH_STRING || 'http://localhost:5679';
-const cardNumber = process.env.TEST_CARDNUMBER || '4242980372988546';
-const cvv = process.env.TEST_CARD_CVV || '333';
-const expirationDate = process.env.TEST_CARD_EXPIRE || '2023-02';
+const cardNumber = process.env.TEST_CARDNUMBER || '5555555555554444';
+const cvv = process.env.TEST_CARD_CVV || '837';
+const expirationDate = process.env.TEST_CARD_EXPIRE || '2024-09';
 const cardHolder = process.env.TEST_CARDHOLDER || 'Testing Name';
 
 jest.setTimeout(15000);
