@@ -392,5 +392,6 @@
     "Bonus": "Bonus",
     "There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.": "Nie ma możliwości wypłaty bonusu. Ale to jest dodatkowa kwota na twoim koncie i kiedy zarobisz wykorzystując ją, jest to coś, co możesz wypłacić.",
     "When you withdraw your funds, the bonus will be deducted from your account.": "Kiedy wypłacisz swoje środki, bonus zostanie potrącony z Twojego konta.",
-    "Withdrawable": "Możliwość wypłaty"
+    "Withdrawable": "Możliwość wypłaty",
+    "steps": "kroki"
 }
