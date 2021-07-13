@@ -162,7 +162,8 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           if (isReconnectedRequest) {
             repeatRequest(error, mainAppStore);
           } else {
-            openNotification(error.message, mainAppStore);
+            mainAppStore.rootStore.badRequestPopupStore.setMessage(error.message);
+            mainAppStore.rootStore.badRequestPopupStore.openModal();
           }
         }
       }
