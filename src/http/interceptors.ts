@@ -81,8 +81,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       if (
         mainAppStore.isAuthorized &&
         !doNotSendRequest.includes(error.response?.status) &&
-        (error.response?.status ||
-        error.config?.timeoutErrorMessage)
+        (error.response?.status || error.config?.timeoutErrorMessage)
       ) {
         const objectToSend = {
           message: error.message,
@@ -137,7 +136,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         }
       }
 
-
       // --- mixpanel
 
       if (isTimeOutError && !isReconnectedRequest) {
@@ -162,7 +160,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           if (isReconnectedRequest) {
             repeatRequest(error, mainAppStore);
           } else {
-            mainAppStore.rootStore.badRequestPopupStore.setMessage(error.message);
+            mainAppStore.rootStore.badRequestPopupStore.setMessage(
+              error.message
+            );
             mainAppStore.rootStore.badRequestPopupStore.openModal();
           }
         }

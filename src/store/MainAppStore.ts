@@ -530,8 +530,6 @@ export class MainAppStore implements MainAppStoreProps {
       this.setIsLoading(false);
     } catch (error) {
       this.setIsLoading(false);
-      this.rootStore.badRequestPopupStore.setMessage(error);
-      this.rootStore.badRequestPopupStore.openModal();
     }
   };
 
