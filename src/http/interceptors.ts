@@ -19,7 +19,9 @@ import mixapanelProps from '../constants/mixpanelProps';
 const repeatRequest = (error: any, mainAppStore: MainAppStore) => {
   mainAppStore.requestReconnectCounter += 1;
   if (mainAppStore.requestReconnectCounter > 2) {
-    mainAppStore.rootStore.badRequestPopupStore.setRecconect();
+    if (!error.config?.url.includes(API_LIST.INSTRUMENTS.FAVOURITES)) {
+      mainAppStore.rootStore.badRequestPopupStore.setRecconect();
+    }
   }
   setTimeout(() => {
     axios.request(error.config);
@@ -73,8 +75,8 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       
       console.log('LOGGER');
       console.log(error)
-      console.log('error url: ', error.response?.config?.url);
-      console.log('is ignored Debug: ', error.response?.config?.url.includes(API_LIST.DEBUG.POST));
+      console.log('error url: ', error.config?.url);
+      console.log('is ignored Debug: ', error.config?.url.includes(API_LIST.DEBUG.POST));
 
       if (
         error.config?.url.includes(API_LIST.DEBUG.POST) ||
