@@ -72,12 +72,13 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     async function (error) {
       
       console.log('LOGGER');
+      console.log(error)
       console.log('error url: ', error.response?.config?.url);
       console.log('is ignored Debug: ', error.response?.config?.url.includes(API_LIST.DEBUG.POST));
 
       if (
-        error.response?.config?.url.includes(API_LIST.DEBUG.POST) ||
-        error.response?.config?.url.includes(API_LIST.ONBOARDING.STEPS)
+        error.config?.url.includes(API_LIST.DEBUG.POST) ||
+        error.config?.url.includes(API_LIST.ONBOARDING.STEPS)
       ) {
         return Promise.reject(error);
       }
