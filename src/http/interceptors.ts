@@ -28,6 +28,12 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
   let requestErrorStack: string[] = [];
 
+  /**
+   *
+   * @param url string href from requst like as "https::/api.com/api/get-test"
+   * @returns clear part of string - "/api/get-test"
+   *
+   */
   const getApiUrl = (url: string) => {
     const urlString = new URL(url);
     if (urlString.search) {
@@ -43,6 +49,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     if (!requestErrorStack.includes(url)) {
       requestErrorStack.push(url);
     }
+    console.log(requestErrorStack);
   };
 
   const removeErrorUrl = (str: any) => {
@@ -67,56 +74,61 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
   };
 
   axios.interceptors.response.use(
-    function (config: AxiosResponse) {
-      if (config.data.status === OperationApiResponseCodes.Ok) {
-        removeErrorUrl(config?.config?.url);
-
-        if (requestErrorStack.length === 0) {
-          mainAppStore.requestReconnectCounter = 0;
-          mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
-          return Promise.resolve(config);
+    function (response: AxiosResponse) {
+      switch (response.data.status) {
+        case OperationApiResponseCodes.Ok: {
+          removeErrorUrl(response?.config?.url);
+          if (requestErrorStack.length === 0) {
+            mainAppStore.requestReconnectCounter = 0;
+            mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
+            return Promise.resolve(response);
+          }
+          break;
         }
-      }
+        case OperationApiResponseCodes.TechnicalError: {
+          return Promise.reject(
+            apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
+          );
+        }
+        case OperationApiResponseCodes.InvalidUserNameOrPassword: {
+          mainAppStore.signOut();
+          break;
+        }
 
-      if (config.data.result === OperationApiResponseCodes.TechnicalError) {
-        return Promise.reject(
-          apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
-        );
+        default:
+          break;
       }
-      if (
-        config.data.result ===
-        OperationApiResponseCodes.InvalidUserNameOrPassword
-      ) {
-        mainAppStore.signOut();
-      }
-      return config;
+      return response;
     },
 
     async function (error) {
       const excludeReconectList = [API_LIST.INSTRUMENTS.FAVOURITES];
+      const excludeCheckErrorFlow = [
+        API_LIST.DEBUG.POST,
+        API_LIST.ONBOARDING.STEPS,
+      ];
+
+      const requestUrl: string = error?.config?.url;
+      const originalRequest = error.config;
+
+      if (excludeCheckErrorFlow.includes(getApiUrl(requestUrl))) {
+        return Promise.reject(error);
+      }
 
       const repeatRequest = (callback: any) => {
-        mainAppStore.requestReconnectCounter =
-          mainAppStore.requestReconnectCounter + 1;
+        mainAppStore.requestReconnectCounter += 1;
 
         if (
-          !excludeReconectList.includes(getApiUrl(error.config?.url)) &&
+          !excludeReconectList.includes(getApiUrl(requestUrl)) &&
           mainAppStore.requestReconnectCounter > 2
         ) {
           mainAppStore.rootStore.badRequestPopupStore.setRecconect();
         }
 
         setTimeout(() => {
-          callback(error.config);
+          callback(originalRequest);
         }, +mainAppStore.connectTimeOut);
       };
-
-      if (
-        error.config?.url.includes(API_LIST.DEBUG.POST) ||
-        error.config?.url.includes(API_LIST.ONBOARDING.STEPS)
-      ) {
-        return Promise.reject(error);
-      }
 
       // looger
       if (
@@ -154,9 +166,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         JSON.parse(error.config.data).initBy === requestOptions.BACKGROUND;
 
       if (isReconnectedRequest) {
-        addErrorUrl(error.config?.url);
+        addErrorUrl(requestUrl);
       }
-      const urlString = new URL(error?.config.url).href;
+      const urlString = new URL(requestUrl).href;
 
       // mixpanel
       if (isTimeOutError) {
@@ -189,7 +201,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       if (isTimeOutError && isReconnectedRequest) {
         return new Promise((resolve) => {
           repeatRequest(() => {
-            resolve(axios(error.config));
+            resolve(axios(originalRequest));
           });
         });
       }
@@ -208,7 +220,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           if (isReconnectedRequest) {
             return new Promise((resolve) => {
               repeatRequest(() => {
-                resolve(axios(error.config));
+                resolve(axios(originalRequest));
               });
             });
           } else {
@@ -219,8 +231,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           }
         }
       }
-
-      const originalRequest = error.config;
 
       switch (error.response?.status) {
         case 401:
