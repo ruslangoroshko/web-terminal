@@ -10,10 +10,11 @@ import LoaderFullscreen from '../components/LoaderFullscreen';
 import { Observer } from 'mobx-react-lite';
 import Page from '../constants/Pages';
 import { Redirect } from 'react-router-dom';
+import PublicContainer from '../containers/PublicContainer';
 
 const RoutingLayout: FC = () => {
   const location = useLocation();
-  const { push } = useHistory()
+  const { push } = useHistory();
   const { mainAppStore } = useStores();
 
   const allRoutes = routesList.map((route) => (
@@ -29,7 +30,7 @@ const RoutingLayout: FC = () => {
   if (currentRoute) {
     layoutType = currentRoute.layoutType;
   } else {
-    push(Page.DASHBOARD)
+    push(Page.DASHBOARD);
   }
 
   switch (layoutType) {
@@ -39,7 +40,9 @@ const RoutingLayout: FC = () => {
           <Observer>
             {() => (
               <>
-                {!location.search && <Redirect to={location.pathname.replace(/\/+$/, "")} />}
+                {!location.search && (
+                  <Redirect to={location.pathname.replace(/\/+$/, '')} />
+                )}
                 {!mainAppStore.isInitLoading && <Switch>{allRoutes}</Switch>}
                 <LoaderFullscreen
                   isLoading={
@@ -55,7 +58,9 @@ const RoutingLayout: FC = () => {
     case RouteLayoutType.SignFlow:
       return (
         <FlexContainer height="100vh" width="100%">
-          {!location.search && <Redirect to={location.pathname.replace(/\/+$/, "")} />}
+          {!location.search && (
+            <Redirect to={location.pathname.replace(/\/+$/, '')} />
+          )}
           <Observer>
             {() => (
               <>
@@ -74,7 +79,9 @@ const RoutingLayout: FC = () => {
     case RouteLayoutType.KYC:
       return (
         <KYCcontainer>
-          {!location.search && <Redirect to={location.pathname.replace(/\/+$/, "")} />}
+          {!location.search && (
+            <Redirect to={location.pathname.replace(/\/+$/, '')} />
+          )}
           <Observer>
             {() => (
               <>
@@ -92,8 +99,10 @@ const RoutingLayout: FC = () => {
 
     default:
       return (
-        <FlexContainer height="100vh" width="100%">
-          {!location.search && <Redirect to={location.pathname.replace(/\/+$/, "")} />}
+        <PublicContainer>
+          {!location.search && (
+            <Redirect to={location.pathname.replace(/\/+$/, '')} />
+          )}
           <Observer>
             {() => (
               <>
@@ -104,7 +113,7 @@ const RoutingLayout: FC = () => {
               </>
             )}
           </Observer>
-        </FlexContainer>
+        </PublicContainer>
       );
   }
 };
