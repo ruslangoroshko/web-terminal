@@ -26,6 +26,34 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
   let isRefreshing = false;
   let failedQueue: any[] = [];
 
+  let requestErrorStack: string[] = [];
+
+  const getApiUrl = (url: string) => {
+    const urlString = new URL(url);
+    if (urlString.search) {
+      return urlString.href
+        .split(urlString.search)[0]
+        .split(urlString.origin)[1];
+    }
+    return urlString.href.split(urlString.origin)[1];
+  };
+
+  const addErrorUrl = (str: string) => {
+    const url = getApiUrl(str);
+    if (!requestErrorStack.includes(url)) {
+      requestErrorStack.push(url);
+    }
+  };
+
+  const removeErrorUrl = (str: any) => {
+    const url = getApiUrl(str);
+    const index = requestErrorStack.findIndex((elem) => elem === url);
+    requestErrorStack = [
+      ...requestErrorStack.slice(0, index),
+      ...requestErrorStack.slice(index + 1),
+    ];
+  };
+
   const processQueue = (error: any, token: string | null = null) => {
     failedQueue.forEach((prom) => {
       if (error) {
@@ -40,16 +68,16 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
   axios.interceptors.response.use(
     function (config: AxiosResponse) {
-      console.log(config.config.url);
-      if (config.data) {
-        if (mainAppStore.requestReconnectCounter !== 0) {
+      if (config.data.status === OperationApiResponseCodes.Ok) {
+        removeErrorUrl(config?.config?.url);
+
+        if (requestErrorStack.length === 0) {
           mainAppStore.requestReconnectCounter = 0;
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
-          return Promise.resolve(
-            config
-          );
+          return Promise.resolve(config);
         }
       }
+
       if (config.data.result === OperationApiResponseCodes.TechnicalError) {
         return Promise.reject(
           apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
@@ -65,23 +93,23 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     },
 
     async function (error) {
+      const excludeReconectList = [API_LIST.INSTRUMENTS.FAVOURITES];
 
       const repeatRequest = (callback: any) => {
-        mainAppStore.requestReconnectCounter += 1;
-        if (mainAppStore.requestReconnectCounter > 2) {
-          if (!error.config?.url.includes(API_LIST.INSTRUMENTS.FAVOURITES)) {
-            mainAppStore.rootStore.badRequestPopupStore.setRecconect();
-          }
+        mainAppStore.requestReconnectCounter =
+          mainAppStore.requestReconnectCounter + 1;
+
+        if (
+          !excludeReconectList.includes(getApiUrl(error.config?.url)) &&
+          mainAppStore.requestReconnectCounter > 2
+        ) {
+          mainAppStore.rootStore.badRequestPopupStore.setRecconect();
         }
+
         setTimeout(() => {
           callback(error.config);
         }, +mainAppStore.connectTimeOut);
       };
-
-      // console.log('LOGGER');
-      // console.log(error)
-      // console.log('error url: ', error.config?.url);
-      // console.log('is ignored Debug: ', error.config?.url.includes(API_LIST.DEBUG.POST));
 
       if (
         error.config?.url.includes(API_LIST.DEBUG.POST) ||
@@ -125,6 +153,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       let isReconnectedRequest =
         JSON.parse(error.config.data).initBy === requestOptions.BACKGROUND;
 
+      if (isReconnectedRequest) {
+        addErrorUrl(error.config?.url);
+      }
       const urlString = new URL(error?.config.url).href;
 
       // mixpanel

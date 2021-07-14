@@ -51,7 +51,7 @@ export class RootStore {
     this.kycStore = new KYCstore();
     this.notificationStore = new NotificationStore();
     this.sortingStore = new SortingStore(this);
-    this.badRequestPopupStore = new BadRequestPopupStore();
+    this.badRequestPopupStore = new BadRequestPopupStore(this);
     this.depositFundsStore = new DepositFundsStore();
     this.withdrawalStore = new WithdrawalStore();
     this.phoneVerificationStore = new PhoneVerificationStore();
