@@ -11,22 +11,9 @@ import { getCircularReplacer } from '../helpers/getCircularReplacer';
 import API from '../helpers/API';
 import { getStatesSnapshot } from '../helpers/getStatesSnapshot';
 import requestOptions from '../constants/requestOptions';
-import { logger } from '../helpers/ConsoleLoggerTool';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
-
-const repeatRequest = (error: any, mainAppStore: MainAppStore) => {
-  mainAppStore.requestReconnectCounter += 1;
-  if (mainAppStore.requestReconnectCounter > 2) {
-    if (!error.config?.url.includes(API_LIST.INSTRUMENTS.FAVOURITES)) {
-      mainAppStore.rootStore.badRequestPopupStore.setRecconect();
-    }
-  }
-  setTimeout(() => {
-    axios.request(error.config);
-  }, +mainAppStore.connectTimeOut);
-};
 
 const openNotification = (errorText: string, mainAppStore: MainAppStore) => {
   mainAppStore.rootStore.notificationStore.setNotification(errorText);
@@ -53,9 +40,15 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
   axios.interceptors.response.use(
     function (config: AxiosResponse) {
+      console.log(config.config.url);
       if (config.data) {
-        mainAppStore.requestReconnectCounter = 0;
-        mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
+        if (mainAppStore.requestReconnectCounter !== 0) {
+          mainAppStore.requestReconnectCounter = 0;
+          mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
+          return Promise.resolve(
+            config
+          );
+        }
       }
       if (config.data.result === OperationApiResponseCodes.TechnicalError) {
         return Promise.reject(
@@ -72,11 +65,23 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     },
 
     async function (error) {
-      
-      console.log('LOGGER');
-      console.log(error)
-      console.log('error url: ', error.config?.url);
-      console.log('is ignored Debug: ', error.config?.url.includes(API_LIST.DEBUG.POST));
+
+      const repeatRequest = (callback: any) => {
+        mainAppStore.requestReconnectCounter += 1;
+        if (mainAppStore.requestReconnectCounter > 2) {
+          if (!error.config?.url.includes(API_LIST.INSTRUMENTS.FAVOURITES)) {
+            mainAppStore.rootStore.badRequestPopupStore.setRecconect();
+          }
+        }
+        setTimeout(() => {
+          callback(error.config);
+        }, +mainAppStore.connectTimeOut);
+      };
+
+      // console.log('LOGGER');
+      // console.log(error)
+      // console.log('error url: ', error.config?.url);
+      // console.log('is ignored Debug: ', error.config?.url.includes(API_LIST.DEBUG.POST));
 
       if (
         error.config?.url.includes(API_LIST.DEBUG.POST) ||
@@ -151,7 +156,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       }
 
       if (isTimeOutError && isReconnectedRequest) {
-        repeatRequest(error, mainAppStore);
+        return new Promise((resolve) => {
+          repeatRequest(() => {
+            resolve(axios(error.config));
+          });
+        });
       }
 
       if (!error.response?.status && !isTimeOutError && !isReconnectedRequest) {
@@ -166,7 +175,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           error.response?.status.toString().includes('50')
         ) {
           if (isReconnectedRequest) {
-            repeatRequest(error, mainAppStore);
+            return new Promise((resolve) => {
+              repeatRequest(() => {
+                resolve(axios(error.config));
+              });
+            });
           } else {
             mainAppStore.rootStore.badRequestPopupStore.setMessage(
               error.message
