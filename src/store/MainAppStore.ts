@@ -212,6 +212,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   handleInitConnection = async (token = this.token) => {
     this.setIsLoading(true);
+    console.log(this.initModel);
     const connectionString = IS_LOCAL
       ? WS_HOST
       : `${this.initModel.tradingUrl}/signalr`;
