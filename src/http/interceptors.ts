@@ -83,7 +83,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         response.config
       ) {
         console.log(response?.config?.url);
-        removeErrorUrl(response?.config?.url);
+        if (requestErrorStack.length > 0) {
+          removeErrorUrl(response?.config?.url);
+        }
         console.log(requestErrorStack.length);
         if (requestErrorStack.length === 0) {
           mainAppStore.requestReconnectCounter = 0;
