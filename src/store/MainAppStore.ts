@@ -179,10 +179,10 @@ export class MainAppStore implements MainAppStoreProps {
   initApp = async () => {
     try {
       const initModel = await API.getInitModel();
-      console.log(initModel);
+      console.log('initModel', initModel);
       this.initModel = initModel;
+      console.log('this.initModel', this.initModel);
       this.setInterceptors();
-      this.handleInitConnection();
     } catch (error) {
       this.rootStore.badRequestPopupStore.openModal();
       this.rootStore.badRequestPopupStore.setMessage(error);
