@@ -75,18 +75,14 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
   axios.interceptors.response.use(
     function (response: AxiosResponse) {
-      console.log(response);
-      console.log(response.config);
       if (
         response.data.status !== OperationApiResponseCodes.TechnicalError &&
         response.data.status !== OperationApiResponseCodes.InvalidUserNameOrPassword &&
         response.config
       ) {
-        console.log(response?.config?.url);
         if (requestErrorStack.length > 0) {
           removeErrorUrl(response?.config?.url);
         }
-        console.log(requestErrorStack.length);
         if (requestErrorStack.length === 0) {
           mainAppStore.requestReconnectCounter = 0;
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
