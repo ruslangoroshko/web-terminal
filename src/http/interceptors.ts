@@ -75,16 +75,19 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
   axios.interceptors.response.use(
     function (response: AxiosResponse) {
-      switch (response.data.status) {
-        case OperationApiResponseCodes.Ok: {
-          removeErrorUrl(response?.config?.url);
-          if (requestErrorStack.length === 0) {
-            mainAppStore.requestReconnectCounter = 0;
-            mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
-            return Promise.resolve(response);
-          }
-          break;
+      if (
+        response.data.status !== OperationApiResponseCodes.TechnicalError &&
+        response.data.status !== OperationApiResponseCodes.InvalidUserNameOrPassword &&
+        response.config
+      ) {
+        removeErrorUrl(response?.config?.url);
+        if (requestErrorStack.length === 0) {
+          mainAppStore.requestReconnectCounter = 0;
+          mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
+          return Promise.resolve(response);
         }
+      }
+      switch (response.data.status) {
         case OperationApiResponseCodes.TechnicalError: {
           return Promise.reject(
             apiResponseCodeMessages[OperationApiResponseCodes.TechnicalError]
