@@ -179,6 +179,7 @@ export class MainAppStore implements MainAppStoreProps {
   initApp = async () => {
     try {
       const initModel = await API.getInitModel();
+      console.log(initModel);
       this.initModel = initModel;
       this.setInterceptors();
     } catch (error) {

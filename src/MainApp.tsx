@@ -18,8 +18,13 @@ const MainApp: FC = () => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    mainAppStore.handleInitConnection();
-  }, [mainAppStore.isLoading]);
+    if (mainAppStore.initModel.tradingUrl !== '/' || IS_LOCAL) {
+      mainAppStore.handleInitConnection();
+    }
+  }, [
+    mainAppStore.isLoading,
+    mainAppStore.initModel
+  ]);
 
   useEffect(() => {
     autorun(() => {
