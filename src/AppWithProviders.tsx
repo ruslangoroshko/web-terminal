@@ -15,7 +15,7 @@ const AppWithProviders = () => {
           mainAppStore.initModel.mixpanelToken ||
             '582507549d28c813188211a0d15ec940'
         );
-
+        console.log('fetchInit', mainAppStore.initModel);
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
