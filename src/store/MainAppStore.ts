@@ -179,9 +179,7 @@ export class MainAppStore implements MainAppStoreProps {
   initApp = async () => {
     try {
       const initModel = await API.getInitModel();
-      console.log('initModel', initModel);
       this.initModel = initModel;
-      console.log('this.initModel', this.initModel);
       this.setInterceptors();
     } catch (error) {
       this.rootStore.badRequestPopupStore.openModal();
@@ -214,11 +212,9 @@ export class MainAppStore implements MainAppStoreProps {
 
   handleInitConnection = async (token = this.token) => {
     this.setIsLoading(true);
-    console.log(this.initModel);
     const connectionString = IS_LOCAL
       ? WS_HOST
       : `${this.initModel.tradingUrl}/signalr`;
-    console.log(connectionString);
     const connection = initConnection(connectionString);
 
     const connectToWebocket = async () => {
