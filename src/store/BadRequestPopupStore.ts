@@ -52,8 +52,8 @@ export class BadRequestPopupStore implements ContextProps {
   @action
   stopRecconect = () => {
     if (
-      this.rootStore.mainAppStore.requestReconnectCounter === 0 &&
-      this.rootStore.mainAppStore.signalRReconectCounter === 0
+      this.rootStore.mainAppStore.requestReconnectCounter < 3 &&
+      this.rootStore.mainAppStore.signalRReconectCounter < 3
     ) {
       this.isRecconect = false;
     }

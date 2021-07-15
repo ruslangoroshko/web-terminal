@@ -49,16 +49,22 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     if (!requestErrorStack.includes(url)) {
       requestErrorStack.push(url);
     }
+    console.log('add');
     console.log(requestErrorStack);
   };
 
   const removeErrorUrl = (str: any) => {
     const url = getApiUrl(str);
+    console.log(url);
     const index = requestErrorStack.findIndex((elem) => elem === url);
-    requestErrorStack = [
-      ...requestErrorStack.slice(0, index),
-      ...requestErrorStack.slice(index + 1),
-    ];
+    if (index !== -1) {
+      requestErrorStack = [
+        ...requestErrorStack.slice(0, index),
+        ...requestErrorStack.slice(index + 1),
+      ];
+    }
+    console.log('remove');
+    console.log(requestErrorStack);
   };
 
   const processQueue = (error: any, token: string | null = null) => {
@@ -77,7 +83,8 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     function (response: AxiosResponse) {
       if (
         response.data.status !== OperationApiResponseCodes.TechnicalError &&
-        response.data.status !== OperationApiResponseCodes.InvalidUserNameOrPassword &&
+        response.data.status !==
+          OperationApiResponseCodes.InvalidUserNameOrPassword &&
         response.config
       ) {
         if (requestErrorStack.length > 0) {
@@ -171,7 +178,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         const dataObject = {};
         error.config.data.forEach((value: any, key: any) => {
           // @ts-ignore
-          dataObject[key] = value
+          dataObject[key] = value;
         });
         finalJSON = JSON.stringify(dataObject);
       } else {

@@ -362,6 +362,9 @@ export class MainAppStore implements MainAppStoreProps {
 
       console.log('websocket error: ', error);
       console.log('=====/=====');
+
+      this.signalRReconectCounter = 0;
+      this.rootStore.badRequestPopupStore.stopRecconect();
     });
 
     connection.on(
