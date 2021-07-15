@@ -215,6 +215,7 @@ export class MainAppStore implements MainAppStoreProps {
     const connectionString = IS_LOCAL
       ? WS_HOST
       : `${this.initModel.tradingUrl}/signalr`;
+    console.log(connectionString);
     const connection = initConnection(connectionString);
 
     const connectToWebocket = async () => {
