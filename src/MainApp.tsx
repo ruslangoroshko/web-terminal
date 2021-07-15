@@ -18,15 +18,6 @@ const MainApp: FC = () => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    if (mainAppStore.initModel.tradingUrl !== '/' || IS_LOCAL) {
-      mainAppStore.handleInitConnection();
-    }
-  }, [
-    mainAppStore.isLoading,
-    mainAppStore.initModel
-  ]);
-
-  useEffect(() => {
     autorun(() => {
       if (mainAppStore.lang) {
         i18n.changeLanguage(mainAppStore.lang);
