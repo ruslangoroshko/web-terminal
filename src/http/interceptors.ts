@@ -14,6 +14,7 @@ import requestOptions from '../constants/requestOptions';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
+import AUTH_API_LIST from '../helpers/apiListAuth';
 
 const openNotification = (errorText: string, mainAppStore: MainAppStore) => {
   mainAppStore.rootStore.notificationStore.setNotification(errorText);
@@ -79,6 +80,37 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     failedQueue = [];
   };
 
+  const CLIENTS_REQUEST: string[] = [
+    AUTH_API_LIST.TRADER.AUTHENTICATE,
+    AUTH_API_LIST.TRADER.REGISTER,
+    API_LIST.PENDING_ORDERS.ADD,
+    API_LIST.PENDING_ORDERS.REMOVE,
+    API_LIST.POSITIONS.UPDATE_SL_TP,
+    API_LIST.POSITIONS.UPDATE_TOPPING_UP,
+    AUTH_API_LIST.PERSONAL_DATA.CONFIRM,
+    AUTH_API_LIST.TRADER.FORGOT_PASSWORD,
+    AUTH_API_LIST.TRADER.PASSWORD_RECOVERY,
+    AUTH_API_LIST.TRADER.CHANGE_PASSWORD,
+    API_LIST.POSITIONS.OPEN,
+    API_LIST.POSITIONS.CLOSE,
+    API_LIST.WITHWRAWAL.CREATE,
+    API_LIST.WITHWRAWAL.CANCEL,
+    API_LIST.DEPOSIT.CREATE_INVOICE,
+    API_LIST.DEPOSIT.CREATE_INVOICE_SWIFFY,
+    API_LIST.DEPOSIT.CREATE_INVOICE_DIRECTA,
+    API_LIST.DEPOSIT.CREATE_INVOICE_PAY_RETAILERS,
+    API_LIST.DEPOSIT.CREATE_INVOICE_VOLT,
+  ]
+
+  axios.interceptors.request.use((config) => {
+    const request_url = getApiUrl(config?.url || "");
+    const initBy = CLIENTS_REQUEST.includes(request_url) ? requestOptions.CLIENT : requestOptions.BACKGROUND;
+
+    config.data['initBy'] = initBy;
+    console.log(config);
+    return config;
+  });
+
   axios.interceptors.response.use(
     function (response: AxiosResponse) {
       if (
@@ -95,7 +127,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
         }
 
-        console.log(response)
+        console.log(response);
         return Promise.resolve(response);
       }
       switch (response.data.status) {
@@ -183,13 +215,15 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           dataObject[key] = value;
         });
         finalJSON = JSON.stringify(dataObject);
+        console.log('work');
       } else {
         finalJSON = error.config.data;
       }
 
       // ---
-      console.log(error.message)
-      console.log(JSON.parse(finalJSON).initBy)
+      console.log(finalJSON);
+      console.log(error.message);
+      console.log(error.config);
       let isTimeOutError = error.message === requestOptions.TIMEOUT;
       let isReconnectedRequest =
         JSON.parse(finalJSON).initBy === requestOptions.BACKGROUND;
