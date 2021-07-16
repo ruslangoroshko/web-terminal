@@ -94,6 +94,8 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.requestReconnectCounter = 0;
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
         }
+
+        console.log(response)
         return Promise.resolve(response);
       }
       switch (response.data.status) {
@@ -223,7 +225,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       }
 
       if (isTimeOutError && isReconnectedRequest) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
           repeatRequest(() => {
             resolve(axios(originalRequest));
           });
@@ -242,7 +244,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           error.response?.status.toString().includes('50')
         ) {
           if (isReconnectedRequest) {
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
               repeatRequest(() => {
                 resolve(axios(originalRequest));
               });

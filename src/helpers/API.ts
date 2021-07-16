@@ -144,7 +144,7 @@ class API {
     const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.POSITIONS.UPDATE_SL_TP}`,
       formData,
-      this.clientRequestOptions
+      this.clientRequestOptions 
     );
     return response.data;
   };
@@ -153,7 +153,8 @@ class API {
     const formData = this.convertParamsToFormData(position);
     const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.POSITIONS.UPDATE_TOPPING_UP}`,
-      formData
+      formData,
+      this.clientRequestOptions 
     );
     return response.data;
   };

@@ -18,7 +18,6 @@ const FavoriteInstrumetsBar = observer(() => {
   const { mainAppStore, instrumentsStore } = useStores();
 
   const fetchFavoriteInstruments = useCallback(async () => {
-    mainAppStore.setIsLoading(true);
     if (mainAppStore.activeAccount) {
       try {
         const response = await API.getFavoriteInstrumets({
@@ -27,6 +26,8 @@ const FavoriteInstrumetsBar = observer(() => {
             : AccountTypeEnum.Demo,
           accountId: mainAppStore.activeAccountId,
         });
+
+        console.log('response', response);
 
         instrumentsStore.setActiveInstrumentsIds(response);
         const checkAvailable =
@@ -44,15 +45,7 @@ const FavoriteInstrumetsBar = observer(() => {
             response[0] ||
             instrumentsStore.instruments[0].instrumentItem.id
         );
-        mainAppStore.setIsLoading(false);
-      } catch (error) {
-        instrumentsStore.setActiveInstrumentsIds(instrumentsStore.instruments.slice(0, 5).map(instr => instr.instrumentItem.id));
-        await instrumentsStore.switchInstrument(
-          instrumentsStore.instruments[0].instrumentItem.id,
-          false
-        );
-        mainAppStore.setIsLoading(false);
-      }
+      } catch (error) {}
     }
   }, [
     mainAppStore.activeAccountId,
@@ -60,8 +53,20 @@ const FavoriteInstrumetsBar = observer(() => {
     instrumentsStore.instruments,
   ]);
 
+  const setDefaultInstruments = async () => {
+    instrumentsStore.setActiveInstrumentsIds(
+      instrumentsStore.instruments
+        .slice(0, 5)
+        .map((instr) => instr.instrumentItem.id)
+    );
+    await instrumentsStore.switchInstrument(
+      instrumentsStore.instruments[0].instrumentItem.id,
+      false
+    );
+  };
   useEffect(() => {
     if (instrumentsStore.instruments.length) {
+      setDefaultInstruments();
       fetchFavoriteInstruments();
     }
   }, [instrumentsStore.instruments]);
