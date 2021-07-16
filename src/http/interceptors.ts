@@ -102,25 +102,25 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     API_LIST.DEPOSIT.CREATE_INVOICE_VOLT,
   ]
 
-  axios.interceptors.request.use((config) => {
-    console.log(getApiUrl(config?.url || ""));
-    console.log(getApiUrl(config?.url || "").includes(API_LIST.INIT.GET));
-    if (getApiUrl(config?.url || "").includes(API_LIST.INIT.GET)) {
-      return config;
-    }
-    const request_url = getApiUrl(config?.url || "");
-    const initBy = CLIENTS_REQUEST.includes(request_url) ? requestOptions.CLIENT : requestOptions.BACKGROUND;
-    let newData = config.data;
-    if (typeof newData === 'object') {
-      newData.initBy = initBy;
-    } else {
-      const parsedData = JSON.parse(newData);
-      parsedData.initBy = initBy;
-      newData = JSON.stringify(parsedData);
-    }
-    config.data = newData;
-    return config;
-  });
+  // axios.interceptors.request.use((config) => {
+  //   console.log(getApiUrl(config?.url || ""));
+  //   console.log(getApiUrl(config?.url || "").includes(API_LIST.INIT.GET));
+  //   if (getApiUrl(config?.url || "").includes(API_LIST.INIT.GET)) {
+  //     return config;
+  //   }
+  //   const request_url = getApiUrl(config?.url || "");
+  //   const initBy = CLIENTS_REQUEST.includes(request_url) ? requestOptions.CLIENT : requestOptions.BACKGROUND;
+  //   let newData = config.data;
+  //   if (typeof newData === 'object') {
+  //     newData.initBy = initBy;
+  //   } else {
+  //     const parsedData = JSON.parse(newData);
+  //     parsedData.initBy = initBy;
+  //     newData = JSON.stringify(parsedData);
+  //   }
+  //   config.data = newData;
+  //   return config;
+  // });
 
   axios.interceptors.response.use(
     function (response: AxiosResponse) {
