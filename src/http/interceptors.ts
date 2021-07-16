@@ -188,6 +188,8 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       }
 
       // ---
+      console.log(error.message)
+      console.log(JSON.parse(finalJSON).initBy)
       let isTimeOutError = error.message === requestOptions.TIMEOUT;
       let isReconnectedRequest =
         JSON.parse(finalJSON).initBy === requestOptions.BACKGROUND;

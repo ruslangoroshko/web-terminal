@@ -27,8 +27,6 @@ const FavoriteInstrumetsBar = observer(() => {
           accountId: mainAppStore.activeAccountId,
         });
 
-        console.log('response', response);
-
         instrumentsStore.setActiveInstrumentsIds(response);
         const checkAvailable =
           mainAppStore.paramsAsset ||
