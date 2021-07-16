@@ -105,9 +105,15 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
   axios.interceptors.request.use((config) => {
     const request_url = getApiUrl(config?.url || "");
     const initBy = CLIENTS_REQUEST.includes(request_url) ? requestOptions.CLIENT : requestOptions.BACKGROUND;
-
-    config.data['initBy'] = initBy;
-    console.log(config);
+    let newData = config.data;
+    if (typeof newData === 'object') {
+      newData.initBy = initBy;
+    } else {
+      const parsedData = JSON.parse(newData);
+      parsedData.initBy = initBy;
+      newData = JSON.stringify(parsedData);
+    }
+    config.data = newData;
     return config;
   });
 
@@ -127,7 +133,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
         }
 
-        console.log(response);
         return Promise.resolve(response);
       }
       switch (response.data.status) {
@@ -163,14 +168,12 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
       const repeatRequest = (callback: any) => {
         mainAppStore.requestReconnectCounter += 1;
-
         if (
           !excludeReconectList.includes(getApiUrl(requestUrl)) &&
           mainAppStore.requestReconnectCounter > 2
         ) {
           mainAppStore.rootStore.badRequestPopupStore.setRecconect();
         }
-
         setTimeout(() => {
           callback(originalRequest);
         }, +mainAppStore.connectTimeOut);
@@ -215,11 +218,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           dataObject[key] = value;
         });
         finalJSON = JSON.stringify(dataObject);
-        console.log('work');
       } else {
         finalJSON = error.config.data;
       }
-
       // ---
       console.log(finalJSON);
       console.log(error.message);
@@ -275,7 +276,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       if (error.response?.status) {
         if (
           (error.response?.status !== 401 &&
-            error.response?.status !== 403 &&
+            (error.response?.status !== 403 || !mainAppStore.isAuthorized) &&
             error.response?.status.toString().includes('40')) ||
           error.response?.status.toString().includes('50')
         ) {

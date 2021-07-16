@@ -131,7 +131,6 @@ class DataFeedService implements IBasicDataFeed {
           case supportedResolutions['1 hour']:
           case supportedResolutions['4 hours']:
             this.nextTimeTries = this.nextTimeTries + 1;
-            console.log(this.nextTimeTries);
             onResult(bars, {
               noData: true,
               nextTime: moment(rangeStartDate * 1000)
