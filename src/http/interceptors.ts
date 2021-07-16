@@ -103,6 +103,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
   ]
 
   axios.interceptors.request.use((config) => {
+    console.log(getApiUrl(config?.url || ""));
+    console.log(getApiUrl(config?.url || "").includes(API_LIST.INIT.GET));
+    if (getApiUrl(config?.url || "").includes(API_LIST.INIT.GET)) {
+      return config;
+    }
     const request_url = getApiUrl(config?.url || "");
     const initBy = CLIENTS_REQUEST.includes(request_url) ? requestOptions.CLIENT : requestOptions.BACKGROUND;
     let newData = config.data;
