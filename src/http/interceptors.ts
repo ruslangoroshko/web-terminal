@@ -111,7 +111,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     const initBy = CLIENTS_REQUEST.includes(request_url) ? requestOptions.CLIENT : requestOptions.BACKGROUND;
     let newData = config.data;
     if (typeof newData === 'object') {
-      newData.initBy = initBy;
+      if (newData instanceof FormData) {
+        newData.append('initBy', initBy);
+      } else {
+        newData.initBy = initBy;
+      }
     } else {
       const parsedData = JSON.parse(newData);
       parsedData.initBy = initBy;

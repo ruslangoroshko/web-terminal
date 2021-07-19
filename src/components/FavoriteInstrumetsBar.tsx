@@ -19,6 +19,21 @@ const FavoriteInstrumetsBar = observer(() => {
 
   const fetchFavoriteInstruments = useCallback(async () => {
     if (mainAppStore.activeAccount) {
+      let alreadyAdded = false;
+      setTimeout(() => {
+        if (!alreadyAdded) {
+          instrumentsStore.setActiveInstrumentsIds(
+            instrumentsStore.instruments
+              .slice(0, 5)
+              .map((instr) => instr.instrumentItem.id)
+          );
+          instrumentsStore.switchInstrument(
+            instrumentsStore.instruments[0].instrumentItem.id,
+            false,
+            false
+          );
+        }
+      }, 5000);
       try {
         const response = await API.getFavoriteInstrumets({
           type: mainAppStore.activeAccount?.isLive
@@ -26,7 +41,7 @@ const FavoriteInstrumetsBar = observer(() => {
             : AccountTypeEnum.Demo,
           accountId: mainAppStore.activeAccountId,
         });
-
+        alreadyAdded = true;
         instrumentsStore.setActiveInstrumentsIds(response);
         const checkAvailable =
           mainAppStore.paramsAsset ||
@@ -51,20 +66,8 @@ const FavoriteInstrumetsBar = observer(() => {
     instrumentsStore.instruments,
   ]);
 
-  const setDefaultInstruments = async () => {
-    instrumentsStore.setActiveInstrumentsIds(
-      instrumentsStore.instruments
-        .slice(0, 5)
-        .map((instr) => instr.instrumentItem.id)
-    );
-    await instrumentsStore.switchInstrument(
-      instrumentsStore.instruments[0].instrumentItem.id,
-      false
-    );
-  };
   useEffect(() => {
     if (instrumentsStore.instruments.length) {
-      setDefaultInstruments();
       fetchFavoriteInstruments();
     }
   }, [instrumentsStore.instruments]);

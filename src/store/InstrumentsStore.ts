@@ -191,7 +191,11 @@ export class InstrumentsStore implements ContextProps {
 
   // TODO: refactor, too heavy
   @action
-  switchInstrument = async (instrumentId: string, addToFavorites: boolean = true) => {
+  switchInstrument = async (
+    instrumentId: string,
+    addToFavorites: boolean = true,
+    addToLastViewed: boolean = true
+  ) => {
     if (this.activeInstrument?.instrumentItem.id === instrumentId) {
       return;
     }
@@ -200,8 +204,9 @@ export class InstrumentsStore implements ContextProps {
     );
 
     if (newActiveInstrument) {
-
-      localStorage.setItem(LOCAL_INSTRUMENT_ACTIVE, instrumentId);
+      if (addToLastViewed) {
+        localStorage.setItem(LOCAL_INSTRUMENT_ACTIVE, instrumentId);
+      }
       if (addToFavorites) {
         this.addActiveInstrumentId(instrumentId);
       }
