@@ -20,16 +20,16 @@ const MainApp: FC = () => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    window.openDebugMode = function () {
+    window.stopPongDebugMode = function () {
       console.log('Open debug mode');
       mainAppStore.debugSocketMode = true;
       console.log(mainAppStore.debugSocketMode);
     };
 
-    window.closeDebugMode = function () {
-      console.log('Close debug mode');
-      mainAppStore.debugSocketMode = false;
-      console.log(mainAppStore.debugSocketMode);
+    window.stopPingDebugMode = function () {
+      console.log('stop ping debug mode');
+      mainAppStore.debugDontPing = true;
+      console.log(mainAppStore.debugDontPing);
     };
 
     autorun(() => {

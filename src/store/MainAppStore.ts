@@ -87,6 +87,7 @@ interface MainAppStoreProps {
   requestReconnectCounter: number;
 
   debugSocketMode: boolean;
+  debugDontPing: boolean;
 }
 
 // TODO: think about application initialization
@@ -153,6 +154,7 @@ export class MainAppStore implements MainAppStoreProps {
   signalRReconectCounter = 0;
 
   debugSocketMode = false;
+  debugDontPing = false;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -439,6 +441,8 @@ export class MainAppStore implements MainAppStoreProps {
 
     connection.on(Topics.PONG, (response: ResponseFromWebsocket<any>) => {
       if (this.debugSocketMode) {
+        console.log('cancel ping');
+        console.log('ping counter: ', this.signalRReconectCounter);
         return;
       }
 
@@ -467,6 +471,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   socketPing = () => {
+    console.log('ping counter: ', this.signalRReconectCounter);
     if (this.activeSession) {
       this.activeSession?.send(Topics.PING);
     }
@@ -477,7 +482,7 @@ export class MainAppStore implements MainAppStoreProps {
     let timer: any;
 
     if (this.activeSession && this.isAuthorized) {
-      if (this.signalRReconectCounter >= 2) {
+      if (this.signalRReconectCounter > 3) {
         this.rootStore.badRequestPopupStore.setRecconect();
 
         this.activeSession
@@ -485,15 +490,21 @@ export class MainAppStore implements MainAppStoreProps {
           .then(() => {
             this.handleInitConnection();
           })
-          .finally(() => (this.debugSocketMode = false));
+          .finally(() => {
+            this.debugSocketMode = false;
+            this.debugDontPing = false;
+          });
 
         return;
       }
 
-      this.socketPing();
+      if (!this.debugDontPing) {
+        this.socketPing();
+      }
+      
 
       timer = setTimeout(() => {
-        this.signalRReconectCounter += 1;
+        this.signalRReconectCounter = this.signalRReconectCounter + 1;
         this.pingPongConnection();
       }, 3000);
     } else {
