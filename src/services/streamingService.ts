@@ -107,7 +107,7 @@ class StreamingService {
 
   _updateBar = (bar: Bar, { lastBar, resolution }: DataSubscriber) => {
     const MINUTE = 60000;
-    console.log('_updateBar resolution', resolution)
+    // console.log('_updateBar resolution', resolution)
     let time = MINUTE;
 
     switch (resolution) {
