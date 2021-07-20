@@ -725,6 +725,8 @@ export class MainAppStore implements MainAppStoreProps {
       this.socketError = false;
       this.rootStore.badRequestPopupStore.setSocket(false);
     });
+    this.requestReconnectCounter = 0;
+    this.rootStore.badRequestPopupStore.stopRecconect();
     if (this.activeAccount) {
       this.setParamsAsset(null);
       this.setParamsMarkets(null);
