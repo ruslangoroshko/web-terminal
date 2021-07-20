@@ -442,7 +442,6 @@ export class MainAppStore implements MainAppStoreProps {
     connection.on(Topics.PONG, (response: ResponseFromWebsocket<any>) => {
       if (this.debugSocketMode) {
         console.log('cancel ping');
-        console.log('ping counter: ', this.signalRReconectCounter);
         return;
       }
 
@@ -471,7 +470,6 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   socketPing = () => {
-    console.log('ping counter: ', this.signalRReconectCounter);
     if (this.activeSession) {
       this.activeSession?.send(Topics.PING);
     }
@@ -482,6 +480,8 @@ export class MainAppStore implements MainAppStoreProps {
     let timer: any;
 
     if (this.activeSession && this.isAuthorized) {
+
+      console.log('ping pong counter: ', this.signalRReconectCounter);
       if (this.signalRReconectCounter > 3) {
         this.rootStore.badRequestPopupStore.setRecconect();
 
