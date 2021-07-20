@@ -85,6 +85,8 @@ interface MainAppStoreProps {
   websocketConnectionTries: number;
 
   requestReconnectCounter: number;
+
+  debugSocketMode: boolean;
 }
 
 // TODO: think about application initialization
@@ -149,6 +151,8 @@ export class MainAppStore implements MainAppStoreProps {
   connectTimeOut = 10000; // 5000;
   requestReconnectCounter = 0;
   signalRReconectCounter = 0;
+
+  debugSocketMode = false;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -434,6 +438,10 @@ export class MainAppStore implements MainAppStoreProps {
     );
 
     connection.on(Topics.PONG, (response: ResponseFromWebsocket<any>) => {
+      if (this.debugSocketMode) {
+        return;
+      }
+
       if (response.now) {
         this.signalRReconectCounter = 0;
         this.rootStore.badRequestPopupStore.stopRecconect();
@@ -471,12 +479,19 @@ export class MainAppStore implements MainAppStoreProps {
     if (this.activeSession && this.isAuthorized) {
       if (this.signalRReconectCounter >= 2) {
         this.rootStore.badRequestPopupStore.setRecconect();
-        this.handleInitConnection();
+
+        this.activeSession
+          ?.stop()
+          .then(() => {
+            this.handleInitConnection();
+          })
+          .finally(() => (this.debugSocketMode = false));
+
         return;
       }
-  
+
       this.socketPing();
-  
+
       timer = setTimeout(() => {
         this.signalRReconectCounter += 1;
         this.pingPongConnection();

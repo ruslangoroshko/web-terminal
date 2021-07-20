@@ -13,11 +13,25 @@ import SocketErrorPopup from './components/SocketErrorPopup';
 import { useTranslation } from 'react-i18next';
 import { autorun } from 'mobx';
 
+declare const window: any;
+
 const MainApp: FC = () => {
   const { mainAppStore } = useStores();
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
+    window.openDebugMode = function () {
+      console.log('Open debug mode');
+      mainAppStore.debugSocketMode = true;
+      console.log(mainAppStore.debugSocketMode);
+    };
+
+    window.closeDebugMode = function () {
+      console.log('Close debug mode');
+      mainAppStore.debugSocketMode = false;
+      console.log(mainAppStore.debugSocketMode);
+    };
+
     autorun(() => {
       if (mainAppStore.lang) {
         i18n.changeLanguage(mainAppStore.lang);
