@@ -174,6 +174,16 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         return Promise.reject(error);
       }
 
+      if (
+        error.response?.status === 401 &&
+        getApiUrl(requestUrl).includes(AUTH_API_LIST.TRADER.REFRESH_TOKEN)
+      ) {
+        mainAppStore.requestReconnectCounter = 0;
+        mainAppStore.rootStore.badRequestPopupStore.closeModal();
+        mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
+        mainAppStore.signOut();
+      }
+
       const repeatRequest = (callback: any) => {
         mainAppStore.requestReconnectCounter += 1;
         if (
@@ -353,7 +363,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           failedQueue.forEach((prom) => {
             prom.reject();
           });
+          mainAppStore.requestReconnectCounter = 0;
           mainAppStore.rootStore.badRequestPopupStore.closeModal();
+          mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
           mainAppStore.signOut();
           break;
         }
