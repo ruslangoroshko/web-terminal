@@ -169,7 +169,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         API_LIST.ONBOARDING.STEPS,
       ];
 
-      const requestUrl: string = error?.config?.url;
+      const requestUrl: string = error?.config?.url === API_LIST.INIT.GET
+        ? error?.request?.responseURL
+        : error?.config?.url;
       const originalRequest = error.config;
       console.log('requestUrl', requestUrl);
       console.log('getApiUrl(requestUrl)', getApiUrl(requestUrl));
