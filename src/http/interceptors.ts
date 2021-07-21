@@ -256,13 +256,13 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       const urlString = new URL(requestUrl).href;
       console.log('after urlstring');
       // mixpanel
-      if (isTimeOutError) {
+      if (isTimeOutError && !requestUrl.includes(API_LIST.INIT.GET)) {
         mixpanel.track(mixpanelEvents.TIMEOUT, {
           [mixapanelProps.REQUEST_URL]: urlString,
         });
       }
 
-      if (error.response?.status) {
+      if (error.response?.status && !requestUrl.includes(API_LIST.INIT.GET)) {
         if (error.response?.status.toString().includes('50')) {
           mixpanel.track(mixpanelEvents.SERVER_ERROR_50X, {
             [mixapanelProps.REQUEST_URL]: urlString,
