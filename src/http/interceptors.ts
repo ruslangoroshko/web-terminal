@@ -37,7 +37,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
    */
   const getApiUrl = (url: string) => {
     const urlString = new URL(url);
-    console.log('urlString', urlString);
     if (urlString.search) {
       return urlString.href
         .split(urlString.search)[0]
@@ -173,8 +172,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         ? error?.request?.responseURL
         : error?.config?.url;
       const originalRequest = error.config;
-      console.log('requestUrl', requestUrl);
-      console.log('getApiUrl(requestUrl)', getApiUrl(requestUrl));
       if (excludeCheckErrorFlow.includes(getApiUrl(requestUrl))) {
         return Promise.reject(error);
       }
@@ -201,9 +198,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         }, +mainAppStore.connectTimeOut);
       };
 
-      console.log('logger', mainAppStore.isAuthorized &&
-        !doNotSendRequest.includes(error.response?.status) &&
-        (error.response?.status || error.config?.timeoutErrorMessage));
       // looger
       if (
         mainAppStore.isAuthorized &&
@@ -235,7 +229,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       // --- looger
 
       // check for formData
-      console.log('typeof error.config.data ', typeof error.config.data);
       let finalJSON = '';
       if (typeof error.config.data === 'object') {
         const dataObject = {};
@@ -259,8 +252,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       if (isReconnectedRequest) {
         addErrorUrl(requestUrl);
       }
+      console.log('before urlstring');
       const urlString = new URL(requestUrl).href;
-
+      console.log('after urlstring');
       // mixpanel
       if (isTimeOutError) {
         mixpanel.track(mixpanelEvents.TIMEOUT, {
@@ -283,7 +277,13 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         }
       }
 
+      console.log('after mixpanels');
       // --- mixpanel
+
+
+      console.log('isTimeOutError', isTimeOutError);
+      console.log('isReconnectedRequest', isReconnectedRequest);
+      console.log('error.response?.status', error.response?.status);
 
       if (isTimeOutError && !isReconnectedRequest) {
         openNotification('Timeout connection error', mainAppStore);
@@ -302,6 +302,10 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       }
 
       if (error.response?.status) {
+        console.log('full check', (error.response?.status !== 401 &&
+          (error.response?.status !== 403 || !mainAppStore.isAuthorized) &&
+          error.response?.status.toString().includes('40')) ||
+          error.response?.status.toString().includes('50'));
         if (
           (error.response?.status !== 401 &&
             (error.response?.status !== 403 || !mainAppStore.isAuthorized) &&
