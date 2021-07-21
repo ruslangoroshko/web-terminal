@@ -244,6 +244,8 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           dataObject[key] = value;
         });
         finalJSON = JSON.stringify(dataObject);
+      } else if (typeof error.config.data === 'undefined') {
+        finalJSON = JSON.stringify({ initBy: requestOptions.BACKGROUND });
       } else {
         finalJSON = error.config.data;
       }
