@@ -103,8 +103,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
   ]
 
   axios.interceptors.request.use((config) => {
-    console.log(config.url);
-    console.log(config);
     if (config.url === API_LIST.INIT.GET) {
       return config;
     }
@@ -164,7 +162,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     },
 
     async function (error) {
-      console.log('error.config', error.config);
       const excludeReconectList = [API_LIST.INSTRUMENTS.FAVOURITES];
       const excludeCheckErrorFlow = [
         API_LIST.DEBUG.POST,
