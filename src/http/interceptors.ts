@@ -171,11 +171,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
       const requestUrl: string = error?.config?.url;
       const originalRequest = error.config;
-
+      console.log('requestUrl', requestUrl);
+      console.log('getApiUrl(requestUrl)', getApiUrl(requestUrl));
       if (excludeCheckErrorFlow.includes(getApiUrl(requestUrl))) {
         return Promise.reject(error);
       }
-      console.log('getApiUrl(requestUrl)', getApiUrl(requestUrl));
       if (
         error.response?.status === 401 &&
         getApiUrl(requestUrl).includes(AUTH_API_LIST.TRADER.REFRESH_TOKEN)
