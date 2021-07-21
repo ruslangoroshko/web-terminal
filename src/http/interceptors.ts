@@ -37,6 +37,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
    */
   const getApiUrl = (url: string) => {
     const urlString = new URL(url);
+    console.log('urlString', urlString);
     if (urlString.search) {
       return urlString.href
         .split(urlString.search)[0]
@@ -161,7 +162,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     },
 
     async function (error) {
-      console.log('error', error);
       console.log('error.config', error.config);
       const excludeReconectList = [API_LIST.INSTRUMENTS.FAVOURITES];
       const excludeCheckErrorFlow = [
@@ -175,7 +175,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       if (excludeCheckErrorFlow.includes(getApiUrl(requestUrl))) {
         return Promise.reject(error);
       }
-
+      console.log('getApiUrl(requestUrl)', getApiUrl(requestUrl));
       if (
         error.response?.status === 401 &&
         getApiUrl(requestUrl).includes(AUTH_API_LIST.TRADER.REFRESH_TOKEN)
@@ -199,6 +199,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         }, +mainAppStore.connectTimeOut);
       };
 
+      console.log('logger', mainAppStore.isAuthorized &&
+        !doNotSendRequest.includes(error.response?.status) &&
+        (error.response?.status || error.config?.timeoutErrorMessage));
       // looger
       if (
         mainAppStore.isAuthorized &&
@@ -230,6 +233,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       // --- looger
 
       // check for formData
+      console.log('typeof error.config.data ', typeof error.config.data);
       let finalJSON = '';
       if (typeof error.config.data === 'object') {
         const dataObject = {};
