@@ -104,6 +104,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
   axios.interceptors.request.use((config) => {
     console.log(config.url);
+    console.log(config);
     if (config.url === API_LIST.INIT.GET) {
       return config;
     }
@@ -252,9 +253,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       if (isReconnectedRequest) {
         addErrorUrl(requestUrl);
       }
-      console.log('before urlstring');
       const urlString = new URL(requestUrl).href;
-      console.log('after urlstring');
       // mixpanel
       if (isTimeOutError && !requestUrl.includes(API_LIST.INIT.GET)) {
         mixpanel.track(mixpanelEvents.TIMEOUT, {
@@ -277,13 +276,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         }
       }
 
-      console.log('after mixpanels');
       // --- mixpanel
-
-
-      console.log('isTimeOutError', isTimeOutError);
-      console.log('isReconnectedRequest', isReconnectedRequest);
-      console.log('error.response?.status', error.response?.status);
 
       if (isTimeOutError && !isReconnectedRequest) {
         openNotification('Timeout connection error', mainAppStore);
@@ -302,10 +295,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       }
 
       if (error.response?.status) {
-        console.log('full check', (error.response?.status !== 401 &&
-          (error.response?.status !== 403 || !mainAppStore.isAuthorized) &&
-          error.response?.status.toString().includes('40')) ||
-          error.response?.status.toString().includes('50'));
         if (
           (error.response?.status !== 401 &&
             (error.response?.status !== 403 || !mainAppStore.isAuthorized) &&
@@ -313,7 +302,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           error.response?.status.toString().includes('50')
         ) {
           if (isReconnectedRequest) {
-            console.log('originalRequest', originalRequest);
             return new Promise((resolve, reject) => {
               repeatRequest(() => {
                 resolve(axios(originalRequest));
