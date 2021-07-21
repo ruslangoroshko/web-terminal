@@ -309,6 +309,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           error.response?.status.toString().includes('50')
         ) {
           if (isReconnectedRequest) {
+            console.log('originalRequest', originalRequest);
             return new Promise((resolve, reject) => {
               repeatRequest(() => {
                 resolve(axios(originalRequest));
