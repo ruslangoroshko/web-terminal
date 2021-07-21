@@ -85,9 +85,15 @@ class API {
 
   clientRequestOptions: AxiosRequestConfig = {
     timeoutErrorMessage: requestOptions.TIMEOUT,
+    data: {
+      initBy: requestOptions.CLIENT
+    }
   };
   backgroundRequestOptions: AxiosRequestConfig = {
     timeoutErrorMessage: requestOptions.TIMEOUT,
+    data: {
+      initBy: requestOptions.BACKGROUND
+    }
   };
 
   //
@@ -429,7 +435,6 @@ class API {
           `${API_LIST.INIT.GET}`,
           this.backgroundRequestOptions
         );
-    console.log('response', response);
     return response.data;
   };
 
