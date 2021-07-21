@@ -85,15 +85,9 @@ class API {
 
   clientRequestOptions: AxiosRequestConfig = {
     timeoutErrorMessage: requestOptions.TIMEOUT,
-    data: {
-      initBy: requestOptions.CLIENT
-    }
   };
   backgroundRequestOptions: AxiosRequestConfig = {
     timeoutErrorMessage: requestOptions.TIMEOUT,
-    data: {
-      initBy: requestOptions.BACKGROUND
-    }
   };
 
   //
