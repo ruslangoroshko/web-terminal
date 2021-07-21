@@ -128,6 +128,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
   axios.interceptors.response.use(
     function (response: AxiosResponse) {
+      console.log(response);
       if (
         response.data.status !== OperationApiResponseCodes.TechnicalError &&
         response.data.status !==
@@ -141,7 +142,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           mainAppStore.requestReconnectCounter = 0;
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
         }
-
+        console.log('path 1')
         return Promise.resolve(response);
       }
       switch (response.data.status) {
@@ -158,6 +159,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         default:
           break;
       }
+      console.log('path 2')
       return response;
     },
 
