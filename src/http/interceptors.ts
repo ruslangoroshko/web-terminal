@@ -161,6 +161,8 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     },
 
     async function (error) {
+      console.log('error', error);
+      console.log('error.config', error.config);
       const excludeReconectList = [API_LIST.INSTRUMENTS.FAVOURITES];
       const excludeCheckErrorFlow = [
         API_LIST.DEBUG.POST,
