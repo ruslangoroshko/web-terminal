@@ -12,6 +12,7 @@ import NetworkErrorPopup from './components/NetworkErrorPopup';
 import SocketErrorPopup from './components/SocketErrorPopup';
 import { useTranslation } from 'react-i18next';
 import { autorun } from 'mobx';
+import { logger } from './helpers/ConsoleLoggerTool';
 
 declare const window: any;
 
@@ -21,28 +22,41 @@ const MainApp: FC = () => {
 
   useEffect(() => {
     window.stopPongDebugMode = function () {
-      console.log('Open debug mode');
+      logger('DEBUG: Stop listen pong');
       mainAppStore.debugSocketMode = true;
-      console.log(mainAppStore.debugSocketMode);
     };
 
     window.stopPingDebugMode = function () {
-      console.log('stop ping debug mode');
+      logger('DEBUG: Stop send ping');
       mainAppStore.debugDontPing = true;
-      console.log(mainAppStore.debugDontPing);
     };
 
     window.startSocketInitError = function () {
-      window.stopPongDebugMode();
-      console.log('Start Socket Init Error debug mode');
+      logger('DEBUG: Open connection has error');
       mainAppStore.debugSocketReconnect = true;
-      console.log(mainAppStore.debugSocketReconnect);
     };
 
     window.stopSocketInitError = function () {
-      console.log('Stop Socket Init Error debug mode');
+      logger('DEBUG: Stop Socket Init Error');
       mainAppStore.debugSocketReconnect = false;
       console.log(mainAppStore.debugSocketReconnect);
+    };
+
+    window.debugSocketServerError = () => {
+      logger('DEBUG: Test servererror message');
+      const response = {
+        data: {
+          reason: 'Test Server eror',
+        },
+        now: 'test',
+      };
+      mainAppStore.handleSocketServerError(response);
+    };
+
+    window.debugSocketCloseError = () => {
+      logger('DEBUG: Stop Socket with Error');
+      mainAppStore.activeSession?.stop();
+      mainAppStore.handleSocketCloseError(Error('Socket close error'));
     };
 
     autorun(() => {

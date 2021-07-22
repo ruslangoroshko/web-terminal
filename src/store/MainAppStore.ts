@@ -218,6 +218,47 @@ export class MainAppStore implements MainAppStoreProps {
     });
   };
 
+  // For socket
+  handleSocketServerError = (response: ResponseFromWebsocket<ServerError>) => {
+    this.setInitLoading(false);
+    this.setIsLoading(false);
+    this.rootStore.badRequestPopupStore.openModal();
+    this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
+  };
+
+  handleSocketCloseError = (error: any) => {
+    if (error) {
+      if (this.websocketConnectionTries < 3) {
+        this.websocketConnectionTries = this.websocketConnectionTries + 1;
+        this.handleInitConnection();
+      } else {
+        window.location.reload();
+        return;
+      }
+    }
+    if (this.isAuthorized) {
+      const objectToSend = {
+        message: error?.message,
+        name: error?.name,
+        stack: error?.stack,
+      };
+      const jsonLogObject = {
+        error: JSON.stringify(objectToSend),
+        snapShot: JSON.stringify(
+          getStatesSnapshot(this),
+          getCircularReplacer()
+        ),
+      };
+      const params: DebugTypes = {
+        level: debugLevel.TRANSPORT,
+        processId: getProcessId(),
+        message: error?.message || 'unknown error',
+        jsonLogObject: JSON.stringify(jsonLogObject),
+      };
+      API.postDebug(params, API_STRING);
+    }
+  }
+
   handleInitConnection = async (token = this.token) => {
     this.setIsLoading(true);
     const connectionString = IS_LOCAL
@@ -227,13 +268,13 @@ export class MainAppStore implements MainAppStoreProps {
 
     const debugSocketReconnectFunction = () => {
       if (this.debugSocketReconnect) {
-        console.log('Return error socket init')
+        console.log('Return error socket init');
         return Promise.reject('Error socket init');
       }
-    }
+    };
 
     const connectToWebocket = async () => {
-      console.log('connectToWebocket')
+      console.log('connectToWebocket');
       try {
         await debugSocketReconnectFunction();
         await connection.start();
@@ -334,44 +375,12 @@ export class MainAppStore implements MainAppStoreProps {
     connection.on(
       Topics.SERVER_ERROR,
       (response: ResponseFromWebsocket<ServerError>) => {
-        this.setInitLoading(false);
-        this.setIsLoading(false);
-        this.rootStore.badRequestPopupStore.openModal();
-        this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
+        this.handleSocketServerError(response);
       }
     );
 
     connection.onclose((error) => {
-      if (error) {
-        if (this.websocketConnectionTries < 3) {
-          this.websocketConnectionTries = this.websocketConnectionTries + 1; // TODO: mobx strange behavior with i++;
-          this.handleInitConnection();
-        } else {
-          window.location.reload();
-          return;
-        }
-      }
-      if (this.isAuthorized) {
-        const objectToSend = {
-          message: error?.message,
-          name: error?.name,
-          stack: error?.stack,
-        };
-        const jsonLogObject = {
-          error: JSON.stringify(objectToSend),
-          snapShot: JSON.stringify(
-            getStatesSnapshot(this),
-            getCircularReplacer()
-          ),
-        };
-        const params: DebugTypes = {
-          level: debugLevel.TRANSPORT,
-          processId: getProcessId(),
-          message: error?.message || 'unknown error',
-          jsonLogObject: JSON.stringify(jsonLogObject),
-        };
-        API.postDebug(params, API_STRING);
-      }
+      this.handleSocketCloseError(error);
 
       //this.socketError = true;
       this.isLoading = false;
@@ -491,7 +500,6 @@ export class MainAppStore implements MainAppStoreProps {
     let timer: any;
 
     if (this.activeSession && this.isAuthorized) {
-
       console.log('ping pong counter: ', this.signalRReconectCounter);
       if (this.signalRReconectCounter > 3) {
         this.rootStore.badRequestPopupStore.setRecconect();
@@ -512,7 +520,6 @@ export class MainAppStore implements MainAppStoreProps {
       if (!this.debugDontPing) {
         this.socketPing();
       }
-      
 
       timer = setTimeout(() => {
         this.signalRReconectCounter = this.signalRReconectCounter + 1;
