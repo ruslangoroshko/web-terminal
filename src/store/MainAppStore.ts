@@ -187,11 +187,9 @@ export class MainAppStore implements MainAppStoreProps {
   initApp = async () => {
     try {
       const initModel = await API.getInitModel();
-      console.log('not error', initModel);
       this.initModel = initModel;
       this.setInterceptors();
     } catch (error) {
-      console.log('error', error);
       await this.initApp();
       // this.rootStore.badRequestPopupStore.openModal();
       // this.rootStore.badRequestPopupStore.setMessage(error);
@@ -235,7 +233,7 @@ export class MainAppStore implements MainAppStoreProps {
         this.websocketConnectionTries = this.websocketConnectionTries + 1;
         this.handleInitConnection();
       } else {
-        window.location.reload();
+        // window.location.reload();
         return;
       }
     }
