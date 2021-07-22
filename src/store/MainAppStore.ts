@@ -185,9 +185,11 @@ export class MainAppStore implements MainAppStoreProps {
   initApp = async () => {
     try {
       const initModel = await API.getInitModel();
+      console.log('not error', initModel);
       this.initModel = initModel;
       this.setInterceptors();
     } catch (error) {
+      console.log('error', error);
       this.rootStore.badRequestPopupStore.openModal();
       this.rootStore.badRequestPopupStore.setMessage(error);
     }
@@ -646,7 +648,7 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   signInLpLogin = async (params: LpLoginParams) => {
     const response = await API.postLpLoginToken(params, this.initModel.authUrl);
-
+    console.log('response LpLogin 1', response);
     if (response.result === OperationApiResponseCodes.Ok) {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.setIsAuthorized(true);
