@@ -88,6 +88,7 @@ interface MainAppStoreProps {
 
   debugSocketMode: boolean;
   debugDontPing: boolean;
+  debugSocketReconnect: boolean;
 }
 
 // TODO: think about application initialization
@@ -155,6 +156,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   debugSocketMode = false;
   debugDontPing = false;
+  debugSocketReconnect = false;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -223,8 +225,17 @@ export class MainAppStore implements MainAppStoreProps {
       : `${this.initModel.tradingUrl}/signalr`;
     const connection = initConnection(connectionString);
 
+    const debugSocketReconnectFunction = () => {
+      if (this.debugSocketReconnect) {
+        console.log('Return error socket init')
+        return Promise.reject('Error socket init');
+      }
+    }
+
     const connectToWebocket = async () => {
+      console.log('connectToWebocket')
       try {
+        await debugSocketReconnectFunction();
         await connection.start();
         try {
           await connection.send(Topics.INIT, token);

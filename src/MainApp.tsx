@@ -32,6 +32,19 @@ const MainApp: FC = () => {
       console.log(mainAppStore.debugDontPing);
     };
 
+    window.startSocketInitError = function () {
+      window.stopPongDebugMode();
+      console.log('Start Socket Init Error debug mode');
+      mainAppStore.debugSocketReconnect = true;
+      console.log(mainAppStore.debugSocketReconnect);
+    };
+
+    window.stopSocketInitError = function () {
+      console.log('Stop Socket Init Error debug mode');
+      mainAppStore.debugSocketReconnect = false;
+      console.log(mainAppStore.debugSocketReconnect);
+    };
+
     autorun(() => {
       if (mainAppStore.lang) {
         i18n.changeLanguage(mainAppStore.lang);
