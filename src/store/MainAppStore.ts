@@ -233,7 +233,7 @@ export class MainAppStore implements MainAppStoreProps {
         this.websocketConnectionTries = this.websocketConnectionTries + 1;
         this.handleInitConnection();
       } else {
-        // window.location.reload();
+        window.location.reload();
         return;
       }
     }
