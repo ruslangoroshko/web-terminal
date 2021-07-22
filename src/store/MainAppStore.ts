@@ -192,8 +192,9 @@ export class MainAppStore implements MainAppStoreProps {
       this.setInterceptors();
     } catch (error) {
       console.log('error', error);
-      this.rootStore.badRequestPopupStore.openModal();
-      this.rootStore.badRequestPopupStore.setMessage(error);
+      await this.initApp();
+      // this.rootStore.badRequestPopupStore.openModal();
+      // this.rootStore.badRequestPopupStore.setMessage(error);
     }
   };
 
