@@ -39,15 +39,12 @@ const MainApp: FC = () => {
     window.stopSocketInitError = function () {
       logger('DEBUG: Stop Socket Init Error');
       mainAppStore.debugSocketReconnect = false;
-      console.log(mainAppStore.debugSocketReconnect);
     };
 
     window.debugSocketServerError = () => {
       logger('DEBUG: Test servererror message');
       const response = {
-        data: {
-          reason: 'Test Server eror',
-        },
+        data: { reason: 'Test Server error' },
         now: 'test',
       };
       mainAppStore.handleSocketServerError(response);
@@ -55,7 +52,6 @@ const MainApp: FC = () => {
 
     window.debugSocketCloseError = () => {
       logger('DEBUG: Stop Socket with Error');
-      mainAppStore.activeSession?.stop();
       mainAppStore.handleSocketCloseError(Error('Socket close error'));
     };
 
