@@ -341,4 +341,8 @@ export const reboot = css`
   [hidden] {
     display: none !important;
   }
+
+  font {
+    pointer-events: none
+  }
 `;
