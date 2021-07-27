@@ -172,15 +172,16 @@ export class MainAppStore implements MainAppStoreProps {
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
     Axios.defaults.timeout = this.connectTimeOut;
 
-    // @ts-ignore
-    this.lang =
-      localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
+    const newLang = localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
       (window.navigator.language &&
       languagesList.includes(
         window.navigator.language.slice(0, 2).toLowerCase()
       )
         ? window.navigator.language.slice(0, 2).toLowerCase()
         : CountriesEnum.EN);
+    // @ts-ignore
+    this.lang = newLang;
+    document.querySelector('html')?.setAttribute('lang', newLang);
     injectInerceptors(this);
   }
 
