@@ -21,8 +21,8 @@ const AmountPlaceholder: FC<Props> = ({ isActive, currencySymbol, value , handle
       padding="8px 20px"
       onClick={selectValue}
     >
-      <PrimaryTextSpan color={isActive ? "#FFFCCC" : "rgba(196, 196, 196, 0.5)"} fontSize="12px" fontWeight="bold">
-        {currencySymbol} {value}
+      <PrimaryTextSpan color={isActive ? "#FFFCCC" : "rgba(196, 196, 196, 0.5)"} fontSize="10px" fontWeight="bold">
+        {currencySymbol} (USD) {value}
       </PrimaryTextSpan>
     </AmountPlaceholderWrapper>
   );

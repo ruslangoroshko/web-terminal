@@ -258,8 +258,9 @@ const Directa = () => {
               color="#003A38"
               fontSize="14px"
               fontWeight="bold"
+              marginRight="5px"
             >
-              {t('Deposit')} {mainAppStore.activeAccount?.symbol}
+              {t('Deposit')} {mainAppStore.activeAccount?.symbol} (USD)
             </PrimaryTextSpan>
             <PrimaryTextSpan
               className="notranslate"
