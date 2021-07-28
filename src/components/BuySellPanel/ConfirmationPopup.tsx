@@ -107,8 +107,7 @@ const ConfirmationPopup: FC<Props> = ({
           {t('Investment')}
         </PrimaryTextSpan>
         <PrimaryTextSpan color="#fffccc" fontSize="12px">
-          {mainAppStore.activeAccount?.symbol}
-          {investmentAmount}
+          {`${mainAppStore.activeAccount?.symbol} ${investmentAmount}`}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
