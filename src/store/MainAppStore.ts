@@ -173,7 +173,6 @@ export class MainAppStore implements MainAppStoreProps {
     )
       ? window.navigator.language
       : newLang;
-    document.querySelector('html')?.setAttribute('lang', langToHtml);
     injectInerceptors(this);
   }
 
@@ -696,7 +695,6 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setLanguage = (newLang: CountriesEnum) => {
     localStorage.setItem(LOCAL_STORAGE_LANGUAGE, newLang);
-    document.querySelector('html')?.setAttribute('lang', newLang);
     this.lang = newLang;
   };
 
