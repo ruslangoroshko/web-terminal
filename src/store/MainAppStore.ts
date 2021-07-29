@@ -167,7 +167,8 @@ export class MainAppStore implements MainAppStoreProps {
         : CountriesEnum.EN);
     // @ts-ignore
     this.lang = newLang;
-    document.querySelector('html')?.setAttribute('lang', newLang);
+    const langToHtml = newLang === CountriesEnum.ES ? window.navigator.language : newLang;
+    document.querySelector('html')?.setAttribute('lang', langToHtml);
     injectInerceptors(this);
   }
 
