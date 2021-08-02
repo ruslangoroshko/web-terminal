@@ -99,8 +99,16 @@ const RenderExpandedTabByType = observer(() => {
 
 const AuthorizedContainer: FC<Props> = observer((props) => {
   const { children } = props;
+
+  
+
   const { tabsStore, mainAppStore, notificationStore } = useStores();
   const { push } = useHistory();
+
+  const hiddenSideNavBar = useRouteMatch([
+    Page.ONBOARDING
+  ]);
+  const isHiddenSideNavBar = hiddenSideNavBar?.isExact;
 
   const hidenPromoPageList = useRouteMatch([
     Page.ACCOUNT_WITHDRAW,
@@ -215,7 +223,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
         </Observer>
       </FlexContainer>
       <Observer>
-        {() => <>{mainAppStore.isAuthorized && !mainAppStore.isOnboarding && <NavBar></NavBar>}</>}
+        {() => <>{mainAppStore.isAuthorized && !isHiddenSideNavBar && <NavBar></NavBar>}</>}
       </Observer>
       <Observer>
         {() => (
@@ -232,7 +240,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
 
       <FlexContainer height="calc(100% - 48px)">
         <Observer>
-          {() => <>{mainAppStore.isAuthorized && !mainAppStore.isOnboarding && <SideBar></SideBar>}</>}
+          {() => <>{mainAppStore.isAuthorized && !isHiddenSideNavBar && <SideBar></SideBar>}</>}
         </Observer>
         <SideBarAndPageContentWrapper width="100%">
           <Observer>
