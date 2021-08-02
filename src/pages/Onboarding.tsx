@@ -194,7 +194,7 @@ const Onboarding = () => {
   }, [mainAppStore.isPromoAccount]);
 
   useEffect(() => {
-    getInfoByStep(1);
+    isOnboardingAvailable();
   }, []);
 
   if (loading || actualStepInfo === null) {
