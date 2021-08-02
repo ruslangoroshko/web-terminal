@@ -158,7 +158,8 @@ export class MainAppStore implements MainAppStoreProps {
     this.refreshToken =
       localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
-    const newLang = localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
+    const newLang =
+      localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
       (window.navigator.language &&
       languagesList.includes(
         window.navigator.language.slice(0, 2).toLowerCase()
@@ -167,12 +168,11 @@ export class MainAppStore implements MainAppStoreProps {
         : CountriesEnum.EN);
     // @ts-ignore
     this.lang = newLang;
-    const langToHtml = (
+    const langToHtml =
       newLang === CountriesEnum.ES &&
       window.navigator.language.slice(0, 2).toLowerCase() === CountriesEnum.ES
-    )
-      ? window.navigator.language
-      : newLang;
+        ? window.navigator.language
+        : newLang;
     document.querySelector('html')?.setAttribute('lang', langToHtml);
     injectInerceptors(this);
   }
@@ -194,8 +194,8 @@ export class MainAppStore implements MainAppStoreProps {
         IS_LIVE &&
         this.initModel.tradingUrl &&
         config.url &&
-        !config.url.includes('auth/')
-        && !config.url.includes('misc')
+        !config.url.includes('auth/') &&
+        !config.url.includes('misc')
       ) {
         if (config.url.includes('://')) {
           const arrayOfSubpath = config.url.split('://')[1].split('/');
@@ -333,6 +333,7 @@ export class MainAppStore implements MainAppStoreProps {
           window.location.reload();
           return;
         }
+        console.log('websocket error: ', error);
       }
       if (this.isAuthorized) {
         const objectToSend = {
@@ -342,7 +343,10 @@ export class MainAppStore implements MainAppStoreProps {
         };
         const jsonLogObject = {
           error: JSON.stringify(objectToSend),
-          snapShot: JSON.stringify(getStatesSnapshot(this), getCircularReplacer())
+          snapShot: JSON.stringify(
+            getStatesSnapshot(this),
+            getCircularReplacer()
+          ),
         };
         const params: DebugTypes = {
           level: debugLevel.TRANSPORT,
@@ -357,7 +361,6 @@ export class MainAppStore implements MainAppStoreProps {
       this.isLoading = false;
       this.isInitLoading = false;
 
-      console.log('websocket error: ', error);
       console.log('=====/=====');
     });
 
@@ -460,6 +463,22 @@ export class MainAppStore implements MainAppStoreProps {
     }
   };
 
+  @action
+  checkOnboardingShowLPLogin = async () => {
+    try {
+      //
+      const onBoardingKey = await API.getKeyValue(KeysInApi.SHOW_ONBOARDING);
+      const showOnboarding = onBoardingKey !== 'false';
+      if (showOnboarding) {
+        this.isOnboarding = true;
+      }
+      return showOnboarding;
+      //
+    } catch (error) {
+      return false;
+    }
+  };
+
   getActiveAccount = async () => {
     try {
       await this.checkOnboardingShow();
@@ -477,7 +496,6 @@ export class MainAppStore implements MainAppStoreProps {
       const activeAccount =
         this.accounts.find((acc) => acc.id === activeAccountId) ||
         this.accounts.find((acc) => !acc.isLive);
-
 
       if (activeAccount) {
         this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
@@ -500,10 +518,11 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   addTriggerShowOnboarding = async () => {
     try {
-      API.setKeyValue({
+      await API.setKeyValue({
         key: KeysInApi.SHOW_ONBOARDING,
         value: true,
       });
+      this.isOnboarding = true;
     } catch (error) {}
   };
 
@@ -580,20 +599,20 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   signInLpLogin = async (params: LpLoginParams) => {
+    if (this.isAuthorized) {
+      this.signOut();
+    }
+
     const response = await API.postLpLoginToken(params, this.initModel.authUrl);
 
     if (response.result === OperationApiResponseCodes.Ok) {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
-      this.setIsAuthorized(true);
+      //this.setIsAuthorized(true);
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.setTokenHandler(response.data.token);
-      this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
+      this.handleInitConnection(response.data.token);
       mixpanel.track(mixpanelEvents.LOGIN);
-
-      await this.addTriggerShowOnboarding();
-      //  we should sign out current user if logined anotger user
-      document.location.reload();
     }
 
     if (
