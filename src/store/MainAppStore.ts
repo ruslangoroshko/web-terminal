@@ -181,7 +181,12 @@ export class MainAppStore implements MainAppStoreProps {
         : CountriesEnum.EN);
     // @ts-ignore
     this.lang = newLang;
-    document.querySelector('html')?.setAttribute('lang', newLang);
+    const langToHtml =
+      newLang === CountriesEnum.ES &&
+      window.navigator.language.slice(0, 2).toLowerCase() === CountriesEnum.ES
+        ? window.navigator.language
+        : newLang;
+    document.querySelector('html')?.setAttribute('lang', langToHtml);
     injectInerceptors(this);
   }
 
@@ -388,7 +393,6 @@ export class MainAppStore implements MainAppStoreProps {
       this.isLoading = false;
       this.isInitLoading = false;
 
-      console.log('websocket error: ', error);
       console.log('=====/=====');
 
       this.signalRReconectCounter = 0;
@@ -548,6 +552,22 @@ export class MainAppStore implements MainAppStoreProps {
     }
   };
 
+  @action
+  checkOnboardingShowLPLogin = async () => {
+    try {
+      //
+      const onBoardingKey = await API.getKeyValue(KeysInApi.SHOW_ONBOARDING);
+      const showOnboarding = onBoardingKey !== 'false';
+      if (showOnboarding) {
+        this.isOnboarding = true;
+      }
+      return showOnboarding;
+      //
+    } catch (error) {
+      return false;
+    }
+  };
+
   getActiveAccount = async () => {
     try {
       await this.checkOnboardingShow();
@@ -585,10 +605,11 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   addTriggerShowOnboarding = async () => {
     try {
-      API.setKeyValue({
+      await API.setKeyValue({
         key: KeysInApi.SHOW_ONBOARDING,
         value: true,
       });
+      this.isOnboarding = true;
     } catch (error) {}
   };
 
@@ -665,20 +686,21 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   signInLpLogin = async (params: LpLoginParams) => {
+    if (this.isAuthorized) {
+      this.signOut();
+    }
+
     const response = await API.postLpLoginToken(params, this.initModel.authUrl);
     console.log('response LpLogin 1', response);
     if (response.result === OperationApiResponseCodes.Ok) {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
-      this.setIsAuthorized(true);
+      //this.setIsAuthorized(true);
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.setConnectionTimeout(+response.data.connectionTimeOut);
       this.setTokenHandler(response.data.token);
-      this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
+      this.handleInitConnection(response.data.token);
       mixpanel.track(mixpanelEvents.LOGIN);
-
-      //  we should sign out current user if logined anotger user
-      document.location.reload();
     }
 
     if (

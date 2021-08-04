@@ -185,8 +185,7 @@ const BankTransferForm = () => {
             disabled={isSubmitting}
           >
             <PrimaryTextSpan color="#003A38" fontSize="14px" fontWeight="bold">
-              {t('Deposit')} {mainAppStore.activeAccount?.symbol}
-              {values.amount}
+              {t('Deposit')} {mainAppStore.activeAccount?.symbol} (USD) {values.amount}
             </PrimaryTextSpan>
           </PrimaryButton>
         </FlexContainer>

@@ -21,6 +21,8 @@ const LpLogin = observer(() => {
   const location = useLocation();
 
   const pageParams = new URLSearchParams(location.search);
+
+  let timer: any;
   useEffect(() => {
     async function fetchLpLogin() {
       try {
@@ -42,9 +44,19 @@ const LpLogin = observer(() => {
               push(Page.ACCOUNT_WITHDRAW);
               break;
 
-            default:
-              push(Page.DASHBOARD);
+            default: {
+              const showOnBoarding = await mainAppStore.checkOnboardingShowLPLogin();
+              if (showOnBoarding) {
+                await mainAppStore.addTriggerShowOnboarding();
+                timer = setTimeout(() => {
+                  push(Page.ONBOARDING);
+                }, 500);
+              } else {
+                push(Page.DASHBOARD);
+              }
+              
               break;
+            }
           }
         } else {
           push(Page.SIGN_IN);
@@ -60,9 +72,13 @@ const LpLogin = observer(() => {
 
     i18n.changeLanguage(pageLang);
     mainAppStore.setLanguage(pageLang);
+
+    return () => {
+      clearTimeout(timer);
+    }
   }, []);
 
-  return <div></div>;
+  return <></>;
 });
 
 export default LpLogin;
