@@ -95,11 +95,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     API_LIST.POSITIONS.CLOSE,
     API_LIST.WITHWRAWAL.CREATE,
     API_LIST.WITHWRAWAL.CANCEL,
-    API_LIST.DEPOSIT.CREATE_INVOICE,
-    API_LIST.DEPOSIT.CREATE_INVOICE_SWIFFY,
-    API_LIST.DEPOSIT.CREATE_INVOICE_DIRECTA,
-    API_LIST.DEPOSIT.CREATE_INVOICE_PAY_RETAILERS,
-    API_LIST.DEPOSIT.CREATE_INVOICE_VOLT,
+    `/deposit${API_LIST.DEPOSIT.CREATE_INVOICE}`,
+    `/deposit${API_LIST.DEPOSIT.CREATE_INVOICE_SWIFFY}`,
+    `/deposit${API_LIST.DEPOSIT.CREATE_INVOICE_DIRECTA}`,
+    `/deposit${API_LIST.DEPOSIT.CREATE_INVOICE_PAY_RETAILERS}`,
+    `/deposit${API_LIST.DEPOSIT.CREATE_INVOICE_VOLT}`,
   ]
 
   axios.interceptors.request.use((config) => {
@@ -188,7 +188,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       const repeatRequest = (callback: any) => {
         mainAppStore.requestReconnectCounter += 1;
         if (
-          !excludeReconectList.includes(getApiUrl(requestUrl)) &&
+          !(excludeReconectList.includes(getApiUrl(requestUrl)) && error.config.method === 'get') &&
           mainAppStore.requestReconnectCounter > 2
         ) {
           mainAppStore.rootStore.badRequestPopupStore.setRecconect();
@@ -342,6 +342,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
                   error.config.headers[RequestHeaders.AUTHORIZATION] =
                     mainAppStore.token;
+                  originalRequest._retry = false;
 
                   processQueue(null, mainAppStore.token);
                   resolve(axios(originalRequest));

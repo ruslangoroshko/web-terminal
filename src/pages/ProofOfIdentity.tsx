@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import DragNDropArea from '../components/KYC/DragNDropArea';
@@ -7,26 +7,27 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import Axios from 'axios';
 import API from '../helpers/API';
 import { DocumentTypeEnum } from '../enums/DocumentTypeEnum';
-import KeysInApi from '../constants/keysInApi';
 import Page from '../constants/Pages';
 import { useStores } from '../hooks/useStores';
 import { KYCstepsEnum } from '../enums/KYCsteps';
 import { useHistory } from 'react-router-dom';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import BadRequestPopup from '../components/BadRequestPopup';
 import { getProcessId } from '../helpers/getProcessId';
 import { useTranslation } from 'react-i18next';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
+import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
+import LoaderForComponents from '../components/LoaderForComponents';
 
-function ProofOfIdentity() {
+const ProofOfIdentity = observer(() => {
   const [isSubmiting, setSubmit] = useState(true);
   const { t } = useTranslation();
 
   const { kycStore, badRequestPopupStore, mainAppStore } = useStores();
 
   const { push } = useHistory();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [customPassportId, setCustomPassportId] = useState({
     file: new Blob(),
     fileSrc: '',
@@ -112,9 +113,29 @@ function ProofOfIdentity() {
     kycStore.setFilledStep(KYCstepsEnum.PhoneVerification);
   }, []);
 
+  useEffect(() => {
+    let cleanupFunction = false;
+    if (
+      mainAppStore.profileStatus !== PersonalDataKYCEnum.NotVerified &&
+      mainAppStore.profileStatus !== PersonalDataKYCEnum.Restricted
+    ) {
+      push(Page.DASHBOARD);
+    } else {
+      setTimeout(() => {
+        if (!cleanupFunction) {
+          setIsLoading(false);
+        }
+      }, 1000);
+    }
+    return () => {
+      cleanupFunction = true;
+    };
+  }, [mainAppStore.profileStatus]);
+
   return (
     <FlexContainer flexDirection="column" height="100%" overflow="auto">
-      <FlexContainer
+      <LoaderForComponents isLoading={isLoading} />
+      {!isLoading && <FlexContainer
         width="100%"
         flexDirection="column"
         alignItems="center"
@@ -248,9 +269,9 @@ function ProofOfIdentity() {
             </ButtonWithoutStyles>
           </FlexContainer>
         </FlexContainer>
-      </FlexContainer>
+      </FlexContainer>}
     </FlexContainer>
   );
-}
+});
 
 export default ProofOfIdentity;
