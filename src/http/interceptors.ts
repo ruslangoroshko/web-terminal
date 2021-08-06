@@ -270,6 +270,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
             if (JSON.parse(finalJSON).isAuthorized === `${mainAppStore.isAuthorized}`) {
               resolve(axios(originalRequest));
             } else {
+              mainAppStore.requestReconnectCounter = 0;
+              mainAppStore.rootStore.badRequestPopupStore.closeModal();
+              mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
               reject(error);
             }
           });
@@ -293,6 +296,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
                 if (JSON.parse(finalJSON).isAuthorized === `${mainAppStore.isAuthorized}`) {
                   resolve(axios(originalRequest));
                 } else {
+                  mainAppStore.requestReconnectCounter = 0;
+                  mainAppStore.rootStore.badRequestPopupStore.closeModal();
+                  mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
                   reject(error);
                 }
               });
@@ -349,6 +355,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
                 });
             });
           } else {
+            mainAppStore.requestReconnectCounter = 0;
+            mainAppStore.rootStore.badRequestPopupStore.closeModal();
+            mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
             mainAppStore.signOut();
           }
           break;
