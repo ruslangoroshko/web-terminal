@@ -15,6 +15,7 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import AUTH_API_LIST from '../helpers/apiListAuth';
+import { CLIENTS_REQUEST } from '../constants/interceptorsConstants';
 
 const openNotification = (errorText: string, mainAppStore: MainAppStore) => {
   mainAppStore.rootStore.notificationStore.setNotification(errorText);
@@ -80,44 +81,26 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     failedQueue = [];
   };
 
-  const CLIENTS_REQUEST: string[] = [
-    AUTH_API_LIST.TRADER.AUTHENTICATE,
-    AUTH_API_LIST.TRADER.REGISTER,
-    API_LIST.PENDING_ORDERS.ADD,
-    API_LIST.PENDING_ORDERS.REMOVE,
-    API_LIST.POSITIONS.UPDATE_SL_TP,
-    API_LIST.POSITIONS.UPDATE_TOPPING_UP,
-    AUTH_API_LIST.PERSONAL_DATA.CONFIRM,
-    AUTH_API_LIST.TRADER.FORGOT_PASSWORD,
-    AUTH_API_LIST.TRADER.PASSWORD_RECOVERY,
-    AUTH_API_LIST.TRADER.CHANGE_PASSWORD,
-    API_LIST.POSITIONS.OPEN,
-    API_LIST.POSITIONS.CLOSE,
-    API_LIST.WITHWRAWAL.CREATE,
-    API_LIST.WITHWRAWAL.CANCEL,
-    `/deposit${API_LIST.DEPOSIT.CREATE_INVOICE}`,
-    `/deposit${API_LIST.DEPOSIT.CREATE_INVOICE_SWIFFY}`,
-    `/deposit${API_LIST.DEPOSIT.CREATE_INVOICE_DIRECTA}`,
-    `/deposit${API_LIST.DEPOSIT.CREATE_INVOICE_PAY_RETAILERS}`,
-    `/deposit${API_LIST.DEPOSIT.CREATE_INVOICE_VOLT}`,
-  ]
-
   axios.interceptors.request.use((config) => {
     if (config.url === API_LIST.INIT.GET) {
       return config;
     }
+    const isAuthorized = `${mainAppStore.isAuthorized}`;
     const request_url = getApiUrl(config?.url || "");
     const initBy = CLIENTS_REQUEST.includes(request_url) ? requestOptions.CLIENT : requestOptions.BACKGROUND;
     let newData = config.data;
     if (typeof newData === 'object') {
       if (newData instanceof FormData) {
         newData.append('initBy', initBy);
+        newData.append('isAuthorized', isAuthorized);
       } else {
         newData.initBy = initBy;
+        newData.isAuthorized = isAuthorized;
       }
     } else {
       const parsedData = JSON.parse(newData);
       parsedData.initBy = initBy;
+      parsedData.isAuthorized = isAuthorized;
       newData = JSON.stringify(parsedData);
     }
     config.data = newData;
@@ -284,7 +267,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       if (isTimeOutError && isReconnectedRequest) {
         return new Promise((resolve, reject) => {
           repeatRequest(() => {
-            resolve(axios(originalRequest));
+            if (JSON.parse(finalJSON).isAuthorized === `${mainAppStore.isAuthorized}`) {
+              resolve(axios(originalRequest));
+            } else {
+              reject(error);
+            }
           });
         });
       }
@@ -303,7 +290,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           if (isReconnectedRequest) {
             return new Promise((resolve, reject) => {
               repeatRequest(() => {
-                resolve(axios(originalRequest));
+                if (JSON.parse(finalJSON).isAuthorized === `${mainAppStore.isAuthorized}`) {
+                  resolve(axios(originalRequest));
+                } else {
+                  reject(error);
+                }
               });
             });
           } else {

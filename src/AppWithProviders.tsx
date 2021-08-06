@@ -3,6 +3,7 @@ import MainApp from './MainApp';
 import { useStores } from './hooks/useStores';
 import { init } from 'mixpanel-browser';
 import '../i18n';
+import LoaderForComponents from './components/LoaderForComponents';
 
 const AppWithProviders = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +25,7 @@ const AppWithProviders = () => {
     fetchInit();
   }, []);
 
-  return isLoading ? null : <MainApp></MainApp>;
+  return isLoading ? <LoaderForComponents isLoading={true} /> : <MainApp></MainApp>;
 };
 
 export default AppWithProviders;
