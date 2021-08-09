@@ -95,12 +95,12 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         newData.append('isAuthorized', isAuthorized);
       } else {
         newData.initBy = initBy;
-        newData.isAuthorized = isAuthorized;
+        newData.isAuthorized = newData.isAuthorized || isAuthorized;
       }
     } else {
       const parsedData = JSON.parse(newData);
       parsedData.initBy = initBy;
-      parsedData.isAuthorized = isAuthorized;
+      parsedData.isAuthorized = parsedData.isAuthorized || isAuthorized;
       newData = JSON.stringify(parsedData);
     }
     config.data = newData;
@@ -270,6 +270,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
             if (JSON.parse(finalJSON).isAuthorized === `${mainAppStore.isAuthorized}`) {
               resolve(axios(originalRequest));
             } else {
+              requestErrorStack = [];
               mainAppStore.requestReconnectCounter = 0;
               mainAppStore.rootStore.badRequestPopupStore.closeModal();
               mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
@@ -296,6 +297,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
                 if (JSON.parse(finalJSON).isAuthorized === `${mainAppStore.isAuthorized}`) {
                   resolve(axios(originalRequest));
                 } else {
+                  requestErrorStack = [];
                   mainAppStore.requestReconnectCounter = 0;
                   mainAppStore.rootStore.badRequestPopupStore.closeModal();
                   mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
@@ -355,6 +357,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
                 });
             });
           } else {
+            requestErrorStack = [];
             mainAppStore.requestReconnectCounter = 0;
             mainAppStore.rootStore.badRequestPopupStore.closeModal();
             mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
