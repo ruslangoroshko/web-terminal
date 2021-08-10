@@ -155,7 +155,10 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         ? error?.request?.responseURL
         : error?.config?.url;
       const originalRequest = error.config;
-      if (excludeCheckErrorFlow.includes(getApiUrl(requestUrl))) {
+      if (
+        excludeCheckErrorFlow.includes(getApiUrl(requestUrl)) ||
+        getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS)
+      ) {
         return Promise.reject(error);
       }
       if (
