@@ -39,18 +39,21 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
   const getApiUrl = (url: string) => {
     const urlString = new URL(url);
     if (urlString.search) {
-      return urlString.href
-        .split(urlString.search)[0]
-        .split(urlString.origin)[1];
+      if (urlString.href.includes('KeyValue')) {
+        return urlString.href
+          .split(urlString.origin)[1];
+      } else {
+        return urlString.href
+          .split(urlString.search)[0]
+          .split(urlString.origin)[1];
+      }
     }
     return urlString.href.split(urlString.origin)[1];
   };
 
   const addErrorUrl = (str: string) => {
     const url = getApiUrl(str);
-    if (!requestErrorStack.includes(url)) {
-      requestErrorStack.push(url);
-    }
+    requestErrorStack.push(url);
     console.log('add');
     console.log(requestErrorStack);
   };
@@ -58,13 +61,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
   const removeErrorUrl = (str: any) => {
     const url = getApiUrl(str);
     console.log(url);
-    const index = requestErrorStack.findIndex((elem) => elem === url);
-    if (index !== -1) {
-      requestErrorStack = [
-        ...requestErrorStack.slice(0, index),
-        ...requestErrorStack.slice(index + 1),
-      ];
-    }
+    requestErrorStack = requestErrorStack.filter((elem) => elem !== url);
     console.log('remove');
     console.log(requestErrorStack);
   };
@@ -119,7 +116,14 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         response.config
       ) {
         if (requestErrorStack.length > 0) {
-          removeErrorUrl(response?.config?.url);
+          let requestUrl = response?.config?.url;
+          if (
+            response?.config?.params?.key &&
+            response?.config?.url?.includes('KeyValue')
+          ) {
+            requestUrl = `${requestUrl}?key=${response?.config?.params.key}`
+          }
+          removeErrorUrl(requestUrl);
         }
         if (requestErrorStack.length === 0) {
           mainAppStore.requestReconnectCounter = 0;
@@ -151,14 +155,50 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         API_LIST.ONBOARDING.STEPS,
       ];
 
-      const requestUrl: string = error?.config?.url === API_LIST.INIT.GET
+      const sendClientLog = () => {
+        if (
+          mainAppStore.isAuthorized &&
+          !doNotSendRequest.includes(error.response?.status) &&
+          (error.response?.status || error.config?.timeoutErrorMessage)
+        ) {
+          const objectToSend = {
+            message: error.message,
+            name: error.name,
+            stack: error.stack,
+            status: error.response?.status,
+          };
+          const jsonLogObject = {
+            error: JSON.stringify(objectToSend),
+            snapShot: JSON.stringify(
+              getStatesSnapshot(mainAppStore),
+              getCircularReplacer()
+            ),
+          };
+          const params: DebugTypes = {
+            level: debugLevel.TRANSPORT,
+            processId: getProcessId(),
+            message:
+              error.response?.statusText || error.message || 'unknown error',
+            jsonLogObject: JSON.stringify(jsonLogObject),
+          };
+          API.postDebug(params, API_STRING);
+        }
+      };
+
+      let requestUrl: string = (
+        error?.config?.url === API_LIST.INIT.GET
+      )
         ? error?.request?.responseURL
         : error?.config?.url;
+      if (error?.config?.params.key && error?.config?.url.includes('KeyValue')) {
+        requestUrl = `${requestUrl}?key=${error?.config?.params.key}`
+      }
       const originalRequest = error.config;
-      if (
-        excludeCheckErrorFlow.includes(getApiUrl(requestUrl)) ||
-        getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS)
-      ) {
+      if (excludeCheckErrorFlow.includes(getApiUrl(requestUrl))) {
+        return Promise.reject(error);
+      }
+      if (getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS)) {
+        sendClientLog();
         return Promise.reject(error);
       }
       if (
@@ -175,7 +215,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         mainAppStore.requestReconnectCounter += 1;
         if (
           !(excludeReconectList.includes(getApiUrl(requestUrl)) && error.config.method === 'get') &&
-          mainAppStore.requestReconnectCounter > 2
+          requestErrorStack.filter((elem) => elem === getApiUrl(requestUrl)).length > 2
         ) {
           mainAppStore.rootStore.badRequestPopupStore.setRecconect();
         }
@@ -184,35 +224,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         }, +mainAppStore.connectTimeOut);
       };
 
-      // looger
-      if (
-        mainAppStore.isAuthorized &&
-        !doNotSendRequest.includes(error.response?.status) &&
-        (error.response?.status || error.config?.timeoutErrorMessage)
-      ) {
-        const objectToSend = {
-          message: error.message,
-          name: error.name,
-          stack: error.stack,
-          status: error.response?.status,
-        };
-        const jsonLogObject = {
-          error: JSON.stringify(objectToSend),
-          snapShot: JSON.stringify(
-            getStatesSnapshot(mainAppStore),
-            getCircularReplacer()
-          ),
-        };
-        const params: DebugTypes = {
-          level: debugLevel.TRANSPORT,
-          processId: getProcessId(),
-          message:
-            error.response?.statusText || error.message || 'unknown error',
-          jsonLogObject: JSON.stringify(jsonLogObject),
-        };
-        API.postDebug(params, API_STRING);
-      }
-      // --- looger
+      sendClientLog();
 
       // check for formData
       let finalJSON = '';

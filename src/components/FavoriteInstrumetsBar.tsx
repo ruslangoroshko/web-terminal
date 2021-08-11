@@ -53,6 +53,20 @@ const FavoriteInstrumetsBar = observer(() => {
           )
             ? checkAvailable
             : false;
+        if (checkAvailable && !instrumentsStore.activeInstrumentsIds.includes(checkAvailable)) {
+          if (instrumentsStore.activeInstrumentsIds.length > 6) {
+            instrumentsStore.activeInstrumentsIds[6] = checkAvailable;
+          } else {
+            instrumentsStore.activeInstrumentsIds.push(checkAvailable);
+          }
+          API.postFavoriteInstrumets({
+            accountId: mainAppStore.activeAccount!.id,
+            type: mainAppStore.activeAccount!.isLive
+              ? AccountTypeEnum.Live
+              : AccountTypeEnum.Demo,
+            instruments: instrumentsStore.activeInstrumentsIds,
+          });
+        }
         await instrumentsStore.switchInstrument(
           lastActive ||
             response[0] ||

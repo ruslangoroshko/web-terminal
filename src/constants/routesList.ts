@@ -45,13 +45,14 @@ const routesList = [
     strict: true,
     layoutType: RouteLayoutType.Public,
   },
-  {
-    component: EmailConfirmation,
-    path: Page.EMAIL_CONFIRMATION,
-    exact: false,
-    strict: true,
-    layoutType: RouteLayoutType.Public,
-  },
+  // TODO Temporary commit for waiting backend resolving
+  // {
+  //   component: EmailConfirmation,
+  //   path: Page.EMAIL_CONFIRMATION,
+  //   exact: false,
+  //   strict: true,
+  //   layoutType: RouteLayoutType.Public,
+  // },
   {
     component: ForgotPassword,
     path: Page.FORGOT_PASSWORD,
