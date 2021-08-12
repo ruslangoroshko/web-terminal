@@ -28,8 +28,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
   let isRefreshing = false;
   let failedQueue: any[] = [];
 
-  let requestErrorStack: string[] = [];
-
   /**
    *
    * @param url string href from requst like as "https::/api.com/api/get-test"
@@ -53,17 +51,20 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
   const addErrorUrl = (str: string) => {
     const url = getApiUrl(str);
-    requestErrorStack.push(url);
+    const newRequestErrorStack = mainAppStore.requestErrorStack;
+    newRequestErrorStack.push(url)
+    mainAppStore.setRequestErrorStack(newRequestErrorStack);
     console.log('add');
-    console.log(requestErrorStack);
+    console.log(mainAppStore.requestErrorStack);
   };
 
   const removeErrorUrl = (str: any) => {
     const url = getApiUrl(str);
     console.log(url);
-    requestErrorStack = requestErrorStack.filter((elem) => elem !== url);
+    const newRequestErrorStack = mainAppStore.requestErrorStack.filter((elem) => elem !== url);
+    mainAppStore.setRequestErrorStack(newRequestErrorStack);
     console.log('remove');
-    console.log(requestErrorStack);
+    console.log(mainAppStore.requestErrorStack);
   };
 
   const processQueue = (error: any, token: string | null = null) => {
@@ -115,7 +116,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           OperationApiResponseCodes.InvalidUserNameOrPassword &&
         response.config
       ) {
-        if (requestErrorStack.length > 0) {
+        if (mainAppStore.requestErrorStack.length > 0) {
           let requestUrl = response?.config?.url;
           if (
             response?.config?.params?.key &&
@@ -125,7 +126,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           }
           removeErrorUrl(requestUrl);
         }
-        if (requestErrorStack.length === 0) {
+        if (mainAppStore.requestErrorStack.length === 0) {
           mainAppStore.requestReconnectCounter = 0;
           mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
         }
@@ -184,14 +185,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           API.postDebug(params, API_STRING);
         }
       };
-
-      let requestUrl: string = (
-        error?.config?.url === API_LIST.INIT.GET
-      )
+      let requestUrl: string = error?.config?.url === API_LIST.INIT.GET
         ? error?.request?.responseURL
         : error?.config?.url;
-      if (error?.config?.params.key && error?.config?.url.includes('KeyValue')) {
-        requestUrl = `${requestUrl}?key=${error?.config?.params.key}`
+      if (error?.config?.params?.key && error?.config?.url?.includes('KeyValue')) {
+        requestUrl = `${requestUrl}?key=${error?.config?.params?.key}`
       }
       const originalRequest = error.config;
       if (excludeCheckErrorFlow.includes(getApiUrl(requestUrl))) {
@@ -215,7 +213,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         mainAppStore.requestReconnectCounter += 1;
         if (
           !(excludeReconectList.includes(getApiUrl(requestUrl)) && error.config.method === 'get') &&
-          requestErrorStack.filter((elem) => elem === getApiUrl(requestUrl)).length > 2
+          mainAppStore.requestErrorStack.filter((elem) => elem === getApiUrl(requestUrl)).length > 2
         ) {
           mainAppStore.rootStore.badRequestPopupStore.setRecconect();
         }
@@ -247,7 +245,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       let isTimeOutError = error.message === requestOptions.TIMEOUT;
       let isReconnectedRequest =
         JSON.parse(finalJSON).initBy === requestOptions.BACKGROUND;
-      if (isReconnectedRequest) {
+      if (isReconnectedRequest && error.response?.status !== 401) {
         addErrorUrl(requestUrl);
       }
       const urlString = new URL(requestUrl).href;
@@ -285,7 +283,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
             if (JSON.parse(finalJSON).isAuthorized === `${mainAppStore.isAuthorized}`) {
               resolve(axios(originalRequest));
             } else {
-              requestErrorStack = [];
+              mainAppStore.setRequestErrorStack([]);
               mainAppStore.requestReconnectCounter = 0;
               mainAppStore.rootStore.badRequestPopupStore.closeModal();
               mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
@@ -312,7 +310,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
                 if (JSON.parse(finalJSON).isAuthorized === `${mainAppStore.isAuthorized}`) {
                   resolve(axios(originalRequest));
                 } else {
-                  requestErrorStack = [];
+                  mainAppStore.setRequestErrorStack([]);
                   mainAppStore.requestReconnectCounter = 0;
                   mainAppStore.rootStore.badRequestPopupStore.closeModal();
                   mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
@@ -372,7 +370,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
                 });
             });
           } else {
-            requestErrorStack = [];
+            mainAppStore.setRequestErrorStack([]);
             mainAppStore.requestReconnectCounter = 0;
             mainAppStore.rootStore.badRequestPopupStore.closeModal();
             mainAppStore.rootStore.badRequestPopupStore.stopRecconect();

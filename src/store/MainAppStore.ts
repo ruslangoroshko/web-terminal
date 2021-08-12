@@ -136,6 +136,7 @@ export class MainAppStore implements MainAppStoreProps {
   signUpFlag: boolean = false;
   lpLoginFlag: boolean = false;
   websocketConnectionTries = 0;
+  requestErrorStack: string[] = [];
 
   paramsAsset: string | null = null;
   paramsMarkets: string | null = null;
@@ -780,6 +781,7 @@ export class MainAppStore implements MainAppStoreProps {
     });
     this.requestReconnectCounter = 0;
     this.rootStore.badRequestPopupStore.stopRecconect();
+    this.requestErrorStack = [];
     if (this.activeAccount) {
       this.setParamsAsset(null);
       this.setParamsMarkets(null);
@@ -910,5 +912,10 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setConnectionTimeout = (timeout: number) => {
     this.connectTimeOut = 10000; //timeout || 5000;
+  };
+
+  @action
+  setRequestErrorStack = (newStack: string[]) => {
+    this.requestErrorStack = newStack;
   };
 }

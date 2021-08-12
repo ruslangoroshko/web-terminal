@@ -70,6 +70,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   const [isLoading, setLoading] = useState(true);
   const [operation, setOperation] = useState<AskBidEnum | null>(null);
   const [multiplier, setMultiplier] = useState(instrument.multiplier[0]);
+  const [accountId, setAccountId] = useState<string>('');
+  const [instrumentId, setInstrumentId] = useState<string>('');
 
   const currentPriceAsk = useCallback(
     () => quotesStore.quotes[instrument.id].ask.c,
@@ -532,8 +534,15 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         }
       } catch (error) {}
     }
-    fetchMultiplier();
-    fetchDefaultInvestAmount();
+    if (
+      mainAppStore.activeAccount?.id !== accountId ||
+      instrument.id !== instrumentId
+    ) {
+      fetchMultiplier();
+      fetchDefaultInvestAmount();
+      setAccountId(mainAppStore.activeAccount?.id || '');
+      setInstrumentId(instrument.id);
+    }
   }, [mainAppStore.activeAccount?.isLive, instrument]);
 
   const handleChangeInputAmount = (increase: boolean) => () => {
