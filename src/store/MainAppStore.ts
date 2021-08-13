@@ -506,7 +506,7 @@ export class MainAppStore implements MainAppStoreProps {
   pingPongConnection = () => {
     let timer: any;
 
-    if (this.activeSession && this.isAuthorized) {
+    if (this.activeSession && this.isAuthorized && !this.rootStore.badRequestPopupStore.isNetwork) {
       console.log('ping pong counter: ', this.signalRReconectCounter);
       if (this.signalRReconectCounter > 3) {
         this.rootStore.badRequestPopupStore.setRecconect();
