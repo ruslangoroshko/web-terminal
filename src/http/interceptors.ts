@@ -303,11 +303,21 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
             (error.response?.status !== 403 || !mainAppStore.isAuthorized) &&
             (
               error.response?.status.toString().includes('40') ||
-              error.response?.status.toString().includes('41')
+              error.response?.status.toString().includes('41') ||
+              error.response?.status.toString().includes('42') ||
+              error.response?.status.toString().includes('43') ||
+              error.response?.status.toString().includes('44') ||
+              error.response?.status.toString().includes('45') ||
+              error.response?.status.toString().includes('46') ||
+              error.response?.status.toString().includes('49')
             )
           ) ||
           error.response?.status.toString().includes('50') ||
-          error.response?.status.toString().includes('51')
+          error.response?.status.toString().includes('51') ||
+          error.response?.status.toString().includes('52') ||
+          error.response?.status.toString().includes('53') ||
+          error.response?.status.toString().includes('56') ||
+          error.response?.status.toString().includes('59')
         ) {
           if (isReconnectedRequest) {
             return new Promise((resolve, reject) => {
