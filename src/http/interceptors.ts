@@ -301,8 +301,13 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         if (
           (error.response?.status !== 401 &&
             (error.response?.status !== 403 || !mainAppStore.isAuthorized) &&
-            error.response?.status.toString().includes('40')) ||
-          error.response?.status.toString().includes('50')
+            (
+              error.response?.status.toString().includes('40') ||
+              error.response?.status.toString().includes('41')
+            )
+          ) ||
+          error.response?.status.toString().includes('50') ||
+          error.response?.status.toString().includes('51')
         ) {
           if (isReconnectedRequest) {
             return new Promise((resolve, reject) => {
@@ -329,6 +334,12 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
       switch (error.response?.status) {
         case 401:
+          if (!mainAppStore.isAuthorized) {
+            mainAppStore.rootStore.badRequestPopupStore.setMessage(
+              error.message
+            );
+            mainAppStore.rootStore.badRequestPopupStore.openModal();
+          }
           if (mainAppStore.refreshToken && !originalRequest._retry) {
             if (isRefreshing) {
               try {
@@ -379,6 +390,12 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           break;
 
         case 403: {
+          if (!mainAppStore.isAuthorized) {
+            mainAppStore.rootStore.badRequestPopupStore.setMessage(
+              error.message
+            );
+            mainAppStore.rootStore.badRequestPopupStore.openModal();
+          }
           failedQueue.forEach((prom) => {
             prom.reject();
           });
