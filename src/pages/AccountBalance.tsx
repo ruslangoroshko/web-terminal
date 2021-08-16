@@ -51,8 +51,8 @@ const AccountBalance = () => {
         const response = await API.getBalanceHistory({
           // FIXME: typings
           accountId: mainAppStore.accounts.find((acc) => acc.isLive)!.id,
-          endDate: dateRangeAccountBalanceStore.endDate.valueOf(),
-          startDate: dateRangeAccountBalanceStore.startDate.valueOf(),
+          // endDate: dateRangeAccountBalanceStore.endDate.valueOf(),
+          // startDate: dateRangeAccountBalanceStore.startDate.valueOf(),
           page: isScrolling ? balanceHistoryReport.page + 1 : 1,
           pageSize: 20,
         });
