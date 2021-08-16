@@ -339,53 +339,54 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
               error.message
             );
             mainAppStore.rootStore.badRequestPopupStore.openModal();
-          }
-          if (mainAppStore.refreshToken && !originalRequest._retry) {
-            if (isRefreshing) {
-              try {
-                const token = await new Promise(function (resolve, reject) {
-                  failedQueue.push({ resolve, reject });
-                });
-                originalRequest.headers[RequestHeaders.AUTHORIZATION] = token;
-                return await axios(originalRequest);
-              } catch (err) {
-                return await Promise.reject(err);
-              }
-            }
-
-            originalRequest._retry = true;
-            isRefreshing = true;
-
-            return new Promise(function (resolve, reject) {
-              mainAppStore
-                .postRefreshToken()
-                .then(() => {
-                  axios.defaults.headers[RequestHeaders.AUTHORIZATION] =
-                    mainAppStore.token;
-
-                  error.config.headers[RequestHeaders.AUTHORIZATION] =
-                    mainAppStore.token;
-                  originalRequest._retry = false;
-
-                  processQueue(null, mainAppStore.token);
-                  resolve(axios(originalRequest));
-                })
-                .catch((err) => {
-                  mainAppStore.setRefreshToken('');
-                  processQueue(err, null);
-                  reject(err);
-                })
-                .finally(() => {
-                  mainAppStore.setIsLoading(false);
-                  isRefreshing = false;
-                });
-            });
           } else {
-            mainAppStore.setRequestErrorStack([]);
-            mainAppStore.requestReconnectCounter = 0;
-            mainAppStore.rootStore.badRequestPopupStore.closeModal();
-            mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
-            mainAppStore.signOut();
+            if (mainAppStore.refreshToken && !originalRequest._retry) {
+              if (isRefreshing) {
+                try {
+                  const token = await new Promise(function (resolve, reject) {
+                    failedQueue.push({ resolve, reject });
+                  });
+                  originalRequest.headers[RequestHeaders.AUTHORIZATION] = token;
+                  return await axios(originalRequest);
+                } catch (err) {
+                  return await Promise.reject(err);
+                }
+              }
+
+              originalRequest._retry = true;
+              isRefreshing = true;
+
+              return new Promise(function (resolve, reject) {
+                mainAppStore
+                  .postRefreshToken()
+                  .then(() => {
+                    axios.defaults.headers[RequestHeaders.AUTHORIZATION] =
+                      mainAppStore.token;
+
+                    error.config.headers[RequestHeaders.AUTHORIZATION] =
+                      mainAppStore.token;
+                    originalRequest._retry = false;
+
+                    processQueue(null, mainAppStore.token);
+                    resolve(axios(originalRequest));
+                  })
+                  .catch((err) => {
+                    mainAppStore.setRefreshToken('');
+                    processQueue(err, null);
+                    reject(err);
+                  })
+                  .finally(() => {
+                    mainAppStore.setIsLoading(false);
+                    isRefreshing = false;
+                  });
+              });
+            } else {
+              mainAppStore.setRequestErrorStack([]);
+              mainAppStore.requestReconnectCounter = 0;
+              mainAppStore.rootStore.badRequestPopupStore.closeModal();
+              mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
+              mainAppStore.signOut();
+            }
           }
           break;
 
@@ -395,14 +396,15 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
               error.message
             );
             mainAppStore.rootStore.badRequestPopupStore.openModal();
+          } else {
+            failedQueue.forEach((prom) => {
+              prom.reject();
+            });
+            mainAppStore.requestReconnectCounter = 0;
+            mainAppStore.rootStore.badRequestPopupStore.closeModal();
+            mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
+            mainAppStore.signOut();
           }
-          failedQueue.forEach((prom) => {
-            prom.reject();
-          });
-          mainAppStore.requestReconnectCounter = 0;
-          mainAppStore.rootStore.badRequestPopupStore.closeModal();
-          mainAppStore.rootStore.badRequestPopupStore.stopRecconect();
-          mainAppStore.signOut();
           break;
         }
 
