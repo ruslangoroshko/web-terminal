@@ -173,7 +173,8 @@ export class MainAppStore implements MainAppStoreProps {
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
     Axios.defaults.timeout = this.connectTimeOut;
 
-    const newLang = localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
+    const newLang =
+      localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
       (window.navigator.language &&
       languagesList.includes(
         window.navigator.language.slice(0, 2).toLowerCase()
@@ -265,10 +266,14 @@ export class MainAppStore implements MainAppStoreProps {
       };
       API.postDebug(params, API_STRING);
     }
-  }
+  };
 
   handleInitConnection = async (token = this.token) => {
     this.setIsLoading(true);
+    if (this.activeSession) {
+      this.activeSession.stop();
+    }
+    
     const connectionString = IS_LOCAL
       ? WS_HOST
       : `${this.initModel.tradingUrl}/signalr`;
@@ -506,7 +511,11 @@ export class MainAppStore implements MainAppStoreProps {
   pingPongConnection = () => {
     let timer: any;
 
-    if (this.activeSession && this.isAuthorized && !this.rootStore.badRequestPopupStore.isNetwork) {
+    if (
+      this.activeSession &&
+      this.isAuthorized &&
+      !this.rootStore.badRequestPopupStore.isNetwork
+    ) {
       console.log('ping pong counter: ', this.signalRReconectCounter);
       if (this.signalRReconectCounter > 3) {
         this.rootStore.badRequestPopupStore.setRecconect();
