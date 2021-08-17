@@ -195,7 +195,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       if (excludeCheckErrorFlow.includes(getApiUrl(requestUrl))) {
         return Promise.reject(error);
       }
-      if (getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS)) {
+      if (
+        getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS) &&
+        error.response?.status !== 401 &&
+        error.response?.status !== 403
+      ) {
         sendClientLog();
         return Promise.reject(error);
       }
@@ -345,10 +349,17 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       switch (error.response?.status) {
         case 401:
           if (!mainAppStore.isAuthorized) {
-            mainAppStore.rootStore.badRequestPopupStore.setMessage(
-              error.message
-            );
-            mainAppStore.rootStore.badRequestPopupStore.openModal();
+            if (getApiUrl(requestUrl).includes(AUTH_API_LIST.TRADER.LP_LOGIN)) {
+              addErrorUrl(requestUrl);
+              return new Promise((resolve, reject) => {
+                repeatRequest(() => resolve(axios(originalRequest)));
+              });
+            } else {
+              mainAppStore.rootStore.badRequestPopupStore.setMessage(
+                error.message
+              );
+              mainAppStore.rootStore.badRequestPopupStore.openModal();
+            }
           } else {
             if (mainAppStore.refreshToken && !originalRequest._retry) {
               if (isRefreshing) {
@@ -402,10 +413,17 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
 
         case 403: {
           if (!mainAppStore.isAuthorized) {
-            mainAppStore.rootStore.badRequestPopupStore.setMessage(
-              error.message
-            );
-            mainAppStore.rootStore.badRequestPopupStore.openModal();
+            if (getApiUrl(requestUrl).includes(AUTH_API_LIST.TRADER.LP_LOGIN)) {
+              addErrorUrl(requestUrl);
+              return new Promise((resolve, reject) => {
+                repeatRequest(() => resolve(axios(originalRequest)));
+              });
+            } else {
+              mainAppStore.rootStore.badRequestPopupStore.setMessage(
+                error.message
+              );
+              mainAppStore.rootStore.badRequestPopupStore.openModal();
+            }
           } else {
             failedQueue.forEach((prom) => {
               prom.reject();

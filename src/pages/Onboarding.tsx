@@ -198,7 +198,7 @@ const Onboarding = () => {
   }, []);
 
   if (loading || actualStepInfo === null) {
-    return <LoaderForComponents isLoading={loading} />;
+    return <LoaderForComponents backgroundColor={'#1c1f26'} isLoading={loading || actualStepInfo === null} />;
   }
 
   return (
