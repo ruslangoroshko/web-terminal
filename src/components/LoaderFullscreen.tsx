@@ -36,7 +36,7 @@ const LoaderFullscreen: FC<Props> = ({ isLoading }) => {
             marginBottom="32px"
           >
             <FlexContainer margin="0 6px 0 0" width="250px">
-              <Logo src={mainAppStore.initModel.logo} />
+              {mainAppStore.initModel.logo && <Logo src={mainAppStore.initModel.logo} />}
             </FlexContainer>
           </FlexContainer>
           <FlexContainer alignItems="center">

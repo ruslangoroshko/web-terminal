@@ -4,6 +4,7 @@ const initConnection = (connectionString: string) => {
   const connection = new signalR.HubConnectionBuilder()
     .withUrl(connectionString)
     .build();
+
   return connection;
 };
 

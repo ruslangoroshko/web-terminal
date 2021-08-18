@@ -561,8 +561,6 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           notificationStore.openNotification();
         }
       } catch (error) {
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
       }
     },
     [
@@ -1041,15 +1039,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
           // TODO: think refactor
-          // console.log(
-          //   'positionStopOut Currency',
-          //   SLTPstore.positionStopOut(
-          //     position.investmentAmount,
-          //     position.instrument
-          //   ),
-          //   'sl',
-          //   sl
-          // );
+          console.log(
+            'positionStopOut Currency',
+            SLTPstore.positionStopOut(
+              position.investmentAmount,
+              position.instrument
+            ),
+            'sl',
+            sl
+          );
           if (
             (hasValue(sl) &&
               sl >
@@ -1079,7 +1077,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             slPrice: sl || 0,
             commission: position.swap + position.commission,
           });
-          // console.log('positionStopOut Price', soValue, 'sl', sl);
+          console.log('positionStopOut Price', soValue, 'sl', sl);
           if (!isToppingUp) {
             if (
               hasValue(sl) &&

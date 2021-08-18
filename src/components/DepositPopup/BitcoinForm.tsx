@@ -64,8 +64,6 @@ const BitcoinForm: FC = () => {
         
         setLoading(false);
       } catch (error) {
-        badRequestPopupStore.setMessage(error);
-        badRequestPopupStore.openModal();
       }
     }
     fetchBitcoinString();

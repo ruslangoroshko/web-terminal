@@ -56,7 +56,6 @@ import { languagesList } from '../constants/languagesList';
 import { PositionModelWSDTO } from '../types/Positions';
 import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
 import { BrandEnum } from '../constants/brandingLinksTranslate';
-import { logger } from '../helpers/ConsoleLoggerTool';
 import { DebugTypes } from '../types/DebugTypes';
 import { debugLevel } from '../constants/debugConstants';
 import { getProcessId } from '../helpers/getProcessId';
@@ -84,6 +83,12 @@ interface MainAppStoreProps {
   activeAccountId: string;
   isPromoAccount: boolean;
   websocketConnectionTries: number;
+
+  requestReconnectCounter: number;
+
+  debugSocketMode: boolean;
+  debugDontPing: boolean;
+  debugSocketReconnect: boolean;
 }
 
 // TODO: think about application initialization
@@ -131,6 +136,7 @@ export class MainAppStore implements MainAppStoreProps {
   signUpFlag: boolean = false;
   lpLoginFlag: boolean = false;
   websocketConnectionTries = 0;
+  requestErrorStack: string[] = [];
 
   paramsAsset: string | null = null;
   paramsMarkets: string | null = null;
@@ -144,7 +150,14 @@ export class MainAppStore implements MainAppStoreProps {
 
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
-  connectTimeOut = '';
+
+  connectTimeOut = 10000; // 5000;
+  requestReconnectCounter = 0;
+  signalRReconectCounter = 0;
+
+  debugSocketMode = false;
+  debugDontPing = false;
+  debugSocketReconnect = false;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -158,6 +171,8 @@ export class MainAppStore implements MainAppStoreProps {
     this.refreshToken =
       localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY) || '';
     Axios.defaults.headers[RequestHeaders.AUTHORIZATION] = this.token;
+    Axios.defaults.timeout = this.connectTimeOut;
+
     const newLang =
       localStorage.getItem(LOCAL_STORAGE_LANGUAGE) ||
       (window.navigator.language &&
@@ -183,8 +198,9 @@ export class MainAppStore implements MainAppStoreProps {
       this.initModel = initModel;
       this.setInterceptors();
     } catch (error) {
-      this.rootStore.badRequestPopupStore.openModal();
-      this.rootStore.badRequestPopupStore.setMessage(error);
+      await this.initApp();
+      // this.rootStore.badRequestPopupStore.openModal();
+      // this.rootStore.badRequestPopupStore.setMessage(error);
     }
   };
 
@@ -211,20 +227,71 @@ export class MainAppStore implements MainAppStoreProps {
     });
   };
 
-  handleInitConnection = async (token = this.token) => {
+  // For socket
+  handleSocketServerError = (response: ResponseFromWebsocket<ServerError>) => {
+    this.setInitLoading(false);
+    this.setIsLoading(false);
+    this.rootStore.badRequestPopupStore.openModal();
+    this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
+  };
+
+  handleSocketCloseError = (error: any) => {
+    if (error) {
+      if (this.websocketConnectionTries < 3) {
+        this.websocketConnectionTries = this.websocketConnectionTries + 1;
+        this.handleInitConnection();
+      } else {
+        window.location.reload();
+        return;
+      }
+    }
+    if (this.isAuthorized) {
+      const objectToSend = {
+        message: error?.message,
+        name: error?.name,
+        stack: error?.stack,
+      };
+      const jsonLogObject = {
+        error: JSON.stringify(objectToSend),
+        snapShot: JSON.stringify(
+          getStatesSnapshot(this),
+          getCircularReplacer()
+        ),
+      };
+      const params: DebugTypes = {
+        level: debugLevel.TRANSPORT,
+        processId: getProcessId(),
+        message: error?.message || 'unknown error',
+        jsonLogObject: JSON.stringify(jsonLogObject),
+      };
+      API.postDebug(params, API_STRING);
+    }
+  };
+
+  handleNewInitConnection = async (token = this.token) => {
     this.setIsLoading(true);
     const connectionString = IS_LOCAL
       ? WS_HOST
       : `${this.initModel.tradingUrl}/signalr`;
     const connection = initConnection(connectionString);
 
+    const debugSocketReconnectFunction = () => {
+      if (this.debugSocketReconnect) {
+        console.log('Return error socket init');
+        return Promise.reject('Error socket init');
+      }
+    };
+
     const connectToWebocket = async () => {
+      console.log('connectToWebocket');
       try {
+        await debugSocketReconnectFunction();
         await connection.start();
         try {
           await connection.send(Topics.INIT, token);
           this.setIsAuthorized(true);
           this.activeSession = connection;
+          this.pingPongConnection();
         } catch (error) {
           this.setInitLoading(false);
           this.setIsAuthorized(false);
@@ -233,7 +300,7 @@ export class MainAppStore implements MainAppStoreProps {
         this.setInitLoading(false);
         setTimeout(
           connectToWebocket,
-          this.signalRReconnectTimeOut ? +this.signalRReconnectTimeOut : 10000
+          this.signalRReconnectTimeOut ? +this.signalRReconnectTimeOut : 3000
         );
       }
     };
@@ -317,51 +384,21 @@ export class MainAppStore implements MainAppStoreProps {
     connection.on(
       Topics.SERVER_ERROR,
       (response: ResponseFromWebsocket<ServerError>) => {
-        this.setInitLoading(false);
-        this.setIsLoading(false);
-        this.rootStore.badRequestPopupStore.openModal();
-        this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
+        this.handleSocketServerError(response);
       }
     );
 
     connection.onclose((error) => {
-      if (error) {
-        if (this.websocketConnectionTries < 3) {
-          this.websocketConnectionTries = this.websocketConnectionTries + 1; // TODO: mobx strange behavior with i++;
-          this.handleInitConnection();
-        } else {
-          window.location.reload();
-          return;
-        }
-        console.log('websocket error: ', error);
-      }
-      if (this.isAuthorized) {
-        const objectToSend = {
-          message: error?.message,
-          name: error?.name,
-          stack: error?.stack,
-        };
-        const jsonLogObject = {
-          error: JSON.stringify(objectToSend),
-          snapShot: JSON.stringify(
-            getStatesSnapshot(this),
-            getCircularReplacer()
-          ),
-        };
-        const params: DebugTypes = {
-          level: debugLevel.TRANSPORT,
-          processId: getProcessId(),
-          message: error?.message || 'unknown error',
-          jsonLogObject: JSON.stringify(jsonLogObject),
-        };
-        API.postDebug(params, API_STRING);
-      }
+      this.handleSocketCloseError(error);
 
       //this.socketError = true;
       this.isLoading = false;
       this.isInitLoading = false;
 
       console.log('=====/=====');
+
+      this.signalRReconectCounter = 0;
+      this.rootStore.badRequestPopupStore.stopRecconect();
     });
 
     connection.on(
@@ -429,6 +466,28 @@ export class MainAppStore implements MainAppStoreProps {
         }
       }
     );
+
+    connection.on(Topics.PONG, (response: ResponseFromWebsocket<any>) => {
+      if (this.debugSocketMode) {
+        console.log('cancel ping');
+        return;
+      }
+
+      if (response.now) {
+        this.signalRReconectCounter = 0;
+        this.rootStore.badRequestPopupStore.stopRecconect();
+      }
+    });
+  };
+
+  handleInitConnection = async (token = this.token) => {
+    if (this.activeSession) {
+      this.activeSession
+        .stop()
+        .finally(() => this.handleNewInitConnection(token));
+    } else {
+      this.handleNewInitConnection(token);
+    }
   };
 
   postRefreshToken = async () => {
@@ -444,6 +503,50 @@ export class MainAppStore implements MainAppStoreProps {
     } catch (error) {
       this.setRefreshToken('');
       this.setTokenHandler('');
+    }
+  };
+
+  @action
+  socketPing = () => {
+    if (this.activeSession) {
+      try {
+        this.activeSession?.send(Topics.PING);
+      } catch (error) {}
+    }
+  };
+
+  @action
+  pingPongConnection = () => {
+    let timer: any;
+
+    if (
+      this.activeSession &&
+      this.isAuthorized &&
+      !this.rootStore.badRequestPopupStore.isNetwork
+    ) {
+      console.log('ping pong counter: ', this.signalRReconectCounter);
+      if (this.signalRReconectCounter > 3) {
+        this.rootStore.badRequestPopupStore.setRecconect();
+
+        this.activeSession?.stop().finally(() => {
+          this.handleInitConnection();
+          this.debugSocketMode = false;
+          this.debugDontPing = false;
+        });
+
+        return;
+      }
+
+      if (!this.debugDontPing) {
+        this.socketPing();
+      }
+
+      timer = setTimeout(() => {
+        this.signalRReconectCounter = this.signalRReconectCounter + 1;
+        this.pingPongConnection();
+      }, 3000);
+    } else {
+      clearTimeout(timer);
     }
   };
 
@@ -510,8 +613,6 @@ export class MainAppStore implements MainAppStoreProps {
       this.setIsLoading(false);
     } catch (error) {
       this.setIsLoading(false);
-      this.rootStore.badRequestPopupStore.setMessage(error);
-      this.rootStore.badRequestPopupStore.openModal();
     }
   };
 
@@ -579,7 +680,7 @@ export class MainAppStore implements MainAppStoreProps {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.setIsAuthorized(true);
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
-      this.connectTimeOut = response.data.connectionTimeOut;
+      this.setConnectionTimeout(+response.data.connectionTimeOut);
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
@@ -604,11 +705,12 @@ export class MainAppStore implements MainAppStoreProps {
     }
 
     const response = await API.postLpLoginToken(params, this.initModel.authUrl);
-
+    console.log('response LpLogin 1', response);
     if (response.result === OperationApiResponseCodes.Ok) {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       //this.setIsAuthorized(true);
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
+      this.setConnectionTimeout(+response.data.connectionTimeOut);
       this.setTokenHandler(response.data.token);
       this.setRefreshToken(response.data.refreshToken);
       this.handleInitConnection(response.data.token);
@@ -633,6 +735,7 @@ export class MainAppStore implements MainAppStoreProps {
     if (response.result === OperationApiResponseCodes.Ok) {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
+      this.setConnectionTimeout(+response.data.connectionTimeOut);
       this.setIsAuthorized(true);
       this.setTokenHandler(response.data.token);
       this.handleInitConnection(response.data.token);
@@ -689,6 +792,9 @@ export class MainAppStore implements MainAppStoreProps {
       this.socketError = false;
       this.rootStore.badRequestPopupStore.setSocket(false);
     });
+    this.requestReconnectCounter = 0;
+    this.rootStore.badRequestPopupStore.stopRecconect();
+    this.requestErrorStack = [];
     if (this.activeAccount) {
       this.setParamsAsset(null);
       this.setParamsMarkets(null);
@@ -814,5 +920,15 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   setParamsDeposit = (params: boolean) => {
     this.paramsDeposit = params;
+  };
+
+  @action
+  setConnectionTimeout = (timeout: number) => {
+    this.connectTimeOut = 10000; //timeout || 5000;
+  };
+
+  @action
+  setRequestErrorStack = (newStack: string[]) => {
+    this.requestErrorStack = newStack;
   };
 }

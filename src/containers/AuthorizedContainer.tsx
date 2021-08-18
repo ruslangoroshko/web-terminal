@@ -26,6 +26,7 @@ import {
 import NotificationPopup from '../components/NotificationPopup';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import Page from '../constants/Pages';
+import ReconnectTestBar from '../components/TestComponents/ReconnectTestBar';
 
 interface Props {}
 

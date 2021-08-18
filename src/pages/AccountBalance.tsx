@@ -68,11 +68,7 @@ const AccountBalance = () => {
         };
         setBalanceHistoryReport(newBalanceHistory);
         setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        badRequestPopupStore.openModal();
-        badRequestPopupStore.setMessage(error);
-      }
+      } catch (error) {}
     },
     [
       dateRangeAccountBalanceStore.endDate,
@@ -82,11 +78,15 @@ const AccountBalance = () => {
     ]
   );
   useEffect(() => {
+    let cleanupFunction = false;
     if (mainAppStore.activeAccount) {
       fetchBalanceHistory().finally(() => {
-        setIsLoading(false);
+        if (!cleanupFunction) setIsLoading(false);
       });
     }
+    return () => {
+      cleanupFunction = true;
+    };
   }, [mainAppStore.activeAccount]);
 
   return (

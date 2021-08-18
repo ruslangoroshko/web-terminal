@@ -20,26 +20,30 @@ const AccountSwitcherDropdown = observer(() => {
   const [balance, setBalance] = useState<number>(0);
   const [accountId, setAccountId] = useState<string>('');
 
-  const animateValue = (start: number, end: number) => {
-    let startTimestamp: number | null = null;
-    const step = (timestamp: number) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / 1000, 1);
-      setBalance(parseFloat((progress * (end - start) + start).toFixed(2)));
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
-    };
-    window.requestAnimationFrame(step);
-  };
-
   useEffect(() => {
+    let cleanupFunction = false;
     if (
       mainAppStore.activeAccount?.balance !== undefined &&
       accountId === mainAppStore.activeAccount.id
     ) {
-      animateValue(balance, mainAppStore.activeAccount.balance);
+      const start = balance;
+      const end = mainAppStore.activeAccount.balance
+      let startTimestamp: number | null = null;
+      const step = (timestamp: number) => {
+        if (!cleanupFunction) {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / 1000, 1);
+          setBalance(parseFloat((progress * (end - start) + start).toFixed(2)));
+          if (progress < 1) {
+            window.requestAnimationFrame(step);
+          }
+        }
+      };
+      window.requestAnimationFrame(step);
     }
+    return () => {
+      cleanupFunction = true;
+    };
   }, [mainAppStore.activeAccount, mainAppStore.activeAccount?.balance]);
 
   useEffect(() => {

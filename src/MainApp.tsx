@@ -12,41 +12,48 @@ import NetworkErrorPopup from './components/NetworkErrorPopup';
 import SocketErrorPopup from './components/SocketErrorPopup';
 import { useTranslation } from 'react-i18next';
 import { autorun } from 'mobx';
+import { logger } from './helpers/ConsoleLoggerTool';
+
+declare const window: any;
 
 const MainApp: FC = () => {
   const { mainAppStore } = useStores();
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    mainAppStore.handleInitConnection();
-  }, [mainAppStore.isLoading]);
+    window.stopPongDebugMode = function () {
+      logger('DEBUG: Stop listen pong');
+      mainAppStore.debugSocketMode = true;
+    };
 
-  useEffect(() => {
-    if (typeof Node === 'function' && Node.prototype) {
-      const originalRemoveChild = Node.prototype.removeChild;
-      Node.prototype.removeChild = function(child) {
-        if (child.parentNode !== this) {
-          if (console) {
-            console.error('Cannot remove a child from a different parent', child, this);
-          }
-          return child;
-        }
-        // @ts-ignore
-        return originalRemoveChild.apply(this, arguments);
-      }
+    window.stopPingDebugMode = function () {
+      logger('DEBUG: Stop send ping');
+      mainAppStore.debugDontPing = true;
+    };
 
-      const originalInsertBefore = Node.prototype.insertBefore;
-      Node.prototype.insertBefore = function(newNode, referenceNode) {
-        if (referenceNode && referenceNode.parentNode !== this) {
-          if (console) {
-            console.error('Cannot insert before a reference node from a different parent', referenceNode, this);
-          }
-          return newNode;
-        }
-        // @ts-ignore
-        return originalInsertBefore.apply(this, arguments);
-      }
-    }
+    window.startSocketInitError = function () {
+      logger('DEBUG: Open connection has error');
+      mainAppStore.debugSocketReconnect = true;
+    };
+
+    window.stopSocketInitError = function () {
+      logger('DEBUG: Stop Socket Init Error');
+      mainAppStore.debugSocketReconnect = false;
+    };
+
+    window.debugSocketServerError = () => {
+      logger('DEBUG: Test servererror message');
+      const response = {
+        data: { reason: 'Test Server error' },
+        now: 'test',
+      };
+      mainAppStore.handleSocketServerError(response);
+    };
+
+    window.debugSocketCloseError = () => {
+      logger('DEBUG: Stop Socket with Error');
+      mainAppStore.handleSocketCloseError(Error('Socket close error'));
+    };
 
     autorun(() => {
       if (mainAppStore.lang) {
@@ -82,6 +89,7 @@ const MainApp: FC = () => {
 
           body {
             background-color: #1c2026;
+            overflow: hidden;
           }
 
           .grecaptcha-badge {

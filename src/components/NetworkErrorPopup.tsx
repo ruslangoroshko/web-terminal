@@ -5,14 +5,15 @@ import { keyframes } from '@emotion/core';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import { useStores } from '../hooks/useStores';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 
-const NetworkErrorPopup = () => {
+const NetworkErrorPopup = observer(() => {
   const { badRequestPopupStore, mainAppStore } = useStores();
   const [show, setShow] = useState(false);
   const [shouldRender, setRender] = useState(false);
 
   const handleLostConnection = () => {
+    badRequestPopupStore.setRecconect();
     badRequestPopupStore.setNetwork(true);
     badRequestPopupStore.initConectionReload();
     setShow(true);
@@ -20,6 +21,7 @@ const NetworkErrorPopup = () => {
 
   const handleSetConnection = () => {
     // TODO: Find out how to make reload using React-Router
+    badRequestPopupStore.stopRecconect();
     window.location.reload();
   };
 
@@ -30,10 +32,11 @@ const NetworkErrorPopup = () => {
   };
 
   useEffect(() => {
+    setShow(badRequestPopupStore.isRecconect);
     setTimeout(() => {
-      setRender(show);
+      setRender(badRequestPopupStore.isRecconect);
     }, 500);
-  }, [show]);
+  }, [badRequestPopupStore.isRecconect]);
 
   useEffect(() => {
     window.addEventListener('offline', handleLostConnection);
@@ -59,14 +62,18 @@ const NetworkErrorPopup = () => {
     <Modal>
       <ModalWrap show={show}>
         <PrimaryTextParagraph color="#ffffff" textAlign="center">
-          There is no Internet connection.
+          {badRequestPopupStore.isRecconect && badRequestPopupStore.isNetwork
+            ? 'There is no Internet connection.'
+            : 'Oooopsss'}
         </PrimaryTextParagraph>
         <PrimaryTextParagraph
           fontSize="12px"
           textAlign="center"
           color="rgba(255, 255, 255, 0.4)"
         >
-          Please make sure you are connected to the Internet.
+          {badRequestPopupStore.isRecconect && badRequestPopupStore.isNetwork
+            ? 'Please make sure you are connected to the Internet.'
+            : 'We are trying to connect to the server'}
         </PrimaryTextParagraph>
 
         <Observer>
@@ -88,7 +95,7 @@ const NetworkErrorPopup = () => {
       </ModalWrap>
     </Modal>
   );
-};
+});
 
 export default NetworkErrorPopup;
 

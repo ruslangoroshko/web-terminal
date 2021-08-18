@@ -29,6 +29,7 @@ const LpLogin = observer(() => {
         const response = await mainAppStore.signInLpLogin({
           token: token || '',
         });
+        console.log('response LpLogin 2', response);
         if (response === OperationApiResponseCodes.Ok) {
           mainAppStore.setLpLoginFlag(true);
           mainAppStore.setSignUpFlag(true);

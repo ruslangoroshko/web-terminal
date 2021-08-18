@@ -95,8 +95,6 @@ function AccountSecurity() {
       }
     } catch (error) {
       setIsLoading(false);
-      badRequestPopupStore.setMessage(error);
-      badRequestPopupStore.openModal();
     }
   };
 

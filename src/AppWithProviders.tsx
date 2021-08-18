@@ -3,6 +3,7 @@ import MainApp from './MainApp';
 import { useStores } from './hooks/useStores';
 import { init } from 'mixpanel-browser';
 import '../i18n';
+import LoaderFullscreen from './components/LoaderFullscreen';
 
 const AppWithProviders = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +16,7 @@ const AppWithProviders = () => {
           mainAppStore.initModel.mixpanelToken ||
             '582507549d28c813188211a0d15ec940'
         );
-
+        mainAppStore.handleInitConnection();
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
@@ -24,7 +25,7 @@ const AppWithProviders = () => {
     fetchInit();
   }, []);
 
-  return isLoading ? null : <MainApp></MainApp>;
+  return isLoading ? <LoaderFullscreen isLoading={true} /> : <MainApp></MainApp>;
 };
 
 export default AppWithProviders;

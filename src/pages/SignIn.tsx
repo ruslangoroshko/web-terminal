@@ -71,8 +71,6 @@ const SingIn = observer(() => {
         });
       }
     } catch (error) {
-      badRequestPopupStore.openModal();
-      badRequestPopupStore.setMessage(error);
       mainAppStore.setInitLoading(false);
     }
   };

@@ -1,4 +1,5 @@
 import { observable, action, makeAutoObservable } from 'mobx';
+import { RootStore } from './RootStore';
 
 interface ContextProps {
   requestMessage?: string;
@@ -12,9 +13,11 @@ export class BadRequestPopupStore implements ContextProps {
   isRecconect: boolean = false;
   isReload: boolean = false;
   isSocket: boolean = false;
+  rootStore: RootStore;
 
-  constructor() {
+  constructor(rootStore: RootStore) {
     makeAutoObservable(this);
+    this.rootStore = rootStore;
   }
 
   @action
@@ -48,7 +51,12 @@ export class BadRequestPopupStore implements ContextProps {
 
   @action
   stopRecconect = () => {
-    this.isRecconect = false;
+    if (
+      this.rootStore.mainAppStore.requestReconnectCounter < 3 &&
+      this.rootStore.mainAppStore.signalRReconectCounter < 3
+    ) {
+      this.isRecconect = false;
+    }
   };
 
   @action

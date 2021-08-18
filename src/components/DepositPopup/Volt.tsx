@@ -137,8 +137,10 @@ const Volt = () => {
       }
       setLoading(false);
     } catch (error) {
-      setLoading(false);
-      push(Page.DEPOSIT_POPUP);
+      if (mainAppStore.isAuthorized) {
+        setLoading(false);
+        push(Page.DEPOSIT_POPUP);
+      }
     }
   };
 

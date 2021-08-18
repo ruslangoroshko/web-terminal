@@ -95,6 +95,7 @@ const TradingHistory: FC = observer(() => {
   );
 
   useEffect(() => {
+    let cleanupFunction = false;
     if (
       mainAppStore.activeAccountId &&
       mainAppStore.paramsPortfolioHistory !== undefined
@@ -140,11 +141,12 @@ const TradingHistory: FC = observer(() => {
       );
       if (!checkScroll) {
         fetchPositionsHistory().finally(() => {
-          setIsLoading(false);
+          if (!cleanupFunction) setIsLoading(false);
         });
       }
     }
     return () => {
+      cleanupFunction = true;
       historyStore.setPositionsHistoryReport({
         ...historyStore.positionsHistoryReport,
         page: 1,

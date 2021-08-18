@@ -191,20 +191,27 @@ export class InstrumentsStore implements ContextProps {
 
   // TODO: refactor, too heavy
   @action
-  switchInstrument = async (instrumentId: string) => {
+  switchInstrument = async (
+    instrumentId: string,
+    addToFavorites: boolean = true,
+    addToLastViewed: boolean = true
+  ) => {
     if (this.activeInstrument?.instrumentItem.id === instrumentId) {
       return;
     }
     const newActiveInstrument = this.instruments.find(
       (item) => item.instrumentItem.id === instrumentId
     );
-    if (newActiveInstrument && this.activeInstrumentsIds.length !== 0) {
-      localStorage.setItem(LOCAL_INSTRUMENT_ACTIVE, instrumentId);
-      this.addActiveInstrumentId(instrumentId);
-      this.activeInstrumentId = instrumentId;
-      // this.activeInstrument = newActiveInstrument;
 
-      // console.log('activeInstrument ', this.activeInstrument);
+    if (newActiveInstrument) {
+      if (addToLastViewed) {
+        localStorage.setItem(LOCAL_INSTRUMENT_ACTIVE, instrumentId);
+      }
+      if (addToFavorites) {
+        this.addActiveInstrumentId(instrumentId);
+      }
+      this.activeInstrumentId = instrumentId;
+
       const tvWidget = this.rootStore.tradingViewStore.tradingWidget;
       if (tvWidget) {
         if (this.rootStore.tradingViewStore.activeOrderLinePositionPnL) {
@@ -253,10 +260,12 @@ export class InstrumentsStore implements ContextProps {
     a: IActiveInstrument,
     b: IActiveInstrument
   ) => {
-    if (a.instrumentItem.name < b.instrumentItem.name) {
+    const nameToDefA = a.instrumentItem.name.toLowerCase();
+    const nameToDefB = b.instrumentItem.name.toLowerCase();
+    if (nameToDefA < nameToDefB) {
       return ascending ? -1 : 1;
     }
-    if (a.instrumentItem.name > b.instrumentItem.name) {
+    if (nameToDefA > nameToDefB) {
       return ascending ? 1 : -1;
     }
     return 0;
