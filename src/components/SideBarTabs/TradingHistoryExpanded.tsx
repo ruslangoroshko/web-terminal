@@ -38,8 +38,8 @@ const TradingHistoryExpanded: FC = () => {
     async (isScrolling = false) => {
       const response = await API.getPositionsHistory({
         accountId: mainAppStore.activeAccountId,
-        startDate: dateRangeStore.startDate.valueOf(),
-        endDate: dateRangeStore.endDate.valueOf(),
+        // startDate: dateRangeStore.startDate.valueOf(),
+        // endDate: dateRangeStore.endDate.valueOf(),
         page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
         pageSize: 20,
       });
