@@ -268,12 +268,9 @@ export class MainAppStore implements MainAppStoreProps {
     }
   };
 
-  handleInitConnection = async (token = this.token) => {
+  
+  handleNewInitConnection = async (token = this.token) => {
     this.setIsLoading(true);
-    if (this.activeSession) {
-      this.activeSession.stop();
-    }
-    
     const connectionString = IS_LOCAL
       ? WS_HOST
       : `${this.initModel.tradingUrl}/signalr`;
@@ -482,6 +479,16 @@ export class MainAppStore implements MainAppStoreProps {
         this.rootStore.badRequestPopupStore.stopRecconect();
       }
     });
+  };
+
+  handleInitConnection = async (token = this.token) => {
+    if (this.activeSession) {
+      this.activeSession
+        .stop()
+        .finally(() => this.handleNewInitConnection(token));
+    } else {
+      this.handleNewInitConnection(token);
+    }
   };
 
   postRefreshToken = async () => {
