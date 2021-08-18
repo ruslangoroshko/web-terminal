@@ -249,7 +249,14 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       let isTimeOutError = error.message === requestOptions.TIMEOUT;
       let isReconnectedRequest =
         JSON.parse(finalJSON).initBy === requestOptions.BACKGROUND;
-      if (isReconnectedRequest && error.response?.status !== 401) {
+      if (
+        isReconnectedRequest &&
+        error.response?.status !== 401 &&
+        !(
+          getApiUrl(requestUrl).includes(API_LIST.INSTRUMENTS.FAVOURITES) &&
+          error.config.method === 'get'
+        )
+      ) {
         addErrorUrl(requestUrl);
       }
       const urlString = new URL(requestUrl).href;
