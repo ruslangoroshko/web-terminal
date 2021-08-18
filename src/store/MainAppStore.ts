@@ -268,7 +268,6 @@ export class MainAppStore implements MainAppStoreProps {
     }
   };
 
-  
   handleNewInitConnection = async (token = this.token) => {
     this.setIsLoading(true);
     const connectionString = IS_LOCAL
@@ -510,7 +509,9 @@ export class MainAppStore implements MainAppStoreProps {
   @action
   socketPing = () => {
     if (this.activeSession) {
-      this.activeSession?.send(Topics.PING);
+      try {
+        this.activeSession?.send(Topics.PING);
+      } catch (error) {}
     }
   };
 
@@ -527,15 +528,11 @@ export class MainAppStore implements MainAppStoreProps {
       if (this.signalRReconectCounter > 3) {
         this.rootStore.badRequestPopupStore.setRecconect();
 
-        this.activeSession
-          ?.stop()
-          .then(() => {
-            this.handleInitConnection();
-          })
-          .finally(() => {
-            this.debugSocketMode = false;
-            this.debugDontPing = false;
-          });
+        this.activeSession?.stop().finally(() => {
+          this.handleInitConnection();
+          this.debugSocketMode = false;
+          this.debugDontPing = false;
+        });
 
         return;
       }
