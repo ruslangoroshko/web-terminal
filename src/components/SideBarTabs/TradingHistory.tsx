@@ -37,14 +37,14 @@ const TradingHistory: FC = observer(() => {
       try {
         const response = await API.getPositionsHistory({
           accountId: mainAppStore.activeAccountId,
-          // startDate: moment(
-          //   (checkIsNaN && checkNumber) || !dataStart
-          //     ? dateRangeStore.startDate
-          //     : checkIsNaN
-          //     ? parseInt(dataStart)
-          //     : dataStart
-          // ).valueOf(),
-          // endDate: moment().valueOf() + 1000,
+          startDate: moment(
+            (checkIsNaN && checkNumber) || !dataStart
+              ? dateRangeStore.startDate
+              : checkIsNaN
+              ? parseInt(dataStart)
+              : dataStart
+          ).valueOf(),
+          endDate: moment().valueOf() + 1000,
           page: isScrolling ? historyStore.positionsHistoryReport.page + 1 : 1,
           pageSize: 20,
         });
