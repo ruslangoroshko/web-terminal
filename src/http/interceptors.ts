@@ -361,7 +361,10 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
               return new Promise((resolve, reject) => {
                 repeatRequest(() => resolve(axios(originalRequest)));
               });
-            } else if (getApiUrl(requestUrl).includes(AUTH_API_LIST.PERSONAL_DATA.GET)){
+            } else if (
+              getApiUrl(requestUrl).includes(AUTH_API_LIST.PERSONAL_DATA.GET) ||
+              JSON.parse(finalJSON).isAuthorized !== `${mainAppStore.isAuthorized}`
+            ){
               return Promise.reject(error);
             } else {
               mainAppStore.rootStore.badRequestPopupStore.setMessage(

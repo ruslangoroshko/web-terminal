@@ -45,7 +45,7 @@ const RouteWrapper: FC<Props> = observer((props) => {
 
   if (layoutType !== RouteLayoutType.Public) {
     if (mainAppStore.isAuthorized && layoutType === RouteLayoutType.SignFlow) {
-      return <Redirect to={Page.DASHBOARD} />;
+      return <Redirect to={Page.ONBOARDING} />;
     } else if (
       !mainAppStore.isAuthorized &&
       [RouteLayoutType.Authorized, RouteLayoutType.KYC].includes(layoutType)
