@@ -36,7 +36,8 @@ function UserProfileButton() {
 
   const getBackgroundColor = useCallback(
     (type: string) => {
-      const key = mainAppStore.activeAccount?.achievementStatus;
+      const key = mainAppStore.accounts.find((acc) => acc.isLive)
+        ?.achievementStatus;
       switch (key) {
         case AchievementStatus.SILVER:
           return type === 'background'
