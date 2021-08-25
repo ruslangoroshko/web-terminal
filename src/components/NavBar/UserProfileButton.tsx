@@ -48,7 +48,8 @@ function UserProfileButton() {
             : ColorsPallete.STAR_OTHER;
         case AchievementStatus.PLATINUM:
           return type === 'background'
-            ? ColorsPallete.BACKGROUND_PLATINUM
+            // ? ColorsPallete.BACKGROUND_PLATINUM
+            ? ColorsPallete.BACKGROUND_ULTRA
             : ColorsPallete.STAR_OTHER;
         default:
           return type === 'background'

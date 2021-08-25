@@ -4,6 +4,7 @@ const AchievementStatus = {
   GOLD: 'gold',
   PLATINUM: 'platinum',
   VIP: 'vip',
+  ULTRA: 'ultra',
 }
 
 Object.freeze(AchievementStatus);
