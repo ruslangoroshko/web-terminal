@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import LanguageButton from './LanguageButton';
@@ -10,9 +10,30 @@ import { Link } from 'react-router-dom';
 import Page from '../../constants/Pages';
 import Logo from '../Logo';
 import { useStores } from '../../hooks/useStores';
+import API from '../../helpers/API';
+import { WelcomeBonusResponseEnum } from '../../enums/WelcomeBonusResponseEnum';
 
 const NavBar = observer(() => {
-  const { mainAppStore } = useStores();
+  const { mainAppStore, bonusStore } = useStores();
+
+  const checkWelcomeBonus = async () => {
+    try {
+      const response = await API.getUserBonus(mainAppStore.initModel.miscUrl);
+      if (response.responseCode === WelcomeBonusResponseEnum.Ok) {
+        bonusStore.setBonusIsLoaded(true);
+        bonusStore.setBonusData(response.data);
+        console.log(response.data);
+      } else {
+        bonusStore.setBonusIsLoaded(true);
+        bonusStore.setBonusData(null);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    checkWelcomeBonus();
+  }, []);
+
   return (
     <FlexContainer
       padding="8px 0 8px 20px"
@@ -32,6 +53,7 @@ const NavBar = observer(() => {
         </Link>
       </FlexContainer>
       <FlexContainer alignItems="center">
+        {bonusStore.bonusIsLoaded && 'Bonus here'}
         <FlexContainer alignItems="center" margin="0 20px 0 0">
           <AccountSwitcherDropdown></AccountSwitcherDropdown>
         </FlexContainer>

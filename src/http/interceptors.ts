@@ -150,7 +150,10 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     },
 
     async function (error) {
-      const excludeReconectList = [API_LIST.INSTRUMENTS.FAVOURITES];
+      const excludeReconectList = [
+        API_LIST.INSTRUMENTS.FAVOURITES,
+        API_LIST.WELCOME_BONUS.GET,
+      ];
       const excludeCheckErrorFlow = [
         API_LIST.DEBUG.POST,
         API_LIST.ONBOARDING.STEPS,
@@ -255,7 +258,8 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         !(
           getApiUrl(requestUrl).includes(API_LIST.INSTRUMENTS.FAVOURITES) &&
           error.config.method === 'get'
-        )
+        ) &&
+        !getApiUrl(requestUrl).includes(API_LIST.WELCOME_BONUS.GET)
       ) {
         addErrorUrl(requestUrl);
       }

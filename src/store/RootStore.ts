@@ -16,6 +16,7 @@ import { DateRangeAccountBalanceStore } from './DateRangeAccountBalanceStore';
 import { PhoneVerificationStore } from './PhoneVerificationStore';
 import { MarkersOnChartStore } from './MarkersOnChartStore';
 import { SLTPStore } from './SLTPStore';
+import { BonusStore } from './BonusStore';
 import { makeAutoObservable } from 'mobx';
 
 export class RootStore {
@@ -37,6 +38,7 @@ export class RootStore {
   phoneVerificationStore: PhoneVerificationStore;
   markersOnChartStore: MarkersOnChartStore;
   SLTPstore: SLTPStore;
+  bonusStore: BonusStore;
 
   constructor() {
     this.quotesStore = new QuotesStore(this);
@@ -57,5 +59,6 @@ export class RootStore {
     this.phoneVerificationStore = new PhoneVerificationStore();
     this.markersOnChartStore = new MarkersOnChartStore(this);
     this.SLTPstore = new SLTPStore(this);
+    this.bonusStore = new BonusStore(this);
   }
 }
