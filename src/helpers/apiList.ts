@@ -57,6 +57,9 @@ const API_LIST = {
   DEBUG: {
     POST: '/api/Debug/ClientLog',
   },
+  WELCOME_BONUS: {
+    GET: '/v1/welcomeBonus',
+  },
 };
 
 Object.freeze(API_LIST);

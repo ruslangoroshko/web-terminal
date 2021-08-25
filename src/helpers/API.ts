@@ -24,7 +24,7 @@ import {
   UserRegistration,
   ChangePasswordRespone,
   LpLoginParams,
-  RecoveryPasswordParams,
+  RecoveryPasswordParams, IWelcomeBonusDTO,
 } from '../types/UserInfo';
 import { HistoryCandlesType, CandleDTO } from '../types/HistoryTypes';
 import {
@@ -616,6 +616,15 @@ class API {
     return response.data;
   };
 
+  getUserBonus = async (miscUrl: string) => {
+    const needToAdd =
+      (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
+    const response = await axios.get<IWelcomeBonusDTO>(
+      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.WELCOME_BONUS.GET}`,
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
 
 
   testBGrequest = async () => {
