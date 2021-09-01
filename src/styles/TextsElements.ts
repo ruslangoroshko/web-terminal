@@ -11,9 +11,11 @@ interface PrimaryTextType {
     | '13px'
     | '14px'
     | '16px'
+    | '18px'
     | '10px'
     | '20px'
     | '24px'
+    | '26px'
     | '30px';
   lineHeight?: string;
   marginRight?: string;
@@ -26,6 +28,7 @@ interface PrimaryTextType {
   overflow?: 'hidden';
   width?: string;
   maxWidth?: string;
+  letterSpacing?: string;
 }
 
 export const PrimaryTextSpan = styled.span<PrimaryTextType>`
@@ -43,6 +46,7 @@ export const PrimaryTextSpan = styled.span<PrimaryTextType>`
   text-overflow: ${props => props.textOverflow};
   overflow: ${props => props.overflow};
   max-width: ${props => props.maxWidth};
+  letter-spacing: ${props => props.letterSpacing};
 `;
 
 export const PrimaryTextParagraph = styled.p<PrimaryTextType>`

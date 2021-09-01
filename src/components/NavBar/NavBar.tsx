@@ -12,6 +12,7 @@ import Logo from '../Logo';
 import { useStores } from '../../hooks/useStores';
 import API from '../../helpers/API';
 import { WelcomeBonusResponseEnum } from '../../enums/WelcomeBonusResponseEnum';
+import BonusDropdown from './BonusDropdown';
 
 const NavBar = observer(() => {
   const { mainAppStore, bonusStore } = useStores();
@@ -53,7 +54,12 @@ const NavBar = observer(() => {
         </Link>
       </FlexContainer>
       <FlexContainer alignItems="center">
-        {bonusStore.bonusIsLoaded && 'Bonus here'}
+        {
+          bonusStore.bonusIsLoaded &&
+          bonusStore.bonusData !== null &&
+          bonusStore.bonusData?.welcomeBonusExpirations !== null &&
+          <BonusDropdown />
+        }
         <FlexContainer alignItems="center" margin="0 20px 0 0">
           <AccountSwitcherDropdown></AccountSwitcherDropdown>
         </FlexContainer>

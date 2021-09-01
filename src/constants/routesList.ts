@@ -13,6 +13,7 @@ import ResetPassword from '../pages/ResetPassword';
 import Withdraw from '../pages/Withdraw';
 import LpLogin from '../pages/LpLogin';
 import Onboarding from '../pages/Onboarding';
+import BonusFAQ from '../pages/BonusFAQ';
 
 
 export enum RouteLayoutType {
@@ -122,6 +123,13 @@ const routesList = [
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.Authorized,
+  },
+  {
+    component: BonusFAQ,
+    path: Page.BONUS_FAQ,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.Authorized
   },
 ];
 

@@ -602,7 +602,7 @@ class API {
   getOnBoardingInfoByStep = async (stepNumber: number, deviceType: number, miscUrl: string) => {
     const needToAdd = ((API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL) ? '' : '/misc';
     const response = await axios.get<OnBoardingInfo>(
-      `https://trading-api-test.mnftx.biz/misc${API_LIST.ONBOARDING.STEPS}/${stepNumber}?deviceTypeId=${deviceType}`,
+      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.ONBOARDING.STEPS}/${stepNumber}?deviceTypeId=${deviceType}`,
       this.backgroundRequestOptions
     );
     return response.data;
@@ -620,7 +620,7 @@ class API {
     const needToAdd =
       (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
     const response = await axios.get<IWelcomeBonusDTO>(
-      `https://trading-api-test.mnftx.biz/misc${API_LIST.WELCOME_BONUS.GET}`,
+      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.WELCOME_BONUS.GET}`,
       this.backgroundRequestOptions
     );
     return response.data;

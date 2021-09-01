@@ -174,14 +174,14 @@ const Onboarding = () => {
 
   const isOnboardingAvailable = async () => {
     //
-    // const isAvailable = await mainAppStore.checkOnboardingShow();
-    // if (!isAvailable) {
-    //   push(Page.DASHBOARD);
-    // } else {
+    const isAvailable = await mainAppStore.checkOnboardingShow();
+    if (!isAvailable) {
+      push(Page.DASHBOARD);
+    } else {
       // init OB
       getInfoByStep(1);
       //
-    // }
+    }
   };
 
   useEffect(() => {

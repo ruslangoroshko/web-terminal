@@ -206,6 +206,13 @@ const ProfileDropdown = observer(() => {
               </PrimaryTextSpan>
             </CustomeNavLink>
           </FlexContainer>
+          <FlexContainer margin="0 0 12px">
+            <CustomeNavLink to={Page.BONUS_FAQ}>
+              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+                {t('Bonus FAQ')}
+              </PrimaryTextSpan>
+            </CustomeNavLink>
+          </FlexContainer>
         </>
       )}
 
