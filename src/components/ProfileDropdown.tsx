@@ -14,6 +14,7 @@ import AchievementStatus from '../constants/achievementStatus';
 import SilverBG from '../assets/images/achievement_status_bg/silver.png';
 import GoldBG from '../assets/images/achievement_status_bg/gold.png';
 import PlatinumBG from '../assets/images/achievement_status_bg/platinum.png';
+import UltraBG from '../assets/images/achievement_status_bg/ultra.png';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
@@ -36,7 +37,8 @@ const ProfileDropdown = observer(() => {
         case AchievementStatus.GOLD:
           return type === 'color' ? '#fffccc' : GoldBG;
         case AchievementStatus.PLATINUM:
-          return type === 'color' ? '#00ffdd' : PlatinumBG;
+          // return type === 'color' ? '#00ffdd' : PlatinumBG;
+          return type === 'color' ? '#AE88FF' : UltraBG;
         default:
           return type === 'color' ? '#C5DDF1' : SilverBG;
       }
@@ -117,7 +119,8 @@ const ProfileDropdown = observer(() => {
             >
               {mainAppStore.accounts.find((acc) => acc.isLive)
                 ?.achievementStatus === AchievementStatus.PLATINUM
-                ? AchievementStatus.VIP
+                // ? AchievementStatus.VIP
+                ? AchievementStatus.ULTRA
                 : mainAppStore.accounts.find((acc) => acc.isLive)
                     ?.achievementStatus}
             </PrimaryTextSpan>
