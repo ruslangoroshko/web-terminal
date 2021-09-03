@@ -7,6 +7,7 @@ import Page from '../../constants/Pages';
 import { useStores } from '../../hooks/useStores';
 import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import IconClose from '../../assets/svg/icon-close.svg';
+import BonusGift from '../../assets/images/deposit-bonus.png';
 
 import SvgIcon from '../SvgIcon';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
@@ -43,6 +44,7 @@ import Directa from './Directa';
 import PayRetailers from './PayRetailers';
 import Volt from './Volt';
 import LoaderForComponents from '../LoaderForComponents';
+import EventBonusTimer from '../EventBonusTimer';
 
 const depositList = [
   {
@@ -112,6 +114,7 @@ const DepositPopupInner: FC = () => {
     depositFundsStore,
     badRequestPopupStore,
     notificationStore,
+    bonusStore,
   } = useStores();
 
   // TODO adding type
@@ -438,6 +441,36 @@ const DepositPopupInner: FC = () => {
                 overflow="auto"
                 //minHeight="688px"
               >
+                {
+                  bonusStore.showBonus() &&
+                  bonusStore.showBonusDeposit  &&
+                  <FlexContainer
+                    padding="20px 0 0 56px"
+                    alignItems="center"
+                  >
+                    <FlexContainer>
+                      <img width="64px" height="64px" alt="bonus" src={BonusGift} />
+                    </FlexContainer>
+                    <FlexContainer flexDirection="column">
+                      <PrimaryTextSpan
+                        color="#00FFDD"
+                        fontWeight={500}
+                        fontSize="14px"
+                        lineHeight="140%"
+                      >
+                        {t('You will get an additional')} {bonusStore.bonusPercent}% {t('bonus')}
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan
+                        color="#77797D"
+                        fontWeight={500}
+                        fontSize="14px"
+                        lineHeight="140%"
+                      >
+                        <EventBonusTimer />
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+                  </FlexContainer>
+                }
                 <Observer>{() => <>{renderDepositType()}</>}</Observer>
               </FlexContainer>
             </FlexContainer>

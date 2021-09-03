@@ -28,10 +28,14 @@ interface Props {
 
 const StatusPaymentPopup: FC<Props> = ({ status }) => {
   const { push } = useHistory();
-  const { depositFundsStore } = useStores();
+  const { depositFundsStore, bonusStore } = useStores();
 
   const backToDeposit = () => {
-    push(Page.DEPOSIT_POPUP);
+    if (bonusStore.showBonus()) {
+      bonusStore.setShowBonusPopup(true);
+    } else {
+      push(Page.DEPOSIT_POPUP);
+    }
   };
 
   const backToDashboard = () => {

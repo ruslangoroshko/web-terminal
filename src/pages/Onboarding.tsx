@@ -28,7 +28,7 @@ import HashLocation from '../constants/hashLocation';
 const Onboarding = () => {
   const { t } = useTranslation();
   const { push } = useHistory();
-  const { badRequestPopupStore, mainAppStore } = useStores();
+  const { badRequestPopupStore, mainAppStore, bonusStore } = useStores();
 
   const [actualStep, setActualStep] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
@@ -138,7 +138,11 @@ const Onboarding = () => {
         });
         mainAppStore.addTriggerDissableOnboarding();
         mainAppStore.isOnboarding = false;
-        push(Page.DEPOSIT_POPUP);
+        if (bonusStore.showBonus()) {
+          bonusStore.setShowBonusPopup(true);
+        } else {
+          push(Page.DEPOSIT_POPUP);
+        }
       } catch (error) {
       }
     }
@@ -175,7 +179,7 @@ const Onboarding = () => {
   const isOnboardingAvailable = async () => {
     //
     const isAvailable = await mainAppStore.checkOnboardingShow();
-    if (!isAvailable) {
+    if (!isAvailable && !bonusStore.onboardingFromDropdown) {
       push(Page.DASHBOARD);
     } else {
       // init OB
@@ -195,6 +199,9 @@ const Onboarding = () => {
 
   useEffect(() => {
     isOnboardingAvailable();
+    return () => {
+      bonusStore.setOnboardingFromDropdown(false);
+    };
   }, []);
 
   if (loading || actualStepInfo === null) {

@@ -64,6 +64,7 @@ const AccountInfo: FC<Props> = observer((props) => {
     dateRangeStore,
     sortingStore,
     markersOnChartStore,
+    bonusStore,
   } = useStores();
   const { push } = useHistory();
 
@@ -142,6 +143,14 @@ const AccountInfo: FC<Props> = observer((props) => {
 
   const pushToWithdrawal = () => () => {
     push(Page.ACCOUNT_WITHDRAW);
+  };
+
+  const pushToDeposit = () => {
+    if (bonusStore.showBonus()) {
+      bonusStore.setShowBonusPopup(true);
+    } else {
+      push(Page.DEPOSIT_POPUP);
+    }
   };
 
   useEffect(() => {
@@ -398,7 +407,7 @@ const AccountInfo: FC<Props> = observer((props) => {
 
         {account.isLive && isActiveAccount && (
           <FlexContainer alignItems="flex-end" width="268px">
-            <DepositButton onClick={() => push(Page.DEPOSIT_POPUP)}>
+            <DepositButton onClick={pushToDeposit}>
               <PrimaryTextSpan fontWeight="bold" color="#000000">
                 {t('Deposit')}
               </PrimaryTextSpan>

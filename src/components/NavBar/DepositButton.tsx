@@ -17,17 +17,23 @@ const DepositButton = observer(() => {
   const { t } = useTranslation();
   const { bonusStore } = useStores();
 
+  const pushToDeposit = () => {
+    if (bonusStore.showBonus()) {
+      bonusStore.setShowBonusPopup(true);
+    } else {
+      push(Page.DEPOSIT_POPUP);
+    }
+  }
+
   return (
     <StyledDepositButton
-      onClick={() => push(Page.DEPOSIT_POPUP)}
+      onClick={pushToDeposit}
       padding="8px 16px"
       data-e2e-id={e2eTests.DEPOSIT_BUTTON_NAVBAR}
       backgroundColor="#00FFF2"
     >
       {
-        bonusStore.bonusIsLoaded &&
-        bonusStore.bonusData !== null &&
-        bonusStore.bonusData?.welcomeBonusExpirations !== null &&
+        bonusStore.showBonus() &&
         <FlexContainer margin="0 5px 4px 0">
           <SvgIcon height={13} width={13} fillColor="#003A38" {...IconGift} />
         </FlexContainer>

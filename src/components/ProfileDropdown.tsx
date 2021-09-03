@@ -18,12 +18,10 @@ import UltraBG from '../assets/images/achievement_status_bg/ultra.png';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
-import e2eTests from '../constants/e2eTests';
-import { observable } from 'mobx';
-import { Observer, observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite';
 
 const ProfileDropdown = observer(() => {
-  const { mainAppStore, depositFundsStore, tabsStore } = useStores();
+  const { mainAppStore, depositFundsStore, tabsStore, bonusStore } = useStores();
   const { t } = useTranslation();
   const { push } = useHistory();
 
@@ -82,6 +80,14 @@ const ProfileDropdown = observer(() => {
       [mixapanelProps.BRAND_NAME]: mainAppStore.initModel.brandProperty,
     });
     mainAppStore.signOut();
+  };
+
+  const pushToDeposit = () => {
+    if (bonusStore.showBonus()) {
+      bonusStore.setShowBonusPopup(true);
+    } else {
+      push(Page.DEPOSIT_POPUP);
+    }
   };
 
   return (
@@ -186,7 +192,7 @@ const ProfileDropdown = observer(() => {
       {!mainAppStore.isPromoAccount && (
         <>
           <FlexContainer margin="0 0 12px">
-            <DepositButtonWrapper onClick={() => push(Page.DEPOSIT_POPUP)}>
+            <DepositButtonWrapper onClick={pushToDeposit}>
               <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
                 {t('Deposit')}
               </PrimaryTextSpan>

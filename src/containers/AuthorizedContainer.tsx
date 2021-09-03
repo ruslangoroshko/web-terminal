@@ -27,6 +27,7 @@ import NotificationPopup from '../components/NotificationPopup';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import Page from '../constants/Pages';
 import ReconnectTestBar from '../components/TestComponents/ReconnectTestBar';
+import BonusPopup from '../components/BonusPopup';
 
 interface Props {}
 
@@ -235,6 +236,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
               <>
                 <DepositPaymentResultPopup />
                 <DepositPopupWrapper />
+                <BonusPopup />
               </>
             )}
           </>

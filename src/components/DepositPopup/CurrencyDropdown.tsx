@@ -6,6 +6,7 @@ import { paymentCurrencies } from '../../constants/paymentCurrencies';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   selectedCurrency: string;
@@ -21,6 +22,7 @@ const CurrencyDropdown: FC<Props> = ({
   disabled = false
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
   const [on, toggle] = useState(false);
   const handleClickOutside = (e: any) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -64,8 +66,8 @@ const CurrencyDropdown: FC<Props> = ({
         </ButtonWithoutStyles>
       </FlexContainer>)}
 
-      <PrimaryTextSpan fontWeight="bold" color="#fffccc" fontSize="14px">
-        {selectedCurrency}
+      <PrimaryTextSpan fontWeight={400} color="#ffffff" fontSize="14px">
+        {t('Amount')}, {selectedCurrency}
       </PrimaryTextSpan>
       {on && !disabled && (
         <FlexContainer

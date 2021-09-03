@@ -13,12 +13,28 @@ import styled from '@emotion/styled';
 import IconDiamond from '../../assets/svg/icon-diamond.svg';
 import EventBonusTimer from '../EventBonusTimer';
 import OnboardingBonusImage from '../../assets/images/onboarding-bonus.png';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Page from '../../constants/Pages';
 
 const BonusDropdown = observer(() => {
   const { mainAppStore, bonusStore } = useStores();
   const { t } = useTranslation();
+  const { push } = useHistory();
+
+  const pushToDeposit = (toggle: () => void) => () => {
+    toggle();
+    if (bonusStore.showBonus()) {
+      bonusStore.setShowBonusPopup(true);
+    } else {
+      push(Page.DEPOSIT_POPUP);
+    }
+  };
+
+  const pushToOnboarding = (toggle: () => void) => () => {
+    toggle();
+    bonusStore.setOnboardingFromDropdown(true);
+    push(Page.ONBOARDING);
+  };
 
   useEffect(() => {
     bonusStore.getUserBonus();
@@ -84,90 +100,88 @@ const BonusDropdown = observer(() => {
                   boxShadow="0px 34px 44px rgba(0, 0, 0, 0.25)"
                   padding="20px 16px"
                 >
-                  <FlexContainer
+                  <ClickableFlexContainer
                     borderRadius="5px"
                     alignItems="center"
                     border="1px solid rgba(255, 255, 255, 0.12)"
                     boxShadow="0px 12px 72px rgba(0, 0, 0, 0.24)"
                     width="342px"
                     marginBottom="15px"
+                    onClick={pushToDeposit(toggle)}
                   >
-                    <CustomLink to={Page.DEPOSIT_POPUP}>
-                      <FlexContainer
-                        width="106px"
-                        height="86px"
-                        background="#00FFDD"
-                        borderRadius="5px"
-                        alignItems="center"
-                        justifyContent="center"
-                        marginRight="15px"
+                    <FlexContainer
+                      width="106px"
+                      height="86px"
+                      background="#00FFDD"
+                      borderRadius="5px"
+                      alignItems="center"
+                      justifyContent="center"
+                      marginRight="15px"
+                    >
+                      <PrimaryTextSpan
+                        fontSize="24px"
+                        fontWeight="bold"
+                        color="#1C1F26"
                       >
-                        <PrimaryTextSpan
-                          fontSize="24px"
-                          fontWeight="bold"
-                          color="#1C1F26"
-                        >
-                          +{bonusStore.bonusPercent}%
-                        </PrimaryTextSpan>
-                      </FlexContainer>
-                      <FlexContainer
-                        padding="16px 0 24px"
-                        flexDirection="column"
+                        +{bonusStore.bonusPercent}%
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+                    <FlexContainer
+                      padding="16px 0 24px"
+                      flexDirection="column"
+                    >
+                      <PrimaryTextSpan
+                        fontSize="18px"
+                        fontWeight={700}
+                        color="#ffffff"
+                        marginBottom="5px"
                       >
-                        <PrimaryTextSpan
-                          fontSize="18px"
-                          fontWeight={700}
-                          color="#ffffff"
-                          marginBottom="5px"
-                        >
-                          {t('Get Bonus')}
-                        </PrimaryTextSpan>
-                        <PrimaryTextSpan
-                          fontSize="14px"
-                          fontWeight={400}
-                          color="rgba(255, 255, 255, 0.4)"
-                        >
-                          <EventBonusTimer />
-                        </PrimaryTextSpan>
-                      </FlexContainer>
-                    </CustomLink>
-                  </FlexContainer>
+                        {t('Get Bonus')}
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan
+                        fontSize="14px"
+                        fontWeight={400}
+                        color="rgba(255, 255, 255, 0.4)"
+                      >
+                        <EventBonusTimer />
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+                  </ClickableFlexContainer>
                   <FlexContainer
                     borderRadius="5px"
                     alignItems="center"
                     border="1px solid rgba(255, 255, 255, 0.12)"
                     boxShadow="0px 12px 72px rgba(0, 0, 0, 0.24)"
                     width="342px"
+                    onClick={pushToOnboarding(toggle)}
                   >
-                    <CustomLink to={Page.ONBOARDING}>
-                      <FlexContainer
-                        width="106px"
-                        height="86px"
+                    <FlexContainer
+                      width="106px"
+                      height="86px"
+                    >
+                      <img src={OnboardingBonusImage} />
+                    </FlexContainer>
+                    <FlexContainer
+                      padding="16px 0 24px"
+                      flexDirection="column"
+                      margin="0 0 0 -20px"
+                    >
+                      <PrimaryTextSpan
+                        fontSize="18px"
+                        fontWeight={700}
+                        color="#ffffff"
+                        marginBottom="5px"
                       >
-                        <img src={OnboardingBonusImage} />
-                      </FlexContainer>
-                      <FlexContainer
-                        padding="16px 0 24px"
-                        flexDirection="column"
-                        margin="0 0 0 -20px"
+                        {t('Onboarding guide')}
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan
+                        fontSize="14px"
+                        fontWeight={400}
+                        color="rgba(255, 255, 255, 0.4)"
                       >
-                        <PrimaryTextSpan
-                          fontSize="18px"
-                          fontWeight={700}
-                          color="#ffffff"
-                          marginBottom="5px"
-                        >
-                          {t('Onboarding guide')}
-                        </PrimaryTextSpan>
-                        <PrimaryTextSpan
-                          fontSize="14px"
-                          fontWeight={400}
-                          color="rgba(255, 255, 255, 0.4)"
-                        >
-                          {t('Learn how to start trading')}
-                        </PrimaryTextSpan>
-                      </FlexContainer>
-                    </CustomLink>
+                        {t('Learn how to start trading')}
+                      </PrimaryTextSpan>
+                    </FlexContainer>
                   </FlexContainer>
                 </FlexContainer>
               )}
@@ -186,11 +200,6 @@ const ButtonSwitcher = styled(ButtonWithoutStyles)`
   z-index: 199;
 `;
 
-const CustomLink = styled(Link)`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  &:hover {
-    text-decoration: none;
-  }
+const ClickableFlexContainer = styled(FlexContainer)`
+  cursor: pointer;
 `;

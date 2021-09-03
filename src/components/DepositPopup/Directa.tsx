@@ -209,6 +209,12 @@ const Directa = () => {
               alignItems="center"
               position="relative"
             >
+              <CurrencyDropdown
+                disabled={true}
+                width="120px"
+                handleSelectCurrency={setCurrency}
+                selectedCurrency={currency}
+              ></CurrencyDropdown>
               <Input
                 value={values.amount}
                 onChange={handleChangeAmount}
@@ -218,12 +224,6 @@ const Directa = () => {
                 autoComplete="off"
               />
               {errors.amount && <ErrorText>{errors.amount}</ErrorText>}
-              <CurrencyDropdown
-                disabled={true}
-                width="80px"
-                handleSelectCurrency={setCurrency}
-                selectedCurrency={currency}
-              ></CurrencyDropdown>
             </FlexContainer>
           </FlexContainer>
 
@@ -288,13 +288,14 @@ const CustomForm = styled.form`
 const Input = styled.input`
   border: none;
   outline: none;
-  width: calc(100% - 80px);
+  width: calc(100% - 120px);
+  text-align: right;
   height: 48px;
   color: #fffccc;
   font-size: 14px;
   font-weight: bold;
   padding: 24px 16px;
-  padding-right: 100px;
+  padding-left: 100px;
   background-color: transparent;
   border-right: 1px solid rgba(255, 255, 255, 0.19);
 `;
