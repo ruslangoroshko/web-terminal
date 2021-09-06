@@ -7,9 +7,6 @@ import {
   PrimaryTextSpan,
 } from '../../styles/TextsElements';
 import paymentStatuses from '../../constants/paymentStatuses';
-import SuccessImage from '../../assets/images/success.png';
-import FailedImage from '../../assets/images/fail.png';
-import PendingImage from '../../assets/images/icon-attention.png';
 import { PrimaryButton } from '../../styles/Buttons';
 import { useHistory } from 'react-router-dom';
 import { useStores } from '../../hooks/useStores';
@@ -21,6 +18,11 @@ import { useTranslation } from 'react-i18next';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import { logger } from '../../helpers/ConsoleLoggerTool';
+import * as failIcon from '../../assets/lotties/fail-icon.json';
+import * as successIcon from '../../assets/lotties/success-icon.json';
+import * as pendingIcon from '../../assets/lotties/pending-icon.json';
+import * as confettie from '../../assets/lotties/confettie-animation.json';
+import Lottie from 'react-lottie';
 
 interface Props {
   status: string;
@@ -29,6 +31,19 @@ interface Props {
 const StatusPaymentPopup: FC<Props> = ({ status }) => {
   const { push } = useHistory();
   const { depositFundsStore, bonusStore } = useStores();
+
+  const getLottieOptions = (animationData: any) => {
+    return {
+      loop: false,
+      autoplay: true,
+      pause: false,
+      animationData: animationData.default,
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid slice',
+        clearCanvas: false,
+      },
+    };
+  };
 
   const backToDeposit = () => {
     if (bonusStore.showBonus()) {
@@ -56,7 +71,21 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
             width="100%"
             height="100%"
           >
-            <FlexContainer flexDirection="column" alignItems="center">
+            <FlexContainer flexDirection="column" alignItems="center" position="relative">
+              <FlexContainer
+                left="49px"
+                top="-49px"
+                position="absolute"
+                width="250px"
+                height="250px"
+              >
+                <Lottie
+                  options={getLottieOptions(confettie)}
+                  height="250px"
+                  width="250px"
+                  isClickToPauseDisabled={true}
+                />
+              </FlexContainer>
               <FlexContainer
                 width="138px"
                 height="138px"
@@ -64,7 +93,12 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 alignItems="center"
                 justifyContent="center"
               >
-                <Image src={SuccessImage}></Image>
+                <Lottie
+                  options={getLottieOptions(successIcon)}
+                  height="138px"
+                  width="138px"
+                  isClickToPauseDisabled={true}
+                />
               </FlexContainer>
               <PrimaryTextParagraph
                 fontSize="20px"
@@ -110,7 +144,12 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 alignItems="center"
                 justifyContent="center"
               >
-                <Image src={FailedImage}></Image>
+                <Lottie
+                  options={getLottieOptions(failIcon)}
+                  height="138px"
+                  width="138px"
+                  isClickToPauseDisabled={true}
+                />
               </FlexContainer>
               <PrimaryTextParagraph
                 fontSize="20px"
@@ -158,7 +197,12 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 justifyContent="center"
                 height="138px"
               >
-                <Image src={PendingImage}></Image>
+                <Lottie
+                  options={getLottieOptions(pendingIcon)}
+                  height="138px"
+                  width="138px"
+                  isClickToPauseDisabled={true}
+                />
               </FlexContainer>
               <PrimaryTextParagraph
                 fontSize="20px"
@@ -260,9 +304,4 @@ const BackgroundWrapperLayout = styled(FlexContainer)`
     background-color: rgba(0, 0, 0, 0.34);
     backdrop-filter: blur(12px);
   }
-`;
-
-const Image = styled.img`
-  display: block;
-  width: 100%;
 `;
