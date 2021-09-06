@@ -251,6 +251,7 @@ const Onboarding = () => {
         <Lottie
           options={getLottieOptions(actualStepInfo?.data.lottieJson)}
           isStopped={false}
+          isClickToPauseDisabled={true}
           height="600px"
           width="650px"
         />
