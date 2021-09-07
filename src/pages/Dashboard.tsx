@@ -90,7 +90,15 @@ const Dashboard: FC = observer(() => {
 
       <Observer>
         {() => (
-          <>{mainAppStore.isDemoRealPopup && !mainAppStore.isOnboarding && !mainAppStore.isPromoAccount && <DemoRealPopup></DemoRealPopup>}</>
+          <>
+            {
+              mainAppStore.isDemoRealPopup &&
+              !mainAppStore.isOnboarding &&
+              !mainAppStore.isPromoAccount &&
+              !mainAppStore.isLoading &&
+              <DemoRealPopup></DemoRealPopup>
+            }
+          </>
         )}
       </Observer>
       {!!paymentStatus && (

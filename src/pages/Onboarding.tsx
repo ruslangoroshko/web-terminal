@@ -91,6 +91,7 @@ const Onboarding = () => {
         [mixapanelProps.ONBOARDING_VALUE]: `close${actualStep}`,
       });
       setActualStep(actualStepInfo?.data.totalSteps);
+      setActualStepInfo(null);
       getInfoByStep(actualStepInfo?.data.totalSteps);
     } else {
       mixpanel.track(mixpanelEvents.ONBOARDING, {
