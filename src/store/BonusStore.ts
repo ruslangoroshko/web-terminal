@@ -57,6 +57,12 @@ export class BonusStore implements IBonusStore {
   };
 
   @action
+  refreshBonusParams = () => {
+    this.bonusPercent = 0;
+    this.bonusExpirationDate = 0;
+  };
+
+  @action
   getUserBonus = async () => {
     this.bonusIsLoaded = false;
     this.bonusData = null;
@@ -82,11 +88,16 @@ export class BonusStore implements IBonusStore {
         this.bonusPercent = bonusInfo.bonusPercentageFromFtd;
         this.bonusExpirationDate = bonusInfo.expirationDateUtc;
         this.bonusData = response.data;
+      } else {
+        this.showBonusPopup = false;
+        this.showBonusDeposit = false;
       }
 
       this.bonusIsLoaded = true;
     } catch (error) {
       this.bonusIsLoaded = true;
+      this.showBonusPopup = false;
+      this.showBonusDeposit = false;
     }
   }
 

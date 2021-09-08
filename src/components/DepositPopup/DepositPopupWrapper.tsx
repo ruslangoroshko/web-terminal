@@ -441,37 +441,39 @@ const DepositPopupInner: FC = () => {
                 overflow="auto"
                 //minHeight="688px"
               >
-                {
-                  bonusStore.showBonus() &&
-                  bonusStore.showBonusDeposit &&
-                  bonusStore.bonusData !== null  &&
-                  <FlexContainer
-                    padding="20px 0 0 56px"
-                    alignItems="center"
-                  >
-                    <FlexContainer>
-                      <img width="64px" height="64px" alt="bonus" src={BonusGift} />
+                <Observer>
+                  {() => <>{
+                    bonusStore.showBonus() &&
+                    bonusStore.showBonusDeposit &&
+                    bonusStore.bonusData !== null  &&
+                    <FlexContainer
+                      padding="20px 0 0 56px"
+                      alignItems="center"
+                    >
+                      <FlexContainer>
+                        <img width="64px" height="64px" alt="bonus" src={BonusGift} />
+                      </FlexContainer>
+                      <FlexContainer flexDirection="column">
+                        <PrimaryTextSpan
+                          color="#00FFDD"
+                          fontWeight={500}
+                          fontSize="14px"
+                          lineHeight="140%"
+                        >
+                          {t('You will get an additional')} {bonusStore.bonusPercent}% {t('bonus')}
+                        </PrimaryTextSpan>
+                        <PrimaryTextSpan
+                          color="#77797D"
+                          fontWeight={500}
+                          fontSize="14px"
+                          lineHeight="140%"
+                        >
+                          <EventBonusTimer />
+                        </PrimaryTextSpan>
+                      </FlexContainer>
                     </FlexContainer>
-                    <FlexContainer flexDirection="column">
-                      <PrimaryTextSpan
-                        color="#00FFDD"
-                        fontWeight={500}
-                        fontSize="14px"
-                        lineHeight="140%"
-                      >
-                        {t('You will get an additional')} {bonusStore.bonusPercent}% {t('bonus')}
-                      </PrimaryTextSpan>
-                      <PrimaryTextSpan
-                        color="#77797D"
-                        fontWeight={500}
-                        fontSize="14px"
-                        lineHeight="140%"
-                      >
-                        <EventBonusTimer />
-                      </PrimaryTextSpan>
-                    </FlexContainer>
-                  </FlexContainer>
-                }
+                  }</>}
+                </Observer>
                 <Observer>{() => <>{renderDepositType()}</>}</Observer>
               </FlexContainer>
             </FlexContainer>

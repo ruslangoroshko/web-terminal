@@ -795,6 +795,12 @@ export class MainAppStore implements MainAppStoreProps {
     this.requestReconnectCounter = 0;
     this.rootStore.badRequestPopupStore.stopRecconect();
     this.requestErrorStack = [];
+    this.rootStore.bonusStore.setShowBonusPopup(false);
+    this.rootStore.bonusStore.setBonusData(null);
+    this.rootStore.bonusStore.setOnboardingFromDropdown(false);
+    this.rootStore.bonusStore.setShowBonusDeposit(false);
+    this.rootStore.bonusStore.setBonusIsLoaded(false);
+    this.rootStore.bonusStore.refreshBonusParams();
     if (this.activeAccount) {
       this.setParamsAsset(null);
       this.setParamsMarkets(null);

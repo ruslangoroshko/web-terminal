@@ -18,10 +18,11 @@ import { useTranslation } from 'react-i18next';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
+import Page from '../constants/Pages';
 
 function DemoRealPopup() {
   const { push } = useHistory();
-  const { mainAppStore, badRequestPopupStore } = useStores();
+  const { mainAppStore, badRequestPopupStore, bonusStore } = useStores();
   const { t } = useTranslation();
 
   const sendMixpanelEvents = (demoRealFunds: 'real' | 'demo') => {
@@ -63,7 +64,16 @@ function DemoRealPopup() {
         });
         mainAppStore.setActiveAccount(acc);
         mainAppStore.addTriggerDissableOnboarding();
-        push(`/${HashLocation.Deposit}`);
+        try {
+          await bonusStore.getUserBonus();
+          if (bonusStore.showBonus()) {
+            bonusStore.setShowBonusPopup(true);
+          } else {
+            push(Page.DEPOSIT_POPUP);
+          }
+        } catch (error) {
+          push(Page.DEPOSIT_POPUP);
+        }
         sendMixpanelEvents('real');
         setTimeout(() => {
           mainAppStore.setIsDemoReal(false);
