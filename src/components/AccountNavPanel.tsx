@@ -50,6 +50,10 @@ const AccountNavPanel = () => {
             <CustomNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="active">
               <AccountLinkSpan color="#fffccc">{t('Withdraw')}</AccountLinkSpan>
             </CustomNavLink>
+
+            <CustomNavLink to={Page.BONUS_FAQ} activeClassName="active">
+              <AccountLinkSpan color="#fffccc">{t('Bonus FAQ')}</AccountLinkSpan>
+            </CustomNavLink>
           </>
         )}
       </FlexContainer>

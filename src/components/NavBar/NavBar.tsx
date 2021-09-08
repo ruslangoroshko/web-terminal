@@ -54,7 +54,7 @@ const NavBar = observer(() => {
         </Link>
       </FlexContainer>
       <FlexContainer alignItems="center">
-        {bonusStore.showBonus() && <BonusDropdown />}
+        {bonusStore.showBonus() && bonusStore.bonusData !== null && <BonusDropdown />}
         <FlexContainer alignItems="center" margin="0 20px 0 0">
           <AccountSwitcherDropdown></AccountSwitcherDropdown>
         </FlexContainer>

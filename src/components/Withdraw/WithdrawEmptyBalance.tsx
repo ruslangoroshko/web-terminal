@@ -7,8 +7,17 @@ import { useStores } from '../../hooks/useStores';
 import { useTranslation } from 'react-i18next';
 
 const WithdrawEmptyBalance = () => {
-  const { depositFundsStore } = useStores();
+  const { depositFundsStore, bonusStore } = useStores();
   const { t } = useTranslation();
+
+  const pushToDeposit = () => {
+    if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
+      bonusStore.setShowBonusPopup(true);
+    } else {
+      depositFundsStore.togglePopup;
+    }
+  };
+
   return (
     <FlexContainer
       width="100%"
@@ -24,7 +33,7 @@ const WithdrawEmptyBalance = () => {
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer width="160px">
-        <DeposteButton onClick={depositFundsStore.togglePopup}>
+        <DeposteButton onClick={pushToDeposit}>
           <PrimaryTextSpan color="#fffccc" fontSize="14px">
             {t('Make a deposit')}
           </PrimaryTextSpan>

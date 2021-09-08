@@ -23,7 +23,7 @@ const BonusDropdown = observer(() => {
 
   const pushToDeposit = (toggle: () => void) => () => {
     toggle();
-    if (bonusStore.showBonus()) {
+    if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
       bonusStore.setShowBonusPopup(true);
     } else {
       push(Page.DEPOSIT_POPUP);
@@ -35,10 +35,6 @@ const BonusDropdown = observer(() => {
     bonusStore.setOnboardingFromDropdown(true);
     push(Page.ONBOARDING);
   };
-
-  useEffect(() => {
-    bonusStore.getUserBonus();
-  }, []);
 
   return (
     <Toggle>
@@ -83,6 +79,7 @@ const BonusDropdown = observer(() => {
               width="100vw"
               height="100vh"
               zIndex="198"
+              onClick={toggle}
             > </FlexContainer>
           )}
           {on && (

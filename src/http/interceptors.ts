@@ -152,11 +152,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     async function (error) {
       const excludeReconectList = [
         API_LIST.INSTRUMENTS.FAVOURITES,
-        API_LIST.WELCOME_BONUS.GET,
       ];
       const excludeCheckErrorFlow = [
         API_LIST.DEBUG.POST,
         API_LIST.ONBOARDING.STEPS,
+        API_LIST.WELCOME_BONUS.GET,
       ];
 
       const sendClientLog = () => {
@@ -199,7 +199,8 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         return Promise.reject(error);
       }
       if (
-        getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS) &&
+        (getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS) ||
+        getApiUrl(requestUrl).includes(API_LIST.WELCOME_BONUS.GET)) &&
         error.response?.status !== 401 &&
         error.response?.status !== 403
       ) {
@@ -258,8 +259,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         !(
           getApiUrl(requestUrl).includes(API_LIST.INSTRUMENTS.FAVOURITES) &&
           error.config.method === 'get'
-        ) &&
-        !getApiUrl(requestUrl).includes(API_LIST.WELCOME_BONUS.GET)
+        )
       ) {
         addErrorUrl(requestUrl);
       }

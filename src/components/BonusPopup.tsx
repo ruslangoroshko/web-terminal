@@ -31,9 +31,13 @@ const BonusPopup: FC = observer(() => {
 
   const { push } = useHistory();
 
-  const handleClosePopup = () => {
+  const handleSkipPopup = () => {
     push(Pages.DEPOSIT_POPUP);
     bonusStore.setShowBonusDeposit(false);
+    bonusStore.setShowBonusPopup(false);
+  };
+
+  const handleClosePopup = () => {
     bonusStore.setShowBonusPopup(false);
   };
 
@@ -176,7 +180,7 @@ const BonusPopup: FC = observer(() => {
                   type="button"
                   width="344px"
                   backgroundColor="transparent"
-                  onClick={handleClosePopup}
+                  onClick={handleSkipPopup}
                 >
                   <PrimaryTextSpan
                     color="#ffffff"

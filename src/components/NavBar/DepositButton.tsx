@@ -18,7 +18,7 @@ const DepositButton = observer(() => {
   const { bonusStore } = useStores();
 
   const pushToDeposit = () => {
-    if (bonusStore.showBonus()) {
+    if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
       bonusStore.setShowBonusPopup(true);
     } else {
       push(Page.DEPOSIT_POPUP);
@@ -34,6 +34,7 @@ const DepositButton = observer(() => {
     >
       {
         bonusStore.showBonus() &&
+        bonusStore.bonusData !== null &&
         <FlexContainer margin="0 5px 4px 0">
           <SvgIcon height={13} width={13} fillColor="#003A38" {...IconGift} />
         </FlexContainer>

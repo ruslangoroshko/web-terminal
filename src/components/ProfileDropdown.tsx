@@ -83,7 +83,7 @@ const ProfileDropdown = observer(() => {
   };
 
   const pushToDeposit = () => {
-    if (bonusStore.showBonus()) {
+    if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
       bonusStore.setShowBonusPopup(true);
     } else {
       push(Page.DEPOSIT_POPUP);

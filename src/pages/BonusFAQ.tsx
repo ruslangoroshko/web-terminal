@@ -3,9 +3,14 @@ import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import { useTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
+import { useHistory } from 'react-router-dom';
+import SvgIcon from '../components/SvgIcon';
+import IconClose from '../assets/svg/icon-close.svg';
+import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 
 const BonusFAQ = () => {
   const { t } = useTranslation();
+  const { goBack } = useHistory();
 
   return (
     <FlexContainer
@@ -13,6 +18,21 @@ const BonusFAQ = () => {
       margin="32px auto"
       flexDirection="column"
     >
+      <FlexContainer
+        position="absolute"
+        top="20px"
+        right="20px"
+      >
+        <ButtonWithoutStyles onClick={goBack}>
+          <SvgIcon
+            {...IconClose}
+            fillColor="rgba(255, 255, 255, 0.6)"
+            hoverFillColor="#00FFF2"
+            width="16px"
+            height="16px"
+          />
+        </ButtonWithoutStyles>
+      </FlexContainer>
       <PrimaryTextSpan
         fontStyle="normal"
         fontWeight="bold"

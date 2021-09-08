@@ -2,6 +2,8 @@ import { RootStore } from './RootStore';
 import { action, makeAutoObservable, observable } from 'mobx';
 import { IWelcomeBonus, IWelcomeBonusExpirations } from '../types/UserInfo';
 import moment from 'moment';
+import API from '../helpers/API';
+import { WelcomeBonusResponseEnum } from '../enums/WelcomeBonusResponseEnum';
 
 interface IBonusStore {
   bonusIsLoaded: boolean;
@@ -55,31 +57,42 @@ export class BonusStore implements IBonusStore {
   };
 
   @action
-  getUserBonus = () => {
-    const currentDate = moment().unix();
-    const bonusInfo: IWelcomeBonusExpirations | null =
-      this.bonusData?.welcomeBonusExpirations
-        .sort(
-          (a: IWelcomeBonusExpirations, b: IWelcomeBonusExpirations) =>
-            a.expirationDateUtc - b.expirationDateUtc
-        )
-        .find(
-          (data: IWelcomeBonusExpirations) =>
-            data.expirationDateUtc > currentDate
-        ) || null;
+  getUserBonus = async () => {
+    this.bonusIsLoaded = false;
+    this.bonusData = null;
+    try {
+      const response = await API.getUserBonus(this.rootStore.mainAppStore.initModel.miscUrl);
+      if (
+        response.responseCode === WelcomeBonusResponseEnum.Ok &&
+        response.data.welcomeBonusExpirations !== null
+      ) {
+        const currentDate = moment().unix();
 
-    if (bonusInfo !== null) {
-      this.bonusPercent = bonusInfo?.bonusPercentageFromFtd;
-      this.bonusExpirationDate = bonusInfo?.expirationDateUtc;
-    } else {
-      this.bonusData = null;
+        const bonusInfo =
+          response.data.welcomeBonusExpirations
+            .sort(
+              (a: IWelcomeBonusExpirations, b: IWelcomeBonusExpirations) =>
+                a.expirationDateUtc - b.expirationDateUtc
+            )
+            .find(
+              (data: IWelcomeBonusExpirations) =>
+                data.expirationDateUtc > currentDate
+            ) || response.data.welcomeBonusExpirations[0];
+
+        this.bonusPercent = bonusInfo.bonusPercentageFromFtd;
+        this.bonusExpirationDate = bonusInfo.expirationDateUtc;
+        this.bonusData = response.data;
+      }
+
+      this.bonusIsLoaded = true;
+    } catch (error) {
+      this.bonusIsLoaded = true;
     }
   }
 
   @action
   showBonus = () => {
     return this.bonusIsLoaded &&
-      this.bonusData !== null &&
       this.bonusData?.welcomeBonusExpirations !== null
   }
 }

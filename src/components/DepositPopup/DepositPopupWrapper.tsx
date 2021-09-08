@@ -443,7 +443,8 @@ const DepositPopupInner: FC = () => {
               >
                 {
                   bonusStore.showBonus() &&
-                  bonusStore.showBonusDeposit  &&
+                  bonusStore.showBonusDeposit &&
+                  bonusStore.bonusData !== null  &&
                   <FlexContainer
                     padding="20px 0 0 56px"
                     alignItems="center"

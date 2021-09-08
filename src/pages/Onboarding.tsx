@@ -139,9 +139,14 @@ const Onboarding = () => {
         });
         mainAppStore.addTriggerDissableOnboarding();
         mainAppStore.isOnboarding = false;
-        if (bonusStore.showBonus()) {
-          bonusStore.setShowBonusPopup(true);
-        } else {
+        try {
+          await bonusStore.getUserBonus();
+          if (bonusStore.showBonus()) {
+            bonusStore.setShowBonusPopup(true);
+          } else {
+            push(Page.DEPOSIT_POPUP);
+          }
+        } catch (error) {
           push(Page.DEPOSIT_POPUP);
         }
       } catch (error) {

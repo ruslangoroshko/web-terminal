@@ -32,9 +32,9 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
   const { push } = useHistory();
   const { depositFundsStore, bonusStore } = useStores();
 
-  const getLottieOptions = (animationData: any) => {
+  const getLottieOptions = (animationData: any, loop: boolean = false) => {
     return {
-      loop: false,
+      loop: loop,
       autoplay: true,
       pause: false,
       animationData: animationData.default,
@@ -46,7 +46,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
   };
 
   const backToDeposit = () => {
-    if (bonusStore.showBonus()) {
+    if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
       bonusStore.setShowBonusPopup(true);
     } else {
       push(Page.DEPOSIT_POPUP);
@@ -80,7 +80,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 height="250px"
               >
                 <Lottie
-                  options={getLottieOptions(confettie)}
+                  options={getLottieOptions(confettie, true)}
                   height="250px"
                   width="250px"
                   isClickToPauseDisabled={true}
