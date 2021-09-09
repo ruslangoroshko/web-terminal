@@ -124,7 +124,7 @@ const AccountBalance = () => {
           />
         )}
       </Observer>
-      <FlexContainer flexDirection="column">
+      <FlexContainer flexDirection="column" margin="0 0 0 80px">
         <FlexContainer
           justifyContent="space-between"
           alignItems="flex-end"

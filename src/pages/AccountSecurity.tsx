@@ -162,7 +162,7 @@ function AccountSecurity() {
           )}
         </Observer>
       )}
-      <FlexContainer flexDirection="column">
+      <FlexContainer flexDirection="column" margin="0 0 0 80px">
         <PrimaryTextSpan
           color="#FFFCCC"
           fontSize="24px"

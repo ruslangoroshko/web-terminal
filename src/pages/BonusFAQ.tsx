@@ -23,7 +23,7 @@ const BonusFAQ = () => {
     <AccountSettingsContainer>
       <FlexContainer
         width="720px"
-        margin="32px auto"
+        margin="0 auto 0 80px"
         flexDirection="column"
       >
         <IconButton onClick={closePage}>

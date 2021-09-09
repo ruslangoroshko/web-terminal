@@ -19,15 +19,7 @@ const NavBar = observer(() => {
 
   const checkWelcomeBonus = async () => {
     try {
-      const response = await API.getUserBonus(mainAppStore.initModel.miscUrl);
-      if (response.responseCode === WelcomeBonusResponseEnum.Ok) {
-        bonusStore.setBonusIsLoaded(true);
-        bonusStore.setBonusData(response.data);
-        console.log(response.data);
-      } else {
-        bonusStore.setBonusIsLoaded(true);
-        bonusStore.setBonusData(null);
-      }
+      await bonusStore.getUserBonus();
     } catch (error) {}
   };
 
