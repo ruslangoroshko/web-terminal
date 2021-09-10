@@ -57,7 +57,7 @@ const AccountSwitcherDropdown = observer(() => {
     <Toggle>
       {({ on, toggle }) => (
         <FlexContainer position="relative">
-          <ButtonSwitcher onClick={toggle}>
+          <ButtonSwitcher toggled={on} onClick={toggle}>
             <FlexContainer>
               <FlexContainer flexDirection="column">
                 <FlexContainer margin="0 0 2px 0">
@@ -136,7 +136,8 @@ const AccountSwitcherDropdown = observer(() => {
               width="100vw"
               height="100vh"
               zIndex="198"
-            ></FlexContainer>
+              onClick={toggle}
+            > </FlexContainer>
           )}
           {!mainAppStore.isPromoAccount && on && (
             <Observer>
@@ -171,7 +172,7 @@ const AccountSwitcherDropdown = observer(() => {
 
 export default AccountSwitcherDropdown;
 
-const ButtonSwitcher = styled(ButtonWithoutStyles)`
+const ButtonSwitcher = styled(ButtonWithoutStyles)<{ toggled: boolean }>`
   position: relative;
-  z-index: 199;
+  z-index: ${(props) => (props.toggled ? '199' : '197')};
 `;

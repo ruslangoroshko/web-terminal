@@ -40,7 +40,7 @@ const BonusDropdown = observer(() => {
     <Toggle>
       {({ on, toggle }) => (
         <FlexContainer position="relative" marginRight="40px">
-          <ButtonSwitcher onClick={toggle}>
+          <ButtonSwitcher toggled={on} onClick={toggle}>
             <FlexContainer>
               <FlexContainer
                 alignItems="center"
@@ -192,9 +192,9 @@ const BonusDropdown = observer(() => {
 
 export default BonusDropdown;
 
-const ButtonSwitcher = styled(ButtonWithoutStyles)`
+const ButtonSwitcher = styled(ButtonWithoutStyles)<{ toggled: boolean }>`
   position: relative;
-  z-index: 199;
+  z-index: ${(props) => (props.toggled ? '199' : '197')};
 `;
 
 const ClickableFlexContainer = styled(FlexContainer)`
