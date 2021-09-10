@@ -66,7 +66,7 @@ function DemoRealPopup() {
         mainAppStore.addTriggerDissableOnboarding();
         try {
           await bonusStore.getUserBonus();
-          if (bonusStore.showBonus()) {
+          if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
             bonusStore.setShowBonusPopup(true);
           } else {
             push(Page.DEPOSIT_POPUP);
