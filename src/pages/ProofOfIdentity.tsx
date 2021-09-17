@@ -19,12 +19,19 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import LoaderForComponents from '../components/LoaderForComponents';
+import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 
 const ProofOfIdentity = observer(() => {
   const [isSubmiting, setSubmit] = useState(true);
   const { t } = useTranslation();
 
-  const { kycStore, badRequestPopupStore, mainAppStore } = useStores();
+  const {
+    kycStore,
+    badRequestPopupStore,
+    mainAppStore,
+    notificationStore,
+  } = useStores();
 
   const { push } = useHistory();
   const [isLoading, setIsLoading] = useState(true);
@@ -72,8 +79,7 @@ const ProofOfIdentity = observer(() => {
       mixpanel.track(mixpanelEvents.KYC_STEP_3);
 
       push(Page.DASHBOARD);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const submitFiles = async () => {
@@ -86,7 +92,7 @@ const ProofOfIdentity = observer(() => {
 
     // TODO: refactor
     try {
-      await Axios.all([
+      const response: any = await Axios.all([
         API.postDocument(
           DocumentTypeEnum.Id,
           customPassportId.file,
@@ -98,6 +104,26 @@ const ProofOfIdentity = observer(() => {
           mainAppStore.initModel.authUrl
         ),
       ]);
+
+      const fileWrongExtension = response.some(
+        (res: any) =>
+          res.result === OperationApiResponseCodes.FileWrongExtension
+      );
+
+      if (fileWrongExtension) {
+        notificationStore.setNotification(
+          t(
+            apiResponseCodeMessages[
+              OperationApiResponseCodes.FileWrongExtension
+            ]
+          )
+        );
+        notificationStore.setIsSuccessfull(false);
+        notificationStore.openNotification();
+        setSubmit(true);
+        return;
+      }
+
       await postPersonalData();
     } catch (error) {
       setSubmit(true);
@@ -135,141 +161,143 @@ const ProofOfIdentity = observer(() => {
   return (
     <FlexContainer flexDirection="column" height="100%" overflow="auto">
       <LoaderForComponents isLoading={isLoading} />
-      {!isLoading && <FlexContainer
-        width="100%"
-        flexDirection="column"
-        alignItems="center"
-        backgroundColor="#252636"
-        padding="40px 32px"
-        minHeight="950px"
-      >
-        <Observer>
-          {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
-        </Observer>
+      {!isLoading && (
         <FlexContainer
-          width="568px"
+          width="100%"
           flexDirection="column"
-          padding="20px 0 0 0"
+          alignItems="center"
+          backgroundColor="#252636"
+          padding="40px 32px"
+          minHeight="950px"
         >
-          <FlexContainer flexDirection="column">
-            <PrimaryTextParagraph
-              fontSize="30px"
-              fontWeight="bold"
-              color="#fffccc"
-              marginBottom="8px"
-            >
-              {t('Proof of indentity')}
-            </PrimaryTextParagraph>
-            <PrimaryTextSpan
-              marginBottom="40px"
-              fontSize="14px"
-              lineHeight="20px"
-              color="rgba(255, 255, 255, 0.4)"
-            >
-              {t(
-                'The documents you sent must be clearly visible. This step is necessary in accordance with the regulatory requirements.'
-              )}
-            </PrimaryTextSpan>
-            <PrimaryTextParagraph
-              fontSize="20px"
-              fontWeight="bold"
-              color="#fffccc"
-              marginBottom="6px"
-            >
-              {t('Passport or ID Card')}
-            </PrimaryTextParagraph>
-            <PrimaryTextParagraph
-              fontSize="14px"
-              color="#fffccc"
-              marginBottom="16px"
-            >
-              {t('The document should clearly show')}:
-            </PrimaryTextParagraph>
-            <PrimaryTextSpan
-              marginBottom="32px"
-              fontSize="14px"
-              lineHeight="20px"
-              color="rgba(255, 255, 255, 0.4)"
-            >
-              {t('Your full name')} / {t('Your photo')} / {t('Date of birth')} /{' '}
-              {t('Expiry date')} / {t('Document number')} /{' '}
-              {t('Your signature')}
-            </PrimaryTextSpan>
-          </FlexContainer>
-
+          <Observer>
+            {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
+          </Observer>
           <FlexContainer
+            width="568px"
             flexDirection="column"
-            margin="0 0 64px 0"
-            minHeight="120px"
+            padding="20px 0 0 0"
           >
-            <DragNDropArea
-              hasError={error.passport}
-              onFileReceive={handleFileReceive(setCustomPassportId)}
-              file={customPassportId.file}
-              fileUrl={customPassportId.fileSrc}
-            />
-          </FlexContainer>
-
-          <FlexContainer flexDirection="column">
-            <PrimaryTextParagraph
-              fontSize="20px"
-              fontWeight="bold"
-              color="#fffccc"
-              marginBottom="6px"
-            >
-              {t('Housing and communal services receipt')}
-            </PrimaryTextParagraph>
-            <PrimaryTextParagraph
-              fontSize="14px"
-              color="#fffccc"
-              marginBottom="16px"
-            >
-              {t(
-                'The Document that should contain the address of your current residence'
-              )}
-              :
-            </PrimaryTextParagraph>
-            <PrimaryTextSpan
-              marginBottom="32px"
-              fontSize="14px"
-              lineHeight="20px"
-              color="rgba(255, 255, 255, 0.4)"
-            >
-              {t('Street address')} / {t('City')} / {t('Province')} /{' '}
-              {t('State')} / {t('Country')}
-            </PrimaryTextSpan>
-          </FlexContainer>
-
-          <FlexContainer
-            flexDirection="column"
-            margin="0 0 64px 0"
-            minHeight="120px"
-          >
-            <DragNDropArea
-              hasError={error.address}
-              onFileReceive={handleFileReceive(setCustomProofOfAddress)}
-              file={customProofOfAddress.file}
-              fileUrl={customProofOfAddress.fileSrc}
-            />
-          </FlexContainer>
-          <FlexContainer margin="0 0 32px 0" justifyContent="center">
-            <PrimaryButton
-              onClick={submitFiles}
-              padding="8px 32px"
-              disabled={!isSubmiting}
-            >
-              {t('Save and continue')}
-            </PrimaryButton>
-          </FlexContainer>
-          <FlexContainer justifyContent="center">
-            <ButtonWithoutStyles onClick={attachLater}>
-              <PrimaryTextSpan color="#07FAFF" fontSize="14px">
-                {t('Attach documents later')}
+            <FlexContainer flexDirection="column">
+              <PrimaryTextParagraph
+                fontSize="30px"
+                fontWeight="bold"
+                color="#fffccc"
+                marginBottom="8px"
+              >
+                {t('Proof of indentity')}
+              </PrimaryTextParagraph>
+              <PrimaryTextSpan
+                marginBottom="40px"
+                fontSize="14px"
+                lineHeight="20px"
+                color="rgba(255, 255, 255, 0.4)"
+              >
+                {t(
+                  'The documents you sent must be clearly visible. This step is necessary in accordance with the regulatory requirements.'
+                )}
               </PrimaryTextSpan>
-            </ButtonWithoutStyles>
+              <PrimaryTextParagraph
+                fontSize="20px"
+                fontWeight="bold"
+                color="#fffccc"
+                marginBottom="6px"
+              >
+                {t('Passport or ID Card')}
+              </PrimaryTextParagraph>
+              <PrimaryTextParagraph
+                fontSize="14px"
+                color="#fffccc"
+                marginBottom="16px"
+              >
+                {t('The document should clearly show')}:
+              </PrimaryTextParagraph>
+              <PrimaryTextSpan
+                marginBottom="32px"
+                fontSize="14px"
+                lineHeight="20px"
+                color="rgba(255, 255, 255, 0.4)"
+              >
+                {t('Your full name')} / {t('Your photo')} / {t('Date of birth')}{' '}
+                / {t('Expiry date')} / {t('Document number')} /{' '}
+                {t('Your signature')}
+              </PrimaryTextSpan>
+            </FlexContainer>
+
+            <FlexContainer
+              flexDirection="column"
+              margin="0 0 64px 0"
+              minHeight="120px"
+            >
+              <DragNDropArea
+                hasError={error.passport}
+                onFileReceive={handleFileReceive(setCustomPassportId)}
+                file={customPassportId.file}
+                fileUrl={customPassportId.fileSrc}
+              />
+            </FlexContainer>
+
+            <FlexContainer flexDirection="column">
+              <PrimaryTextParagraph
+                fontSize="20px"
+                fontWeight="bold"
+                color="#fffccc"
+                marginBottom="6px"
+              >
+                {t('Housing and communal services receipt')}
+              </PrimaryTextParagraph>
+              <PrimaryTextParagraph
+                fontSize="14px"
+                color="#fffccc"
+                marginBottom="16px"
+              >
+                {t(
+                  'The Document that should contain the address of your current residence'
+                )}
+                :
+              </PrimaryTextParagraph>
+              <PrimaryTextSpan
+                marginBottom="32px"
+                fontSize="14px"
+                lineHeight="20px"
+                color="rgba(255, 255, 255, 0.4)"
+              >
+                {t('Street address')} / {t('City')} / {t('Province')} /{' '}
+                {t('State')} / {t('Country')}
+              </PrimaryTextSpan>
+            </FlexContainer>
+
+            <FlexContainer
+              flexDirection="column"
+              margin="0 0 64px 0"
+              minHeight="120px"
+            >
+              <DragNDropArea
+                hasError={error.address}
+                onFileReceive={handleFileReceive(setCustomProofOfAddress)}
+                file={customProofOfAddress.file}
+                fileUrl={customProofOfAddress.fileSrc}
+              />
+            </FlexContainer>
+            <FlexContainer margin="0 0 32px 0" justifyContent="center">
+              <PrimaryButton
+                onClick={submitFiles}
+                padding="8px 32px"
+                disabled={!isSubmiting}
+              >
+                {t('Save and continue')}
+              </PrimaryButton>
+            </FlexContainer>
+            <FlexContainer justifyContent="center">
+              <ButtonWithoutStyles onClick={attachLater}>
+                <PrimaryTextSpan color="#07FAFF" fontSize="14px">
+                  {t('Attach documents later')}
+                </PrimaryTextSpan>
+              </ButtonWithoutStyles>
+            </FlexContainer>
           </FlexContainer>
         </FlexContainer>
-      </FlexContainer>}
+      )}
     </FlexContainer>
   );
 });

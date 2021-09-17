@@ -8,10 +8,11 @@ import { useHistory } from 'react-router';
 import Page from '../constants/Pages';
 import DepositPaymentResultPopup from '../components/DepositPopup/DepositPaymentResultPopup/DepositPaymentResultPopup';
 import BonusPopup from '../components/BonusPopup';
+import NotificationPopup from '../components/NotificationPopup';
 
 const KYCcontainer: FC = observer((props) => {
   const { children } = props;
-  const { mainAppStore } = useStores();
+  const { mainAppStore, notificationStore } = useStores();
   const { push } = useHistory();
   const [showNavBar, setShowNavBar] = useState<boolean>(false);
 
@@ -34,6 +35,19 @@ const KYCcontainer: FC = observer((props) => {
       flexDirection="column"
     >
       {showNavBar && <NavBar></NavBar>}
+      <FlexContainer
+        position="absolute"
+        bottom="100px"
+        left="14px"
+        zIndex="1005"
+      >
+        <NotificationPopup
+          show={
+            notificationStore.isActiveNotification &&
+            !notificationStore.isActiveNotificationGlobal
+          }
+        />
+      </FlexContainer>
       <Observer>
         {() => (
           <>
