@@ -113,8 +113,8 @@ const EducationQuestionsPage: FC = observer(() => {
               frameBorder="none"
               width="720px"
               height="calc(100% - 142px)"
-              // src={`${window.location.origin}/${educationStore.activeQuestion?.pages[activePage]?.url || ''}`}
-              src={`${educationStore.activeQuestion?.pages[activePage]?.url || ''}`}
+              src={`${window.location.origin}/${educationStore.activeQuestion?.pages[activePage]?.url || ''}`}
+              // src={`${educationStore.activeQuestion?.pages[activePage]?.url || ''}`}
             />
           </FlexContainer>
           <FlexContainer
