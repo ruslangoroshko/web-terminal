@@ -155,18 +155,22 @@ const EducationQuestionsList = observer(() => {
                       {counter + 1}
                     </PrimaryTextSpan>
                   </FlexContainer>
-                  <PrimaryTextSpan
-                    fontSize="14px"
-                    lineHeight="18.2px"
-                    color={
-                      item.id === educationStore.activeQuestion?.id
-                        ? '#fff'
-                        : 'rgba(255, 255, 255, 0.64)'
-                    }
-                    marginRight="8px"
+                  <FlexContainer
+                    maxWidth="250px"
                   >
-                    {item.title}
-                  </PrimaryTextSpan>
+                    <PrimaryTextSpan
+                      fontSize="14px"
+                      lineHeight="18.2px"
+                      color={
+                        item.id === educationStore.activeQuestion?.id
+                          ? '#fff'
+                          : 'rgba(255, 255, 255, 0.64)'
+                      }
+                      marginRight="8px"
+                    >
+                      {item.title}
+                    </PrimaryTextSpan>
+                  </FlexContainer>
                 </FlexContainer>
                 <FlexContainer>
                   {
@@ -205,6 +209,7 @@ const QuestionsWrapper = styled(FlexContainer)`
 `;
 
 const QuestionWrapper = styled(FlexContainer)`
+  min-height: 56px;
   cursor: pointer;
   translate: 0.4s;
   &:hover {
