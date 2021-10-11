@@ -14,11 +14,17 @@ import IconHalfStar from '../../assets/svg/halfStar.svg';
 import IconShevronDown from '../../assets/svg/icon-shevron-down-sort-by.svg';
 import IconEducation from '../../assets/svg/icon-education.svg';
 import { PrimaryButton } from '../../styles/Buttons';
+import { CourseEnum } from '../../enums/CourseEnum';
 
 interface Props {
   course: IEducationCourses;
   counter: number;
 }
+
+const checkOrderByTitle = (title: string) => {
+  // @ts-ignore
+  return `${CourseEnum[title]}`;
+};
 
 const EducationCourse: FC<Props> = observer((props) => {
 
@@ -117,6 +123,7 @@ const EducationCourse: FC<Props> = observer((props) => {
     <CourseWrapper
       padding="12px 16px"
       flexDirection="column"
+      titleForOrder={props.course.title}
     >
       <FlexContainer
         height="60px"
@@ -229,10 +236,11 @@ const EducationCourse: FC<Props> = observer((props) => {
 
 export default EducationCourse;
 
-const CourseWrapper = styled(FlexContainer)`
+const CourseWrapper = styled(FlexContainer)<{ titleForOrder: string }>`
   cursor: pointer;
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
   translate: 0.4s;
+  order: ${(props) => checkOrderByTitle(props.titleForOrder)}
   &:hover {
     background: rgba(28, 31, 38, 0.5);
   }
