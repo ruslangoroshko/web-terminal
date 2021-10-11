@@ -28,6 +28,8 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 import Page from '../constants/Pages';
 import ReconnectTestBar from '../components/TestComponents/ReconnectTestBar';
 import BonusPopup from '../components/BonusPopup';
+import Education from '../components/SideBarTabs/Education';
+import EducationExpanded from '../components/SideBarTabs/EducationExpanded';
 
 interface Props {}
 
@@ -68,6 +70,13 @@ const RenderTabByType: FC = observer(() => {
         </ResizableContentAnimationWrapper>
       );
 
+    case SideBarTabType.Education:
+      return (
+        <ResizableContentAnimationWrapper>
+          <Education></Education>
+        </ResizableContentAnimationWrapper>
+      );
+
     default:
       return null;
   }
@@ -93,6 +102,9 @@ const RenderExpandedTabByType = observer(() => {
 
     case SideBarTabType.History:
       return <TradingHistoryExpanded></TradingHistoryExpanded>;
+
+    case SideBarTabType.Education:
+      return <Observer>{() => (<EducationExpanded />)}</Observer>;
 
     default:
       return null;

@@ -151,7 +151,7 @@ export class MainAppStore implements MainAppStoreProps {
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
 
-  connectTimeOut = 30000; // 5000;
+  connectTimeOut = 10000; // 5000;
   requestReconnectCounter = 0;
   signalRReconectCounter = 0;
 
@@ -801,6 +801,13 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.bonusStore.setShowBonusDeposit(false);
     this.rootStore.bonusStore.setBonusIsLoaded(false);
     this.rootStore.bonusStore.refreshBonusParams();
+    this.rootStore.educationStore.setCoursesList(null);
+    this.rootStore.educationStore.setEducationIsLoaded(false);
+    this.rootStore.educationStore.setActiveQuestion(null);
+    this.rootStore.educationStore.setActiveCourse(null);
+    this.rootStore.educationStore.setShowPopup(false);
+    this.rootStore.educationStore.setQuestionsList(null);
+    this.rootStore.tabsStore.setTabExpanded(false);
     if (this.activeAccount) {
       this.setParamsAsset(null);
       this.setParamsMarkets(null);
@@ -930,7 +937,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   setConnectionTimeout = (timeout: number) => {
-    this.connectTimeOut = 30000; //timeout || 5000;
+    this.connectTimeOut = 10000; //timeout || 5000;
   };
 
   @action

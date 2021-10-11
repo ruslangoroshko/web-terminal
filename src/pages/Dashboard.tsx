@@ -26,6 +26,7 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import ShouldValidatePhonePopup from '../components/ShouldValidatePhonePopup';
 import ConfirmPopup from '../components/ConfirmPopup';
 import FavoriteInstrumetsBar from '../components/FavoriteInstrumetsBar';
+import EducationPopup from '../components/EducationPopup';
 
 const Dashboard: FC = observer(() => {
   const {
@@ -34,6 +35,7 @@ const Dashboard: FC = observer(() => {
     notificationStore,
     phoneVerificationStore,
     tradingViewStore,
+    educationStore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -104,6 +106,7 @@ const Dashboard: FC = observer(() => {
       {!!paymentStatus && (
         <StatusPaymentPopup status={paymentStatus}></StatusPaymentPopup>
       )}
+      <Observer>{() => <>{educationStore.showPopup && <EducationPopup> </EducationPopup>}</>}</Observer>
       <FlexContainer
         position="absolute"
         bottom="100px"

@@ -157,6 +157,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         API_LIST.DEBUG.POST,
         API_LIST.ONBOARDING.STEPS,
         API_LIST.WELCOME_BONUS.GET,
+        API_LIST.EDUCATION.LIST,
       ];
 
       const sendClientLog = () => {
@@ -199,8 +200,15 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         return Promise.reject(error);
       }
       if (
-        (getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS) ||
-        getApiUrl(requestUrl).includes(API_LIST.WELCOME_BONUS.GET)) &&
+        (
+          getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS) ||
+          getApiUrl(requestUrl).includes(API_LIST.WELCOME_BONUS.GET) ||
+          (
+            getApiUrl(requestUrl).includes(API_LIST.EDUCATION.LIST) &&
+            !getApiUrl(requestUrl).includes(`${API_LIST.EDUCATION.LIST}/`) &&
+            error.config.method === 'get'
+          )
+        ) &&
         error.response?.status !== 401 &&
         error.response?.status !== 403
       ) {

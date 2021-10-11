@@ -71,6 +71,7 @@ import { BrandEnum } from '../constants/brandingLinksTranslate';
 import { OnBoardingInfo } from '../types/OnBoardingTypes';
 import { DebugResponse, DebugTypes } from '../types/DebugTypes';
 import requestOptions from '../constants/requestOptions';
+import { IEducationCoursesDTO, IEducationQuestionsDTO } from '../types/EducationTypes';
 
 class API {
   private convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -608,14 +609,6 @@ class API {
     return response.data;
   };
 
-  postDebug = async (params: DebugTypes, apiUrl: string) => {
-    const response = await axios.post<DebugResponse>(
-      `${API_STRING || apiUrl}${API_LIST.DEBUG.POST}`,
-      params
-    );
-    return response.data;
-  };
-
   getUserBonus = async (miscUrl: string) => {
     const needToAdd =
       (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
@@ -626,6 +619,47 @@ class API {
     return response.data;
   };
 
+  getListOfCourses = async (miscUrl: string) => {
+    const needToAdd =
+      (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
+    const response = await axios.get<IEducationCoursesDTO>(
+      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.EDUCATION.LIST}`,
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+
+  getQuestionsByCourses = async (miscUrl: string, id: string) => {
+    const needToAdd =
+      (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
+    const response = await axios.get<IEducationQuestionsDTO>(
+      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.EDUCATION.LIST}/${id}`,
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+
+  saveProgressEducation = async (miscUrl: string, id: string, index: number) => {
+    const needToAdd =
+      (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
+    const response = await axios.post<IEducationCoursesDTO>(
+      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.EDUCATION.LIST}/${id}/saveProgress`,
+      {
+        lastQuestionId: index
+      },
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+
+
+  postDebug = async (params: DebugTypes, apiUrl: string) => {
+    const response = await axios.post<DebugResponse>(
+      `${API_STRING || apiUrl}${API_LIST.DEBUG.POST}`,
+      params
+    );
+    return response.data;
+  };
 
   testBGrequest = async () => {
     const response = await axios.get(
