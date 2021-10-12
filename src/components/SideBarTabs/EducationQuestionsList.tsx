@@ -79,7 +79,7 @@ const EducationQuestionsList = observer(() => {
   }
 
   return (
-    <FlexContainer flexDirection="column" height="100%" width="360px">
+    <FlexContainer flexDirection="column" height="100%" minWidth="360px" width="360px">
       <QuestionsHeader
         justifyContent="center"
         alignItems="center"
@@ -138,6 +138,11 @@ const EducationQuestionsList = observer(() => {
                     : 'rgba(28, 31, 38, 0)'
                 }
                 onClick={handleOpenQuestion(item)}
+                hasAccess={
+                  (educationStore.activeCourse &&
+                  counter <= educationStore.activeCourse?.lastQuestionNumber) ||
+                  false
+                }
               >
                 <FlexContainer
                   alignItems="center"
@@ -193,7 +198,7 @@ export default EducationQuestionsList;
 
 const QuestionsWrapper = styled(FlexContainer)`
   overflow-y: auto;
-  max-height: calc(100% - 160px);
+  max-height: calc(100% - 48px);
 
   ::-webkit-scrollbar {
     width: 4px;
@@ -208,9 +213,10 @@ const QuestionsWrapper = styled(FlexContainer)`
   }
 `;
 
-const QuestionWrapper = styled(FlexContainer)`
+const QuestionWrapper = styled(FlexContainer)<{ hasAccess: boolean }>`
   min-height: 56px;
-  cursor: pointer;
+  cursor: ${ (props) => props.hasAccess ? 'pointer' : 'default' };
+  pointer-events: ${ (props) => props.hasAccess ? 'true' : 'none' };
   translate: 0.4s;
   &:hover {
     background: rgba(28, 31, 38, 0.5);

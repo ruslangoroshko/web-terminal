@@ -14,6 +14,7 @@ import Badge from '../../styles/Badge';
 import { useTranslation } from 'react-i18next';
 import API from '../../helpers/API';
 import { WelcomeBonusResponseEnum } from '../../enums/WelcomeBonusResponseEnum';
+import EducationPopup from '../EducationPopup';
 
 const SideBar = observer(() => {
   const {
@@ -57,7 +58,7 @@ const SideBar = observer(() => {
       } catch {}
     }
     getCourses();
-  }, []);
+  }, [mainAppStore.lang]);
 
   return (
     <BottonNavBarWrapper
@@ -110,6 +111,7 @@ const SideBar = observer(() => {
           setSideBarActive={setSideBarActive(SideBarTabType.Education)}
         />
       }
+      <Observer>{() => <>{educationStore.showPopup && <EducationPopup> </EducationPopup>}</>}</Observer>
     </BottonNavBarWrapper>
   );
 });

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { useStores } from '../../hooks/useStores';
 import { CountriesEnum } from '../../enums/CountriesEnum';
@@ -14,13 +14,24 @@ import styled from '@emotion/styled';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { observer } from 'mobx-react-lite';
+import { SideBarTabType } from '../../enums/SideBarTabType';
 
 const ListOfCountries = observer(() => {
-  const { mainAppStore } = useStores();
+  const { mainAppStore, educationStore, tabsStore } = useStores();
   const [list, setList] = useState(ListForEN);
 
   const changeCountry = (newLang: CountriesEnum) => () => {
+    educationStore.setQuestionsList(null);
+    educationStore.setShowPopup(false);
+    educationStore.setActiveCourse(null);
+    educationStore.setActiveQuestion(null);
+    educationStore.setCoursesList(null);
+    educationStore.setEducationIsLoaded(false);
     mainAppStore.setLanguage(newLang);
+    if (tabsStore.sideBarTabType === SideBarTabType.Education) {
+      tabsStore.setSideBarType(null);
+      tabsStore.setTabExpanded(false);
+    }
   };
 
   useEffect(() => {

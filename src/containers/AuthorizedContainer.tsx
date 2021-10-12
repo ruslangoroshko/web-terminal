@@ -104,7 +104,7 @@ const RenderExpandedTabByType = observer(() => {
       return <TradingHistoryExpanded></TradingHistoryExpanded>;
 
     case SideBarTabType.Education:
-      return <Observer>{() => (<EducationExpanded />)}</Observer>;
+      return <EducationExpanded />;
 
     default:
       return null;
@@ -312,7 +312,8 @@ const TabsLayoutWrapper = styled(FlexContainer)<
     props.isExpanded ? 'translateX(100%)' : 'translateX(-60px)'};
   backface-visibility: hidden;
   will-change: transform;
-  transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+  transition: transform ${(props) =>
+  props.isExpanded ? '0.7s' : '0'} cubic-bezier(0.77, 0, 0.175, 1);
 `;
 
 const SideBarAndPageContentWrapper = styled(FlexContainer)`

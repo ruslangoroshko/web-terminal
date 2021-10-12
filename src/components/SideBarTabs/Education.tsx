@@ -8,21 +8,28 @@ import { useTranslation } from 'react-i18next';
 import EducationCourse from './EducationCourse';
 
 const Education = observer(() => {
-  const { educationStore } = useStores();
+  const { educationStore, tabsStore } = useStores();
 
   const { t } = useTranslation();
 
+  const [openTab, setOpenTab] = useState<string>('');
+
   useEffect(() => {
+    tabsStore.setTabExpanded(false);
     educationStore.setActiveCourse(null);
     educationStore.setQuestionsList(null)
   }, []);
+
+  const handleOpenTab = (id: string) => {
+    setOpenTab(id);
+  };
 
   if (educationStore.activeCourse) {
     return null;
   }
 
   return (
-    <FlexContainer flexDirection="column" height="100%">
+    <FlexContainer minWidth="320px" flexDirection="column" height="100%">
       <FlexContainer padding="12px 16px" margin="0 0 8px 0">
         <PrimaryTextSpan
           fontSize="12px"
@@ -63,7 +70,13 @@ const Education = observer(() => {
         {() => (
           <EducationWrapper flexDirection="column">
             {educationStore.coursesList?.map((item, counter) => (
-              <EducationCourse key={item.id} course={item} counter={counter} />
+              <EducationCourse
+                key={item.id}
+                on={openTab === item.id}
+                handleOpen={handleOpenTab}
+                course={item}
+                counter={counter}
+              />
             ))}
           </EducationWrapper>
         )}

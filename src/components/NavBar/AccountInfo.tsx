@@ -65,6 +65,7 @@ const AccountInfo: FC<Props> = observer((props) => {
     sortingStore,
     markersOnChartStore,
     bonusStore,
+    educationStore,
   } = useStores();
   const { push } = useHistory();
 
@@ -111,6 +112,11 @@ const AccountInfo: FC<Props> = observer((props) => {
     mainAppStore.setParamsPortfolioHistory(null);
     mainAppStore.setParamsPortfolioTab(null);
     mainAppStore.setParamsDeposit(false);
+    educationStore.setActiveQuestion(null);
+    educationStore.setActiveCourse(null);
+    educationStore.setShowPopup(false);
+    educationStore.setQuestionsList(null);
+    tabsStore.setTabExpanded(false);
     toggle();
     push(Page.DASHBOARD);
 

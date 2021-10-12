@@ -167,7 +167,4 @@ const EducationButton = styled(PrimaryButton)<{ handleType?: string }>`
   &:focus {
     background-color: ${(props) => props.handleType === 'prev' ? 'rgba(255, 255, 255, 0.12)' : '#00ffdd'};
   }
-  &:disabled {
-    opacity: 0.2;
-  }
 `;

@@ -18,21 +18,23 @@ import { PrimaryButton } from '../../styles/Buttons';
 interface Props {
   course: IEducationCourses;
   counter: number;
+  on: boolean;
+  handleOpen: (id: string) => void;
 }
 
 const EducationCourse: FC<Props> = observer((props) => {
 
   const {
     course: { id, title, description, lastQuestionNumber, totalQuestions },
-    counter
+    counter,
+    on,
+    handleOpen
   } = props;
 
   const {
     educationStore,
     tabsStore
   } = useStores();
-
-  const [on, toggle] = useState<boolean>(false);
 
   const { t } = useTranslation();
 
@@ -104,8 +106,8 @@ const EducationCourse: FC<Props> = observer((props) => {
     }
   };
 
-  const toggling = () => {
-    toggle(!on);
+  const toggling = (id: string) => () => {
+    handleOpen(on ? '' : id);
   };
 
   const handleOpenQuestions = () => {
@@ -117,14 +119,14 @@ const EducationCourse: FC<Props> = observer((props) => {
     <CourseWrapper
       padding="12px 16px"
       flexDirection="column"
-      titleForOrder={props.course.title}
+      titleForOrder={title}
     >
       <FlexContainer
         height="60px"
         alignItems="center"
         justifyContent="space-between"
         width="100%"
-        onClick={toggling}
+        onClick={toggling(id)}
         marginBottom={on ? '16px' : '0'}
       >
         <FlexContainer alignItems="center">

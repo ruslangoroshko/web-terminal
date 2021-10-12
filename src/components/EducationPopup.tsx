@@ -20,7 +20,7 @@ import Lottie from 'react-lottie';
 
 const EducationPopup: FC = () => {
   const { push } = useHistory();
-  const { educationStore, tabsStore } = useStores();
+  const { educationStore, tabsStore, bonusStore } = useStores();
 
   const getLottieOptions = (animationData: any, loop: boolean = false) => {
     return {
@@ -56,6 +56,7 @@ const EducationPopup: FC = () => {
     educationStore.setQuestionsList(null);
     tabsStore.setTabExpanded(false);
     educationStore.setShowPopup(false);
+    bonusStore.setShowBonusDeposit(true);
     push(Page.DEPOSIT_POPUP);
   };
 
