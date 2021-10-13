@@ -50,7 +50,6 @@ const EducationQuestionsPage: FC = observer(() => {
               ...item,
               lastQuestionNumber: indexOfQuestion + 1
             };
-            educationStore.setActiveCourse(newCourse);
             return newCourse;
           }
           return item;

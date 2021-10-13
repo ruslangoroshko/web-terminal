@@ -73,53 +73,54 @@ const EducationQuestionsList = observer(() => {
     }
     return 1;
   };
+
   return (
     <FlexContainer flexDirection="column" height="100%" minWidth="360px" width="360px">
+      <QuestionsHeader
+        justifyContent="center"
+        alignItems="center"
+        position="relative"
+        height="48px"
+      >
+        <FlexContainer position="absolute" top="16px" left="20px">
+          <ButtonWithoutStyles onClick={handleCloseCourse}>
+            <SvgIcon
+              {...CloseIcon}
+              fillColor="#77797D"
+              hoverFillColor="#fff"
+            />
+          </ButtonWithoutStyles>
+        </FlexContainer>
+        <FlexContainer position="absolute" top="14px" right="16px">
+          <PrimaryTextSpan
+            fontSize="14px"
+            lineHeight="19.6px"
+            color="#fff"
+          >
+            {checkNumberOfQuestion()} &nbsp;
+          </PrimaryTextSpan>
+          <PrimaryTextSpan
+            fontSize="14px"
+            lineHeight="19.6px"
+            color="#77797D"
+          >
+            / {educationStore.activeCourse?.totalQuestions}
+          </PrimaryTextSpan>
+        </FlexContainer>
+        <FlexContainer>
+          <PrimaryTextSpan
+            fontSize="14px"
+            lineHeight="18px"
+            color="#fff"
+          >
+            {educationStore.activeCourse?.title}
+          </PrimaryTextSpan>
+        </FlexContainer>
+      </QuestionsHeader>
       {
         isLoading
           ? <LoaderForComponents isLoading={isLoading} />
           : <>
-            <QuestionsHeader
-              justifyContent="center"
-              alignItems="center"
-              position="relative"
-              height="48px"
-            >
-              <FlexContainer position="absolute" top="16px" left="20px">
-                <ButtonWithoutStyles onClick={handleCloseCourse}>
-                  <SvgIcon
-                    {...CloseIcon}
-                    fillColor="#77797D"
-                    hoverFillColor="#fff"
-                  />
-                </ButtonWithoutStyles>
-              </FlexContainer>
-              <FlexContainer position="absolute" top="14px" right="16px">
-                <PrimaryTextSpan
-                  fontSize="14px"
-                  lineHeight="19.6px"
-                  color="#fff"
-                >
-                  {checkNumberOfQuestion()} &nbsp;
-                </PrimaryTextSpan>
-                <PrimaryTextSpan
-                  fontSize="14px"
-                  lineHeight="19.6px"
-                  color="#77797D"
-                >
-                  / {educationStore.activeCourse?.totalQuestions}
-                </PrimaryTextSpan>
-              </FlexContainer>
-              <FlexContainer>
-                <PrimaryTextSpan
-                  fontSize="14px"
-                  lineHeight="18px"
-                  color="#fff"
-                >
-                  {educationStore.activeCourse?.title}
-                </PrimaryTextSpan>
-              </FlexContainer>
-            </QuestionsHeader>
             <Observer>
               {() => (
                 <QuestionsWrapper flexDirection="column">

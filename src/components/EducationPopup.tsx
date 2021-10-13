@@ -37,9 +37,13 @@ const EducationPopup: FC = observer(() => {
   };
 
   const nextCourse = () => {
-    const indexOfCourse: null | number | undefined = educationStore.activeCourse
-      ? educationStore.coursesList?.indexOf(educationStore.activeCourse)
-      : null;
+    let indexOfCourse: null | number | undefined = null;
+    educationStore.coursesList?.map((item, index) => {
+      if (item.id === educationStore.activeCourse?.id) {
+        indexOfCourse = index;
+      }
+      return item;
+    });
     educationStore.setActiveCourse(null);
     console.log('indexOfCourse', indexOfCourse);
     console.log('educationStore.coursesList', educationStore.coursesList);
