@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
@@ -18,6 +18,7 @@ const EducationQuestionsList = observer(() => {
   const { educationStore, mainAppStore, tabsStore } = useStores();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [lastCourseId, setLastCourseId] = useState<string>('');
 
   useEffect(() => {
     let cleanupFunction = false;
@@ -45,7 +46,11 @@ const EducationQuestionsList = observer(() => {
         }
       } catch {}
     }
-    if (educationStore.activeCourse) {
+    if (
+      educationStore.activeCourse &&
+      educationStore.activeCourse?.id !== lastCourseId
+    ) {
+      setLastCourseId(educationStore.activeCourse.id);
       getCourses();
     }
     return () => {
@@ -73,6 +78,16 @@ const EducationQuestionsList = observer(() => {
     }
     return 1;
   };
+
+  const checkLastQuestionNumber = useCallback(() => {
+    const lastNumber = educationStore.coursesList?.find(
+      (item) => item.id === educationStore.activeCourse?.id
+    )?.lastQuestionNumber;
+    return lastNumber || 0;
+  }, [
+    educationStore.activeCourse,
+    educationStore.coursesList
+  ]);
 
   return (
     <FlexContainer flexDirection="column" height="100%" minWidth="360px" width="360px">
@@ -140,7 +155,7 @@ const EducationQuestionsList = observer(() => {
                       onClick={handleOpenQuestion(item)}
                       hasAccess={
                         (educationStore.activeCourse &&
-                          counter <= educationStore.activeCourse?.lastQuestionNumber) ||
+                          counter <= checkLastQuestionNumber()) ||
                         false
                       }
                     >

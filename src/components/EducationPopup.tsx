@@ -45,15 +45,41 @@ const EducationPopup: FC = observer(() => {
       return item;
     });
     educationStore.setActiveCourse(null);
-    console.log('indexOfCourse', indexOfCourse);
-    console.log('educationStore.coursesList', educationStore.coursesList);
     if (
       (indexOfCourse !== null && indexOfCourse !== undefined) &&
-      educationStore.coursesList &&
-      educationStore.coursesList[indexOfCourse + 1]
+      educationStore.coursesList
     ) {
-      console.log('is here')
-      educationStore.setActiveCourse(educationStore.coursesList[indexOfCourse + 1]);
+      switch (indexOfCourse) {
+        case 0:
+          if (
+            educationStore.coursesList[1]?.totalQuestions === educationStore.coursesList[1]?.totalQuestions
+          ) {
+            educationStore.setActiveCourse(educationStore.coursesList[indexOfCourse + 2]);
+          } else {
+            educationStore.setActiveCourse(educationStore.coursesList[indexOfCourse + 1]);
+          }
+          break;
+        case 1:
+          if (
+            educationStore.coursesList[2]?.totalQuestions === educationStore.coursesList[2]?.totalQuestions
+          ) {
+            educationStore.setActiveCourse(educationStore.coursesList[0]);
+          } else {
+            educationStore.setActiveCourse(educationStore.coursesList[indexOfCourse + 1]);
+          }
+          break;
+        case 2:
+          if (
+            educationStore.coursesList[0]?.totalQuestions === educationStore.coursesList[0]?.totalQuestions
+          ) {
+            educationStore.setActiveCourse(educationStore.coursesList[1]);
+          } else {
+            educationStore.setActiveCourse(educationStore.coursesList[0]);
+          }
+          break;
+        default:
+          educationStore.setActiveCourse(educationStore.coursesList[indexOfCourse + 1]);
+      }
     }
     educationStore.setShowPopup(false);
   };
@@ -76,17 +102,11 @@ const EducationPopup: FC = observer(() => {
     educationStore.setShowPopup(false);
   };
 
-  const checkLastCourse = useCallback(() => {
-    return (
-      educationStore.coursesList &&
-      educationStore.activeCourse?.id === educationStore.coursesList[
-        educationStore.coursesList?.length! - 1
-      ]?.id || false
+  const checkLastCourses = useCallback(() => {
+    return educationStore.coursesList?.every(
+      (item) => item.lastQuestionNumber === item.totalQuestions
     );
-  }, [
-    educationStore.activeCourse,
-    educationStore.coursesList
-  ]);
+  }, [educationStore.coursesList]);
 
   const { t } = useTranslation();
 
@@ -201,7 +221,7 @@ const EducationPopup: FC = observer(() => {
                   </PrimaryButton>
                 </FlexContainer>
                 <NextButton
-                  onClick={checkLastCourse() ? closePopup : nextCourse}
+                  onClick={checkLastCourses() ? closePopup : nextCourse}
                   width="100%"
                 >
                   <PrimaryTextSpan
@@ -209,7 +229,7 @@ const EducationPopup: FC = observer(() => {
                     fontSize="16px"
                     color="#fff"
                   >
-                    {checkLastCourse() ? t('Finish Course') : t('Next Course')}
+                    {checkLastCourses() ? t('Finish Course') : t('Next Course')}
                   </PrimaryTextSpan>
                 </NextButton>
               </FlexContainer>
