@@ -105,13 +105,13 @@ const EducationQuestionsPage: FC = observer(() => {
       {educationStore.activeQuestion &&
         <>
           <FlexContainer
-            width="720px"
-            height="calc(100% - 142px)"
-            margin="32px auto 10px"
+            width="100%"
+            height="calc(100% - 110px)"
+            margin="0 auto 10px"
           >
             <iframe
               frameBorder="none"
-              width="720px"
+              width="100%"
               height="calc(100% - 142px)"
               src={`${window.location.origin}/${educationStore.activeQuestion?.pages[activePage]?.url || ''}`}
               // src={`${educationStore.activeQuestion?.pages[activePage]?.url || ''}`}

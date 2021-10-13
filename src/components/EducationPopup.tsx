@@ -17,8 +17,9 @@ import { useTranslation } from 'react-i18next';
 import * as successIcon from '../assets/lotties/success-icon.json';
 import * as confettie from '../assets/lotties/confettie-animation.json';
 import Lottie from 'react-lottie';
+import { observer } from 'mobx-react-lite';
 
-const EducationPopup: FC = () => {
+const EducationPopup: FC = observer(() => {
   const { push } = useHistory();
   const { educationStore, tabsStore, bonusStore } = useStores();
 
@@ -40,11 +41,14 @@ const EducationPopup: FC = () => {
       ? educationStore.coursesList?.indexOf(educationStore.activeCourse)
       : null;
     educationStore.setActiveCourse(null);
+    console.log('indexOfCourse', indexOfCourse);
+    console.log('educationStore.coursesList', educationStore.coursesList);
     if (
       (indexOfCourse !== null && indexOfCourse !== undefined) &&
       educationStore.coursesList &&
       educationStore.coursesList[indexOfCourse + 1]
     ) {
+      console.log('is here')
       educationStore.setActiveCourse(educationStore.coursesList[indexOfCourse + 1]);
     }
     educationStore.setShowPopup(false);
@@ -211,7 +215,7 @@ const EducationPopup: FC = () => {
       </Modal>
     </>
   );
-};
+});
 
 export default EducationPopup;
 

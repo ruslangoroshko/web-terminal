@@ -104,6 +104,7 @@ const SideBar = observer(() => {
       {
         educationStore.educationIsLoaded &&
         educationStore.coursesList !== null &&
+        educationStore.coursesList.length > 0 &&
         <SideBarButton
           iconProps={IconEducation}
           title={t('Education')}
