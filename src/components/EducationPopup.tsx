@@ -49,39 +49,31 @@ const EducationPopup: FC = observer(() => {
       (indexOfCourse !== null && indexOfCourse !== undefined) &&
       educationStore.coursesList
     ) {
-      console.log(indexOfCourse);
-      console.log(educationStore.coursesList);
       switch (indexOfCourse) {
         case 0:
           if (
-            educationStore.coursesList[1]?.totalQuestions === educationStore.coursesList[1]?.totalQuestions
+            educationStore.coursesList[1]?.totalQuestions === educationStore.coursesList[1]?.lastQuestionNumber
           ) {
-            console.log(0.1);
             educationStore.setActiveCourse(educationStore.coursesList[indexOfCourse + 2]);
           } else {
-            console.log(0.2);
             educationStore.setActiveCourse(educationStore.coursesList[indexOfCourse + 1]);
           }
           break;
         case 1:
           if (
-            educationStore.coursesList[2]?.totalQuestions === educationStore.coursesList[2]?.totalQuestions
+            educationStore.coursesList[2]?.totalQuestions === educationStore.coursesList[2]?.lastQuestionNumber
           ) {
-            console.log(1.1);
             educationStore.setActiveCourse(educationStore.coursesList[0]);
           } else {
-            console.log(1.2);
             educationStore.setActiveCourse(educationStore.coursesList[indexOfCourse + 1]);
           }
           break;
         case 2:
           if (
-            educationStore.coursesList[0]?.totalQuestions === educationStore.coursesList[0]?.totalQuestions
+            educationStore.coursesList[0]?.totalQuestions === educationStore.coursesList[0]?.lastQuestionNumber
           ) {
-            console.log(2.1);
             educationStore.setActiveCourse(educationStore.coursesList[1]);
           } else {
-            console.log(2.2);
             educationStore.setActiveCourse(educationStore.coursesList[0]);
           }
           break;
