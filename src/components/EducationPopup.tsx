@@ -61,11 +61,11 @@ const EducationPopup: FC = observer(() => {
           break;
         case 1:
           if (
-            educationStore.coursesList[2]?.totalQuestions === educationStore.coursesList[2]?.lastQuestionNumber
+            educationStore.coursesList[0]?.totalQuestions === educationStore.coursesList[0]?.lastQuestionNumber
           ) {
-            educationStore.setActiveCourse(educationStore.coursesList[0]);
-          } else {
             educationStore.setActiveCourse(educationStore.coursesList[indexOfCourse + 1]);
+          } else {
+            educationStore.setActiveCourse(educationStore.coursesList[0]);
           }
           break;
         case 2:
@@ -95,6 +95,10 @@ const EducationPopup: FC = observer(() => {
   };
 
   const closePopup = () => {
+    educationStore.setShowPopup(false);
+  };
+
+  const finishCourse = () => {
     educationStore.setActiveCourse(null);
     educationStore.setActiveQuestion(null);
     educationStore.setQuestionsList(null);
@@ -221,7 +225,7 @@ const EducationPopup: FC = observer(() => {
                   </PrimaryButton>
                 </FlexContainer>
                 <NextButton
-                  onClick={checkLastCourses() ? closePopup : nextCourse}
+                  onClick={checkLastCourses() ? finishCourse : nextCourse}
                   width="100%"
                 >
                   <PrimaryTextSpan

@@ -8,11 +8,11 @@ import SvgIcon from '../SvgIcon';
 import IconPlay from '../../assets/svg/icon-play.svg';
 import IconLock from '../../assets/svg/icon-lock.svg';
 import API from '../../helpers/API';
-import { WelcomeBonusResponseEnum } from '../../enums/WelcomeBonusResponseEnum';
 import { IEducationQuestion } from '../../types/EducationTypes';
 import LoaderForComponents from '../LoaderForComponents';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import CloseIcon from '../../assets/svg/icon-close.svg';
+import { EducationResponseEnum } from '../../enums/EducationResponseEnum';
 
 const EducationQuestionsList = observer(() => {
   const { educationStore, mainAppStore, tabsStore } = useStores();
@@ -29,7 +29,7 @@ const EducationQuestionsList = observer(() => {
           mainAppStore.initModel.miscUrl,
           educationStore?.activeCourse?.id || ''
         );
-        if (response.responseCode === WelcomeBonusResponseEnum.Ok) {
+        if (response.responseCode === EducationResponseEnum.Ok) {
           educationStore.setQuestionsList(response.data);
           educationStore.setActiveQuestion(
             educationStore.questionsList?.questions[

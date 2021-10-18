@@ -27,6 +27,8 @@ const Page = {
 
   TERMS_OF_SERVICE: 'https://monfex.com/terms-of-service',
   PRIVACY_POLICY: 'https://www.monfex.com/privacy-policy',
+
+  NOT_FOUND: '/404',
 };
 
 Object.freeze(Page);

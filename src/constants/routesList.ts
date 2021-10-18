@@ -14,6 +14,7 @@ import Withdraw from '../pages/Withdraw';
 import LpLogin from '../pages/LpLogin';
 import Onboarding from '../pages/Onboarding';
 import BonusFAQ from '../pages/BonusFAQ';
+import PageNotFound from '../pages/PageNotFound';
 
 
 export enum RouteLayoutType {
@@ -130,6 +131,13 @@ const routesList = [
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.Authorized
+  },
+  {
+    component: PageNotFound,
+    path: Page.NOT_FOUND,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.Page404
   },
 ];
 

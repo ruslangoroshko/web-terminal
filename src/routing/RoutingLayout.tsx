@@ -30,7 +30,7 @@ const RoutingLayout: FC = () => {
   if (currentRoute) {
     layoutType = currentRoute.layoutType;
   } else {
-    push(Page.DASHBOARD);
+    push(Page.NOT_FOUND);
   }
 
   switch (layoutType) {

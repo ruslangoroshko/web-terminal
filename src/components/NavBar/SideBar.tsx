@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import API from '../../helpers/API';
 import { WelcomeBonusResponseEnum } from '../../enums/WelcomeBonusResponseEnum';
 import EducationPopup from '../EducationPopup';
+import { EducationResponseEnum } from '../../enums/EducationResponseEnum';
 
 const SideBar = observer(() => {
   const {
@@ -48,14 +49,24 @@ const SideBar = observer(() => {
     const getCourses = async () => {
       try {
         const response = await API.getListOfCourses(mainAppStore.initModel.miscUrl);
-        if (response.responseCode === WelcomeBonusResponseEnum.Ok) {
+        if (
+          response.responseCode === EducationResponseEnum.Ok ||
+          response.data
+        ) {
           educationStore.setEducationIsLoaded(true);
           educationStore.setCoursesList(response.data);
         } else {
+          tabsStore.setTabExpanded(false);
+          tabsStore.setSideBarType(null);
           educationStore.setEducationIsLoaded(false);
           educationStore.setCoursesList(null);
         }
-      } catch {}
+      } catch {
+        tabsStore.setTabExpanded(false);
+        tabsStore.setSideBarType(null);
+        educationStore.setEducationIsLoaded(false);
+        educationStore.setCoursesList(null);
+      }
     }
     getCourses();
   }, [mainAppStore.lang]);
@@ -105,6 +116,7 @@ const SideBar = observer(() => {
         educationStore.educationIsLoaded &&
         educationStore.coursesList !== null &&
         educationStore.coursesList.length > 0 &&
+        !mainAppStore.isPromoAccount &&
         <SideBarButton
           iconProps={IconEducation}
           title={t('Education')}

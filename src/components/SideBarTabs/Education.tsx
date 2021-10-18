@@ -69,7 +69,9 @@ const Education = observer(() => {
       <Observer>
         {() => (
           <EducationWrapper flexDirection="column">
-            {educationStore.coursesList?.map((item, counter) => (
+            {educationStore.coursesList
+              ?.filter((item) => item.id && item.totalQuestions > 0)
+              ?.map((item, counter) => (
               <EducationCourse
                 key={item.id}
                 on={openTab === item.id}
