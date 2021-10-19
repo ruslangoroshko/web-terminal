@@ -44,13 +44,17 @@ const EducationQuestionsList = observer(() => {
             setIsLoading(false);
           }
         } else {
+          tabsStore.setTabExpanded(false);
+          educationStore.setActiveCourse(null);
           educationStore.setQuestionsList(null);
+          educationStore.setActiveQuestion(null);
         }
       } catch {}
     }
     if (
       educationStore.activeCourse &&
-      educationStore.activeCourse?.id !== lastCourseId
+      educationStore.activeCourse?.id !== lastCourseId &&
+      tabsStore.isTabExpanded
     ) {
       setLastCourseId(educationStore.activeCourse.id);
       getCourses();
@@ -58,7 +62,10 @@ const EducationQuestionsList = observer(() => {
     return () => {
       cleanupFunction = true;
     };
-  }, [educationStore.activeCourse]);
+  }, [
+    educationStore.activeCourse,
+    tabsStore.isTabExpanded
+  ]);
 
   const handleOpenQuestion = (question: IEducationQuestion) => () => {
     educationStore.setActiveQuestion(question);
