@@ -84,6 +84,13 @@ const EducationQuestionsPage: FC = observer(() => {
     }
   }, [activePage, educationStore.questionsList, educationStore.activeQuestion]);
 
+  const checkPage = useCallback(() => {
+    if (!educationStore.activeQuestion?.pages[activePage]?.url) {
+      return`${window.location.origin}/404`;
+    }
+    return `${window.location.origin}/${educationStore.activeQuestion?.pages[activePage]?.url || ''}`;
+  }, [activePage, educationStore.activeQuestion]);
+
   useEffect(() => {
     if (lastHandle !== 'prev') {
       setActivePage(0);
@@ -113,7 +120,7 @@ const EducationQuestionsPage: FC = observer(() => {
               frameBorder="none"
               width="100%"
               height="calc(100% - 142px)"
-              src={`${window.location.origin}/${educationStore.activeQuestion?.pages[activePage]?.url || ''}`}
+              src={checkPage()}
               // src={`${educationStore.activeQuestion?.pages[activePage]?.url || ''}`}
             />
           </FlexContainer>

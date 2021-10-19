@@ -8,7 +8,7 @@ import SvgIcon from '../SvgIcon';
 import IconPlay from '../../assets/svg/icon-play.svg';
 import IconLock from '../../assets/svg/icon-lock.svg';
 import API from '../../helpers/API';
-import { IEducationQuestion } from '../../types/EducationTypes';
+import { IEducationQuestion, IEducationQuestionsList } from '../../types/EducationTypes';
 import LoaderForComponents from '../LoaderForComponents';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import CloseIcon from '../../assets/svg/icon-close.svg';
@@ -30,7 +30,9 @@ const EducationQuestionsList = observer(() => {
           educationStore?.activeCourse?.id || ''
         );
         if (response.responseCode === EducationResponseEnum.Ok) {
-          educationStore.setQuestionsList(response.data);
+          const newData: IEducationQuestionsList = response.data;
+          newData.questions = response.data.questions.sort((a, b) => a.id - b.id);
+          educationStore.setQuestionsList(newData);
           educationStore.setActiveQuestion(
             educationStore.questionsList?.questions[
               educationStore.activeCourse?.lastQuestionNumber!

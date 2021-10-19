@@ -50,8 +50,8 @@ const SideBar = observer(() => {
       try {
         const response = await API.getListOfCourses(mainAppStore.initModel.miscUrl);
         if (
-          response.responseCode === EducationResponseEnum.Ok ||
-          response.data
+          response.responseCode === EducationResponseEnum.Ok &&
+          response.data.filter((item) => item.id && item.totalQuestions > 0).length > 0
         ) {
           educationStore.setEducationIsLoaded(true);
           educationStore.setCoursesList(response.data);
@@ -115,7 +115,7 @@ const SideBar = observer(() => {
       {
         educationStore.educationIsLoaded &&
         educationStore.coursesList !== null &&
-        educationStore.coursesList.length > 0 &&
+        educationStore.coursesList.filter((item) => item.id && item.totalQuestions > 0).length > 0 &&
         !mainAppStore.isPromoAccount &&
         <SideBarButton
           iconProps={IconEducation}
