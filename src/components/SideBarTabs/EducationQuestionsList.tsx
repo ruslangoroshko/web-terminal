@@ -75,7 +75,9 @@ const EducationQuestionsList = observer(() => {
 
   useEffect(() => {
     if (activeQuestionRef !== null) {
-      activeQuestionRef?.current?.scrollIntoView();
+      setTimeout(() => {
+        activeQuestionRef?.current?.scrollIntoView();
+      }, 0);
     }
   }, [educationStore.activeQuestion]);
 
