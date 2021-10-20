@@ -20,11 +20,11 @@ const Education = observer(() => {
     educationStore.setQuestionsList(null)
   }, []);
 
-  const handleOpenTab = (id: string) => {
-    setOpenTab(id);
+  const handleOpenTab = (id: string, counter: number) => {
+    setOpenTab(`${id}_${counter}`);
   };
 
-  if (educationStore.activeCourse) {
+  if (educationStore.activeCourse || educationStore.coursesList === null) {
     return null;
   }
 
@@ -74,7 +74,7 @@ const Education = observer(() => {
               ?.map((item, counter) => (
               <EducationCourse
                 key={item.id}
-                on={openTab === item.id}
+                on={openTab === `${item.id}_${counter}`}
                 handleOpen={handleOpenTab}
                 course={item}
                 counter={counter}

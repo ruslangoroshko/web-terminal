@@ -19,7 +19,7 @@ interface Props {
   course: IEducationCourses;
   counter: number;
   on: boolean;
-  handleOpen: (id: string) => void;
+  handleOpen: (id: string, counter: number) => void;
 }
 
 const EducationCourse: FC<Props> = observer((props) => {
@@ -107,7 +107,7 @@ const EducationCourse: FC<Props> = observer((props) => {
   };
 
   const toggling = (id: string) => () => {
-    handleOpen(on ? '' : id);
+    handleOpen(on ? '' : id, counter);
   };
 
   const handleOpenQuestions = () => {

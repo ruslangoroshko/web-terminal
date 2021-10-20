@@ -25,7 +25,10 @@ const ResizableContainer: FC = observer(props => {
       width="100%"
       height="100%"
       zIndex="102"
-      isActive={tabsStore.sideBarTabType !== null}
+      isActive={
+        tabsStore.sideBarTabType !== null &&
+        !(tabsStore.sideBarTabType === SideBarTabType.Education && educationStore.coursesList === null)
+      }
       flexDirection="column"
     >
       <FlexContainer position="absolute" top="12px" right="12px" zIndex="200">

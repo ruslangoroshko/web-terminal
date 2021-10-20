@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
@@ -20,6 +20,8 @@ const EducationQuestionsList = observer(() => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [lastCourseId, setLastCourseId] = useState<string>('');
 
+  const activeQuestionRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     let cleanupFunction = false;
     const getCourses = async () => {
@@ -29,9 +31,13 @@ const EducationQuestionsList = observer(() => {
           mainAppStore.initModel.miscUrl,
           educationStore?.activeCourse?.id || ''
         );
-        if (response.responseCode === EducationResponseEnum.Ok) {
+        if (
+          response.responseCode === EducationResponseEnum.Ok &&
+          response.data.questions !== null &&
+          response.data.questions.filter((item) => item.pages !== null).length > 0
+        ) {
           const newData: IEducationQuestionsList = response.data;
-          newData.questions = response.data.questions.sort((a, b) => a.id - b.id);
+          newData.questions = response.data.questions.filter((item) => item.pages !== null).sort((a, b) => a.id - b.id);
           educationStore.setQuestionsList(newData);
           educationStore.setActiveQuestion(
             educationStore.questionsList?.questions[
@@ -66,6 +72,12 @@ const EducationQuestionsList = observer(() => {
     educationStore.activeCourse,
     tabsStore.isTabExpanded
   ]);
+
+  useEffect(() => {
+    if (activeQuestionRef !== null) {
+      activeQuestionRef?.current?.scrollIntoView();
+    }
+  }, [educationStore.activeQuestion]);
 
   const handleOpenQuestion = (question: IEducationQuestion) => () => {
     educationStore.setActiveQuestion(question);
@@ -150,6 +162,7 @@ const EducationQuestionsList = observer(() => {
                 <QuestionsWrapper flexDirection="column">
                   {educationStore.questionsList?.questions?.map((item, counter) => (
                     <QuestionWrapper
+                      ref={item.id === educationStore.activeQuestion?.id ? activeQuestionRef : null}
                       key={item.id}
                       width="100%"
                       height="56px"
@@ -225,6 +238,7 @@ export default EducationQuestionsList;
 const QuestionsWrapper = styled(FlexContainer)`
   overflow-y: auto;
   max-height: calc(100% - 48px);
+  scroll-behavior: smooth;
 
   ::-webkit-scrollbar {
     width: 4px;
