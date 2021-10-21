@@ -7,4 +7,5 @@ export enum DepositRequestStatusEnum {
   MinDepositAmountExceeded,
   PaymentDeclined,
   ServerError,
+  PaymentDisabled
 }

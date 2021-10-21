@@ -1,4 +1,5 @@
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
+import { DepositApiResponseCodes } from '../enums/DepositApiResponseCodes';
 
 const apiResponseCodeMessages = {
   [OperationApiResponseCodes.Expired]: 'Access token is expired',
@@ -50,6 +51,11 @@ const apiResponseCodeMessages = {
     'Your account is blocked. We\'ve detected suspicious activity on your account. This block will expire in 15 min.',
   [OperationApiResponseCodes.CountryIsRestricted]:
     'Registration from your country is not allowed',
+  [OperationApiResponseCodes.TradingDisabled]: 'Trading is temporarily disabled',
+};
+
+const depositApiResponseCodeMessages = {
+  [DepositApiResponseCodes.PaymentDisabled]: 'The possibility of replenishment is temporarily blocked',
 };
 
 Object.freeze(apiResponseCodeMessages);

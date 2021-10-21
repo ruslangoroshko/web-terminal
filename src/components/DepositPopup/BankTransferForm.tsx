@@ -20,6 +20,7 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
 import depositMethod from '../../constants/depositMethod';
+import depositApiResponseCodeMessages from '../../constants/depositApiResponseCodeMessages';
 
 const BankTransferForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -38,7 +39,7 @@ const BankTransferForm = () => {
     amount: 500,
   };
 
-  const { mainAppStore, badRequestPopupStore } = useStores();
+  const { mainAppStore, badRequestPopupStore, notificationStore } = useStores();
 
   const investOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
@@ -75,6 +76,12 @@ const BankTransferForm = () => {
             : mainAppStore.accounts.find(item => item.isLive)?.id || '',
         });
         window.location.href = response.redirectUrl;
+      } else if (response.status === DepositApiResponseCodes.PaymentDisabled){
+        notificationStore.setNotification(
+          t(depositApiResponseCodeMessages[response.status])
+        );
+        notificationStore.setIsSuccessfull(false);
+        notificationStore.openNotification();
       } else {
         mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
           [mixapanelProps.SERVER_ERROR]: response.status

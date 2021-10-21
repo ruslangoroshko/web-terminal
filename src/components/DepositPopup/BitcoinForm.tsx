@@ -20,6 +20,7 @@ import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
 import depositMethod from '../../constants/depositMethod';
 import testIds from '../../constants/testIds';
+import depositApiResponseCodeMessages from '../../constants/depositApiResponseCodeMessages';
 
 const BitcoinForm: FC = () => {
   const [bitcoinWalletString, setBitcoinWalletString] = useState('');
@@ -56,6 +57,12 @@ const BitcoinForm: FC = () => {
 
         if (response.status === DepositApiResponseCodes.Success) {
           setBitcoinWalletString(response.walletAddress);
+        } else if (response.status === DepositApiResponseCodes.PaymentDisabled){
+          notificationStore.setNotification(
+            t(depositApiResponseCodeMessages[response.status])
+          );
+          notificationStore.setIsSuccessfull(false);
+          notificationStore.openNotification();
         } else {
           notificationStore.setNotification(t('Technical error'));
           notificationStore.setIsSuccessfull(false);
