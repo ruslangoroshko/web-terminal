@@ -24,7 +24,11 @@ const Education = observer(() => {
     setOpenTab(`${id}_${counter}`);
   };
 
-  if (educationStore.activeCourse || educationStore.coursesList === null) {
+  if (
+    (educationStore.activeCourse ||
+    educationStore.coursesList === null) &&
+    !educationStore.activeQuestion === null
+  ) {
     return null;
   }
 

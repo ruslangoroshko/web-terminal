@@ -14,6 +14,7 @@ const EducationExpanded: FC = observer(() => {
       width="100%"
       height="100%"
       position="relative"
+      isInvisible={educationStore.activeQuestion === null}
     >
       {
         educationStore.activeCourse &&
@@ -28,6 +29,7 @@ const EducationExpanded: FC = observer(() => {
 
 export default EducationExpanded;
 
-const EducationExpandedWrapper = styled(FlexContainer)`
+const EducationExpandedWrapper = styled(FlexContainer)<{ isInvisible: boolean }>`
   background: radial-gradient(92.11% 100% at 0% 0%, rgba(255, 252, 204, 0.08) 0%, rgba(255, 252, 204, 0) 100%), #252636;
+  opacity: ${(props) => props.isInvisible ? '0' : '1'};
 `;
