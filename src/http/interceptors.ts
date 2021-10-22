@@ -16,11 +16,11 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import AUTH_API_LIST from '../helpers/apiListAuth';
 import { CLIENTS_REQUEST } from '../constants/interceptorsConstants';
-import { useTranslation } from 'react-i18next';
 
-const openNotification = (errorText: string, mainAppStore: MainAppStore) => {
+const openNotification = (errorText: string, mainAppStore: MainAppStore, needTranslate?: boolean) => {
   mainAppStore.rootStore.notificationStore.setNotification(errorText);
   mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
+  mainAppStore.rootStore.notificationStore.setNeedTranslate(!!needTranslate);
   mainAppStore.rootStore.notificationStore.openNotification();
 };
 
@@ -28,7 +28,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
   // for multiple requests
   let isRefreshing = false;
   let failedQueue: any[] = [];
-  const { t } = useTranslation();
 
   /**
    *
@@ -299,7 +298,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       // --- mixpanel
 
       if (isTimeOutError && !isReconnectedRequest) {
-        openNotification(t('Timeout connection error'), mainAppStore);
+        openNotification('Timeout connection error', mainAppStore, true);
       }
 
       if (isTimeOutError && isReconnectedRequest) {

@@ -9,6 +9,7 @@ import { keyframes } from '@emotion/core';
 import { useStores } from '../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import testIds from '../constants/testIds';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   show: boolean;
@@ -17,6 +18,7 @@ interface Props {
 
 const NotificationPopup: FC<Props> = observer(({ show, global }) => {
   const { notificationStore, tabsStore } = useStores();
+  const { t } = useTranslation();
 
   const [shouldRender, setRender] = useState(show);
 
@@ -79,7 +81,9 @@ const NotificationPopup: FC<Props> = observer(({ show, global }) => {
         marginRight="20px"
         data-testid={testIds.NOTIFICATION_POPUP_MESSAGE}
       >
-        {notificationStore.notificationMessage}
+        {notificationStore.needTranslate
+          ? t(notificationStore.notificationMessage)
+          : notificationStore.notificationMessage}
       </PrimaryTextSpan>
       <ButtonWithoutStyles onClick={closeNotification}>
         <SvgIcon
