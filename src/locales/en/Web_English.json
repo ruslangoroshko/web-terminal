@@ -457,5 +457,11 @@
     "Oops.. page not found": "Oops.. page not found",
     "Go Home": "Go Home",
     "The possibility of replenishment is temporarily blocked": "The possibility of replenishment is temporarily blocked",
-    "Trading is temporarily disabled": "Trading is temporarily disabled"
+    "Trading is temporarily disabled": "Trading is temporarily disabled",
+    "Reconnecting...": "Reconnecting...",
+    "We are trying to connect to the server": "We are trying to connect to the server",
+    "Please make sure you are connected to the Internet.": "Please make sure you are connected to the Internet.",
+    "There is no Internet connection.": "There is no Internet connection.",
+    "Oooopsss": "Oooopsss",
+    "Timeout connection error": "Timeout connection error"
 }
