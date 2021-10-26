@@ -11,7 +11,7 @@ import API from '../../helpers/API';
 const EducationQuestionsPage: FC = observer(() => {
   const { educationStore, mainAppStore } = useStores();
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [activePage, setActivePage] = useState<number>(0);
   const [lastHandle, setLastHandle] = useState<'prev' | 'next' | null>(null);
@@ -88,7 +88,15 @@ const EducationQuestionsPage: FC = observer(() => {
     if (!educationStore.activeQuestion?.pages[activePage]?.url) {
       return`${window.location.origin}/404`;
     }
-    return `${window.location.origin}/${educationStore.activeQuestion?.pages[activePage]?.url || ''}`;
+    return `${
+      window.location.origin
+    }/${
+      educationStore.activeQuestion?.pages[activePage]?.url || ''
+    }?platform=${
+      mainAppStore.initModel.brandName
+    }&lang=${
+      i18n.language || 'en'
+    }`;
   }, [activePage, educationStore.activeQuestion]);
 
   useEffect(() => {
