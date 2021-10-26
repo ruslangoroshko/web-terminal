@@ -6,6 +6,7 @@ const depositMethod = {
   DIRECTA: 'Directa',
   PAY_RETAILS: 'PayRetailers',
   VOLT: 'Volt',
+  PAYOP: 'Payop',
 };
 
 Object.freeze(depositMethod);

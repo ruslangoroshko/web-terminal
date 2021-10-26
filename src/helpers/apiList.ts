@@ -40,6 +40,7 @@ const API_LIST = {
     CREATE_INVOICE_SWIFFY: '/swiffy/invoice',
     CREATE_INVOICE_DIRECTA: '/directa/invoice',
     CREATE_INVOICE_PAY_RETAILERS: '/payretailers/invoice',
+    CREATE_INVOICE_PAYOP: '/payop/invoice',
     CREATE_INVOICE_VOLT: '/volt/invoice',
     CHECK_PAYMENT_SYSTEMS: '/supported-payment-systems',
   },

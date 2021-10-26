@@ -3,6 +3,8 @@ import {
   CreatePayRetailersInvoiceDTO,
   CreateVoltInvoiceDTO,
   CreateVoltInvoiceParams,
+  CreatePayopInvoiceParams,
+  CreatePayopInvoiceDTO,
 } from './../types/DepositTypes';
 import { WithdrawalHistoryResponseStatus } from './../enums/WithdrawalHistoryResponseStatus';
 import { RefreshToken, RefreshTokenDTO } from './../types/RefreshToken';
@@ -293,6 +295,17 @@ class API {
   ) => {
     const response = await axios.post<CreatePayRetailersInvoiceDTO>(
       `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_PAY_RETAILERS}`,
+      params,
+      this.clientRequestOptions
+    );
+    return response.data;
+  };
+
+  createPayopInvoice = async (
+    params: CreatePayopInvoiceParams
+  ) => {
+    const response = await axios.post<CreatePayopInvoiceDTO>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_PAYOP}`,
       params,
       this.clientRequestOptions
     );

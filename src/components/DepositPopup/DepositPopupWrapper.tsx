@@ -42,6 +42,7 @@ import depositResponseMessages from '../../constants/depositResponseMessages';
 import { keyframes } from '@emotion/core';
 import Directa from './Directa';
 import PayRetailers from './PayRetailers';
+import Payop from './Payop';
 import Volt from './Volt';
 import LoaderForComponents from '../LoaderForComponents';
 import EventBonusTimer from '../EventBonusTimer';
@@ -64,6 +65,13 @@ const depositList = [
 
   {
     id: DepositTypeEnum.PayRetailers,
+    name: 'Local Bank Cards',
+    icon: CardIcon,
+    show: false,
+    order: 0,
+  },
+  {
+    id: DepositTypeEnum.Payop,
     name: 'Local Bank Cards',
     icon: CardIcon,
     show: false,
@@ -148,6 +156,9 @@ const DepositPopupInner: FC = () => {
       case DepositTypeEnum.PayRetailers:
         return <PayRetailers />;
 
+      case DepositTypeEnum.Payop:
+        return <Payop />;
+
       case DepositTypeEnum.Volt:
         return <Volt />;
 
@@ -168,6 +179,8 @@ const DepositPopupInner: FC = () => {
       case DepositTypeEnum.ElectronicFundsTransfer:
         return 'ABSA, Nedbank, Capitec, FNB, Standard, Investec';
       case DepositTypeEnum.PayRetailers:
+        return 'Online Transfers Cash Payments';
+      case DepositTypeEnum.Payop:
         return 'Online Transfers Cash Payments';
       case DepositTypeEnum.Volt:
         return 'Few hours';
