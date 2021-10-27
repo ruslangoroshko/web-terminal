@@ -51,7 +51,7 @@ const apiResponseCodeMessages = {
   [OperationApiResponseCodes.CountryIsRestricted]:
     'Registration from your country is not allowed',
   [OperationApiResponseCodes.SystemError]:
-    'Some tech error, see SEQ errors',
+    'System Error',
 };
 
 Object.freeze(apiResponseCodeMessages);
