@@ -88,6 +88,8 @@ const EducationQuestionsPage: FC = observer(() => {
     if (!educationStore.activeQuestion?.pages[activePage]?.url) {
       return`${window.location.origin}/404`;
     }
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
     return `${
       window.location.origin
     }/${
@@ -96,7 +98,7 @@ const EducationQuestionsPage: FC = observer(() => {
       mainAppStore.initModel.brandName
     }&lang=${
       i18n.language || 'en'
-    }`;
+    }&isSafari=${isSafari}`;
   }, [activePage, educationStore.activeQuestion]);
 
   useEffect(() => {
