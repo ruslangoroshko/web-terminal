@@ -463,5 +463,6 @@
     "Please make sure you are connected to the Internet.": "Убедитесь, что вы подключены к Интернету.",
     "There is no Internet connection.": "Нет подключения к Интернету.",
     "Oooopsss": "Уууупссс",
-    "Timeout connection error": "Ошибка тайм-аута подключения"
+    "Timeout connection error": "Ошибка тайм-аута подключения",
+    "System Error": "Системная ошибка"
 }

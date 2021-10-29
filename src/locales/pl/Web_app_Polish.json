@@ -463,5 +463,6 @@
     "Please make sure you are connected to the Internet.": "Upewnij się, że masz połączenie z Internetem.",
     "There is no Internet connection.": "Brak połączenia z Internetem.",
     "Oooopsss": "Uuuupsss",
-    "Timeout connection error": "Błąd połączenia przekroczenia limitu czasu"
+    "Timeout connection error": "Błąd połączenia przekroczenia limitu czasu",
+    "System Error": "Błąd systemu"
 }

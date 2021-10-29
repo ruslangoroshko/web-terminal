@@ -402,5 +402,12 @@
     "Support_M": "https://www.monfex.com/de/contact-us",
     "steps": "schritte von",
     "The possibility of replenishment is temporarily blocked": "Die Möglichkeit der Geldeinzahlung ist vorübergehend gesperrt",
-    "Trading is temporarily disabled": "Der Handel ist vorübergehend deaktiviert"
+    "Trading is temporarily disabled": "Der Handel ist vorübergehend deaktiviert",
+    "Reconnecting...": "Wiederverbinden...",
+    "We are trying to connect to the server": "Wir versuchen, eine Verbindung zum Server herzustellen",
+    "Please make sure you are connected to the Internet.": "Bitte stellen Sie sicher, dass Sie mit dem Internet verbunden sind.",
+    "There is no Internet connection.": "Es besteht keine Internetverbindung.",
+    "Oooopsss": "Oooopss",
+    "Timeout connection error": "Zeitüberschreitung Verbindungsfehler",
+    "System Error": "Systemfehler"
 }

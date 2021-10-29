@@ -442,7 +442,7 @@
     "Education": "Educación",
     "progress": "progreso",
     "topic": "tema",
-    "Course": "curso",
+    "Course": "Curso",
     "modules": "módulos",
     "Start": "Iniciar",
     "Review": "Revisar",
@@ -463,5 +463,6 @@
     "Please make sure you are connected to the Internet.": "Asegúrese de estar conectado a Internet.",
     "There is no Internet connection.": "No hay conexión a Internet.",
     "Oooopsss": "Uuupsss",
-    "Timeout connection error": "Error de conexión de tiempo de espera"
+    "Timeout connection error": "Error de conexión de tiempo de espera",
+    "System Error": "Error del sistema"
 }

@@ -30,7 +30,7 @@ const EducationQuestionsPage: FC = observer(() => {
       educationStore.activeQuestion?.id === educationStore.questionsList?.questions
       [
         educationStore.questionsList?.questions.length - 1
-      ]?.id && activePage === (educationStore.activeQuestion?.pages.length! - 1)
+      ]?.id && activePage === (educationStore.activeQuestion?.pages?.length! - 1)
     );
   }, [
     educationStore.activeQuestion,
@@ -40,7 +40,10 @@ const EducationQuestionsPage: FC = observer(() => {
 
   const handleNextPage = useCallback(() => {
     setLastHandle('next');
-    if (activePage === educationStore.activeQuestion?.pages.length! - 1) {
+    if (
+      educationStore.activeQuestion?.pages === null ||
+      activePage === educationStore.activeQuestion?.pages.length! - 1
+    ) {
       setActivePage(0);
       const indexOfQuestion = educationStore.questionsList?.questions.indexOf(educationStore.activeQuestion!) || 0;
       if (indexOfQuestion + 1 > educationStore.activeCourse?.lastQuestionNumber!) {
@@ -85,9 +88,14 @@ const EducationQuestionsPage: FC = observer(() => {
   }, [activePage, educationStore.questionsList, educationStore.activeQuestion]);
 
   const checkPage = useCallback(() => {
-    if (!educationStore.activeQuestion?.pages[activePage]?.url) {
+    if (
+      educationStore.activeQuestion?.pages === null ||
+      !educationStore.activeQuestion?.pages[activePage]?.url
+    ) {
       return`${window.location.origin}/404`;
     }
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
     return `${
       window.location.origin
     }/${
@@ -96,14 +104,14 @@ const EducationQuestionsPage: FC = observer(() => {
       mainAppStore.initModel.brandName
     }&lang=${
       i18n.language || 'en'
-    }`;
+    }&isSafari=${isSafari}`;
   }, [activePage, educationStore.activeQuestion]);
 
   useEffect(() => {
     if (lastHandle !== 'prev') {
       setActivePage(0);
     } else {
-      setActivePage((educationStore.activeQuestion?.pages.length! - 1) || 0);
+      setActivePage((educationStore.activeQuestion?.pages?.length! - 1) || 0);
     }
   }, [
     educationStore.activeQuestion,
