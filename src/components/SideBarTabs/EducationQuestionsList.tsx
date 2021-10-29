@@ -34,10 +34,10 @@ const EducationQuestionsList = observer(() => {
         if (
           response.responseCode === EducationResponseEnum.Ok &&
           response.data.questions !== null &&
-          response.data.questions.filter((item) => item.pages !== null).length > 0
+          response.data.questions.length > 0
         ) {
           const newData: IEducationQuestionsList = response.data;
-          newData.questions = response.data.questions.filter((item) => item.pages !== null).sort((a, b) => a.id - b.id);
+          newData.questions = response.data.questions.sort((a, b) => a.id - b.id);
           educationStore.setQuestionsList(newData);
           educationStore.setActiveQuestion(
             educationStore.questionsList?.questions[

@@ -85,7 +85,10 @@ const EducationQuestionsPage: FC = observer(() => {
   }, [activePage, educationStore.questionsList, educationStore.activeQuestion]);
 
   const checkPage = useCallback(() => {
-    if (!educationStore.activeQuestion?.pages[activePage]?.url) {
+    if (
+      educationStore.activeQuestion?.pages === null ||
+      !educationStore.activeQuestion?.pages[activePage]?.url
+    ) {
       return`${window.location.origin}/404`;
     }
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
