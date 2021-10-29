@@ -30,7 +30,7 @@ const EducationQuestionsPage: FC = observer(() => {
       educationStore.activeQuestion?.id === educationStore.questionsList?.questions
       [
         educationStore.questionsList?.questions.length - 1
-      ]?.id && activePage === (educationStore.activeQuestion?.pages.length! - 1)
+      ]?.id && activePage === (educationStore.activeQuestion?.pages?.length! - 1)
     );
   }, [
     educationStore.activeQuestion,
@@ -111,7 +111,7 @@ const EducationQuestionsPage: FC = observer(() => {
     if (lastHandle !== 'prev') {
       setActivePage(0);
     } else {
-      setActivePage((educationStore.activeQuestion?.pages.length! - 1) || 0);
+      setActivePage((educationStore.activeQuestion?.pages?.length! - 1) || 0);
     }
   }, [
     educationStore.activeQuestion,
