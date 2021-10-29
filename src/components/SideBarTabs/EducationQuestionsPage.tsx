@@ -40,7 +40,10 @@ const EducationQuestionsPage: FC = observer(() => {
 
   const handleNextPage = useCallback(() => {
     setLastHandle('next');
-    if (activePage === educationStore.activeQuestion?.pages.length! - 1) {
+    if (
+      educationStore.activeQuestion?.pages === null ||
+      activePage === educationStore.activeQuestion?.pages.length! - 1
+    ) {
       setActivePage(0);
       const indexOfQuestion = educationStore.questionsList?.questions.indexOf(educationStore.activeQuestion!) || 0;
       if (indexOfQuestion + 1 > educationStore.activeCourse?.lastQuestionNumber!) {
