@@ -464,5 +464,6 @@
     "There is no Internet connection.": "Нет подключения к Интернету.",
     "Oooopsss": "Уууупссс",
     "Timeout connection error": "Ошибка тайм-аута подключения",
-    "System Error": "Системная ошибка"
+    "System Error": "Системная ошибка",
+    "Ooops, something went wrong": "Ууупс, что-то пошло не так"
 }

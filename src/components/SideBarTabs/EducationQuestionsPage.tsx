@@ -7,9 +7,10 @@ import { PrimaryButton } from '../../styles/Buttons';
 import { useTranslation } from 'react-i18next';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import API from '../../helpers/API';
+import { EducationResponseEnum } from '../../enums/EducationResponseEnum';
 
 const EducationQuestionsPage: FC = observer(() => {
-  const { educationStore, mainAppStore } = useStores();
+  const { educationStore, mainAppStore, notificationStore } = useStores();
 
   const { t, i18n } = useTranslation();
 
@@ -38,6 +39,23 @@ const EducationQuestionsPage: FC = observer(() => {
     activePage
   ]);
 
+  const saveProgress = async () => {
+    try {
+      const response = await API.saveProgressEducation(
+        mainAppStore.initModel.miscUrl,
+        educationStore.activeCourse?.id || '',
+        educationStore.activeQuestion?.id || 0
+      );
+      if (
+        response.responseCode !== EducationResponseEnum.Ok
+      ) {
+        notificationStore.setNotification('Ooops, something went wrong');
+        notificationStore.setIsSuccessfull(false);
+        notificationStore.openNotification();
+      }
+    } catch {}
+  };
+
   const handleNextPage = useCallback(() => {
     setLastHandle('next');
     if (
@@ -61,11 +79,7 @@ const EducationQuestionsPage: FC = observer(() => {
         if (newCourseList) {
           educationStore.setCoursesList(newCourseList);
         }
-        API.saveProgressEducation(
-          mainAppStore.initModel.miscUrl,
-          educationStore.activeCourse?.id || '',
-          educationStore.activeQuestion?.id || 0
-        );
+        saveProgress();
       }
       if (indexOfQuestion === educationStore.questionsList?.questions.length! - 1) {
         educationStore.setShowPopup(true);
@@ -75,7 +89,11 @@ const EducationQuestionsPage: FC = observer(() => {
     } else {
       setActivePage(activePage + 1);
     }
-  }, [activePage, educationStore.questionsList, educationStore.activeQuestion]);
+  }, [
+    activePage,
+    educationStore.questionsList,
+    educationStore.activeQuestion
+  ]);
 
   const handlePrevPage = useCallback(() => {
     setLastHandle('prev');

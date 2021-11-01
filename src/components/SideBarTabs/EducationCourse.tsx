@@ -136,8 +136,8 @@ const EducationCourse: FC<Props> = observer((props) => {
             marginRight="12px"
           >
             <CircularProgressbar
-              value={parseInt(`${lastQuestionNumber / totalQuestions * 100}`)}
-              text={`${parseInt(`${lastQuestionNumber / totalQuestions * 100}`)}%`}
+              value={parseInt(`${lastQuestionNumber / totalQuestions * 100}`) || 0}
+              text={`${parseInt(`${lastQuestionNumber / totalQuestions * 100}`) || 0}%`}
               styles={buildStyles({
                 strokeLinecap: "butt",
                 pathColor: (lastQuestionNumber / totalQuestions * 100) === 100 ? "#00FFDD" : "#FFFCCC",

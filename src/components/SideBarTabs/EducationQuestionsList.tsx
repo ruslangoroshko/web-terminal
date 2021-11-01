@@ -15,7 +15,12 @@ import CloseIcon from '../../assets/svg/icon-close.svg';
 import { EducationResponseEnum } from '../../enums/EducationResponseEnum';
 
 const EducationQuestionsList = observer(() => {
-  const { educationStore, mainAppStore, tabsStore } = useStores();
+  const {
+    educationStore,
+    mainAppStore,
+    tabsStore,
+    notificationStore
+  } = useStores();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [lastCourseId, setLastCourseId] = useState<string>('');
@@ -50,6 +55,9 @@ const EducationQuestionsList = observer(() => {
             setIsLoading(false);
           }
         } else {
+          notificationStore.setNotification('Ooops, something went wrong');
+          notificationStore.setIsSuccessfull(false);
+          notificationStore.openNotification();
           tabsStore.setTabExpanded(false);
           educationStore.setActiveCourse(null);
           educationStore.setQuestionsList(null);

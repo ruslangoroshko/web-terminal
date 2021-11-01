@@ -5,9 +5,10 @@ import { useStores } from '../../hooks/useStores';
 import { observer, Observer } from 'mobx-react-lite';
 import EducationQuestionsList from './EducationQuestionsList';
 import EducationQuestionsPage from './EducationQuestionsPage';
+import NotificationPopup from '../NotificationPopup';
 
 const EducationExpanded: FC = observer(() => {
-  const { educationStore } = useStores();
+  const { educationStore, notificationStore } = useStores();
 
   return (
     <EducationExpandedWrapper
@@ -16,6 +17,23 @@ const EducationExpanded: FC = observer(() => {
       position="relative"
       isInvisible={educationStore.activeQuestion === null}
     >
+      <FlexContainer
+        position="absolute"
+        bottom="100px"
+        left="14px"
+        zIndex="1005"
+      >
+        <Observer>
+          {() => (
+            <NotificationPopup
+              show={
+                notificationStore.isActiveNotification &&
+                !notificationStore.isActiveNotificationGlobal
+              }
+            ></NotificationPopup>
+          )}
+        </Observer>
+      </FlexContainer>
       {
         educationStore.activeCourse &&
         <>
