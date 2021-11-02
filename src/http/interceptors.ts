@@ -17,9 +17,10 @@ import mixapanelProps from '../constants/mixpanelProps';
 import AUTH_API_LIST from '../helpers/apiListAuth';
 import { CLIENTS_REQUEST } from '../constants/interceptorsConstants';
 
-const openNotification = (errorText: string, mainAppStore: MainAppStore) => {
+const openNotification = (errorText: string, mainAppStore: MainAppStore, needTranslate?: boolean) => {
   mainAppStore.rootStore.notificationStore.setNotification(errorText);
   mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
+  mainAppStore.rootStore.notificationStore.setNeedTranslate(!!needTranslate);
   mainAppStore.rootStore.notificationStore.openNotification();
 };
 
@@ -212,6 +213,18 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         error.response?.status !== 401 &&
         error.response?.status !== 403
       ) {
+        sendClientLog();
+        return Promise.reject(error);
+      }
+      if (
+        (
+          getApiUrl(requestUrl).includes(API_LIST.EDUCATION.LIST) &&
+          error.config.method === 'post'
+        ) &&
+        error.response?.status !== 401 &&
+        error.response?.status !== 403
+      ) {
+        openNotification('Ooops, something went wrong', mainAppStore, true);
         sendClientLog();
         return Promise.reject(error);
       }
