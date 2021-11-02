@@ -13,6 +13,7 @@ import LoaderForComponents from '../LoaderForComponents';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import CloseIcon from '../../assets/svg/icon-close.svg';
 import { EducationResponseEnum } from '../../enums/EducationResponseEnum';
+import { useTranslation } from 'react-i18next';
 
 const EducationQuestionsList = observer(() => {
   const {
@@ -21,6 +22,8 @@ const EducationQuestionsList = observer(() => {
     tabsStore,
     notificationStore
   } = useStores();
+
+  const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [lastCourseId, setLastCourseId] = useState<string>('');
@@ -39,7 +42,9 @@ const EducationQuestionsList = observer(() => {
         if (
           response.responseCode === EducationResponseEnum.Ok &&
           response.data.questions !== null &&
-          response.data.questions.length > 0
+          response.data.questions.filter((item) => item !== null).length > 0 &&
+          !!response.data.id &&
+          response.data.lastQuestionNumber !== null
         ) {
           const newData: IEducationQuestionsList = response.data;
           newData.questions = response.data.questions.sort((a, b) => a.id - b.id);
@@ -55,7 +60,7 @@ const EducationQuestionsList = observer(() => {
             setIsLoading(false);
           }
         } else {
-          notificationStore.setNotification('Ooops, something went wrong');
+          notificationStore.setNotification(t('Ooops, something went wrong'));
           notificationStore.setIsSuccessfull(false);
           notificationStore.openNotification();
           tabsStore.setTabExpanded(false);

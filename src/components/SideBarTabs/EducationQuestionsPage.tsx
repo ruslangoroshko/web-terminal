@@ -49,7 +49,7 @@ const EducationQuestionsPage: FC = observer(() => {
       if (
         response.responseCode !== EducationResponseEnum.Ok
       ) {
-        notificationStore.setNotification('Ooops, something went wrong');
+        notificationStore.setNotification(t('Ooops, something went wrong'));
         notificationStore.setIsSuccessfull(false);
         notificationStore.openNotification();
       }
