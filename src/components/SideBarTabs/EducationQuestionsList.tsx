@@ -39,12 +39,6 @@ const EducationQuestionsList = observer(() => {
           mainAppStore.initModel.miscUrl,
           educationStore?.activeCourse?.id || ''
         );
-        console.log(response);
-        console.log(response.responseCode === EducationResponseEnum.Ok);
-        console.log(response.data.questions !== null);
-        console.log(response.data.questions !== null && response.data.questions?.filter((item) => item !== null).length > 0);
-        console.log(!!response.data.id);
-        console.log(response.data.lastQuestionNumber !== null);
         if (
           response.responseCode === EducationResponseEnum.Ok &&
           response.data.questions !== null &&
