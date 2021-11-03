@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PositionModelWSDTO } from '../../types/Positions';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
@@ -51,6 +51,12 @@ function ActivePositionExpanded(props: Props) {
 
   const isBuy = position.operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
+
+  const positionInstrument = useCallback(() => {
+    return instrumentsStore.instruments.find(
+      (item) => item.instrumentItem.id === position.instrument
+    )?.instrumentItem;
+  }, [props.position]);
 
   const closePosition = async () => {
     try {
@@ -138,7 +144,7 @@ function ActivePositionExpanded(props: Props) {
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 8px 0 0" width="170px">
           <PrimaryTextSpan fontSize="14px" color="#fffccc" marginBottom="4px">
-            {position.instrument}
+            {positionInstrument()?.name}
           </PrimaryTextSpan>
           <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
             {position.instrument}
