@@ -60,6 +60,7 @@ const EducationQuestionsPage: FC = observer(() => {
     setLastHandle('next');
     if (
       educationStore.activeQuestion?.pages === null ||
+      educationStore.activeQuestion?.pages?.length! === 0 ||
       activePage === educationStore.activeQuestion?.pages.length! - 1
     ) {
       setActivePage(0);

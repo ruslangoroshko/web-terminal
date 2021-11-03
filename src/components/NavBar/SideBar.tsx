@@ -50,7 +50,7 @@ const SideBar = observer(() => {
         const response = await API.getListOfCourses(mainAppStore.initModel.miscUrl);
         if (
           response.responseCode === EducationResponseEnum.Ok &&
-          response.data.filter((item) => item.id).length > 0
+          response.data.filter((item) => item.id && !!item.totalQuestions).length > 0
         ) {
           educationStore.setEducationIsLoaded(true);
           educationStore.setCoursesList(response.data);
