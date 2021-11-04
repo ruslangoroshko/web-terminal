@@ -27,10 +27,10 @@ const EducationQuestionsPage: FC = observer(() => {
   ]);
 
   const checkLastPage = useCallback(() => {
-    const index = educationStore.questionsList?.questions.findIndex(
-      el => el.id === educationStore.activeQuestion?.id
+    return (
+      educationStore.activeQuestion?.id === educationStore.questionsList?.questions
+        [educationStore.questionsList?.questions.length - 1]?.id
     );
-    return index === educationStore.questionsList?.lastQuestionNumber;
   }, [
     educationStore.activeQuestion,
     educationStore.questionsList,
