@@ -464,5 +464,6 @@
     "There is no Internet connection.": "No hay conexión a Internet.",
     "Oooopsss": "Uuupsss",
     "Timeout connection error": "Error de conexión de tiempo de espera",
-    "System Error": "Error del sistema"
+    "System Error": "Error del sistema",
+    "Ooops, something went wrong": "Uuups, algo ha ido mal"
 }

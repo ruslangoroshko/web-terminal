@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useCallback, useEffect, useRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import styled from '@emotion/styled';
 import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
@@ -55,6 +55,12 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
   const instrumentRef = useRef<HTMLDivElement>(document.createElement('div'));
 
   const { instrumentsStore, tradingViewStore, mainAppStore } = useStores();
+
+  const positionInstrument = useCallback(() => {
+    return instrumentsStore.instruments.find(
+      (item) => item.instrumentItem.id === instrument
+    )?.instrumentItem;
+  }, [props.tradingHistoryItem]);
 
   const switchInstrument = (e: any) => {
     localStorage.setItem(
@@ -135,7 +141,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
                   color="#fffccc"
                   fontSize="12px"
                 >
-                  {instrument}
+                  {positionInstrument()?.name}
                 </PrimaryTextSpan>
                 <FlexContainer margin="0 4px 0 0">
                   <FlexContainer margin="0 4px 0 0">

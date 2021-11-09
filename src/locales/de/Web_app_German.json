@@ -409,5 +409,6 @@
     "There is no Internet connection.": "Es besteht keine Internetverbindung.",
     "Oooopsss": "Oooopss",
     "Timeout connection error": "Zeitüberschreitung Verbindungsfehler",
-    "System Error": "Systemfehler"
+    "System Error": "Systemfehler",
+    "Ooops, something went wrong": "Ooops, etwas ist schief gelaufen\n"
 }

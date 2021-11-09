@@ -217,6 +217,18 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         return Promise.reject(error);
       }
       if (
+        (
+          getApiUrl(requestUrl).includes(API_LIST.EDUCATION.LIST) &&
+          error.config.method === 'post'
+        ) &&
+        error.response?.status !== 401 &&
+        error.response?.status !== 403
+      ) {
+        openNotification('Ooops, something went wrong', mainAppStore, true);
+        sendClientLog();
+        return Promise.reject(error);
+      }
+      if (
         error.response?.status === 401 &&
         getApiUrl(requestUrl).includes(AUTH_API_LIST.TRADER.REFRESH_TOKEN)
       ) {

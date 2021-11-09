@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SvgIcon from '../SvgIcon';
@@ -42,12 +42,18 @@ function OrderExpandedItem(props: Props) {
     },
     currencySymbol,
   } = props;
-  const { mainAppStore } = useStores();
+  const { mainAppStore, instrumentsStore } = useStores();
   const instrumentRef = useRef<HTMLDivElement>(null);
 
   const { precision } = useInstrumentPrecision(instrument);
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
+
+  const positionInstrument = useCallback(() => {
+    return instrumentsStore.instruments.find(
+      (item) => item.instrumentItem.id === instrument
+    )?.instrumentItem;
+  }, [props.position]);
 
   const closePosition = () => {
     API.removePendingOrder({
@@ -67,7 +73,7 @@ function OrderExpandedItem(props: Props) {
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 8px 0 0" width="170px">
           <PrimaryTextSpan fontSize="14px" color="#fffccc" marginBottom="4px">
-            {instrument}
+            {positionInstrument()?.name}
           </PrimaryTextSpan>
           <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
             {instrument}

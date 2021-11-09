@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
 import SvgIcon from '../SvgIcon';
@@ -15,6 +15,7 @@ import { DisplayContents, Td } from '../../styles/TableElements';
 import ImageContainer from '../ImageContainer';
 import { useTranslation } from 'react-i18next';
 import useInstrumentPrecision from '../../hooks/useInstrumentPrecision';
+import { useStores } from '../../hooks/useStores';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -42,9 +43,16 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
   } = props;
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
+  const { instrumentsStore } = useStores();
   const { t } = useTranslation();
 
   const { precision } = useInstrumentPrecision(instrument);
+
+  const positionInstrument = useCallback(() => {
+    return instrumentsStore.instruments.find(
+      (item) => item.instrumentItem.id === instrument
+    )?.instrumentItem;
+  }, [props.tradingHistoryItem]);
 
   return (
     <DisplayContents>
@@ -54,7 +62,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
         </FlexContainer>
         <FlexContainer flexDirection="column" width="170px">
           <PrimaryTextSpan fontSize="14px" color="#fffccc" marginBottom="4px">
-            {instrument}
+            {positionInstrument()?.name}
           </PrimaryTextSpan>
           <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
             {instrument}

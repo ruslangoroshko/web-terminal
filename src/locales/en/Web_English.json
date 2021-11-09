@@ -464,5 +464,6 @@
     "There is no Internet connection.": "There is no Internet connection.",
     "Oooopsss": "Oooopsss",
     "Timeout connection error": "Timeout connection error",
-    "System Error": "System Error"
+    "System Error": "System Error",
+    "Ooops, something went wrong": "Ooops, something went wrong"
 }

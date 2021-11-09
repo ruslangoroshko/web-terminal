@@ -74,7 +74,7 @@ const Education = observer(() => {
         {() => (
           <EducationWrapper flexDirection="column">
             {educationStore.coursesList
-              ?.filter((item) => item.id && item.totalQuestions > 0)
+              ?.filter((item) => item.id && !!item.totalQuestions)
               ?.map((item, counter) => (
               <EducationCourse
                 key={item.id}
