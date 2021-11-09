@@ -137,6 +137,7 @@ export class MainAppStore implements MainAppStoreProps {
   lpLoginFlag: boolean = false;
   websocketConnectionTries = 0;
   requestErrorStack: string[] = [];
+  canCheckEducation: boolean = false;
 
   paramsAsset: string | null = null;
   paramsMarkets: string | null = null;
@@ -589,6 +590,9 @@ export class MainAppStore implements MainAppStoreProps {
       const activeAccountTarget = await API.getKeyValue(
         KeysInApi.ACTIVE_ACCOUNT_TARGET
       );
+
+      this.canCheckEducation = true;
+
       if (activeAccountTarget === 'facebook') {
         this.isPromoAccount = true;
       }
@@ -808,6 +812,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.educationStore.setShowPopup(false);
     this.rootStore.educationStore.setQuestionsList(null);
     this.rootStore.tabsStore.setTabExpanded(false);
+    this.canCheckEducation = false;
     if (this.activeAccount) {
       this.setParamsAsset(null);
       this.setParamsMarkets(null);

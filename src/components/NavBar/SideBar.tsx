@@ -71,8 +71,13 @@ const SideBar = observer(() => {
         educationStore.setCoursesList(null);
       }
     }
-    getCourses();
-  }, [mainAppStore.lang]);
+    if (!mainAppStore.isPromoAccount && mainAppStore.canCheckEducation) {
+      getCourses();
+    }
+  }, [
+    mainAppStore.lang,
+    mainAppStore.canCheckEducation,
+  ]);
 
   return (
     <BottonNavBarWrapper
