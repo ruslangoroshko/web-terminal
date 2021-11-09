@@ -57,7 +57,7 @@ const RoutingLayout: FC = () => {
 
     case RouteLayoutType.SignFlow:
       return (
-        <FlexContainer height="100vh" width="100%">
+        <FlexContainer height="100%" width="100%">
           {!location.search && (
             <Redirect to={location.pathname.replace(/\/+$/, '')} />
           )}

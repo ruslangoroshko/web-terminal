@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { LOCAL_HISTORY_POSITION } from '../../constants/global';
 import { Observer } from 'mobx-react-lite';
 import closingReasonText from '../../constants/ClosingReasonText';
+import useInstrumentPrecision from '../../hooks/useInstrumentPrecision';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -74,6 +75,8 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
       instrumentsStore.switchInstrument(instrument);
     }
   };
+
+  const { precision } = useInstrumentPrecision(instrument);
 
   useEffect(() => {
     const lastPendingActive =
@@ -216,7 +219,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
                       </PrimaryTextSpan>
                       <PrimaryTextSpan color="#fffccc" fontSize="12px">
                         {t('at')} {currencySymbol}
-                        {openPrice}
+                        {openPrice.toFixed(+precision)}
                       </PrimaryTextSpan>
                     </FlexContainer>
                     <FlexContainer
