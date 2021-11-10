@@ -89,7 +89,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
               color="rgba(255, 255, 255, 0.4)"
               whiteSpace="nowrap"
             >
-              {openPrice.toFixed(+precision)} &mdash; {closePrice}
+              {openPrice.toFixed(+precision)} &mdash; {closePrice.toFixed(+precision)}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
@@ -212,7 +212,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
                   {t('Price closed')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {closePrice}
+                  {closePrice.toFixed(+precision)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">

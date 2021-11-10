@@ -234,7 +234,7 @@ const TradingHistoryItem: FC<Props> = (props: Props) => {
                       </PrimaryTextSpan>
                       <PrimaryTextSpan color="#fffccc" fontSize="12px">
                         {t('at')} {currencySymbol}
-                        {closePrice}
+                        {closePrice.toFixed(+precision)}
                       </PrimaryTextSpan>
                     </FlexContainer>
                     <FlexContainer
