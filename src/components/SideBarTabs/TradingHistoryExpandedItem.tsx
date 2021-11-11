@@ -38,6 +38,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
       profit,
       swap: swaps,
       reservedFundsForToppingUp,
+      commission
     },
     currencySymbol,
   } = props;
@@ -250,7 +251,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {getNumberSign(swaps)}
                   {currencySymbol}
-                  {Math.abs(swaps).toFixed(2)}
+                  {Math.abs(swaps + commission).toFixed(2)}
                 </PrimaryTextSpan>
               </FlexContainer>
               {reservedFundsForToppingUp !== 0 && (
