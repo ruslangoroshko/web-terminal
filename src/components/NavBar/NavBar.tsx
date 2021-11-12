@@ -24,8 +24,13 @@ const NavBar = observer(() => {
   };
 
   useEffect(() => {
-    checkWelcomeBonus();
-  }, []);
+    if (mainAppStore.canCheckEducation && !mainAppStore.isPromoAccount) {
+      checkWelcomeBonus();
+    }
+  }, [
+    mainAppStore.canCheckEducation,
+    mainAppStore.isPromoAccount,
+  ]);
 
   return (
     <FlexContainer

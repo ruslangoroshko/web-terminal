@@ -38,6 +38,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
       profit,
       swap: swaps,
       reservedFundsForToppingUp,
+      commission
     },
     currencySymbol,
   } = props;
@@ -89,7 +90,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
               color="rgba(255, 255, 255, 0.4)"
               whiteSpace="nowrap"
             >
-              {openPrice.toFixed(+precision)} &mdash; {closePrice}
+              {openPrice.toFixed(+precision)} &mdash; {closePrice.toFixed(+precision)}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
@@ -212,7 +213,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
                   {t('Price closed')}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {closePrice}
+                  {closePrice.toFixed(+precision)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
@@ -250,7 +251,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
                 <PrimaryTextSpan color="#fffccc" fontSize="12px">
                   {getNumberSign(swaps)}
                   {currencySymbol}
-                  {Math.abs(swaps).toFixed(2)}
+                  {Math.abs(swaps + commission).toFixed(2)}
                 </PrimaryTextSpan>
               </FlexContainer>
               {reservedFundsForToppingUp !== 0 && (
