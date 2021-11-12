@@ -61,6 +61,7 @@ import { debugLevel } from '../constants/debugConstants';
 import { getProcessId } from '../helpers/getProcessId';
 import { getCircularReplacer } from '../helpers/getCircularReplacer';
 import { getStatesSnapshot } from '../helpers/getStatesSnapshot';
+import { HintEnum } from '../enums/HintsEnum';
 
 interface MainAppStoreProps {
   token: string;
@@ -593,6 +594,15 @@ export class MainAppStore implements MainAppStoreProps {
 
       this.canCheckEducation = true;
 
+      const userActiveHint = await API.getKeyValue(
+        KeysInApi.SHOW_HINT
+      );
+
+      if (Object.keys(HintEnum).includes(userActiveHint.trim())) {
+        // @ts-ignore
+        this.rootStore.educationStore.openHint(userActiveHint.trim(), false);
+      }
+
       if (activeAccountTarget === 'facebook') {
         this.isPromoAccount = true;
       }
@@ -811,6 +821,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.educationStore.setActiveCourse(null);
     this.rootStore.educationStore.setShowPopup(false);
     this.rootStore.educationStore.setQuestionsList(null);
+    this.rootStore.educationStore.setHint(null, false);
     this.rootStore.tabsStore.setTabExpanded(false);
     this.canCheckEducation = false;
     if (this.activeAccount) {

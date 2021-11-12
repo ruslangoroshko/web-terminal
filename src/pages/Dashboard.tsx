@@ -20,6 +20,7 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import ShouldValidatePhonePopup from '../components/ShouldValidatePhonePopup';
 import ConfirmPopup from '../components/ConfirmPopup';
 import FavoriteInstrumetsBar from '../components/FavoriteInstrumetsBar';
+import HintsWrapper from '../components/Hints/HintsWrapper';
 
 const Dashboard: FC = observer(() => {
   const {
@@ -28,6 +29,7 @@ const Dashboard: FC = observer(() => {
     notificationStore,
     phoneVerificationStore,
     tradingViewStore,
+    educationStore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -78,6 +80,19 @@ const Dashboard: FC = observer(() => {
             {phoneVerificationStore.shouldValidatePhone && (
               <ShouldValidatePhonePopup></ShouldValidatePhonePopup>
             )}
+          </>
+        )}
+      </Observer>
+
+      <Observer>
+        {() => (
+          <>
+            {
+              mainAppStore.canCheckEducation &&
+              !mainAppStore.isPromoAccount &&
+              educationStore.educationHint !== null &&
+              <HintsWrapper hintType={educationStore.educationHint} />
+            }
           </>
         )}
       </Observer>

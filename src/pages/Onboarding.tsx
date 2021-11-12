@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import { PrimaryButton } from '../styles/Buttons';
@@ -23,12 +23,12 @@ import SvgIcon from '../components/SvgIcon';
 import IconClose from '../assets/svg/icon-close.svg';
 import { keyframes } from '@emotion/core';
 import { OnBoardingResponseEnum } from '../enums/OnBoardingRsponseEnum';
-import HashLocation from '../constants/hashLocation';
+import { HintEnum } from '../enums/HintsEnum';
 
 const Onboarding = () => {
   const { t } = useTranslation();
   const { push } = useHistory();
-  const { badRequestPopupStore, mainAppStore, bonusStore } = useStores();
+  const { educationStore, mainAppStore, bonusStore } = useStores();
 
   const [actualStep, setActualStep] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
@@ -97,6 +97,7 @@ const Onboarding = () => {
       });
       mainAppStore.addTriggerDissableOnboarding();
       mainAppStore.isOnboarding = false;
+      educationStore.setFTopenHint(HintEnum.SkipOB);
       push(Page.DASHBOARD);
     }
   };
@@ -118,6 +119,7 @@ const Onboarding = () => {
         });
         mainAppStore.addTriggerDissableOnboarding();
         mainAppStore.isOnboarding = false;
+        educationStore.setFTopenHint(HintEnum.DemoACC);
         push(Page.DASHBOARD);
       } catch (error) {
       }
@@ -137,6 +139,7 @@ const Onboarding = () => {
         });
         mainAppStore.addTriggerDissableOnboarding();
         mainAppStore.isOnboarding = false;
+        educationStore.setFTopenHint(HintEnum.DemoACC);
         try {
           await bonusStore.getUserBonus();
           if (bonusStore.showBonus() && bonusStore.bonusData !== null) {

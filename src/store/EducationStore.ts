@@ -1,6 +1,9 @@
 import { RootStore } from './RootStore';
 import { action, makeAutoObservable, observable } from 'mobx';
 import { IEducationCourses, IEducationQuestion, IEducationQuestionsList } from '../types/EducationTypes';
+import { HintEnum } from '../enums/HintsEnum';
+import KeysInApi from '../constants/keysInApi';
+import API from '../helpers/API';
 
 interface IEducationStore {
   educationIsLoaded: boolean;
@@ -9,6 +12,7 @@ interface IEducationStore {
   questionsList: IEducationQuestionsList | null;
   activeCourse: IEducationCourses | null;
   activeQuestion: IEducationQuestion | null;
+  educationHint: HintEnum | null;
 }
 
 export class EducationStore implements IEducationStore {
@@ -19,6 +23,7 @@ export class EducationStore implements IEducationStore {
   @observable activeCourse: IEducationCourses | null = null;
   @observable activeQuestion: IEducationQuestion | null = null;
   @observable showPopup: boolean = false;
+  @observable educationHint: HintEnum | null = null;
 
 
   constructor(rootStore: RootStore) {
@@ -55,4 +60,45 @@ export class EducationStore implements IEducationStore {
   setActiveQuestion = (newValue: IEducationQuestion | null) => {
     this.activeQuestion = newValue;
   };
+
+  @action
+  setFTopenHint = async (value: HintEnum) => {
+    const userActiveHint = await API.getKeyValue(
+      KeysInApi.SHOW_HINT
+    );
+    // hint was closet
+    if (userActiveHint === 'false') {
+      return
+    }
+    // hint dont exist
+    if (!Object.keys(HintEnum).includes(userActiveHint.trim())) {
+      this.setHint(value)
+    }
+  }
+
+  @action
+  setHint = async (value: HintEnum | null, saveKeyValue: boolean = true) => {
+    if (this.rootStore.mainAppStore.isAuthorized) {
+      try {
+        this.educationHint = value;
+        saveKeyValue && API.setKeyValue(
+          {
+            key: KeysInApi.SHOW_HINT,
+            value: value || false,
+          }
+        );
+      } catch (error) {}
+    }
+  };
+
+  @action
+  openHint = (value: HintEnum, saveKeyValue: boolean = true) => {
+    this.setHint(value, saveKeyValue);
+  };
+
+  @action
+  closeHint = () => {
+    this.setHint(null);
+  };
+
 }

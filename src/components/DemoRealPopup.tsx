@@ -19,10 +19,16 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import Page from '../constants/Pages';
+import { HintEnum } from '../enums/HintsEnum';
 
 function DemoRealPopup() {
   const { push } = useHistory();
-  const { mainAppStore, badRequestPopupStore, bonusStore } = useStores();
+  const {
+    mainAppStore,
+    badRequestPopupStore,
+    bonusStore,
+    educationStore
+  } = useStores();
   const { t } = useTranslation();
 
   const sendMixpanelEvents = (demoRealFunds: 'real' | 'demo') => {
@@ -46,6 +52,7 @@ function DemoRealPopup() {
         mainAppStore.addTriggerDissableOnboarding();
         mainAppStore.setIsDemoReal(false);
         sendMixpanelEvents('demo');
+        educationStore.setFTopenHint(HintEnum.DemoACC);
       } catch (error) {
       }
     }
@@ -75,6 +82,7 @@ function DemoRealPopup() {
           push(Page.DEPOSIT_POPUP);
         }
         sendMixpanelEvents('real');
+        educationStore.setFTopenHint(HintEnum.Deposit);
         setTimeout(() => {
           mainAppStore.setIsDemoReal(false);
         }, 500);
