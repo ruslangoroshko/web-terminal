@@ -153,7 +153,7 @@ export class MainAppStore implements MainAppStoreProps {
   rootStore: RootStore;
   signalRReconnectTimeOut = '';
 
-  connectTimeOut = 10000; // 5000;
+  connectTimeOut = 30000; // 5000;
   requestReconnectCounter = 0;
   signalRReconectCounter = 0;
 
@@ -953,7 +953,7 @@ export class MainAppStore implements MainAppStoreProps {
 
   @action
   setConnectionTimeout = (timeout: number) => {
-    this.connectTimeOut = 10000; //timeout || 5000;
+    this.connectTimeOut = 30000; //timeout || 5000;
   };
 
   @action
