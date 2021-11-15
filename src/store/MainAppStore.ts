@@ -597,8 +597,8 @@ export class MainAppStore implements MainAppStoreProps {
       const userActiveHint = await API.getKeyValue(
         KeysInApi.SHOW_HINT
       );
-
-      if (Object.keys(HintEnum).includes(userActiveHint.trim())) {
+      // @ts-ignore
+      if (Object.values(HintEnum).includes(userActiveHint.trim())) {
         // @ts-ignore
         this.rootStore.educationStore.openHint(userActiveHint.trim(), false);
       }

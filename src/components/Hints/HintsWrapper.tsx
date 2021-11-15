@@ -45,7 +45,7 @@ const HintsWrapper = ({ hintType }: Props) => {
       left="0"
       right="0"
       margin="0 auto"
-      zIndex="105"
+      zIndex="198"
     >
       <HintBlock
         item={activeFlowData[step]}

@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import LanguageButton from './LanguageButton';
 import UserProfileButton from './UserProfileButton';
 import DepositButton from './DepositButton';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import AccountSwitcherDropdown from './AccountSwitcherDropdown';
 import { Link } from 'react-router-dom';
 import Page from '../../constants/Pages';
@@ -13,9 +13,10 @@ import { useStores } from '../../hooks/useStores';
 import API from '../../helpers/API';
 import { WelcomeBonusResponseEnum } from '../../enums/WelcomeBonusResponseEnum';
 import BonusDropdown from './BonusDropdown';
+import HintsWrapper from '../Hints/HintsWrapper';
 
 const NavBar = observer(() => {
-  const { mainAppStore, bonusStore } = useStores();
+  const { mainAppStore, bonusStore, educationStore } = useStores();
 
   const checkWelcomeBonus = async () => {
     try {
@@ -41,6 +42,18 @@ const NavBar = observer(() => {
       justifyContent="space-between"
       zIndex="105"
     >
+      <Observer>
+        {() => (
+          <>
+            {
+              mainAppStore.canCheckEducation &&
+              !mainAppStore.isPromoAccount &&
+              educationStore.educationHint !== null &&
+              <HintsWrapper hintType={educationStore.educationHint} />
+            }
+          </>
+        )}
+      </Observer>
       <FlexContainer alignItems="center">
         <Link to={Page.DASHBOARD}>
           <FlexContainer alignItems="center">
