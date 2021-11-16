@@ -54,7 +54,6 @@ const RouteWrapper: FC<Props> = observer((props) => {
       !mainAppStore.isAuthorized &&
       [RouteLayoutType.Authorized, RouteLayoutType.KYC].includes(layoutType)
     ) {
-      console.log(layoutType);
       return <Redirect to={isOldUser ? Page.SIGN_IN : Page.SIGN_UP} />;
     }
   }

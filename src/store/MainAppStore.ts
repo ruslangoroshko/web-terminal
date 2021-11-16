@@ -594,17 +594,19 @@ export class MainAppStore implements MainAppStoreProps {
 
       this.canCheckEducation = true;
 
-      const userActiveHint = await API.getKeyValue(
-        KeysInApi.SHOW_HINT
-      );
-      // @ts-ignore
-      if (Object.values(HintEnum).includes(userActiveHint.trim())) {
-        // @ts-ignore
-        this.rootStore.educationStore.openHint(userActiveHint.trim(), false);
-      }
-
       if (activeAccountTarget === 'facebook') {
         this.isPromoAccount = true;
+      } else {
+        try {
+          const userActiveHint = await API.getKeyValue(
+            KeysInApi.SHOW_HINT
+          );
+          // @ts-ignore
+          if (Object.values(HintEnum).includes(userActiveHint.trim())) {
+            // @ts-ignore
+            this.rootStore.educationStore.openHint(userActiveHint.trim(), false);
+          }
+        } catch {}
       }
 
       const activeAccountId = await API.getKeyValue(

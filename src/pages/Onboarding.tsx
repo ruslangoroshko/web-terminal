@@ -97,7 +97,11 @@ const Onboarding = () => {
       });
       mainAppStore.addTriggerDissableOnboarding();
       mainAppStore.isOnboarding = false;
-      educationStore.setFTopenHint(HintEnum.SkipOB);
+      educationStore.setFTopenHint(
+        mainAppStore.activeAccount?.isLive
+          ? HintEnum.SkipOB
+          : HintEnum.DemoACC
+      );
       push(Page.DASHBOARD);
     }
   };
@@ -139,7 +143,7 @@ const Onboarding = () => {
         });
         mainAppStore.addTriggerDissableOnboarding();
         mainAppStore.isOnboarding = false;
-        educationStore.setFTopenHint(HintEnum.DemoACC);
+        educationStore.setFTopenHint(HintEnum.Deposit);
         try {
           await bonusStore.getUserBonus();
           if (bonusStore.showBonus() && bonusStore.bonusData !== null) {

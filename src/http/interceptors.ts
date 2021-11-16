@@ -16,6 +16,7 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import AUTH_API_LIST from '../helpers/apiListAuth';
 import { CLIENTS_REQUEST } from '../constants/interceptorsConstants';
+import KeysInApi from '../constants/keysInApi';
 
 const openNotification = (errorText: string, mainAppStore: MainAppStore, needTranslate?: boolean) => {
   mainAppStore.rootStore.notificationStore.setNotification(errorText);
@@ -207,6 +208,11 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           (
             getApiUrl(requestUrl).includes(API_LIST.EDUCATION.LIST) &&
             !getApiUrl(requestUrl).includes(`${API_LIST.EDUCATION.LIST}/`) &&
+            error.config.method === 'get'
+          ) ||
+          (
+            getApiUrl(requestUrl).includes(API_LIST.KEY_VALUE.GET) &&
+            getApiUrl(requestUrl).includes(KeysInApi.SHOW_HINT) &&
             error.config.method === 'get'
           )
         ) &&
