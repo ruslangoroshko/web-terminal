@@ -82,7 +82,7 @@ const Onboarding = () => {
     getInfoByStep(nextStep);
   };
 
-  const closeOnBoarding = () => {
+  const closeOnBoarding = async () => {
     if (
       actualStepInfo?.data.totalSteps &&
       actualStepInfo?.data.totalSteps !== actualStep
@@ -92,17 +92,28 @@ const Onboarding = () => {
       });
       getInfoByStep(actualStepInfo?.data.totalSteps);
     } else {
-      mixpanel.track(mixpanelEvents.ONBOARDING, {
-        [mixapanelProps.ONBOARDING_VALUE]: `close${actualStep}`,
-      });
-      mainAppStore.addTriggerDissableOnboarding();
-      mainAppStore.isOnboarding = false;
-      educationStore.setFTopenHint(
-        mainAppStore.activeAccount?.isLive
-          ? HintEnum.SkipOB
-          : HintEnum.DemoACC
-      );
-      push(Page.DASHBOARD);
+      const acc = mainAppStore.accounts.find((item) => item.isLive);
+      if (acc) {
+        try {
+          await API.setKeyValue({
+            key: KeysInApi.ACTIVE_ACCOUNT_ID,
+            value: acc.id,
+          });
+          mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+            [Fields.ACCOUNT_ID]: acc.id,
+          });
+          mixpanel.track(mixpanelEvents.ONBOARDING, {
+            [mixapanelProps.ONBOARDING_VALUE]: `close${actualStep}`,
+          });
+          mainAppStore.setActiveAccount(acc);
+          mainAppStore.addTriggerDissableOnboarding();
+          mainAppStore.isOnboarding = false;
+          educationStore.setFTopenHint(HintEnum.SkipOB);
+          push(Page.DASHBOARD);
+        } catch (error) {
+        }
+      }
+
     }
   };
 
