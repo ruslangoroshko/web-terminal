@@ -5,12 +5,13 @@ import { useStores } from '../../hooks/useStores';
 import { HintEnum } from '../../enums/HintsEnum';
 import { IHint } from '../../types/HintsTypes';
 import { HINT_DATA } from '../../constants/hintsData';
+import { observer } from 'mobx-react-lite';
 
 interface Props {
   hintType: HintEnum;
 }
 
-const HintsWrapper = ({ hintType }: Props) => {
+const HintsWrapper = observer(({ hintType }: Props) => {
   const { educationStore } = useStores();
 
   const [step, setStep] = useState<number>(0);
@@ -74,6 +75,6 @@ const HintsWrapper = ({ hintType }: Props) => {
       />
     </FlexContainer>
   );
-};
+});
 
 export default HintsWrapper;
