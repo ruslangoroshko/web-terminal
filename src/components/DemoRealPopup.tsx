@@ -40,54 +40,40 @@ function DemoRealPopup() {
   const selectDemoAccount = async () => {
     const acc = mainAppStore.accounts.find((item) => !item.isLive);
     if (acc) {
-      try {
-        await API.setKeyValue({
-          key: KeysInApi.ACTIVE_ACCOUNT_ID,
-          value: acc.id,
-        });
-        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: acc.id,
-        });
-        mainAppStore.setActiveAccount(acc);
-        mainAppStore.addTriggerDissableOnboarding();
-        mainAppStore.setIsDemoReal(false);
-        sendMixpanelEvents('demo');
-        educationStore.setFTopenHint(HintEnum.DemoACC);
-      } catch (error) {
-      }
+      mainAppStore.setActiveAccount(acc);
+      mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+        [Fields.ACCOUNT_ID]: acc.id,
+      });
+      mainAppStore.addTriggerDissableOnboarding();
+      mainAppStore.setIsDemoReal(false);
+      sendMixpanelEvents('demo');
+      educationStore.setFTopenHint(HintEnum.DemoACC);
     }
   };
 
   const selectRealAccount = async () => {
     const acc = mainAppStore.accounts.find((item) => item.isLive);
     if (acc) {
+      mainAppStore.setActiveAccount(acc);
+      mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+        [Fields.ACCOUNT_ID]: acc.id,
+      });
+      mainAppStore.addTriggerDissableOnboarding();
       try {
-        await API.setKeyValue({
-          key: KeysInApi.ACTIVE_ACCOUNT_ID,
-          value: acc.id,
-        });
-        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: acc.id,
-        });
-        mainAppStore.setActiveAccount(acc);
-        mainAppStore.addTriggerDissableOnboarding();
-        try {
-          await bonusStore.getUserBonus();
-          if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
-            bonusStore.setShowBonusPopup(true);
-          } else {
-            push(Page.DEPOSIT_POPUP);
-          }
-        } catch (error) {
+        await bonusStore.getUserBonus();
+        if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
+          bonusStore.setShowBonusPopup(true);
+        } else {
           push(Page.DEPOSIT_POPUP);
         }
-        sendMixpanelEvents('real');
-        educationStore.setFTopenHint(HintEnum.Deposit);
-        setTimeout(() => {
-          mainAppStore.setIsDemoReal(false);
-        }, 500);
       } catch (error) {
+        push(Page.DEPOSIT_POPUP);
       }
+      sendMixpanelEvents('real');
+      educationStore.setFTopenHint(HintEnum.Deposit);
+      setTimeout(() => {
+        mainAppStore.setIsDemoReal(false);
+      }, 500);
     }
   };
 

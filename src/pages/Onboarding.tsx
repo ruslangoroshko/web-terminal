@@ -120,52 +120,42 @@ const Onboarding = () => {
   const selectDemoAccount = async () => {
     const acc = mainAppStore.accounts.find((item) => !item.isLive);
     if (acc) {
-      try {
-        await API.setKeyValue({
-          key: KeysInApi.ACTIVE_ACCOUNT_ID,
-          value: acc.id,
-        });
-        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: acc.id,
-        });
-        mainAppStore.setActiveAccount(acc);
-        mixpanel.track(mixpanelEvents.ONBOARDING, {
-          [mixapanelProps.ONBOARDING_VALUE]: `demo${actualStep}`,
-        });
-        mainAppStore.addTriggerDissableOnboarding();
-        mainAppStore.isOnboarding = false;
-        educationStore.setFTopenHint(HintEnum.DemoACC);
-        push(Page.DASHBOARD);
-      } catch (error) {
-      }
+      mainAppStore.setActiveAccount(acc);
+      mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+        [Fields.ACCOUNT_ID]: acc.id,
+      });
+      mixpanel.track(mixpanelEvents.ONBOARDING, {
+        [mixapanelProps.ONBOARDING_VALUE]: `demo${actualStep}`,
+      });
+      mainAppStore.addTriggerDissableOnboarding();
+      mainAppStore.isOnboarding = false;
+      educationStore.setFTopenHint(HintEnum.DemoACC);
+      push(Page.DASHBOARD);
     }
   };
 
   const selectRealAccount = async () => {
     const acc = mainAppStore.accounts.find((item) => item.isLive);
     if (acc) {
+      mainAppStore.setActiveAccount(acc);
+      mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+        [Fields.ACCOUNT_ID]: acc.id,
+      });
+      mixpanel.track(mixpanelEvents.ONBOARDING, {
+        [mixapanelProps.ONBOARDING_VALUE]: `real${actualStep}`,
+      });
+      mainAppStore.addTriggerDissableOnboarding();
+      mainAppStore.isOnboarding = false;
+      educationStore.setFTopenHint(HintEnum.Deposit);
       try {
-        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: acc.id,
-        });
-        mainAppStore.setActiveAccount(acc);
-        mixpanel.track(mixpanelEvents.ONBOARDING, {
-          [mixapanelProps.ONBOARDING_VALUE]: `real${actualStep}`,
-        });
-        mainAppStore.addTriggerDissableOnboarding();
-        mainAppStore.isOnboarding = false;
-        educationStore.setFTopenHint(HintEnum.Deposit);
-        try {
-          await bonusStore.getUserBonus();
-          if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
-            bonusStore.setShowBonusPopup(true);
-          } else {
-            push(Page.DEPOSIT_POPUP);
-          }
-        } catch (error) {
+        await bonusStore.getUserBonus();
+        if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
+          bonusStore.setShowBonusPopup(true);
+        } else {
           push(Page.DEPOSIT_POPUP);
         }
       } catch (error) {
+        push(Page.DEPOSIT_POPUP);
       }
     }
   };

@@ -29,8 +29,26 @@ const HintsWrapper = ({ hintType }: Props) => {
   };
 
   useEffect(() => {
-    setData(HINT_DATA[hintType] || null);
-  }, [hintType]);
+    const hintData = HINT_DATA[hintType] || null;
+    if (
+      hintData !== null &&
+      (
+        !educationStore.educationIsLoaded ||
+        educationStore.coursesList === null ||
+        educationStore.coursesList.filter(
+          (item) => item.id && item.totalQuestions > 0
+        ).length === 0
+      )
+    ) {
+      setData(hintData.filter((hint) => !hint.text.includes('education')));
+    } else {
+      setData(hintData);
+    }
+  }, [
+    hintType,
+    educationStore.educationIsLoaded,
+    educationStore.coursesList
+  ]);
 
   if (activeFlowData === null) {
     return null;
@@ -52,7 +70,7 @@ const HintsWrapper = ({ hintType }: Props) => {
         onClose={handleClose}
         onNext={handleNext}
         total={activeFlowData.length}
-        currentStepNum={activeFlowData[step].order}
+        currentStepNum={step + 1}
       />
     </FlexContainer>
   );
