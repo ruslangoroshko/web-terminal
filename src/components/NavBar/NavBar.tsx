@@ -6,7 +6,7 @@ import UserProfileButton from './UserProfileButton';
 import DepositButton from './DepositButton';
 import { Observer, observer } from 'mobx-react-lite';
 import AccountSwitcherDropdown from './AccountSwitcherDropdown';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Page from '../../constants/Pages';
 import Logo from '../Logo';
 import { useStores } from '../../hooks/useStores';
@@ -17,6 +17,7 @@ import HintsWrapper from '../Hints/HintsWrapper';
 
 const NavBar = observer(() => {
   const { mainAppStore, bonusStore, educationStore } = useStores();
+  const location = useLocation();
 
   const checkWelcomeBonus = async () => {
     try {
@@ -49,6 +50,7 @@ const NavBar = observer(() => {
               mainAppStore.canCheckEducation &&
               !mainAppStore.isPromoAccount &&
               educationStore.educationHint !== null &&
+              location.pathname === '/' &&
               <HintsWrapper hintType={educationStore.educationHint} />
             }
           </>
