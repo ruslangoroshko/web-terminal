@@ -141,9 +141,11 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
     ?.isExact;
 
   useEffect(() => {
-    console.log('location change');
-    console.log(location.hash);
-    if (!isDepositPage && location.hash !== HashLocation.Deposit) {
+    if (
+      !isDepositPage &&
+      location.hash !== HashLocation.Deposit &&
+      !depositFundsStore.isActivePopup
+    ) {
       console.log('hide deposit');
       depositFundsStore.closePopup();
     }
