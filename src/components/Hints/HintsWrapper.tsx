@@ -6,6 +6,7 @@ import { HintEnum } from '../../enums/HintsEnum';
 import { IHint } from '../../types/HintsTypes';
 import { HINT_DATA } from '../../constants/hintsData';
 import { observer } from 'mobx-react-lite';
+import Modal from '../Modal';
 
 interface Props {
   hintType: HintEnum;
@@ -33,47 +34,43 @@ const HintsWrapper = observer(({ hintType }: Props) => {
     const hintData = HINT_DATA[hintType] || null;
     if (
       hintData !== null &&
-      (
-        !educationStore.educationIsLoaded ||
+      (!educationStore.educationIsLoaded ||
         educationStore.coursesList === null ||
         educationStore.coursesList.filter(
           (item) => item.id && item.totalQuestions > 0
-        ).length === 0
-      )
+        ).length === 0)
     ) {
       setData(hintData.filter((hint) => !hint.text.includes('education')));
     } else {
       setData(hintData);
     }
-  }, [
-    hintType,
-    educationStore.educationIsLoaded,
-    educationStore.coursesList
-  ]);
+  }, [hintType, educationStore.educationIsLoaded, educationStore.coursesList]);
 
   if (activeFlowData === null) {
     return null;
   }
 
   return (
-    <FlexContainer
-      width="100vw"
-      height="100vh"
-      position="fixed"
-      top="0"
-      left="0"
-      right="0"
-      margin="0 auto"
-      zIndex="198"
-    >
-      <HintBlock
-        item={activeFlowData[step]}
-        onClose={handleClose}
-        onNext={handleNext}
-        total={activeFlowData.length}
-        currentStepNum={step + 1}
-      />
-    </FlexContainer>
+    <Modal>
+      <FlexContainer
+        width="100vw"
+        height="100vh"
+        position="fixed"
+        top="0"
+        left="0"
+        right="0"
+        margin="0 auto"
+        zIndex="198"
+      >
+        <HintBlock
+          item={activeFlowData[step]}
+          onClose={handleClose}
+          onNext={handleNext}
+          total={activeFlowData.length}
+          currentStepNum={step + 1}
+        />
+      </FlexContainer>
+    </Modal>
   );
 });
 
