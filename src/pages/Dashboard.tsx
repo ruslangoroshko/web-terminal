@@ -29,7 +29,8 @@ const Dashboard: FC = observer(() => {
     notificationStore,
     phoneVerificationStore,
     tradingViewStore,
-    educationStore
+    educationStore,
+    depositFundsStore
   } = useStores();
 
   const { t } = useTranslation();
@@ -55,6 +56,10 @@ const Dashboard: FC = observer(() => {
   useEffect(() => {
     // webt-272 is this works?
     window.scrollTo(0, 0);
+
+    return () => {
+      depositFundsStore.closePopup();
+    }
   }, []);
 
   return (
@@ -93,6 +98,7 @@ const Dashboard: FC = observer(() => {
               educationStore.educationHint !== null &&
               !mainAppStore.isDemoRealPopup &&
               !phoneVerificationStore.shouldValidatePhone &&
+              !depositFundsStore.isActivePopup &&
               <HintsWrapper hintType={educationStore.educationHint} />
             }
           </>

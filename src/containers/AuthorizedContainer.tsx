@@ -26,11 +26,9 @@ import {
 import NotificationPopup from '../components/NotificationPopup';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import Page from '../constants/Pages';
-import ReconnectTestBar from '../components/TestComponents/ReconnectTestBar';
 import BonusPopup from '../components/BonusPopup';
 import Education from '../components/SideBarTabs/Education';
 import EducationExpanded from '../components/SideBarTabs/EducationExpanded';
-import HashLocation from '../constants/hashLocation';
 
 interface Props {}
 
@@ -136,20 +134,6 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
   ]);
 
   const isHiddenPromoPage = hidenPromoPageList?.isExact;
-
-  const isDepositPage = useRouteMatch([Page.DASHBOARD, Page.DEPOSIT_POPUP])
-    ?.isExact;
-
-  useEffect(() => {
-    if (
-      !isDepositPage &&
-      location.hash !== HashLocation.Deposit &&
-      !depositFundsStore.isActivePopup
-    ) {
-      console.log('hide deposit');
-      depositFundsStore.closePopup();
-    }
-  }, [location]);
 
   useEffect(() => {
     if (mainAppStore.isPromoAccount && isHiddenPromoPage) {
