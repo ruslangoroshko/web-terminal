@@ -24,12 +24,13 @@ import {
   LOCAL_STORAGE_SIDEBAR,
 } from '../constants/global';
 import NotificationPopup from '../components/NotificationPopup';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import Page from '../constants/Pages';
 import ReconnectTestBar from '../components/TestComponents/ReconnectTestBar';
 import BonusPopup from '../components/BonusPopup';
 import Education from '../components/SideBarTabs/Education';
 import EducationExpanded from '../components/SideBarTabs/EducationExpanded';
+import HashLocation from '../constants/hashLocation';
 
 interface Props {}
 
@@ -113,8 +114,13 @@ const RenderExpandedTabByType = observer(() => {
 
 const AuthorizedContainer: FC<Props> = observer((props) => {
   const { children } = props;
-
-  const { tabsStore, mainAppStore, notificationStore } = useStores();
+  const location = useLocation();
+  const {
+    tabsStore,
+    mainAppStore,
+    notificationStore,
+    depositFundsStore,
+  } = useStores();
   const { push } = useHistory();
 
   const hiddenSideNavBar = useRouteMatch([Page.ONBOARDING]);
@@ -130,6 +136,14 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
   ]);
 
   const isHiddenPromoPage = hidenPromoPageList?.isExact;
+
+  useEffect(() => {
+    console.log('location change');
+    console.log(location.hash);
+    if (location.hash !== HashLocation.Deposit) {
+      depositFundsStore.closePopup();
+    }
+  }, [location]);
 
   useEffect(() => {
     if (mainAppStore.isPromoAccount && isHiddenPromoPage) {
@@ -312,8 +326,8 @@ const TabsLayoutWrapper = styled(FlexContainer)<
     props.isExpanded ? 'translateX(100%)' : 'translateX(-60px)'};
   backface-visibility: hidden;
   will-change: transform;
-  transition: transform ${(props) =>
-  props.isExpanded ? '0.7s' : '0'} cubic-bezier(0.77, 0, 0.175, 1);
+  transition: transform ${(props) => (props.isExpanded ? '0.7s' : '0')}
+    cubic-bezier(0.77, 0, 0.175, 1);
 `;
 
 const SideBarAndPageContentWrapper = styled(FlexContainer)`
