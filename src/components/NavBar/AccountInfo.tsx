@@ -45,6 +45,7 @@ import { SortByPendingOrdersEnum } from '../../enums/SortByPendingOrdersEnum';
 import { moneyFormat, moneyFormatPart } from '../../helpers/moneyFormat';
 import { logger } from '../../helpers/ConsoleLoggerTool';
 import InformationPopup from '../InformationPopup';
+import { HintEnum } from '../../enums/HintsEnum';
 
 interface Props {
   account: AccountModelWebSocketDTO;
@@ -76,7 +77,16 @@ const AccountInfo: FC<Props> = observer((props) => {
 
   const isActiveAccount = mainAppStore.activeAccountId === account.id;
 
-  const handleSwitch = () => {
+  const handleSwitch = async () => {
+    if (educationStore.educationHint) {
+      const isLive = account.isLive;
+      if (isLive) {
+        await educationStore.updateHint(HintEnum.Deposit);
+      } else {
+        await educationStore.updateHint(HintEnum.DemoACC);
+      }
+    }
+
     mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
       [Fields.ACCOUNT_ID]: account.id,
     });

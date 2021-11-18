@@ -1,6 +1,10 @@
 import { RootStore } from './RootStore';
 import { action, makeAutoObservable, observable } from 'mobx';
-import { IEducationCourses, IEducationQuestion, IEducationQuestionsList } from '../types/EducationTypes';
+import {
+  IEducationCourses,
+  IEducationQuestion,
+  IEducationQuestionsList,
+} from '../types/EducationTypes';
 import { HintEnum } from '../enums/HintsEnum';
 import KeysInApi from '../constants/keysInApi';
 import API from '../helpers/API';
@@ -24,7 +28,6 @@ export class EducationStore implements IEducationStore {
   @observable activeQuestion: IEducationQuestion | null = null;
   @observable showPopup: boolean = false;
   @observable educationHint: HintEnum | null = null;
-
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, { rootStore: false });
@@ -63,31 +66,43 @@ export class EducationStore implements IEducationStore {
 
   @action
   setFTopenHint = async (value: HintEnum) => {
-    const userActiveHint = await API.getKeyValue(
-      KeysInApi.SHOW_HINT
-    );
+    const userActiveHint = await API.getKeyValue(KeysInApi.SHOW_HINT);
     // hint was closet
     if (userActiveHint === 'false') {
-      return
+      return;
     }
     // hint dont exist
     if (!Object.keys(HintEnum).includes(userActiveHint.trim())) {
-      this.setHint(value)
+      this.setHint(value);
     }
-  }
+  };
+
+  @action
+  updateHint = async (value: HintEnum) => {
+    const userActiveHint = await API.getKeyValue(KeysInApi.SHOW_HINT);
+    // hint was closet
+    if (userActiveHint === 'false') {
+      return Promise.resolve();
+    }
+    await this.setHint(value);
+
+    return Promise.resolve();
+  };
 
   @action
   setHint = async (value: HintEnum | null, saveKeyValue: boolean = true) => {
     if (this.rootStore.mainAppStore.isAuthorized) {
       try {
         this.educationHint = value;
-        saveKeyValue && API.setKeyValue(
-          {
+        saveKeyValue &&
+          (await API.setKeyValue({
             key: KeysInApi.SHOW_HINT,
             value: value || false,
-          }
-        );
-      } catch (error) {}
+          }));
+        return Promise.resolve();
+      } catch (error) {
+        return Promise.resolve();
+      }
     }
   };
 
@@ -100,5 +115,4 @@ export class EducationStore implements IEducationStore {
   closeHint = () => {
     this.setHint(null);
   };
-
 }
