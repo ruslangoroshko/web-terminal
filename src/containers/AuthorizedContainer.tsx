@@ -137,10 +137,14 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
 
   const isHiddenPromoPage = hidenPromoPageList?.isExact;
 
+  const isDepositPage = useRouteMatch([Page.DASHBOARD, Page.DEPOSIT_POPUP])
+    ?.isExact;
+
   useEffect(() => {
     console.log('location change');
     console.log(location.hash);
-    if (location.hash !== HashLocation.Deposit) {
+    if (!isDepositPage && location.hash !== HashLocation.Deposit) {
+      console.log('hide deposit');
       depositFundsStore.closePopup();
     }
   }, [location]);
