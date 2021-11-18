@@ -43,19 +43,6 @@ const NavBar = observer(() => {
       justifyContent="space-between"
       zIndex="105"
     >
-      <Observer>
-        {() => (
-          <>
-            {
-              mainAppStore.canCheckEducation &&
-              !mainAppStore.isPromoAccount &&
-              educationStore.educationHint !== null &&
-              location.pathname === '/' &&
-              <HintsWrapper hintType={educationStore.educationHint} />
-            }
-          </>
-        )}
-      </Observer>
       <FlexContainer alignItems="center">
         <Link to={Page.DASHBOARD}>
           <FlexContainer alignItems="center">
