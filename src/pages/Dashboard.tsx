@@ -93,6 +93,7 @@ const Dashboard: FC = observer(() => {
               educationStore.educationHint !== null &&
               !mainAppStore.isDemoRealPopup &&
               !phoneVerificationStore.shouldValidatePhone &&
+              !!paymentStatus &&
               <HintsWrapper hintType={educationStore.educationHint} />
             }
           </>
