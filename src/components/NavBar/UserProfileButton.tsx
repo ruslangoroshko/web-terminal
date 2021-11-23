@@ -12,6 +12,14 @@ import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
 import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import { Observer } from 'mobx-react-lite';
+
+import BasicIMG from '../../assets/images/achievement_status_bg/new/basic_star.png';
+import SilverIMG from '../../assets/images/achievement_status_bg/new/silver_star.png';
+import GoldIMG from '../../assets/images/achievement_status_bg/new/gold_star.png';
+import PlatinumIMG from '../../assets/images/achievement_status_bg/new/platinum_star.png';
+import DiamondIMG from '../../assets/images/achievement_status_bg/new/diamond_star.png';
+import VipIMG from '../../assets/images/achievement_status_bg/new/vip_star.png';
+
 import mixpanel from 'mixpanel-browser';
 import KYCStatus from '../../constants/KYCStatus';
 import mixapanelProps from '../../constants/mixpanelProps';
@@ -34,28 +42,25 @@ function UserProfileButton() {
     }
   };
 
-  const getBackgroundColor = useCallback(
-    (type: string) => {
+  const getStarLabel = useCallback(
+    () => {
       const key = mainAppStore.accounts.find((acc) => acc.isLive)
         ?.achievementStatus;
       switch (key) {
-        case AchievementStatus.SILVER:
-          return type === 'background'
-            ? ColorsPallete.BACKGROUND_SILVER
-            : ColorsPallete.STAR_OTHER;
         case AchievementStatus.GOLD:
-          return type === 'background'
-            ? ColorsPallete.BACKGROUND_GOLD
-            : ColorsPallete.STAR_OTHER;
+          return GoldIMG;
+        case AchievementStatus.SILVER:
+          return SilverIMG;
+        case AchievementStatus.VIP:
+          return VipIMG;
         case AchievementStatus.PLATINUM:
-          return type === 'background'
-            // ? ColorsPallete.BACKGROUND_PLATINUM
-            ? ColorsPallete.BACKGROUND_ULTRA
-            : ColorsPallete.STAR_OTHER;
+          return PlatinumIMG;
+        case AchievementStatus.DIAMOND:
+          return DiamondIMG;
+        case AchievementStatus.ULTRA:
+          return VipIMG;
         default:
-          return type === 'background'
-            ? ColorsPallete.BACKGROUND_BASIC
-            : ColorsPallete.STAR_BASIC;
+          return BasicIMG;
       }
     },
     [mainAppStore.activeAccount]
@@ -137,7 +142,6 @@ function UserProfileButton() {
         {() => (
           <FlexContainer alignItems={'center'}>
             <FlexContainer
-              background={getBackgroundColor('background')}
               width={'25px'}
               height={'25px'}
               justifyContent={'center'}
@@ -146,12 +150,7 @@ function UserProfileButton() {
               borderRadius={'50%'}
               position={'relative'}
             >
-              <SvgIcon
-                {...IconStatus}
-                fillColor={getBackgroundColor('star')}
-                width={13}
-                height={13}
-              />
+              <img src={getStarLabel()} width="24px" height="24px" />
               {mainAppStore.profileStatus ===
                 PersonalDataKYCEnum.NotVerified && (
                 <FlexContainer
@@ -159,8 +158,8 @@ function UserProfileButton() {
                   height={'10px'}
                   width={'10px'}
                   position={'absolute'}
-                  top={'0'}
-                  right={'0'}
+                  top={'-2px'}
+                  right={'-2px'}
                   borderRadius={'50%'}
                   border={'2px solid #1C2026'}
                 ></FlexContainer>
