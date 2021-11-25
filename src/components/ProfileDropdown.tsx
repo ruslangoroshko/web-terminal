@@ -11,10 +11,15 @@ import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import { useTranslation } from 'react-i18next';
 import IconUser from '../assets/svg/icon-user-logo.svg';
 import AchievementStatus from '../constants/achievementStatus';
-import SilverBG from '../assets/images/achievement_status_bg/silver.png';
-import GoldBG from '../assets/images/achievement_status_bg/gold.png';
-import PlatinumBG from '../assets/images/achievement_status_bg/platinum.png';
-import UltraBG from '../assets/images/achievement_status_bg/ultra.png';
+
+import BasicIMG from '../assets/images/achievement_status_bg/new/basic.png';
+import SilverIMG from '../assets/images/achievement_status_bg/new/silver.png';
+import GoldIMG from '../assets/images/achievement_status_bg/new/gold.png';
+import PlatinumIMG from '../assets/images/achievement_status_bg/new/platinum.png';
+import DiamondIMG from '../assets/images/achievement_status_bg/new/diamond.png';
+import VipIMG from '../assets/images/achievement_status_bg/new/vip.png';
+import UltraIMG from '../assets/images/achievement_status_bg/new/ultra.png';
+
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
@@ -30,15 +35,20 @@ const ProfileDropdown = observer(() => {
       const key = mainAppStore.accounts.find((acc) => acc.isLive)
         ?.achievementStatus;
       switch (key) {
-        case AchievementStatus.SILVER:
-          return type === 'color' ? '#C5DDF1' : SilverBG;
         case AchievementStatus.GOLD:
-          return type === 'color' ? '#fffccc' : GoldBG;
+          return GoldIMG;
+        case AchievementStatus.SILVER:
+          return SilverIMG;
+        case AchievementStatus.VIP:
+          return VipIMG;
         case AchievementStatus.PLATINUM:
-          // return type === 'color' ? '#00ffdd' : PlatinumBG;
-          return type === 'color' ? '#AE88FF' : UltraBG;
+          return PlatinumIMG;
+        case AchievementStatus.DIAMOND:
+          return DiamondIMG;
+        case AchievementStatus.ULTRA:
+          return UltraIMG;
         default:
-          return type === 'color' ? '#C5DDF1' : SilverBG;
+          return BasicIMG;
       }
     },
     [mainAppStore.accounts]
@@ -100,37 +110,16 @@ const ProfileDropdown = observer(() => {
       border="1px solid rgba(169, 171, 173, 0.1)"
       boxShadow="0px 34px 44px rgba(0, 0, 0, 0.25)"
     >
-      {!mainAppStore.isPromoAccount &&
-        (mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
-          AchievementStatus.GOLD ||
-          mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
-            AchievementStatus.SILVER ||
-          mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
-            AchievementStatus.PLATINUM) && (
-          <StatusLabel
+      {!mainAppStore.isPromoAccount && (
+          <FlexContainer
             width="124px"
             height="24px"
-            padding="5px"
-            borderRadius="0 0 12px 12px"
             alignItems="center"
             justifyContent="center"
             margin="0 auto"
-            background={`url(${getStatusLabel()})`}
           >
-            <PrimaryTextSpan
-              fontSize="12px"
-              textTransform="uppercase"
-              color={getStatusLabel('color')}
-              fontWeight={500}
-            >
-              {mainAppStore.accounts.find((acc) => acc.isLive)
-                ?.achievementStatus === AchievementStatus.PLATINUM
-                // ? AchievementStatus.VIP
-                ? AchievementStatus.ULTRA
-                : mainAppStore.accounts.find((acc) => acc.isLive)
-                    ?.achievementStatus}
-            </PrimaryTextSpan>
-          </StatusLabel>
+            <img src={getStatusLabel()} width="123px" height="24px" />
+          </FlexContainer>
         )}
       <FlexWithBottomBorder
         flexDirection="column"
@@ -247,13 +236,6 @@ const VerificationButton = styled(FlexContainer)`
   &:hover {
     background-color: #ff557e;
   }
-`;
-
-const StatusLabel = styled(FlexContainer)`
-  border: 1px solid rgba(169, 171, 173, 0.1);
-  border-top: 0;
-  background-repeat: no-repeat;
-  background-size: cover;
 `;
 
 const LogoutButton = styled(ButtonWithoutStyles)`
