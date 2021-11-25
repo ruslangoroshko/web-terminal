@@ -132,6 +132,9 @@ module.exports = (env, argv) => {
         CHARTING_LIBRARY_PATH: ['production', 'none'].includes(argv.mode)
           ? JSON.stringify('./charting_library/')
           : JSON.stringify('./src/vendor/charting_library/'),
+        OneSignal_PATH: ['production', 'none'].includes(argv.mode)
+          ? JSON.stringify('./')
+          : JSON.stringify('./src/vendor/'),
         IS_LIVE: ['production', 'none'].includes(argv.mode),
         IS_LOCAL: argv.is_local === 'true',
         BUILD_VERSION: JSON.stringify(process.env.BUILD_VERSION),
@@ -139,6 +142,7 @@ module.exports = (env, argv) => {
       new CopyPlugin({
         patterns: [
           { from: './src/vendor/charting_library/', to: 'charting_library' },
+          { from: './src/vendor/', to: '' },
           { from: './src/apple-app-site-association', to: '' },
           { from: './src/robots.txt', to: '' },
         ],
