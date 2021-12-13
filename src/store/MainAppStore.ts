@@ -21,7 +21,7 @@ import {
   LpLoginParams,
 } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
-import { AccountModelWebSocketDTO } from '../types/AccountsTypes';
+import { AccountModelWebSocketDTO, AccountUpdateTypeModelWebSocketDTO } from '../types/AccountsTypes';
 import { action, observable, computed, makeAutoObservable } from 'mobx';
 import API from '../helpers/API';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
@@ -349,6 +349,36 @@ export class MainAppStore implements MainAppStoreProps {
             account.id === response.data.id ? response.data : account
           )
         );
+      }
+    );
+
+    connection.on(
+      Topics.UPDATE_ACCOUNT_TYPE,
+      (response: ResponseFromWebsocket<AccountUpdateTypeModelWebSocketDTO>) => {
+        const actualType = response.data.accountTypeModels.find(
+          (item) => item.id === response.data.currentAccountTypeId
+        ) || null;
+        const sortedListOfAccountTypes = response.data.accountTypeModels.sort(
+          (a, b) => a.order - b.order
+        );
+        const indexOfActualType = actualType !== null
+          ? response.data.accountTypeModels.indexOf(actualType)
+          : null;
+
+        this.rootStore.accountTypeStore.setActualType(actualType);
+        this.rootStore.accountTypeStore.setAllTypes(response.data.accountTypeModels);
+        this.rootStore.accountTypeStore.setAmount(response.data.amountToNextAccountType);
+        this.rootStore.accountTypeStore.setPercentage(response.data.percentageToNextAccountType);
+        if (indexOfActualType !== null) {
+          this.rootStore.accountTypeStore.setNextType(sortedListOfAccountTypes[indexOfActualType + 1] || null);
+        }
+
+        this.rootStore.accountTypeStore.checkActiveAccount(
+          response.data.currentAccountTypeId
+        );
+
+        // set default status
+        this.rootStore.accountTypeStore.setKVActiveStatus(response.data.currentAccountTypeId, true);
       }
     );
 
@@ -825,6 +855,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.educationStore.setQuestionsList(null);
     this.rootStore.educationStore.setHint(null, false);
     this.rootStore.tabsStore.setTabExpanded(false);
+    this.rootStore.accountTypeStore.resetAccountType();
     this.canCheckEducation = false;
     if (this.activeAccount) {
       this.setParamsAsset(null);

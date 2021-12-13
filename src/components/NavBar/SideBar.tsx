@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import API from '../../helpers/API';
 import EducationPopup from '../EducationPopup';
 import { EducationResponseEnum } from '../../enums/EducationResponseEnum';
+import LanguageButton from './LanguageButton';
 
 const SideBar = observer(() => {
   const {
@@ -87,51 +88,58 @@ const SideBar = observer(() => {
       zIndex="104"
       position="relative"
       backgroundColor="#1c2026"
+      justifyContent="space-between"
+      alignItems="center"
     >
-      <SideBarButton
-        iconProps={MarketsIcon}
-        title={t('Markets')}
-        isActive={tabsStore.sideBarTabType === SideBarTabType.Markets}
-        setSideBarActive={setSideBarActive(SideBarTabType.Markets)}
-      />
-      <SideBarButton
-        iconProps={PortfolioIcon}
-        title={t('Portfolio')}
-        isActive={tabsStore.sideBarTabType === SideBarTabType.Portfolio}
-        setSideBarActive={setSideBarActive(SideBarTabType.Portfolio)}
-      >
-        <Observer>
-          {() => (
-            <>
-              {(activeOrdersCount > 0 || pendingOrdersCount > 0) && (
-                <CustomBadge>
-                  {pendingOrdersCount > 0
-                    ? `${activeOrdersCount}/${pendingOrdersCount}`
-                    : activeOrdersCount}
-                </CustomBadge>
-              )}
-            </>
-          )}
-        </Observer>
-      </SideBarButton>
-      <SideBarButton
-        iconProps={IconHistory}
-        title={t('History')}
-        isActive={tabsStore.sideBarTabType === SideBarTabType.History}
-        setSideBarActive={setSideBarActive(SideBarTabType.History)}
-      />
-      {
-        educationStore.educationIsLoaded &&
-        educationStore.coursesList !== null &&
-        educationStore.coursesList.filter((item) => item.id && item.totalQuestions > 0).length > 0 &&
-        !mainAppStore.isPromoAccount &&
+      <FlexContainer flexDirection="column">
         <SideBarButton
-          iconProps={IconEducation}
-          title={t('Education')}
-          isActive={tabsStore.sideBarTabType === SideBarTabType.Education}
-          setSideBarActive={setSideBarActive(SideBarTabType.Education)}
+          iconProps={MarketsIcon}
+          title={t('Markets')}
+          isActive={tabsStore.sideBarTabType === SideBarTabType.Markets}
+          setSideBarActive={setSideBarActive(SideBarTabType.Markets)}
         />
-      }
+        <SideBarButton
+          iconProps={PortfolioIcon}
+          title={t('Portfolio')}
+          isActive={tabsStore.sideBarTabType === SideBarTabType.Portfolio}
+          setSideBarActive={setSideBarActive(SideBarTabType.Portfolio)}
+        >
+          <Observer>
+            {() => (
+              <>
+                {(activeOrdersCount > 0 || pendingOrdersCount > 0) && (
+                  <CustomBadge>
+                    {pendingOrdersCount > 0
+                      ? `${activeOrdersCount}/${pendingOrdersCount}`
+                      : activeOrdersCount}
+                  </CustomBadge>
+                )}
+              </>
+            )}
+          </Observer>
+        </SideBarButton>
+        <SideBarButton
+          iconProps={IconHistory}
+          title={t('History')}
+          isActive={tabsStore.sideBarTabType === SideBarTabType.History}
+          setSideBarActive={setSideBarActive(SideBarTabType.History)}
+        />
+        {
+          educationStore.educationIsLoaded &&
+          educationStore.coursesList !== null &&
+          educationStore.coursesList.filter((item) => item.id && item.totalQuestions > 0).length > 0 &&
+          !mainAppStore.isPromoAccount &&
+          <SideBarButton
+            iconProps={IconEducation}
+            title={t('Education')}
+            isActive={tabsStore.sideBarTabType === SideBarTabType.Education}
+            setSideBarActive={setSideBarActive(SideBarTabType.Education)}
+          />
+        }
+      </FlexContainer>
+      <NavBarButtonsWrapper margin="0 auto 24px">
+        <LanguageButton></LanguageButton>
+      </NavBarButtonsWrapper>
       <Observer>{() => <>{educationStore.showPopup && <EducationPopup> </EducationPopup>}</>}</Observer>
     </BottonNavBarWrapper>
   );
@@ -149,4 +157,11 @@ const CustomBadge = styled(Badge)`
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;
+`;
+
+const NavBarButtonsWrapper = styled(FlexContainer)`
+  padding: 0 8px;
+  &:first-of-type {
+    border-right: none;
+  }
 `;

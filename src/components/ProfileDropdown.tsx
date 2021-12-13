@@ -211,6 +211,13 @@ const ProfileDropdown = observer(() => {
               </PrimaryTextSpan>
             </CustomeNavLink>
           </FlexContainer>
+          <FlexContainer margin="0 0 12px">
+            <CustomeNavLink to={Page.ACCOUNT_TYPE_INFO}>
+              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+                {t('My Status')}
+              </PrimaryTextSpan>
+            </CustomeNavLink>
+          </FlexContainer>
         </>
       )}
 

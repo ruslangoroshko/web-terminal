@@ -29,6 +29,7 @@ import Page from '../constants/Pages';
 import BonusPopup from '../components/BonusPopup';
 import Education from '../components/SideBarTabs/Education';
 import EducationExpanded from '../components/SideBarTabs/EducationExpanded';
+import CongratulationPopup from '../components/CongratulationPopup';
 
 interface Props {}
 
@@ -250,6 +251,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
           <>
             {!mainAppStore.isPromoAccount && mainAppStore.activeAccount && (
               <>
+                <CongratulationPopup />
                 <DepositPaymentResultPopup />
                 <DepositPopupWrapper />
                 <BonusPopup />

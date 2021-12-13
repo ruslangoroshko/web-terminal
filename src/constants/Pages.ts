@@ -15,6 +15,7 @@ const Page = {
   ACCOUNT_BALANCE_HISTORY: '/account-balance-history',
   ACCOUNT_SETTINGS: '/account-settings',
   ACCOUNT_SEQURITY: '/account-security',
+  ACCOUNT_TYPE_INFO: '/account-types',
   ACCOUNT_HISTORY_QUOTES: '/account-history-quotes',
   PAYMENTS: '/payments/:status',
   DEPOSIT_POPUP: '/#deposit',

@@ -57,7 +57,7 @@ function LanguageButton() {
         )}
       </Observer>
       {on && (
-        <FlexContainer position="absolute" right="0" top="100%">
+        <FlexContainer position="absolute" bottom="0" left="calc(100% + 18px)">
           <ListOfCountries></ListOfCountries>
         </FlexContainer>
       )}

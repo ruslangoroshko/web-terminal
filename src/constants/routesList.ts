@@ -15,6 +15,7 @@ import LpLogin from '../pages/LpLogin';
 import Onboarding from '../pages/Onboarding';
 import BonusFAQ from '../pages/BonusFAQ';
 import PageNotFound from '../pages/PageNotFound';
+import AccountTypeInfo from '../pages/AccountTypeInfo';
 
 
 export enum RouteLayoutType {
@@ -86,6 +87,13 @@ const routesList = [
   {
     component: AccountSecurity,
     path: Page.ACCOUNT_SEQURITY,
+    exact: true,
+    strict: true,
+    layoutType: RouteLayoutType.Authorized
+  },
+  {
+    component: AccountTypeInfo,
+    path: Page.ACCOUNT_TYPE_INFO,
     exact: true,
     strict: true,
     layoutType: RouteLayoutType.Authorized

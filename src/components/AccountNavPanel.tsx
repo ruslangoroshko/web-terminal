@@ -54,6 +54,10 @@ const AccountNavPanel = () => {
             <CustomNavLink to={Page.BONUS_FAQ} activeClassName="active">
               <AccountLinkSpan color="#fffccc">{t('Bonus FAQ')}</AccountLinkSpan>
             </CustomNavLink>
+
+            <CustomNavLink to={Page.ACCOUNT_TYPE_INFO} activeClassName="active">
+              <AccountLinkSpan color="#fffccc">{t('My Status')}</AccountLinkSpan>
+            </CustomNavLink>
           </>
         )}
       </FlexContainer>

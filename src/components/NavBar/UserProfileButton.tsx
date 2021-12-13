@@ -135,7 +135,7 @@ function UserProfileButton() {
     <UserProfileButtonWrapper
       ref={wrapperRef}
       onClick={handleToggle}
-      margin="0 16px 0 0"
+      margin="0 8px 0 0"
       position="relative"
     >
       <Observer>
@@ -175,7 +175,7 @@ function UserProfileButton() {
             <FlexContainer
               justifyContent="center"
               alignItems="center"
-              padding="6px"
+              padding="5px"
             >
               <SvgIcon
                 {...IconShevron}

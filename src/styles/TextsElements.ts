@@ -17,7 +17,8 @@ interface PrimaryTextType {
     | '22px'
     | '24px'
     | '26px'
-    | '30px';
+    | '30px'
+    | '40px';
   lineHeight?: string;
   marginRight?: string;
   marginBottom?: string;
