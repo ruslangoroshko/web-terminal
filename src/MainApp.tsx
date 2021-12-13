@@ -13,6 +13,7 @@ import SocketErrorPopup from './components/SocketErrorPopup';
 import { useTranslation } from 'react-i18next';
 import { autorun } from 'mobx';
 import { logger } from './helpers/ConsoleLoggerTool';
+import OneSignal from 'react-onesignal';
 
 declare const window: any;
 
@@ -59,6 +60,12 @@ const MainApp: FC = () => {
       if (mainAppStore.lang) {
         i18n.changeLanguage(mainAppStore.lang);
       }
+    });
+  }, []);
+
+  useEffect(() => {
+    OneSignal.init({
+      appId: "6cebaf4d-407b-491e-acb3-65a27855c428"
     });
   }, []);
 
