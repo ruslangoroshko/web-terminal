@@ -169,10 +169,16 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           (error.response?.status || error.config?.timeoutErrorMessage)
         ) {
           const objectToSend = {
-            message: error.message,
-            name: error.name,
-            stack: error.stack,
-            status: error.response?.status,
+            context: 'REST',
+            urlAPI: mainAppStore.initModel.tradingUrl,
+            urlMiscAPI: mainAppStore.initModel.miscUrl,
+            urlAuthAPI: mainAppStore.initModel.authUrl,
+            platform: 'Web',
+            config: error.config || 'config is missing',
+            message: error?.message || 'message is empty',
+            name: error?.name || 'name is empty',
+            stack: error?.stack || 'stack is empty',
+            status: error?.response?.status || 'status is empty',
           };
           const jsonLogObject = {
             error: JSON.stringify(objectToSend),
