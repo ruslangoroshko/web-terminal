@@ -4,5 +4,6 @@ export enum AccountStatusEnum {
   Gold ,
   Platinum,
   Diamond,
-  Vip
+  Vip,
+  Ultra = 3,
 }

@@ -24,12 +24,12 @@ import mixpanel from 'mixpanel-browser';
 import KYCStatus from '../../constants/KYCStatus';
 import mixapanelProps from '../../constants/mixpanelProps';
 import IconShevron from '../../assets/svg/icon-shevron-down.svg';
-import AchievementStatus from '../../constants/achievementStatus';
 import ColorsPallete from '../../styles/colorPallete';
 import mixpanelEvents from '../../constants/mixpanelEvents';
+import { AccountStatusEnum } from '../../enums/AccountStatusEnum';
 
 function UserProfileButton() {
-  const { mainAppStore, phoneVerificationStore } = useStores();
+  const { mainAppStore, phoneVerificationStore, accountTypeStore } = useStores();
   const [on, toggle] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const handleToggle = () => {
@@ -44,20 +44,19 @@ function UserProfileButton() {
 
   const getStarLabel = useCallback(
     () => {
-      const key = mainAppStore.accounts.find((acc) => acc.isLive)
-        ?.achievementStatus;
+      const key = accountTypeStore.actualType?.type;
       switch (key) {
-        case AchievementStatus.GOLD:
+        case AccountStatusEnum.Gold:
           return GoldIMG;
-        case AchievementStatus.SILVER:
+        case AccountStatusEnum.Silver:
           return SilverIMG;
-        case AchievementStatus.VIP:
+        case AccountStatusEnum.Vip:
           return VipIMG;
-        case AchievementStatus.PLATINUM:
+        case AccountStatusEnum.Platinum:
           return PlatinumIMG;
-        case AchievementStatus.DIAMOND:
+        case AccountStatusEnum.Diamond:
           return DiamondIMG;
-        case AchievementStatus.ULTRA:
+        case AccountStatusEnum.Ultra:
           return VipIMG;
         default:
           return BasicIMG;

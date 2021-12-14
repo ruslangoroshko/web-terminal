@@ -10,7 +10,6 @@ import Page from '../constants/Pages';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import { useTranslation } from 'react-i18next';
 import IconUser from '../assets/svg/icon-user-logo.svg';
-import AchievementStatus from '../constants/achievementStatus';
 
 import BasicIMG from '../assets/images/achievement_status_bg/new/basic.png';
 import SilverIMG from '../assets/images/achievement_status_bg/new/silver.png';
@@ -24,28 +23,28 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import { observer } from 'mobx-react-lite';
+import { AccountStatusEnum } from '../enums/AccountStatusEnum';
 
 const ProfileDropdown = observer(() => {
-  const { mainAppStore, depositFundsStore, tabsStore, bonusStore } = useStores();
+  const { mainAppStore, depositFundsStore, tabsStore, bonusStore, accountTypeStore } = useStores();
   const { t } = useTranslation();
   const { push } = useHistory();
 
   const getStatusLabel = useCallback(
     (type?: string) => {
-      const key = mainAppStore.accounts.find((acc) => acc.isLive)
-        ?.achievementStatus;
+      const key = accountTypeStore.actualType?.type;
       switch (key) {
-        case AchievementStatus.GOLD:
+        case AccountStatusEnum.Gold:
           return GoldIMG;
-        case AchievementStatus.SILVER:
+        case AccountStatusEnum.Silver:
           return SilverIMG;
-        case AchievementStatus.VIP:
+        case AccountStatusEnum.Vip:
           return VipIMG;
-        case AchievementStatus.PLATINUM:
+        case AccountStatusEnum.Platinum:
           return PlatinumIMG;
-        case AchievementStatus.DIAMOND:
+        case AccountStatusEnum.Diamond:
           return DiamondIMG;
-        case AchievementStatus.ULTRA:
+        case AccountStatusEnum.Ultra:
           return UltraIMG;
         default:
           return BasicIMG;
