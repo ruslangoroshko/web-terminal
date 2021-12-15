@@ -31,6 +31,7 @@ const CongratulationPopup = observer(() => {
 
   const handleOpenDashboard = () => {
     push(Page.DASHBOARD);
+    accountTypeStore.setShowPopup(false);
   };
 
   if (
