@@ -374,7 +374,7 @@ export class MainAppStore implements MainAppStoreProps {
         this.rootStore.accountTypeStore.setActualType(actualType);
         this.rootStore.accountTypeStore.setAllTypes(response.data.accountTypeModels);
         this.rootStore.accountTypeStore.setAmount(response.data.amountToNextAccountType);
-        this.rootStore.accountTypeStore.setPercentage(response.data.percentageToNextAccountType);
+        this.rootStore.accountTypeStore.setPercentage(response.data.currentAccountTypeProgressPercentage);
         if (indexOfActualType !== null) {
           this.rootStore.accountTypeStore.setNextType(sortedListOfAccountTypes[indexOfActualType + 1] || null);
         }

@@ -56,11 +56,18 @@ function LanguageButton() {
           </PrimaryTextSpan>
         )}
       </Observer>
-      {on && (
-        <FlexContainer position="absolute" bottom="0" left="calc(100% + 18px)">
-          <ListOfCountries></ListOfCountries>
-        </FlexContainer>
-      )}
+      {on && (mainAppStore.isAuthorized
+        ? (
+            <FlexContainer position="absolute" bottom={'0'} left="calc(100% + 18px)">
+              <ListOfCountries></ListOfCountries>
+            </FlexContainer>
+          )
+        : (
+          <FlexContainer position="absolute" right="0" top="100%">
+            <ListOfCountries></ListOfCountries>
+          </FlexContainer>
+        ))
+      }
     </LagnButton>
   );
 }

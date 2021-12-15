@@ -8,29 +8,31 @@ import IconClose from '../assets/svg/icon-popup-close.svg';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import { useHistory } from 'react-router-dom';
-import { Observer } from 'mobx-react-lite';
+import { observer, Observer } from 'mobx-react-lite';
 import AccountStatusProgress from '../components/AccountStatusProgress';
 import AboutStatusTable from '../components/AboutStatusTable';
+import { useStores } from '../hooks/useStores';
 
-function AccountTypeInfo() {
+const AccountTypeInfo = observer(() => {
+  const { tabsStore } = useStores();
   const { t } = useTranslation();
   const { push } = useHistory();
 
   return (
     <AccountSettingsContainer>
-      <IconButton onClick={() => push(Page.DASHBOARD)}>
-        <SvgIcon
-          {...IconClose}
-          fillColor="rgba(255, 255, 255, 0.6)"
-          hoverFillColor="#00FFDD"
-        > </SvgIcon>
-      </IconButton>
       <FlexContainer
-        width="1024px"
-        maxWidth="calc(100% - 220px)"
+        width={tabsStore.sideBarTabType !== null ? 'calc(100% - 444px)' : '100%'}
         flexDirection="column"
-        margin="0 auto 0 80px"
+        margin="0"
+        position="relative"
       >
+        <IconButton onClick={() => push(Page.DASHBOARD)}>
+          <SvgIcon
+            {...IconClose}
+            fillColor="rgba(255, 255, 255, 0.6)"
+            hoverFillColor="#00FFDD"
+          > </SvgIcon>
+        </IconButton>
         <AccountStatusProgress />
         <Observer>
           {() => <AboutStatusTable />}
@@ -38,15 +40,15 @@ function AccountTypeInfo() {
       </FlexContainer>
     </AccountSettingsContainer>
   );
-}
+});
 
 export default AccountTypeInfo;
 
 const IconButton = styled(ButtonWithoutStyles)`
   margin-right: 8px;
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: -20px;
+  right: -10px;
   z-index: 1;
   &:last-of-type {
     margin-right: 0;

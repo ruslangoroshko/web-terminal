@@ -29,16 +29,8 @@ const CongratulationPopup = observer(() => {
     accountTypeStore.showCongratulationsPopup,
   ]);
 
-  const handleOpenDeposit = () => {
-    accountTypeStore.setKVActiveStatus(accountTypeStore.actualType?.id || "");
-    if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
-      bonusStore.setShowBonusPopup(true);
-    } else {
-      push(Page.DEPOSIT_POPUP);
-    }
-    setTimeout(() => {
-      accountTypeStore.setShowPopup(false);
-    }, 1000);
+  const handleOpenDashboard = () => {
+    push(Page.DASHBOARD);
   };
 
   if (
@@ -139,7 +131,7 @@ const CongratulationPopup = observer(() => {
               width="100%"
               padding="19px"
               type="button"
-              onClick={handleOpenDeposit}
+              onClick={handleOpenDashboard}
             >
               <PrimaryTextSpan
                 color="#252636"

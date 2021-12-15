@@ -48,8 +48,8 @@ const NextAccountType = observer(() => {
       overflow="hidden"
     >
       <NextAccountTypeHeader
-        padding="16px 77px 16px 16px"
-        height="80px"
+        padding="16px 57px 16px 16px"
+        minHeight="80px"
         backgroundColor={activeStatusInfo.color}
         backgroundImage={activeStatusInfo.backgroundImage}
         width="100%"

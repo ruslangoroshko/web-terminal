@@ -22,7 +22,6 @@ const AccountStatusProgress = observer(() => {
   const { t } = useTranslation();
   const { push } = useHistory();
 
-
   const handleOpenDeposit = () => {
     if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
       bonusStore.setShowBonusPopup(true);
@@ -46,7 +45,7 @@ const AccountStatusProgress = observer(() => {
           position="relative"
         >
           <CircularProgressbar
-            value={accountTypeStore.percentageToNextAccountType || 0.1}
+            value={accountTypeStore.currentAccountTypeProgressPercentage || 0.1}
             styles={buildStyles({
               pathColor: AccountComplete[accountTypeStore.actualType?.type || 0].color,
               trailColor: 'transparent',

@@ -23,7 +23,7 @@ const AboutStatusTable = observer(() => {
   }, [accountTypeStore.allTypes]);
 
   return (
-    <FlexContainer width="100%" position="relative" overflow="auto">
+    <FlexContainer maxWidth="100%" margin="0 auto" position="relative" overflow="auto">
       <FlexContainer marginRight="2px" flexDirection="column" width="114px">
         <TitleCell
           height="54px"
@@ -67,7 +67,7 @@ const AboutStatusTable = observer(() => {
               {el.name}
             </PrimaryTextSpan>
             {el.type === AccountStatusEnum.Gold && <FlexContainer
-              width="54px"
+              padding="0 4px"
               height="15px"
               background="#FFFCCC"
               borderRadius="4px"
@@ -131,7 +131,7 @@ const AboutStatusTable = observer(() => {
                         ? `${t('from')} ${desc}`
                         : index === 1
                         ? `${desc} ${t('instruments')}`
-                        : desc
+                        : t(desc)
                     }
                   </PrimaryTextSpan>
                 </FlexContainer>

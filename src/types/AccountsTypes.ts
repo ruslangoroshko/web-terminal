@@ -39,7 +39,7 @@ export interface IAccountType {
 export interface AccountUpdateTypeModelWebSocketDTO {
   accountTypeModels: IAccountType[],
   currentAccountTypeId: string,
-  percentageToNextAccountType: number,
+  currentAccountTypeProgressPercentage: number,
   amountToNextAccountType: number,
 }
 

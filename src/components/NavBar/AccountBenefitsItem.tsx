@@ -43,7 +43,7 @@ const AccountBenefitsItem: FC<Props> = observer(({icon, text, color, type, isNew
           lineHeight="21px"
           fontWeight={400}
         >
-          {text}
+          {t(text)}
         </PrimaryTextSpan>
       </FlexContainer>
       {isNew && <FlexContainer

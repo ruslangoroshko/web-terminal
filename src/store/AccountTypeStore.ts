@@ -9,7 +9,7 @@ interface ContextProps {
   nextType: IAccountType | null;
   showCongratulationsPopup: boolean;
   allTypes: IAccountType[] | null;
-  percentageToNextAccountType: number | null;
+  currentAccountTypeProgressPercentage: number | null;
   amountToNextAccountType: number | null;
 }
 
@@ -18,7 +18,7 @@ export class AccountTypeStore implements ContextProps {
   @observable nextType: IAccountType | null = null;
   @observable allTypes: IAccountType[] | null = null;
   @observable showCongratulationsPopup: boolean = false;
-  @observable percentageToNextAccountType: number | null = null;
+  @observable currentAccountTypeProgressPercentage: number | null = null;
   @observable amountToNextAccountType: number | null = null;
 
   constructor(rootStore: RootStore) {
@@ -52,7 +52,7 @@ export class AccountTypeStore implements ContextProps {
 
   @action
   setPercentage = (newValue: number | null) => {
-    this.percentageToNextAccountType = newValue;
+    this.currentAccountTypeProgressPercentage = newValue;
   };
 
   @action
@@ -109,6 +109,6 @@ export class AccountTypeStore implements ContextProps {
     this.allTypes = null;
     this.showCongratulationsPopup = false;
     this.amountToNextAccountType = null;
-    this.percentageToNextAccountType = null;
+    this.currentAccountTypeProgressPercentage = null;
   };
 }
