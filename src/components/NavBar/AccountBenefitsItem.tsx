@@ -47,7 +47,6 @@ const AccountBenefitsItem: FC<Props> = observer(({icon, text, color, type, isNew
         </PrimaryTextSpan>
       </FlexContainer>
       {isNew && <FlexContainer
-        width="37px"
         height="16px"
         padding="2px 4px"
         borderRadius="4px"

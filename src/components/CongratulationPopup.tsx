@@ -10,7 +10,7 @@ import styled from '@emotion/styled';
 import { useTranslation } from 'react-i18next';
 import AccountBenefitsItem from './NavBar/AccountBenefitsItem';
 import { PrimaryButton } from '../styles/Buttons';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import Page from '../constants/Pages';
 import Modal from './Modal';
 import SvgIcon from './SvgIcon';
@@ -19,8 +19,16 @@ const CongratulationPopup = observer(() => {
   const { accountTypeStore, bonusStore } = useStores();
   const { push } = useHistory();
   const { t } = useTranslation();
+  const location = useLocation();
 
   const [activeStatusInfo, setActiveStatusInfo] = useState<any>(null);
+
+  const [queryParams, setParams] = React.useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setParams(params.get('status'));
+  }, [location]);
 
   useEffect(() => {
     setActiveStatusInfo(AccountComplete[accountTypeStore.actualType?.type || 0]);
@@ -30,6 +38,9 @@ const CongratulationPopup = observer(() => {
   ]);
 
   const handleOpenDashboard = () => {
+    accountTypeStore.setKVActiveStatus(
+      accountTypeStore.actualType?.id || ''
+    );
     push(Page.DASHBOARD);
     accountTypeStore.setShowPopup(false);
   };
@@ -38,7 +49,8 @@ const CongratulationPopup = observer(() => {
     accountTypeStore.actualType === null ||
     activeStatusInfo === null ||
     activeStatusInfo.benefits.length === 0 ||
-    !accountTypeStore.showCongratulationsPopup
+    !accountTypeStore.showCongratulationsPopup ||
+    queryParams
   ) {
     return null;
   }

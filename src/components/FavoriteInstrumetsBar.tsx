@@ -42,10 +42,16 @@ const FavoriteInstrumetsBar = observer(() => {
           accountId: mainAppStore.activeAccountId,
         });
         alreadyAdded = true;
-        let responseToCheck = response;
-        if (!responseToCheck.some((instrumentId) => instrumentsStore.instruments.find(
-          (item) => (item.instrumentItem.id === instrumentId)
-        ))) {
+        let responseToCheck: string[] = [];
+        response.map((instrumentId) => {
+          if (instrumentsStore.instruments.find(
+            (item) => (item.instrumentItem.id === instrumentId)
+          )) {
+            responseToCheck.push(instrumentId);
+          }
+          return instrumentId;
+        });
+        if (responseToCheck.length === 0) {
           const newInstruments = [];
           for (let i = 0; i < 5; i++) {
             if (instrumentsStore.instruments[i]) {
@@ -103,7 +109,6 @@ const FavoriteInstrumetsBar = observer(() => {
       marginBottom="20px"
       height={instrumentsStore.activeInstruments.length !== 0 ? '40px' : '0px'}
     >
-      {console.log(instrumentsStore.activeInstruments)}
       {instrumentsStore.activeInstruments.length !== 0 && (
         <>
           <InstrumentsScrollWrapper />

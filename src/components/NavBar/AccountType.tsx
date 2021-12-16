@@ -66,7 +66,11 @@ const AccountType = observer(() => {
           top="1px"
           left="1px"
           position="absolute"
-          width={`${accountTypeStore.currentAccountTypeProgressPercentage || 0}px`}
+          width={`${
+            accountTypeStore.actualType?.type === AccountStatusEnum.Vip
+              ? 100
+              : accountTypeStore.currentAccountTypeProgressPercentage || 0
+          }px`}
           height="12px"
           borderRadius="100px 0 0 100px"
           background={AccountToBe[accountTypeStore.actualType?.type || 0].color}

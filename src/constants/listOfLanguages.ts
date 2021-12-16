@@ -21,11 +21,11 @@ export const ListForEN = {
     originName: 'Deutsch',
     shortName: 'DE',
   },
-  [CountriesEnum.RU]: {
-    name: 'Russian',
-    originName: 'Русский',
-    shortName: 'RU',
-  },
+  // [CountriesEnum.RU]: {
+  //   name: 'Russian',
+  //   originName: 'Русский',
+  //   shortName: 'RU',
+  // },
 };
 
 export const ListForPL = {
@@ -49,11 +49,11 @@ export const ListForPL = {
     originName: 'Deutsch',
     shortName: 'DE',
   },
-  [CountriesEnum.RU]: {
-    name: 'Rosyjski',
-    originName: 'Русский',
-    shortName: 'RU',
-  },
+  // [CountriesEnum.RU]: {
+  //   name: 'Rosyjski',
+  //   originName: 'Русский',
+  //   shortName: 'RU',
+  // },
 };
 
 export const ListForES = {
@@ -77,11 +77,11 @@ export const ListForES = {
     originName: 'Deutsch',
     shortName: 'DE',
   },
-  [CountriesEnum.RU]: {
-    name: 'Ruso',
-    originName: 'Русский',
-    shortName: 'RU',
-  },
+  // [CountriesEnum.RU]: {
+  //   name: 'Ruso',
+  //   originName: 'Русский',
+  //   shortName: 'RU',
+  // },
 };
 
 
@@ -106,11 +106,11 @@ export const ListForDE = {
     originName: 'Deutsch',
     shortName: 'DE',
   },
-  [CountriesEnum.RU]: {
-    name: 'Russisch',
-    originName: 'Русский',
-    shortName: 'RU',
-  },
+  // [CountriesEnum.RU]: {
+  //   name: 'Russisch',
+  //   originName: 'Русский',
+  //   shortName: 'RU',
+  // },
 };
 
 
@@ -135,11 +135,11 @@ export const ListForRU = {
     originName: 'Deutsch',
     shortName: 'DE',
   },
-  [CountriesEnum.RU]: {
-    name: 'Russian',
-    originName: 'Русский',
-    shortName: 'RU',
-  },
+  // [CountriesEnum.RU]: {
+  //   name: 'Russian',
+  //   originName: 'Русский',
+  //   shortName: 'RU',
+  // },
 };
 
 export type ListOfCountriesType = typeof ListForEN;

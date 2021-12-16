@@ -45,7 +45,11 @@ const AccountStatusProgress = observer(() => {
           position="relative"
         >
           <CircularProgressbar
-            value={accountTypeStore.currentAccountTypeProgressPercentage || 0.1}
+            value={
+              accountTypeStore.actualType?.type === AccountStatusEnum.Vip
+                ? 100
+                : accountTypeStore.currentAccountTypeProgressPercentage || 0.1
+            }
             styles={buildStyles({
               pathColor: AccountComplete[accountTypeStore.actualType?.type || 0].color,
               trailColor: 'transparent',

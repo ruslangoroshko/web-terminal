@@ -1,28 +1,28 @@
 import {
-  LOCAL_STORAGE_TOKEN_KEY,
-  LOCAL_STORAGE_REFRESH_TOKEN_KEY,
-  LOCAL_STORAGE_LANGUAGE,
-  LOCAL_STORAGE_SIDEBAR,
-  LOCAL_POSITION,
-  LOCAL_MARKET_TABS,
-  LOCAL_PORTFOLIO_TABS,
-  LOCAL_PENDING_POSITION,
-  LOCAL_HISTORY_POSITION,
-  LOCAL_STORAGE_IS_NEW_USER,
-  LOCAL_HISTORY_TIME,
   LOCAL_HISTORY_DATERANGE,
   LOCAL_HISTORY_PAGE,
-  LOCAL_POSITION_SORT,
+  LOCAL_HISTORY_POSITION,
+  LOCAL_HISTORY_TIME,
+  LOCAL_MARKET_TABS,
+  LOCAL_PENDING_POSITION,
   LOCAL_PENDING_POSITION_SORT,
+  LOCAL_PORTFOLIO_TABS,
+  LOCAL_POSITION,
+  LOCAL_POSITION_SORT,
+  LOCAL_STORAGE_IS_NEW_USER,
+  LOCAL_STORAGE_LANGUAGE,
+  LOCAL_STORAGE_REFRESH_TOKEN_KEY,
+  LOCAL_STORAGE_SIDEBAR,
+  LOCAL_STORAGE_TOKEN_KEY,
 } from './../constants/global';
 import {
+  LpLoginParams,
   UserAuthenticate,
   UserRegistration,
-  LpLoginParams,
 } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
 import { AccountModelWebSocketDTO, AccountUpdateTypeModelWebSocketDTO } from '../types/AccountsTypes';
-import { action, observable, computed, makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import API from '../helpers/API';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import initConnection from '../services/websocketService';
@@ -51,7 +51,6 @@ import moment from 'moment';
 import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
 import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
-import { polandLocalsList } from '../constants/polandLocalsList';
 import { languagesList } from '../constants/languagesList';
 import { PositionModelWSDTO } from '../types/Positions';
 import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
