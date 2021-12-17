@@ -45,9 +45,9 @@ const ListOfCountries = observer(() => {
       case CountriesEnum.ES:
         setList(ListForES);
         break;
-      case CountriesEnum.DE:
-        setList(ListForDE);
-        break;
+      // case CountriesEnum.DE:
+      //   setList(ListForDE);
+      //   break;
       // case CountriesEnum.RU:
       //   setList(ListForRU);
       //   break;

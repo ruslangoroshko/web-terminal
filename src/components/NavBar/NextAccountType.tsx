@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStores } from '../../hooks/useStores';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { FlexContainer } from '../../styles/FlexContainer';
@@ -11,6 +11,7 @@ import AccountBenefitsItem from './AccountBenefitsItem';
 import { PrimaryButton } from '../../styles/Buttons';
 import { useHistory } from 'react-router-dom';
 import Page from '../../constants/Pages';
+import { AccountStatusEnum } from '../../enums/AccountStatusEnum';
 
 const NextAccountType = observer(() => {
   const { accountTypeStore } = useStores();
@@ -53,16 +54,28 @@ const NextAccountType = observer(() => {
         backgroundColor={activeStatusInfo.color}
         backgroundImage={activeStatusInfo.backgroundImage}
         width="100%"
+        alignItems="center"
       >
-        <PrimaryTextSpan
-          color="#1C1F26"
-          fontSize="16px"
-          lineHeight="24px"
-          fontWeight={700}
-        >
-          {t('Deposit')} ${accountTypeStore.amountToNextAccountType} <br />
-          {t('to unlock')} {accountTypeStore.nextType?.name} {t('Status')}!
-        </PrimaryTextSpan>
+        {
+          accountTypeStore.actualType.type !== AccountStatusEnum.Vip
+            ? <PrimaryTextSpan
+                color="#1C1F26"
+                fontSize="16px"
+                lineHeight="24px"
+                fontWeight={700}
+              >
+                {t('Deposit')} ${accountTypeStore.amountToNextAccountType} <br />
+                {t('to unlock')} {accountTypeStore.nextType?.name} {t('Status')}!
+              </PrimaryTextSpan>
+            : <PrimaryTextSpan
+              color="#1C1F26"
+              fontSize="16px"
+              lineHeight="24px"
+              fontWeight={700}
+            >
+              {accountTypeStore.actualType?.name} {t('Status')}!
+            </PrimaryTextSpan>
+        }
       </NextAccountTypeHeader>
       <FlexContainer
         width="100%"
@@ -73,12 +86,14 @@ const NextAccountType = observer(() => {
           flexDirection="column"
           marginBottom="12px"
         >
-          <AccountBenefitsItem
-            icon={IconStar}
-            text={`${t(`New`)} ${accountTypeStore.nextType?.name} ${t(`Status`)}`}
-            color={activeStatusInfo.color}
-            type="next"
-          />
+          {
+            accountTypeStore.actualType.type !== AccountStatusEnum.Vip && <AccountBenefitsItem
+              icon={IconStar}
+              text={`${t(`New`)} ${accountTypeStore.nextType?.name} ${t(`Status`)}`}
+              color={activeStatusInfo.color}
+              type="next"
+            />
+          }
           {activeStatusInfo.benefits.map(
             (item: any, counter: number) => <AccountBenefitsItem
               key={`${accountTypeStore.nextType}_${counter}`}

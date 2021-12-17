@@ -141,7 +141,28 @@ export const AccountToBe = {
     color: '#CAB1FF',
     gradient: 'linear-gradient(90deg, rgba(202, 177, 255, 0.2) -0.6%, rgba(202, 177, 255, 0) 99.4%), rgba(0, 0, 0, 0.3)',
     backgroundImage: BackgroundVIP,
-    benefits: [],
+    benefits: [
+      {
+        text: 'Personal trading assistance',
+        icon: IconEducation,
+      },
+      {
+        text: 'All Webinars',
+        icon: IconWebinar,
+      },
+      {
+        text: 'TOP Analytics',
+        icon: IconConditions,
+      },
+      {
+        text: 'Spread -70%',
+        icon: IconSpread,
+      },
+      {
+        text: 'Swap -70%',
+        icon: IconSwap,
+      },
+    ]
   }
 };
 

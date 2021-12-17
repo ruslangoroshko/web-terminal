@@ -16,11 +16,7 @@ const AccountType = observer(() => {
   const [on, toggle] = useState(false);
 
   const handleToggle = () => {
-    if (accountTypeStore.actualType?.type === AccountStatusEnum.Vip) {
-      accountTypeStore.setShowPopup(true);
-    } else {
-      toggle(!on);
-    }
+    toggle(!on);
   };
 
   const handleClickOutside = (e: any) => {
