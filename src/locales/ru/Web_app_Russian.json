@@ -527,5 +527,12 @@
     "Custom analytics": "Произвольная аналитика",
     "Tutorials at request": "Туториалы по запросу",
     "All webinars": "Все вебинары",
-    "TOP analytics": "ТОП аналитика"
+    "TOP analytics": "ТОП аналитика",
+    "This is the amount of funds that will be available for you to trade with": "Это сумма средств, которые будут вам доступны для торговли",
+    "Number of Assets that can be traded": "Количество активов, которыми можно торговать",
+    "Type of included personal educational session with an investment manager": "Тип включенной персональной обучающей сессии с инвестиционным менеджером",
+    "Live sessions with a professional trader during market events or promotions": "Онлайн сессии с профессиональным трейдером во время рыночных событий или рекламных акций",
+    "Access to assisted trading software, indicators, analytics  and special charting tools": "Доступ к вспомогательному торговому программному обеспечению, индикаторам, аналитике и специальным инструментам для построения графиков",
+    "A discount on the commission that occurs from the difference between Bid and Ask prices": "Скидка на комиссию, возникающую из разницы между ценами Bid и Ask.",
+    "A discount on the over-the-night transactions": "Скидка на транзакции в ночное время"
 }

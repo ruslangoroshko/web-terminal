@@ -11,10 +11,11 @@ interface Props {
   direction: 'top' | 'right' | 'left' | 'bottom' | 'bottomLeft';
   width: string;
   needScroll?: boolean;
+  needOversize?: boolean;
 }
 
 const InformationPopup: FC<Props> = props => {
-  const { bgColor, children, classNameTooltip, direction, width, needScroll } = props;
+  const { bgColor, children, classNameTooltip, direction, width, needScroll, needOversize } = props;
   const infoBlock = useRef<HTMLDivElement>(null);
   const handleHover = () => {
     if (needScroll) {
@@ -35,7 +36,9 @@ const InformationPopup: FC<Props> = props => {
         className={classNameTooltip}
         zIndex="103"
         ref={infoBlock}
+        flexDirection={needOversize ? 'column' : 'row'}
       >
+        {needOversize && <OversizedIcon position="absolute"> </OversizedIcon>}
         {children}
       </TooltipWrapper>
     </FlexContainer>
@@ -163,4 +166,11 @@ const InfoIcon = styled(FlexContainer)<
     display: block;
     cursor: default;
   }
+`;
+
+const OversizedIcon = styled(FlexContainer)`
+  width: 100%;
+  top: -20px;
+  left: 0;
+  height: 20px;
 `;

@@ -23,7 +23,7 @@ const AboutStatusTable = observer(() => {
   }, [accountTypeStore.allTypes]);
 
   return (
-    <FlexContainer maxWidth="100%" margin="0 auto" position="relative" overflow="auto">
+    <TableContainer maxWidth="100%" margin="0 auto" position="relative" overflow="auto">
       <FlexContainer marginRight="2px" flexDirection="column" width="114px">
         <TitleCell
           height="54px"
@@ -140,7 +140,7 @@ const AboutStatusTable = observer(() => {
           ))}
         </FlexContainer>
       </FlexContainer>
-    </FlexContainer>
+    </TableContainer>
   );
 });
 
@@ -176,6 +176,10 @@ const CellRowContainer = styled(FlexContainer)`
   }
 `;
 
+const TableContainer = styled(FlexContainer)`
+  scroll-behavior: smooth;
+`;
+
 interface TableHeaderCellItemProps {
   item: {
     id: string;
@@ -205,7 +209,14 @@ const TableHeaderCellItem = ({ item }: TableHeaderCellItemProps) => {
         {t(`${item.label}`)}
       </PrimaryTextSpan>
 
-      <InformationPopup bgColor="#000000" classNameTooltip="type_tooltip" direction="bottom" width="222px">
+      <InformationPopup
+        bgColor="#000000"
+        classNameTooltip="type_tooltip"
+        direction={item.id === 'swap' ? 'bottomLeft' : 'bottom'}
+        width="222px"
+        needScroll={true}
+        needOversize={true}
+      >
         <PrimaryTextSpan>{t(`${item.tooltipText}`)}</PrimaryTextSpan>
       </InformationPopup>
     </FlexContainer>

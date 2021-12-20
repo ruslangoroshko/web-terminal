@@ -3,6 +3,7 @@ import {
   LOCAL_HISTORY_PAGE,
   LOCAL_HISTORY_POSITION,
   LOCAL_HISTORY_TIME,
+  LOCAL_INSTRUMENT_ACTIVE,
   LOCAL_MARKET_TABS,
   LOCAL_PENDING_POSITION,
   LOCAL_PENDING_POSITION_SORT,
@@ -816,6 +817,7 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_HISTORY_TIME);
     localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
     localStorage.removeItem(LOCAL_HISTORY_PAGE);
+    localStorage.removeItem(LOCAL_INSTRUMENT_ACTIVE);
     this.isPromoAccount = false;
     this.setInitLoading(false);
     this.setIsLoading(false);
