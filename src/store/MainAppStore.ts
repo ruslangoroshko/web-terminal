@@ -349,6 +349,16 @@ export class MainAppStore implements MainAppStoreProps {
           this.activeAccount?.id === response.data.id ? response.data : null;
         if (isCurrentAcc !== null) {
           this.setActiveAccount(isCurrentAcc);
+          if (
+            isCurrentAcc.balance !== 0 &&
+            this.rootStore.bonusStore.showBonus() &&
+            this.rootStore.bonusStore.bonusData !== null &&
+            !this.isPromoAccount
+          ) {
+            try {
+              this.rootStore.bonusStore.getUserBonus();
+            } catch (error) {}
+          }
         }
         this.setAccounts(
           this.accounts.map((account) =>
