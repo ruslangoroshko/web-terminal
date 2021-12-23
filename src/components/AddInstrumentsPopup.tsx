@@ -20,6 +20,7 @@ const AddInstrumentsPopup: FC<Props> = (props) => {
   const { instrumentsStore } = useStores();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isLeft, setIsLeft] = useState(true);
+  const [leftIsUpdated, setLeftIsUpdated] = useState<boolean>(false);
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value.trim().toLowerCase();
@@ -48,6 +49,7 @@ const AddInstrumentsPopup: FC<Props> = (props) => {
     if (rect && window.innerWidth - rect.right - 320 <= 0) {
       setIsLeft(false);
     }
+    setLeftIsUpdated(true);
   }, []);
 
   const handleClickOutside = (e: any) => {
@@ -74,6 +76,7 @@ const AddInstrumentsPopup: FC<Props> = (props) => {
       right={isLeft ? 'auto' : '0'}
       zIndex="105"
       ref={wrapperRef}
+      visibilityProp={leftIsUpdated ? 'visible' : 'hidden'}
     >
       <FlexContainer
         padding="12px 12px 0 20px"
