@@ -68,7 +68,7 @@ const ProfileDropdown = observer(() => {
                 justifyContent="center"
               >
                 <PrimaryTextSpan color="#ffffff" fontSize="10px">
-                  {t('Not Verified')}
+                  {t('Account is not Verified')}
                 </PrimaryTextSpan>
               </VerificationButton>
             </CustomeNavLink>
@@ -77,7 +77,20 @@ const ProfileDropdown = observer(() => {
 
       case PersonalDataKYCEnum.Verified:
       case PersonalDataKYCEnum.OnVerification:
-        return null;
+        return <FlexContainer margin="20px 0 0" width="100%">
+            <OnVerificationButton
+              borderRadius="5px"
+              backgroundColor="#fffccc"
+              height="21px"
+              alignItems="center"
+              width="100%"
+              justifyContent="center"
+            >
+              <PrimaryTextSpan color="#1C1F26" fontSize="10px">
+                {t('Verification on Review')}
+              </PrimaryTextSpan>
+          </OnVerificationButton>
+        </FlexContainer>;
 
       default:
         return null;
@@ -242,6 +255,11 @@ const VerificationButton = styled(FlexContainer)`
   &:hover {
     background-color: #ff557e;
   }
+`;
+
+const OnVerificationButton = styled(FlexContainer)`
+  transition: 0.4;
+  cursor: default;
 `;
 
 const LogoutButton = styled(ButtonWithoutStyles)`

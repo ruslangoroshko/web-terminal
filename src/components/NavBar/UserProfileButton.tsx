@@ -150,18 +150,24 @@ function UserProfileButton() {
               position={'relative'}
             >
               <img src={getStarLabel()} width="24px" height="24px" />
-              {mainAppStore.profileStatus ===
-                PersonalDataKYCEnum.NotVerified && (
+              {(
+                mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified ||
+                mainAppStore.profileStatus === PersonalDataKYCEnum.OnVerification
+              ) && (
                 <FlexContainer
-                  backgroundColor={ColorsPallete.RAZZMATAZZ}
-                  height={'10px'}
-                  width={'10px'}
-                  position={'absolute'}
-                  top={'-2px'}
-                  right={'-2px'}
-                  borderRadius={'50%'}
-                  border={'2px solid #1C2026'}
-                ></FlexContainer>
+                  backgroundColor={
+                    mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified
+                      ? ColorsPallete.RAZZMATAZZ
+                      : ColorsPallete.STAR_BASIC
+                  }
+                  height="10px"
+                  width="10px"
+                  position="absolute"
+                  top="-2px"
+                  right="-2px"
+                  borderRadius="50%"
+                  border="2px solid #1C2026"
+                > </FlexContainer>
               )}
             </FlexContainer>
             <PrimaryTextSpan

@@ -182,8 +182,12 @@ const WithdrawRequestTab = observer(() => {
         <PaymentButtonsWrapper flexDirection="column">
           <PaymentButtonsWrapper flexDirection="column">
             {mainAppStore.profileEmail &&
-              mainAppStore.profileStatus ===
-                PersonalDataKYCEnum.NotVerified && <WithdrawPagePopup />}
+              (
+                mainAppStore.profileStatus ===
+                PersonalDataKYCEnum.NotVerified ||
+                mainAppStore.profileStatus ===
+                PersonalDataKYCEnum.OnVerification
+              ) && <WithdrawPagePopup type={mainAppStore.profileStatus} />}
             <PrimaryTextSpan
               textTransform="uppercase"
               fontSize="12px"
