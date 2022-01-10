@@ -39,6 +39,7 @@ export interface FlexContainerProps {
   flex?: string;
   visibilityProp?: 'hidden' | 'visible';
   display?: 'flex' | 'none';
+  cursor?: 'pointer' | 'default';
 }
 
 export const FlexContainer = styled.div<FlexContainerProps>`
@@ -73,4 +74,5 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   box-shadow: ${(props) => props.boxShadow};
   visibility: ${(props) => props.visibilityProp};
   display: ${(props) => props.display || 'flex'};
+  cursor: ${(props) => props.cursor};
 `;

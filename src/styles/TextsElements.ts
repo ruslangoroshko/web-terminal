@@ -6,13 +6,14 @@ interface PrimaryTextType {
   fontStyle?: 'italic' | 'normal';
   fontSize?:
     | '8px'
-    | '12px'
+    | '10px'
     | '11px'
+    | '12px'
     | '13px'
     | '14px'
     | '16px'
+    | '17px'
     | '18px'
-    | '10px'
     | '20px'
     | '22px'
     | '24px'

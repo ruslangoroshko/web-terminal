@@ -36,7 +36,7 @@ const WithdrawHistoryTab = () => {
 
       if (result.status === WithdrawalHistoryResponseStatus.SystemError) {
         notificationStore.setIsSuccessfull(false);
-        notificationStore.setNotification(t('Technical Error'));
+        notificationStore.setNotification(t('System Error'));
         notificationStore.openNotification();
       }
 

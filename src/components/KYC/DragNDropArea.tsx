@@ -14,6 +14,7 @@ interface Props {
   file: any;
   fileUrl: string;
   hasError?: boolean;
+  typeOfFile?: string;
 }
 
 const FIVE_MB = 5242880;
@@ -58,6 +59,7 @@ function DragNDropArea(props: Props) {
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
+      marginBottom="32px"
       hasError={inputError}
     >
       <FileInput
@@ -74,17 +76,22 @@ function DragNDropArea(props: Props) {
           <FlexContainer margin="0 0 10px 0">
             <SvgIcon {...IconFileUpload} fillColor="#fffccc" />
           </FlexContainer>
-          <PrimaryTextSpan color="#777A7A" fontSize="14px" marginBottom="4px">
-            {t('Drop file here to upload or')}{' '}
-            <PrimaryTextSpan color="#00FFDD" textDecoration="underline">
+          <FlexContainer alignItems="center" marginBottom="6px">
+            <PrimaryTextSpan color="#fff" fontSize="16px" lineHeight="24px">
+              {t('Drop')}&nbsp;
+            </PrimaryTextSpan>
+            <PrimaryTextSpan color="#fffccc" fontSize="16px" lineHeight="24px" fontWeight={700}>
+              '{t(props.typeOfFile || '')} {t('Photo')}'&nbsp;
+            </PrimaryTextSpan>
+            <PrimaryTextSpan color="#fff" fontSize="16px" lineHeight="24px">
+              {t('here to upload or')}&nbsp;
+            </PrimaryTextSpan>
+            <PrimaryTextSpan color="#00FFDD" fontSize="16px" lineHeight="24px" textDecoration="underline">
               {t('choose file')}
             </PrimaryTextSpan>
-          </PrimaryTextSpan>
-          <PrimaryTextSpan fontSize="10px" color="rgba(255,255,255,0.4)">
-            {t('Maximum upload file size: 5MB')}
-          </PrimaryTextSpan>
-          <PrimaryTextSpan fontSize="10px" color="rgba(255,255,255,0.4)">
-            {t('Allowed file types: png, jpg')}
+          </FlexContainer>
+          <PrimaryTextSpan fontSize="13px" lineHeight="17px" color="rgba(255, 255, 255, 0.64)">
+            {t('File size must be less 5 MB in PNG, JPEG, PDF format')}
           </PrimaryTextSpan>
         </FlexContainer>
       )}
@@ -95,6 +102,7 @@ function DragNDropArea(props: Props) {
       padding="20px"
       alignItems="center"
       position="relative"
+      marginBottom="16px"
     >
       <FlexContainer
         backgroundColor="#151919"
@@ -114,19 +122,12 @@ function DragNDropArea(props: Props) {
           <img src={fileUrl} width="100%" />
         </FlexContainer>
         <FlexContainer flexDirection="column">
-          <PrimaryTextSpan
-            fontSize="11px"
-            color="rgba(255,255,255,0.4)"
-            marginBottom="8px"
-          >
-            {t('Front side photo of your document')}
-          </PrimaryTextSpan>
-          <FileNameText color="#fffccc" fontSize="14px">
-            {file.name} -{' '}
-            <PrimaryTextSpan color="rgba(255,255,255,0.4)">
-              {Math.round(file.size / 1024)}kb
-            </PrimaryTextSpan>
+          <FileNameText color="#fff" fontSize="16px" lineHeight="24px">
+            {file.name}
           </FileNameText>
+          <PrimaryTextSpan fontSize="12px" lineHeight="18px" color="rgba(255,255,255,0.4)">
+            {Math.round(file.size / 1024)}kb
+          </PrimaryTextSpan>
         </FlexContainer>
       </FlexContainer>
     </FlexContainer>

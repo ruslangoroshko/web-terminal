@@ -11,20 +11,23 @@ export const brandingLinksTranslate = {
 		termsCondition: "TermsConditions_AM",
 		privacyPolicy: "PrivacyPolicy_AM",
 		aboutUs: "AboutUs_AM",
-		support: "Support_AM"
+		support: "Support_AM",
+		supportEmail: "compliance@allianzmarket.com"
 	},
 	[BrandEnum.HP]: {
 		faq: "FAQ_HP",
 		termsCondition: "TermsConditions_HP",
 		privacyPolicy: "PrivacyPolicy_HP",
 		aboutUs: "AboutUs_HP",
-		support: "Support_HP"
+		support: "Support_HP",
+		supportEmail: "compliance@handelpro.com"
 	},
 	[BrandEnum.Monfex]: {
 		faq: "FAQ_M",
 		termsCondition: "TermsConditions_M",
 		privacyPolicy: "PrivacyPolicy_M",
 		aboutUs: "AboutUs_M",
-		support: "Support_M"
+		support: "Support_M",
+		supportEmail: "compliance@monfex.com"
 	}
 }

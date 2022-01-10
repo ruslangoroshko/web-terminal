@@ -30,6 +30,7 @@ import BonusPopup from '../components/BonusPopup';
 import Education from '../components/SideBarTabs/Education';
 import EducationExpanded from '../components/SideBarTabs/EducationExpanded';
 import CongratulationPopup from '../components/CongratulationPopup';
+import KYCPopup from '../components/KYC/KYCPopup';
 
 interface Props {}
 
@@ -255,6 +256,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
                 <DepositPaymentResultPopup />
                 <DepositPopupWrapper />
                 <BonusPopup />
+                <KYCPopup />
               </>
             )}
           </>

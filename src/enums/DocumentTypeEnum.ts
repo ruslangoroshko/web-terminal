@@ -13,3 +13,10 @@ export enum DocumentTypeEnum {
   ProofOfWireTransfer ,
   CardAuthorizationForm
 }
+
+export enum KYCTypeMainEnum {
+  Identity = 1,
+  Address,
+  BankCard,
+  Additional,
+}

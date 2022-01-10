@@ -64,7 +64,7 @@ const BitcoinForm: FC = () => {
           notificationStore.setIsSuccessfull(false);
           notificationStore.openNotification();
         } else {
-          notificationStore.setNotification(t('Technical error'));
+          notificationStore.setNotification(t('System error'));
           notificationStore.setIsSuccessfull(false);
           notificationStore.openNotification();
         }

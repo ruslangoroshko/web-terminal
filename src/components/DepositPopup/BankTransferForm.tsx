@@ -86,7 +86,7 @@ const BankTransferForm = () => {
         mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
           [mixapanelProps.SERVER_ERROR]: response.status
         });
-        badRequestPopupStore.setMessage(t('Technical error'));
+        badRequestPopupStore.setMessage(t('System error'));
         badRequestPopupStore.openModal();
       }
     } catch (error) {

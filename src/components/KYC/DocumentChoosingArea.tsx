@@ -41,4 +41,4 @@ const DocumentChoosingArea = () => {
   );
 }
 
-export default BirthDayPicker;
+export default DocumentChoosingArea;
