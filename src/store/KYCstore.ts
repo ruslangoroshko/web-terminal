@@ -31,7 +31,7 @@ export class KYCstore implements Props {
     DocumentTypeEnum.Id |
     DocumentTypeEnum.FrontCard |
     DocumentTypeEnum.DriverLicenceFront = DocumentTypeEnum.Id;
-  showPopup: boolean = true;
+  showPopup: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
