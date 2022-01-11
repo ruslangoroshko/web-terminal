@@ -43,7 +43,7 @@ const KYCOther = observer(() => {
   const handleFileReceive = (method: (file: any) => void, errorMethod: (file: any) => void,) => (file: any) => {
     method({
       file,
-      fileSrc: URL.createObjectURL(file),
+      fileSrc: file.size ? URL.createObjectURL(file) : '',
     });
     errorMethod(false);
   };
@@ -137,6 +137,7 @@ const KYCOther = observer(() => {
             file={imagePayment.file}
             fileUrl={imagePayment.fileSrc}
             typeOfFile={'Proof of Payment'}
+            typeForEnum={DocumentTypeEnum.ProofOfPayment}
           />
           <PrimaryTextSpan
             fontWeight={700}
@@ -154,6 +155,7 @@ const KYCOther = observer(() => {
             file={imageWire.file}
             fileUrl={imageWire.fileSrc}
             typeOfFile={'Proof of Wire Transfer (Invoice)'}
+            typeForEnum={DocumentTypeEnum.ProofOfWireTransfer}
           />
           <PrimaryTextSpan
             fontWeight={700}
@@ -171,6 +173,7 @@ const KYCOther = observer(() => {
             file={imageCard.file}
             fileUrl={imageCard.fileSrc}
             typeOfFile={'Card Authorization Form'}
+            typeForEnum={DocumentTypeEnum.CardAuthorizationForm}
           />
           <PrimaryTextSpan
             fontWeight={700}
@@ -354,7 +357,7 @@ const KYCOther = observer(() => {
             lineHeight="24px"
             color="rgba(255, 255, 255, 0.64)"
           >
-            {t('Close')}
+            {t('Back')}
           </PrimaryTextSpan>
         </KYCButton>
         <KYCButton

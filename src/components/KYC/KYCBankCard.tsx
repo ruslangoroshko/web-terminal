@@ -37,7 +37,7 @@ const KYCBankCard = () => {
   const handleFileReceive = (method: (file: any) => void, errorMethod: (file: any) => void,) => (file: any) => {
     method({
       file,
-      fileSrc: URL.createObjectURL(file),
+      fileSrc: file.size ? URL.createObjectURL(file) : '',
     });
     errorMethod(false);
   };
@@ -118,6 +118,7 @@ const KYCBankCard = () => {
             file={imageFront.file}
             fileUrl={imageFront.fileSrc}
             typeOfFile={'Front Side'}
+            typeForEnum={DocumentTypeEnum.BankCardFront}
           />
           <DragNDropArea
             key={'pass2'}
@@ -126,6 +127,7 @@ const KYCBankCard = () => {
             file={imageBack.file}
             fileUrl={imageBack.fileSrc}
             typeOfFile={'Back Side'}
+            typeForEnum={DocumentTypeEnum.BankCardBack}
           />
           <PrimaryTextSpan
             fontWeight={700}
@@ -334,7 +336,7 @@ const KYCBankCard = () => {
             lineHeight="24px"
             color="rgba(255, 255, 255, 0.64)"
           >
-            {t('Close')}
+            {t('Back')}
           </PrimaryTextSpan>
         </KYCButton>
         <KYCButton

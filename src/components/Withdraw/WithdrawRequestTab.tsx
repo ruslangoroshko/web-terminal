@@ -186,7 +186,9 @@ const WithdrawRequestTab = observer(() => {
                 mainAppStore.profileStatus ===
                 PersonalDataKYCEnum.NotVerified ||
                 mainAppStore.profileStatus ===
-                PersonalDataKYCEnum.OnVerification
+                PersonalDataKYCEnum.OnVerification ||
+                mainAppStore.profileStatus ===
+                PersonalDataKYCEnum.Restricted
               ) && <WithdrawPagePopup type={mainAppStore.profileStatus} />}
             <PrimaryTextSpan
               textTransform="uppercase"

@@ -42,6 +42,7 @@ const KYCMain = () => {
       );
       mixpanel.track(mixpanelEvents.KYC_STEP_3);
 
+      kycStore.setShowPopup(true);
       push(Page.DASHBOARD);
     } catch (error) {}
   };

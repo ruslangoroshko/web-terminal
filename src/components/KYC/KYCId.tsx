@@ -65,7 +65,7 @@ const KYCId = observer(() => {
   const handleFileReceive = (method: (file: any) => void, errorMethod: (file: any) => void,) => (file: any) => {
     method({
       file,
-      fileSrc: URL.createObjectURL(file),
+      fileSrc: file.size ? URL.createObjectURL(file) : '',
     });
     errorMethod(false);
   };
@@ -125,6 +125,7 @@ const KYCId = observer(() => {
               file={driveFrontImage.file}
               fileUrl={driveFrontImage.fileSrc}
               typeOfFile={'Front Side'}
+              typeForEnum={DocumentTypeEnum.DriverLicenceFront}
             />
             <DragNDropArea
               key={'drive2'}
@@ -133,6 +134,7 @@ const KYCId = observer(() => {
               file={driveBackImage.file}
               fileUrl={driveBackImage.fileSrc}
               typeOfFile={'Back Side'}
+              typeForEnum={DocumentTypeEnum.DriverLicenceBack}
             />
             <PrimaryTextSpan
               fontWeight={700}
@@ -322,6 +324,7 @@ const KYCId = observer(() => {
               file={passportImage.file}
               fileUrl={passportImage.fileSrc}
               typeOfFile={'Passport'}
+              typeForEnum={DocumentTypeEnum.Id}
             />
             <PrimaryTextSpan
               fontWeight={700}
@@ -511,6 +514,7 @@ const KYCId = observer(() => {
               file={idFrontImage.file}
               fileUrl={idFrontImage.fileSrc}
               typeOfFile={'Front Side'}
+              typeForEnum={DocumentTypeEnum.FrontCard}
             />
             <DragNDropArea
               key={'id2'}
@@ -519,6 +523,7 @@ const KYCId = observer(() => {
               file={idBackImage.file}
               fileUrl={idBackImage.fileSrc}
               typeOfFile={'Back Side'}
+              typeForEnum={DocumentTypeEnum.BackCard}
             />
             <PrimaryTextSpan
               fontWeight={700}
@@ -760,7 +765,7 @@ const KYCId = observer(() => {
             lineHeight="24px"
             color="rgba(255, 255, 255, 0.64)"
           >
-            {t('Close')}
+            {t('Back')}
           </PrimaryTextSpan>
         </KYCButton>
         <KYCButton disabled={checkDisabled()} onClick={handleContinue}>

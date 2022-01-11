@@ -74,8 +74,41 @@ const ProfileDropdown = observer(() => {
             </CustomeNavLink>
           </FlexContainer>
         );
+      case PersonalDataKYCEnum.Restricted:
+        return (
+          <FlexContainer margin="20px 0 0" width="100%">
+            <CustomeNavLink to={Page.PROOF_OF_IDENTITY}>
+              <VerificationButton
+                borderRadius="5px"
+                backgroundColor="#ED145B"
+                height="21px"
+                alignItems="center"
+                width="100%"
+                justifyContent="center"
+              >
+                <PrimaryTextSpan color="#ffffff" fontSize="10px">
+                  {t('Verification is Restricted')}
+                </PrimaryTextSpan>
+              </VerificationButton>
+            </CustomeNavLink>
+          </FlexContainer>
+        );
 
       case PersonalDataKYCEnum.Verified:
+        return <FlexContainer margin="20px 0 0" width="100%">
+          <OnVerificationButton
+            borderRadius="5px"
+            backgroundColor="#00ffdd"
+            height="21px"
+            alignItems="center"
+            width="100%"
+            justifyContent="center"
+          >
+            <PrimaryTextSpan color="#1C1F26" fontSize="10px">
+              {t('Account is Verified')}
+            </PrimaryTextSpan>
+          </OnVerificationButton>
+        </FlexContainer>;
       case PersonalDataKYCEnum.OnVerification:
         return <FlexContainer margin="20px 0 0" width="100%">
             <OnVerificationButton

@@ -152,11 +152,12 @@ function UserProfileButton() {
               <img src={getStarLabel()} width="24px" height="24px" />
               {(
                 mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified ||
+                mainAppStore.profileStatus === PersonalDataKYCEnum.Restricted ||
                 mainAppStore.profileStatus === PersonalDataKYCEnum.OnVerification
               ) && (
                 <FlexContainer
                   backgroundColor={
-                    mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified
+                    mainAppStore.profileStatus !== PersonalDataKYCEnum.OnVerification
                       ? ColorsPallete.RAZZMATAZZ
                       : ColorsPallete.STAR_BASIC
                   }

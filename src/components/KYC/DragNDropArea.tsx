@@ -8,6 +8,8 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import IconClose from '../../assets/svg/icon-close.svg';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import { useTranslation } from 'react-i18next';
+import { DocumentTypeEnum } from '../../enums/DocumentTypeEnum';
+import { useStores } from '../../hooks/useStores';
 
 interface Props {
   onFileReceive: (file: Blob) => void;
@@ -15,13 +17,18 @@ interface Props {
   fileUrl: string;
   hasError?: boolean;
   typeOfFile?: string;
+  typeForEnum?: DocumentTypeEnum;
 }
 
 const FIVE_MB = 5242880;
 const allowedFileTypes = ['image/png', 'image/jpg', 'image/jpeg'];
 
 function DragNDropArea(props: Props) {
-  const { onFileReceive, file, fileUrl, hasError = false } = props;
+  const { onFileReceive, file, fileUrl, hasError = false, typeForEnum } = props;
+
+  const {
+    kycStore,
+  } = useStores();
 
   const [inputError, setError] = React.useState(false);
   React.useEffect(() => {
@@ -42,6 +49,9 @@ function DragNDropArea(props: Props) {
 
   const handleFileRemove = () => {
     onFileReceive(new Blob());
+    if (typeForEnum !== undefined)  {
+      kycStore.setFile(null, typeForEnum);
+    }
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -91,7 +101,7 @@ function DragNDropArea(props: Props) {
             </PrimaryTextSpan>
           </FlexContainer>
           <PrimaryTextSpan fontSize="13px" lineHeight="17px" color="rgba(255, 255, 255, 0.64)">
-            {t('File size must be less 5 MB in PNG, JPEG, PDF format')}
+            {t('File size must be less 5 MB in PNG, JPEG format')}
           </PrimaryTextSpan>
         </FlexContainer>
       )}

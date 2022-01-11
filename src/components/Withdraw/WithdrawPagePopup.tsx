@@ -23,7 +23,10 @@ const WithdrawPagePopup: FC<Props> = ({ type }) => {
         justifyContent="space-between"
         alignItems="center"
       >
-        {type === PersonalDataKYCEnum.NotVerified
+        {(
+          type === PersonalDataKYCEnum.NotVerified ||
+          type === PersonalDataKYCEnum.Restricted
+        )
           ? <>
             <FlexContainer padding="0 50px 0 0">
               <PrimaryTextSpan fontSize="14px" color="#ffffff" lineHeight="20px">

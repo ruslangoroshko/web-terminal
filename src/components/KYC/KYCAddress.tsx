@@ -33,7 +33,7 @@ const KYCAddress = observer(() => {
   const handleFileReceive = (method: (file: any) => void, errorMethod: (file: any) => void,) => (file: any) => {
     method({
       file,
-      fileSrc: URL.createObjectURL(file),
+      fileSrc: file.size ? URL.createObjectURL(file) : '',
     });
     errorMethod(false);
   };
@@ -108,6 +108,7 @@ const KYCAddress = observer(() => {
             file={image.file}
             fileUrl={image.fileSrc}
             typeOfFile={'Proof of Address'}
+            typeForEnum={DocumentTypeEnum.ProofOfAddress}
           />
           <PrimaryTextSpan
             fontWeight={700}
@@ -300,7 +301,7 @@ const KYCAddress = observer(() => {
             lineHeight="24px"
             color="rgba(255, 255, 255, 0.64)"
           >
-            {t('Close')}
+            {t('Back')}
           </PrimaryTextSpan>
         </KYCButton>
         <KYCButton

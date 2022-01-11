@@ -588,5 +588,9 @@
     "Card Authorization Form": "Card Authorization Form",
     "Your documents were successfully send": "Your documents were successfully send",
     "Our Compliance Department will review your data in a timely manner. This process usually takes no more than 48 business hours.": "Our Compliance Department will review your data in a timely manner. This process usually takes no more than 48 business hours.",
-    "For questions regarding verification please contact": "For questions regarding verification please contact"
+    "For questions regarding verification please contact": "For questions regarding verification please contact",
+    "Account is Verified": "Account is Verified",
+    "Verification is Restricted": "Verification is Restricted",
+    "Back": "Back",
+    "File size must be less 5 MB in PNG, JPEG format": "File size must be less 5 MB in PNG, JPEG format"
 }
