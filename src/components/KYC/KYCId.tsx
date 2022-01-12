@@ -93,18 +93,16 @@ const KYCId = observer(() => {
   ]);
 
   const handleContinue = () => {
-    switch (kycStore.typeOfIdActual) {
-      case DocumentTypeEnum.DriverLicenceFront:
-        kycStore.setFile(driveFrontImage, DocumentTypeEnum.DriverLicenceFront);
-        kycStore.setFile(driveBackImage, DocumentTypeEnum.DriverLicenceBack);
-        break;
-      case DocumentTypeEnum.Id:
-        kycStore.setFile(passportImage, DocumentTypeEnum.Id);
-        break;
-      case DocumentTypeEnum.FrontCard:
-        kycStore.setFile(idFrontImage, DocumentTypeEnum.FrontCard);
-        kycStore.setFile(idBackImage, DocumentTypeEnum.BackCard);
-        break;
+    if (!!driveBackImage.fileSrc.length && !!driveFrontImage.fileSrc.length) {
+      kycStore.setFile(driveFrontImage, DocumentTypeEnum.DriverLicenceFront);
+      kycStore.setFile(driveBackImage, DocumentTypeEnum.DriverLicenceBack);
+    }
+    if (passportImage.fileSrc.length) {
+      kycStore.setFile(passportImage, DocumentTypeEnum.Id);
+    }
+    if (!!idFrontImage.fileSrc.length && !!idBackImage.fileSrc.length) {
+      kycStore.setFile(idFrontImage, DocumentTypeEnum.FrontCard);
+      kycStore.setFile(idBackImage, DocumentTypeEnum.BackCard);
     }
     kycStore.setCurrentPageStep(KYCPageStepsEnum.Main);
   };
