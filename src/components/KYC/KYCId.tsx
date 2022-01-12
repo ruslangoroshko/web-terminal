@@ -746,7 +746,6 @@ const KYCId = observer(() => {
         <Observer>
           {() => <FlexContainer
             justifyContent="space-between"
-            alignItems="center"
             marginBottom="32px"
           >
             {

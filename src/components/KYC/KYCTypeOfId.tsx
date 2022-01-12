@@ -44,7 +44,7 @@ const KYCTypeOfId: FC<Props> = observer(({ id, title, icon, description }) => {
       borderRadius="4px"
       padding="12px 32px 16px 12px"
       width="232px"
-      height="120px"
+      minHeight="120px"
       flexDirection="column"
       onClick={handleChangeActualType}
     >
