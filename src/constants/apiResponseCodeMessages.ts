@@ -5,7 +5,7 @@ const apiResponseCodeMessages = {
   [OperationApiResponseCodes.Expired]: 'Access token is expired',
   [OperationApiResponseCodes.FileNotFound]: 'File not found',
   [OperationApiResponseCodes.FileWrongExtension]:
-    'Only files with the following extensions are allowed: jpg, png, pdf.',
+    'Only files with the following extensions are allowed: jpg, png.',
   [OperationApiResponseCodes.OldPasswordNotMatch]: 'Old password not match.',
   [OperationApiResponseCodes.UserNotExist]: 'User not found',
   [OperationApiResponseCodes.UserExists]: 'This email is already in use.',

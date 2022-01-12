@@ -71,4 +71,28 @@ export class KYCstore implements Props {
   setShowPopup = (newValue: boolean) => {
     this.showPopup = newValue;
   };
+
+  @action
+  resetKYCStore = () => {
+    this.allFiles = {
+      [DocumentTypeEnum.Id]: null,
+      [DocumentTypeEnum.ProofOfAddress]: null,
+      [DocumentTypeEnum.FrontCard]: null,
+      [DocumentTypeEnum.BackCard]: null,
+      [DocumentTypeEnum.DepositLetter]: null,
+      [DocumentTypeEnum.Other]: null,
+      [DocumentTypeEnum.DriverLicenceFront]: null,
+      [DocumentTypeEnum.DriverLicenceBack]: null,
+      [DocumentTypeEnum.BankCardFront]: null,
+      [DocumentTypeEnum.BankCardBack]: null,
+      [DocumentTypeEnum.ProofOfPayment]: null,
+      [DocumentTypeEnum.ProofOfWireTransfer]: null,
+      [DocumentTypeEnum.CardAuthorizationForm]: null,
+    };
+    this.typeOfIdActual = DocumentTypeEnum.Id;
+    this.currentStep = KYCstepsEnum.PhoneVerification;
+    this.filledStep = KYCstepsEnum.PhoneVerification;
+    this.actualPageStep = KYCPageStepsEnum.Main;
+    this.showPopup = false;
+  }
 }

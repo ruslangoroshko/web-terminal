@@ -873,6 +873,7 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.educationStore.setHint(null, false);
     this.rootStore.tabsStore.setTabExpanded(false);
     this.rootStore.accountTypeStore.resetAccountType();
+    this.rootStore.kycStore.resetKYCStore();
     this.canCheckEducation = false;
     if (this.activeAccount) {
       this.setParamsAsset(null);
