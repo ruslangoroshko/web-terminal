@@ -65,7 +65,8 @@ const MainApp: FC = () => {
 
   useEffect(() => {
     OneSignal.init({
-      appId: "6cebaf4d-407b-491e-acb3-65a27855c428"
+      // appId: "6cebaf4d-407b-491e-acb3-65a27855c428"
+      appId: "88c64d44-f1e1-4561-b08f-344b07fe31f6"
     });
   }, []);
 
