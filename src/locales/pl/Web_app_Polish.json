@@ -183,7 +183,7 @@
     "Login": "Zaloguj się",
     "Sign up": "Rejestracja",
     "File not found": "Nie znaleziono pliku",
-    "Only files with the following extensions are allowed: jpg, png.": "Dozwolone są tylko pliki typu: jpg, png.",
+    "Only files with the following extensions are allowed: jpg, png, pdf.": "Dozwolone są tylko pliki typu: jpg, png, pdf.",
     "Old password not match.": "Stare hasło nie pasuje.",
     "User not exist.": "Brak użytkownika.",
     "This email is already in use.": "Ten email jest już w użyciu.",

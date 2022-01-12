@@ -183,7 +183,7 @@
     "Login": "Login",
     "Sign up": "Sign up",
     "File not found": "File not found",
-    "Only files with the following extensions are allowed: jpg, png.": "Only files with the following extensions are allowed: jpg, png.",
+    "Only files with the following extensions are allowed: jpg, png, pdf.": "Only files with the following extensions are allowed: jpg, png, pdf.",
     "Old password not match.": "Old password not match.",
     "User not exist.": "User not exist.",
     "This email is already in use.": "This email is already in use.",
