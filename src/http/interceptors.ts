@@ -256,10 +256,16 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           !(excludeReconectList.includes(getApiUrl(requestUrl)) && error.config.method === 'get') &&
           mainAppStore.requestErrorStack.filter((elem) => elem === getApiUrl(requestUrl)).length > 2
         ) {
-          mainAppStore.rootStore.badRequestPopupStore.setRecconect();
+          if (getApiUrl(requestUrl).includes(AUTH_API_LIST.PERSONAL_DATA.GET)) {
+            mainAppStore.signOut();
+          } else {
+            mainAppStore.rootStore.badRequestPopupStore.setRecconect();
+          }
         }
         setTimeout(() => {
-          callback(originalRequest);
+          if (mainAppStore.requestErrorStack.filter((elem) => elem === getApiUrl(requestUrl)).length) {
+            callback(originalRequest);
+          }
         }, +mainAppStore.connectTimeOut);
       };
 
@@ -280,9 +286,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         finalJSON = error.config.data;
       }
       // ---
-      console.log(finalJSON);
-      console.log(error.message);
-      console.log(error.config);
+      // console.log(finalJSON);
+      // console.log(error.message);
+      // console.log(error.config);
       let isTimeOutError = error.message === requestOptions.TIMEOUT;
       let isReconnectedRequest =
         JSON.parse(finalJSON).initBy === requestOptions.BACKGROUND;

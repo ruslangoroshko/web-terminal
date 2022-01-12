@@ -18,8 +18,9 @@ import mixpanelEvents from '../../constants/mixpanelEvents';
 import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
 import Axios from 'axios';
+import { observer } from 'mobx-react-lite';
 
-const KYCMain = () => {
+const KYCMain = observer(() => {
   const { t } = useTranslation();
   const {
     kycStore,
@@ -27,8 +28,6 @@ const KYCMain = () => {
     notificationStore,
   } = useStores();
   const { push } = useHistory();
-
-  const [isSubmit, setSubmit] = useState<boolean>(false);
 
   const postPersonalData = async () => {
     try {
@@ -53,7 +52,7 @@ const KYCMain = () => {
       // @ts-ignore
       return kycStore.allFiles[item] !== null
     });
-    setSubmit(false);
+    kycStore.setFileSubmit(true);
     // TODO: refactor
     try {
       const response: any = await Axios.all(readyFiles.map((item) => {
@@ -75,13 +74,13 @@ const KYCMain = () => {
         );
         notificationStore.setIsSuccessfull(false);
         notificationStore.openNotification();
-        setSubmit(true);
+        kycStore.setFileSubmit(false);
         return;
       }
 
       await postPersonalData();
     } catch (error) {
-      setSubmit(true);
+      kycStore.setFileSubmit(false);
     }
   };
 
@@ -134,7 +133,7 @@ const KYCMain = () => {
             {t('Close')}
           </PrimaryTextSpan>
         </KYCButton>
-        <KYCButton disabled={checkIsAvailableToSend || isSubmit} onClick={submitFiles}>
+        <KYCButton disabled={checkIsAvailableToSend || kycStore.isFilesSubmit} onClick={submitFiles}>
           <PrimaryTextSpan
             fontWeight={700}
             fontSize="16px"
@@ -147,7 +146,7 @@ const KYCMain = () => {
       </FlexContainer>
     </FlexContainer>
   );
-}
+});
 
 export default KYCMain;
 

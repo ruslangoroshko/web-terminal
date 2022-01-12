@@ -23,10 +23,6 @@ const KYCPopup: FC = observer(() => {
     kycStore.setShowPopup(false);
   };
 
-  useEffect(() => {
-    console.log(kycStore.showPopup);
-  }, []);
-
   if (kycStore.showPopup) {
     return (
       <Modal>
