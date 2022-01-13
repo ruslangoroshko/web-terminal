@@ -90,7 +90,7 @@ const KYCAddress = observer(() => {
         color="#fff"
         marginBottom="24px"
       >
-        {t('You need to upload proof of address. It can be your bank statement or utility bill.')})
+        {t('You need to upload proof of address. It can be your bank statement or utility bill.')}
       </PrimaryTextSpan>
       <FlexContainer
         width="100%"

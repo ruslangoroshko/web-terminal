@@ -100,7 +100,7 @@ const KYCBankCard = () => {
         color="#fff"
         marginBottom="24px"
       >
-        {t('If you make a deposit using a bank card, you need to confirm that it belongs to you')})
+        {t('If you make a deposit using a bank card, you need to confirm that it belongs to you')}
       </PrimaryTextSpan>
       <FlexContainer
         width="100%"

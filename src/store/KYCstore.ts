@@ -32,6 +32,7 @@ export class KYCstore implements Props {
     DocumentTypeEnum.FrontCard |
     DocumentTypeEnum.DriverLicenceFront = DocumentTypeEnum.Id;
   showPopup: boolean = false;
+  isFilesSubmit: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -73,6 +74,12 @@ export class KYCstore implements Props {
   };
 
   @action
+  setFileSubmit = (newValue: boolean) => {
+    console.log(newValue)
+    this.isFilesSubmit = newValue;
+  };
+
+  @action
   resetKYCStore = () => {
     this.allFiles = {
       [DocumentTypeEnum.Id]: null,
@@ -94,5 +101,6 @@ export class KYCstore implements Props {
     this.filledStep = KYCstepsEnum.PhoneVerification;
     this.actualPageStep = KYCPageStepsEnum.Main;
     this.showPopup = false;
+    this.isFilesSubmit = false;
   }
 }

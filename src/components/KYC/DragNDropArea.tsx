@@ -21,7 +21,7 @@ interface Props {
 }
 
 const FIVE_MB = 5242880;
-const allowedFileTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+const allowedFileTypes = ['image/png', 'image/jpg', 'image/jpeg', 'application/pdf'];
 
 function DragNDropArea(props: Props) {
   const { onFileReceive, file, fileUrl, hasError = false, typeForEnum } = props;
@@ -74,7 +74,7 @@ function DragNDropArea(props: Props) {
     >
       <FileInput
         {...getInputProps()}
-        accept=".png, .jpg, .jpeg"
+        accept=".png, .jpg, .jpeg, .pdf"
         multiple={false}
       />
       {isDragActive ? (
@@ -101,7 +101,7 @@ function DragNDropArea(props: Props) {
             </PrimaryTextSpan>
           </FlexContainer>
           <PrimaryTextSpan fontSize="13px" lineHeight="17px" color="rgba(255, 255, 255, 0.64)">
-            {t('File size must be less 5 MB in PNG, JPEG format')}
+            {t('File size must be less 5 MB in PNG, JPEG, PDF format')}
           </PrimaryTextSpan>
         </FlexContainer>
       )}

@@ -273,8 +273,12 @@ const DepositPopupInner: FC = () => {
           <Observer>
             {() => (
               <>
-                {mainAppStore.profileStatus ===
-                  PersonalDataKYCEnum.NotVerified && (
+                {(
+                  mainAppStore.profileStatus ===
+                  PersonalDataKYCEnum.NotVerified ||
+                  mainAppStore.profileStatus ===
+                  PersonalDataKYCEnum.Restricted
+                ) && (
                   <FlexContainer
                     backgroundColor="rgba(0,0,0,0.2)"
                     padding="20px 12px"
