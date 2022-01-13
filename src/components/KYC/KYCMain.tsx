@@ -133,7 +133,7 @@ const KYCMain = observer(() => {
             {t('Close')}
           </PrimaryTextSpan>
         </KYCButton>
-        <KYCButton disabled={checkIsAvailableToSend || kycStore.isFilesSubmit} onClick={submitFiles}>
+        <KYCButton disabled={checkIsAvailableToSend} onClick={submitFiles}>
           <PrimaryTextSpan
             fontWeight={700}
             fontSize="16px"
