@@ -20,6 +20,7 @@ import PlatinumIMG from '../../assets/images/achievement_status_bg/new/platinum_
 import DiamondIMG from '../../assets/images/achievement_status_bg/new/diamond_star.png';
 import VipIMG from '../../assets/images/achievement_status_bg/new/vip_star.png';
 
+import OneSignal from 'react-onesignal';
 import mixpanel from 'mixpanel-browser';
 import KYCStatus from '../../constants/KYCStatus';
 import mixapanelProps from '../../constants/mixpanelProps';
@@ -86,6 +87,9 @@ function UserProfileButton() {
         if (!response.data.phone) {
           fetchAdditionalFields();
         }
+        OneSignal.push(function() {
+          OneSignal.setExternalUserId(response.data.id);
+        });
         const setMixpanelEvents = async () => {
           mainAppStore.signUpFlag
             ? await mixpanel.alias(response.data.id)
