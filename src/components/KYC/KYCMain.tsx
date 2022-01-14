@@ -19,6 +19,7 @@ import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
 import Axios from 'axios';
 import { observer } from 'mobx-react-lite';
+import PreloaderButtonMask from './PreloaderButtonMask';
 
 const KYCMain = observer(() => {
   const { t } = useTranslation();
@@ -133,7 +134,11 @@ const KYCMain = observer(() => {
             {t('Close')}
           </PrimaryTextSpan>
         </KYCButton>
-        <KYCButton disabled={checkIsAvailableToSend} onClick={submitFiles}>
+        <KYCButton
+          disabled={checkIsAvailableToSend || kycStore.isFilesSubmit}
+          onClick={submitFiles}
+        >
+          <PreloaderButtonMask loading={kycStore.isFilesSubmit} />
           <PrimaryTextSpan
             fontWeight={700}
             fontSize="16px"
@@ -155,6 +160,8 @@ const KYCButton = styled(PrimaryButton)`
   width: 324px;
   padding: 20px 0;
   transition: 0.4s;
+  position: relative;
+  overflow: hidden;
   &.close {
     background: rgba(255, 255, 255, 0.12);
     &:hover {
