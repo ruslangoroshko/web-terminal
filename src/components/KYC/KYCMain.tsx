@@ -121,7 +121,11 @@ const KYCMain = observer(() => {
   return (
     <FlexContainer flexDirection="column" height="100%" justifyContent="space-between">
       <FlexContainer flexDirection="column">
-        {KYCTypesMain.map((item) => (<TypeOfDocument key={item.id} {...item} />))}
+        {KYCTypesMain.map((item) => (<TypeOfDocument
+          key={item.id}
+          isSubmitting={kycStore.isFilesSubmit}
+          {...item}
+        />))}
       </FlexContainer>
       <FlexContainer width="100%" justifyContent="space-between">
         <KYCButton className="close" onClick={attachLater}>
