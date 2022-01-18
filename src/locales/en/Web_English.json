@@ -592,5 +592,7 @@
     "Account is Verified": "Account is Verified",
     "Verification is Restricted": "Verification is Restricted",
     "Back": "Back",
-    "File size must be less 5 MB in PNG, JPEG format": "File size must be less 5 MB in PNG, JPEG format"
+    "File size must be less 5 MB in PNG, JPEG format": "File size must be less 5 MB in PNG, JPEG format",
+    "Personalized conditions": "Personalized conditions",
+    "Exclusive from $100,000": "Exclusive from $100,000"
 }

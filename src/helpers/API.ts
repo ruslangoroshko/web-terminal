@@ -501,7 +501,10 @@ class API {
         AUTH_API_LIST.DOCUMENT.POST
       }/${documentType}`,
       formData,
-      this.backgroundRequestOptions
+      {
+        ...this.backgroundRequestOptions,
+        timeout: 600000,
+      }
     );
     return response.data;
   };
