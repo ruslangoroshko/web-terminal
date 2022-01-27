@@ -15,6 +15,7 @@ variables:
   KUBERNETES_APP_TEST_SELECTOR_NAME: web-terminal
   K8S_STG_SELECTOR_NAME: web-terminal-slot-b
   K8S_STG_NAMESPACE: simple-trading
+  K8S_STG_SELECTOR_NAME_HP: handelpro-web-terminal-slot-b
 
 stages:
   - test
@@ -202,6 +203,8 @@ publish-kubernetes-stg:
 #    - kubectl delete pods -l app=${KUBERNETES_APP_STG_SELECTOR_NAME} --namespace=$KUBERNETES_TEST_NAMESPACE
     - kubectl set image deployments/${K8S_STG_SELECTOR_NAME} ${K8S_STG_SELECTOR_NAME}=$DOCKER_REGISTRY_HOST/${DOCKER_IMAGE_TAG} --namespace=$K8S_STG_NAMESPACE
     - kubectl patch deployment ${K8S_STG_SELECTOR_NAME} -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"date\":\"`date +'%s'`\"}}}}}" --namespace=$K8S_STG_NAMESPACE
+    - kubectl set image deployments/${K8S_STG_SELECTOR_NAME_HP} ${K8S_STG_SELECTOR_NAME_HP}=$DOCKER_REGISTRY_HOST/${DOCKER_IMAGE_TAG} --namespace=$K8S_STG_NAMESPACE
+    - kubectl patch deployment ${K8S_STG_SELECTOR_NAME_HP} -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"date\":\"`date +'%s'`\"}}}}}" --namespace=$K8S_STG_NAMESPACE
   only:
     - stg
 
