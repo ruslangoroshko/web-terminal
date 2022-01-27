@@ -187,11 +187,17 @@ publish-kubernetes-uat:
 
 publish-kubernetes-stg:
   stage: publish-kubernetes
-  image: simpletrading.azurecr.io/monfex/simple-trading-kubectl:latest
+  image: simpletrading.azurecr.io/monfex/helm:latest
   services:
     - docker:dind
+  variables:
+    GIT_STRATEGY: none
+    SUBSCRIPTION: Production-CSP
+    RG: SimpleTradingKubernetesRG
+    CLUSTER_NAME: Simple-Trading-Prod-Kube
   before_script:
-    - kubectl config use-context $K8S_PROD_CONTEXT
+    - az login --service-principal -u ${SERVICE_PRINCIPAL_LOGIN} -p ${SERVICE_PRINCIPAL_PASSWORD} --tenant ${SERVICE_PRINCIPAL_TENANT} > /dev/null
+    - az aks get-credentials --resource-group ${RG} --name ${CLUSTER_NAME} --subscription ${SUBSCRIPTION} --overwrite-existin
   script:
 #    - kubectl delete pods -l app=${KUBERNETES_APP_STG_SELECTOR_NAME} --namespace=$KUBERNETES_TEST_NAMESPACE
     - kubectl set image deployments/${K8S_STG_SELECTOR_NAME} ${K8S_STG_SELECTOR_NAME}=$DOCKER_REGISTRY_HOST/${DOCKER_IMAGE_TAG} --namespace=$K8S_STG_NAMESPACE
