@@ -17,6 +17,7 @@ const Page = {
   ACCOUNT_SEQURITY: '/account-security',
   ACCOUNT_TYPE_INFO: '/account-types',
   ACCOUNT_HISTORY_QUOTES: '/account-history-quotes',
+  ACCOUNT_MT5: '/account-mt5',
   PAYMENTS: '/payments/:status',
   DEPOSIT_POPUP: '/#deposit',
   ONBOARDING: '/onboarding',

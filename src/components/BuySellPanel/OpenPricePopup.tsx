@@ -164,7 +164,6 @@ const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
             hasPrice={true}
           >
             <PrimaryTextSpan color="#fffccc" fontSize="14px">
-              {mainAppStore.activeAccount?.symbol}
               {openPrice}
             </PrimaryTextSpan>
           </ButtonAutoClosePurchase>

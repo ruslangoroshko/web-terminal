@@ -594,5 +594,11 @@
     "Back": "Back",
     "File size must be less 5 MB in PNG, JPEG format": "File size must be less 5 MB in PNG, JPEG format",
     "Personalized conditions": "Personalized conditions",
-    "Exclusive from $100,000": "Exclusive from $100,000"
+    "Exclusive from $100,000": "Exclusive from $100,000",
+    "MT5": "MT5",
+    "Margin": "Margin",
+    "Login info": "Login info",
+    "Server name": "Server name",
+    "MT5 Standart": "MT5 Standart",
+    "Create MT5 Account": "Create MT5 Account"
 }
