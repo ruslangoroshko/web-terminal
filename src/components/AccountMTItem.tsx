@@ -124,7 +124,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
-        {(isST && server && login) && <FlexContainer
+        {(!isST && server && login) && <FlexContainer
           flexDirection="column"
           marginRight="20px"
         >

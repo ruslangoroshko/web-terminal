@@ -48,8 +48,6 @@ const AccountMT = observer(() => {
           balance={10000}
           margin={1000}
           icon={mainAppStore.initModel.favicon}
-          server="SwissSVG-Live"
-          login="61561156"
           tradingLink={Page.DASHBOARD}
           depositLink={Page.DEPOSIT_POPUP}
         />
@@ -63,6 +61,8 @@ const AccountMT = observer(() => {
               icon={MT5Logo}
               tradingLink={Page.DASHBOARD}
               depositLink={Page.DEPOSIT_POPUP}
+              server="SwissSVG-Live"
+              login="61561156"
             />
             : <FlexContainer
               padding="48px 36px"
