@@ -595,5 +595,18 @@
     "Back": "Wstecz",
     "File size must be less 5 MB in PNG, JPEG format": "Rozmiar pliku musi być mniejszy niż 5 MB w formacie PNG, JPEG",
     "Personalized conditions": "Spersonalizowane warunki",
-    "Exclusive from $100,000": "Wyłącznie od $100,000"
+    "Exclusive from $100,000": "Wyłącznie od $100,000",
+    "MT5": "MT5",
+    "Margin": "Marża",
+    "Login info": "Dane logowania",
+    "Server name": "Nazwa serwera",
+    "MT5 Standart": "MT5 Standart",
+    "Create MT5 Account": "Utwórz konto MT5",
+    "You can limit the additional funds reserved on your balance by specifing a level of loss that is acceptable for this position.": "Możesz ograniczyć dodatkowe środki zarezerwowane na saldzie, określając poziom straty, który jest akceptowalny dla tej pozycji.",
+    "save position is not active": "Zapisz pozycję nie jest aktywne",
+    "save position is active": "Zapisz pozycję jest aktywne",
+    "save position is active and use available funds": "Zapisz pozycję jest aktywne i używa dostępne środki",
+    "Save position": "Zapisz pozycję",
+    "Stop loss": "Stop Loss",
+    "Take profit": "Take Profit"
 }
