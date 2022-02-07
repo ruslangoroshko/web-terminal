@@ -600,5 +600,12 @@
     "Login info": "Login info",
     "Server name": "Server name",
     "MT5 Standart": "MT5 Standart",
-    "Create MT5 Account": "Create MT5 Account"
+    "Create MT5 Account": "Create MT5 Account",
+    "You can limit the additional funds reserved on your balance by specifing a level of loss that is acceptable for this position.": "You can limit the additional funds reserved on your balance by specifing a level of loss that is acceptable for this position.",
+    "save position is not active": "save position is not active",
+    "save position is active": "save position is active",
+    "save position is active and use available funds": "save position is active and use available funds",
+    "Save position": "Save position",
+    "Stop loss": "Stop loss",
+    "Take profit": "Take profit"
 }

@@ -10,6 +10,7 @@ import PnLTypeDropdown from './PnLTypeDropdown';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
+import IconShield from '../../assets/svg/icon-shield.svg';
 import { useStores } from '../../hooks/useStores';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
@@ -411,6 +412,28 @@ const SetAutoclose: FC<Props> = observer(
                               }%, ${t(
                                 'all previously reserved funds are returned to your balance.'
                               )}`}
+                              <br />
+                              <br />
+                              {t('You can limit the additional funds reserved on your balance by specifing a level of loss that is acceptable for this position.')}
+                              <br />
+                              <br />
+                              <FlexContainer>
+                                <FlexContainer margin="3px 5px 0 0">
+                                  <SvgIcon {...IconShield} fillColor="#77797D"/>
+                                </FlexContainer> - {t('save position is not active')}
+                              </FlexContainer>
+                              <br />
+                              <FlexContainer>
+                                <FlexContainer margin="3px 5px 0 0">
+                                  <SvgIcon {...IconShield} fillColor="#fffccc"/>
+                                </FlexContainer> - {t('save position is active')}
+                              </FlexContainer>
+                              <br />
+                              <FlexContainer>
+                                <FlexContainer margin="3px 5px 0 0">
+                                  <SvgIcon {...IconShield} fillColor="#ED145B"/>
+                                </FlexContainer> - {t('save position is active and use available funds')}
+                              </FlexContainer>
                             </PrimaryTextSpan>
                           )}
                         </Observer>
