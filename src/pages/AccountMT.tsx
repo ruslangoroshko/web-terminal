@@ -18,11 +18,15 @@ import AccountMTItem from '../components/AccountMTItem';
 const AccountMT = observer(() => {
   const { t } = useTranslation();
 
-  const { mainAppStore } = useStores();
+  const { mainAppStore, accountTypeStore } = useStores();
   const { push } = useHistory();
 
-  const closePage = () => {
+  const handleClosePage = () => {
     push(Page.DASHBOARD);
+  };
+
+  const handleOpenPopup = () => {
+    accountTypeStore.setShowMTPopup(true);
   };
 
   return (
@@ -33,7 +37,7 @@ const AccountMT = observer(() => {
         margin="0"
         flexDirection="column"
       >
-        <IconButton onClick={closePage}>
+        <IconButton onClick={handleClosePage}>
           <SvgIcon
             {...IconClose}
             fillColor="rgba(255, 255, 255, 0.6)"
@@ -71,6 +75,8 @@ const AccountMT = observer(() => {
               borderRadius="5px"
               width="100%"
               alignItems="center"
+              cursor="pointer"
+              onClick={handleOpenPopup}
             >
               <FlexContainer marginRight="36px">
                 <SvgIcon

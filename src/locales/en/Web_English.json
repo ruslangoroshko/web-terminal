@@ -607,5 +607,11 @@
     "save position is active and use available funds": "save position is active and use available funds",
     "Save position": "Save position",
     "Stop loss": "Stop loss",
-    "Take profit": "Take profit"
+    "Take profit": "Take profit",
+    "Copy All": "Copy All",
+    "Copied successfully!": "Copied successfully!",
+    "Server": "Server",
+    "Investor": "Investor",
+    "MT5 Credentials": "MT5 Credentials",
+    "Please wait while we processing your request": "Please wait while we processing your request"
 }

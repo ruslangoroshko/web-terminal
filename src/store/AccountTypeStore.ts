@@ -18,6 +18,8 @@ export class AccountTypeStore implements ContextProps {
   @observable nextType: IAccountType | null = null;
   @observable allTypes: IAccountType[] | null = null;
   @observable showCongratulationsPopup: boolean = false;
+  @observable showMTPopup: boolean = false;
+  @observable showMTErrorPopup: boolean = false;
   @observable currentAccountTypeProgressPercentage: number | null = null;
   @observable amountToNextAccountType: number | null = null;
 
@@ -43,6 +45,16 @@ export class AccountTypeStore implements ContextProps {
   @action
   setShowPopup = (newValue: boolean) => {
     this.showCongratulationsPopup = newValue;
+  };
+
+  @action
+  setShowMTPopup = (newValue: boolean) => {
+    this.showMTPopup = newValue;
+  };
+
+  @action
+  setShowMTErrorPopup = (newValue: boolean) => {
+    this.showMTErrorPopup = newValue;
   };
 
   @action
