@@ -478,6 +478,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               ? Math.abs(response.position.sl!)
               : undefined,
           });
+          position.sl = response.position.sl;
+          position.slType = response.position.slType;
+          position.tp = response.position.tp;
+          position.tpType = response.position.tpType;
+          position.isToppingUpActive = response.position.isToppingUpActive;
           SLTPstore.setTpType(
             response.position.tpType ?? TpSlTypeEnum.Currency
           );
@@ -842,28 +847,24 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   const removeSLChart = useCallback(async () => {
     if (quotesStore.selectedPosition) {
-      // setValue(Fields.CLOSED_BY_CHART, true);
-      tradingViewStore.activeOrderLinePositionSL?.remove();
-      tradingViewStore.setActiveOrderLinePositionSL(undefined);
-      removeSL();
       const objectToSend: FormValues = {
         tp: quotesStore.selectedPosition.tp ?? undefined,
         investmentAmount: quotesStore.selectedPosition.investmentAmount,
         isToppingUpActive: position.isToppingUpActive,
       };
       SLTPstore.toggleClosedByChart(true);
+      await updateSLTP(objectToSend);
+      // setValue(Fields.CLOSED_BY_CHART, true);
+      tradingViewStore.activeOrderLinePositionSL?.remove();
+      tradingViewStore.setActiveOrderLinePositionSL(undefined);
+      removeSL();
       quotesStore.selectedPosition.sl = null;
       quotesStore.selectedPosition.slType = null;
-      updateSLTP(objectToSend);
     }
-  }, [quotesStore.selectedPosition]);
+  }, [quotesStore.selectedPosition, position]);
 
   const removeTPChart = useCallback(async () => {
     if (quotesStore.selectedPosition) {
-      SLTPstore.toggleClosedByChart(true);
-      tradingViewStore.activeOrderLinePositionTP?.remove();
-      tradingViewStore.setActiveOrderLinePositionTP(undefined);
-      removeTP();
       const objectToSend: FormValues = {
         sl: hasValue(quotesStore.selectedPosition.sl)
           ? Math.abs(quotesStore.selectedPosition.sl!)
@@ -871,9 +872,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         investmentAmount: quotesStore.selectedPosition.investmentAmount,
         isToppingUpActive: position.isToppingUpActive,
       };
+      SLTPstore.toggleClosedByChart(true);
+      await updateSLTP(objectToSend);
+      tradingViewStore.activeOrderLinePositionTP?.remove();
+      tradingViewStore.setActiveOrderLinePositionTP(undefined);
+      removeTP();
       quotesStore.selectedPosition.tp = null;
       quotesStore.selectedPosition.tpType = null;
-      updateSLTP(objectToSend);
     }
   }, [quotesStore.selectedPosition]);
 
