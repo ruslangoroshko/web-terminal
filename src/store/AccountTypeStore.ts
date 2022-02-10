@@ -1,5 +1,5 @@
 import { observable, action, makeAutoObservable } from 'mobx';
-import { IAccountType } from '../types/AccountsTypes';
+import { IAccountType, MTCreateAccountDTO } from '../types/AccountsTypes';
 import { RootStore } from './RootStore';
 import API from '../helpers/API';
 import KeysInApi from '../constants/keysInApi';
@@ -22,6 +22,7 @@ export class AccountTypeStore implements ContextProps {
   @observable showMTErrorPopup: boolean = false;
   @observable currentAccountTypeProgressPercentage: number | null = null;
   @observable amountToNextAccountType: number | null = null;
+  @observable newMTAccountInfo: MTCreateAccountDTO | null = null;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this);
@@ -55,6 +56,11 @@ export class AccountTypeStore implements ContextProps {
   @action
   setShowMTErrorPopup = (newValue: boolean) => {
     this.showMTErrorPopup = newValue;
+  };
+
+  @action
+  setNewMTAccountInfo = (newValue: MTCreateAccountDTO | null) => {
+    this.newMTAccountInfo = newValue;
   };
 
   @action
@@ -122,5 +128,8 @@ export class AccountTypeStore implements ContextProps {
     this.showCongratulationsPopup = false;
     this.amountToNextAccountType = null;
     this.currentAccountTypeProgressPercentage = null;
+    this.newMTAccountInfo = null;
+    this.showMTErrorPopup = false;
+    this.showMTPopup = false;
   };
 }

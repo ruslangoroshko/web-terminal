@@ -26,6 +26,7 @@ const MTPopup: FC = observer(() => {
 
   const handleClosePopup = () => {
     accountTypeStore.setShowMTPopup(false);
+    accountTypeStore.setNewMTAccountInfo(null);
   };
 
   const handleCopyText = (ref: any) => () => {
@@ -40,7 +41,10 @@ const MTPopup: FC = observer(() => {
 
   const handleCopyAll = () => {
     const input = document.createElement('textarea');
-    input.innerHTML = `server: server \nlogin: login \npassword: password \ninvestor: investor`;
+    input.innerHTML = `server: ${accountTypeStore.newMTAccountInfo?.serverName}
+login: ${accountTypeStore.newMTAccountInfo?.login}
+password: ${accountTypeStore.newMTAccountInfo?.password}
+investor: ${accountTypeStore.newMTAccountInfo?.investorPassword}`;
     document.body.appendChild(input);
     input.select();
     document.execCommand('copy');
@@ -109,7 +113,7 @@ const MTPopup: FC = observer(() => {
                 >
                   <TextBlockForDev
                     ref={copyServer}
-                    value={'MetaQuotes-Dev'}
+                    value={accountTypeStore.newMTAccountInfo?.serverName}
                     readOnly
                   />
                   <CustomIcon onClick={handleCopyText(copyServer)}>
@@ -140,7 +144,7 @@ const MTPopup: FC = observer(() => {
                 >
                   <TextBlockForDev
                     ref={copyLogin}
-                    value={'1835537'}
+                    value={accountTypeStore.newMTAccountInfo?.login}
                     readOnly
                   />
                   <CustomIcon onClick={handleCopyText(copyLogin)}>
@@ -171,7 +175,7 @@ const MTPopup: FC = observer(() => {
                 >
                   <TextBlockForDev
                     ref={copyPassword}
-                    value={'4lbrzywt'}
+                    value={accountTypeStore.newMTAccountInfo?.password}
                     readOnly
                   />
                   <CustomIcon onClick={handleCopyText(copyPassword)}>
@@ -202,7 +206,7 @@ const MTPopup: FC = observer(() => {
                 >
                   <TextBlockForDev
                     ref={copyInvestor}
-                    value={'xmxhaaj8'}
+                    value={accountTypeStore.newMTAccountInfo?.investorPassword}
                     readOnly
                   />
                   <CustomIcon onClick={handleCopyText(copyInvestor)}>

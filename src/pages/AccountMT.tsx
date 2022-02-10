@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { useTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
@@ -14,6 +14,10 @@ import Page from '../constants/Pages';
 import { useStores } from '../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import AccountMTItem from '../components/AccountMTItem';
+import { AccountModelWebSocketDTO, MTAccountDTO } from '../types/AccountsTypes';
+import { moneyFormatPart } from '../helpers/moneyFormat';
+import LoaderForComponents from '../components/LoaderForComponents';
+import API from '../helpers/API';
 
 const AccountMT = observer(() => {
   const { t } = useTranslation();
@@ -21,13 +25,46 @@ const AccountMT = observer(() => {
   const { mainAppStore, accountTypeStore } = useStores();
   const { push } = useHistory();
 
+  const [accountInfo, setAccountInfo] = useState<AccountModelWebSocketDTO | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [MTAccountInfo, setMTAccountInfo] = useState<MTAccountDTO[] | null>(null);
+
   const handleClosePage = () => {
     push(Page.DASHBOARD);
   };
 
-  const handleOpenPopup = () => {
-    accountTypeStore.setShowMTPopup(true);
+  const handleOpenPopup = async () => {
+    if (isLoading) {
+      return false;
+    }
+    try {
+      setIsLoading(true);
+      const response = await API.createMTAccounts(mainAppStore.initModel.tradingUrl);
+      accountTypeStore.setNewMTAccountInfo(response);
+      accountTypeStore.setShowMTPopup(true);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      accountTypeStore.setShowMTErrorPopup(true);
+    }
   };
+
+  useEffect(() => {
+    setAccountInfo(mainAppStore.accounts.find((item) => item.isLive) || null);
+    async function fetchMTAccount() {
+      try {
+        const response = await API.getMTAccounts(mainAppStore.initModel.tradingUrl);
+        if (response.length > 0) {
+          setMTAccountInfo(response);
+        }
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        accountTypeStore.setShowMTErrorPopup(true);
+      }
+    }
+    fetchMTAccount();
+  }, []);
 
   return (
     <AccountSettingsContainer>
@@ -36,6 +73,7 @@ const AccountMT = observer(() => {
         maxWidth="1064px"
         margin="0"
         flexDirection="column"
+        overflow="auto"
       >
         <IconButton onClick={handleClosePage}>
           <SvgIcon
@@ -48,26 +86,29 @@ const AccountMT = observer(() => {
         </IconButton>
         <AccountMTItem
           isST={true}
-          bonus={400}
-          balance={10000}
-          margin={1000}
+          bonus={moneyFormatPart(accountInfo?.bonus || 0).full}
+          balance={moneyFormatPart(accountInfo?.balance || 0).full}
+          margin={moneyFormatPart(accountInfo?.balance || 0).full}
           icon={mainAppStore.initModel.favicon}
           tradingLink={Page.DASHBOARD}
           depositLink={Page.DEPOSIT_POPUP}
         />
         {
-          mainAppStore.isPromoAccount
-            ? <AccountMTItem
-              isST={false}
-              bonus={300}
-              balance={4000}
-              margin={600}
-              icon={MT5Logo}
-              tradingLink={Page.DASHBOARD}
-              depositLink={Page.DEPOSIT_POPUP}
-              server="SwissSVG-Live"
-              login="61561156"
-            />
+          MTAccountInfo !== null
+            ? <>
+              {MTAccountInfo.map((item, index) => <AccountMTItem
+                key={`${item.login}_${index}`}
+                isST={false}
+                bonus={moneyFormatPart(item?.bonus || 0).full}
+                balance={moneyFormatPart(item?.balance || 0).full}
+                margin={moneyFormatPart(item?.margin || 0).full}
+                icon={MT5Logo}
+                tradingLink={item.tradeUrl}
+                depositLink={Page.DEPOSIT_POPUP}
+                server={item.serverName}
+                login={`${item.login}`}
+              />)}
+            </>
             : <FlexContainer
               padding="48px 36px"
               background="rgba(255, 255, 255, 0.04)"
@@ -76,8 +117,10 @@ const AccountMT = observer(() => {
               width="100%"
               alignItems="center"
               cursor="pointer"
+              position="relative"
               onClick={handleOpenPopup}
             >
+              {isLoading && <LoaderForComponents isLoading={isLoading}/>}
               <FlexContainer marginRight="36px">
                 <SvgIcon
                   {...IconPlus}

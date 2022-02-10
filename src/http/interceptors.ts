@@ -112,6 +112,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       if (response.config.url === API_LIST.INIT.GET) {
         return Promise.resolve(response);
       }
+      if (response.config?.url?.includes(API_LIST.MT5_ACCOUNTS.GET)) {
+        mainAppStore.rootStore.accountTypeStore.setShowMTErrorPopup(false);
+      }
       if (
         response.data.status !== OperationApiResponseCodes.TechnicalError &&
         response.data.status !==
@@ -259,7 +262,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           if (getApiUrl(requestUrl).includes(AUTH_API_LIST.PERSONAL_DATA.GET)) {
             mainAppStore.signOut();
           } else {
-            mainAppStore.rootStore.badRequestPopupStore.setRecconect();
+            if (!getApiUrl(requestUrl).includes(API_LIST.MT5_ACCOUNTS.GET)) {
+              mainAppStore.rootStore.badRequestPopupStore.setRecconect();
+            }
           }
         }
         setTimeout(() => {
@@ -332,6 +337,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       }
 
       if (isTimeOutError && isReconnectedRequest) {
+        if (requestUrl.includes(API_LIST.MT5_ACCOUNTS.GET)) {
+          mainAppStore.rootStore.accountTypeStore.setShowMTErrorPopup(true);
+        }
         return new Promise((resolve, reject) => {
           repeatRequest(() => {
             if (JSON.parse(finalJSON).isAuthorized === `${mainAppStore.isAuthorized}`) {
@@ -374,6 +382,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           error.response?.status.toString().includes('59')
         ) {
           if (isReconnectedRequest) {
+            if (requestUrl.includes(API_LIST.MT5_ACCOUNTS.GET)) {
+              mainAppStore.rootStore.accountTypeStore.setShowMTErrorPopup(true);
+            }
             return new Promise((resolve, reject) => {
               repeatRequest(() => {
                 if (JSON.parse(finalJSON).isAuthorized === `${mainAppStore.isAuthorized}`) {

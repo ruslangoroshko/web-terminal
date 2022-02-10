@@ -64,6 +64,10 @@ const API_LIST = {
   EDUCATION: {
     LIST: '/v1/educations',
   },
+  MT5_ACCOUNTS: {
+    GET: '/api/v1/Mt5Account',
+    POST: '/api/v1/Mt5Account',
+  },
 };
 
 Object.freeze(API_LIST);

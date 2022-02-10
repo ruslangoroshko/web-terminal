@@ -9,12 +9,14 @@ import { useTranslation } from 'react-i18next';
 import { useStores } from '../hooks/useStores';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import Topics from '../constants/websocketTopics';
+import Fields from '../constants/fields';
 
 interface Props {
   isST: boolean,
-  bonus: number,
-  balance: number,
-  margin: number,
+  bonus: string,
+  balance: string,
+  margin: string,
   server?: string,
   login?: string,
   icon: string,
@@ -33,7 +35,19 @@ const AccountMTItem: FC<Props> = observer((props) => {
   };
 
   const handleClickTrading = () => {
-    push(tradingLink);
+    const acc = mainAppStore.accounts.find((item) => item.isLive);
+    if (isST) {
+      if (acc) {
+        mainAppStore.setActiveAccount(acc);
+        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+          [Fields.ACCOUNT_ID]: acc.id,
+        });
+      }
+      push(tradingLink);
+    } else {
+      // @ts-ignore
+      window.open(`${tradingLink}`, '_blank').focus();
+    }
   };
 
   return (
@@ -73,7 +87,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
         <FlexContainer
           flexDirection="column"
           marginRight="16px"
-          width="188px"
+          minWidth="188px"
         >
           <MTText marginBottom="9px">
             {t('Balance')}
@@ -94,7 +108,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
             flexDirection="column"
             marginRight="20px"
             marginBottom={tabsStore.sideBarTabType !== null ? '12px' : '0'}
-            width="100px"
+            minWidth="100px"
           >
             <MTText marginBottom="16.5px">
               {t('Margin')}
@@ -110,7 +124,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
           <FlexContainer
             flexDirection="column"
             marginRight="20px"
-            width="100px"
+            minWidth="100px"
           >
             <MTText marginBottom="16.5px">
               {t('Bonus')}
