@@ -607,5 +607,11 @@
     "save position is active and use available funds": "Guardar posición está activo y usa los fondos disponibles",
     "Save position": "Guarda posición",
     "Stop loss": "Stop Loss",
-    "Take profit": "Take profit"
+    "Take profit": "Take profit",
+    "Copy All": "Copie todo",
+    "Copied successfully!": "¡Copiado con éxito!",
+    "Server": "Servidor",
+    "Investor": "Inversor",
+    "MT5 Credentials": "Credenciales MT5",
+    "Please wait while we processing your request": "Espere mientras procesamos su solicitud"
 }
