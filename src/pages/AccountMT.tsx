@@ -22,7 +22,7 @@ import API from '../helpers/API';
 const AccountMT = observer(() => {
   const { t } = useTranslation();
 
-  const { mainAppStore, accountTypeStore } = useStores();
+  const { mainAppStore, accountTypeStore, quotesStore } = useStores();
   const { push } = useHistory();
 
   const [accountInfo, setAccountInfo] = useState<AccountModelWebSocketDTO | null>(null);
@@ -88,7 +88,7 @@ const AccountMT = observer(() => {
           isST={true}
           bonus={moneyFormatPart(accountInfo?.bonus || 0).full}
           balance={moneyFormatPart(accountInfo?.balance || 0).full}
-          margin={moneyFormatPart(accountInfo?.balance || 0).full}
+          margin={moneyFormatPart(quotesStore.profit || 0).full}
           icon={mainAppStore.initModel.favicon}
           tradingLink={Page.DASHBOARD}
           depositLink={Page.DEPOSIT_POPUP}

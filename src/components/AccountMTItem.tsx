@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import Topics from '../constants/websocketTopics';
 import Fields from '../constants/fields';
+import { getNumberSign } from '../helpers/getNumberSign';
 
 interface Props {
   isST: boolean,
@@ -118,7 +119,8 @@ const AccountMTItem: FC<Props> = observer((props) => {
               lineHeight="100%"
               color="#FFF"
             >
-              ${margin}
+              {getNumberSign(parseFloat(margin))}
+              ${Math.abs(parseFloat(margin))}
             </PrimaryTextSpan>
           </FlexContainer>
           <FlexContainer
