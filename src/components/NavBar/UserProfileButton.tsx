@@ -95,14 +95,18 @@ function UserProfileButton() {
         console.log(appIdOneSignal);
         console.log(location);
         if (appIdOneSignal) {
-          OneSignal.init({
+          console.log(1)
+          await OneSignal.init({
             appId: appIdOneSignal
           });
+          console.log(2)
           OneSignal.push(function() {
             OneSignal.setExternalUserId(response.data.id);
           });
+          console.log(3)
           OneSignal.push(function() {
             OneSignal.getExternalUserId().then(function(externalUserId){
+              console.log(4)
               console.log("externalUserId: ", externalUserId);
             });
           });
