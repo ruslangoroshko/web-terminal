@@ -87,9 +87,24 @@ function UserProfileButton() {
         if (!response.data.phone) {
           fetchAdditionalFields();
         }
-        OneSignal.push(function() {
-          OneSignal.setExternalUserId(response.data.id);
-        });
+        const appIdOneSignal = location.href.includes('trading-test.mnftx.biz/')
+          ? '88c64d44-f1e1-4561-b08f-344b07fe31f6'
+          : location.href.includes('https://trade.monfex.com/')
+            ? '6cebaf4d-407b-491e-acb3-65a27855c428'
+            : null;
+        if (appIdOneSignal) {
+          OneSignal.init({
+            appId: appIdOneSignal
+          });
+          OneSignal.push(function() {
+            OneSignal.setExternalUserId(response.data.id);
+          });
+          OneSignal.push(function() {
+            OneSignal.getExternalUserId().then(function(externalUserId){
+              console.log("externalUserId: ", externalUserId);
+            });
+          });
+        }
         const setMixpanelEvents = async () => {
           mainAppStore.signUpFlag
             ? await mixpanel.alias(response.data.id)
