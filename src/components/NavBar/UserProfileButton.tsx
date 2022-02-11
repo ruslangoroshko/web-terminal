@@ -92,18 +92,12 @@ function UserProfileButton() {
           : location.href.includes('https://trade.monfex.com')
             ? '6cebaf4d-407b-491e-acb3-65a27855c428'
             : null;
-        console.log(appIdOneSignal);
-        console.log(location);
         if (appIdOneSignal) {
-          console.log(1)
           await OneSignal.init({
             appId: appIdOneSignal
           });
-          console.log(2)
           await OneSignal.setExternalUserId(response.data.id);
-          console.log(3)
           OneSignal.getExternalUserId().then(function(externalUserId){
-            console.log(4)
             console.log("externalUserId: ", externalUserId);
           });
         }
