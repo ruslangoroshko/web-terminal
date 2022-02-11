@@ -100,15 +100,11 @@ function UserProfileButton() {
             appId: appIdOneSignal
           });
           console.log(2)
-          OneSignal.push(function() {
-            OneSignal.setExternalUserId(response.data.id);
-          });
+          await OneSignal.setExternalUserId(response.data.id);
           console.log(3)
-          OneSignal.push(function() {
-            OneSignal.getExternalUserId().then(function(externalUserId){
-              console.log(4)
-              console.log("externalUserId: ", externalUserId);
-            });
+          OneSignal.getExternalUserId().then(function(externalUserId){
+            console.log(4)
+            console.log("externalUserId: ", externalUserId);
           });
         }
         const setMixpanelEvents = async () => {
