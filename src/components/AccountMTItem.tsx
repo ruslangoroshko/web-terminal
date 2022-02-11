@@ -119,11 +119,10 @@ const AccountMTItem: FC<Props> = observer((props) => {
               lineHeight="100%"
               color="#FFF"
             >
-              {getNumberSign(parseFloat(margin))}
-              ${Math.abs(parseFloat(margin))}
+              ${margin}
             </PrimaryTextSpan>
           </FlexContainer>
-          <FlexContainer
+          {isST && <FlexContainer
             flexDirection="column"
             marginRight="20px"
             minWidth="100px"
@@ -138,7 +137,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
             >
               ${bonus}
             </PrimaryTextSpan>
-          </FlexContainer>
+          </FlexContainer>}
         </FlexContainer>
         {(!isST && server && login) && <FlexContainer
           flexDirection="column"
