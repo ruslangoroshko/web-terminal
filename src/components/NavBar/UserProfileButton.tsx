@@ -101,13 +101,11 @@ function UserProfileButton() {
             console.log("externalUserId: ", externalUserId);
           });
 
-          console.log("idsAvailable1: ", await OneSignal.getIdsAvailable());
-          const idsAvailable1 = await OneSignal.getIdsAvailable();
-          console.log("idsAvailable: ", idsAvailable1);
           await OneSignal.registerForPushNotifications();
-          console.log("idsAvailable2: ", await OneSignal.getIdsAvailable());
-          const idsAvailable = await OneSignal.getIdsAvailable();
-          console.log("idsAvailable: ", idsAvailable);
+          console.log('registered');
+          await OneSignal.getUserId().then(function(UserId: any){
+            console.log("UserId: ", UserId);
+          })
         }
         const setMixpanelEvents = async () => {
           mainAppStore.signUpFlag
