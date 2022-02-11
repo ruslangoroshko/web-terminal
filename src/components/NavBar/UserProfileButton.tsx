@@ -100,6 +100,8 @@ function UserProfileButton() {
           OneSignal.getExternalUserId().then(function(externalUserId){
             console.log("externalUserId: ", externalUserId);
           });
+          const idsAvailable1 = await OneSignal.getIdsAvailable();
+          console.log("idsAvailable: ", idsAvailable1);
           await OneSignal.registerForPushNotifications();
           const idsAvailable = await OneSignal.getIdsAvailable();
           console.log("idsAvailable: ", idsAvailable);
