@@ -100,6 +100,9 @@ function UserProfileButton() {
           OneSignal.getExternalUserId().then(function(externalUserId){
             console.log("externalUserId: ", externalUserId);
           });
+          OneSignal.getUserId().then(function(UserId){
+            console.log("UserId: ", UserId);
+          });
         }
         const setMixpanelEvents = async () => {
           mainAppStore.signUpFlag
