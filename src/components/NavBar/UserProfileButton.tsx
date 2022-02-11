@@ -87,11 +87,13 @@ function UserProfileButton() {
         if (!response.data.phone) {
           fetchAdditionalFields();
         }
-        const appIdOneSignal = location.href.includes('trading-test.mnftx.biz/')
+        const appIdOneSignal = location.href.includes('trading-test.mnftx.biz')
           ? '88c64d44-f1e1-4561-b08f-344b07fe31f6'
-          : location.href.includes('https://trade.monfex.com/')
+          : location.href.includes('https://trade.monfex.com')
             ? '6cebaf4d-407b-491e-acb3-65a27855c428'
             : null;
+        console.log(appIdOneSignal);
+        console.log(location);
         if (appIdOneSignal) {
           OneSignal.init({
             appId: appIdOneSignal
