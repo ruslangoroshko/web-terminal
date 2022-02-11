@@ -96,13 +96,14 @@ function UserProfileButton() {
           await OneSignal.init({
             appId: appIdOneSignal
           });
-          await OneSignal.setExternalUserId(response.data.id);
+          console.log("idsAvailable1: ", await OneSignal.setExternalUserId(response.data.id));
           OneSignal.getExternalUserId().then(function(externalUserId){
             console.log("externalUserId: ", externalUserId);
           });
           const idsAvailable1 = await OneSignal.getIdsAvailable();
           console.log("idsAvailable: ", idsAvailable1);
           await OneSignal.registerForPushNotifications();
+          console.log("idsAvailable2: ", await OneSignal.setExternalUserId(response.data.id));
           const idsAvailable = await OneSignal.getIdsAvailable();
           console.log("idsAvailable: ", idsAvailable);
         }
