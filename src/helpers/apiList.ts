@@ -65,8 +65,8 @@ const API_LIST = {
     LIST: '/v1/educations',
   },
   MT5_ACCOUNTS: {
-    GET: '/api/v1/Mt5Account',
-    POST: '/api/v1/Mt5Account',
+    GET: '/api/v1/Mt5Accounts',
+    POST: '/api/v1/Mt5Accounts',
   },
 };
 
