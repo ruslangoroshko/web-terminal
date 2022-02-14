@@ -325,6 +325,14 @@ class API {
     return response.data;
   };
 
+  createMTAccounts = async (apiUrl: string) => {
+    const response = await axios.post<MTCreateAccountDTO>(
+      `${API_STRING || apiUrl}${API_LIST.MT5_ACCOUNTS.GET}`, {},
+      this.clientRequestOptions
+    );
+    return response.data;
+  };
+
   
   // -------------------
 
@@ -623,14 +631,6 @@ class API {
   getMTAccounts = async (apiUrl: string) => {
     const response = await axios.get<MTAccountDTO[]>(
       `${API_STRING || apiUrl}${API_LIST.MT5_ACCOUNTS.GET}`,
-      this.backgroundRequestOptions
-    );
-    return response.data;
-  };
-
-  createMTAccounts = async (apiUrl: string) => {
-    const response = await axios.post<MTCreateAccountDTO>(
-      `${API_STRING || apiUrl}${API_LIST.MT5_ACCOUNTS.GET}`, {},
       this.backgroundRequestOptions
     );
     return response.data;

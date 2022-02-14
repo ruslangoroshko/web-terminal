@@ -261,7 +261,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
                 <BonusPopup />
                 <KYCPopup />
                 <MTPopup />
-                <MTErrorPopup />
+                {/*<MTErrorPopup />*/}
               </>
             )}
           </>

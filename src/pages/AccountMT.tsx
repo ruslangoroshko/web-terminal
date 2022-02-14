@@ -12,17 +12,18 @@ import AccountSettingsContainer from '../containers/AccountSettingsContainer';
 import { useHistory } from 'react-router-dom';
 import Page from '../constants/Pages';
 import { useStores } from '../hooks/useStores';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import AccountMTItem from '../components/AccountMTItem';
 import { AccountModelWebSocketDTO, MTAccountDTO } from '../types/AccountsTypes';
 import { moneyFormatPart } from '../helpers/moneyFormat';
 import LoaderForComponents from '../components/LoaderForComponents';
 import API from '../helpers/API';
+import BadRequestPopup from '../components/BadRequestPopup';
 
 const AccountMT = observer(() => {
   const { t } = useTranslation();
 
-  const { mainAppStore, accountTypeStore, quotesStore } = useStores();
+  const { mainAppStore, accountTypeStore, quotesStore, badRequestPopupStore } = useStores();
   const { push } = useHistory();
 
   const [accountInfo, setAccountInfo] = useState<AccountModelWebSocketDTO | null>(null);
@@ -40,12 +41,21 @@ const AccountMT = observer(() => {
     try {
       setIsLoading(true);
       const response = await API.createMTAccounts(mainAppStore.initModel.tradingUrl);
-      accountTypeStore.setNewMTAccountInfo(response);
-      accountTypeStore.setShowMTPopup(true);
-      setIsLoading(false);
+      if (
+        !!response.investorPassword &&
+        !!response.login &&
+        !!response.password &&
+        !!response.serverName
+      ) {
+        accountTypeStore.setNewMTAccountInfo(response);
+        accountTypeStore.setShowMTPopup(true);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        badRequestPopupStore.openModal();
+      }
     } catch (error) {
       setIsLoading(false);
-      accountTypeStore.setShowMTErrorPopup(true);
     }
   };
 
@@ -84,6 +94,9 @@ const AccountMT = observer(() => {
             height="16px"
           />
         </IconButton>
+        <Observer>
+          {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
+        </Observer>
         <AccountMTItem
           isST={true}
           bonus={moneyFormatPart(accountInfo?.bonus || 0).full}
@@ -120,7 +133,7 @@ const AccountMT = observer(() => {
               position="relative"
               onClick={handleOpenPopup}
             >
-              {isLoading && <LoaderForComponents isLoading={isLoading}/>}
+              {isLoading && <LoaderForComponents backgroundColor="rgba(0, 0, 0, 0.3)" isLoading={isLoading}/>}
               <FlexContainer marginRight="36px">
                 <SvgIcon
                   {...IconPlus}
