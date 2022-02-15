@@ -31,6 +31,8 @@ import Education from '../components/SideBarTabs/Education';
 import EducationExpanded from '../components/SideBarTabs/EducationExpanded';
 import CongratulationPopup from '../components/CongratulationPopup';
 import KYCPopup from '../components/KYC/KYCPopup';
+import MTPopup from '../components/MTPopup';
+import MTErrorPopup from '../components/MTErrorPopup';
 
 interface Props {}
 
@@ -133,6 +135,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
     Page.ACCOUNT_BALANCE_HISTORY,
     Page.PROOF_OF_IDENTITY,
     Page.ONBOARDING,
+    Page.ACCOUNT_MT5,
   ]);
 
   const isHiddenPromoPage = hidenPromoPageList?.isExact;
@@ -257,6 +260,8 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
                 <DepositPopupWrapper />
                 <BonusPopup />
                 <KYCPopup />
+                <MTPopup />
+                {/*<MTErrorPopup />*/}
               </>
             )}
           </>

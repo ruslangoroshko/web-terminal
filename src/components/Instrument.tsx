@@ -44,6 +44,7 @@ const Instrument: FC<Props> = observer(({ instrument, handleClose }) => {
     instrument.id === instrumentsStore.activeInstrument?.instrumentItem.id;
 
   const switchInstrument = (e: any) => {
+    tradingViewStore.clearActivePositionLine();
     if (buttonCloseRef.current && buttonCloseRef.current.contains(e.target)) {
       e.preventDefault();
     } else {

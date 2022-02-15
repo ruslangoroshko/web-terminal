@@ -81,7 +81,7 @@ const ConfirmationPopup: FC<Props> = ({
       </PrimaryTextParagraph>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
         <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
-          {t('Price opened')}
+          {t('Open price')}
         </PrimaryTextSpan>
         <Observer>
           {() => (

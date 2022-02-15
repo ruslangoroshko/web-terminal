@@ -47,6 +47,10 @@ const AccountNavPanel = () => {
               </AccountLinkSpan>
             </CustomNavLink>
 
+            <CustomNavLink to={Page.ACCOUNT_MT5} activeClassName="active">
+              <AccountLinkSpan color="#fffccc">{t('MT5')}</AccountLinkSpan>
+            </CustomNavLink>
+
             <CustomNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="active">
               <AccountLinkSpan color="#fffccc">{t('Withdraw')}</AccountLinkSpan>
             </CustomNavLink>

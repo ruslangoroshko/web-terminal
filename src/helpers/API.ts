@@ -19,7 +19,11 @@ import {
   UpdateToppingUp,
 } from '../types/Positions';
 import API_LIST from './apiList';
-import { AccountModelDTO } from '../types/AccountsTypes';
+import {
+  AccountModelDTO,
+  MTAccountDTO,
+  MTCreateAccountDTO
+} from '../types/AccountsTypes';
 import {
   UserAuthenticate,
   UserAuthenticateResponse,
@@ -321,6 +325,14 @@ class API {
     return response.data;
   };
 
+  createMTAccounts = async (apiUrl: string) => {
+    const response = await axios.post<MTCreateAccountDTO>(
+      `${API_STRING || apiUrl}${API_LIST.MT5_ACCOUNTS.GET}`, {},
+      this.clientRequestOptions
+    );
+    return response.data;
+  };
+
   
   // -------------------
 
@@ -428,11 +440,11 @@ class API {
             aboutUrl: '',
             androidAppLink: '',
             brandCopyrights: '',
-            brandName: '',
+            brandName: 'Monfex',
             brandProperty: BrandEnum.Monfex,
             faqUrl: '',
             withdrawFaqUrl: '',
-            favicon: '',
+            favicon: 'https://trading-test.mnftx.biz/br/favicon.ico',
             gaAsAccount: '',
             iosAppLink: '',
             logo: '',
@@ -501,7 +513,10 @@ class API {
         AUTH_API_LIST.DOCUMENT.POST
       }/${documentType}`,
       formData,
-      this.backgroundRequestOptions
+      {
+        ...this.backgroundRequestOptions,
+        timeout: 600000,
+      }
     );
     return response.data;
   };
@@ -608,6 +623,14 @@ class API {
       dial: string;
     }>(
       `${API_AUTH_STRING || authUrl}${AUTH_API_LIST.COMMON.GEOLOCATION_INFO}`,
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+
+  getMTAccounts = async (apiUrl: string) => {
+    const response = await axios.get<MTAccountDTO[]>(
+      `${API_STRING || apiUrl}${API_LIST.MT5_ACCOUNTS.GET}`,
       this.backgroundRequestOptions
     );
     return response.data;

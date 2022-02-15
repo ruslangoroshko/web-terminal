@@ -12,13 +12,22 @@ import styled from '@emotion/styled';
 
 interface Props {
   id: KYCPageStepsEnum,
+  isSubmitting: boolean,
   title: string,
   comment: string,
   description: string,
   checkId: (DocumentTypeEnum | DocumentTypeEnum[])[],
 }
 
-const TypeOfDocument: FC<Props> = ({ id, title, comment, description, checkId }) => {
+const TypeOfDocument: FC<Props> = (
+  {
+    id,
+    title,
+    comment,
+    description,
+    checkId,
+    isSubmitting,
+  }) => {
   const {
     kycStore,
   } = useStores();
@@ -50,6 +59,7 @@ const TypeOfDocument: FC<Props> = ({ id, title, comment, description, checkId })
       cursor="pointer"
       marginBottom="16px"
       onClick={handleClick}
+      isSubmitting={isSubmitting}
     >
       <FlexContainer
         alignItems="center"
@@ -135,8 +145,9 @@ const TypeOfDocument: FC<Props> = ({ id, title, comment, description, checkId })
 
 export default TypeOfDocument;
 
-const TypeDocumentWrapper = styled(FlexContainer)`
+const TypeDocumentWrapper = styled(FlexContainer)<{isSubmitting: boolean}>`
   transition: 0.4s;
+  pointer-events: ${(props) => props.isSubmitting ? 'none' : 'all'};
   &:hover {
     background-color: rgba(255, 255, 255, 0.12);
   }

@@ -46,6 +46,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import hasValue from '../../helpers/hasValue';
 import ActivePositionToppingUp from '../ActivePositionToppingUp';
 import { SortByProfitEnum } from '../../enums/SortByProfitEnum';
+import IconShield from '../../assets/svg/icon-shield.svg';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -446,6 +447,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           };
 
       try {
+        if (
+          (values.sl === position.sl || (!values.sl && !position.sl)) &&
+          (values.tp === position.tp || (!values.tp && !position.tp)) &&
+          values.isToppingUpActive === position.isToppingUpActive
+        ) {
+          return false;
+        }
         const response = await API.updateSLTP(valuesToSubmit);
         if (response.result === OperationApiResponseCodes.Ok) {
           try {
@@ -470,6 +478,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               ? Math.abs(response.position.sl!)
               : undefined,
           });
+          position.sl = response.position.sl;
+          position.slType = response.position.slType;
+          position.tp = response.position.tp;
+          position.tpType = response.position.tpType;
+          position.isToppingUpActive = response.position.isToppingUpActive;
           SLTPstore.setTpType(
             response.position.tpType ?? TpSlTypeEnum.Currency
           );
@@ -834,28 +847,24 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   const removeSLChart = useCallback(async () => {
     if (quotesStore.selectedPosition) {
-      // setValue(Fields.CLOSED_BY_CHART, true);
-      tradingViewStore.activeOrderLinePositionSL?.remove();
-      tradingViewStore.setActiveOrderLinePositionSL(undefined);
-      removeSL();
       const objectToSend: FormValues = {
         tp: quotesStore.selectedPosition.tp ?? undefined,
         investmentAmount: quotesStore.selectedPosition.investmentAmount,
         isToppingUpActive: position.isToppingUpActive,
       };
       SLTPstore.toggleClosedByChart(true);
+      await updateSLTP(objectToSend);
+      // setValue(Fields.CLOSED_BY_CHART, true);
+      tradingViewStore.activeOrderLinePositionSL?.remove();
+      tradingViewStore.setActiveOrderLinePositionSL(undefined);
+      removeSL();
       quotesStore.selectedPosition.sl = null;
       quotesStore.selectedPosition.slType = null;
-      updateSLTP(objectToSend);
     }
-  }, [quotesStore.selectedPosition]);
+  }, [quotesStore.selectedPosition, position]);
 
   const removeTPChart = useCallback(async () => {
     if (quotesStore.selectedPosition) {
-      SLTPstore.toggleClosedByChart(true);
-      tradingViewStore.activeOrderLinePositionTP?.remove();
-      tradingViewStore.setActiveOrderLinePositionTP(undefined);
-      removeTP();
       const objectToSend: FormValues = {
         sl: hasValue(quotesStore.selectedPosition.sl)
           ? Math.abs(quotesStore.selectedPosition.sl!)
@@ -863,9 +872,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         investmentAmount: quotesStore.selectedPosition.investmentAmount,
         isToppingUpActive: position.isToppingUpActive,
       };
+      SLTPstore.toggleClosedByChart(true);
+      await updateSLTP(objectToSend);
+      tradingViewStore.activeOrderLinePositionTP?.remove();
+      tradingViewStore.setActiveOrderLinePositionTP(undefined);
+      removeTP();
       quotesStore.selectedPosition.tp = null;
       quotesStore.selectedPosition.tpType = null;
-      updateSLTP(objectToSend);
     }
   }, [quotesStore.selectedPosition]);
 
@@ -1306,6 +1319,61 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       </PrimaryTextSpan>
                     </FlexContainer>
 
+                    {position.tp && (
+                      <FlexContainer
+                        justifyContent="space-between"
+                        margin="0 0 8px 0"
+                      >
+                        <PrimaryTextSpan
+                          color="rgba(255, 255, 255, 0.4)"
+                          fontSize="12px"
+                        >
+                          {t('Take profit')}
+                        </PrimaryTextSpan>
+                        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                          {position.tpType === TpSlTypeEnum.Currency
+                            ? `+${mainAppStore.activeAccount?.symbol}${Math.abs(position.tp).toFixed(2)}`
+                            : Math.abs(position.tp).toFixed(+precision)
+                          }
+                        </PrimaryTextSpan>
+                      </FlexContainer>
+                    )}
+
+                    {position.sl && (
+                      <FlexContainer
+                        justifyContent="space-between"
+                        margin="0 0 8px 0"
+                      >
+                        <PrimaryTextSpan
+                          color="rgba(255, 255, 255, 0.4)"
+                          fontSize="12px"
+                        >
+                          {t('Stop loss')}
+                        </PrimaryTextSpan>
+                        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                          {position.slType === TpSlTypeEnum.Currency
+                            ? `-${mainAppStore.activeAccount?.symbol}${Math.abs(position.sl).toFixed(2)}`
+                            : Math.abs(position.sl).toFixed(+precision)
+                          }
+                        </PrimaryTextSpan>
+                      </FlexContainer>
+                    )}
+
+                    <FlexContainer
+                      justifyContent="space-between"
+                      margin="0 0 8px 0"
+                    >
+                      <PrimaryTextSpan
+                        color="rgba(255, 255, 255, 0.4)"
+                        fontSize="12px"
+                      >
+                        {t('Save position')}
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        {position.isToppingUpActive ? t('On') : t('Off')}
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+
                     {position.reservedFundsForToppingUp !== 0 && (
                       <FlexContainer
                         justifyContent="space-between"
@@ -1388,29 +1456,66 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       resetFormStateToInitial={resetFormStateToInitial}
                     >
                       <SetSLTPButton>
-                        <PrimaryTextSpan
-                          fontSize="12px"
-                          lineHeight="14px"
-                          color={
+                        <FlexContainer
+                          background={
                             hasValue(tp)
-                              ? '#fffccc'
-                              : 'rgba(255, 255, 255, 0.6)'
+                              ? 'rgba(255, 255, 255, 0.12)'
+                              : 'transparent'
                           }
+                          padding="1px 2px"
+                          marginRight="1px"
                         >
-                          {t('TP')}
-                        </PrimaryTextSpan>
-                        &nbsp;
-                        <PrimaryTextSpan
-                          fontSize="12px"
-                          lineHeight="14px"
-                          color={
+                          <PrimaryTextSpan
+                            fontSize="12px"
+                            lineHeight="18px"
+                            color={
+                              hasValue(tp)
+                                ? '#fffccc'
+                                : 'rgba(255, 255, 255, 0.6)'
+                            }
+                          >
+                            {t('TP')}
+                          </PrimaryTextSpan>
+                        </FlexContainer>
+                        <FlexContainer
+                          background={
                             hasValue(sl)
-                              ? '#fffccc'
-                              : 'rgba(255, 255, 255, 0.6)'
+                              ? 'rgba(255, 255, 255, 0.12)'
+                              : 'transparent'
                           }
+                          padding="1px 2px"
+                          marginRight="1px"
                         >
-                          {t('SL')}
-                        </PrimaryTextSpan>
+                          <PrimaryTextSpan
+                            fontSize="12px"
+                            lineHeight="18px"
+                            color={
+                              hasValue(sl)
+                                ? '#fffccc'
+                                : 'rgba(255, 255, 255, 0.6)'
+                            }
+                          >
+                            {t('SL')}
+                          </PrimaryTextSpan>
+                        </FlexContainer>
+                        <FlexContainer
+                          background={
+                            (position.isToppingUpActive || position.reservedFundsForToppingUp !== 0)
+                              ? 'rgba(255, 255, 255, 0.12)'
+                              : 'transparent'
+                          }
+                          padding="1px 2px"
+                          height="20px"
+                          alignItems="center"
+                        >
+                          <SvgIcon {...IconShield} fillColor={
+                            position.reservedFundsForToppingUp !== 0
+                              ? '#ED145B'
+                              : position.isToppingUpActive
+                              ? '#fffccc'
+                              : '#77797D'
+                          } />
+                        </FlexContainer>
                       </SetSLTPButton>
                     </AutoClosePopupSideBar>
                   </CustomForm>
@@ -1425,7 +1530,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                     SLTPstore.closeOpenPrice
                   }
                   isButton
-                ></ClosePositionPopup>
+                />
               </FlexContainer>
             </FlexContainer>
           </InstrumentInfoWrapperForBorder>
@@ -1453,10 +1558,9 @@ const InstrumentInfoWrapperForBorder = styled(FlexContainer)`
 `;
 
 const SetSLTPButton = styled(FlexContainer)`
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.12);
   margin-right: 8px;
   background-color: transparent;
-  padding: 4px 8px;
   transition: background-color 0.2s ease;
   will-change: background-color;
   border-radius: 4px;

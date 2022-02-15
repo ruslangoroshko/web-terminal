@@ -61,7 +61,7 @@ const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
   };
 
   const applyOpenPrice = (errors: any) => () => {
-    trigger().then(() => {
+    trigger('openPrice').then(() => {
       if (!Object.keys(errors).length) {
         toggle(false);
       }
@@ -164,7 +164,6 @@ const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
             hasPrice={true}
           >
             <PrimaryTextSpan color="#fffccc" fontSize="14px">
-              {mainAppStore.activeAccount?.symbol}
               {openPrice}
             </PrimaryTextSpan>
           </ButtonAutoClosePurchase>

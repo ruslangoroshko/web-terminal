@@ -104,6 +104,18 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 }
               ),
           })
+          .test(
+            Fields.INVEST_AMOUNT,
+            `${t(
+              'Insufficient funds to open a position. You have only'
+            )} $${mainAppStore.activeAccount?.balance}`,
+            (value) => {
+              if (value) {
+                return mainAppStore.activeAccount?.balance !== 0;
+              }
+              return true;
+            }
+          )
 
           .test(
             Fields.INVEST_AMOUNT,
@@ -207,7 +219,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           ),
         openPrice: yup
           .number()
-          .test(Fields.STOP_LOSS, t('Open Price can not be zero'), (value) => {
+          .test(Fields.OPEN_PRICE, t('Open Price can not be zero'), (value) => {
             return value !== 0 || value === null;
           }),
         isToppingUpActive: yup.boolean().required(),

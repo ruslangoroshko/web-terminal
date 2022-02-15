@@ -19,6 +19,7 @@ interface PrimaryTextType {
     | '24px'
     | '26px'
     | '30px'
+    | '32px'
     | '40px';
   lineHeight?: string;
   marginRight?: string;

@@ -26,7 +26,7 @@ const ActivePositionToppingUp: FC<Props> = observer(
       if (hasValue(sl)) {
         challengeStopOutBySlValue(sl);
       } else {
-        setValue(Fields.IS_TOPPING_UP, false);
+        // setValue(Fields.IS_TOPPING_UP, false);
       }
     }, [sl, SLTPstore.slType]);
 

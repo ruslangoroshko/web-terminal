@@ -235,6 +235,8 @@ export class MainAppStore implements MainAppStoreProps {
     this.setIsLoading(false);
     this.rootStore.badRequestPopupStore.openModal();
     this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
+
+    this.handleInitConnection(this.token);
   };
 
   handleSocketCloseError = (error: any) => {
@@ -297,6 +299,7 @@ export class MainAppStore implements MainAppStoreProps {
         await connection.start();
         try {
           await connection.send(Topics.INIT, token);
+          this.rootStore.badRequestPopupStore.closeModal();
           this.setIsAuthorized(true);
           this.activeSession = connection;
           this.pingPongConnection();

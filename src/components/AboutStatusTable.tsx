@@ -56,8 +56,10 @@ const AboutStatusTable = observer(() => {
             justifyContent="center"
             flexDirection="column"
             className={
-              index === 0
+              el.type === AccountStatusEnum.Silver
                 ? 'first'
+                : el.type === AccountStatusEnum.Basic
+                ? 'hidden'
                 : index === (allTypes.length - 1)
                 ? 'last'
                 : ''
@@ -66,10 +68,10 @@ const AboutStatusTable = observer(() => {
             <PrimaryTextSpan fontWeight={700} fontSize="16px" color={AccountInfoTable[el.type].color}>
               {el.name}
             </PrimaryTextSpan>
-            {el.type === AccountStatusEnum.Gold && <FlexContainer
+            {el.type === AccountStatusEnum.Platinum && <FlexContainer
               padding="0 4px"
               height="15px"
-              background="#FFFCCC"
+              background="#00FFDD"
               borderRadius="4px"
               alignItems="center"
               justifyContent="center"
@@ -107,6 +109,11 @@ const AboutStatusTable = observer(() => {
             <CellRowContainer
               height="54px"
               alignItems="center"
+              className={
+                el.type === AccountStatusEnum.Basic
+                  ? 'hidden'
+                  : ''
+              }
               key={uuid()}
             >
               {Object.values(AccountInfoTable[el.type].description).map((desc, index) => (
@@ -150,6 +157,9 @@ const TitleCell = styled(FlexContainer)<{ background: string }>`
   border-bottom: 2px solid #1C1F26;
   border-right: 2px solid #1C1F26;
   background: ${(props) => props.background};
+  &.hidden {
+    display: none;
+  }
   &.first {
     border-radius: 8px 0px 0px 0px;
   }
@@ -165,6 +175,9 @@ const TitleCell = styled(FlexContainer)<{ background: string }>`
 
 const CellRowContainer = styled(FlexContainer)`
   border-bottom: 2px solid #1C1F26;
+  &.hidden {
+    display: none;
+  }
   &.noneBorder {
     border-bottom: none;
   }

@@ -75,7 +75,6 @@ export class KYCstore implements Props {
 
   @action
   setFileSubmit = (newValue: boolean) => {
-    console.log(newValue)
     this.isFilesSubmit = newValue;
   };
 
