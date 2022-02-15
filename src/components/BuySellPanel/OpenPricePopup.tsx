@@ -61,7 +61,7 @@ const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
   };
 
   const applyOpenPrice = (errors: any) => () => {
-    trigger().then(() => {
+    trigger('openPrice').then(() => {
       if (!Object.keys(errors).length) {
         toggle(false);
       }
