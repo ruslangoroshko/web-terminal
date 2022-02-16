@@ -28,6 +28,7 @@ import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import ColorsPallete from '../../styles/colorPallete';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import { AccountStatusEnum } from '../../enums/AccountStatusEnum';
+import { getOneSignalAppId } from '../../helpers/getOneSignalAppId';
 
 function UserProfileButton() {
   const { mainAppStore, phoneVerificationStore, accountTypeStore } = useStores();
@@ -87,11 +88,7 @@ function UserProfileButton() {
         if (!response.data.phone) {
           fetchAdditionalFields();
         }
-        const appIdOneSignal = location.href.includes('trading-test.mnftx.biz')
-          ? '88c64d44-f1e1-4561-b08f-344b07fe31f6'
-          : location.href.includes('https://trade.monfex.com')
-            ? '6cebaf4d-407b-491e-acb3-65a27855c428'
-            : null;
+        const appIdOneSignal: string | null = getOneSignalAppId(location.href);
         if (appIdOneSignal) {
           await OneSignal.init({
             appId: appIdOneSignal
