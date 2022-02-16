@@ -50,6 +50,14 @@ const AccountMT = observer(() => {
         accountTypeStore.setNewMTAccountInfo(response);
         accountTypeStore.setShowMTPopup(true);
         setIsLoading(false);
+        try {
+          const responseGet = await API.getMTAccounts(mainAppStore.initModel.tradingUrl);
+          if (responseGet.length > 0) {
+            setMTAccountInfo(responseGet);
+          }
+        } catch (error) {
+          accountTypeStore.setShowMTErrorPopup(true);
+        }
       } else {
         setIsLoading(false);
         badRequestPopupStore.openModal();
