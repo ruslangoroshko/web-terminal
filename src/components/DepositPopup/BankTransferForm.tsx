@@ -59,11 +59,15 @@ const BankTransferForm = () => {
   };
 
   const handleSubmitForm = async () => {
+    const paramsFromLocation = new URLSearchParams(location.search);
+    const accountIdFromParams = paramsFromLocation.get('accountId')?.slice(0, -1);
     const params = {
       paymentMethod: 'BANK_CARDS',
       depositSum: +values.amount,
       currency: 'USD',
-      accountId: mainAppStore.accounts.find(item => item.isLive)?.id || '',
+      accountId: accountIdFromParams
+        ? accountIdFromParams
+        : mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
     };
     try {
       const response = await API.createDeposit(params);

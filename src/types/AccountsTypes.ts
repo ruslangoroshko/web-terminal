@@ -46,7 +46,7 @@ export interface AccountUpdateTypeModelWebSocketDTO {
 export interface MTAccountDTO {
   balance: number,
   margin: number,
-  bonus: number,
+  accountId: string,
   tradeUrl: string,
   login: number,
   serverName: string,

@@ -785,6 +785,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
   }, [isToppingUpActive]);
 
+  useEffect(() => {
+    clearErrors();
+  }, [operation]);
+
   const methods = {
     watch,
     register,

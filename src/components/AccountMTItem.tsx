@@ -15,7 +15,7 @@ import { getNumberSign } from '../helpers/getNumberSign';
 
 interface Props {
   isST: boolean,
-  bonus: string,
+  bonus?: string,
   balance: string,
   margin: string,
   server?: string,
@@ -23,16 +23,17 @@ interface Props {
   icon: string,
   depositLink: string,
   tradingLink: string,
+  accountId?: string,
 }
 
 const AccountMTItem: FC<Props> = observer((props) => {
   const { t } = useTranslation();
   const { push } = useHistory();
-  const { isST, balance, bonus, margin, server, login, icon, depositLink, tradingLink } = props;
+  const { isST, balance, bonus, margin, server, login, icon, depositLink, tradingLink, accountId } = props;
   const { mainAppStore, tabsStore } = useStores();
 
   const handleClickDeposit = () => {
-    push(depositLink);
+    push(accountId ? `?accountId=${accountId}${depositLink}` : depositLink);
   };
 
   const handleClickTrading = () => {

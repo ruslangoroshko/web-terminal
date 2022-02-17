@@ -52,8 +52,23 @@ const AccountMT = observer(() => {
         setIsLoading(false);
         try {
           const responseGet = await API.getMTAccounts(mainAppStore.initModel.tradingUrl);
-          if (responseGet.length > 0) {
-            setMTAccountInfo(responseGet);
+          const checkData = responseGet.some((item) => {
+            return (
+              !item.serverName ||
+              !(item.margin || (item.margin === 0)) ||
+              !(item.login || (item.login === 0)) ||
+              !(item.balance || (item.balance === 0)) ||
+              !item.accountId ||
+              !item.tradeUrl
+            );
+          });
+          if (checkData) {
+            setIsLoading(false);
+            badRequestPopupStore.openModal();
+          } else {
+            if (responseGet.length > 0) {
+              setMTAccountInfo(responseGet);
+            }
           }
         } catch (error) {
           accountTypeStore.setShowMTErrorPopup(true);
@@ -72,8 +87,23 @@ const AccountMT = observer(() => {
     async function fetchMTAccount() {
       try {
         const response = await API.getMTAccounts(mainAppStore.initModel.tradingUrl);
-        if (response.length > 0) {
-          setMTAccountInfo(response);
+        const checkData = response.some((item) => {
+          return (
+            !item.serverName ||
+            !(item.margin || (item.margin === 0)) ||
+            !(item.login || (item.login === 0)) ||
+            !(item.balance || (item.balance === 0)) ||
+            !item.accountId ||
+            !item.tradeUrl
+          );
+        });
+        if (checkData) {
+          setIsLoading(false);
+          badRequestPopupStore.openModal();
+        } else {
+          if (response.length > 0) {
+            setMTAccountInfo(response);
+          }
         }
         setIsLoading(false);
       } catch (error) {
@@ -120,7 +150,6 @@ const AccountMT = observer(() => {
               {MTAccountInfo.map((item, index) => <AccountMTItem
                 key={`${item.login}_${index}`}
                 isST={false}
-                bonus={moneyFormatPart(item?.bonus || 0).full}
                 balance={moneyFormatPart(item?.balance || 0).full}
                 margin={moneyFormatPart(item?.margin || 0).full}
                 icon={MT5Logo}
@@ -128,6 +157,7 @@ const AccountMT = observer(() => {
                 depositLink={Page.DEPOSIT_POPUP}
                 server={item.serverName}
                 login={`${item.login}`}
+                accountId={item.accountId}
               />)}
             </>
             : <FlexContainer
