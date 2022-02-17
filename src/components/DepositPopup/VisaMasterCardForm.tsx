@@ -35,7 +35,7 @@ import SvgIcon from '../SvgIcon';
 import { CreateDepositInvoiceParams } from '../../types/DepositTypes';
 import moment from 'moment';
 import depositResponseMessages from '../../constants/depositResponseMessages';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { DepositRequestStatusEnum } from '../../enums/DepositRequestStatusEnum';
 import LoaderComponent from '../LoaderComponent';
 import PreloaderButtonMask from '../PreloaderButtonMask';
@@ -56,6 +56,7 @@ const VisaMasterCardForm = () => {
 
   const { t } = useTranslation();
   const { push } = useHistory();
+  const location = useLocation();
 
   const numberCardInputRef = useRef<HTMLInputElement>(null);
 
@@ -208,13 +209,17 @@ const VisaMasterCardForm = () => {
   const handleSubmitForm = async (values: any) => {
     setLoading(true);
     let parts = values.expirationDate.split('/');
+    const paramsFromLocation = new URLSearchParams(location.search);
+    const accountIdFromParams = paramsFromLocation.get('accountId')?.slice(0, -1);
 
     const params: CreateDepositInvoiceParams = {
       ...values,
       amount: +values.amount,
       fullName: values.fullName.trim(),
       cardNumber: values.cardNumber.split(' ').join(''),
-      accountId: mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
+      accountId: accountIdFromParams
+        ? accountIdFromParams
+        : mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
       expirationDate: new Date(`20${parts[1]}-${parts[0]}`).getTime(),
     };
 

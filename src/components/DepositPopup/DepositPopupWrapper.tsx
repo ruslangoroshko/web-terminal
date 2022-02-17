@@ -103,7 +103,7 @@ const DepositPopupWrapper: FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.hash === HashLocation.Deposit) {
+    if (location.hash.includes(HashLocation.Deposit)) {
       depositFundsStore.openPopup();
     }
   }, [location]);

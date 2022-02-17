@@ -95,12 +95,16 @@ const Payop = () => {
 
   const handleSubmitForm = async (values: any) => {
     setLoading(true);
+    const paramsFromLocation = new URLSearchParams(location.search);
+    const accountIdFromParams = paramsFromLocation.get('accountId')?.slice(0, -1);
 
     const params: CreatePayopInvoiceParams = {
       ...values,
       amount: +values.amount,
       processId: getProcessId(),
-      accountId: mainAppStore.accounts.find((acc) => acc.isLive)?.id || ''
+      accountId: accountIdFromParams
+        ? accountIdFromParams
+        : mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
     };
 
     try {

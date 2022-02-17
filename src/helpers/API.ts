@@ -630,7 +630,7 @@ class API {
 
   getMTAccounts = async (apiUrl: string) => {
     const response = await axios.get<MTAccountDTO[]>(
-      `${API_STRING || apiUrl}${API_LIST.MT5_ACCOUNTS.GET}`,
+      `${API_STRING || apiUrl}${API_LIST.MT5_ACCOUNTS.GET}?deviceType=0`,
       this.backgroundRequestOptions
     );
     return response.data;
