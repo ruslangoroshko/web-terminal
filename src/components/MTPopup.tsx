@@ -31,8 +31,12 @@ const MTPopup: FC = observer(() => {
 
   const handleCopyText = (ref: any) => () => {
     if (ref && ref.current) {
-      ref.current.select();
+      const input = document.createElement('textarea');
+      input.innerHTML = `${ref.current.name}: ${ref.current.value}`;
+      document.body.appendChild(input);
+      input.select();
       document.execCommand('copy');
+      document.body.removeChild(input);
       notificationStore.setNotification(t('Copied successfully!'));
       notificationStore.setIsSuccessfull(true);
       notificationStore.openNotificationGlobal();
@@ -114,6 +118,7 @@ investor: ${accountTypeStore.newMTAccountInfo?.investorPassword}`;
                   <TextBlockForDev
                     ref={copyServer}
                     value={accountTypeStore.newMTAccountInfo?.serverName}
+                    name="server"
                     readOnly
                   />
                   <CustomIcon onClick={handleCopyText(copyServer)}>
@@ -145,6 +150,7 @@ investor: ${accountTypeStore.newMTAccountInfo?.investorPassword}`;
                   <TextBlockForDev
                     ref={copyLogin}
                     value={accountTypeStore.newMTAccountInfo?.login}
+                    name="login"
                     readOnly
                   />
                   <CustomIcon onClick={handleCopyText(copyLogin)}>
@@ -176,6 +182,7 @@ investor: ${accountTypeStore.newMTAccountInfo?.investorPassword}`;
                   <TextBlockForDev
                     ref={copyPassword}
                     value={accountTypeStore.newMTAccountInfo?.password}
+                    name="password"
                     readOnly
                   />
                   <CustomIcon onClick={handleCopyText(copyPassword)}>
@@ -207,6 +214,7 @@ investor: ${accountTypeStore.newMTAccountInfo?.investorPassword}`;
                   <TextBlockForDev
                     ref={copyInvestor}
                     value={accountTypeStore.newMTAccountInfo?.investorPassword}
+                    name="investor"
                     readOnly
                   />
                   <CustomIcon onClick={handleCopyText(copyInvestor)}>
