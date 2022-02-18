@@ -49,10 +49,13 @@ const BitcoinForm: FC = () => {
   useEffect(() => {
     async function fetchBitcoinString() {
       try {
+        const paramsFromLocation = new URLSearchParams(location.search);
+        const accountIdFromParams = paramsFromLocation.get('accountId')?.slice(0, -1);
         const response = await API.getCryptoWallet({
           currency: DepositCurrency.BTC,
-          accountId:
-            mainAppStore.accounts.find((item) => item.isLive)?.id || '',
+          accountId: accountIdFromParams
+            ? accountIdFromParams
+            : mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
         });
 
         if (response.status === DepositApiResponseCodes.Success) {
