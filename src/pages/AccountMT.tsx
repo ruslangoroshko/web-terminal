@@ -19,11 +19,12 @@ import { moneyFormatPart } from '../helpers/moneyFormat';
 import LoaderForComponents from '../components/LoaderForComponents';
 import API from '../helpers/API';
 import BadRequestPopup from '../components/BadRequestPopup';
+import NotificationPopup from '../components/NotificationPopup';
 
 const AccountMT = observer(() => {
   const { t } = useTranslation();
 
-  const { mainAppStore, accountTypeStore, quotesStore, badRequestPopupStore } = useStores();
+  const { mainAppStore, accountTypeStore, quotesStore, badRequestPopupStore, notificationStore } = useStores();
   const { push } = useHistory();
 
   const [accountInfo, setAccountInfo] = useState<AccountModelWebSocketDTO | null>(null);
@@ -116,6 +117,20 @@ const AccountMT = observer(() => {
 
   return (
     <AccountSettingsContainer>
+      <FlexContainer
+        position="absolute"
+        bottom="100px"
+        left="14px"
+        zIndex="100"
+      >
+        <Observer>
+          {() => (
+            <NotificationPopup
+              show={notificationStore.isActiveNotification}
+            ></NotificationPopup>
+          )}
+        </Observer>
+      </FlexContainer>
       <FlexContainer
         width="100%"
         maxWidth="1064px"
