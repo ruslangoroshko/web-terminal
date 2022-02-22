@@ -45,6 +45,8 @@ const AccountMT = observer(() => {
       if (
         !!response.investorPassword &&
         !!response.login &&
+        !!response.traderId &&
+        !!response.accountId &&
         !!response.password &&
         !!response.serverName
       ) {

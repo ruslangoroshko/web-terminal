@@ -58,4 +58,5 @@ export interface MTCreateAccountDTO {
   serverName: string,
   password: string,
   investorPassword: string,
+  accountId: string,
 }
