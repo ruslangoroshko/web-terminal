@@ -1,6 +1,8 @@
 export const getOneSignalAppId = (locationHref: string) => {
   if (locationHref.includes('trading-test.mnftx')) {
     return '88c64d44-f1e1-4561-b08f-344b07fe31f6';
+  } else if (locationHref.includes('trading-uat.mnftx')) {
+    return 'cfbb1f42-7445-4dfa-b7c9-0d69e37c9195';
   } else if (locationHref.includes('trade.monfex')) {
     return '6cebaf4d-407b-491e-acb3-65a27855c428';
   } else if (locationHref.includes('trade.handelpro')) {
