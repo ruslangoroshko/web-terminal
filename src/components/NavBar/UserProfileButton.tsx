@@ -20,6 +20,7 @@ import PlatinumIMG from '../../assets/images/achievement_status_bg/new/platinum_
 import DiamondIMG from '../../assets/images/achievement_status_bg/new/diamond_star.png';
 import VipIMG from '../../assets/images/achievement_status_bg/new/vip_star.png';
 
+import OneSignal from 'react-onesignal';
 import mixpanel from 'mixpanel-browser';
 import KYCStatus from '../../constants/KYCStatus';
 import mixapanelProps from '../../constants/mixpanelProps';
@@ -27,6 +28,7 @@ import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import ColorsPallete from '../../styles/colorPallete';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import { AccountStatusEnum } from '../../enums/AccountStatusEnum';
+import { getOneSignalAppId } from '../../helpers/getOneSignalAppId';
 
 function UserProfileButton() {
   const { mainAppStore, phoneVerificationStore, accountTypeStore } = useStores();
@@ -85,6 +87,22 @@ function UserProfileButton() {
         );
         if (!response.data.phone) {
           fetchAdditionalFields();
+        }
+        const appIdOneSignal: string | null = getOneSignalAppId(location.href);
+        if (appIdOneSignal) {
+          await OneSignal.init({
+            appId: appIdOneSignal
+          });
+          await OneSignal.setExternalUserId(response.data.id);
+          OneSignal.getExternalUserId().then(function(externalUserId){
+            console.log("externalUserId: ", externalUserId);
+          });
+
+          await OneSignal.registerForPushNotifications();
+          console.log('registered');
+          await OneSignal.getUserId().then(function(UserId: any){
+            console.log("UserId: ", UserId);
+          })
         }
         const setMixpanelEvents = async () => {
           mainAppStore.signUpFlag
