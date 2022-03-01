@@ -117,6 +117,12 @@ const AccountMT = observer(() => {
     fetchMTAccount();
   }, []);
 
+  useEffect(() => {
+    if (!accountTypeStore.isMTAvailable) {
+      push(Page.DASHBOARD);
+    }
+  }, []);
+
   return (
     <AccountSettingsContainer>
       <FlexContainer

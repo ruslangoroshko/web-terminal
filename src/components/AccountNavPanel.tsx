@@ -12,7 +12,7 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 
 const AccountNavPanel = () => {
-  const { mainAppStore, tabsStore } = useStores();
+  const { mainAppStore, tabsStore, accountTypeStore } = useStores();
   const { t } = useTranslation();
   const handleLogoutClick = () => {
     tabsStore.closeAnyTab();
@@ -47,9 +47,12 @@ const AccountNavPanel = () => {
               </AccountLinkSpan>
             </CustomNavLink>
 
-            <CustomNavLink to={Page.ACCOUNT_MT5} activeClassName="active">
-              <AccountLinkSpan color="#fffccc">{t('MT5')}</AccountLinkSpan>
-            </CustomNavLink>
+            {
+              accountTypeStore.isMTAvailable &&
+                <CustomNavLink to={Page.ACCOUNT_MT5} activeClassName="active">
+                  <AccountLinkSpan color="#fffccc">{t('MT5')}</AccountLinkSpan>
+                </CustomNavLink>
+            }
 
             <CustomNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="active">
               <AccountLinkSpan color="#fffccc">{t('Withdraw')}</AccountLinkSpan>

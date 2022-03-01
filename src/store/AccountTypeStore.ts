@@ -23,6 +23,7 @@ export class AccountTypeStore implements ContextProps {
   @observable currentAccountTypeProgressPercentage: number | null = null;
   @observable amountToNextAccountType: number | null = null;
   @observable newMTAccountInfo: MTCreateAccountDTO | null = null;
+  @observable isMTAvailable: boolean = false;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this);
@@ -41,6 +42,11 @@ export class AccountTypeStore implements ContextProps {
   @action
   setAllTypes = (newActualType: IAccountType[] | null) => {
     this.allTypes = newActualType;
+  };
+
+  @action
+  setMTAvailable = (newValue: boolean) => {
+    this.isMTAvailable = newValue;
   };
 
   @action
@@ -131,5 +137,6 @@ export class AccountTypeStore implements ContextProps {
     this.newMTAccountInfo = null;
     this.showMTErrorPopup = false;
     this.showMTPopup = false;
+    this.isMTAvailable = false;
   };
 }

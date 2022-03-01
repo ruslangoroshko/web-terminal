@@ -16,3 +16,4 @@ export const LOCAL_STORAGE_IS_NEW_USER = 'is-new-user';
 export const LOCAL_HISTORY_TIME = 'history-time';
 export const LOCAL_HISTORY_PAGE = 'history-page';
 export const LOCAL_HISTORY_DATERANGE = 'history-daterange';
+export const LOCAL_STORAGE_MT = 'available-mt';
