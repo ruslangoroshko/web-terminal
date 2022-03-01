@@ -21,6 +21,7 @@ import DepositPopupWrapper from '../components/DepositPopup/DepositPopupWrapper'
 import DepositPaymentResultPopup from '../components/DepositPopup/DepositPaymentResultPopup/DepositPaymentResultPopup';
 import {
   LOCAL_PORTFOLIO_TABS,
+  LOCAL_STORAGE_MT,
   LOCAL_STORAGE_SIDEBAR,
 } from '../constants/global';
 import NotificationPopup from '../components/NotificationPopup';
@@ -122,6 +123,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
     mainAppStore,
     notificationStore,
     depositFundsStore,
+    accountTypeStore,
   } = useStores();
   const { push } = useHistory();
 
@@ -148,6 +150,10 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
 
   useEffect(() => {
     const wasOpen = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
+    const isMTAvailable = localStorage.getItem(LOCAL_STORAGE_MT);
+    if (isMTAvailable) {
+      accountTypeStore.setMTAvailable(!!isMTAvailable);
+    }
     if (wasOpen) {
       tabsStore.setSideBarType(parseInt(wasOpen));
     }

@@ -12,6 +12,7 @@ import {
   LOCAL_POSITION_SORT,
   LOCAL_STORAGE_IS_NEW_USER,
   LOCAL_STORAGE_LANGUAGE,
+  LOCAL_STORAGE_MT,
   LOCAL_STORAGE_REFRESH_TOKEN_KEY,
   LOCAL_STORAGE_SIDEBAR,
   LOCAL_STORAGE_TOKEN_KEY,
@@ -743,6 +744,10 @@ export class MainAppStore implements MainAppStoreProps {
     );
     if (response.result === OperationApiResponseCodes.Ok) {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
+      if (response.data.mt5Enabled) {
+        localStorage.setItem(LOCAL_STORAGE_MT, 'true');
+        this.rootStore.accountTypeStore.setMTAvailable(true);
+      }
       this.setIsAuthorized(true);
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.setConnectionTimeout(+response.data.connectionTimeOut);
@@ -799,6 +804,10 @@ export class MainAppStore implements MainAppStoreProps {
     );
     if (response.result === OperationApiResponseCodes.Ok) {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
+      if (response.data.mt5Enabled) {
+        localStorage.setItem(LOCAL_STORAGE_MT, 'true');
+        this.rootStore.accountTypeStore.setMTAvailable(true);
+      }
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.setConnectionTimeout(+response.data.connectionTimeOut);
       this.setIsAuthorized(true);
@@ -831,6 +840,7 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
     localStorage.removeItem(LOCAL_HISTORY_PAGE);
     localStorage.removeItem(LOCAL_INSTRUMENT_ACTIVE);
+    localStorage.removeItem(LOCAL_STORAGE_MT);
     this.isPromoAccount = false;
     this.setInitLoading(false);
     this.setIsLoading(false);
