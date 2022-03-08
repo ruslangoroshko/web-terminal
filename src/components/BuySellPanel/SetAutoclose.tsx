@@ -382,7 +382,7 @@ const SetAutoclose: FC<Props> = observer(
                         classNameTooltip="autoclose-loss"
                         bgColor="#000"
                         width="260px"
-                        direction="left"
+                        direction="leftCenter"
                       >
                         <Observer>
                           {() => (

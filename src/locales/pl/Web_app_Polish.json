@@ -614,5 +614,10 @@
     "Server": "Serwer",
     "Investor": "Inwestor",
     "MT5 Credentials": "Dane logowania MT5",
-    "Please wait while we processing your request": "Poczekaj, aż przetworzymy Twoje żądanie"
+    "Please wait while we processing your request": "Poczekaj, aż przetworzymy Twoje żądanie",
+    "Basic": "Podstawowe",
+    "Silver": "Srebrny",
+    "Gold": "Złoty",
+    "Platinum": "Platynowy",
+    "Diamond": "Diamentowy"
 }

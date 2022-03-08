@@ -613,5 +613,10 @@
     "Server": "Server",
     "Investor": "Investor",
     "MT5 Credentials": "MT5 Credentials",
-    "Please wait while we processing your request": "Please wait while we processing your request"
+    "Please wait while we processing your request": "Please wait while we processing your request",
+    "Basic": "Basic",
+    "Silver": "Silver",
+    "Gold": "Gold",
+    "Platinum": "Platinum",
+    "Diamond": "Diamond"
 }

@@ -490,6 +490,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             response.position.slType ?? TpSlTypeEnum.Currency
           );
           quotesStore.setSelectedPositionId(position.id);
+          localStorage.setItem(LOCAL_POSITION, `${position.id}`);
           mixpanel.track(mixpanelEvents.EDIT_SLTP, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -982,21 +983,21 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         : SLTPstore.getCurrentPriceAsk(position.instrument);
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
-          // console.log(
-          //   'positionStopOut Currency',
-          //   SLTPstore.positionStopOut(
-          //     position.investmentAmount,
-          //     position.instrument
-          //   ),
-          //   'sl',
-          //   stopLoss,
-          //   'SL RATE',
-          //   //SL Rate = Current Price + ($SL - Comission) * Сurrent Price /Invest amount *direction*multiplier
-          //   currentPrice +
-          //     ((stopLoss - (position.swap + position.commission)) *
-          //       currentPrice) /
-          //       (position.investmentAmount * direction * position.multiplier)
-          // );
+          console.log(
+            'positionStopOut Currency',
+            SLTPstore.positionStopOut(
+              position.investmentAmount,
+              position.instrument
+            ),
+            'sl',
+            stopLoss,
+            'SL RATE',
+            //SL Rate = Current Price + ($SL - Comission) * Сurrent Price /Invest amount *direction*multiplier
+            currentPrice +
+              ((stopLoss - (position.swap + position.commission)) *
+                currentPrice) /
+                (position.investmentAmount * direction * position.multiplier)
+          );
           setValue(
             'isToppingUpActive',
             stopLoss >
@@ -1017,18 +1018,18 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             slPrice: stopLoss,
             commission: position.swap + position.commission,
           });
-          // console.log(
-          //   'positionStopOut Price',
-          //   soValue,
-          //   'sl',
-          //   stopLoss,
-          //   'SL $ ',
-          //   (stopLoss / currentPrice - 1) *
-          //     position.investmentAmount *
-          //     position.multiplier *
-          //     direction +
-          //     (position.swap + position.commission)
-          // );
+          console.log(
+            'positionStopOut Price',
+            soValue,
+            'sl',
+            stopLoss,
+            'SL $ ',
+            (stopLoss / currentPrice - 1) *
+              position.investmentAmount *
+              position.multiplier *
+              direction +
+              (position.swap + position.commission)
+          );
           setValue(
             'isToppingUpActive',
             soValue <= 0 &&

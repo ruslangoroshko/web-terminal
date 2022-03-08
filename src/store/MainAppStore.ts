@@ -847,6 +847,8 @@ export class MainAppStore implements MainAppStoreProps {
     this.token = '';
     this.refreshToken = '';
     this.setIsAuthorized(false);
+    this.profileName = '';
+    this.profileEmail = '';
     this.rootStore.quotesStore.setActivePositions([]);
     this.rootStore.quotesStore.setPendingOrders([]);
     this.rootStore.tradingViewStore.setSelectedPendingPosition(undefined);

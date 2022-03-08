@@ -9,12 +9,14 @@ import IconStar from '../../assets/svg/account-types/icon-type-star.svg';
 import SvgIcon from '../SvgIcon';
 import NextAccountType from './NextAccountType';
 import { AccountStatusEnum } from '../../enums/AccountStatusEnum';
+import { useTranslation } from 'react-i18next';
 
 const AccountType = observer(() => {
   const { accountTypeStore } = useStores();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [on, toggle] = useState(false);
 
+  const { t } = useTranslation();
   const handleToggle = () => {
     toggle(!on);
   };
@@ -52,7 +54,7 @@ const AccountType = observer(() => {
           color={AccountToBe[accountTypeStore.actualType?.type || 0].color}
           textTransform="uppercase"
         >
-          {accountTypeStore.actualType?.name}
+          {t(accountTypeStore.actualType?.name || '')}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer

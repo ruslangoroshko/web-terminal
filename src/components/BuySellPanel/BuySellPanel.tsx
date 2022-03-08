@@ -286,6 +286,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               }`,
             });
             setValue('openPrice', undefined);
+            setValue('isToppingUpActive', false);
             mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
               [mixapanelProps.AMOUNT]: response.order.investmentAmount,
               [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -393,6 +394,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             });
             reset();
             setValue('investmentAmount', values.investmentAmount);
+            setValue('openPrice', undefined);
+            setValue('isToppingUpActive', false);
             mixpanel.track(mixpanelEvents.MARKET_ORDER, {
               [mixapanelProps.AMOUNT]: response.position.investmentAmount,
               [mixapanelProps.ACCOUNT_CURRENCY]:

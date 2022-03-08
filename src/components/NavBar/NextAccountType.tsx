@@ -65,7 +65,7 @@ const NextAccountType = observer(() => {
                 fontWeight={700}
               >
                 {t('Deposit')} ${accountTypeStore.amountToNextAccountType} <br />
-                {t('to unlock')} {accountTypeStore.nextType?.name} {t('Status')}!
+                {t('to unlock')} {t(accountTypeStore.nextType?.name || '')} {t('Status')}!
               </PrimaryTextSpan>
             : <PrimaryTextSpan
               color="#1C1F26"
@@ -73,7 +73,7 @@ const NextAccountType = observer(() => {
               lineHeight="24px"
               fontWeight={700}
             >
-              {accountTypeStore.actualType?.name} {t('Status')}!
+              {t(accountTypeStore.actualType?.name)} {t('Status')}!
             </PrimaryTextSpan>
         }
       </NextAccountTypeHeader>
@@ -89,7 +89,7 @@ const NextAccountType = observer(() => {
           {
             accountTypeStore.actualType.type !== AccountStatusEnum.Vip && <AccountBenefitsItem
               icon={IconStar}
-              text={`${t(`New`)} ${accountTypeStore.nextType?.name} ${t(`Status`)}`}
+              text={`${t(`New`)} ${t(accountTypeStore.nextType?.name || '')} ${t(`Status`)}`}
               color={activeStatusInfo.color}
               type="next"
             />

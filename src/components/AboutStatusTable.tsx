@@ -65,8 +65,8 @@ const AboutStatusTable = observer(() => {
                 : ''
             }
           >
-            <PrimaryTextSpan fontWeight={700} fontSize="16px" color={AccountInfoTable[el.type].color}>
-              {el.name}
+            <PrimaryTextSpan fontWeight={700} fontSize="14px" color={AccountInfoTable[el.type].color}>
+              {t(el.name)}
             </PrimaryTextSpan>
             {el.type === AccountStatusEnum.Platinum && <FlexContainer
               padding="0 4px"

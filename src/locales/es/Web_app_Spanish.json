@@ -613,5 +613,10 @@
     "Server": "Servidor",
     "Investor": "Inversor",
     "MT5 Credentials": "Credenciales MT5",
-    "Please wait while we processing your request": "Espere mientras procesamos su solicitud"
+    "Please wait while we processing your request": "Espere mientras procesamos su solicitud",
+    "Basic": "Básicas",
+    "Silver": "Silver",
+    "Gold": "Gold",
+    "Platinum": "Platinum",
+    "Diamond": "Diamond"
 }

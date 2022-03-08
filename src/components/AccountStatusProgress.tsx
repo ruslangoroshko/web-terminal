@@ -69,7 +69,7 @@ const AccountStatusProgress = observer(() => {
               height={40}
             />
             <PrimaryTextSpan color="#ffffff" fontSize="16px" fontWeight="bold">
-              {accountTypeStore.actualType?.name}
+              {t(accountTypeStore.actualType?.name || '')}
             </PrimaryTextSpan>
           </ProgressBackground>
         </ProgressWrapper>
@@ -102,7 +102,7 @@ const AccountStatusProgress = observer(() => {
               fontWeight={700}
             >
               &nbsp;
-              {`${accountTypeStore.nextType?.name} ${t(
+              {`${t(accountTypeStore.nextType?.name || '')} ${t(
                 'Status'
               )}`}
             </PrimaryTextSpan>
