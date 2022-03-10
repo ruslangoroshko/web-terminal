@@ -29,6 +29,7 @@ interface Props {
   toggle: (arg0: boolean) => void;
   isActive: boolean;
   isNewOrder?: boolean;
+  amount?: number;
 }
 
 const SetAutoclose: FC<Props> = observer(
@@ -37,7 +38,8 @@ const SetAutoclose: FC<Props> = observer(
      toggle,
      children,
      isActive,
-     isNewOrder
+     isNewOrder,
+     amount,
   }) => {
     const { t } = useTranslation();
 
@@ -123,8 +125,22 @@ const SetAutoclose: FC<Props> = observer(
     };
 
     const handelFalseRadioClick = (
-      setValue: (arg0: any, arg1: any) => void
+      setValue: (arg0: any, arg1: any) => void,
+      getValues: (arg0: any) => void,
     ) => () => {
+      const stopLoss = getValues(Fields.STOP_LOSS);
+      const stopLossType = SLTPstore[isNewOrder ? 'slTypeNewOrder' : 'slType'];
+      // @ts-ignore
+      if (amount) {
+        if (stopLossType === TpSlTypeEnum.Currency) {
+          // @ts-ignore
+          if (stopLoss > amount * 0.9) {
+            setValue(Fields.STOP_LOSS, amount * 0.9);
+          }
+        } else {
+          setValue(Fields.STOP_LOSS, null);
+        }
+      }
       setValue(Fields.IS_TOPPING_UP, false);
     };
 
@@ -149,7 +165,7 @@ const SetAutoclose: FC<Props> = observer(
 
     return (
       <ConnectForm>
-        {({ register, setValue, errors, watch, clearErrors }) => {
+        {({ register, setValue, errors, watch, clearErrors, getValues }) => {
           const { sl, tp, isToppingUpActive } = watch();
           return (
             <Wrapper
@@ -451,7 +467,7 @@ const SetAutoclose: FC<Props> = observer(
                       />
                       <PseudoRadio
                         isChecked={!isToppingUpActive}
-                        onClick={handelFalseRadioClick(setValue)}
+                        onClick={handelFalseRadioClick(setValue, getValues)}
                       >
                         {t('Off')}
                       </PseudoRadio>
@@ -516,6 +532,14 @@ const InputPnL = styled.input`
   &::placeholder {
     color: rgba(255, 255, 255, 0.3);
     font-weight: normal;
+  }
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:valid,
+  &:-webkit-autofill:active {
+    transition: border 0.2s ease, background-color 50000s ease-in-out 0s;
+    -webkit-text-fill-color: #fffccc !important;
   }
 `;
 

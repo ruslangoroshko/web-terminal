@@ -88,6 +88,12 @@ function UserProfileButton() {
         if (!response.data.phone) {
           fetchAdditionalFields();
         }
+        mainAppStore.setProfileStatus(response.data.kyc);
+        mainAppStore.setProfilePhone(response.data.phone || '');
+        mainAppStore.setProfileName(!!response.data.firstName && !!response.data.lastName
+          ? `${response.data.firstName} ${response.data.lastName}`
+          : '');
+        mainAppStore.setProfileEmail(response.data.email || '');
         const appIdOneSignal: string | null = getOneSignalAppId(location.href);
         if (appIdOneSignal) {
           await OneSignal.init({
@@ -129,14 +135,14 @@ function UserProfileButton() {
             });
           }
 
-          mainAppStore.setSignUpFlag(false);
-          mainAppStore.setLpLoginFlag(false);
-          mainAppStore.setProfileStatus(response.data.kyc);
-          mainAppStore.setProfilePhone(response.data.phone || '');
-          mainAppStore.setProfileName(!!response.data.firstName && !!response.data.lastName
-            ? `${response.data.firstName} ${response.data.lastName}`
-            : '');
-          mainAppStore.setProfileEmail(response.data.email || '');
+          // mainAppStore.setSignUpFlag(false);
+          // mainAppStore.setLpLoginFlag(false);
+          // mainAppStore.setProfileStatus(response.data.kyc);
+          // mainAppStore.setProfilePhone(response.data.phone || '');
+          // mainAppStore.setProfileName(!!response.data.firstName && !!response.data.lastName
+          //   ? `${response.data.firstName} ${response.data.lastName}`
+          //   : '');
+          // mainAppStore.setProfileEmail(response.data.email || '');
         };
         setMixpanelEvents();
       } catch (error) {}

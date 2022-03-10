@@ -20,9 +20,10 @@ import { observer, Observer } from 'mobx-react-lite';
 
 interface Props {
   instrumentId: string;
+  amount?: number;
 }
 
-const AutoClosePopup: FC<Props> = observer(({ instrumentId, children }) => {
+const AutoClosePopup: FC<Props> = observer(({ instrumentId, amount, children }) => {
   const { mainAppStore, SLTPstore } = useStores();
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
@@ -210,7 +211,7 @@ const AutoClosePopup: FC<Props> = observer(({ instrumentId, children }) => {
           right="100%"
           visibilityProp={on ? 'visible' : 'hidden'}
         >
-          <SetAutoclose toggle={toggle} isActive={on} isNewOrder={on}>
+          <SetAutoclose toggle={toggle} isActive={on} isNewOrder={on} amount={amount}>
             <ButtonApply type="button" onClick={handleApplySetAutoClose}>
               {t('Apply')}
             </ButtonApply>

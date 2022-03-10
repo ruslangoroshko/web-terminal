@@ -1153,6 +1153,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
     return isSlNull && isTpNull && isToppingUpNull;
   }, [position]);
 
+  useEffect(() => {
+    if (quotesStore.selectedPosition?.id === position.id) {
+      checkSL(SLTPstore.slType, position.sl);
+      checkTP(SLTPstore.tpType, position.tp);
+    }
+  }, [quotesStore.selectedPositionId]);
+
   const methodsForForm = {
     errors,
     getValues,
@@ -1455,6 +1462,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       positionId={position.id}
                       handleResetLines={handleResetLines}
                       resetFormStateToInitial={resetFormStateToInitial}
+                      amount={position.investmentAmount}
                     >
                       <SetSLTPButton>
                         <FlexContainer

@@ -968,7 +968,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </InformationPopup>
           </FlexContainer>
           <FlexContainer position="relative" flexDirection="column">
-            <AutoClosePopup instrumentId={instrument.id}>
+            <AutoClosePopup instrumentId={instrument.id} amount={investmentAmount}>
               <>
                 {((formState.touched.sl && errors.sl) ||
                   (formState.touched.tp && errors.tp)) && (

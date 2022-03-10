@@ -26,6 +26,7 @@ interface Props {
   positionId: number;
   handleResetLines?: () => void;
   resetFormStateToInitial?: () => void;
+  amount?: number
 }
 
 const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
@@ -40,6 +41,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
       positionId,
       handleResetLines,
       resetFormStateToInitial,
+      amount,
     },
     ref
   ) => {
@@ -183,6 +185,7 @@ const AutoClosePopupSideBar = forwardRef<HTMLDivElement, Props>(
               isDisabled={isDisabled}
               toggle={handleClosePopup}
               isActive={on}
+              amount={amount}
             >
               <ButtonApply
                 type="button"
