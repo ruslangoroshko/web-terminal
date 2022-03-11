@@ -315,7 +315,7 @@ const SetAutoclose: FC<Props> = observer(
                           ? '0 0 0 8px'
                           : '0 0 0 22px'
                       }
-                      margin={isDisabled ? '0' : '0 0 16px 0'}
+                      margin="0 0 16px 0"
                       height="32px"
                       width="100%"
                       position="relative"
@@ -375,111 +375,110 @@ const SetAutoclose: FC<Props> = observer(
                     </InputWrapper>
                   )}
                 </Observer>
-                {!isDisabled && (
+                <FlexContainer
+                  flexDirection="column"
+                  width="100%"
+                  marginBottom={isDisabled ? '0' : '24px'}
+                >
                   <FlexContainer
-                    flexDirection="column"
-                    width="100%"
-                    marginBottom="24px"
+                    margin="0 0 6px 0"
+                    alignItems="center"
+                    justifyContent="space-between"
                   >
-                    <FlexContainer
-                      margin="0 0 6px 0"
-                      alignItems="center"
-                      justifyContent="space-between"
+                    <PrimaryTextSpan
+                      fontSize="11px"
+                      lineHeight="12px"
+                      color="rgba(255, 255, 255, 0.3)"
+                      textTransform="uppercase"
                     >
-                      <PrimaryTextSpan
-                        fontSize="11px"
-                        lineHeight="12px"
-                        color="rgba(255, 255, 255, 0.3)"
-                        textTransform="uppercase"
-                      >
-                        {t('Save position from market noise')}
-                      </PrimaryTextSpan>
-                      <InformationPopup
-                        classNameTooltip="autoclose-loss"
-                        bgColor="#000"
-                        width="260px"
-                        direction="leftCenter"
-                      >
-                        <Observer>
-                          {() => (
-                            <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                              {`${t('If the loss for a position reaches')} ${
-                                instrumentsStore.instruments.find(
-                                  (inst) =>
-                                    inst.instrumentItem.id ===
-                                    SLTPstore[
-                                      isNewOrder
-                                        ? 'instrumentIdNewOrder'
-                                        : 'instrumentId'
-                                    ]
-                                )?.instrumentItem.stopOutPercent || 0
-                              }%, ${t(
-                                'an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least'
-                              )} ${
-                                instrumentsStore.instruments.find(
-                                  (inst) =>
-                                    inst.instrumentItem.id ===
-                                    SLTPstore[
-                                      isNewOrder
-                                        ? 'instrumentIdNewOrder'
-                                        : 'instrumentId'
-                                    ]
-                                )?.instrumentItem.stopOutPercent || 0
-                              }%, ${t(
-                                'all previously reserved funds are returned to your balance.'
-                              )}`}
-                              <br />
-                              <br />
-                              {t('You can limit the additional funds reserved on your balance by specifing a level of loss that is acceptable for this position.')}
-                              <br />
-                              <br />
-                              <FlexContainer>
-                                <FlexContainer margin="3px 5px 0 0">
-                                  <SvgIcon {...IconShield} fillColor="#77797D"/>
-                                </FlexContainer> - {t('save position is not active')}
-                              </FlexContainer>
-                              <br />
-                              <FlexContainer>
-                                <FlexContainer margin="3px 5px 0 0">
-                                  <SvgIcon {...IconShield} fillColor="#fffccc"/>
-                                </FlexContainer> - {t('save position is active')}
-                              </FlexContainer>
-                              <br />
-                              <FlexContainer>
-                                <FlexContainer margin="3px 5px 0 0">
-                                  <SvgIcon {...IconShield} fillColor="#ED145B"/>
-                                </FlexContainer> - {t('save position is active and use available funds')}
-                              </FlexContainer>
-                            </PrimaryTextSpan>
-                          )}
-                        </Observer>
-                      </InformationPopup>
-                    </FlexContainer>
-                    <FlexContainer
-                      backgroundColor="#2A2C33"
-                      borderRadius="4px"
-                      overflow="hidden"
+                      {t('Save position from market noise')}
+                    </PrimaryTextSpan>
+                    <InformationPopup
+                      classNameTooltip="autoclose-loss"
+                      bgColor="#000"
+                      width="260px"
+                      direction="leftCenter"
                     >
-                      <RadioInput
-                        type="checkbox"
-                        ref={register}
-                        name={Fields.IS_TOPPING_UP}
-                      />
-                      <PseudoRadio
-                        isChecked={!isToppingUpActive}
-                        onClick={handelFalseRadioClick(setValue, getValues)}
-                      >
-                        {t('Off')}
-                      </PseudoRadio>
-                      <PseudoRadio
-                        isChecked={isToppingUpActive}
-                        onClick={handelTrueRadioClick(setValue)}
-                      >
-                        {t('On')}
-                      </PseudoRadio>
-                    </FlexContainer>
+                      <Observer>
+                        {() => (
+                          <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                            {`${t('If the loss for a position reaches')} ${
+                              instrumentsStore.instruments.find(
+                                (inst) =>
+                                  inst.instrumentItem.id ===
+                                  SLTPstore[
+                                    isNewOrder
+                                      ? 'instrumentIdNewOrder'
+                                      : 'instrumentId'
+                                  ]
+                              )?.instrumentItem.stopOutPercent || 0
+                            }%, ${t(
+                              'an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least'
+                            )} ${
+                              instrumentsStore.instruments.find(
+                                (inst) =>
+                                  inst.instrumentItem.id ===
+                                  SLTPstore[
+                                    isNewOrder
+                                      ? 'instrumentIdNewOrder'
+                                      : 'instrumentId'
+                                  ]
+                              )?.instrumentItem.stopOutPercent || 0
+                            }%, ${t(
+                              'all previously reserved funds are returned to your balance.'
+                            )}`}
+                            <br />
+                            <br />
+                            {t('You can limit the additional funds reserved on your balance by specifing a level of loss that is acceptable for this position.')}
+                            <br />
+                            <br />
+                            <FlexContainer>
+                              <FlexContainer margin="3px 5px 0 0">
+                                <SvgIcon {...IconShield} fillColor="#77797D"/>
+                              </FlexContainer> - {t('save position is not active')}
+                            </FlexContainer>
+                            <br />
+                            <FlexContainer>
+                              <FlexContainer margin="3px 5px 0 0">
+                                <SvgIcon {...IconShield} fillColor="#fffccc"/>
+                              </FlexContainer> - {t('save position is active')}
+                            </FlexContainer>
+                            <br />
+                            <FlexContainer>
+                              <FlexContainer margin="3px 5px 0 0">
+                                <SvgIcon {...IconShield} fillColor="#ED145B"/>
+                              </FlexContainer> - {t('save position is active and use available funds')}
+                            </FlexContainer>
+                          </PrimaryTextSpan>
+                        )}
+                      </Observer>
+                    </InformationPopup>
                   </FlexContainer>
-                )}
+                  <RadioWrapper
+                    backgroundColor="#2A2C33"
+                    borderRadius="4px"
+                    overflow="hidden"
+                    isDisabled={!!isDisabled}
+                  >
+                    <RadioInput
+                      type="checkbox"
+                      ref={register}
+                      name={Fields.IS_TOPPING_UP}
+                    />
+                    <PseudoRadio
+                      isChecked={!isToppingUpActive}
+                      onClick={handelFalseRadioClick(setValue, getValues)}
+                    >
+                      {t('Off')}
+                    </PseudoRadio>
+                    <PseudoRadio
+                      isChecked={isToppingUpActive}
+                      onClick={handelTrueRadioClick(setValue)}
+                    >
+                      {t('On')}
+                    </PseudoRadio>
+                  </RadioWrapper>
+                </FlexContainer>
                 {!isDisabled ? children : null}
               </>
             </Wrapper>
@@ -563,6 +562,12 @@ const PlusSign = styled.span`
 
 const CloseValueButtonWrapper = styled(FlexContainer)`
   transform: translateY(-50%);
+`;
+
+const RadioWrapper = styled(FlexContainer)<{ isDisabled: boolean }>`
+  * {
+    pointer-events: ${(props) => props.isDisabled ? 'none' : 'auto'};
+  }
 `;
 
 const RadioInput = styled.input`

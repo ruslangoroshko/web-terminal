@@ -624,6 +624,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           quotesStore.setSelectedPositionId(position.id);
           localStorage.setItem(LOCAL_POSITION, `${position.id}`);
           await instrumentsStore.switchInstrument(position.instrument);
+          markersOnChartStore.clearMarkersOnChart();
           tradingViewStore.setActiveOrderLinePosition(
             tradingViewStore.tradingWidget
               ?.chart()

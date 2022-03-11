@@ -197,6 +197,7 @@ export class InstrumentsStore implements ContextProps {
     addToLastViewed: boolean = true
   ) => {
     if (this.activeInstrument?.instrumentItem.id === instrumentId) {
+      this.rootStore.markersOnChartStore.renderActivePositionsMarkersOnChart();
       return;
     }
     const newActiveInstrument = this.instruments.find(
