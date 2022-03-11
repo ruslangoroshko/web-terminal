@@ -490,6 +490,8 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             response.position.slType ?? TpSlTypeEnum.Currency
           );
           quotesStore.setSelectedPositionId(position.id);
+          markersOnChartStore.clearMarkersOnChart();
+          setInstrumentActive(false);
           localStorage.setItem(LOCAL_POSITION, `${position.id}`);
           mixpanel.track(mixpanelEvents.EDIT_SLTP, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,

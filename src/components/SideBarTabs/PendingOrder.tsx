@@ -25,6 +25,7 @@ import hasValue from '../../helpers/hasValue';
 import { SortByPendingOrdersEnum } from '../../enums/SortByPendingOrdersEnum';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
+import IconShield from '../../assets/svg/icon-topping-up-active.svg';
 
 interface Props {
   pendingOrder: PendingOrderWSDTO;
@@ -145,8 +146,14 @@ const PendingOrder: FC<Props> = (props) => {
               width="32px"
               height="32px"
               marginRight="8px"
+              position="relative"
             >
               <ImageContainer instrumentId={pendingOrder.instrument} />
+              {pendingOrder.isToppingUpActive && (
+                <FlexContainer position="absolute" bottom="0" right="-4px">
+                  <SvgIcon width={12} height={13} {...IconShield} fillColor="#fffccc" />
+                </FlexContainer>
+              )}
             </FlexContainer>
             <FlexContainer
               flexDirection="column"
@@ -222,6 +229,7 @@ const PendingOrder: FC<Props> = (props) => {
                     slType={pendingOrder.slType}
                     instrumentId={pendingOrder.instrument}
                     positionId={pendingOrder.id}
+                    manualIsToppingUp={pendingOrder.isToppingUpActive}
                   >
                     <SvgIcon
                       {...IconSettings}

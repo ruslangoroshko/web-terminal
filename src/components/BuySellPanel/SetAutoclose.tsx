@@ -30,6 +30,7 @@ interface Props {
   isActive: boolean;
   isNewOrder?: boolean;
   amount?: number;
+  manualIsToppingUp?: boolean;
 }
 
 const SetAutoclose: FC<Props> = observer(
@@ -40,6 +41,7 @@ const SetAutoclose: FC<Props> = observer(
      isActive,
      isNewOrder,
      amount,
+     manualIsToppingUp,
   }) => {
     const { t } = useTranslation();
 
@@ -466,13 +468,13 @@ const SetAutoclose: FC<Props> = observer(
                       name={Fields.IS_TOPPING_UP}
                     />
                     <PseudoRadio
-                      isChecked={!isToppingUpActive}
+                      isChecked={!isToppingUpActive && !manualIsToppingUp}
                       onClick={handelFalseRadioClick(setValue, getValues)}
                     >
                       {t('Off')}
                     </PseudoRadio>
                     <PseudoRadio
-                      isChecked={isToppingUpActive}
+                      isChecked={isToppingUpActive || !!manualIsToppingUp}
                       onClick={handelTrueRadioClick(setValue)}
                     >
                       {t('On')}
