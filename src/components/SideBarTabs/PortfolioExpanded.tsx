@@ -26,12 +26,13 @@ import { moneyFormatPart } from '../../helpers/moneyFormat';
 interface Props {}
 
 const PortfolioExpanded: FC<Props> = () => {
-  const { tabsStore, mainAppStore, quotesStore } = useStores();
+  const { tabsStore, mainAppStore, quotesStore, markersOnChartStore } = useStores();
   const closeExpanded = () => {
     tabsStore.setTabExpanded(false);
   };
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    markersOnChartStore.renderActivePositionsMarkersOnChart();
     localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
     tabsStore.setPortfolioTab(portfolioTab);
   };

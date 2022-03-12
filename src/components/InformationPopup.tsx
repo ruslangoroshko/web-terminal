@@ -104,14 +104,12 @@ const bottomLeftDirection = css`
 `;
 
 const leftCenterDirection = css`
-  top: 50%;
+  bottom: 0;
   right: 22px;
-  transform: translateY(-50%);
 
   &:after {
-    top: 50%;
+    bottom: 0;
     right: -7px;
-    transform: translateY(-50%);
   }
 `;
 

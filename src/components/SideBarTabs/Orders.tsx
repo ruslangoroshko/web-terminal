@@ -22,9 +22,10 @@ import {
 } from '../../constants/global';
 
 const Orders: FC = () => {
-  const { sortingStore, tabsStore, mainAppStore, quotesStore } = useStores();
+  const { sortingStore, tabsStore, mainAppStore, quotesStore, markersOnChartStore } = useStores();
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    markersOnChartStore.renderActivePositionsMarkersOnChart();
     localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
     tabsStore.setPortfolioTab(portfolioTab);
   };

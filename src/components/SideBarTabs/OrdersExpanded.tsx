@@ -19,12 +19,13 @@ import { useTranslation } from 'react-i18next';
 import { LOCAL_PORTFOLIO_TABS } from '../../constants/global';
 
 const OrdersExpanded: FC = () => {
-  const { tabsStore, mainAppStore, quotesStore } = useStores();
+  const { tabsStore, mainAppStore, quotesStore, markersOnChartStore } = useStores();
   const closeExpanded = () => {
     tabsStore.setTabExpanded(false);
   };
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    markersOnChartStore.renderActivePositionsMarkersOnChart();
     localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
     tabsStore.setPortfolioTab(portfolioTab);
   };

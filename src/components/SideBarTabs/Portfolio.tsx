@@ -33,9 +33,11 @@ const Portfolio: FC<Props> = () => {
     tabsStore,
     quotesStore,
     tradingViewStore,
+    markersOnChartStore,
   } = useStores();
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    markersOnChartStore.renderActivePositionsMarkersOnChart();
     localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
     tabsStore.setPortfolioTab(portfolioTab);
   };
