@@ -44,10 +44,10 @@ const Instrument: FC<Props> = observer(({ instrument, handleClose }) => {
     instrument.id === instrumentsStore.activeInstrument?.instrumentItem.id;
 
   const switchInstrument = (e: any) => {
-    tradingViewStore.clearActivePositionLine();
     if (buttonCloseRef.current && buttonCloseRef.current.contains(e.target)) {
       e.preventDefault();
     } else {
+      tradingViewStore.clearActivePositionLine();
       const activeTab = localStorage.getItem(LOCAL_PORTFOLIO_TABS);
       const isHistory = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
       if (!!isHistory) {
