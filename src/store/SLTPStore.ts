@@ -147,8 +147,6 @@ export class SLTPStore implements ContextProps {
       (slPrice / currentPrice - 1) * investmentAmount * multiplier * direction +
       commission;
 
-    console.log(+result.toFixed(2));
-
     return +result.toFixed(2);
   };
 
