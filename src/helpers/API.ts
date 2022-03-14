@@ -636,6 +636,14 @@ class API {
     return response.data;
   };
 
+  getSubscribe = async (apiUrl: string) => {
+    const response = await axios.get<MTAccountDTO[]>(
+      `${API_STRING || apiUrl}${API_LIST.ONESIGNAL.SUBSCRIBE}`,
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+
   getOnBoardingInfoByStep = async (stepNumber: number, deviceType: number, miscUrl: string) => {
     const needToAdd = ((API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL) ? '' : '/misc';
     const response = await axios.get<OnBoardingInfo>(

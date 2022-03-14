@@ -68,6 +68,9 @@ const API_LIST = {
     GET: '/api/v1/Mt5Accounts',
     POST: '/api/v1/Mt5Accounts',
   },
+  ONESIGNAL: {
+    SUBSCRIBE: '/v1/oneSignal/subscribe',
+  }
 };
 
 Object.freeze(API_LIST);

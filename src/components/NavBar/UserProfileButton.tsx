@@ -106,6 +106,7 @@ function UserProfileButton() {
 
           await OneSignal.registerForPushNotifications();
           console.log('registered');
+          await API.getSubscribe(mainAppStore.initModel.tradingUrl);
           await OneSignal.getUserId().then(function(UserId: any){
             console.log("UserId: ", UserId);
           })
