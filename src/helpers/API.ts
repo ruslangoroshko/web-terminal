@@ -636,9 +636,10 @@ class API {
     return response.data;
   };
 
-  getSubscribe = async (apiUrl: string) => {
+  getSubscribe = async (miscUrl: string) => {
+    const needToAdd = ((API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL) ? '' : '/misc';
     const response = await axios.get<MTAccountDTO[]>(
-      `${API_STRING || apiUrl}${API_LIST.ONESIGNAL.SUBSCRIBE}`,
+      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.ONESIGNAL.SUBSCRIBE}`,
       this.backgroundRequestOptions
     );
     return response.data;
