@@ -165,6 +165,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         API_LIST.ONBOARDING.STEPS,
         API_LIST.WELCOME_BONUS.GET,
         API_LIST.EDUCATION.LIST,
+        API_LIST.ONESIGNAL.SUBSCRIBE,
       ];
 
       const sendClientLog = () => {
@@ -215,6 +216,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       if (
         (
           getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS) ||
+          getApiUrl(requestUrl).includes(API_LIST.ONESIGNAL.SUBSCRIBE) ||
           getApiUrl(requestUrl).includes(API_LIST.WELCOME_BONUS.GET) ||
           (
             getApiUrl(requestUrl).includes(API_LIST.EDUCATION.LIST) &&
