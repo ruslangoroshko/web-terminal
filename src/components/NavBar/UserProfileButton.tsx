@@ -99,7 +99,7 @@ function UserProfileButton() {
         console.log(location.href);
         if (appIdOneSignal) {
           console.log(1);
-          await OneSignal.init({
+          OneSignal.init({
             appId: appIdOneSignal
           });
           console.log(2);
