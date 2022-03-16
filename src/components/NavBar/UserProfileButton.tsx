@@ -95,14 +95,10 @@ function UserProfileButton() {
           : '');
         mainAppStore.setProfileEmail(response.data.email || '');
         const appIdOneSignal: string | null = getOneSignalAppId(location.href);
-        console.log(appIdOneSignal);
-        console.log(location.href);
         if (appIdOneSignal) {
-          console.log(1);
           OneSignal.init({
             appId: appIdOneSignal
           });
-          console.log(2);
           await OneSignal.setExternalUserId(response.data.id);
           OneSignal.getExternalUserId().then(function(externalUserId){
             console.log("externalUserId: ", externalUserId);
