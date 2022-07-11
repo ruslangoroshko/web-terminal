@@ -22,6 +22,7 @@ import PortfolioTotalProfit from './PortfolioTotalProfit';
 import PortfolioTotalEquity from './PortfolioTotalEquity';
 import { LOCAL_PORTFOLIO_TABS } from '../../constants/global';
 import { moneyFormatPart } from '../../helpers/moneyFormat';
+import Colors from '../../constants/Colors';
 
 interface Props {}
 
@@ -46,8 +47,8 @@ const PortfolioExpanded: FC<Props> = () => {
       <ButtonClose onClick={closeExpanded}>
         <SvgIcon
           {...IconClose}
-          fillColor="rgba(255, 255, 255, 0.6)"
-          hoverFillColor="#00FFDD"
+          fillColor={Colors.WHITE_DARK}
+          hoverFillColor={Colors.PRIMARY}
         />
       </ButtonClose>
       <FlexContainer margin="0 0 40px 0" padding="0 0 0 8px">
@@ -85,7 +86,7 @@ const PortfolioExpanded: FC<Props> = () => {
                 margin="0 60px 0 0"
               >
                 <PrimaryTextParagraph
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="10px"
                   marginBottom="8px"
                   textTransform="uppercase"
@@ -100,7 +101,7 @@ const PortfolioExpanded: FC<Props> = () => {
                 margin="0 60px 0 0"
               >
                 <PrimaryTextParagraph
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="10px"
                   marginBottom="14px"
                   textTransform="uppercase"
@@ -113,7 +114,7 @@ const PortfolioExpanded: FC<Props> = () => {
                       fontSize="14px"
                       lineHeight="16px"
                       fontWeight="bold"
-                      color="#fffccc"
+                      color={Colors.ACCENT}
                     >
                       {mainAppStore.activeAccount?.symbol}
                       {moneyFormatPart(quotesStore.invest).int}
@@ -121,7 +122,7 @@ const PortfolioExpanded: FC<Props> = () => {
                         fontSize="10px"
                         lineHeight="16px"
                         fontWeight="bold"
-                        color="#fffccc"
+                        color={Colors.ACCENT}
                       >
                         .{moneyFormatPart(quotesStore.invest).decimal}
                       </PrimaryTextSpan>
@@ -135,7 +136,7 @@ const PortfolioExpanded: FC<Props> = () => {
                 margin="0 60px 0 0"
               >
                 <PrimaryTextParagraph
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="10px"
                   marginBottom="14px"
                   textTransform="uppercase"
@@ -150,7 +151,7 @@ const PortfolioExpanded: FC<Props> = () => {
             <TableGrid columnsCount={9} maxHeight="calc(100vh - 235px)">
               <Th>
                 <HeaderTitleItem
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="10px"
                   textTransform="uppercase"
                 >
@@ -159,7 +160,7 @@ const PortfolioExpanded: FC<Props> = () => {
               </Th>
               <Th>
                 <HeaderTitleItem
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="10px"
                   textTransform="uppercase"
                 >
@@ -168,7 +169,7 @@ const PortfolioExpanded: FC<Props> = () => {
               </Th>
               <Th>
                 <HeaderTitleItem
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="10px"
                   textTransform="uppercase"
                 >
@@ -177,7 +178,7 @@ const PortfolioExpanded: FC<Props> = () => {
               </Th>
               <Th justifyContent="flex-end">
                 <HeaderTitleItem
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="10px"
                   textTransform="uppercase"
                 >
@@ -186,7 +187,7 @@ const PortfolioExpanded: FC<Props> = () => {
               </Th>
               <Th justifyContent="flex-end">
                 <HeaderTitleItem
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="10px"
                   textTransform="uppercase"
                   textAlign="center"
@@ -196,7 +197,7 @@ const PortfolioExpanded: FC<Props> = () => {
               </Th>
               <Th justifyContent="center">
                 <HeaderTitleItem
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="10px"
                   textTransform="uppercase"
                 >
@@ -205,7 +206,7 @@ const PortfolioExpanded: FC<Props> = () => {
               </Th>
               <Th justifyContent="center">
                 <HeaderTitleItem
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="10px"
                   textTransform="uppercase"
                   textAlign="center"
@@ -215,7 +216,7 @@ const PortfolioExpanded: FC<Props> = () => {
               </Th>
               <Th justifyContent="center">
                 <HeaderTitleItem
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="10px"
                   textTransform="uppercase"
                   textAlign="center"
@@ -249,12 +250,12 @@ const PortfolioExpanded: FC<Props> = () => {
                 <FlexContainer margin="0 0 30px 0">
                   <SvgIcon
                     {...IconPortfolioNoDataExpanded}
-                    fillColor="rgba(255,255,255,0.4)"
+                    fillColor={Colors.WHITE_LIGHT}
                   />
                 </FlexContainer>
                 <PrimaryTextParagraph
                   fontSize="16px"
-                  color="rgba(255,255,255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                 >
                   {t("You haven't opened any positions yet")}
                 </PrimaryTextParagraph>
@@ -279,16 +280,9 @@ const PortfolioWrapper = styled(FlexContainer)`
       rgba(255, 252, 204, 0.08) 0%,
       rgba(255, 252, 204, 0) 100%
     ),
-    #252636;
+    ${Colors.DARK_BLACK};
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.08);
   border-radius: 8px 0px 0px 0px;
-`;
-
-const ButtonCloseAll = styled(ButtonWithoutStyles)`
-  padding: 8px 16px;
-  width: 80px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
 `;
 
 const ButtonClose = styled(ButtonWithoutStyles)`

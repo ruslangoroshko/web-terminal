@@ -9,6 +9,7 @@ import { useStores } from '../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import InstrumentMarkets from './SideBarTabs/InstrumentMarkets';
 import { useTranslation } from 'react-i18next';
+import Colors from '../constants/Colors';
 
 interface Props {
   toggle: () => void;
@@ -95,7 +96,7 @@ const AddInstrumentsPopup: FC<Props> = (props) => {
             <SvgIcon
               {...IconClose}
               fillColor="rgba(255, 255, 255, 0.8)"
-              hoverFillColor="#00FFDD"
+              hoverFillColor={Colors.PRIMARY}
             ></SvgIcon>
           </ButtonWithoutStyles>
         </FlexContainer>
@@ -156,7 +157,7 @@ const SearchInput = styled.input`
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   margin-right: 4px;
   width: 100%;
-  color: #fffccc;
+  color: ${Colors.ACCENT};
   font-size: 12px;
   line-height: 14px;
   padding-bottom: 4px;

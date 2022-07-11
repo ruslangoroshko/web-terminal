@@ -12,6 +12,7 @@ import { useStores } from '../../hooks/useStores';
 import { observer } from 'mobx-react-lite';
 import { IActiveInstrument } from '../../types/InstrumentsTypes';
 import { ResolutionString } from '../../vendor/charting_library/charting_library';
+import Colors from '../../constants/Colors';
 
 interface Props {}
 
@@ -126,11 +127,11 @@ export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
       rgba(0, 255, 221, 0) 100%
     ),
     rgba(255, 255, 255, 0.1)`};
-  box-shadow: ${(props) => props.isActive && 'inset 0px -1px 0px #00ffdd'};
+  box-shadow: ${(props) => props.isActive && `inset 0px -1px 0px ${Colors.PRIMARY}`};
   border-radius: 2px 2px 0px 0px;
   text-transform: uppercase;
   color: ${(props) =>
-    props.isActive ? '#fffccc' : 'rgba(255, 255, 255, 0.6)'};
+    props.isActive ? Colors.ACCENT : Colors.WHITE_DARK};
   justify-content: center;
   align-items: center;
   font-family: 'Roboto', sans-serif;
@@ -147,6 +148,6 @@ export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
       ),
       rgba(255, 255, 255, 0.1);
     cursor: pointer;
-    box-shadow: inset 0px -1px 0px #00ffdd;
+    box-shadow: inset 0px -1px 0px ${Colors.PRIMARY};
   }
 `;

@@ -21,6 +21,7 @@ import Helmet from 'react-helmet';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
+import Colors from '../constants/Colors';
 
 function AccountSecurity() {
   const {
@@ -76,7 +77,7 @@ function AccountSecurity() {
         <SvgIcon
           {...IconClose}
           fillColor="rgba(255, 255, 255, 0.6)"
-          hoverFillColor="#00FFDD"
+          hoverFillColor={Colors.PRIMARY}
         ></SvgIcon>
       </IconButton>
       <Observer>
@@ -84,12 +85,7 @@ function AccountSecurity() {
       </Observer>
 
       <FlexContainer flexDirection="column" width="708px" margin="0 0 0 80px">
-        <PrimaryTextSpan
-          color="#FFFCCC"
-          fontSize="24px"
-          fontWeight="bold"
-          marginBottom="40px"
-        >
+        <PrimaryTextSpan fontSize="24px" fontWeight="bold" marginBottom="40px">
           {t('Withdraw')}
         </PrimaryTextSpan>
 
@@ -152,7 +148,7 @@ const TabControllsWraper = styled(FlexContainer)`
 
 const TabControllItem = styled(ButtonWithoutStyles)<{ active: boolean }>`
   width: 50%;
-  color: ${(props) => (props.active ? '#fffccc' : '#979797')};
+  color: ${(props) => (props.active ? Colors.ACCENT : '#979797')};
   font-weight: 500;
   font-size: 12px;
   line-height: 16px;
@@ -169,7 +165,7 @@ const TabControllItem = styled(ButtonWithoutStyles)<{ active: boolean }>`
     display: block;
     width: 100%;
     height: ${(props) => (props.active ? '2px' : '1px')};
-    background: ${(props) => (props.active ? '#FFFCCC' : '#46484d')};
+    background: ${(props) => (props.active ? Colors.ACCENT : '#46484d')};
     position: absolute;
     bottom: 0;
     left: 0;

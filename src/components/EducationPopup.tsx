@@ -18,6 +18,7 @@ import * as successIcon from '../assets/lotties/success-icon.json';
 import * as confettie from '../assets/lotties/confettie-animation.json';
 import Lottie from 'react-lottie';
 import { observer } from 'mobx-react-lite';
+import Colors from '../constants/Colors';
 
 const EducationPopup: FC = observer(() => {
   const { push } = useHistory();
@@ -147,7 +148,7 @@ const EducationPopup: FC = observer(() => {
               <PrimaryTextSpan
                 fontWeight={700}
                 fontSize="20px"
-                color="#fffccc"
+                color={Colors.ACCENT}
               >
                 {t('Course')} - “{educationStore.activeCourse?.title}”
               </PrimaryTextSpan>
@@ -156,8 +157,8 @@ const EducationPopup: FC = observer(() => {
               <ButtonWithoutStyles onClick={closePopup}>
                 <SvgIcon
                   {...CloseIcon}
-                  fillColor="rgba(255, 255, 255, 0.6)"
-                  hoverFillColor="#01ffdd"
+                  fillColor={Colors.WHITE_LIGHT}
+                  hoverFillColor={Colors.PRIMARY}
                 />
               </ButtonWithoutStyles>
             </FlexContainer>
@@ -200,7 +201,7 @@ const EducationPopup: FC = observer(() => {
                 <PrimaryTextParagraph
                   fontSize="22px"
                   lineHeight="33px"
-                  color="#fff"
+                  color={Colors.WHITE}
                   marginBottom="8px"
                   width="470px"
                   textAlign="center"
@@ -218,7 +219,7 @@ const EducationPopup: FC = observer(() => {
                     <PrimaryTextSpan
                       fontWeight="bold"
                       fontSize="16px"
-                      color="#252636"
+                      color={Colors.DARK_BLACK}
                     >
                       {t('Deposit & Start Trading')}
                     </PrimaryTextSpan>
@@ -231,7 +232,7 @@ const EducationPopup: FC = observer(() => {
                   <PrimaryTextSpan
                     fontWeight="bold"
                     fontSize="16px"
-                    color="#fff"
+                    color={Colors.WHITE}
                   >
                     {checkLastCourses() ? t('Finish Course') : t('Next Course')}
                   </PrimaryTextSpan>

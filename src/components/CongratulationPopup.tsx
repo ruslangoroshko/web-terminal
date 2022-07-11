@@ -14,6 +14,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import Page from '../constants/Pages';
 import Modal from './Modal';
 import SvgIcon from './SvgIcon';
+import Colors from '../constants/Colors';
 
 const CongratulationPopup = observer(() => {
   const { accountTypeStore, bonusStore } = useStores();
@@ -147,7 +148,7 @@ const CongratulationPopup = observer(() => {
               onClick={handleOpenDashboard}
             >
               <PrimaryTextSpan
-                color="#252636"
+                color={Colors.DARK_BLACK}
                 fontSize="16px"
                 lineHeight="18px"
               >

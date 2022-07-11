@@ -1,4 +1,5 @@
 import { css } from '@emotion/core';
+import Colors from '../constants/Colors';
 
 export default css`
   .SingleDatePicker_picker {
@@ -28,19 +29,19 @@ export default css`
 
   .CalendarDay__default {
     background: #1c2026;
-    color: #fffccc;
+    color: ${Colors.ACCENT};
     border: none;
 
     &:hover {
       border: none;
-      color: #fffccc;
+      color: ${Colors.ACCENT};
       background: #21b3a4;
     }
   }
 
   .CalendarDay__selected_span {
     background: rgba(255, 252, 204, 0.08);
-    color: #fffccc;
+    color: ${Colors.ACCENT};
   }
 
   .CalendarDay__selected {
@@ -50,7 +51,7 @@ export default css`
 
   .CalendarDay__selected:hover {
     background: orange;
-    color: #fffccc;
+    color: ${Colors.ACCENT};
   }
 
   .CalendarDay__hovered_span:hover,
@@ -59,7 +60,7 @@ export default css`
   }
 
   .CalendarMonth_caption {
-    color: #fffccc;
+    color: ${Colors.ACCENT};
     font-size: 12px;
   }
 
@@ -89,8 +90,8 @@ export default css`
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     background-color: transparent;
     width: 100%;
-    caret-color: #fff;
-    color: #fffccc;
+    caret-color: ${Colors.WHITE};
+    color: ${Colors.ACCENT};
     font-size: 14px;
     line-height: 16px;
     padding-bottom: 4px;
@@ -101,7 +102,7 @@ export default css`
     }
 
     &.DateInput_input__focused {
-      border-bottom: 1px solid #00ffdd;
+      border-bottom: 1px solid${Colors.PRIMARY};
     }
   }
 `;

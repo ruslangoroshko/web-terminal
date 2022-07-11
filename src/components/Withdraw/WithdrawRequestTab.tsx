@@ -20,7 +20,7 @@ import WithdrawEmptyBalance from './WithdrawEmptyBalance';
 import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import WithdrawFormBankTransfer from './WithdrawPaymentForm/WithdrawFormBankTransfer';
 import WithdrawFormBitcoin from './WithdrawPaymentForm/WithdrawFormBitcoin';
-import { observer, Observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite';
 import WithdrawPendingPopup from './WithdrawPendingPopup';
 import { useTranslation } from 'react-i18next';
 import { WithdrawalHistoryResponseStatus } from '../../enums/WithdrawalHistoryResponseStatus';
@@ -28,14 +28,13 @@ import API from '../../helpers/API';
 import { WithdrawalStatusesEnum } from '../../enums/WithdrawalStatusesEnum';
 import { brandingLinksTranslate } from '../../constants/brandingLinksTranslate';
 import { moneyFormatPart } from '../../helpers/moneyFormat';
-import useAccount from '../../hooks/useAccount';
 import InformationPopup from '../InformationPopup';
+import Colors from '../../constants/Colors';
 
 const WithdrawRequestTab = observer(() => {
   const { mainAppStore, withdrawalStore, notificationStore } = useStores();
   const requestWrapper = useRef(document.createElement('div'));
-  const { total } = useAccount();
-
+  
   const [paymentMeyhod, setPaymentMethod] = useState(
     WithdrawalTypesEnum.BankTransfer
   );
@@ -107,7 +106,7 @@ const WithdrawRequestTab = observer(() => {
                 textTransform="uppercase"
                 fontSize="24px"
                 fontWeight="bold"
-                color="#FFFCCC"
+                color={Colors.ACCENT}
               >
                 {getAccount()?.symbol}
                 {moneyFormatPart((mainAppStore.realAcc?.balance || 0) - (mainAppStore.realAcc?.bonus || 0)).int}
@@ -115,7 +114,7 @@ const WithdrawRequestTab = observer(() => {
                   textTransform="uppercase"
                   fontSize="14px"
                   fontWeight="bold"
-                  color="#FFFCCC"
+                  color={Colors.ACCENT}
                 >
                   .{moneyFormatPart((mainAppStore.realAcc?.balance || 0) - (mainAppStore.realAcc?.bonus || 0)).decimal}
                 </PrimaryTextSpan>
@@ -147,7 +146,7 @@ const WithdrawRequestTab = observer(() => {
                     width="212px"
                     direction="right"
                   >
-                    <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                       {t(
                         'There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.'
                       )}
@@ -160,7 +159,7 @@ const WithdrawRequestTab = observer(() => {
                     textTransform="uppercase"
                     fontSize="14px"
                     fontWeight="bold"
-                    color="#FFFCCC"
+                    color={Colors.ACCENT}
                   >
                     {getAccount()?.symbol}
                     {moneyFormatPart(getAccount()?.bonus || 0).int}
@@ -168,7 +167,7 @@ const WithdrawRequestTab = observer(() => {
                       textTransform="uppercase"
                       fontSize="10px"
                       fontWeight="bold"
-                      color="#FFFCCC"
+                      color={Colors.ACCENT}
                     >
                       .{moneyFormatPart(getAccount()?.bonus || 0).decimal}
                     </PrimaryTextSpan>
@@ -207,13 +206,13 @@ const WithdrawRequestTab = observer(() => {
                 }}
               >
                 <FlexContainer>
-                  <SvgIcon {...BankTransferIcon} fillColor="#FFFCCC" />
+                  <SvgIcon {...BankTransferIcon} fillColor={Colors.ACCENT} />
                 </FlexContainer>
                 <FlexContainer flexDirection="column">
                   <PrimaryTextSpan
                     fontWeight="bold"
                     fontSize="12px"
-                    color="#FFFCCC"
+                    color={Colors.ACCENT}
                     textAlign="left"
                   >
                     {t('Bank transfer')}
@@ -235,13 +234,13 @@ const WithdrawRequestTab = observer(() => {
                 }}
               >
                 <FlexContainer>
-                  <SvgIcon {...BitcoinIcon} fillColor="#FFFCCC" />
+                  <SvgIcon {...BitcoinIcon} fillColor={Colors.ACCENT} />
                 </FlexContainer>
                 <FlexContainer flexDirection="column">
                   <PrimaryTextSpan
                     fontWeight="bold"
                     fontSize="12px"
-                    color="#FFFCCC"
+                    color={Colors.ACCENT}
                     textAlign="left"
                   >
                     {t('Bitcoin')}
@@ -276,13 +275,13 @@ const WithdrawRequestTab = observer(() => {
         <FlexContainer justifyContent="space-between">
           <WithdrawCardItem>
             <FlexContainer>
-              <SvgIcon {...IconFast} fillColor="#FFFCCC" />
+              <SvgIcon {...IconFast} fillColor={Colors.ACCENT} />
             </FlexContainer>
             <FlexContainer flexDirection="column">
               <PrimaryTextSpan
                 fontWeight="bold"
                 fontSize="12px"
-                color="#FFFCCC"
+                color={Colors.ACCENT}
               >
                 {t('Fast')}
               </PrimaryTextSpan>
@@ -301,7 +300,7 @@ const WithdrawRequestTab = observer(() => {
               <PrimaryTextSpan
                 fontWeight="bold"
                 fontSize="12px"
-                color="#FFFCCC"
+                color={Colors.ACCENT}
               >
                 {t('No commission')}
               </PrimaryTextSpan>
@@ -319,7 +318,7 @@ const WithdrawRequestTab = observer(() => {
               <PrimaryTextSpan
                 fontWeight="bold"
                 fontSize="12px"
-                color="#FFFCCC"
+                color={Colors.ACCENT}
               >
                 {t('No limits')}
               </PrimaryTextSpan>
@@ -337,14 +336,14 @@ const WithdrawRequestTab = observer(() => {
             <FlexContainer flexDirection="column" padding="0 16px">
               <PrimaryTextSpan
                 textTransform="uppercase"
-                color="#FFFCCC"
+                color={Colors.ACCENT}
                 fontSize="14px"
                 lineHeight="16px"
               >
                 {t('FAQ')}
               </PrimaryTextSpan>
               <PrimaryTextSpan
-                color="#FFFFFF"
+                color={Colors.WHITE}
                 fontSize="14px"
                 lineHeight="16px"
               >
@@ -363,7 +362,7 @@ const WithdrawRequestTab = observer(() => {
               target="blank"
             >
               <PrimaryTextSpan
-                color="#fffccc"
+                color={Colors.ACCENT}
                 fontSize="14px"
                 fontWeight="normal"
               >
@@ -398,7 +397,7 @@ const WithdrawPaymenMethodtItem = styled(ButtonWithoutStyles)<{
   active: boolean;
 }>`
   display: flex;
-  border: 2px solid ${(props) => (props.active ? '#FFFCCC' : 'transparent')};
+  border: 2px solid ${(props) => (props.active ? Colors.ACCENT : 'transparent')};
   background: ${(props) =>
     props.active ? '#373737' : 'rgba(255, 255, 255, 0.06)'};
   border-radius: 4px;

@@ -25,6 +25,7 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../constants/apiResponseCodeMessages';
 import { fromAlpha3ToAlpha2Code } from '../helpers/fromAlpha3ToAlpha2Code';
 import examples from 'libphonenumber-js/examples.mobile.json';
+import Colors from '../constants/Colors';
 
 function ShouldValidatePhonePopup() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -191,7 +192,7 @@ function ShouldValidatePhonePopup() {
           <PrimaryTextParagraph
             fontSize="30px"
             fontWeight="bold"
-            color="#fffccc"
+            color={Colors.ACCENT}
             marginBottom="8px"
           >
             {t('Phone verification')}
@@ -200,7 +201,7 @@ function ShouldValidatePhonePopup() {
             marginBottom="40px"
             fontSize="14px"
             lineHeight="20px"
-            color="rgba(255, 255, 255, 0.4)"
+            color={Colors.WHITE_LIGHT}
           >
             {t('Improve your account protection by linking your phone number.')}
           </PrimaryTextSpan>

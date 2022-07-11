@@ -7,6 +7,7 @@ import ListOfCountries from '../SideBarTabs/ListOfCountries';
 import styled from '@emotion/styled';
 import { ListForEN } from '../../constants/listOfLanguages';
 import { CountriesEnum } from '../../enums/CountriesEnum';
+import Colors from '../../constants/Colors';
 
 function LanguageButton() {
   const { mainAppStore } = useStores();
@@ -36,7 +37,7 @@ function LanguageButton() {
       width="32px"
       height="32px"
       borderRadius="50%"
-      backgroundColor="#FFFCCC"
+      backgroundColor={Colors.ACCENT}
       justifyContent="center"
       alignItems="center"
       position="relative"

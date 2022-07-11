@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
+import Colors from '../../constants/Colors';
 
 interface Props {
   multipliers: number[];
@@ -45,7 +46,7 @@ function MultiplierDropdown(props: Props) {
   return (
     <FlexContainer position="relative" margin="0 0 14px 0" ref={wrapperRef}>
       <MultiplierButton isActive={on} onClick={handleToggle} type="button">
-        <PrimaryTextSpan fontWeight="bold" color="#fffccc">
+        <PrimaryTextSpan fontWeight="bold" color={Colors.ACCENT}>
           &times;{selectedMultiplier}
         </PrimaryTextSpan>
       </MultiplierButton>
@@ -72,7 +73,7 @@ function MultiplierDropdown(props: Props) {
                 <PrimaryTextSpan
                   fontSize="16px"
                   fontWeight="bold"
-                  color="#fffccc"
+                  color={Colors.ACCENT}
                 >
                   &times;{multiplier}
                 </PrimaryTextSpan>
@@ -108,7 +109,7 @@ const DropDownItem = styled(FlexContainer)`
     cursor: pointer;
 
     & > span {
-      color: #00ffdd;
+      color: ${Colors.PRIMARY};
     }
   }
 `;

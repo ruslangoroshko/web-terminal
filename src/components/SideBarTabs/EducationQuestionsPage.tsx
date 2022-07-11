@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import API from '../../helpers/API';
 import { EducationResponseEnum } from '../../enums/EducationResponseEnum';
+import Colors from '../../constants/Colors';
 
 const EducationQuestionsPage: FC = observer(() => {
   const { educationStore, mainAppStore, notificationStore } = useStores();
@@ -18,24 +19,20 @@ const EducationQuestionsPage: FC = observer(() => {
   const [lastHandle, setLastHandle] = useState<'prev' | 'next' | null>(null);
 
   const checkFirstPage = useCallback(() => {
-    return educationStore.activeQuestion?.id === educationStore.questionsList?.questions[0]?.id &&
-      activePage === 0;
-  }, [
-    educationStore.activeQuestion,
-    educationStore.questionsList,
-    activePage
-  ]);
+    return (
+      educationStore.activeQuestion?.id ===
+        educationStore.questionsList?.questions[0]?.id && activePage === 0
+    );
+  }, [educationStore.activeQuestion, educationStore.questionsList, activePage]);
 
   const checkLastPage = useCallback(() => {
     return (
-      educationStore.activeQuestion?.id === educationStore.questionsList?.questions
-        [educationStore.questionsList?.questions.length - 1]?.id
+      educationStore.activeQuestion?.id ===
+      educationStore.questionsList?.questions[
+        educationStore.questionsList?.questions.length - 1
+      ]?.id
     );
-  }, [
-    educationStore.activeQuestion,
-    educationStore.questionsList,
-    activePage
-  ]);
+  }, [educationStore.activeQuestion, educationStore.questionsList, activePage]);
 
   const saveProgress = async () => {
     try {
@@ -44,9 +41,7 @@ const EducationQuestionsPage: FC = observer(() => {
         educationStore.activeCourse?.id || '',
         educationStore.activeQuestion?.id || 0
       );
-      if (
-        response.responseCode !== EducationResponseEnum.Ok
-      ) {
+      if (response.responseCode !== EducationResponseEnum.Ok) {
         notificationStore.setNotification(t('Ooops, something went wrong'));
         notificationStore.setIsSuccessfull(false);
         notificationStore.openNotification();
@@ -62,13 +57,19 @@ const EducationQuestionsPage: FC = observer(() => {
       activePage === educationStore.activeQuestion?.pages.length! - 1
     ) {
       setActivePage(0);
-      const indexOfQuestion = educationStore.questionsList?.questions.indexOf(educationStore.activeQuestion!) || 0;
-      if (indexOfQuestion + 1 > educationStore.activeCourse?.lastQuestionNumber!) {
+      const indexOfQuestion =
+        educationStore.questionsList?.questions.indexOf(
+          educationStore.activeQuestion!
+        ) || 0;
+      if (
+        indexOfQuestion + 1 >
+        educationStore.activeCourse?.lastQuestionNumber!
+      ) {
         const newCourseList = educationStore.coursesList?.map((item) => {
           if (item.id === educationStore.activeCourse?.id) {
             const newCourse = {
               ...item,
-              lastQuestionNumber: indexOfQuestion + 1
+              lastQuestionNumber: indexOfQuestion + 1,
             };
             educationStore.setActiveCourse(newCourse);
             return newCourse;
@@ -80,25 +81,31 @@ const EducationQuestionsPage: FC = observer(() => {
         }
         saveProgress();
       }
-      if (indexOfQuestion === educationStore.questionsList?.questions.length! - 1) {
+      if (
+        indexOfQuestion ===
+        educationStore.questionsList?.questions.length! - 1
+      ) {
         educationStore.setShowPopup(true);
       } else {
-        educationStore.setActiveQuestion(educationStore.questionsList?.questions[indexOfQuestion + 1] || null);
+        educationStore.setActiveQuestion(
+          educationStore.questionsList?.questions[indexOfQuestion + 1] || null
+        );
       }
     } else {
       setActivePage(activePage + 1);
     }
-  }, [
-    activePage,
-    educationStore.questionsList,
-    educationStore.activeQuestion
-  ]);
+  }, [activePage, educationStore.questionsList, educationStore.activeQuestion]);
 
   const handlePrevPage = useCallback(() => {
     setLastHandle('prev');
     if (activePage === 0) {
-      const indexOfQuestion = educationStore.questionsList?.questions.indexOf(educationStore.activeQuestion!) || 0;
-      educationStore.setActiveQuestion(educationStore.questionsList?.questions[indexOfQuestion - 1] || null);
+      const indexOfQuestion =
+        educationStore.questionsList?.questions.indexOf(
+          educationStore.activeQuestion!
+        ) || 0;
+      educationStore.setActiveQuestion(
+        educationStore.questionsList?.questions[indexOfQuestion - 1] || null
+      );
     } else {
       setActivePage(activePage - 1);
     }
@@ -109,17 +116,13 @@ const EducationQuestionsPage: FC = observer(() => {
       educationStore.activeQuestion?.pages === null ||
       !educationStore.activeQuestion?.pages[activePage]?.url
     ) {
-      return`${window.location.origin}/404`;
+      return `${window.location.origin}/404`;
     }
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-    return `${
-      window.location.origin
-    }/${
+    return `${window.location.origin}/${
       educationStore.activeQuestion?.pages[activePage]?.url || ''
-    }?platform=${
-      mainAppStore.initModel.brandName
-    }&lang=${
+    }?platform=${mainAppStore.initModel.brandName}&lang=${
       i18n.language || 'en'
     }&isSafari=${isSafari}`;
   }, [activePage, educationStore.activeQuestion]);
@@ -128,12 +131,9 @@ const EducationQuestionsPage: FC = observer(() => {
     if (lastHandle !== 'prev') {
       setActivePage(0);
     } else {
-      setActivePage((educationStore.activeQuestion?.pages?.length! - 1) || 0);
+      setActivePage(educationStore.activeQuestion?.pages?.length! - 1 || 0);
     }
-  }, [
-    educationStore.activeQuestion,
-    educationStore.coursesList
-  ]);
+  }, [educationStore.activeQuestion, educationStore.coursesList]);
 
   return (
     <EducationPageWrapper
@@ -142,7 +142,7 @@ const EducationQuestionsPage: FC = observer(() => {
       height="100%"
       position="relative"
     >
-      {educationStore.activeQuestion &&
+      {educationStore.activeQuestion && (
         <>
           <FlexContainer
             width="100%"
@@ -154,7 +154,6 @@ const EducationQuestionsPage: FC = observer(() => {
               width="100%"
               height="calc(100% - 142px)"
               src={checkPage()}
-              // src={`${educationStore.activeQuestion?.pages[activePage]?.url || ''}`}
             />
           </FlexContainer>
           <FlexContainer
@@ -164,14 +163,14 @@ const EducationQuestionsPage: FC = observer(() => {
           >
             <EducationButton
               disabled={checkFirstPage()}
-              backgroundColor="rgba(255, 255, 255, 0.12)"
+              backgroundColor={Colors.WHITE_TINE}
               handleType="prev"
               onClick={handlePrevPage}
             >
               <PrimaryTextSpan
                 fontSize="16px"
                 lineHeight="24px"
-                color="rgba(255, 255, 255, 0.64)"
+                color={Colors.WHITE_DARK}
               >
                 {t('Previous')}
               </PrimaryTextSpan>
@@ -187,7 +186,7 @@ const EducationQuestionsPage: FC = observer(() => {
             </EducationButton>
           </FlexContainer>
         </>
-      }
+      )}
     </EducationPageWrapper>
   );
 });
@@ -195,16 +194,18 @@ const EducationQuestionsPage: FC = observer(() => {
 export default EducationQuestionsPage;
 
 const EducationPageWrapper = styled(FlexContainer)`
-  background: #252636;
+  background: ${Colors.DARK_BLACK};
 `;
 
 const EducationButton = styled(PrimaryButton)<{ handleType?: string }>`
   width: 348px;
   height: 60px;
   &:hover {
-    background-color: ${(props) => props.handleType === 'prev' ? 'rgba(255, 255, 255, 0.42)' : '#9ffff2'};
+    background-color: ${(props) =>
+      props.handleType === 'prev' ? Colors.WHITE_LIGHT : Colors.PRIMARY_LIGHT};
   }
   &:focus {
-    background-color: ${(props) => props.handleType === 'prev' ? 'rgba(255, 255, 255, 0.12)' : '#00ffdd'};
+    background-color: ${(props) =>
+      props.handleType === 'prev' ? Colors.WHITE_TINE : Colors.PRIMARY};
   }
 `;

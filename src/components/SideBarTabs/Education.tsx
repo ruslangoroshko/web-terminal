@@ -6,6 +6,7 @@ import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { observer, Observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import EducationCourse from './EducationCourse';
+import Colors from '../../constants/Colors';
 
 const Education = observer(() => {
   const { educationStore, tabsStore } = useStores();
@@ -37,7 +38,7 @@ const Education = observer(() => {
       <FlexContainer padding="12px 16px" margin="0 0 8px 0">
         <PrimaryTextSpan
           fontSize="12px"
-          color="#fffccc"
+          color={Colors.ACCENT}
           textTransform="uppercase"
         >
           {t('Education')}
@@ -55,14 +56,14 @@ const Education = observer(() => {
           <PrimaryTextSpan
             fontSize="10px"
             textTransform="uppercase"
-            color="rgba(255, 255, 255, 0.4)"
+            color={Colors.WHITE_LIGHT}
           >
             {t('progress')}
           </PrimaryTextSpan>
         </FlexContainer>
         <FlexContainer>
           <PrimaryTextSpan
-            color="rgba(255,255,255,0.4)"
+            color={Colors.WHITE_LIGHT}
             fontSize="10px"
             textTransform="uppercase"
           >

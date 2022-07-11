@@ -14,6 +14,7 @@ import IconHalfStar from '../../assets/svg/halfStar.svg';
 import IconShevronDown from '../../assets/svg/icon-shevron-down-sort-by.svg';
 import IconEducation from '../../assets/svg/icon-education.svg';
 import { PrimaryButton } from '../../styles/Buttons';
+import Colors from '../../constants/Colors';
 
 interface Props {
   course: IEducationCourses;
@@ -42,16 +43,16 @@ const EducationCourse: FC<Props> = observer((props) => {
     switch (counter) {
       case 0: {
         return <FlexContainer alignItems="center">
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer><SvgIcon fillColor="#fffccc" {...IconHalfStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer><SvgIcon fillColor={Colors.ACCENT} {...IconHalfStar} /></FlexContainer>
           <ReverseStar margin="0 8px 0 -1px"><SvgIcon fillColor="#7D8289" {...IconHalfStar} /></ReverseStar>
           <PrimaryTextSpan
             fontSize="12px"
             lineHeight="14px"
-            color="rgba(255, 255, 255, 0.64)"
+            color={Colors.WHITE_DARK}
             letterSpacing="0.3px"
           >
             4.8 (22,012)
@@ -60,15 +61,15 @@ const EducationCourse: FC<Props> = observer((props) => {
       }
       case 1: {
         return <FlexContainer alignItems="center">
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer marginRight="8px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="8px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
           <PrimaryTextSpan
             fontSize="12px"
             lineHeight="14px"
-            color="rgba(255, 255, 255, 0.64)"
+            color={Colors.WHITE_DARK}
             letterSpacing="0.3px"
           >
             4.9 (12,843)
@@ -77,15 +78,15 @@ const EducationCourse: FC<Props> = observer((props) => {
       }
       case 2: {
         return <FlexContainer alignItems="center">
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer marginRight="3px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
-          <FlexContainer marginRight="8px"><SvgIcon fillColor="#fffccc" {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="3px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
+          <FlexContainer marginRight="8px"><SvgIcon fillColor={Colors.ACCENT} {...IconFullStar} /></FlexContainer>
           <PrimaryTextSpan
             fontSize="12px"
             lineHeight="14px"
-            color="rgba(255, 255, 255, 0.64)"
+            color={Colors.WHITE_DARK}
             letterSpacing="0.3px"
           >
             5.0 (8,628)
@@ -140,9 +141,9 @@ const EducationCourse: FC<Props> = observer((props) => {
               text={`${parseInt(`${lastQuestionNumber / totalQuestions * 100}`) || 0}%`}
               styles={buildStyles({
                 strokeLinecap: "butt",
-                pathColor: (lastQuestionNumber / totalQuestions * 100) === 100 ? "#00FFDD" : "#FFFCCC",
+                pathColor: (lastQuestionNumber / totalQuestions * 100) === 100 ? Colors.PRIMARY : Colors.ACCENT,
                 trailColor: "transparent",
-                textColor: (lastQuestionNumber / totalQuestions * 100) === 100 ? "#00FFDD" : "#FFFCCC",
+                textColor: (lastQuestionNumber / totalQuestions * 100) === 100 ? Colors.PRIMARY : Colors.ACCENT,
                 textSize: '16px'
               })}
               strokeWidth={3}
@@ -153,7 +154,7 @@ const EducationCourse: FC<Props> = observer((props) => {
             <PrimaryTextSpan
               fontSize="16px"
               lineHeight="19px"
-              color="#fffccc"
+              color={Colors.ACCENT}
               letterSpacing="0.3px"
               marginBottom="10px"
             >
@@ -168,7 +169,7 @@ const EducationCourse: FC<Props> = observer((props) => {
         >
           <SvgIcon
             {...IconShevronDown}
-            fillColor="rgba(255, 255, 255, 0.64)"
+            fillColor={Colors.WHITE_DARK}
             width={10}
             height={6}
             transformProp={on ? 'rotate(0)' : 'rotate(180deg)'}
@@ -188,14 +189,14 @@ const EducationCourse: FC<Props> = observer((props) => {
             >
               <SvgIcon
                 {...IconEducation}
-                fillColor="#fffccc"
+                fillColor={Colors.ACCENT}
                 width={16}
                 height={10}
               />
             </FlexContainer>
             <PrimaryTextSpan
               textTransform="uppercase"
-              color="#fff"
+              color={Colors.WHITE}
               fontSize="14px"
               lineHeight="21px"
               letterSpacing="0.3px"
@@ -205,7 +206,7 @@ const EducationCourse: FC<Props> = observer((props) => {
             </PrimaryTextSpan>
           </FlexContainer>
           <PrimaryTextSpan
-            color="rgba(255, 255, 255, 0.64)"
+            color={Colors.WHITE_DARK}
             fontSize="14px"
             lineHeight="19.6px"
             letterSpacing="0.3px"

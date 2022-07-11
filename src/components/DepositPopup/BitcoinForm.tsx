@@ -21,6 +21,7 @@ import mixapanelProps from '../../constants/mixpanelProps';
 import depositMethod from '../../constants/depositMethod';
 import testIds from '../../constants/testIds';
 import depositApiResponseCodeMessages from '../../constants/depositApiResponseCodeMessages';
+import Colors from '../../constants/Colors';
 
 const BitcoinForm: FC = () => {
   const [bitcoinWalletString, setBitcoinWalletString] = useState('');
@@ -90,13 +91,13 @@ const BitcoinForm: FC = () => {
       <LoaderForComponents backgroundColor="#1c2026" isLoading={isLoading} />
       <PrimaryTextParagraph
         fontSize="16px"
-        color="#fffccc"
+        color={Colors.ACCENT}
         fontWeight="bold"
         marginBottom="12px"
       >
         {t('Bitcoin')}
       </PrimaryTextParagraph>
-      <PrimaryTextParagraph fontSize="13px" color="#fff" marginBottom="38px">
+      <PrimaryTextParagraph fontSize="13px" color={Colors.WHITE} marginBottom="38px">
         {t('Send funds to the address provided below')}
       </PrimaryTextParagraph>
       <FlexContainer>
@@ -113,14 +114,14 @@ const BitcoinForm: FC = () => {
         justifyContent="space-between"
         marginBottom="20px"
       >
-        <PrimaryTextSpan fontWeight="bold" fontSize="14px" color="#fffccc">
+        <PrimaryTextSpan fontWeight="bold" fontSize="14px" color={Colors.ACCENT}>
           {bitcoinWalletString}
         </PrimaryTextSpan>
         <ButtonWithoutStyles
           data-testid={testIds.BITCOIN_COPY_BUTTON}
           onClick={handleCopyText}
         >
-          <SvgIcon {...CopyIcon} fillColor="rgba(255, 255, 255, 0.6)" />
+          <SvgIcon {...CopyIcon} fillColor={Colors.WHITE_DARK} />
         </ButtonWithoutStyles>
       </BitcoinWalletStringWrapper>
       <FlexContainer flexDirection="column" width="250px">

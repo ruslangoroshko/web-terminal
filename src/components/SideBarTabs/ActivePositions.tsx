@@ -47,6 +47,7 @@ import hasValue from '../../helpers/hasValue';
 import ActivePositionToppingUp from '../ActivePositionToppingUp';
 import { SortByProfitEnum } from '../../enums/SortByProfitEnum';
 import IconShield from '../../assets/svg/icon-shield.svg';
+import Colors from '../../constants/Colors';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -668,12 +669,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               )
               .setQuantity('')
               .setPrice(+position.openPrice)
-              .setBodyBorderColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
-              .setBodyTextColor(PnL() > 0 ? '#252636' : '#ffffff')
+              .setBodyBorderColor(PnL() > 0 ? Colors.PRIMARY : Colors.DANGER)
+              .setBodyTextColor(PnL() > 0 ? Colors.DARK_BLACK : Colors.WHITE)
               .setCancelButtonBackgroundColor('#2A2C33')
               .setCancelButtonBorderColor('#494C51')
-              .setCancelButtonIconColor('#ffffff')
-              .setBodyBackgroundColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
+              .setCancelButtonIconColor(Colors.WHITE)
+              .setBodyBackgroundColor(PnL() > 0 ? Colors.PRIMARY : Colors.DANGER)
               .setLineColor('rgba(73,76,81,1)')
               .setLineLength(10)
           );
@@ -730,10 +731,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           .setPrice(getActualPricing(sl, 'sl', slType))
           .setExtendLeft(false)
           .setBodyBorderColor('#494C51')
-          .setBodyTextColor('#ffffff')
+          .setBodyTextColor(Colors.WHITE)
           .setCancelButtonBackgroundColor('#2A2C33')
           .setCancelButtonBorderColor('#494C51')
-          .setCancelButtonIconColor('#ffffff')
+          .setCancelButtonIconColor(Colors.WHITE)
           .setBodyBackgroundColor('#2A2C33')
           .setLineColor('#494C51')
           .setLineLength(10)
@@ -775,10 +776,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           .setPrice(getActualPricing(tp, 'tp', tpType))
           .setExtendLeft(false)
           .setBodyBorderColor('#494C51')
-          .setBodyTextColor('#ffffff')
+          .setBodyTextColor(Colors.WHITE)
           .setCancelButtonBackgroundColor('#2A2C33')
           .setCancelButtonBorderColor('#494C51')
-          .setCancelButtonIconColor('#ffffff')
+          .setCancelButtonIconColor(Colors.WHITE)
           .setBodyBackgroundColor('#2A2C33')
           .setLineColor('#494C51')
           .setLineLength(10)
@@ -924,9 +925,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 instrumentsStore.activeInstrument.instrumentItem.id
               ].bid.c
             )
-            .setBodyTextColor(PnL() >= 0 ? '#252636' : '#ffffff')
-            .setBodyBackgroundColor(PnL() >= 0 ? '#00FFDD' : '#ED145B')
-            .setBodyBorderColor(PnL() >= 0 ? '#00FFDD' : '#ED145B')
+            .setBodyTextColor(PnL() >= 0 ? Colors.DARK_BLACK : Colors.WHITE)
+            .setBodyBackgroundColor(PnL() >= 0 ? Colors.PRIMARY : Colors.DANGER)
+            .setBodyBorderColor(PnL() >= 0 ? Colors.PRIMARY : Colors.DANGER)
             .setText(
               `${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL()).toFixed(2)}`
             );
@@ -1225,12 +1226,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 <FlexContainer margin="0 4px 0 0">
                   <SvgIcon
                     {...Icon}
-                    fillColor={isBuy ? '#00FFDD' : '#ED145B'}
+                    fillColor={isBuy ? Colors.PRIMARY : Colors.DANGER}
                   />
                 </FlexContainer>
                 <PrimaryTextSpan
                   fontSize="10px"
-                  color={isBuy ? '#00FFDD' : '#ED145B'}
+                  color={isBuy ? Colors.PRIMARY : Colors.DANGER}
                   textTransform="uppercase"
                   fontWeight="bold"
                 >
@@ -1238,7 +1239,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 </PrimaryTextSpan>
               </FlexContainer>
               <PrimaryTextSpan
-                color="rgba(255, 255, 255, 0.5)"
+                color={Colors.WHITE_LIGHT}
                 fontSize="10px"
                 lineHeight="12px"
               >
@@ -1255,7 +1256,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 {position.investmentAmount.toFixed(2)}
               </PrimaryTextSpan>
               <PrimaryTextSpan
-                color="rgba(255, 255, 255, 0.5)"
+                color={Colors.WHITE_LIGHT}
                 fontSize="10px"
                 lineHeight="12px"
                 marginBottom="12px"
@@ -1277,12 +1278,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       margin="0 0 8px 0"
                     >
                       <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
+                        color={Colors.WHITE_LIGHT}
                         fontSize="12px"
                       >
                         {t('Price opened')}
                       </PrimaryTextSpan>
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                         {t('at')} {position.openPrice.toFixed(+precision)}
                       </PrimaryTextSpan>
                     </FlexContainer>
@@ -1291,12 +1292,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       margin="0 0 8px 0"
                     >
                       <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
+                        color={Colors.WHITE_LIGHT}
                         fontSize="12px"
                       >
                         {t('Opened')}
                       </PrimaryTextSpan>
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                         {moment(position.openDate).format('DD MMM, HH:mm:ss')}
                       </PrimaryTextSpan>
                     </FlexContainer>
@@ -1305,7 +1306,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       margin="0 0 8px 0"
                     >
                       <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
+                        color={Colors.WHITE_LIGHT}
                         fontSize="12px"
                       >
                         {t('Equity')}
@@ -1317,13 +1318,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       margin="0 0 8px 0"
                     >
                       <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
+                        color={Colors.WHITE_LIGHT}
                         fontSize="12px"
                         marginRight="20px"
                       >
                         {t('Overnight fee')}
                       </PrimaryTextSpan>
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                         {getNumberSign(position.swap)}
                         {mainAppStore.activeAccount?.symbol}
                         {Math.abs(position.swap + position.commission).toFixed(2)}
@@ -1336,12 +1337,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                         margin="0 0 8px 0"
                       >
                         <PrimaryTextSpan
-                          color="rgba(255, 255, 255, 0.4)"
+                          color={Colors.WHITE_LIGHT}
                           fontSize="12px"
                         >
                           {t('Take profit')}
                         </PrimaryTextSpan>
-                        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                           {position.tpType === TpSlTypeEnum.Currency
                             ? `+${mainAppStore.activeAccount?.symbol}${Math.abs(position.tp).toFixed(2)}`
                             : Math.abs(position.tp).toFixed(+precision)
@@ -1356,12 +1357,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                         margin="0 0 8px 0"
                       >
                         <PrimaryTextSpan
-                          color="rgba(255, 255, 255, 0.4)"
+                          color={Colors.WHITE_LIGHT}
                           fontSize="12px"
                         >
                           {t('Stop loss')}
                         </PrimaryTextSpan>
-                        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                           {position.slType === TpSlTypeEnum.Currency
                             ? `-${mainAppStore.activeAccount?.symbol}${Math.abs(position.sl).toFixed(2)}`
                             : Math.abs(position.sl).toFixed(+precision)
@@ -1375,12 +1376,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       margin="0 0 8px 0"
                     >
                       <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
+                        color={Colors.WHITE_LIGHT}
                         fontSize="12px"
                       >
                         {t('Save position')}
                       </PrimaryTextSpan>
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                         {position.isToppingUpActive ? t('On') : t('Off')}
                       </PrimaryTextSpan>
                     </FlexContainer>
@@ -1391,12 +1392,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                         margin="0 0 8px 0"
                       >
                         <PrimaryTextSpan
-                          color="rgba(255, 255, 255, 0.4)"
+                          color={Colors.WHITE_LIGHT}
                           fontSize="12px"
                         >
                           {t('Insurance amount')}
                         </PrimaryTextSpan>
-                        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                           {mainAppStore.activeAccount?.symbol}
                           {Math.abs(position.reservedFundsForToppingUp).toFixed(
                             2
@@ -1407,12 +1408,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
                     <FlexContainer justifyContent="space-between">
                       <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
+                        color={Colors.WHITE_LIGHT}
                         fontSize="12px"
                       >
                         {t('Position ID')}
                       </PrimaryTextSpan>
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                         {position.id}
                       </PrimaryTextSpan>
                     </FlexContainer>
@@ -1435,7 +1436,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 {((formState.touched.sl && errors.sl) ||
                   (formState.touched.tp && errors.tp)) && (
                   <ErropPopup
-                    textColor="#fffccc"
+                    textColor={Colors.ACCENT}
                     bgColor={ColorsPallete.RAZZMATAZZ}
                     classNameTooltip={Fields.INVEST_AMOUNT}
                     direction="left"
@@ -1482,7 +1483,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                             lineHeight="18px"
                             color={
                               hasValue(tp)
-                                ? '#fffccc'
+                                ? Colors.ACCENT
                                 : 'rgba(255, 255, 255, 0.6)'
                             }
                           >
@@ -1503,7 +1504,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                             lineHeight="18px"
                             color={
                               hasValue(sl)
-                                ? '#fffccc'
+                                ? Colors.ACCENT
                                 : 'rgba(255, 255, 255, 0.6)'
                             }
                           >
@@ -1522,9 +1523,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                         >
                           <SvgIcon {...IconShield} fillColor={
                             position.reservedFundsForToppingUp !== 0
-                              ? '#ED145B'
+                              ? Colors.DANGER
                               : position.isToppingUpActive
-                              ? '#fffccc'
+                              ? Colors.ACCENT
                               : '#77797D'
                           } />
                         </FlexContainer>
@@ -1588,7 +1589,7 @@ const SetSLTPButton = styled(FlexContainer)`
   &:disabled {
     background-color: rgba(255, 255, 255, 0.04);
     & span {
-      color: rgba(255, 255, 255, 0.4);
+      color: ${Colors.WHITE_LIGHT};
     }
   }
 `;

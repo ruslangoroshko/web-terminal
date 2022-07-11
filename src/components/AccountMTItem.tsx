@@ -12,6 +12,7 @@ import { observer } from 'mobx-react-lite';
 import Topics from '../constants/websocketTopics';
 import Fields from '../constants/fields';
 import { getNumberSign } from '../helpers/getNumberSign';
+import Colors from '../constants/Colors';
 
 interface Props {
   isST: boolean,
@@ -76,7 +77,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
         <PrimaryTextSpan
           fontSize="12px"
           lineHeight="150%"
-          color="#00FFDD"
+          color={Colors.PRIMARY}
           textTransform="uppercase"
         >
           {isST ? mainAppStore.initModel.brandName : t('MT5 Standart')}
@@ -98,7 +99,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
             fontWeight={500}
             fontSize="32px"
             lineHeight="100%"
-            color="#FFFCCC"
+            color={Colors.ACCENT}
           >
             ${balance}
           </PrimaryTextSpan>
@@ -118,7 +119,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
             <PrimaryTextSpan
               fontSize="24px"
               lineHeight="100%"
-              color="#FFF"
+              color={Colors.WHITE}
             >
               ${margin}
             </PrimaryTextSpan>
@@ -134,7 +135,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
             <PrimaryTextSpan
               fontSize="24px"
               lineHeight="100%"
-              color="#FFF"
+              color={Colors.WHITE}
             >
               ${bonus}
             </PrimaryTextSpan>
@@ -157,7 +158,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
               <PrimaryTextSpan
                 fontSize="12px"
                 lineHeight="100%"
-                color="rgba(255, 255, 255, 0.64)"
+                color={Colors.WHITE_DARK}
                 marginRight="8px"
               >
                 {t('Login')}:
@@ -166,7 +167,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
                 fontSize="12px"
                 lineHeight="100%"
                 fontWeight={500}
-                color="#fff"
+                color={Colors.WHITE}
               >
                 {login}
               </PrimaryTextSpan>
@@ -175,7 +176,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
               <PrimaryTextSpan
                 fontSize="12px"
                 lineHeight="100%"
-                color="rgba(255, 255, 255, 0.64)"
+                color={Colors.WHITE_DARK}
                 marginRight="8px"
               >
                 {t('Server name')}:
@@ -184,7 +185,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
                 fontSize="12px"
                 lineHeight="100%"
                 fontWeight={500}
-                color="#fff"
+                color={Colors.WHITE}
               >
                 {server}
               </PrimaryTextSpan>
@@ -206,7 +207,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
           onClick={handleClickDeposit}
         >
           <PrimaryTextSpan
-            color="#fff"
+            color={Colors.WHITE}
             fontWeight={700}
             fontSize="14px"
             lineHeight="21px"
@@ -218,7 +219,7 @@ const AccountMTItem: FC<Props> = observer((props) => {
           type="button"
           width="94px"
           padding="7.5px"
-          backgroundColor="#00FFDD"
+          backgroundColor={Colors.PRIMARY}
           onClick={handleClickTrading}
         >
           <FlexContainer marginRight="8px">
@@ -257,12 +258,12 @@ const MTButton = styled(PrimaryButton)`
 const MTText = styled(PrimaryTextSpan)`
   font-size: 13px;
   line-height: 100%;
-  color: rgba(255, 255, 255, 0.64);
+  color: ${Colors.WHITE_DARK};
   text-transform: uppercase;
 `;
 
 const InfoWrapper = styled(FlexContainer)`
-  background: rgba(255, 255, 255, 0.12);
+  background: ${Colors.WHITE_TINE};
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 5px;
   padding: 6px 12px;

@@ -7,6 +7,7 @@ import { DocumentTypeEnum } from '../../enums/DocumentTypeEnum';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import SvgIcon from '../SvgIcon';
 import { observer } from 'mobx-react-lite';
+import Colors from '../../constants/Colors';
 
 interface Props {
   id: DocumentTypeEnum.Id |
@@ -31,13 +32,13 @@ const KYCTypeOfId: FC<Props> = observer(({ id, title, icon, description }) => {
     <TypeWrapper
       backgroundColor={
         id === kycStore.typeOfIdActual
-          ? 'rgba(255, 255, 255, 0.12)'
+          ? Colors.WHITE_TINE
           : 'rgba(255, 255, 255, 0.06)'
       }
       cursor="pointer"
       border={
         id === kycStore.typeOfIdActual
-          ? '2px solid #FFFCCC'
+          ? `2px solid ${Colors.ACCENT}`
           : 'none'
       }
       boxShadow="inset 0px 1px 1px rgba(255, 255, 255, 0.04)"
@@ -57,7 +58,7 @@ const KYCTypeOfId: FC<Props> = observer(({ id, title, icon, description }) => {
         fontWeight={700}
         fontSize="12px"
         lineHeight="16px"
-        color="#fffccc"
+        color={Colors.ACCENT}
         marginBottom="4px"
       >
         {t(title)}
@@ -66,7 +67,7 @@ const KYCTypeOfId: FC<Props> = observer(({ id, title, icon, description }) => {
         fontWeight={400}
         fontSize="12px"
         lineHeight="16px"
-        color="rgba(255, 255, 255, 0.64)"
+        color={Colors.WHITE_DARK}
       >
         {t(description)}
       </PrimaryTextSpan>

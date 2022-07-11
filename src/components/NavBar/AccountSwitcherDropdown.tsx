@@ -13,6 +13,7 @@ import AccountTotal from './AccountTotal';
 import styled from '@emotion/styled';
 import { moneyFormat, moneyFormatPart } from '../../helpers/moneyFormat';
 import { logger } from '../../helpers/ConsoleLoggerTool';
+import Colors from '../../constants/Colors';
 
 const AccountSwitcherDropdown = observer(() => {
   const { mainAppStore } = useStores();
@@ -65,7 +66,7 @@ const AccountSwitcherDropdown = observer(() => {
                     {() => (
                       <PrimaryTextSpan
                         marginRight="8px"
-                        color="#fffccc"
+                        color={Colors.ACCENT}
                         fontSize="16px"
                       >
                         {mainAppStore.activeAccount?.symbol}
@@ -103,7 +104,7 @@ const AccountSwitcherDropdown = observer(() => {
                 <FlexContainer>
                   <PrimaryTextSpan
                     fontSize="11px"
-                    color="rgba(255, 255, 255, 0.4)"
+                    color={Colors.WHITE_LIGHT}
                     marginRight="2px"
                   >
                     {t('Total')}:
@@ -119,7 +120,7 @@ const AccountSwitcherDropdown = observer(() => {
                 >
                   <SvgIcon
                     {...IconShevron}
-                    fillColor="rgba(255, 255, 255, 0.6)"
+                    fillColor={Colors.WHITE_DARK}
                     width={6}
                     height={4}
                   />

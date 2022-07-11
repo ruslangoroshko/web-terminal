@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 
 import Modal from '../Modal';
 import { FlexContainer } from '../../styles/FlexContainer';
-import { useHistory } from 'react-router-dom';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
 import IconClose from '../../assets/svg/icon-close.svg';
@@ -14,6 +13,7 @@ import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import { PrimaryButton } from '../../styles/Buttons';
 import { brandingLinksTranslate } from '../../constants/brandingLinksTranslate';
+import Colors from '../../constants/Colors';
 
 const KYCPopup: FC = observer(() => {
   const { mainAppStore, kycStore } = useStores();
@@ -46,34 +46,28 @@ const KYCPopup: FC = observer(() => {
               <ButtonWithoutStyles onClick={handleClosePopup}>
                 <SvgIcon
                   {...IconClose}
-                  fillColor="rgba(255, 255, 255, 0.6)"
-                  hoverFillColor="#00FFF2"
+                  fillColor={Colors.WHITE_DARK}
+                  hoverFillColor={Colors.PRIMARY}
                   width="16px"
                   height="16px"
                 />
               </ButtonWithoutStyles>
             </FlexContainer>
-            <FlexContainer
-              flexDirection="column"
-              alignItems="center"
-            >
+            <FlexContainer flexDirection="column" alignItems="center">
               <FlexContainer
                 position="relative"
                 width="138px"
                 height="138px"
                 borderRadius="50%"
-                backgroundColor="#fffccc"
+                backgroundColor={Colors.ACCENT}
                 alignItems="center"
                 justifyContent="center"
                 marginBottom="32px"
               >
-                <SvgIcon
-                  {...IconSend}
-                  fillColor="none"
-                />
+                <SvgIcon {...IconSend} fillColor="none" />
               </FlexContainer>
               <PrimaryTextSpan
-                color="#fff"
+                color={Colors.WHITE}
                 fontWeight={500}
                 fontSize="18px"
                 lineHeight="150%"
@@ -81,24 +75,20 @@ const KYCPopup: FC = observer(() => {
               >
                 {t('Your documents were successfully send')}
               </PrimaryTextSpan>
-              <FlexContainer
-                marginBottom="134px"
-                width="343px"
-              >
+              <FlexContainer marginBottom="134px" width="343px">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.64)"
+                  color={Colors.WHITE_DARK}
                   fontWeight={400}
                   fontSize="16px"
                   lineHeight="150%"
                   textAlign="center"
                 >
-                  {t('Our Compliance Department will review your data in a timely manner. This process usually takes no more than 48 business hours.')}
+                  {t(
+                    'Our Compliance Department will review your data in a timely manner. This process usually takes no more than 48 business hours.'
+                  )}
                 </PrimaryTextSpan>
               </FlexContainer>
-              <FlexContainer
-                flexDirection="column"
-                marginBottom="16px"
-              >
+              <FlexContainer flexDirection="column" marginBottom="16px">
                 <PrimaryButton
                   padding="18px 12px"
                   type="button"
@@ -115,7 +105,7 @@ const KYCPopup: FC = observer(() => {
                 </PrimaryButton>
               </FlexContainer>
               <PrimaryTextSpan
-                color="rgba(255, 255, 255, 0.4)"
+                color={Colors.WHITE_LIGHT}
                 fontWeight={400}
                 fontSize="14px"
                 lineHeight="150%"
@@ -124,9 +114,15 @@ const KYCPopup: FC = observer(() => {
                 {t('For questions regarding verification please contact')}
               </PrimaryTextSpan>
               <LinkItem
-                href={`mailto: ${brandingLinksTranslate[mainAppStore.initModel.brandProperty].supportEmail}`}
+                href={`mailto: ${
+                  brandingLinksTranslate[mainAppStore.initModel.brandProperty]
+                    .supportEmail
+                }`}
               >
-                {brandingLinksTranslate[mainAppStore.initModel.brandProperty].supportEmail}
+                {
+                  brandingLinksTranslate[mainAppStore.initModel.brandProperty]
+                    .supportEmail
+                }
               </LinkItem>
             </FlexContainer>
           </PopupWrap>
@@ -134,7 +130,7 @@ const KYCPopup: FC = observer(() => {
       </Modal>
     );
   }
-   return null;
+  return null;
 });
 
 export default KYCPopup;
@@ -160,8 +156,8 @@ const LinkItem = styled.a`
   text-decoration: none;
   font-size: 14px;
   line-height: 150%;
-  color: #fff;
+  color: #fff ${Colors.WHITE};
   :hover {
-    color: rgba(255, 255, 255, 0.6);
+    color: ${Colors.WHITE_DARK};
   }
 `;

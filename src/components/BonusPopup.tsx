@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import EventBonusTimer from './EventBonusTimer';
 import Page from '../constants/Pages';
 import { PrimaryButton } from '../styles/Buttons';
+import Colors from '../constants/Colors';
 
 interface Params {
   hash: string;
@@ -88,8 +89,8 @@ const BonusPopup: FC = observer(() => {
               <ButtonWithoutStyles onClick={handleClosePopup}>
                 <SvgIcon
                   {...IconClose}
-                  fillColor="rgba(255, 255, 255, 0.6)"
-                  hoverFillColor="#00FFF2"
+                  fillColor={Colors.WHITE_DARK}
+                  hoverFillColor={Colors.PRIMARY}
                   width="16px"
                   height="16px"
                 />
@@ -109,7 +110,7 @@ const BonusPopup: FC = observer(() => {
                 margin="auto"
               >
                 <PrimaryTextSpan
-                  color="#00FFDD"
+                  color={Colors.PRIMARY}
                   fontWeight="bold"
                   fontSize="22px"
                   lineHeight="140%"
@@ -139,14 +140,14 @@ const BonusPopup: FC = observer(() => {
                 <PrimaryTextSpan
                   fontWeight={400}
                   fontSize="16px"
-                  color="#FFFCCC"
+                  color={Colors.ACCENT}
                   lineHeight="140%"
                   marginBottom="16px"
                 >
                   <EventBonusTimer />
                 </PrimaryTextSpan>
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.64)"
+                  color={Colors.WHITE_DARK}
                   fontWeight={400}
                   fontSize="16px"
                   lineHeight="140%"
@@ -183,7 +184,7 @@ const BonusPopup: FC = observer(() => {
                   onClick={handleSkipPopup}
                 >
                   <PrimaryTextSpan
-                    color="#ffffff"
+                    color={Colors.WHITE}
                     fontWeight="bold"
                     fontSize="16px"
                   >
@@ -218,7 +219,7 @@ const ModalBackground = styled(FlexContainer)`
 `;
 
 const CustomLink = styled(PrimaryTextSpan)`
-  color: #FFFCCC;
+  color: ${Colors.ACCENT};
   text-decoration: underline;
   cursor: pointer;
 `;

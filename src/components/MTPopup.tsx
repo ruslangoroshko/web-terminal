@@ -15,6 +15,7 @@ import { PrimaryTextSpan } from '../styles/TextsElements';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import { PrimaryButton } from '../styles/Buttons';
+import Colors from '../constants/Colors';
 
 const MTPopup: FC = observer(() => {
   const { accountTypeStore, notificationStore } = useStores();
@@ -74,7 +75,7 @@ investor: ${accountTypeStore.newMTAccountInfo?.investorPassword}`;
           <PopupWrap flexDirection="column" position="relative">
             <PopupHeader>
               <PrimaryTextSpan
-                color="#FFFCCC"
+                color={Colors.ACCENT}
                 fontWeight={700}
                 fontSize="20px"
                 lineHeight="150%"
@@ -84,8 +85,8 @@ investor: ${accountTypeStore.newMTAccountInfo?.investorPassword}`;
               <ButtonWithoutStyles onClick={handleClosePopup}>
                 <SvgIcon
                   {...IconClose}
-                  fillColor="rgba(255, 255, 255, 0.6)"
-                  hoverFillColor="#00FFF2"
+                  fillColor={Colors.WHITE_DARK}
+                  hoverFillColor={Colors.PRIMARY}
                   width="16px"
                   height="16px"
                 />
@@ -102,7 +103,7 @@ investor: ${accountTypeStore.newMTAccountInfo?.investorPassword}`;
               >
                 <FlexContainer marginBottom="4px">
                   <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.64)"
+                    color={Colors.WHITE_DARK}
                     fontWeight={500}
                     fontSize="11px"
                     lineHeight="150%"
@@ -134,7 +135,7 @@ investor: ${accountTypeStore.newMTAccountInfo?.investorPassword}`;
               >
                 <FlexContainer marginBottom="4px">
                   <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.64)"
+                    color={Colors.WHITE_DARK}
                     fontWeight={500}
                     fontSize="11px"
                     lineHeight="150%"
@@ -166,7 +167,7 @@ investor: ${accountTypeStore.newMTAccountInfo?.investorPassword}`;
               >
                 <FlexContainer marginBottom="4px">
                   <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.64)"
+                    color={Colors.WHITE_DARK}
                     fontWeight={500}
                     fontSize="11px"
                     lineHeight="150%"
@@ -198,7 +199,7 @@ investor: ${accountTypeStore.newMTAccountInfo?.investorPassword}`;
               >
                 <FlexContainer marginBottom="4px">
                   <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.64)"
+                    color={Colors.WHITE_DARK}
                     fontWeight={500}
                     fontSize="11px"
                     lineHeight="150%"
@@ -293,17 +294,17 @@ const ModalBackground = styled(FlexContainer)`
 const TextBlockForDev = styled.input`
   background: transparent;
   border: none;
-  color: #fffccc;
+  color: ${Colors.ACCENT};
   outline: none;
   &::selection {
     background-color: transparent;
-    color: #fffccc;
+    color: ${Colors.ACCENT};
   }
 `;
 
 const TextBlockWrapper = styled(FlexContainer)`
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid ${Colors.WHITE_TINE};
   box-sizing: border-box;
   border-radius: 4px;
   width: 344px;

@@ -6,6 +6,7 @@ import { PrimaryTextSpan } from '../styles/TextsElements';
 import { Observer } from 'mobx-react-lite';
 import SvgIcon from './SvgIcon';
 import IconShevronDown from '../assets/svg/icon-shevron-down-sort-by.svg';
+import Colors from '../constants/Colors';
 
 interface Props {
   selectedLabel: string;
@@ -46,7 +47,7 @@ const SortByDropdown: FC<Props> = ({
           <ButtonDropdown onClick={handleToggle}>
             <PrimaryTextSpan
               fontSize="10px"
-              color={opened ? '#00FFDD' : '#fffccc'}
+              color={opened ? Colors.PRIMARY : Colors.ACCENT}
               textTransform="uppercase"
               marginRight="4px"
             >
@@ -54,7 +55,7 @@ const SortByDropdown: FC<Props> = ({
             </PrimaryTextSpan>
             <SvgIcon
               {...IconShevronDown}
-              fillColor={opened ? '#00FFDD' : '#fffccc'}
+              fillColor={opened ? Colors.PRIMARY : Colors.ACCENT}
               transformProp={opened ? 'rotate(0)' : 'rotate(180deg)'}
             />
           </ButtonDropdown>

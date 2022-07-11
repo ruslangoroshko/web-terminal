@@ -5,6 +5,7 @@ import { PrimaryTextParagraph } from '../../styles/TextsElements';
 import IconShevronDown from '../../assets/svg/icon-shevron-down.svg';
 import IconShevronUp from '../../assets/svg/icon-shevron-up.svg';
 import SvgIcon from '../SvgIcon';
+import Colors from '../../constants/Colors';
 
 interface Props {
   list: string[];
@@ -62,12 +63,12 @@ function YearMonthDropdown(props: Props) {
       <FlexContainer position="absolute" right="14px" top="14px">
         <SvgIcon
           {...IconShevron}
-          fillColor="rgba(255, 255, 255, 0.6)"
+          fillColor={Colors.WHITE_DARK}
           width="6px"
           height="4px"
         />
       </FlexContainer>
-      <PrimaryTextParagraph fontSize="12px" color="#fffccc">
+      <PrimaryTextParagraph fontSize="12px" color={Colors.ACCENT}>
         {selected}
       </PrimaryTextParagraph>
       {on && (
@@ -87,7 +88,7 @@ function YearMonthDropdown(props: Props) {
             <DroppdownItem
               key={item.valueOf()}
               onClick={selectItem(item)}
-              color="#fffccc"
+              color={Colors.ACCENT}
               fontSize="12px"
             >
               {isYear ? item : item}
@@ -112,7 +113,7 @@ const DroppdownItem = styled(PrimaryTextParagraph)`
 
   &:hover {
     cursor: pointer;
-    color: #21b3a4;
+    color: ${Colors.PRIMARY_LIGHT};
   }
 `;
 

@@ -26,6 +26,7 @@ import validationInputTexts from '../constants/validationInputTexts';
 import { useTranslation } from 'react-i18next';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
+import Colors from '../constants/Colors';
 
 const PhoneVerification: FC = () => {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -166,13 +167,13 @@ const PhoneVerification: FC = () => {
       height="100%"
       flexDirection="column"
       alignItems="center"
-      backgroundColor="#252636"
+      backgroundColor={Colors.DARK_BLACK}
     >
       <FlexContainer width="568px" flexDirection="column" padding="40px 0">
         <PrimaryTextParagraph
           fontSize="30px"
           fontWeight="bold"
-          color="#fffccc"
+          color={Colors.ACCENT}
           marginBottom="8px"
         >
           {t('Phone verification')}
@@ -181,7 +182,7 @@ const PhoneVerification: FC = () => {
           marginBottom="40px"
           fontSize="14px"
           lineHeight="20px"
-          color="rgba(255, 255, 255, 0.4)"
+          color={Colors.WHITE_LIGHT}
         >
           {t('Improve your account protection by linking your phone number.')}
         </PrimaryTextSpan>

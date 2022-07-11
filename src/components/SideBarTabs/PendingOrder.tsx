@@ -26,6 +26,7 @@ import { SortByPendingOrdersEnum } from '../../enums/SortByPendingOrdersEnum';
 import { OperationApiResponseCodes } from '../../enums/OperationApiResponseCodes';
 import apiResponseCodeMessages from '../../constants/apiResponseCodeMessages';
 import IconShield from '../../assets/svg/icon-topping-up-active.svg';
+import Colors from '../../constants/Colors';
 
 interface Props {
   pendingOrder: PendingOrderWSDTO;
@@ -151,7 +152,7 @@ const PendingOrder: FC<Props> = (props) => {
               <ImageContainer instrumentId={pendingOrder.instrument} />
               {pendingOrder.isToppingUpActive && (
                 <FlexContainer position="absolute" bottom="0" right="-4px">
-                  <SvgIcon width={12} height={13} {...IconShield} fillColor="#fffccc" />
+                  <SvgIcon width={12} height={13} {...IconShield} fillColor={Colors.ACCENT} />
                 </FlexContainer>
               )}
             </FlexContainer>
@@ -161,7 +162,7 @@ const PendingOrder: FC<Props> = (props) => {
               width="100%"
             >
               <PrimaryTextSpan
-                color="#fffccc"
+                color={Colors.ACCENT}
                 fontSize="12px"
                 marginBottom="4px"
                 textOverflow="ellipsis"
@@ -185,12 +186,12 @@ const PendingOrder: FC<Props> = (props) => {
                 <FlexContainer marginRight="4px">
                   <SvgIcon
                     {...Icon}
-                    fillColor={isBuy ? '#00FFDD' : '#ED145B'}
+                    fillColor={isBuy ? Colors.PRIMARY : Colors.DANGER}
                   />
                 </FlexContainer>
                 <PrimaryTextSpan
                   fontSize="12px"
-                  color={isBuy ? '#00FFDD' : '#ED145B'}
+                  color={isBuy ? Colors.PRIMARY : Colors.DANGER}
                   textTransform="uppercase"
                 >
                   {isBuy ? t('Buy') : t('Sell')}
@@ -207,7 +208,7 @@ const PendingOrder: FC<Props> = (props) => {
               minWidth="70px"
             >
               <PrimaryTextSpan
-                color="#fffccc"
+                color={Colors.ACCENT}
                 fontSize="12px"
                 marginBottom="4px"
               >
@@ -233,8 +234,8 @@ const PendingOrder: FC<Props> = (props) => {
                   >
                     <SvgIcon
                       {...IconSettings}
-                      fillColor="rgba(255, 255, 255, 0.6)"
-                      hoverFillColor="#00FFDD"
+                      fillColor={Colors.WHITE_DARK}
+                      hoverFillColor={Colors.PRIMARY}
                     />
                   </AutoClosePopupSideBar>
                 </FormProvider>

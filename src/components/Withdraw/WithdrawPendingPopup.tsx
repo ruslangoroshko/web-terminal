@@ -9,6 +9,7 @@ import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
 import { useTranslation } from 'react-i18next';
 import { useStores } from '../../hooks/useStores';
+import Colors from '../../constants/Colors';
 
 const WithdrawPendingPopup = () => {
   const { push } = useHistory();
@@ -41,11 +42,13 @@ const WithdrawPendingPopup = () => {
         alignItems="center"
       >
         <FlexContainer padding="0 40px 0 0">
-          <PrimaryTextSpan fontSize="14px" color="#ffffff" lineHeight="20px">
+          <PrimaryTextSpan
+            fontSize="14px"
+            color={Colors.WHITE}
+            lineHeight="20px"
+          >
             {t('Our Customer support will contact you via')} &nbsp;
-            <PrimaryTextSpan color="#FFFCCC">
-              {userEmail || 'your@email.com'}{' '}
-            </PrimaryTextSpan>
+            <PrimaryTextSpan>{userEmail || 'your@email.com'} </PrimaryTextSpan>
             {t('to confirm and proceed with your withdrawal request.')}{' '}
             {t(
               'Please be note, that you can submit only one withdrawal request at a time'

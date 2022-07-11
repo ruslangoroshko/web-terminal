@@ -6,6 +6,7 @@ import { observer } from 'mobx-react-lite';
 import SvgIcon from '../SvgIcon';
 import IconDone from '../../assets/svg/icon-kyc-done.svg';
 import { useTranslation } from 'react-i18next';
+import Colors from '../../constants/Colors';
 
 interface Props {
   stepNumber: number;
@@ -57,21 +58,21 @@ const StepIndicator: FC<Props> = observer(props => {
         {isFilled ? (
           <SvgIcon {...IconDone} fillColor="none" />
         ) : (
-          <PrimaryTextSpan fontSize="24px" color="#fffccc">
+          <PrimaryTextSpan fontSize="24px" color={Colors.ACCENT}>
             {stepNumber}
           </PrimaryTextSpan>
         )}
       </FlexContainer>
       <PrimaryTextSpan
         fontSize="14px"
-        color="#fffccc"
+        color={Colors.ACCENT}
         marginBottom="4px"
         textTransform="capitalize"
       >
         {stepTitle}
       </PrimaryTextSpan>
       <PrimaryTextSpan
-        color={isFilled ? '#008284' : 'rgba(255, 255, 255, 0.4)'}
+        color={isFilled ? '#008284' : Colors.WHITE_LIGHT}
       >
         {isFilled ? t('Done') : t('Not filled')}
       </PrimaryTextSpan>

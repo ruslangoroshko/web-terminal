@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import Colors from '../constants/Colors';
 
 interface PrimaryTextType {
   color?: string;
@@ -40,7 +41,7 @@ export const PrimaryTextSpan = styled.span<PrimaryTextType>`
   font-weight: ${props => props.fontWeight || 'normal'};
   font-size: ${props => props.fontSize || '14px'};
   line-height: ${props => props.lineHeight || '120%'};
-  color: ${props => props.color || '#FFFCCC'};
+  color: ${props => props.color || Colors.ACCENT};
   margin-right: ${props => props.marginRight};
   margin-bottom: ${props => props.marginBottom};
   text-decoration: ${props => props.textDecoration};
@@ -58,7 +59,7 @@ export const PrimaryTextParagraph = styled.p<PrimaryTextType>`
   font-weight: ${props => props.fontWeight};
   font-size: ${props => props.fontSize || '16px'};
   line-height: ${props => props.lineHeight || '120%'};
-  color: ${props => props.color || '#FFFCCC'};
+  color: ${props => props.color || Colors.ACCENT};
   margin-right: ${props => props.marginRight};
   margin-bottom: ${props => props.marginBottom || '0'};
   text-decoration: ${props => props.textDecoration};
@@ -78,7 +79,7 @@ export const QuoteText = styled(PrimaryTextSpan)<
   font-weight: ${props => props.fontWeight || 'normal'};
   font-size: ${props => props.fontSize || '16px'};
   line-height: ${props => props.lineHeight || '120%'};
-  color: ${props => (props.isGrowth ? '#3BFF8A' : '#FF557E')};
+  color: ${props => (props.isGrowth ? Colors.SUCCESS : Colors.DANGER_LIGHT)};
   margin-right: ${props => props.marginRight};
   margin-bottom: ${props => props.marginBottom};
   text-decoration: ${props => props.textDecoration};

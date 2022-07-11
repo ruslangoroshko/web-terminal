@@ -23,6 +23,7 @@ import * as successIcon from '../../assets/lotties/success-icon.json';
 import * as pendingIcon from '../../assets/lotties/pending-icon.json';
 import * as confettie from '../../assets/lotties/confettie-animation.json';
 import Lottie from 'react-lottie';
+import Colors from '../../constants/Colors';
 
 interface Props {
   status: string;
@@ -102,12 +103,12 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
               </FlexContainer>
               <PrimaryTextParagraph
                 fontSize="20px"
-                color="#fff"
+                color={Colors.WHITE}
                 marginBottom="8px"
               >
                 {t('Success')}
               </PrimaryTextParagraph>
-              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.4)">
+              <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_LIGHT}>
                 {t('The operation was succesful.')}
               </PrimaryTextSpan>
             </FlexContainer>
@@ -119,7 +120,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
               <PrimaryTextSpan
                 fontWeight="bold"
                 fontSize="16px"
-                color="#252636"
+                color={Colors.DARK_BLACK}
               >
                 {t('Back to Trading')}
               </PrimaryTextSpan>
@@ -153,14 +154,14 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
               </FlexContainer>
               <PrimaryTextParagraph
                 fontSize="20px"
-                color="#fff"
+                color={Colors.WHITE}
                 marginBottom="8px"
               >
                 {t('Failed')}
               </PrimaryTextParagraph>
               <PrimaryTextSpan
                 fontSize="13px"
-                color="rgba(255, 255, 255, 0.4)"
+                color={Colors.WHITE_LIGHT}
                 textAlign="center"
               >
                 {t('Something went wrong.')}
@@ -172,7 +173,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
               <PrimaryTextSpan
                 fontWeight="bold"
                 fontSize="16px"
-                color="#252636"
+                color={Colors.DARK_BLACK}
               >
                 {t('Back to Deposit')}
               </PrimaryTextSpan>
@@ -206,7 +207,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
               </FlexContainer>
               <PrimaryTextParagraph
                 fontSize="20px"
-                color="#fff"
+                color={Colors.WHITE}
                 marginBottom="8px"
               >
                 {t('Pending')}
@@ -214,7 +215,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
               <FlexContainer flexDirection="column" padding="8px">
                 <PrimaryTextSpan
                   fontSize="13px"
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   textAlign="center"
                   marginBottom="12px"
                 >
@@ -222,7 +223,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 </PrimaryTextSpan>
                 <PrimaryTextSpan
                   fontSize="13px"
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   textAlign="center"
                   marginBottom="12px"
                 >
@@ -232,7 +233,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
                 </PrimaryTextSpan>
                 <PrimaryTextSpan
                   fontSize="13px"
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   textAlign="center"
                 >
                   {t('You will receive an update to your e-mail')}
@@ -243,7 +244,7 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
               <PrimaryTextSpan
                 fontWeight="bold"
                 fontSize="16px"
-                color="#252636"
+                color={Colors.DARK_BLACK}
               >
                 {t('Back to Trading')}
               </PrimaryTextSpan>
@@ -283,8 +284,8 @@ const StatusPaymentPopup: FC<Props> = ({ status }) => {
               <ButtonWithoutStyles onClick={backToDashboard}>
                 <SvgIcon
                   {...CloseIcon}
-                  fillColor="rgba(255, 255, 255, 0.6)"
-                  hoverFillColor="#01ffdd"
+                  fillColor={Colors.WHITE_LIGHT}
+                  hoverFillColor={Colors.PRIMARY}
                 />
               </ButtonWithoutStyles>
             </FlexContainer>

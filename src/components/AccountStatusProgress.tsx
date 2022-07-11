@@ -16,6 +16,7 @@ import { AccountStatusEnum } from '../enums/AccountStatusEnum';
 import { PrimaryButton } from '../styles/Buttons';
 import Page from '../constants/Pages';
 import { useHistory } from 'react-router-dom';
+import Colors from '../constants/Colors';
 
 const AccountStatusProgress = observer(() => {
   const { accountTypeStore, bonusStore } = useStores();
@@ -68,7 +69,7 @@ const AccountStatusProgress = observer(() => {
               width={40}
               height={40}
             />
-            <PrimaryTextSpan color="#ffffff" fontSize="16px" fontWeight="bold">
+            <PrimaryTextSpan color={Colors.WHITE} fontSize="16px" fontWeight="bold">
               {t(accountTypeStore.actualType?.name || '')}
             </PrimaryTextSpan>
           </ProgressBackground>
@@ -76,7 +77,7 @@ const AccountStatusProgress = observer(() => {
       </FlexContainer>
       <FlexContainer flexDirection="column">
         <PrimaryTextSpan
-          color="#fff"
+          color={Colors.WHITE}
           fontSize="40px"
           lineHeight="60px"
           fontWeight="bold"
@@ -86,7 +87,7 @@ const AccountStatusProgress = observer(() => {
         {accountTypeStore.actualType?.type !== AccountStatusEnum.Vip && (
           <FlexContainer>
             <PrimaryTextSpan
-              color="#fff"
+              color={Colors.WHITE}
               fontSize="20px"
               lineHeight="30px"
               fontWeight={400}
@@ -116,7 +117,7 @@ const AccountStatusProgress = observer(() => {
             onClick={handleOpenDeposit}
           >
             <PrimaryTextSpan
-              color="#252636"
+              color={Colors.DARK_BLACK}
               fontSize="16px"
               lineHeight="18px"
             >

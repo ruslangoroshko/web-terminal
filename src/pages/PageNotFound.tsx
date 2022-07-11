@@ -9,6 +9,7 @@ import Page from '../constants/Pages';
 import { useStores } from '../hooks/useStores';
 import { SideBarTabType } from '../enums/SideBarTabType';
 import { LOCAL_STORAGE_SIDEBAR } from '../constants/global';
+import Colors from '../constants/Colors';
 
 function PageNotFound() {
   const {
@@ -28,7 +29,7 @@ function PageNotFound() {
       height="100%"
       flexDirection="column"
       alignItems="center"
-      backgroundColor="#252636"
+      backgroundColor={Colors.DARK_BLACK}
       padding="200px"
       margin="0 auto"
     >
@@ -37,7 +38,7 @@ function PageNotFound() {
       </FlexContainer>
       <FlexContainer marginBottom="32px">
         <PrimaryTextSpan
-          color="#fff"
+          color={Colors.WHITE}
           fontWeight="bold"
           fontSize="24px"
           lineHeight="150%"

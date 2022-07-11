@@ -24,6 +24,7 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import { observer } from 'mobx-react-lite';
 import { AccountStatusEnum } from '../enums/AccountStatusEnum';
+import Colors from '../constants/Colors';
 
 const ProfileDropdown = observer(() => {
   const { mainAppStore, depositFundsStore, tabsStore, bonusStore, accountTypeStore } = useStores();
@@ -61,13 +62,13 @@ const ProfileDropdown = observer(() => {
             <CustomeNavLink to={Page.PROOF_OF_IDENTITY}>
               <VerificationButton
                 borderRadius="5px"
-                backgroundColor="#ED145B"
+                backgroundColor={Colors.DANGER}
                 height="21px"
                 alignItems="center"
                 width="100%"
                 justifyContent="center"
               >
-                <PrimaryTextSpan color="#ffffff" fontSize="10px">
+                <PrimaryTextSpan color={Colors.WHITE} fontSize="10px">
                   {t('Account is not Verified')}
                 </PrimaryTextSpan>
               </VerificationButton>
@@ -80,13 +81,13 @@ const ProfileDropdown = observer(() => {
             <CustomeNavLink to={Page.PROOF_OF_IDENTITY}>
               <VerificationButton
                 borderRadius="5px"
-                backgroundColor="#ED145B"
+                backgroundColor={Colors.DANGER}
                 height="21px"
                 alignItems="center"
                 width="100%"
                 justifyContent="center"
               >
-                <PrimaryTextSpan color="#ffffff" fontSize="10px">
+                <PrimaryTextSpan color={Colors.WHITE} fontSize="10px">
                   {t('Verification is Restricted')}
                 </PrimaryTextSpan>
               </VerificationButton>
@@ -98,7 +99,7 @@ const ProfileDropdown = observer(() => {
         return <FlexContainer margin="20px 0 0" width="100%">
           <OnVerificationButton
             borderRadius="5px"
-            backgroundColor="#00ffdd"
+            backgroundColor={Colors.PRIMARY}
             height="21px"
             alignItems="center"
             width="100%"
@@ -113,7 +114,7 @@ const ProfileDropdown = observer(() => {
         return <FlexContainer margin="20px 0 0" width="100%">
             <OnVerificationButton
               borderRadius="5px"
-              backgroundColor="#fffccc"
+              backgroundColor={Colors.ACCENT}
               height="21px"
               alignItems="center"
               width="100%"
@@ -193,7 +194,7 @@ const ProfileDropdown = observer(() => {
             {!!mainAppStore.profileName.length && (
               <PrimaryTextSpan
                 fontSize="12px"
-                color="#fffccc"
+                color={Colors.ACCENT}
                 overflow="hidden"
                 textOverflow="ellipsis"
                 whiteSpace="nowrap"
@@ -204,7 +205,7 @@ const ProfileDropdown = observer(() => {
             )}
             <PrimaryTextSpan
               fontSize="12px"
-              color="rgba(255, 255, 255, 0.4)"
+              color={Colors.WHITE_LIGHT}
               overflow="hidden"
               textOverflow="ellipsis"
               title={mainAppStore.profileEmail}
@@ -217,7 +218,7 @@ const ProfileDropdown = observer(() => {
       </FlexWithBottomBorder>
       <FlexContainer margin="0 0 12px">
         <CustomeNavLink to={Page.ACCOUNT_SEQURITY}>
-          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+          <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
             {t('Account Settings')}
           </PrimaryTextSpan>
         </CustomeNavLink>
@@ -227,7 +228,7 @@ const ProfileDropdown = observer(() => {
         <>
           <FlexContainer margin="0 0 12px">
             <DepositButtonWrapper onClick={pushToDeposit}>
-              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+              <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
                 {t('Deposit')}
               </PrimaryTextSpan>
             </DepositButtonWrapper>
@@ -237,14 +238,14 @@ const ProfileDropdown = observer(() => {
               to={Page.ACCOUNT_WITHDRAW}
               activeClassName="is-active"
             >
-              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+              <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
                 {t('Withdraw')}
               </PrimaryTextSpan>
             </CustomeNavLink>
           </FlexContainer>
           <FlexContainer margin="0 0 12px">
             <CustomeNavLink to={Page.ACCOUNT_BALANCE_HISTORY}>
-              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+              <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
                 {t('Balance history')}
               </PrimaryTextSpan>
             </CustomeNavLink>
@@ -253,7 +254,7 @@ const ProfileDropdown = observer(() => {
             accountTypeStore.isMTAvailable &&
             <FlexContainer margin="0 0 12px">
               <CustomeNavLink to={Page.ACCOUNT_MT5}>
-                <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+                <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
                   {t('MT5')}
                 </PrimaryTextSpan>
               </CustomeNavLink>
@@ -261,14 +262,14 @@ const ProfileDropdown = observer(() => {
           }
           <FlexContainer margin="0 0 12px">
             <CustomeNavLink to={Page.BONUS_FAQ}>
-              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+              <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
                 {t('Bonus FAQ')}
               </PrimaryTextSpan>
             </CustomeNavLink>
           </FlexContainer>
           <FlexContainer margin="0 0 12px">
             <CustomeNavLink to={Page.ACCOUNT_TYPE_INFO}>
-              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+              <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
                 {t('My Status')}
               </PrimaryTextSpan>
             </CustomeNavLink>
@@ -278,7 +279,7 @@ const ProfileDropdown = observer(() => {
 
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={handleLogoutClick}>
-          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+          <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
             {t('Logout')}
           </PrimaryTextSpan>
         </LogoutButton>
@@ -296,7 +297,7 @@ const FlexWithBottomBorder = styled(FlexContainer)`
 const VerificationButton = styled(FlexContainer)`
   transition: 0.4;
   &:hover {
-    background-color: #ff557e;
+    background-color: ${Colors.DANGER_LIGHT};
   }
 `;
 
@@ -313,7 +314,7 @@ const LogoutButton = styled(ButtonWithoutStyles)`
   }
   &:hover {
     span {
-      color: #fffccc;
+      color: ${Colors.ACCENT};
     }
   }
 `;
@@ -326,7 +327,7 @@ const CustomeNavLink = styled(NavLink)`
   }
   &:hover {
     span {
-      color: #fffccc;
+      color: ${Colors.ACCENT};
     }
   }
   &:hover,
@@ -343,7 +344,7 @@ const DepositButtonWrapper = styled(ButtonWithoutStyles)`
   }
   &:hover {
     span {
-      color: #fffccc;
+      color: ${Colors.ACCENT};
     }
   }
 `;

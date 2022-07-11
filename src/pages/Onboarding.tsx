@@ -24,6 +24,7 @@ import IconClose from '../assets/svg/icon-close.svg';
 import { keyframes } from '@emotion/core';
 import { OnBoardingResponseEnum } from '../enums/OnBoardingRsponseEnum';
 import { HintEnum } from '../enums/HintsEnum';
+import Colors from '../constants/Colors';
 
 const Onboarding = () => {
   const { t } = useTranslation();
@@ -229,15 +230,15 @@ const Onboarding = () => {
         <BackButton onClick={closeOnBoarding}>
           <SvgIcon
             {...IconClose}
-            fillColor="rgba(255, 255, 255, 0.6)"
-            hoverFillColor="#ffffff"
+            fillColor={Colors.WHITE_DARK}
+            hoverFillColor={Colors.WHITE_DARK}
             width="40px"
             height="40px"
           />
         </BackButton>
         <PageTitle
           fontSize="16px"
-          color="#ffffff"
+          color={Colors.WHITE}
           textTransform="capitalize"
           className={'onboarding_title'}
         >
@@ -275,7 +276,7 @@ const Onboarding = () => {
             {actualStepInfo?.data.title && (
               <PrimaryTextSpan
                 fontSize="24px"
-                color="#ffffff"
+                color={Colors.WHITE}
                 marginBottom="16px"
                 textAlign="center"
               >
@@ -285,7 +286,7 @@ const Onboarding = () => {
             {actualStepInfo?.data.description && (
               <PrimaryTextSpan
                 fontSize="16px"
-                color="rgba(235, 235, 245, 0.6)"
+                color={Colors.WHITE_DARK}
                 textAlign="center"
               >
                 {actualStepInfo?.data.description}
@@ -311,8 +312,8 @@ const Onboarding = () => {
                 <PrimaryTextSpan
                   color={
                     button.action === ButtonActionType.Demo
-                      ? '#ffffff'
-                      : '#252636'
+                      ? Colors.WHITE
+                      : Colors.DARK_BLACK
                   }
                   fontWeight="bold"
                   fontSize="16px"
@@ -353,7 +354,7 @@ const PageTitle = styled(PrimaryTextSpan)`
   &.onboarding_title {
     text-transform: lowercase;
     &::first-letter {
-      color: #00ffdd;
+      color: ${Colors.PRIMARY};
     }
   }
 `;
@@ -377,10 +378,10 @@ const translateAnimationIn = keyframes(`
 
 const buttonAnimation = keyframes`
     from {
-      background-color: rgba(196, 196, 196, 0.5);
+      background-color: ${Colors.WHITE_LIGHT};
     }
     to {
-      background-color: #00FFDD;
+      background-color: ${Colors.PRIMARY};
     }
 `;
 

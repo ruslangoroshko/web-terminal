@@ -9,6 +9,7 @@ import Pages from '../../../constants/Pages';
 import { useTranslation } from 'react-i18next';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../../constants/mixpanelEvents';
+import Colors from '../../../constants/Colors';
 
 interface Props {
   amount: number;
@@ -64,13 +65,13 @@ const DepositPaymentSuccess: FC<Props> = (props) => {
 export default DepositPaymentSuccess;
 
 const TradeButton = styled(ButtonWithoutStyles)`
-  background-color: #00ffdd;
+  background-color: ${Colors.PRIMARY};
   border-radius: 10px;
   width: 100%;
   padding: 20px;
   font-size: 16px;
   font-weight: bold;
-  color: #252636;
+  color: ${Colors.DARK_BLACK};
 `;
 
 const SuccessText = styled.span`
@@ -78,20 +79,20 @@ const SuccessText = styled.span`
   font-size: 18px;
   line-height: 18px;
   text-align: center;
-  color: #ffffff;
+  color: ${Colors.WHITE};
   margin-bottom: 18px;
 `;
 
 const AmountText = styled.span`
   font-size: 13px;
   line-height: 16px;
-  color: #00ffdd;
+  color: ${Colors.PRIMARY};
 `;
 
 const SuccessDescription = styled.span`
   font-size: 13px;
   line-height: 16px;
   text-align: center;
-  color: rgba(255, 255, 255, 0.4);
+  color: ${Colors.WHITE_LIGHT};
   margin-bottom: 112px;
 `;

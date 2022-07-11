@@ -13,6 +13,7 @@ import SocketErrorPopup from './components/SocketErrorPopup';
 import { useTranslation } from 'react-i18next';
 import { autorun } from 'mobx';
 import { logger } from './helpers/ConsoleLoggerTool';
+import Colors from './constants/Colors';
 
 declare const window: any;
 
@@ -97,9 +98,9 @@ const MainApp: FC = () => {
           }
 
           .input-border {
-            border: 1px solid #494b50;
+            border: 1px solid ${Colors.INPUT_BORDER};
             &.error {
-              border-color: #ed145b !important;
+              border-color: ${Colors.DANGER} !important;
             }
           }
 

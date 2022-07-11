@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import Page from '../constants/Pages';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import { useTranslation } from 'react-i18next';
+import Colors from '../constants/Colors';
 
 function SignTypeTabs() {
   const { t } = useTranslation();
@@ -17,7 +18,7 @@ function SignTypeTabs() {
     >
       <CustomNavLink to={Page.SIGN_IN} activeClassName="selected">
         <PrimaryTextSpan
-          color="rgba(255, 255, 255, 0.6)"
+          color={Colors.WHITE_DARK}
           fontSize="14px"
           fontWeight="bold"
         >
@@ -26,7 +27,7 @@ function SignTypeTabs() {
       </CustomNavLink>
       <CustomNavLink to={Page.SIGN_UP} activeClassName="selected">
         <PrimaryTextSpan
-          color="rgba(255, 255, 255, 0.6)"
+          color={Colors.WHITE_DARK}
           fontSize="14px"
           fontWeight="bold"
         >
@@ -55,7 +56,7 @@ const CustomNavLink = styled(NavLink)`
     background-color: rgba(255, 255, 255, 0.03);
 
     & > span {
-      color: #fffccc;
+      color: ${Colors.ACCENT};
     }
   }
 

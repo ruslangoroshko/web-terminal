@@ -12,6 +12,7 @@ import { observer } from 'mobx-react-lite';
 import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import Colors from '../constants/Colors';
 
 interface Props {
   datesChangeCallback: () => void;
@@ -82,7 +83,7 @@ const DatePickerAccountBalanceDropdown: FC<Props> = observer(
         >
           <FlexContainer alignItems="center">
             <FlexContainer margin="0 8px 0 0">
-              <SvgIcon {...IconCalendar} fillColor="rgba(255, 255, 255, 0.6)" />
+              <SvgIcon {...IconCalendar} fillColor={Colors.WHITE_DARK} />
             </FlexContainer>
             <PrimaryTextSpan fontSize="12px" whiteSpace="nowrap">
               {dateRangeAccountBalanceStore.startDate ||
@@ -106,7 +107,7 @@ const DatePickerAccountBalanceDropdown: FC<Props> = observer(
           <FlexContainer>
             <SvgIcon
               {...IconDroplistShevron}
-              fillColor="rgba(255, 255, 255, 0.6)"
+              fillColor={Colors.WHITE_DARK}
             />
           </FlexContainer>
         </InputLabelWrapper>
@@ -119,28 +120,28 @@ const DatePickerAccountBalanceDropdown: FC<Props> = observer(
               <DateRangeItemButton
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Today)}
               >
-                <PrimaryTextSpan fontSize="14px" color="#fffccc">
+                <PrimaryTextSpan fontSize="14px" color={Colors.ACCENT}>
                   {t('Today')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
               <DateRangeItemButton
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Week)}
               >
-                <PrimaryTextSpan fontSize="14px" color="#fffccc">
+                <PrimaryTextSpan fontSize="14px" color={Colors.ACCENT}>
                   {t('Week')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
               <DateRangeItemButton
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Month)}
               >
-                <PrimaryTextSpan fontSize="14px" color="#fffccc">
+                <PrimaryTextSpan fontSize="14px" color={Colors.ACCENT}>
                   {t('Month')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
               <DateRangeItemButton
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Year)}
               >
-                <PrimaryTextSpan fontSize="14px" color="#fffccc">
+                <PrimaryTextSpan fontSize="14px" color={Colors.ACCENT}>
                   {t('Year')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
@@ -167,7 +168,6 @@ const DatePickerWrapper = styled(FlexContainer)`
 `;
 
 const DefinedDaterangeWrapper = styled(FlexContainer)`
-  /* border-bottom: 1px solid rgba(255, 255, 255, 0.16); */
   padding: 16px 0;
 `;
 
@@ -182,7 +182,7 @@ const DateRangeItemButton = styled(ButtonWithoutStyles)`
   }
 
   &:hover > span {
-    color: #00fff2;
+    color: ${Colors.PRIMARY_LIGHT};
   }
 `;
 
@@ -190,7 +190,7 @@ const InputLabelWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
   background-color: rgba(255, 255, 255, 0.06);
   border: ${(props) =>
     props.isActive
-      ? '1px solid #00FFDD'
+      ? `1px solid ${Colors.PRIMARY}`
       : '1px solid rgba(255, 255, 255, 0.19)'};
   box-sizing: border-box;
   border-radius: 4px;
@@ -204,7 +204,7 @@ const InputLabelWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
   }
 
   &:focus {
-    border-color: #00ffdd;
+    border-color: ${Colors.PRIMARY_LIGHT};
   }
 `;
 
@@ -216,6 +216,6 @@ const ButtonRightArrow = styled(ButtonWithoutStyles)`
   will-change: background-color;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: ${Colors.WHITE_LIGHT};
   }
 `;

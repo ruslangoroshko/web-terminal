@@ -46,6 +46,7 @@ import Payop from './Payop';
 import Volt from './Volt';
 import LoaderForComponents from '../LoaderForComponents';
 import EventBonusTimer from '../EventBonusTimer';
+import Colors from '../../constants/Colors';
 
 const depositList = [
   {
@@ -319,7 +320,7 @@ const DepositPopupInner: FC = () => {
                   <SvgIcon
                     {...IconClose}
                     fillColor="rgba(255, 255, 255, 0.6)"
-                    hoverFillColor="#00FFF2"
+                    hoverFillColor={Colors.PRIMARY}
                   />
                 </ButtonWithoutStyles>
               </FlexContainer>
@@ -327,7 +328,7 @@ const DepositPopupInner: FC = () => {
                 <PrimaryTextSpan
                   fontSize="16px"
                   fontWeight="bold"
-                  color="#fffccc"
+                  color={Colors.ACCENT}
                 >
                   {t('Deposit Funds')}
                 </PrimaryTextSpan>
@@ -403,7 +404,7 @@ const DepositPopupInner: FC = () => {
                                         fillColor={
                                           depositFundsStore.activeDepositType ===
                                           item.id
-                                            ? '#fffccc'
+                                            ? Colors.ACCENT
                                             : 'rgba(196, 196, 196, 0.5)'
                                         }
                                       ></SvgIcon>
@@ -415,7 +416,7 @@ const DepositPopupInner: FC = () => {
                                       color={
                                         depositFundsStore.activeDepositType ===
                                         item.id
-                                          ? '#fffccc'
+                                          ? Colors.ACCENT
                                           : 'rgba(196, 196, 196, 0.5)'
                                       }
                                     >
@@ -474,7 +475,7 @@ const DepositPopupInner: FC = () => {
                       </FlexContainer>
                       <FlexContainer flexDirection="column">
                         <PrimaryTextSpan
-                          color="#00FFDD"
+                          color={Colors.PRIMARY}
                           fontWeight={500}
                           fontSize="14px"
                           lineHeight="140%"
@@ -530,7 +531,7 @@ const HeaderDepositPopup = styled(FlexContainer)`
 
 const CustomLink = styled(Link)`
   font-size: 12px;
-  color: #00fff2;
+  color: ${Colors.PRIMARY};
   font-weight: bold;
   line-height: 120%;
   &:hover {
@@ -568,7 +569,7 @@ const ModalBackground = styled(FlexContainer)`
 
 const PaymentIcon = styled(FlexContainer)<{ isActive: boolean }>`
   background-color: ${(props) =>
-    props.isActive ? '#fffccc' : 'rgba(196, 196, 196, 0.5)'};
+    props.isActive ? Colors.ACCENT : 'rgba(196, 196, 196, 0.5)'};
   border-radius: 3px;
   align-items: center;
   justify-content: center;

@@ -46,6 +46,7 @@ import { moneyFormat, moneyFormatPart } from '../../helpers/moneyFormat';
 import { logger } from '../../helpers/ConsoleLoggerTool';
 import InformationPopup from '../InformationPopup';
 import { HintEnum } from '../../enums/HintsEnum';
+import Colors from '../../constants/Colors';
 
 interface Props {
   account: AccountModelWebSocketDTO;
@@ -195,7 +196,7 @@ const AccountInfo: FC<Props> = observer((props) => {
         <FlexContainer alignItems="flex-end" width="calc(100% - 268px)">
           <FlexContainer flex="1">
             <FlexContainer
-              backgroundColor={isActiveAccount ? '#fffccc' : '#C4C4C4'}
+              backgroundColor={isActiveAccount ? Colors.ACCENT : '#C4C4C4'}
               alignItems="center"
               justifyContent="center"
               width="40px"
@@ -213,7 +214,7 @@ const AccountInfo: FC<Props> = observer((props) => {
               >
                 <PrimaryTextSpan
                   fontSize="14px"
-                  color={isActiveAccount ? '#fffccc' : '#C4C4C4'}
+                  color={isActiveAccount ? Colors.ACCENT : '#C4C4C4'}
                 >
                   {account.symbol}
                 </PrimaryTextSpan>
@@ -228,9 +229,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                 <PrimaryTextSpan
                   fontSize="20px"
                   fontWeight={700}
-                  color={
-                    isActiveAccount ? '#fffccc' : 'rgba(255, 255, 255, 0.4)'
-                  }
+                  color={isActiveAccount ? Colors.ACCENT : Colors.WHITE_LIGHT}
                   marginRight="6px"
                   className={
                     isActiveAccount ? 'account_total_active' : 'account_total'
@@ -246,7 +245,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                     fontWeight={700}
                     fontSize="14px"
                     color={
-                      isActiveAccount ? '#fffccc' : 'rgba(255, 255, 255, 0.4)'
+                      isActiveAccount ? Colors.ACCENT : Colors.DANGER_LIGHT
                     }
                   >
                     .
@@ -258,7 +257,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                 <FlexContainer
                   borderRadius="3px"
                   backgroundColor={
-                    isActiveAccount ? '#FFFCCC' : 'rgba(196, 196, 196, 0.5)'
+                    isActiveAccount ? Colors.ACCENT : 'rgba(196, 196, 196, 0.5)'
                   }
                   padding="3px 10px"
                   alignItems="center"
@@ -278,7 +277,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                   isActiveAccount ? 'account_total_active' : 'account_total'
                 }
                 fontSize="10px"
-                color="rgba(255, 255, 255, 0.4)"
+                color={Colors.WHITE_LIGHT}
                 textTransform="uppercase"
               >
                 {account.id}
@@ -289,7 +288,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                     {...CopyIcon}
                     width="12px"
                     height="12px"
-                    fillColor="#ffffff"
+                    fillColor={Colors.WHITE}
                   />
                 </ButtonWithoutStyles>
               </AccountId>
@@ -306,20 +305,20 @@ const AccountInfo: FC<Props> = observer((props) => {
               <FlexContainer flexDirection="column">
                 <PrimaryTextSpan
                   fontSize="14px"
-                  color="#fffccc"
+                  color={Colors.ACCENT}
                   marginBottom="4px"
                 >
                   {account.symbol}
                   {moneyFormatPart(quotesStore.invest).int}
 
-                  <PrimaryTextSpan fontSize="10px" color="#fffccc">
+                  <PrimaryTextSpan fontSize="10px" color={Colors.ACCENT}>
                     .{moneyFormatPart(quotesStore.invest).decimal}
                   </PrimaryTextSpan>
                 </PrimaryTextSpan>
                 <PrimaryTextParagraph
                   fontSize="10px"
                   textTransform="uppercase"
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                 >
                   {t('Invested')}
                 </PrimaryTextParagraph>
@@ -342,7 +341,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                 <PrimaryTextParagraph
                   fontSize="10px"
                   textTransform="uppercase"
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                 >
                   {t('Profit')}
                 </PrimaryTextParagraph>
@@ -352,19 +351,19 @@ const AccountInfo: FC<Props> = observer((props) => {
               <FlexContainer flexDirection="column">
                 <PrimaryTextSpan
                   fontSize="14px"
-                  color="#fffccc"
+                  color={Colors.ACCENT}
                   marginBottom="4px"
                 >
                   {account.symbol}
                   {moneyFormatPart(account.balance).int}
-                  <PrimaryTextSpan fontSize="10px" color="#fffccc">
+                  <PrimaryTextSpan fontSize="10px" color={Colors.ACCENT}>
                     .{moneyFormatPart(account.balance).decimal}
                   </PrimaryTextSpan>
                 </PrimaryTextSpan>
                 <PrimaryTextParagraph
                   fontSize="10px"
                   textTransform="uppercase"
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                 >
                   {t('Available')}
                 </PrimaryTextParagraph>
@@ -382,13 +381,13 @@ const AccountInfo: FC<Props> = observer((props) => {
                 <FlexContainer flexDirection="column" marginRight="12px">
                   <PrimaryTextSpan
                     fontSize="14px"
-                    color="#fffccc"
+                    color={Colors.ACCENT}
                     //marginBottom="4px"
                   >
                     {account.symbol}
                     {moneyFormatPart(account.bonus).int}
 
-                    <PrimaryTextSpan fontSize="10px" color="#fffccc">
+                    <PrimaryTextSpan fontSize="10px" color={Colors.ACCENT}>
                       .{moneyFormatPart(account.bonus).decimal}
                     </PrimaryTextSpan>
                   </PrimaryTextSpan>
@@ -397,7 +396,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                     <PrimaryTextParagraph
                       fontSize="10px"
                       textTransform="uppercase"
-                      color="rgba(255, 255, 255, 0.4)"
+                      color={Colors.WHITE_LIGHT}
                       marginRight="4px"
                     >
                       {t('Bonus')}
@@ -408,7 +407,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                       width="212px"
                       direction="right"
                     >
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                         {t(
                           'There is no possibility of withdrawing bonus. But this is an extra amount on your account and when you make a profit with them, this is something you can withdraw.'
                         )}
@@ -432,7 +431,9 @@ const AccountInfo: FC<Props> = observer((props) => {
             <WithdrawButton onClick={pushToWithdrawal()}>
               <PrimaryTextSpan
                 fontSize="14px"
-                color={isActiveAccount ? '#fffccc' : 'rgba(196, 196, 196, 0.5)'}
+                color={
+                  isActiveAccount ? Colors.ACCENT : 'rgba(196, 196, 196, 0.5)'
+                }
                 fontWeight="bold"
               >
                 {t('Withdraw')}
@@ -462,17 +463,17 @@ const AccountWrapper = styled(FlexContainer)<{ isActive?: boolean }>`
       props.isActive ? '#292C33' : 'rgba(41, 44, 51, 0.35)'};
     &:before {
       background: ${(props) =>
-        props.isActive ? '#00FFDD' : 'rgba(41, 44, 51, 0.35)'};
+        props.isActive ? Colors.PRIMARY : 'rgba(41, 44, 51, 0.35)'};
     }
     .account_total {
-      color: ${(props) => (props.isActive ? '#fffccc' : '#ffffff')};
+      color: ${(props) => (props.isActive ? Colors.ACCENT : Colors.WHITE)};
     }
   }
 
   &:before {
     content: '';
     transition: 0.4s;
-    background: ${(props) => (props.isActive ? '#00FFDD' : '#1C1F26')};
+    background: ${(props) => (props.isActive ? Colors.PRIMARY : '#1C1F26')};
     position: absolute;
     border-radius: 50%;
     width: 8px;

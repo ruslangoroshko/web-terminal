@@ -21,6 +21,7 @@ import {
 } from '../../constants/global';
 import { PositionHistoryDTO } from '../../types/HistoryReportTypes';
 import { ShowDatesDropdownEnum } from '../../enums/ShowDatesDropdownEnum';
+import Colors from '../../constants/Colors';
 
 const TradingHistory: FC = observer(() => {
   const { tabsStore, mainAppStore, historyStore, dateRangeStore } = useStores();
@@ -163,7 +164,7 @@ const TradingHistory: FC = observer(() => {
       <FlexContainer padding="12px 16px" margin="0 0 8px 0">
         <PrimaryTextSpan
           fontSize="12px"
-          color="#fffccc"
+          color={Colors.ACCENT}
           textTransform="uppercase"
         >
           {t('Trading History')}
@@ -175,7 +176,7 @@ const TradingHistory: FC = observer(() => {
         alignItems="center"
       >
         <PrimaryTextSpan
-          color="rgba(255, 255, 255, 0.4)"
+          color={Colors.WHITE_LIGHT}
           marginRight="4px"
           fontSize="10px"
           textTransform="uppercase"

@@ -10,6 +10,7 @@ import { useStores } from '../hooks/useStores';
 import IconCopy from '../assets/svg_no_compress/icon-copy.svg';
 import SvgIcon from './SvgIcon';
 import { useTranslation } from 'react-i18next';
+import Colors from '../constants/Colors';
 
 function BadRequestPopup() {
   const copyText = useRef<HTMLInputElement>(null);
@@ -51,13 +52,13 @@ function BadRequestPopup() {
             fontSize="20px"
             fontWeight="bold"
             marginBottom="10px"
-            color="#fffccc"
+            color={Colors.ACCENT}
           >
             {t('Something went wrong')}
           </PrimaryTextParagraph>
           <PrimaryTextParagraph
             fontSize="11px"
-            color="#fffccc"
+            color={Colors.ACCENT}
             marginBottom="42px"
           >
             {t('Please try again later or reload the page')}
@@ -101,7 +102,7 @@ const CustomIcon = styled.span`
 `;
 
 const TextBlockForDev = styled.input`
-  color: #fffccc;
+  color: ${Colors.ACCENT};
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.19);
   box-sizing: border-box;
@@ -118,20 +119,20 @@ const TextBlockForDev = styled.input`
   }
   &::selection {
     background-color: transparent;
-    color: #fffccc;
+    color: ${Colors.ACCENT};
   }
 `;
 
 const CustomButton = styled(ButtonWithoutStyles)`
   border-radius: 4px;
-  background-color: #00fff2;
+  background-color: ${Colors.PRIMARY};
   width: 200px;
   height: 40px;
   transition: all 0.2s ease;
   will-change: background-color;
 
   &:hover {
-    background-color: #9ffff2;
+    background-color: ${Colors.PRIMARY_LIGHT};
   }
 `;
 

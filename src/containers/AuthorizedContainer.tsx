@@ -34,6 +34,7 @@ import CongratulationPopup from '../components/CongratulationPopup';
 import KYCPopup from '../components/KYC/KYCPopup';
 import MTPopup from '../components/MTPopup';
 import MTErrorPopup from '../components/MTErrorPopup';
+import Colors from '../constants/Colors';
 
 interface Props {}
 
@@ -341,7 +342,7 @@ const SideBarAndPageContentWrapper = styled(FlexContainer)`
       rgba(255, 252, 204, 0.08) 0%,
       rgba(255, 252, 204, 0) 100%
     ),
-    #252636;
+    ${Colors.DARK_BLACK};
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.08);
   overflow: hidden;
   border-top-left-radius: 8px;

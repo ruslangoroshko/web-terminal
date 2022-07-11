@@ -5,6 +5,7 @@ import { SecondaryButton } from '../../styles/Buttons';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
 import { useTranslation } from 'react-i18next';
+import Colors from '../../constants/Colors';
 
 const WithdrawEmptyBalance = () => {
   const { depositFundsStore, bonusStore } = useStores();
@@ -26,7 +27,7 @@ const WithdrawEmptyBalance = () => {
       padding="30px 0"
     >
       <FlexContainer width="calc(100% - 220px)">
-        <PrimaryTextSpan fontSize="14px" color="#FFFCCC" lineHeight="20px">
+        <PrimaryTextSpan fontSize="14px" lineHeight="20px">
           {t(
             'Withdrawals are processed by the same payment systems used to deposit money into the system.'
           )}
@@ -34,7 +35,7 @@ const WithdrawEmptyBalance = () => {
       </FlexContainer>
       <FlexContainer width="160px">
         <DeposteButton onClick={pushToDeposit}>
-          <PrimaryTextSpan color="#fffccc" fontSize="14px">
+          <PrimaryTextSpan fontSize="14px">
             {t('Make a deposit')}
           </PrimaryTextSpan>
         </DeposteButton>

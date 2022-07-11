@@ -119,7 +119,6 @@ function ForgotPassword() {
         {isSuccessful ? (
           <>
             <PrimaryTextParagraph
-              color="#fffccc"
               fontSize="24px"
               fontWeight="bold"
               marginBottom="20px"
@@ -149,7 +148,6 @@ function ForgotPassword() {
         ) : (
           <>
             <PrimaryTextParagraph
-              color="#fffccc"
               fontSize="24px"
               fontWeight="bold"
               marginBottom="20px"

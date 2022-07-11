@@ -15,6 +15,7 @@ import KYCId from '../components/KYC/KYCId';
 import KYCBankCard from '../components/KYC/KYCBankCard';
 import KYCOther from '../components/KYC/KYCOther';
 import KYCAddress from '../components/KYC/KYCAddress';
+import Colors from '../constants/Colors';
 
 const ProofOfIdentity = observer(() => {
   const [isSubmiting, setSubmit] = useState(true);
@@ -81,7 +82,7 @@ const ProofOfIdentity = observer(() => {
           height="100%"
           flexDirection="column"
           alignItems="center"
-          backgroundColor="#252636"
+          backgroundColor={Colors.DARK_BLACK}
           padding="40px 32px"
         >
           <Observer>
@@ -97,7 +98,7 @@ const ProofOfIdentity = observer(() => {
               <PrimaryTextParagraph
                 fontSize="30px"
                 fontWeight="bold"
-                color="#fffccc"
+                color={Colors.ACCENT}
                 marginBottom="48px"
               >
                 {t('Account verification')}

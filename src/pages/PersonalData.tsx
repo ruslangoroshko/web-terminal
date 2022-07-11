@@ -29,6 +29,7 @@ import BadRequestPopup from '../components/BadRequestPopup';
 import { useTranslation } from 'react-i18next';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
+import Colors from '../constants/Colors';
 
 function PersonalData() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -193,7 +194,7 @@ function PersonalData() {
       height="100%"
       flexDirection="column"
       alignItems="center"
-      backgroundColor="#252636"
+      backgroundColor={Colors.DARK_BLACK}
       padding="40px"
     >
       <Observer>
@@ -204,7 +205,7 @@ function PersonalData() {
         <PrimaryTextParagraph
           fontSize="30px"
           fontWeight="bold"
-          color="#fffccc"
+          color={Colors.ACCENT}
           marginBottom="8px"
         >
           {t('Personal data')}
@@ -213,7 +214,7 @@ function PersonalData() {
           marginBottom="40px"
           fontSize="14px"
           lineHeight="20px"
-          color="rgba(255, 255, 255, 0.4)"
+          color={Colors.WHITE_LIGHT}
         >
           {t(
             'Your pesonal data will be kept in strict confidence. We will not disclose your data to third parties.'
@@ -254,7 +255,7 @@ function PersonalData() {
                 position="relative"
               >
                 <PrimaryTextParagraph
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                   marginBottom="8px"
@@ -355,7 +356,7 @@ function PersonalData() {
               >
                 <FlexContainer margin="0 0 0 8px">
                   <PrimaryTextSpan
-                    color="#fffccc"
+                    color={Colors.ACCENT}
                     fontSize="14px"
                     marginRight="16px"
                   >
@@ -367,7 +368,7 @@ function PersonalData() {
                     direction="right"
                     width="334px"
                   >
-                    <PrimaryTextSpan fontSize="12px" color="#fffccc">
+                    <PrimaryTextSpan fontSize="12px" color={Colors.ACCENT}>
                       {t(
                         'A US reportable person is classified as anyone who holds one of the following: US citizenship, residency, tax identification number or mailing/residential adress, telephone number, as well as anyone who has instructions to transfer funds to an account maintained in the US.'
                       )}

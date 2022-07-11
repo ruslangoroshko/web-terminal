@@ -12,6 +12,7 @@ import { PrimaryButton } from '../../styles/Buttons';
 import { useHistory } from 'react-router-dom';
 import Page from '../../constants/Pages';
 import { AccountStatusEnum } from '../../enums/AccountStatusEnum';
+import Colors from '../../constants/Colors';
 
 const NextAccountType = observer(() => {
   const { accountTypeStore } = useStores();
@@ -111,7 +112,7 @@ const NextAccountType = observer(() => {
           onClick={handleOpenInfoPage}
         >
           <PrimaryTextSpan
-            color="#252636"
+            color={Colors.DARK_BLACK}
             fontSize="16px"
             lineHeight="18px"
           >

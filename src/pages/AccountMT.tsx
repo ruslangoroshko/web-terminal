@@ -205,7 +205,6 @@ const AccountMT = observer(() => {
                 fontWeight={500}
                 fontSize="20px"
                 lineHeight="150%"
-                color="#FFFCCC"
               >
                 {t('Create MT5 Account')}
               </PrimaryTextSpan>

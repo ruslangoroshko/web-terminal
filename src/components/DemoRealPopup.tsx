@@ -20,6 +20,7 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import Page from '../constants/Pages';
 import { HintEnum } from '../enums/HintsEnum';
+import Colors from '../constants/Colors';
 
 function DemoRealPopup() {
   const { push } = useHistory();
@@ -115,20 +116,20 @@ function DemoRealPopup() {
               fontSize="20px"
               fontWeight="bold"
               marginBottom="10px"
-              color="#fffccc"
+              color={Colors.ACCENT}
             >
               {t('Congratulations!')}
             </PrimaryTextParagraph>
             <PrimaryTextParagraph
               fontSize="11px"
-              color="#fffccc"
+              color={Colors.ACCENT}
               marginBottom="42px"
             >
               {t('You Have Been Successfully Registered')}
             </PrimaryTextParagraph>
             <FlexContainer justifyContent="space-between">
               <DemoButton onClick={selectDemoAccount} isSingle={mainAppStore.isPromoAccount}>
-                <PrimaryTextSpan fontSize="14px" fontWeight="bold" color="#fff">
+                <PrimaryTextSpan fontSize="14px" fontWeight="bold" color={Colors.WHITE}>
                   {t('Practice on Demo')}
                 </PrimaryTextSpan>
               </DemoButton>
@@ -137,7 +138,7 @@ function DemoRealPopup() {
                   <PrimaryTextSpan
                     fontSize="14px"
                     fontWeight="bold"
-                    color="#000"
+                    color={Colors.DARK_BLACK}
                   >
                     {t('Invest Real funds')}
                   </PrimaryTextSpan>
@@ -155,27 +156,27 @@ export default DemoRealPopup;
 
 const DemoButton = styled(ButtonWithoutStyles)<{isSingle: boolean;}>`
   border-radius: 4px;
-  background-color: #ff0764;
+  background-color: ${Colors.DANGER};
   width: 200px;
   height: 40px;
   transition: all 0.2s ease;
   will-change: background-color;
   margin-right: ${props => props.isSingle ? '' : '30px'};
   &:hover {
-    background-color: #ff557e;
+    background-color: ${Colors.DANGER_LIGHT};
   }
 `;
 
 const RealButton = styled(ButtonWithoutStyles)`
   border-radius: 4px;
-  background-color: #00fff2;
+  background-color: ${Colors.PRIMARY};
   width: 200px;
   height: 40px;
   transition: all 0.2s ease;
   will-change: background-color;
 
   &:hover {
-    background-color: #9ffff2;
+    background-color: ${Colors.PRIMARY_LIGHT};
   }
 `;
 

@@ -15,6 +15,7 @@ import { Observer } from 'mobx-react-lite';
 import { ObjectKeys } from '../../helpers/objectKeys';
 import { ResolutionString } from '../../vendor/charting_library/charting_library';
 import { useTranslation } from 'react-i18next';
+import Colors from '../../constants/Colors';
 
 interface Props {}
 
@@ -26,29 +27,24 @@ const ChartResolutionsDropdown: FC<Props> = (props) => {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const handleChangeResolution = (
-    resolutionKey: SupportedResolutionsType
-  ) => () => {
-    tradingViewStore.tradingWidget
-      ?.activeChart()
-      .setResolution(
-        supportedResolutions[resolutionKey] as ResolutionString,
-        () => {
-          console.log(
-            '***** resolution has changed to ',
-            supportedResolutions[resolutionKey]
-          );
-          if (instrumentsStore.activeInstrument) {
-            instrumentsStore.editActiveInstrument({
-              ...instrumentsStore.activeInstrument,
-              resolution: resolutionKey,
-              interval: null,
-            });
+  const handleChangeResolution =
+    (resolutionKey: SupportedResolutionsType) => () => {
+      tradingViewStore.tradingWidget
+        ?.activeChart()
+        .setResolution(
+          supportedResolutions[resolutionKey] as ResolutionString,
+          () => {
+            if (instrumentsStore.activeInstrument) {
+              instrumentsStore.editActiveInstrument({
+                ...instrumentsStore.activeInstrument,
+                resolution: resolutionKey,
+                interval: null,
+              });
+            }
+            toggle(false);
           }
-          toggle(false);
-        }
-      );
-  };
+        );
+    };
 
   const handleToggle = () => {
     toggle(!on);
@@ -87,7 +83,7 @@ const ChartResolutionsDropdown: FC<Props> = (props) => {
             {instrumentsStore.activeInstrument && (
               <SettingsButton onClick={handleToggle}>
                 <PrimaryTextSpan
-                  color={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
+                  color={on ? Colors.PRIMARY : 'rgba(255, 255, 255, 0.5)'}
                   fontSize="12px"
                 >
                   {getShortName(instrumentsStore.activeInstrument.resolution)}
@@ -112,7 +108,7 @@ const ChartResolutionsDropdown: FC<Props> = (props) => {
                   >
                     <PrimaryTextParagraph
                       fontSize="12px"
-                      color="#fffccc"
+                      color={Colors.ACCENT}
                       marginBottom="12px"
                       whiteSpace="nowrap"
                     >
@@ -164,7 +160,7 @@ const Triangle = styled.div`
 
 const SettingsButton = styled(ButtonWithoutStyles)`
   padding: 8px;
-  color: rgba(255, 255, 255, 0.6);
+  color: ${Colors.WHITE_DARK};
   font-size: 12px;
   line-height: 16px;
 `;

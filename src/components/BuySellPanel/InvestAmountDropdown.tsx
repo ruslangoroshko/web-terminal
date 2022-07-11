@@ -9,6 +9,7 @@ import Fields from '../../constants/fields';
 import { useStores } from '../../hooks/useStores';
 import { useTranslation } from 'react-i18next';
 import { Observer } from 'mobx-react-lite';
+import Colors from '../../constants/Colors';
 
 interface Props {
   setFieldValue: any;
@@ -48,7 +49,7 @@ const InvestAmountDropdown: FC<Props> = (props) => {
               <PrimaryTextSpan
                 fontSize="16px"
                 fontWeight="bold"
-                color="#fffccc"
+                color={Colors.ACCENT}
               >
                 {mainAppStore.activeAccount?.symbol}
                 {item}
@@ -71,7 +72,7 @@ const InvestAmountDropdown: FC<Props> = (props) => {
         </PrimaryTextParagraph>
         <Observer>
           {() => (
-            <PrimaryTextSpan fontSize="16px" fontWeight="bold" color="#fffccc">
+            <PrimaryTextSpan fontSize="16px" fontWeight="bold" color={Colors.ACCENT}>
               {mainAppStore.activeAccount?.symbol}
               {mainAppStore.activeAccount?.balance.toFixed(2)}
             </PrimaryTextSpan>
@@ -102,7 +103,7 @@ const DropDownItem = styled(FlexContainer)`
   &:hover {
     cursor: pointer;
     > span {
-      color: #00ffdd;
+      color: ${Colors.PRIMARY};
     }
   }
 `;

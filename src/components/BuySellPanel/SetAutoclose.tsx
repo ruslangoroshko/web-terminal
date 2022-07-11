@@ -23,6 +23,7 @@ import hasValue from '../../helpers/hasValue';
 import { Observer, observer } from 'mobx-react-lite';
 import setValueAsNullIfEmptyAndNegative from '../../helpers/setValueAsNullIfEmptyAndNegative';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
+import Colors from '../../constants/Colors';
 
 interface Props {
   isDisabled?: boolean;
@@ -180,8 +181,8 @@ const SetAutoclose: FC<Props> = observer(
                 <ButtonClose type="button" onClick={handleToggle}>
                   <SvgIcon
                     {...IconClose}
-                    fillColor="rgba(255, 255, 255, 0.6)"
-                    hoverFillColor="#00FFDD"
+                    fillColor={Colors.WHITE_DARK}
+                    hoverFillColor={Colors.PRIMARY}
                   ></SvgIcon>
                 </ButtonClose>
                 <PrimaryTextParagraph marginBottom="16px">
@@ -206,7 +207,7 @@ const SetAutoclose: FC<Props> = observer(
                     width="200px"
                     direction="left"
                   >
-                    <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                       {t(
                         'Determine the Take profit based on the amount of capital you are willing to take at the peak of the deal or based on the price level of your asset'
                       )}
@@ -229,7 +230,7 @@ const SetAutoclose: FC<Props> = observer(
                     >
                       {isActive && errors.tp && (
                         <ErropPopup
-                          textColor="#fffccc"
+                          textColor={Colors.ACCENT}
                           bgColor={ColorsPallete.RAZZMATAZZ}
                           classNameTooltip={getProcessId()}
                           direction="left"
@@ -267,7 +268,7 @@ const SetAutoclose: FC<Props> = observer(
                           >
                             <SvgIcon
                               {...IconClose}
-                              fillColor="rgba(255, 255, 255, 0.6)"
+                              fillColor={Colors.WHITE_DARK}
                             ></SvgIcon>
                           </ButtonWithoutStyles>
                         </CloseValueButtonWrapper>
@@ -301,7 +302,7 @@ const SetAutoclose: FC<Props> = observer(
                     width="200px"
                     direction="left"
                   >
-                    <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                       {t(
                         'Determine the Stop loss based on the amount of capital you are willing to risk or based on the price level of your asset'
                       )}
@@ -324,7 +325,7 @@ const SetAutoclose: FC<Props> = observer(
                     >
                       {isActive && errors.sl && (
                         <ErropPopup
-                          textColor="#fffccc"
+                          textColor={Colors.ACCENT}
                           bgColor={ColorsPallete.RAZZMATAZZ}
                           classNameTooltip={getProcessId()}
                           direction="left"
@@ -362,7 +363,7 @@ const SetAutoclose: FC<Props> = observer(
                           >
                             <SvgIcon
                               {...IconClose}
-                              fillColor="rgba(255, 255, 255, 0.6)"
+                              fillColor={Colors.WHITE_DARK}
                             ></SvgIcon>
                           </ButtonWithoutStyles>
                         </CloseValueButtonWrapper>
@@ -403,7 +404,7 @@ const SetAutoclose: FC<Props> = observer(
                     >
                       <Observer>
                         {() => (
-                          <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                          <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                             {`${t('If the loss for a position reaches')} ${
                               instrumentsStore.instruments.find(
                                 (inst) =>
@@ -442,13 +443,13 @@ const SetAutoclose: FC<Props> = observer(
                             <br />
                             <FlexContainer>
                               <FlexContainer margin="3px 5px 0 0">
-                                <SvgIcon {...IconShield} fillColor="#fffccc"/>
+                                <SvgIcon {...IconShield} fillColor={Colors.ACCENT}/>
                               </FlexContainer> - {t('save position is active')}
                             </FlexContainer>
                             <br />
                             <FlexContainer>
                               <FlexContainer margin="3px 5px 0 0">
-                                <SvgIcon {...IconShield} fillColor="#ED145B"/>
+                                <SvgIcon {...IconShield} fillColor={Colors.DANGER}/>
                               </FlexContainer> - {t('save position is active and use available funds')}
                             </FlexContainer>
                           </PrimaryTextSpan>
@@ -527,7 +528,7 @@ const InputPnL = styled.input`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #fffccc;
+  color: ${Colors.ACCENT};
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 
   &::placeholder {
@@ -540,14 +541,14 @@ const InputPnL = styled.input`
   &:-webkit-autofill:valid,
   &:-webkit-autofill:active {
     transition: border 0.2s ease, background-color 50000s ease-in-out 0s;
-    -webkit-text-fill-color: #fffccc !important;
+    -webkit-text-fill-color: ${Colors.ACCENT} !important;
   }
 `;
 
 const InputWrapper = styled(FlexContainer)`
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
+  color: ${Colors.WHITE};
   background-color: rgba(255, 255, 255, 0.06);
 `;
 
@@ -555,7 +556,7 @@ const PlusSign = styled.span`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #fffccc;
+  color: ${Colors.ACCENT};
   position: absolute;
   top: 50%;
   left: 8px;
@@ -591,12 +592,12 @@ const RadioInput = styled.input`
     width: 100%;
     height: 100%;
     color: #1c1f26;
-    background-color: #fffccc;
+    background-color: ${Colors.ACCENT};
   }
 
   &:checked ~ .check-on {
     color: #1c1f26;
-    background-color: #fffccc;
+    background-color: ${Colors.ACCENT};
   }
 
   &:checked + .check-off {
@@ -626,5 +627,5 @@ const PseudoRadio = styled.div<{ isChecked: boolean }>`
   height: 100%;
   color: ${(props) =>
     props.isChecked ? '#1c1f26' : 'rgba(196, 196, 196, 0.5)'};
-  background-color: ${(props) => (props.isChecked ? '#fffccc' : 'transparent')};
+  background-color: ${(props) => (props.isChecked ? Colors.ACCENT : 'transparent')};
 `;

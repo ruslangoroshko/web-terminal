@@ -13,6 +13,7 @@ import { useStores } from '../hooks/useStores';
 import { LOCAL_INSTRUMENT_ACTIVE } from '../constants/global';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 import API from '../helpers/API';
+import Colors from '../constants/Colors';
 
 const FavoriteInstrumetsBar = observer(() => {
   const { mainAppStore, instrumentsStore } = useStores();
@@ -117,7 +118,7 @@ const FavoriteInstrumetsBar = observer(() => {
               {({ on, toggle }) => (
                 <>
                   <AddIntrumentButton onClick={toggle}>
-                    <SvgIcon {...IconAddInstrument} fillColor="#FFFCCC" />
+                    <SvgIcon {...IconAddInstrument} fillColor={Colors.ACCENT} />
                   </AddIntrumentButton>
                   {on && <AddInstrumentsPopup toggle={toggle} />}
                 </>

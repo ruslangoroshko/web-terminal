@@ -14,6 +14,7 @@ import AccountStatusProgress from '../components/AccountStatusProgress';
 import AboutStatusTable from '../components/AboutStatusTable';
 import { useStores } from '../hooks/useStores';
 import { PrimaryTextSpan } from '../styles/TextsElements';
+import Colors from '../constants/Colors';
 
 const AccountTypeInfo = observer(() => {
   const { tabsStore } = useStores();
@@ -32,7 +33,7 @@ const AccountTypeInfo = observer(() => {
           <SvgIcon
             {...IconClose}
             fillColor="rgba(255, 255, 255, 0.6)"
-            hoverFillColor="#00FFDD"
+            hoverFillColor={Colors.PRIMARY}
           > </SvgIcon>
         </IconButton>
         <AccountStatusProgress />
@@ -54,7 +55,7 @@ const AccountTypeInfo = observer(() => {
             width="40px"
             height="40px"
             borderRadius="20px"
-            backgroundColor="#FFFCCC"
+            backgroundColor={Colors.ACCENT}
             alignItems="center"
             justifyContent="center"
             marginRight="16px"
@@ -71,7 +72,6 @@ const AccountTypeInfo = observer(() => {
               fontSize="14px"
               lineHeight="14px"
               fontWeight={700}
-              color="#FFFCCC"
               marginBottom="4px"
             >
               {t('Personalized conditions')}
@@ -80,7 +80,7 @@ const AccountTypeInfo = observer(() => {
               fontSize="12px"
               lineHeight="12px"
               fontWeight={400}
-              color="rgba(255, 255, 255, 0.64)"
+              color={Colors.WHITE_DARK}
             >
               {t('Exclusive from $100,000')}
             </PrimaryTextSpan>

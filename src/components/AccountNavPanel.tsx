@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
+import Colors from '../constants/Colors';
 
 const AccountNavPanel = () => {
   const { mainAppStore, tabsStore, accountTypeStore } = useStores();
@@ -24,7 +25,7 @@ const AccountNavPanel = () => {
   return (
     <FlexContainer flexDirection="column" margin="0 40px 0 0" width="140px">
       <PrimaryTextParagraph
-        color="#fffccc"
+        color={Colors.ACCENT}
         fontSize="20px"
         fontWeight="bold"
         marginBottom="34px"
@@ -34,7 +35,7 @@ const AccountNavPanel = () => {
 
       <FlexContainer flexDirection="column">
         <CustomNavLink to={Page.ACCOUNT_SEQURITY} activeClassName="active">
-          <AccountLinkSpan color="#fffccc">{t('Security')}</AccountLinkSpan>
+          <AccountLinkSpan color={Colors.ACCENT}>{t('Security')}</AccountLinkSpan>
         </CustomNavLink>
         {!mainAppStore.isPromoAccount && (
           <>
@@ -42,7 +43,7 @@ const AccountNavPanel = () => {
               to={Page.ACCOUNT_BALANCE_HISTORY}
               activeClassName="active"
             >
-              <AccountLinkSpan color="#fffccc">
+              <AccountLinkSpan color={Colors.ACCENT}>
                 {t('Balance history')}
               </AccountLinkSpan>
             </CustomNavLink>
@@ -50,27 +51,27 @@ const AccountNavPanel = () => {
             {
               accountTypeStore.isMTAvailable &&
                 <CustomNavLink to={Page.ACCOUNT_MT5} activeClassName="active">
-                  <AccountLinkSpan color="#fffccc">{t('MT5')}</AccountLinkSpan>
+                  <AccountLinkSpan color={Colors.ACCENT}>{t('MT5')}</AccountLinkSpan>
                 </CustomNavLink>
             }
 
             <CustomNavLink to={Page.ACCOUNT_WITHDRAW} activeClassName="active">
-              <AccountLinkSpan color="#fffccc">{t('Withdraw')}</AccountLinkSpan>
+              <AccountLinkSpan color={Colors.ACCENT}>{t('Withdraw')}</AccountLinkSpan>
             </CustomNavLink>
 
             <CustomNavLink to={Page.BONUS_FAQ} activeClassName="active">
-              <AccountLinkSpan color="#fffccc">{t('Bonus FAQ')}</AccountLinkSpan>
+              <AccountLinkSpan color={Colors.ACCENT}>{t('Bonus FAQ')}</AccountLinkSpan>
             </CustomNavLink>
 
             <CustomNavLink to={Page.ACCOUNT_TYPE_INFO} activeClassName="active">
-              <AccountLinkSpan color="#fffccc">{t('My Status')}</AccountLinkSpan>
+              <AccountLinkSpan color={Colors.ACCENT}>{t('My Status')}</AccountLinkSpan>
             </CustomNavLink>
           </>
         )}
       </FlexContainer>
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={handleLogoutClick}>
-          <AccountLinkSpan color="#fffccc">{t('Logout')}</AccountLinkSpan>
+          <AccountLinkSpan color={Colors.ACCENT}>{t('Logout')}</AccountLinkSpan>
         </LogoutButton>
       </FlexContainer>
     </FlexContainer>
@@ -92,7 +93,7 @@ const CustomNavLink = styled(NavLink)`
   }
 
   &.active > span {
-    color: #21b3a4;
+    color: ${Colors.PRIMARY_LIGHT};
   }
 
   &:hover {
@@ -105,7 +106,7 @@ const AccountLinkSpan = styled(PrimaryTextSpan)`
   will-change: color;
 
   &:hover {
-    color: #21b3a4;
+    color: ${Colors.PRIMARY_LIGHT};
   }
 `;
 
