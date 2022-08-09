@@ -45,7 +45,7 @@ prebuild-prod:
     TRADING_URL: ${MASTER_TRADING_URL}
   script:
     - npm i
-    - npm test
+    # - npm test
   only:
     # - master
     - uat
