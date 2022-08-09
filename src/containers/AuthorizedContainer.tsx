@@ -33,7 +33,6 @@ import EducationExpanded from '../components/SideBarTabs/EducationExpanded';
 import CongratulationPopup from '../components/CongratulationPopup';
 import KYCPopup from '../components/KYC/KYCPopup';
 import MTPopup from '../components/MTPopup';
-import MTErrorPopup from '../components/MTErrorPopup';
 import Colors from '../constants/Colors';
 
 interface Props {}
@@ -268,7 +267,6 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
                 <BonusPopup />
                 <KYCPopup />
                 <MTPopup />
-                {/*<MTErrorPopup />*/}
               </>
             )}
           </>

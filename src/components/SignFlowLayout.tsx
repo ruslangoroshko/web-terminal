@@ -10,7 +10,10 @@ import { useStores } from '../hooks/useStores';
 import { useTranslation } from 'react-i18next';
 import { Observer } from 'mobx-react-lite';
 import LanguageButton from './NavBar/LanguageButton';
-import { brandingLinksTranslate } from '../constants/brandingLinksTranslate';
+import {
+  BrandEnum,
+  brandingLinksTranslate,
+} from '../constants/brandingLinksTranslate';
 import Colors from '../constants/Colors';
 
 interface Props {}
@@ -45,34 +48,40 @@ const SignFlowLayout: FC<Props> = (props) => {
       </FlexContainer>
       <FlexContainer flexDirection="column">{children}</FlexContainer>
       <FlexContainer flexDirection="column" alignItems="center" width="100%">
-        <PrimaryTextParagraph
-          fontSize="14px"
-          fontWeight="bold"
-          color={Colors.ACCENT}
-          marginBottom="20px"
-        >
-          {t('Download App')}
-        </PrimaryTextParagraph>
         <Observer>
           {() => (
-            <FlexContainer margin="0 0 30px 0" padding="0 0 0 14px">
-              <ButtonAppleStore
-                to={{
-                  pathname: mainAppStore.initModel.iosAppLink,
-                }}
-                target="_blank"
+            <>
+              <PrimaryTextParagraph
+                fontSize="14px"
+                fontWeight="bold"
+                color={Colors.ACCENT}
+                marginBottom="20px"
               >
-                <ButtonImage src={ButtonAppleStoreImage} />
-              </ButtonAppleStore>
-              <ButtonGoogleStore
-                to={{
-                  pathname: mainAppStore.initModel.androidAppLink,
-                }}
-                target="_blank"
-              >
-                <ButtonImage src={ButtonGoogleStoreImage} />
-              </ButtonGoogleStore>
-            </FlexContainer>
+                {t('Download App')}
+              </PrimaryTextParagraph>
+              {mainAppStore.initModel.brandProperty &&
+                mainAppStore.initModel.brandProperty !==
+                  BrandEnum.Welltrade && (
+                  <FlexContainer margin="0 0 30px 0" padding="0 0 0 14px">
+                    <ButtonAppleStore
+                      to={{
+                        pathname: mainAppStore.initModel.iosAppLink,
+                      }}
+                      target="_blank"
+                    >
+                      <ButtonImage src={ButtonAppleStoreImage} />
+                    </ButtonAppleStore>
+                    <ButtonGoogleStore
+                      to={{
+                        pathname: mainAppStore.initModel.androidAppLink,
+                      }}
+                      target="_blank"
+                    >
+                      <ButtonImage src={ButtonGoogleStoreImage} />
+                    </ButtonGoogleStore>
+                  </FlexContainer>
+                )}
+            </>
           )}
         </Observer>
         <FlexContainer justifyContent="space-between" width="100%">
@@ -96,44 +105,50 @@ const SignFlowLayout: FC<Props> = (props) => {
 
           <Observer>
             {() => (
-              <FlexContainer>
-                <LinkItem
-                  href={t(
-                    `${
-                      brandingLinksTranslate[
-                        mainAppStore.initModel.brandProperty
-                      ].support
-                    }`
+              <>
+                {mainAppStore.initModel.brandProperty &&
+                  mainAppStore.initModel.brandProperty !==
+                    BrandEnum.Welltrade && (
+                    <FlexContainer>
+                      <LinkItem
+                        href={t(
+                          `${
+                            brandingLinksTranslate[
+                              mainAppStore.initModel.brandProperty
+                            ].support
+                          }`
+                        )}
+                        target="_blank"
+                      >
+                        {t('Support')}
+                      </LinkItem>
+                      <LinkItem
+                        href={t(
+                          `${
+                            brandingLinksTranslate[
+                              mainAppStore.initModel.brandProperty
+                            ].faq
+                          }`
+                        )}
+                        target="_blank"
+                      >
+                        {t('FAQ')}
+                      </LinkItem>
+                      <LinkItem
+                        href={t(
+                          `${
+                            brandingLinksTranslate[
+                              mainAppStore.initModel.brandProperty
+                            ].aboutUs
+                          }`
+                        )}
+                        target="_blank"
+                      >
+                        {t('About us')}
+                      </LinkItem>
+                    </FlexContainer>
                   )}
-                  target="_blank"
-                >
-                  {t('Support')}
-                </LinkItem>
-                <LinkItem
-                  href={t(
-                    `${
-                      brandingLinksTranslate[
-                        mainAppStore.initModel.brandProperty
-                      ].faq
-                    }`
-                  )}
-                  target="_blank"
-                >
-                  {t('FAQ')}
-                </LinkItem>
-                <LinkItem
-                  href={t(
-                    `${
-                      brandingLinksTranslate[
-                        mainAppStore.initModel.brandProperty
-                      ].aboutUs
-                    }`
-                  )}
-                  target="_blank"
-                >
-                  {t('About us')}
-                </LinkItem>
-              </FlexContainer>
+              </>
             )}
           </Observer>
         </FlexContainer>

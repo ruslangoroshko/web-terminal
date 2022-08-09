@@ -2,7 +2,8 @@
 export enum BrandEnum {
 	AM = "allianzmarket",
 	Monfex = "monfex",
-	HP = "handelpro"
+	HP = "handelpro",
+	Welltrade = "welltrade",
 }
 
 export const brandingLinksTranslate = {
@@ -29,5 +30,13 @@ export const brandingLinksTranslate = {
 		aboutUs: "AboutUs_M",
 		support: "Support_M",
 		supportEmail: "compliance@monfex.com"
+	},
+	[BrandEnum.Welltrade]: {
+		faq: "",
+		termsCondition: "",
+		privacyPolicy: "",
+		aboutUs: "",
+		support: "",
+		supportEmail: "compliance@welltrade.online"
 	}
 }
