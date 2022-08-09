@@ -35,8 +35,14 @@ const LoaderFullscreen: FC<Props> = ({ isLoading }) => {
             justifyContent="center"
             marginBottom="32px"
           >
-            <FlexContainer margin="0 6px 0 0" width="250px">
-              {mainAppStore.initModel.logo && <Logo src={mainAppStore.initModel.logo} />}
+            <FlexContainer
+              margin="0 6px 0 0"
+              width="250px"
+              justifyContent="center"
+            >
+              {mainAppStore.initModel.logo && (
+                <Logo src={mainAppStore.initModel.logo} />
+              )}
             </FlexContainer>
           </FlexContainer>
           <FlexContainer alignItems="center">
@@ -72,7 +78,7 @@ const FixedContainerWrapper = styled.div<{ isLoading: boolean }>`
   position: relative;
   z-index: 105;
   will-change: opacity, visibility;
-  animation: ${props =>
+  animation: ${(props) =>
     !props.isLoading &&
     css`
       ${fadeOut} 0.5s linear forwards

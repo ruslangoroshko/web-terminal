@@ -51,35 +51,37 @@ const SignFlowLayout: FC<Props> = (props) => {
         <Observer>
           {() => (
             <>
-              <PrimaryTextParagraph
-                fontSize="14px"
-                fontWeight="bold"
-                color={Colors.ACCENT}
-                marginBottom="20px"
-              >
-                {t('Download App')}
-              </PrimaryTextParagraph>
               {mainAppStore.initModel.brandProperty &&
                 mainAppStore.initModel.brandProperty !==
                   BrandEnum.Welltrade && (
-                  <FlexContainer margin="0 0 30px 0" padding="0 0 0 14px">
-                    <ButtonAppleStore
-                      to={{
-                        pathname: mainAppStore.initModel.iosAppLink,
-                      }}
-                      target="_blank"
+                  <>
+                    <PrimaryTextParagraph
+                      fontSize="14px"
+                      fontWeight="bold"
+                      color={Colors.ACCENT}
+                      marginBottom="20px"
                     >
-                      <ButtonImage src={ButtonAppleStoreImage} />
-                    </ButtonAppleStore>
-                    <ButtonGoogleStore
-                      to={{
-                        pathname: mainAppStore.initModel.androidAppLink,
-                      }}
-                      target="_blank"
-                    >
-                      <ButtonImage src={ButtonGoogleStoreImage} />
-                    </ButtonGoogleStore>
-                  </FlexContainer>
+                      {t('Download App')}
+                    </PrimaryTextParagraph>
+                    <FlexContainer margin="0 0 30px 0" padding="0 0 0 14px">
+                      <ButtonAppleStore
+                        to={{
+                          pathname: mainAppStore.initModel.iosAppLink,
+                        }}
+                        target="_blank"
+                      >
+                        <ButtonImage src={ButtonAppleStoreImage} />
+                      </ButtonAppleStore>
+                      <ButtonGoogleStore
+                        to={{
+                          pathname: mainAppStore.initModel.androidAppLink,
+                        }}
+                        target="_blank"
+                      >
+                        <ButtonImage src={ButtonGoogleStoreImage} />
+                      </ButtonGoogleStore>
+                    </FlexContainer>
+                  </>
                 )}
             </>
           )}
