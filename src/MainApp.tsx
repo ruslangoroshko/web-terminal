@@ -104,6 +104,10 @@ const MainApp: FC = () => {
             }
           }
 
+          #header-toolbar-symbol-search::parrent {
+            display: none !important;
+          }
+
           ${reactDatePickerOverrides};
         `}
       />

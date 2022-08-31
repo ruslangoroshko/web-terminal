@@ -148,7 +148,7 @@ class DataFeedService implements IBasicDataFeed {
         }
       }
     } catch (err) {
-      onError(err);
+      onError(`${err}`);
     }
   };
   subscribeBars = (
