@@ -59,6 +59,63 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         backgroundColor: 'transparent',
         foregroundColor: 'transparent',
       },
+      studies_access: {
+        type: 'black',
+        tools: [
+          {
+            name: 'Accumulation/Distribution',
+            grayed: false,
+          },
+          {
+            name: 'Chaikin Oscillator',
+            grayed: false,
+          },
+          {
+            name: 'Ease Of Movement',
+            grayed: false,
+          },
+          {
+            name: "Elder's Force Index",
+            grayed: false,
+          },
+          {
+            name: 'Klinger Oscillator',
+            grayed: false,
+          },
+          {
+            name: 'Money Flow Index',
+            grayed: false,
+          },
+          {
+            name: 'Net Volume',
+            grayed: false,
+          },
+          {
+            name: 'On Balance Volume',
+            grayed: false,
+          },
+          {
+            name: 'Volume',
+            grayed: false,
+          },
+          {
+            name: 'Volume Oscillator',
+            grayed: false,
+          },
+          {
+            name: 'VWAP',
+            grayed: false,
+          },
+          {
+            name: 'VWMA',
+            grayed: false,
+          },
+          {
+            name: 'Zig Zag',
+            grayed: false,
+          },
+        ],
+      },
       interval: supportedResolutions[BASIC_RESOLUTION_KEY] as ResolutionString,
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
@@ -138,6 +195,8 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
     tvWidget.onChartReady(async () => {
       tradingViewStore.setTradingWidget(tvWidget);
       markersOnChartStore.renderActivePositionsMarkersOnChart();
+
+      console.log(tvWidget.getStudiesList());
     });
     return () => {
       tradingViewStore.setTradingWidget(undefined);
