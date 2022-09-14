@@ -27,7 +27,11 @@ import {
   RecoveryPasswordParams,
   IWelcomeBonusDTO,
 } from '../types/UserInfo';
-import { CandleDTO, HistoryCandlesDTOType } from '../types/HistoryTypes';
+import {
+  CandleDTO,
+  CandlesDTO,
+  HistoryCandlesDTOType,
+} from '../types/HistoryTypes';
 import {
   PositionsHistoryReportDTO,
   BalanceHistoryDTO,
@@ -345,19 +349,19 @@ class API {
   };
 
   getPriceHistory = async (params: HistoryCandlesDTOType) => {
-    const response = await axios.get<CandleDTO[]>(
+    const response = await axios.get<{ candles: CandlesDTO[] }>(
       `${API_STRING}${API_LIST.PRICE_HISTORY.CANDLES}`,
       {
         params,
         ...this.backgroundRequestOptions,
       }
     );
-    const bars = response.data.map((item) => ({
-      time: item.d,
-      low: item.l,
-      high: item.h,
-      open: item.o,
-      close: item.c,
+    const bars = response.data.candles.map((item) => ({
+      time: item.D,
+      low: item.L,
+      high: item.H,
+      open: item.O,
+      close: item.C,
     }));
     return bars;
   };
