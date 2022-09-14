@@ -10,6 +10,15 @@ export interface HistoryCandlesType {
   candleType: CandleTypeEnum;
 }
 
+
+export interface HistoryCandlesDTOType {
+  InstrumentId: string;
+  BidOrAsk: AskBidEnum;
+  From: number;
+  To: number;
+  CandleType: CandleTypeEnum;
+}
+
 export interface CandleDTO extends HLOC {
   d: number;
 }

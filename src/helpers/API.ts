@@ -24,9 +24,10 @@ import {
   UserRegistration,
   ChangePasswordRespone,
   LpLoginParams,
-  RecoveryPasswordParams, IWelcomeBonusDTO,
+  RecoveryPasswordParams,
+  IWelcomeBonusDTO,
 } from '../types/UserInfo';
-import { HistoryCandlesType, CandleDTO } from '../types/HistoryTypes';
+import { CandleDTO, HistoryCandlesDTOType } from '../types/HistoryTypes';
 import {
   PositionsHistoryReportDTO,
   BalanceHistoryDTO,
@@ -86,14 +87,14 @@ class API {
   clientRequestOptions: AxiosRequestConfig = {
     timeoutErrorMessage: requestOptions.TIMEOUT,
     data: {
-      initBy: requestOptions.CLIENT
-    }
+      initBy: requestOptions.CLIENT,
+    },
   };
   backgroundRequestOptions: AxiosRequestConfig = {
     timeoutErrorMessage: requestOptions.TIMEOUT,
     data: {
-      initBy: requestOptions.BACKGROUND
-    }
+      initBy: requestOptions.BACKGROUND,
+    },
   };
 
   //
@@ -144,7 +145,7 @@ class API {
     const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.POSITIONS.UPDATE_SL_TP}`,
       formData,
-      this.clientRequestOptions 
+      this.clientRequestOptions
     );
     return response.data;
   };
@@ -154,7 +155,7 @@ class API {
     const response = await axios.post<OpenPositionResponseDTO>(
       `${API_STRING}${API_LIST.POSITIONS.UPDATE_TOPPING_UP}`,
       formData,
-      this.clientRequestOptions 
+      this.clientRequestOptions
     );
     return response.data;
   };
@@ -307,7 +308,6 @@ class API {
     return response.data;
   };
 
-  
   // -------------------
 
   //
@@ -344,7 +344,7 @@ class API {
     return response.data;
   };
 
-  getPriceHistory = async (params: HistoryCandlesType) => {
+  getPriceHistory = async (params: HistoryCandlesDTOType) => {
     const response = await axios.get<CandleDTO[]>(
       `${API_STRING}${API_LIST.PRICE_HISTORY.CANDLES}`,
       {
@@ -599,10 +599,17 @@ class API {
     return response.data;
   };
 
-  getOnBoardingInfoByStep = async (stepNumber: number, deviceType: number, miscUrl: string) => {
-    const needToAdd = ((API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL) ? '' : '/misc';
+  getOnBoardingInfoByStep = async (
+    stepNumber: number,
+    deviceType: number,
+    miscUrl: string
+  ) => {
+    const needToAdd =
+      (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
     const response = await axios.get<OnBoardingInfo>(
-      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.ONBOARDING.STEPS}/${stepNumber}?deviceTypeId=${deviceType}`,
+      `${API_MISC_STRING || miscUrl}${needToAdd}${
+        API_LIST.ONBOARDING.STEPS
+      }/${stepNumber}?deviceTypeId=${deviceType}`,
       this.backgroundRequestOptions
     );
     return response.data;
@@ -625,7 +632,6 @@ class API {
     );
     return response.data;
   };
-
 
   testBGrequest = async () => {
     const response = await axios.get(
