@@ -1,6 +1,6 @@
 import { AskBidEnum } from '../enums/AskBid';
 import { CandleTypeEnum } from '../enums/CandleType';
-import { HLOC, HLOC_DTO } from './BidAsk';
+import { HLOC } from './BidAsk';
 
 export interface HistoryCandlesType {
   instrumentId: string;
@@ -20,8 +20,4 @@ export interface HistoryCandlesDTOType {
 
 export interface CandleDTO extends HLOC {
   d: number;
-}
-
-export interface CandlesDTO extends HLOC_DTO {
-  D: number;
 }

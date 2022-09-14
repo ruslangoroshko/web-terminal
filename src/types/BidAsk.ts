@@ -18,10 +18,3 @@ export interface HLOC {
   o: number;
   c: number;
 }
-
-export interface HLOC_DTO {
-  L: number;
-  O: number;
-  H: number;
-  C: number;
-}

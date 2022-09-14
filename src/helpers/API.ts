@@ -29,7 +29,6 @@ import {
 } from '../types/UserInfo';
 import {
   CandleDTO,
-  CandlesDTO,
   HistoryCandlesDTOType,
 } from '../types/HistoryTypes';
 import {
@@ -349,7 +348,7 @@ class API {
   };
 
   getPriceHistory = async (params: HistoryCandlesDTOType) => {
-    const response = await axios.get<{ candles: CandlesDTO[] }>(
+    const response = await axios.get<{ candles: CandleDTO[] }>(
       `${API_STRING}${API_LIST.PRICE_HISTORY.CANDLES}`,
       {
         params,
@@ -357,11 +356,11 @@ class API {
       }
     );
     const bars = response.data.candles.map((item) => ({
-      time: item.D,
-      low: item.L,
-      high: item.H,
-      open: item.O,
-      close: item.C,
+      time: item.d,
+      low: item.l,
+      high: item.h,
+      open: item.o,
+      close: item.c,
     }));
     return bars;
   };
