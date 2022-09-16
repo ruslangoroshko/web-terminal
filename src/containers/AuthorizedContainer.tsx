@@ -21,13 +21,19 @@ import DepositPopupWrapper from '../components/DepositPopup/DepositPopupWrapper'
 import DepositPaymentResultPopup from '../components/DepositPopup/DepositPaymentResultPopup/DepositPaymentResultPopup';
 import {
   LOCAL_PORTFOLIO_TABS,
+  LOCAL_STORAGE_MT,
   LOCAL_STORAGE_SIDEBAR,
 } from '../constants/global';
 import NotificationPopup from '../components/NotificationPopup';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import Page from '../constants/Pages';
-import ReconnectTestBar from '../components/TestComponents/ReconnectTestBar';
 import BonusPopup from '../components/BonusPopup';
+import Education from '../components/SideBarTabs/Education';
+import EducationExpanded from '../components/SideBarTabs/EducationExpanded';
+import CongratulationPopup from '../components/CongratulationPopup';
+import KYCPopup from '../components/KYC/KYCPopup';
+import MTPopup from '../components/MTPopup';
+import Colors from '../constants/Colors';
 
 interface Props {}
 
@@ -68,6 +74,13 @@ const RenderTabByType: FC = observer(() => {
         </ResizableContentAnimationWrapper>
       );
 
+    case SideBarTabType.Education:
+      return (
+        <ResizableContentAnimationWrapper>
+          <Education></Education>
+        </ResizableContentAnimationWrapper>
+      );
+
     default:
       return null;
   }
@@ -94,6 +107,9 @@ const RenderExpandedTabByType = observer(() => {
     case SideBarTabType.History:
       return <TradingHistoryExpanded></TradingHistoryExpanded>;
 
+    case SideBarTabType.Education:
+      return <EducationExpanded />;
+
     default:
       return null;
   }
@@ -101,8 +117,14 @@ const RenderExpandedTabByType = observer(() => {
 
 const AuthorizedContainer: FC<Props> = observer((props) => {
   const { children } = props;
-
-  const { tabsStore, mainAppStore, notificationStore } = useStores();
+  const location = useLocation();
+  const {
+    tabsStore,
+    mainAppStore,
+    notificationStore,
+    depositFundsStore,
+    accountTypeStore,
+  } = useStores();
   const { push } = useHistory();
 
   const hiddenSideNavBar = useRouteMatch([Page.ONBOARDING]);
@@ -115,6 +137,7 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
     Page.ACCOUNT_BALANCE_HISTORY,
     Page.PROOF_OF_IDENTITY,
     Page.ONBOARDING,
+    Page.ACCOUNT_MT5,
   ]);
 
   const isHiddenPromoPage = hidenPromoPageList?.isExact;
@@ -127,6 +150,10 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
 
   useEffect(() => {
     const wasOpen = localStorage.getItem(LOCAL_STORAGE_SIDEBAR);
+    const isMTAvailable = localStorage.getItem(LOCAL_STORAGE_MT);
+    if (isMTAvailable) {
+      accountTypeStore.setMTAvailable(!!isMTAvailable);
+    }
     if (wasOpen) {
       tabsStore.setSideBarType(parseInt(wasOpen));
     }
@@ -234,9 +261,12 @@ const AuthorizedContainer: FC<Props> = observer((props) => {
           <>
             {!mainAppStore.isPromoAccount && mainAppStore.activeAccount && (
               <>
+                <CongratulationPopup />
                 <DepositPaymentResultPopup />
                 <DepositPopupWrapper />
                 <BonusPopup />
+                <KYCPopup />
+                <MTPopup />
               </>
             )}
           </>
@@ -300,7 +330,8 @@ const TabsLayoutWrapper = styled(FlexContainer)<
     props.isExpanded ? 'translateX(100%)' : 'translateX(-60px)'};
   backface-visibility: hidden;
   will-change: transform;
-  transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+  transition: transform ${(props) => (props.isExpanded ? '0.7s' : '0')}
+    cubic-bezier(0.77, 0, 0.175, 1);
 `;
 
 const SideBarAndPageContentWrapper = styled(FlexContainer)`
@@ -309,7 +340,7 @@ const SideBarAndPageContentWrapper = styled(FlexContainer)`
       rgba(255, 252, 204, 0.08) 0%,
       rgba(255, 252, 204, 0) 100%
     ),
-    #252636;
+    ${Colors.DARK_BLACK};
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.08);
   overflow: hidden;
   border-top-left-radius: 8px;

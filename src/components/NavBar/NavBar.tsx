@@ -4,18 +4,21 @@ import styled from '@emotion/styled';
 import LanguageButton from './LanguageButton';
 import UserProfileButton from './UserProfileButton';
 import DepositButton from './DepositButton';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import AccountSwitcherDropdown from './AccountSwitcherDropdown';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Page from '../../constants/Pages';
 import Logo from '../Logo';
 import { useStores } from '../../hooks/useStores';
 import API from '../../helpers/API';
 import { WelcomeBonusResponseEnum } from '../../enums/WelcomeBonusResponseEnum';
 import BonusDropdown from './BonusDropdown';
+import HintsWrapper from '../Hints/HintsWrapper';
+import AccountType from './AccountType';
 
 const NavBar = observer(() => {
-  const { mainAppStore, bonusStore } = useStores();
+  const { mainAppStore, bonusStore, educationStore } = useStores();
+  const location = useLocation();
 
   const checkWelcomeBonus = async () => {
     try {
@@ -24,8 +27,13 @@ const NavBar = observer(() => {
   };
 
   useEffect(() => {
-    checkWelcomeBonus();
-  }, []);
+    if (mainAppStore.canCheckEducation && !mainAppStore.isPromoAccount) {
+      checkWelcomeBonus();
+    }
+  }, [
+    mainAppStore.canCheckEducation,
+    mainAppStore.isPromoAccount,
+  ]);
 
   return (
     <FlexContainer
@@ -37,13 +45,20 @@ const NavBar = observer(() => {
       zIndex="105"
     >
       <FlexContainer alignItems="center">
-        <Link to={Page.DASHBOARD}>
-          <FlexContainer alignItems="center">
-            <FlexContainer margin="0 6px 0 0" width="102px">
-              <Logo src={mainAppStore.initModel.logo} />
+        <FlexContainer marginRight="64px">
+          <Link to={Page.DASHBOARD}>
+            <FlexContainer alignItems="center">
+              <FlexContainer margin="0 6px 0 0" width="102px">
+                <Logo src={mainAppStore.initModel.logo} />
+              </FlexContainer>
             </FlexContainer>
-          </FlexContainer>
-        </Link>
+          </Link>
+        </FlexContainer>
+        {!mainAppStore.isPromoAccount && (
+          <Observer>
+            { () => <AccountType /> }
+          </Observer>
+        )}
       </FlexContainer>
       <FlexContainer alignItems="center">
         {
@@ -63,19 +78,8 @@ const NavBar = observer(() => {
         )}
 
         <UserProfileButton></UserProfileButton>
-        <NavBarButtonsWrapper>
-          <LanguageButton></LanguageButton>
-        </NavBarButtonsWrapper>
       </FlexContainer>
     </FlexContainer>
   );
 });
 export default NavBar;
-
-const NavBarButtonsWrapper = styled(FlexContainer)`
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0 8px;
-  &:first-of-type {
-    border-right: none;
-  }
-`;

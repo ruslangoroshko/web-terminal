@@ -7,6 +7,7 @@ import moment from 'moment';
 import { useStores } from '../hooks/useStores';
 import { getNumberSign } from '../helpers/getNumberSign';
 import { FlexContainer } from '../styles/FlexContainer';
+import Colors from '../constants/Colors';
 
 interface Props {
   balanceHistoryItem: BalanceHistoryDTO;
@@ -22,7 +23,7 @@ const BalanceHistoryItem: FC<Props> = props => {
     <DisplayContents>
       <Td alignItems="center">
         <FlexContainer padding="0 0 0 12px">
-          <PrimaryTextSpan fontSize="12px" color="#fffccc">
+          <PrimaryTextSpan fontSize="12px" color={Colors.ACCENT}>
             {moment(createdAt).format('DD MMM YYYY, HH:mm:ss')}
           </PrimaryTextSpan>
         </FlexContainer>
@@ -35,14 +36,14 @@ const BalanceHistoryItem: FC<Props> = props => {
         </QuoteText>
       </Td>
       <Td alignItems="center">
-        <PrimaryTextSpan fontSize="12px" color="#fffccc">
+        <PrimaryTextSpan fontSize="12px" color={Colors.ACCENT}>
           {mainAppStore.activeAccount?.symbol}
           {balance.toFixed(2)}
         </PrimaryTextSpan>
       </Td>
       <Td alignItems="center">
         <FlexContainer padding="0 30px 0 0">
-          <PrimaryTextSpan fontSize="12px" color="rgba(255, 255, 255, 0.6)">
+          <PrimaryTextSpan fontSize="12px" color={Colors.WHITE_DARK}>
             {description}
           </PrimaryTextSpan>
         </FlexContainer>

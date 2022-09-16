@@ -28,6 +28,7 @@ import PreloaderButtonMask from '../PreloaderButtonMask';
 import Page from '../../constants/Pages';
 import { getProcessId } from '../../helpers/getProcessId';
 import Fields from '../../constants/fields';
+import Colors from '../../constants/Colors';
 
 const Directa = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -95,12 +96,16 @@ const Directa = () => {
 
   const handleSubmitForm = async (values: any) => {
     setLoading(true);
+    const paramsFromLocation = new URLSearchParams(location.search);
+    const accountIdFromParams = paramsFromLocation.get('accountId')?.slice(0, -1);
 
     const params: CreateDirectaInvoiceParams = {
       ...values,
       amount: +values.amount,
       processId: getProcessId(),
-      accountId: mainAppStore.accounts.find((acc) => acc.isLive)?.id || ''
+      accountId: accountIdFromParams
+        ? accountIdFromParams
+        : mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
     };
 
     try {
@@ -202,7 +207,7 @@ const Directa = () => {
 
             <FlexContainer
               borderRadius="4px"
-              border="1px solid #FFFCCC"
+              border={`1px solid ${Colors.ACCENT}`}
               backgroundColor="#292C33"
               marginBottom="10px"
               maxHeight="48px"
@@ -291,7 +296,7 @@ const Input = styled.input`
   width: calc(100% - 120px);
   text-align: right;
   height: 48px;
-  color: #fffccc;
+  color: ${Colors.ACCENT};
   font-size: 14px;
   font-weight: bold;
   padding: 24px 16px;
@@ -304,7 +309,7 @@ const ErrorText = styled.span`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #ff557e;
+  color: ${Colors.DANGER_LIGHT};
   position: absolute;
   top: 50%;
   right: 95px;

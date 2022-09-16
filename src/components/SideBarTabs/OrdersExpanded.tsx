@@ -17,14 +17,16 @@ import { Th, TableGrid } from '../../styles/TableElements';
 import OrderExpandedItem from './OrderExpandedItem';
 import { useTranslation } from 'react-i18next';
 import { LOCAL_PORTFOLIO_TABS } from '../../constants/global';
+import Colors from '../../constants/Colors';
 
 const OrdersExpanded: FC = () => {
-  const { tabsStore, mainAppStore, quotesStore } = useStores();
+  const { tabsStore, mainAppStore, quotesStore, markersOnChartStore } = useStores();
   const closeExpanded = () => {
     tabsStore.setTabExpanded(false);
   };
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    markersOnChartStore.renderActivePositionsMarkersOnChart();
     localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
     tabsStore.setPortfolioTab(portfolioTab);
   };
@@ -36,8 +38,8 @@ const OrdersExpanded: FC = () => {
       <ButtonClose onClick={closeExpanded}>
         <SvgIcon
           {...IconClose}
-          fillColor="rgba(255, 255, 255, 0.6)"
-          hoverFillColor="#00FFDD"
+          fillColor={Colors.WHITE_DARK}
+          hoverFillColor={Colors.PRIMARY}
         />
       </ButtonClose>
       <FlexContainer margin="0 0 40px 0" padding="0 0 0 8px">
@@ -66,7 +68,7 @@ const OrdersExpanded: FC = () => {
             <TableGrid columnsCount={7} maxHeight="calc(100vh - 180px)">
               <Th>
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                 >
@@ -75,7 +77,7 @@ const OrdersExpanded: FC = () => {
               </Th>
               <Th>
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                 >
@@ -84,7 +86,7 @@ const OrdersExpanded: FC = () => {
               </Th>
               <Th>
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                 >
@@ -93,7 +95,7 @@ const OrdersExpanded: FC = () => {
               </Th>
               <Th justifyContent="center">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                 >
@@ -102,7 +104,7 @@ const OrdersExpanded: FC = () => {
               </Th>
               <Th justifyContent="center">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                 >
@@ -111,7 +113,7 @@ const OrdersExpanded: FC = () => {
               </Th>
               <Th justifyContent="center">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                 >
@@ -144,12 +146,12 @@ const OrdersExpanded: FC = () => {
                 <FlexContainer margin="0 0 30px 0">
                   <SvgIcon
                     {...IconPortfolioNoData}
-                    fillColor="rgba(255,255,255,0.4)"
+                    fillColor={Colors.WHITE_LIGHT}
                   />
                 </FlexContainer>
                 <PrimaryTextParagraph
                   fontSize="16px"
-                  color="rgba(255,255,255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                 >
                   {t("You haven't made any order yet")}
                 </PrimaryTextParagraph>
@@ -170,7 +172,7 @@ const PortfolioWrapper = styled(FlexContainer)`
       rgba(255, 252, 204, 0.08) 0%,
       rgba(255, 252, 204, 0) 100%
     ),
-    #252636;
+    ${Colors.DARK_BLACK};
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.08);
   border-radius: 8px 0px 0px 0px;
 `;

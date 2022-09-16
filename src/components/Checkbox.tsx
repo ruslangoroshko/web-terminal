@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { FlexContainer } from '../styles/FlexContainer';
 import ErropPopup from './ErropPopup';
+import Colors from '../constants/Colors';
 
 interface Props {
   id: string;
@@ -36,8 +37,8 @@ const Checkbox: FC<Props> = ({
 
       {hasError && (
         <ErropPopup
-          textColor="#fffccc"
-          bgColor="#ED145B"
+          textColor={Colors.ACCENT}
+          bgColor={Colors.DANGER}
           classNameTooltip={id}
           direction="right"
         >
@@ -75,7 +76,7 @@ const CheckboxElement = styled(FlexContainer)`
   will-change: background-color;
 
   &.hasError {
-    border-color: #ff2b47;
+    border-color: ${Colors.DANGER};
   }
 
   &:before {
@@ -94,6 +95,6 @@ const InputCheckbox = styled.input<{ checkboxClass: string }>`
   display: none;
 
   &:checked + .${props => props.checkboxClass}-checkbox {
-    background-color: #00fff2;
+    background-color: ${Colors.PRIMARY};
   }
 `;

@@ -17,12 +17,14 @@ import { useFormContext } from 'react-hook-form';
 import hasValue from '../../helpers/hasValue';
 import { FormValues } from '../../types/Positions';
 import { observer, Observer } from 'mobx-react-lite';
+import Colors from '../../constants/Colors';
 
 interface Props {
   instrumentId: string;
+  amount?: number;
 }
 
-const AutoClosePopup: FC<Props> = observer(({ instrumentId, children }) => {
+const AutoClosePopup: FC<Props> = observer(({ instrumentId, amount, children }) => {
   const { mainAppStore, SLTPstore } = useStores();
   const [on, toggle] = useState(false);
   const { t } = useTranslation();
@@ -63,6 +65,10 @@ const AutoClosePopup: FC<Props> = observer(({ instrumentId, children }) => {
       }
 
       handleClose();
+      const tmp = document.createElement('input');
+      document.body.appendChild(tmp);
+      tmp.focus();
+      document.body.removeChild(tmp);
     }
   };
 
@@ -167,7 +173,7 @@ const AutoClosePopup: FC<Props> = observer(({ instrumentId, children }) => {
                           textOverflow="ellipsis"
                           whiteSpace="nowrap"
                           title={renderTPValue(SLTPstore.tpTypeNewOrder)}
-                          color="#fffccc"
+                          color={Colors.ACCENT}
                           fontSize="14px"
                         >
                           {renderTPValue(SLTPstore.tpTypeNewOrder)}
@@ -177,7 +183,7 @@ const AutoClosePopup: FC<Props> = observer(({ instrumentId, children }) => {
                           textOverflow="ellipsis"
                           whiteSpace="nowrap"
                           title={renderSLValue(SLTPstore.slTypeNewOrder)}
-                          color="#fffccc"
+                          color={Colors.ACCENT}
                           fontSize="14px"
                         >
                           {renderSLValue(SLTPstore.slTypeNewOrder)}
@@ -187,7 +193,7 @@ const AutoClosePopup: FC<Props> = observer(({ instrumentId, children }) => {
                   </Observer>
                 </FlexContainer>
               ) : (
-                <PrimaryTextParagraph color="#fffccc" fontSize="14px">
+                <PrimaryTextParagraph color={Colors.ACCENT} fontSize="14px">
                   {t('Set')}
                 </PrimaryTextParagraph>
               )}
@@ -197,8 +203,8 @@ const AutoClosePopup: FC<Props> = observer(({ instrumentId, children }) => {
             <ClearSLTPButton type="button" onClick={clearSLTP(setValue)}>
               <SvgIcon
                 {...IconClose}
-                fillColor="rgba(255,255,255,0.4)"
-                hoverFillColor="#00FFDD"
+                fillColor={Colors.WHITE_LIGHT}
+                hoverFillColor={Colors.PRIMARY}
               />
             </ClearSLTPButton>
           )}
@@ -210,7 +216,7 @@ const AutoClosePopup: FC<Props> = observer(({ instrumentId, children }) => {
           right="100%"
           visibilityProp={on ? 'visible' : 'hidden'}
         >
-          <SetAutoclose toggle={toggle} isActive={on} isNewOrder={on}>
+          <SetAutoclose toggle={toggle} isActive={on} isNewOrder={on} amount={amount}>
             <ButtonApply type="button" onClick={handleApplySetAutoClose}>
               {t('Apply')}
             </ButtonApply>
@@ -242,7 +248,7 @@ const ClearSLTPButton = styled(ButtonWithoutStyles)`
 `;
 
 const ButtonApply = styled(ButtonWithoutStyles)`
-  background: linear-gradient(0deg, #00fff2, #00fff2);
+  background: ${Colors.PRIMARY};
   border-radius: 4px;
   font-weight: bold;
   font-size: 14px;

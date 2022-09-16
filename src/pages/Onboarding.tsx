@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import { PrimaryButton } from '../styles/Buttons';
@@ -23,12 +23,13 @@ import SvgIcon from '../components/SvgIcon';
 import IconClose from '../assets/svg/icon-close.svg';
 import { keyframes } from '@emotion/core';
 import { OnBoardingResponseEnum } from '../enums/OnBoardingRsponseEnum';
-import HashLocation from '../constants/hashLocation';
+import { HintEnum } from '../enums/HintsEnum';
+import Colors from '../constants/Colors';
 
 const Onboarding = () => {
   const { t } = useTranslation();
   const { push } = useHistory();
-  const { badRequestPopupStore, mainAppStore, bonusStore } = useStores();
+  const { educationStore, mainAppStore, bonusStore } = useStores();
 
   const [actualStep, setActualStep] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
@@ -82,7 +83,7 @@ const Onboarding = () => {
     getInfoByStep(nextStep);
   };
 
-  const closeOnBoarding = () => {
+  const closeOnBoarding = async () => {
     if (
       actualStepInfo?.data.totalSteps &&
       actualStepInfo?.data.totalSteps !== actualStep
@@ -92,62 +93,63 @@ const Onboarding = () => {
       });
       getInfoByStep(actualStepInfo?.data.totalSteps);
     } else {
-      mixpanel.track(mixpanelEvents.ONBOARDING, {
-        [mixapanelProps.ONBOARDING_VALUE]: `close${actualStep}`,
-      });
-      mainAppStore.addTriggerDissableOnboarding();
-      mainAppStore.isOnboarding = false;
-      push(Page.DASHBOARD);
+      const acc = mainAppStore.accounts.find((item) => item.isLive);
+      if (acc) {
+        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+          [Fields.ACCOUNT_ID]: acc.id,
+        });
+        mixpanel.track(mixpanelEvents.ONBOARDING, {
+          [mixapanelProps.ONBOARDING_VALUE]: `close${actualStep}`,
+        });
+        mainAppStore.setActiveAccount(acc);
+        mainAppStore.addTriggerDissableOnboarding();
+        mainAppStore.isOnboarding = false;
+        educationStore.setFTopenHint(HintEnum.SkipOB);
+        push(Page.DASHBOARD);
+      }
+
     }
   };
 
   const selectDemoAccount = async () => {
     const acc = mainAppStore.accounts.find((item) => !item.isLive);
     if (acc) {
-      try {
-        await API.setKeyValue({
-          key: KeysInApi.ACTIVE_ACCOUNT_ID,
-          value: acc.id,
-        });
-        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: acc.id,
-        });
-        mainAppStore.setActiveAccount(acc);
-        mixpanel.track(mixpanelEvents.ONBOARDING, {
-          [mixapanelProps.ONBOARDING_VALUE]: `demo${actualStep}`,
-        });
-        mainAppStore.addTriggerDissableOnboarding();
-        mainAppStore.isOnboarding = false;
-        push(Page.DASHBOARD);
-      } catch (error) {
-      }
+      mainAppStore.setActiveAccount(acc);
+      mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+        [Fields.ACCOUNT_ID]: acc.id,
+      });
+      mixpanel.track(mixpanelEvents.ONBOARDING, {
+        [mixapanelProps.ONBOARDING_VALUE]: `demo${actualStep}`,
+      });
+      mainAppStore.addTriggerDissableOnboarding();
+      mainAppStore.isOnboarding = false;
+      educationStore.setFTopenHint(HintEnum.DemoACC);
+      push(Page.DASHBOARD);
     }
   };
 
   const selectRealAccount = async () => {
     const acc = mainAppStore.accounts.find((item) => item.isLive);
     if (acc) {
+      mainAppStore.setActiveAccount(acc);
+      mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+        [Fields.ACCOUNT_ID]: acc.id,
+      });
+      mixpanel.track(mixpanelEvents.ONBOARDING, {
+        [mixapanelProps.ONBOARDING_VALUE]: `real${actualStep}`,
+      });
+      mainAppStore.addTriggerDissableOnboarding();
+      mainAppStore.isOnboarding = false;
+      educationStore.setFTopenHint(HintEnum.Deposit);
       try {
-        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: acc.id,
-        });
-        mainAppStore.setActiveAccount(acc);
-        mixpanel.track(mixpanelEvents.ONBOARDING, {
-          [mixapanelProps.ONBOARDING_VALUE]: `real${actualStep}`,
-        });
-        mainAppStore.addTriggerDissableOnboarding();
-        mainAppStore.isOnboarding = false;
-        try {
-          await bonusStore.getUserBonus();
-          if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
-            bonusStore.setShowBonusPopup(true);
-          } else {
-            push(Page.DEPOSIT_POPUP);
-          }
-        } catch (error) {
+        await bonusStore.getUserBonus();
+        if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
+          bonusStore.setShowBonusPopup(true);
+        } else {
           push(Page.DEPOSIT_POPUP);
         }
       } catch (error) {
+        push(Page.DEPOSIT_POPUP);
       }
     }
   };
@@ -228,15 +230,15 @@ const Onboarding = () => {
         <BackButton onClick={closeOnBoarding}>
           <SvgIcon
             {...IconClose}
-            fillColor="rgba(255, 255, 255, 0.6)"
-            hoverFillColor="#ffffff"
+            fillColor={Colors.WHITE_DARK}
+            hoverFillColor={Colors.WHITE_DARK}
             width="40px"
             height="40px"
           />
         </BackButton>
         <PageTitle
           fontSize="16px"
-          color="#ffffff"
+          color={Colors.WHITE}
           textTransform="capitalize"
           className={'onboarding_title'}
         >
@@ -274,7 +276,7 @@ const Onboarding = () => {
             {actualStepInfo?.data.title && (
               <PrimaryTextSpan
                 fontSize="24px"
-                color="#ffffff"
+                color={Colors.WHITE}
                 marginBottom="16px"
                 textAlign="center"
               >
@@ -284,7 +286,7 @@ const Onboarding = () => {
             {actualStepInfo?.data.description && (
               <PrimaryTextSpan
                 fontSize="16px"
-                color="rgba(235, 235, 245, 0.6)"
+                color={Colors.WHITE_DARK}
                 textAlign="center"
               >
                 {actualStepInfo?.data.description}
@@ -310,8 +312,8 @@ const Onboarding = () => {
                 <PrimaryTextSpan
                   color={
                     button.action === ButtonActionType.Demo
-                      ? '#ffffff'
-                      : '#252636'
+                      ? Colors.WHITE
+                      : Colors.DARK_BLACK
                   }
                   fontWeight="bold"
                   fontSize="16px"
@@ -352,7 +354,7 @@ const PageTitle = styled(PrimaryTextSpan)`
   &.onboarding_title {
     text-transform: lowercase;
     &::first-letter {
-      color: #00ffdd;
+      color: ${Colors.PRIMARY};
     }
   }
 `;
@@ -376,10 +378,10 @@ const translateAnimationIn = keyframes(`
 
 const buttonAnimation = keyframes`
     from {
-      background-color: rgba(196, 196, 196, 0.5);
+      background-color: ${Colors.WHITE_LIGHT};
     }
     to {
-      background-color: #00FFDD;
+      background-color: ${Colors.PRIMARY};
     }
 `;
 

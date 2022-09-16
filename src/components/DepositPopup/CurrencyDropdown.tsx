@@ -7,6 +7,7 @@ import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import SvgIcon from '../SvgIcon';
 import { useTranslation } from 'react-i18next';
+import Colors from '../../constants/Colors';
 
 interface Props {
   selectedCurrency: string;
@@ -59,14 +60,14 @@ const CurrencyDropdown: FC<Props> = ({
         <ButtonWithoutStyles onClick={handleToggleDropdown(false)}>
           <SvgIcon
             {...IconShevronDropdown}
-            fillColor="#fffccc"
-            hoverFillColor="#00fff2"
+            fillColor={Colors.ACCENT}
+            hoverFillColor={Colors.PRIMARY}
             width={8}
           />
         </ButtonWithoutStyles>
       </FlexContainer>)}
 
-      <PrimaryTextSpan fontWeight={400} color="#ffffff" fontSize="14px">
+      <PrimaryTextSpan fontWeight={400} color={Colors.WHITE} fontSize="14px">
         {t('Amount')}, {selectedCurrency}
       </PrimaryTextSpan>
       {on && !disabled && (
@@ -83,7 +84,7 @@ const CurrencyDropdown: FC<Props> = ({
               key={item}
               onClick={handleSelectCurrencyDropdown(item)}
             >
-              <CurrencyItemText fontSize="14px" color="#fffccc">
+              <CurrencyItemText fontSize="14px" color={Colors.ACCENT}>
                 {item}
               </CurrencyItemText>
             </CurrencyItem>
@@ -105,7 +106,7 @@ const CurrencyItem = styled(ButtonWithoutStyles)`
   }
 
   &:hover > span {
-    color: #00fff2;
+    color: ${Colors.PRIMARY};
   }
 `;
 

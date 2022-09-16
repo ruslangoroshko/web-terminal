@@ -3,5 +3,6 @@ export enum DepositApiResponseCodes {
     Error,
     Unauthorized,
     CurrencyNotFound,
-    ClientNotFound
+    ClientNotFound,
+    PaymentDisabled = 8,
 }

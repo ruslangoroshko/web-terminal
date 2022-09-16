@@ -42,6 +42,7 @@ export interface UserAuthenticateResponse {
     connectionTimeOut: string;
     reconnectTimeOut: string;
     refreshToken: string;
+    mt5Enabled: boolean;
   };
 }
 

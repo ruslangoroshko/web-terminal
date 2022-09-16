@@ -7,6 +7,7 @@ import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import SvgIcon from './SvgIcon';
 import IconClose from '../assets/svg/icon-close.svg';
 import { useTranslation } from 'react-i18next';
+import Colors from '../constants/Colors';
 
 interface Props {
   toggle: (arg: boolean) => void;
@@ -52,14 +53,14 @@ const ConfirmPopup: FC<Props> = ({ toggle, applyHandler, confirmText }) => {
         <ButtonWithoutStyles onClick={handleClose}>
           <SvgIcon
             {...IconClose}
-            fillColor="rgba(255, 255, 255, 0.6)"
-            hoverFillColor="#00FFDD"
+            fillColor={Colors.WHITE_DARK}
+            hoverFillColor={Colors.PRIMARY}
           />
         </ButtonWithoutStyles>
       </FlexContainer>
       <PrimaryTextParagraph
         fontSize="14px"
-        color="#fffccc"
+        color={Colors.ACCENT}
         marginBottom="16px"
         lineHeight="22px"
         textAlign="center"

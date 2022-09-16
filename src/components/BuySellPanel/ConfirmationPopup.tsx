@@ -13,6 +13,7 @@ import { useStores } from '../../hooks/useStores';
 import { Observer } from 'mobx-react-lite';
 import styled from '@emotion/styled';
 import { useTranslation } from 'react-i18next';
+import Colors from '../../constants/Colors';
 
 interface Props {
   closePopup: () => void;
@@ -66,13 +67,13 @@ const ConfirmationPopup: FC<Props> = ({
         <ButtonWithoutStyles type="button" onClick={closePopup}>
           <SvgIcon
             {...IconClose}
-            fillColor="rgba(255, 255, 255, 0.6)"
-            hoverFillColor="#00FFDD"
+            fillColor={Colors.WHITE_DARK}
+            hoverFillColor={Colors.PRIMARY}
           />
         </ButtonWithoutStyles>
       </FlexContainer>
       <PrimaryTextParagraph
-        color="#fffccc"
+        color={Colors.ACCENT}
         fontSize="16px"
         marginBottom="16px"
         fontWeight="bold"
@@ -80,12 +81,12 @@ const ConfirmationPopup: FC<Props> = ({
         {t('Confirmation')}
       </PrimaryTextParagraph>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
-        <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
-          {t('Price opened')}
+        <PrimaryTextSpan color={Colors.WHITE_LIGHT} fontSize="12px">
+          {t('Open price')}
         </PrimaryTextSpan>
         <Observer>
           {() => (
-            <PrimaryTextSpan color="#fffccc" fontSize="12px">
+            <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
               {quotesStore.quotes[instrumentId] &&
                 quotesStore.quotes[instrumentId][
                   operation === AskBidEnum.Buy ? 'ask' : 'bid'
@@ -95,34 +96,34 @@ const ConfirmationPopup: FC<Props> = ({
         </Observer>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
-        <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
+        <PrimaryTextSpan color={Colors.WHITE_LIGHT} fontSize="12px">
           {t('Type')}
         </PrimaryTextSpan>
-        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+        <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
           {operation !== null ? AskBidEnum[operation] : ''}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
-        <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
+        <PrimaryTextSpan color={Colors.WHITE_LIGHT} fontSize="12px">
           {t('Investment')}
         </PrimaryTextSpan>
-        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+        <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
           {`${mainAppStore.activeAccount?.symbol} ${investmentAmount}`}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
-        <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
+        <PrimaryTextSpan color={Colors.WHITE_LIGHT} fontSize="12px">
           {t('Multiplier')}
         </PrimaryTextSpan>
-        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+        <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
           &times;{multiplier}
         </PrimaryTextSpan>
       </FlexContainer>
       <FlexContainer justifyContent="space-between" margin="0 0 16px 0">
-        <PrimaryTextSpan color="rgba(255,255,255,0.4)" fontSize="12px">
+        <PrimaryTextSpan color={Colors.WHITE_LIGHT} fontSize="12px">
           {t('Volume')}
         </PrimaryTextSpan>
-        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+        <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
           {mainAppStore.activeAccount?.symbol}
           {(investmentAmount * multiplier).toFixed(2)}
         </PrimaryTextSpan>
@@ -136,7 +137,7 @@ const ConfirmationPopup: FC<Props> = ({
           </PrimaryButton>
         ) : (
           <ButtonSell type="submit" disabled={disabled}>
-            <PrimaryTextSpan fontSize="14px" color="#ffffff" fontWeight="bold">
+            <PrimaryTextSpan fontSize="14px" color={Colors.WHITE} fontWeight="bold">
               {t('Confirm Selling')}
             </PrimaryTextSpan>
           </ButtonSell>
@@ -149,18 +150,14 @@ const ConfirmationPopup: FC<Props> = ({
 export default ConfirmationPopup;
 
 const ButtonSell = styled(ButtonWithoutStyles)`
-  background-color: #ed145b;
+  background-color: ${Colors.DANGER};
   border-radius: 4px;
   padding: 8px 16px;
   transition: background-color 0.2s ease;
   will-change: background-color;
 
   &:hover {
-    background-color: #ff557e;
-  }
-
-  &:focus {
-    background-color: #bd1d51;
+    background-color: ${Colors.DANGER_LIGHT};
   }
 
   &:disabled {

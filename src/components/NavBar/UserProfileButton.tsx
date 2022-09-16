@@ -12,16 +12,26 @@ import API from '../../helpers/API';
 import { getProcessId } from '../../helpers/getProcessId';
 import { PersonalDataKYCEnum } from '../../enums/PersonalDataKYCEnum';
 import { Observer } from 'mobx-react-lite';
+
+import BasicIMG from '../../assets/images/achievement_status_bg/new/basic_star.png';
+import SilverIMG from '../../assets/images/achievement_status_bg/new/silver_star.png';
+import GoldIMG from '../../assets/images/achievement_status_bg/new/gold_star.png';
+import PlatinumIMG from '../../assets/images/achievement_status_bg/new/platinum_star.png';
+import DiamondIMG from '../../assets/images/achievement_status_bg/new/diamond_star.png';
+import VipIMG from '../../assets/images/achievement_status_bg/new/vip_star.png';
+
+import OneSignal from 'react-onesignal';
 import mixpanel from 'mixpanel-browser';
 import KYCStatus from '../../constants/KYCStatus';
 import mixapanelProps from '../../constants/mixpanelProps';
 import IconShevron from '../../assets/svg/icon-shevron-down.svg';
-import AchievementStatus from '../../constants/achievementStatus';
 import ColorsPallete from '../../styles/colorPallete';
 import mixpanelEvents from '../../constants/mixpanelEvents';
+import { AccountStatusEnum } from '../../enums/AccountStatusEnum';
+import { getOneSignalAppId } from '../../helpers/getOneSignalAppId';
 
 function UserProfileButton() {
-  const { mainAppStore, phoneVerificationStore } = useStores();
+  const { mainAppStore, phoneVerificationStore, accountTypeStore } = useStores();
   const [on, toggle] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const handleToggle = () => {
@@ -34,28 +44,24 @@ function UserProfileButton() {
     }
   };
 
-  const getBackgroundColor = useCallback(
-    (type: string) => {
-      const key = mainAppStore.accounts.find((acc) => acc.isLive)
-        ?.achievementStatus;
+  const getStarLabel = useCallback(
+    () => {
+      const key = accountTypeStore.actualType?.type;
       switch (key) {
-        case AchievementStatus.SILVER:
-          return type === 'background'
-            ? ColorsPallete.BACKGROUND_SILVER
-            : ColorsPallete.STAR_OTHER;
-        case AchievementStatus.GOLD:
-          return type === 'background'
-            ? ColorsPallete.BACKGROUND_GOLD
-            : ColorsPallete.STAR_OTHER;
-        case AchievementStatus.PLATINUM:
-          return type === 'background'
-            // ? ColorsPallete.BACKGROUND_PLATINUM
-            ? ColorsPallete.BACKGROUND_ULTRA
-            : ColorsPallete.STAR_OTHER;
+        case AccountStatusEnum.Gold:
+          return GoldIMG;
+        case AccountStatusEnum.Silver:
+          return SilverIMG;
+        case AccountStatusEnum.Vip:
+          return VipIMG;
+        case AccountStatusEnum.Platinum:
+          return PlatinumIMG;
+        case AccountStatusEnum.Diamond:
+          return DiamondIMG;
+        case AccountStatusEnum.Ultra:
+          return VipIMG;
         default:
-          return type === 'background'
-            ? ColorsPallete.BACKGROUND_BASIC
-            : ColorsPallete.STAR_BASIC;
+          return BasicIMG;
       }
     },
     [mainAppStore.activeAccount]
@@ -82,6 +88,29 @@ function UserProfileButton() {
         if (!response.data.phone) {
           fetchAdditionalFields();
         }
+        mainAppStore.setProfileStatus(response.data.kyc);
+        mainAppStore.setProfilePhone(response.data.phone || '');
+        mainAppStore.setProfileName(!!response.data.firstName && !!response.data.lastName
+          ? `${response.data.firstName} ${response.data.lastName}`
+          : '');
+        mainAppStore.setProfileEmail(response.data.email || '');
+        const appIdOneSignal: string | null = getOneSignalAppId(location.href);
+        if (appIdOneSignal) {
+          OneSignal.init({
+            appId: appIdOneSignal
+          });
+          await OneSignal.setExternalUserId(response.data.id);
+          OneSignal.getExternalUserId().then(function(externalUserId){
+            console.log("externalUserId: ", externalUserId);
+          });
+
+          await OneSignal.registerForPushNotifications();
+          console.log('registered');
+          await API.getSubscribe(mainAppStore.initModel.tradingUrl);
+          await OneSignal.getUserId().then(function(UserId: any){
+            console.log("UserId: ", UserId);
+          })
+        }
         const setMixpanelEvents = async () => {
           mainAppStore.signUpFlag
             ? await mixpanel.alias(response.data.id)
@@ -107,14 +136,14 @@ function UserProfileButton() {
             });
           }
 
-          mainAppStore.setSignUpFlag(false);
-          mainAppStore.setLpLoginFlag(false);
-          mainAppStore.setProfileStatus(response.data.kyc);
-          mainAppStore.setProfilePhone(response.data.phone || '');
-          mainAppStore.setProfileName(!!response.data.firstName && !!response.data.lastName
-            ? `${response.data.firstName} ${response.data.lastName}`
-            : '');
-          mainAppStore.setProfileEmail(response.data.email || '');
+          // mainAppStore.setSignUpFlag(false);
+          // mainAppStore.setLpLoginFlag(false);
+          // mainAppStore.setProfileStatus(response.data.kyc);
+          // mainAppStore.setProfilePhone(response.data.phone || '');
+          // mainAppStore.setProfileName(!!response.data.firstName && !!response.data.lastName
+          //   ? `${response.data.firstName} ${response.data.lastName}`
+          //   : '');
+          // mainAppStore.setProfileEmail(response.data.email || '');
         };
         setMixpanelEvents();
       } catch (error) {}
@@ -130,14 +159,13 @@ function UserProfileButton() {
     <UserProfileButtonWrapper
       ref={wrapperRef}
       onClick={handleToggle}
-      margin="0 16px 0 0"
+      margin="0 8px 0 0"
       position="relative"
     >
       <Observer>
         {() => (
           <FlexContainer alignItems={'center'}>
             <FlexContainer
-              background={getBackgroundColor('background')}
               width={'25px'}
               height={'25px'}
               justifyContent={'center'}
@@ -146,24 +174,26 @@ function UserProfileButton() {
               borderRadius={'50%'}
               position={'relative'}
             >
-              <SvgIcon
-                {...IconStatus}
-                fillColor={getBackgroundColor('star')}
-                width={13}
-                height={13}
-              />
-              {mainAppStore.profileStatus ===
-                PersonalDataKYCEnum.NotVerified && (
+              <img src={getStarLabel()} width="24px" height="24px" />
+              {(
+                mainAppStore.profileStatus === PersonalDataKYCEnum.NotVerified ||
+                mainAppStore.profileStatus === PersonalDataKYCEnum.Restricted ||
+                mainAppStore.profileStatus === PersonalDataKYCEnum.OnVerification
+              ) && (
                 <FlexContainer
-                  backgroundColor={ColorsPallete.RAZZMATAZZ}
-                  height={'10px'}
-                  width={'10px'}
-                  position={'absolute'}
-                  top={'0'}
-                  right={'0'}
-                  borderRadius={'50%'}
-                  border={'2px solid #1C2026'}
-                ></FlexContainer>
+                  backgroundColor={
+                    mainAppStore.profileStatus !== PersonalDataKYCEnum.OnVerification
+                      ? ColorsPallete.RAZZMATAZZ
+                      : ColorsPallete.STAR_BASIC
+                  }
+                  height="10px"
+                  width="10px"
+                  position="absolute"
+                  top="-2px"
+                  right="-2px"
+                  borderRadius="50%"
+                  border="2px solid #1C2026"
+                > </FlexContainer>
               )}
             </FlexContainer>
             <PrimaryTextSpan
@@ -176,7 +206,7 @@ function UserProfileButton() {
             <FlexContainer
               justifyContent="center"
               alignItems="center"
-              padding="6px"
+              padding="5px"
             >
               <SvgIcon
                 {...IconShevron}

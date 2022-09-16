@@ -24,6 +24,7 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
+import Colors from '../constants/Colors';
 
 interface Props {}
 
@@ -130,7 +131,6 @@ function ResetPassword(props: Props) {
         {isSuccessful && (
           <>
             <PrimaryTextParagraph
-              color="#fffccc"
               fontSize="24px"
               fontWeight="bold"
               marginBottom="20px"
@@ -161,7 +161,6 @@ function ResetPassword(props: Props) {
         {isNotSuccessful && (
           <>
             <PrimaryTextParagraph
-              color="#fffccc"
               fontSize="24px"
               fontWeight="bold"
               marginBottom="20px"
@@ -192,7 +191,6 @@ function ResetPassword(props: Props) {
         {!isSuccessful && !isNotSuccessful && (
           <>
             <PrimaryTextParagraph
-              color="#fffccc"
               fontSize="24px"
               fontWeight="bold"
               marginBottom="20px"
@@ -297,7 +295,7 @@ const FallDownIco = () => {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M23.6465 24.3535L17.0002 17.7071L17.7073 17L24.3536 23.6464L31 17L31.7071 17.7071L25.0608 24.3535L31.7073 31L31.0002 31.7071L24.3536 25.0606L17.7071 31.7071L17 31L23.6465 24.3535Z"
-        fill="#FF557E"
+        fill={Colors.DANGER_LIGHT}
       />
     </svg>
   );

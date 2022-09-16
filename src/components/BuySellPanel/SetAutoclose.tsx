@@ -10,6 +10,7 @@ import PnLTypeDropdown from './PnLTypeDropdown';
 import styled from '@emotion/styled';
 import { ButtonWithoutStyles } from '../../styles/ButtonWithoutStyles';
 import IconClose from '../../assets/svg/icon-popup-close.svg';
+import IconShield from '../../assets/svg/icon-shield.svg';
 import { useStores } from '../../hooks/useStores';
 import ErropPopup from '../ErropPopup';
 import ColorsPallete from '../../styles/colorPallete';
@@ -22,12 +23,15 @@ import hasValue from '../../helpers/hasValue';
 import { Observer, observer } from 'mobx-react-lite';
 import setValueAsNullIfEmptyAndNegative from '../../helpers/setValueAsNullIfEmptyAndNegative';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
+import Colors from '../../constants/Colors';
 
 interface Props {
   isDisabled?: boolean;
   toggle: (arg0: boolean) => void;
   isActive: boolean;
   isNewOrder?: boolean;
+  amount?: number;
+  manualIsToppingUp?: boolean;
 }
 
 const SetAutoclose: FC<Props> = observer(
@@ -36,7 +40,9 @@ const SetAutoclose: FC<Props> = observer(
      toggle,
      children,
      isActive,
-     isNewOrder
+     isNewOrder,
+     amount,
+     manualIsToppingUp,
   }) => {
     const { t } = useTranslation();
 
@@ -122,8 +128,22 @@ const SetAutoclose: FC<Props> = observer(
     };
 
     const handelFalseRadioClick = (
-      setValue: (arg0: any, arg1: any) => void
+      setValue: (arg0: any, arg1: any) => void,
+      getValues: (arg0: any) => void,
     ) => () => {
+      const stopLoss = getValues(Fields.STOP_LOSS);
+      const stopLossType = SLTPstore[isNewOrder ? 'slTypeNewOrder' : 'slType'];
+      // @ts-ignore
+      if (amount) {
+        if (stopLossType === TpSlTypeEnum.Currency) {
+          // @ts-ignore
+          if (stopLoss > amount * 0.9) {
+            setValue(Fields.STOP_LOSS, amount * 0.9);
+          }
+        } else {
+          setValue(Fields.STOP_LOSS, null);
+        }
+      }
       setValue(Fields.IS_TOPPING_UP, false);
     };
 
@@ -148,7 +168,7 @@ const SetAutoclose: FC<Props> = observer(
 
     return (
       <ConnectForm>
-        {({ register, setValue, errors, watch, clearErrors }) => {
+        {({ register, setValue, errors, watch, clearErrors, getValues }) => {
           const { sl, tp, isToppingUpActive } = watch();
           return (
             <Wrapper
@@ -161,8 +181,8 @@ const SetAutoclose: FC<Props> = observer(
                 <ButtonClose type="button" onClick={handleToggle}>
                   <SvgIcon
                     {...IconClose}
-                    fillColor="rgba(255, 255, 255, 0.6)"
-                    hoverFillColor="#00FFDD"
+                    fillColor={Colors.WHITE_DARK}
+                    hoverFillColor={Colors.PRIMARY}
                   ></SvgIcon>
                 </ButtonClose>
                 <PrimaryTextParagraph marginBottom="16px">
@@ -187,7 +207,7 @@ const SetAutoclose: FC<Props> = observer(
                     width="200px"
                     direction="left"
                   >
-                    <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                       {t(
                         'Determine the Take profit based on the amount of capital you are willing to take at the peak of the deal or based on the price level of your asset'
                       )}
@@ -210,7 +230,7 @@ const SetAutoclose: FC<Props> = observer(
                     >
                       {isActive && errors.tp && (
                         <ErropPopup
-                          textColor="#fffccc"
+                          textColor={Colors.ACCENT}
                           bgColor={ColorsPallete.RAZZMATAZZ}
                           classNameTooltip={getProcessId()}
                           direction="left"
@@ -248,7 +268,7 @@ const SetAutoclose: FC<Props> = observer(
                           >
                             <SvgIcon
                               {...IconClose}
-                              fillColor="rgba(255, 255, 255, 0.6)"
+                              fillColor={Colors.WHITE_DARK}
                             ></SvgIcon>
                           </ButtonWithoutStyles>
                         </CloseValueButtonWrapper>
@@ -282,7 +302,7 @@ const SetAutoclose: FC<Props> = observer(
                     width="200px"
                     direction="left"
                   >
-                    <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                    <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                       {t(
                         'Determine the Stop loss based on the amount of capital you are willing to risk or based on the price level of your asset'
                       )}
@@ -298,14 +318,14 @@ const SetAutoclose: FC<Props> = observer(
                           ? '0 0 0 8px'
                           : '0 0 0 22px'
                       }
-                      margin={isDisabled ? '0' : '0 0 16px 0'}
+                      margin="0 0 16px 0"
                       height="32px"
                       width="100%"
                       position="relative"
                     >
                       {isActive && errors.sl && (
                         <ErropPopup
-                          textColor="#fffccc"
+                          textColor={Colors.ACCENT}
                           bgColor={ColorsPallete.RAZZMATAZZ}
                           classNameTooltip={getProcessId()}
                           direction="left"
@@ -343,7 +363,7 @@ const SetAutoclose: FC<Props> = observer(
                           >
                             <SvgIcon
                               {...IconClose}
-                              fillColor="rgba(255, 255, 255, 0.6)"
+                              fillColor={Colors.WHITE_DARK}
                             ></SvgIcon>
                           </ButtonWithoutStyles>
                         </CloseValueButtonWrapper>
@@ -358,89 +378,110 @@ const SetAutoclose: FC<Props> = observer(
                     </InputWrapper>
                   )}
                 </Observer>
-                {!isDisabled && (
+                <FlexContainer
+                  flexDirection="column"
+                  width="100%"
+                  marginBottom={isDisabled ? '0' : '24px'}
+                >
                   <FlexContainer
-                    flexDirection="column"
-                    width="100%"
-                    marginBottom="24px"
+                    margin="0 0 6px 0"
+                    alignItems="center"
+                    justifyContent="space-between"
                   >
-                    <FlexContainer
-                      margin="0 0 6px 0"
-                      alignItems="center"
-                      justifyContent="space-between"
+                    <PrimaryTextSpan
+                      fontSize="11px"
+                      lineHeight="12px"
+                      color="rgba(255, 255, 255, 0.3)"
+                      textTransform="uppercase"
                     >
-                      <PrimaryTextSpan
-                        fontSize="11px"
-                        lineHeight="12px"
-                        color="rgba(255, 255, 255, 0.3)"
-                        textTransform="uppercase"
-                      >
-                        {t('Save position from market noise')}
-                      </PrimaryTextSpan>
-                      <InformationPopup
-                        classNameTooltip="autoclose-loss"
-                        bgColor="#000"
-                        width="260px"
-                        direction="left"
-                      >
-                        <Observer>
-                          {() => (
-                            <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                              {`${t('If the loss for a position reaches')} ${
-                                instrumentsStore.instruments.find(
-                                  (inst) =>
-                                    inst.instrumentItem.id ===
-                                    SLTPstore[
-                                      isNewOrder
-                                        ? 'instrumentIdNewOrder'
-                                        : 'instrumentId'
-                                    ]
-                                )?.instrumentItem.stopOutPercent || 0
-                              }%, ${t(
-                                'an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least'
-                              )} ${
-                                instrumentsStore.instruments.find(
-                                  (inst) =>
-                                    inst.instrumentItem.id ===
-                                    SLTPstore[
-                                      isNewOrder
-                                        ? 'instrumentIdNewOrder'
-                                        : 'instrumentId'
-                                    ]
-                                )?.instrumentItem.stopOutPercent || 0
-                              }%, ${t(
-                                'all previously reserved funds are returned to your balance.'
-                              )}`}
-                            </PrimaryTextSpan>
-                          )}
-                        </Observer>
-                      </InformationPopup>
-                    </FlexContainer>
-                    <FlexContainer
-                      backgroundColor="#2A2C33"
-                      borderRadius="4px"
-                      overflow="hidden"
+                      {t('Save position from market noise')}
+                    </PrimaryTextSpan>
+                    <InformationPopup
+                      classNameTooltip="autoclose-loss"
+                      bgColor="#000"
+                      width="260px"
+                      direction="leftCenter"
                     >
-                      <RadioInput
-                        type="checkbox"
-                        ref={register}
-                        name={Fields.IS_TOPPING_UP}
-                      />
-                      <PseudoRadio
-                        isChecked={!isToppingUpActive}
-                        onClick={handelFalseRadioClick(setValue)}
-                      >
-                        {t('Off')}
-                      </PseudoRadio>
-                      <PseudoRadio
-                        isChecked={isToppingUpActive}
-                        onClick={handelTrueRadioClick(setValue)}
-                      >
-                        {t('On')}
-                      </PseudoRadio>
-                    </FlexContainer>
+                      <Observer>
+                        {() => (
+                          <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
+                            {`${t('If the loss for a position reaches')} ${
+                              instrumentsStore.instruments.find(
+                                (inst) =>
+                                  inst.instrumentItem.id ===
+                                  SLTPstore[
+                                    isNewOrder
+                                      ? 'instrumentIdNewOrder'
+                                      : 'instrumentId'
+                                  ]
+                              )?.instrumentItem.stopOutPercent || 0
+                            }%, ${t(
+                              'an additional 20% of the original investment amount will be reserved from your balance to save your position from closing. If the position takes a further loss, your available balance is reduced by 20% again and again. Once the position rises to at least'
+                            )} ${
+                              instrumentsStore.instruments.find(
+                                (inst) =>
+                                  inst.instrumentItem.id ===
+                                  SLTPstore[
+                                    isNewOrder
+                                      ? 'instrumentIdNewOrder'
+                                      : 'instrumentId'
+                                  ]
+                              )?.instrumentItem.stopOutPercent || 0
+                            }%, ${t(
+                              'all previously reserved funds are returned to your balance.'
+                            )}`}
+                            <br />
+                            <br />
+                            {t('You can limit the additional funds reserved on your balance by specifing a level of loss that is acceptable for this position.')}
+                            <br />
+                            <br />
+                            <FlexContainer>
+                              <FlexContainer margin="3px 5px 0 0">
+                                <SvgIcon {...IconShield} fillColor="#77797D"/>
+                              </FlexContainer> - {t('save position is not active')}
+                            </FlexContainer>
+                            <br />
+                            <FlexContainer>
+                              <FlexContainer margin="3px 5px 0 0">
+                                <SvgIcon {...IconShield} fillColor={Colors.ACCENT}/>
+                              </FlexContainer> - {t('save position is active')}
+                            </FlexContainer>
+                            <br />
+                            <FlexContainer>
+                              <FlexContainer margin="3px 5px 0 0">
+                                <SvgIcon {...IconShield} fillColor={Colors.DANGER}/>
+                              </FlexContainer> - {t('save position is active and use available funds')}
+                            </FlexContainer>
+                          </PrimaryTextSpan>
+                        )}
+                      </Observer>
+                    </InformationPopup>
                   </FlexContainer>
-                )}
+                  <RadioWrapper
+                    backgroundColor="#2A2C33"
+                    borderRadius="4px"
+                    overflow="hidden"
+                    isDisabled={!!isDisabled}
+                  >
+                    <RadioInput
+                      type="checkbox"
+                      ref={register}
+                      name={Fields.IS_TOPPING_UP}
+                    />
+                    <PseudoRadio
+                      isChecked={!isToppingUpActive && !manualIsToppingUp}
+                      onClick={handelFalseRadioClick(setValue, getValues)}
+                    >
+                      {t('Off')}
+                    </PseudoRadio>
+                    <PseudoRadio
+                      isChecked={isToppingUpActive || !!manualIsToppingUp}
+                      onClick={handelTrueRadioClick(setValue)}
+                    >
+                      {t('On')}
+                    </PseudoRadio>
+                  </RadioWrapper>
+                </FlexContainer>
                 {!isDisabled ? children : null}
               </>
             </Wrapper>
@@ -487,19 +528,27 @@ const InputPnL = styled.input`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #fffccc;
+  color: ${Colors.ACCENT};
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 
   &::placeholder {
     color: rgba(255, 255, 255, 0.3);
     font-weight: normal;
   }
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:valid,
+  &:-webkit-autofill:active {
+    transition: border 0.2s ease, background-color 50000s ease-in-out 0s;
+    -webkit-text-fill-color: ${Colors.ACCENT} !important;
+  }
 `;
 
 const InputWrapper = styled(FlexContainer)`
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
+  color: ${Colors.WHITE};
   background-color: rgba(255, 255, 255, 0.06);
 `;
 
@@ -507,7 +556,7 @@ const PlusSign = styled.span`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #fffccc;
+  color: ${Colors.ACCENT};
   position: absolute;
   top: 50%;
   left: 8px;
@@ -516,6 +565,12 @@ const PlusSign = styled.span`
 
 const CloseValueButtonWrapper = styled(FlexContainer)`
   transform: translateY(-50%);
+`;
+
+const RadioWrapper = styled(FlexContainer)<{ isDisabled: boolean }>`
+  * {
+    pointer-events: ${(props) => props.isDisabled ? 'none' : 'auto'};
+  }
 `;
 
 const RadioInput = styled.input`
@@ -537,12 +592,12 @@ const RadioInput = styled.input`
     width: 100%;
     height: 100%;
     color: #1c1f26;
-    background-color: #fffccc;
+    background-color: ${Colors.ACCENT};
   }
 
   &:checked ~ .check-on {
     color: #1c1f26;
-    background-color: #fffccc;
+    background-color: ${Colors.ACCENT};
   }
 
   &:checked + .check-off {
@@ -572,5 +627,5 @@ const PseudoRadio = styled.div<{ isChecked: boolean }>`
   height: 100%;
   color: ${(props) =>
     props.isChecked ? '#1c1f26' : 'rgba(196, 196, 196, 0.5)'};
-  background-color: ${(props) => (props.isChecked ? '#fffccc' : 'transparent')};
+  background-color: ${(props) => (props.isChecked ? Colors.ACCENT : 'transparent')};
 `;

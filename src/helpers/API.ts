@@ -3,6 +3,8 @@ import {
   CreatePayRetailersInvoiceDTO,
   CreateVoltInvoiceDTO,
   CreateVoltInvoiceParams,
+  CreatePayopInvoiceParams,
+  CreatePayopInvoiceDTO,
 } from './../types/DepositTypes';
 import { WithdrawalHistoryResponseStatus } from './../enums/WithdrawalHistoryResponseStatus';
 import { RefreshToken, RefreshTokenDTO } from './../types/RefreshToken';
@@ -17,7 +19,11 @@ import {
   UpdateToppingUp,
 } from '../types/Positions';
 import API_LIST from './apiList';
-import { AccountModelDTO } from '../types/AccountsTypes';
+import {
+  AccountModelDTO,
+  MTAccountDTO,
+  MTCreateAccountDTO
+} from '../types/AccountsTypes';
 import {
   UserAuthenticate,
   UserAuthenticateResponse,
@@ -75,6 +81,7 @@ import { BrandEnum } from '../constants/brandingLinksTranslate';
 import { OnBoardingInfo } from '../types/OnBoardingTypes';
 import { DebugResponse, DebugTypes } from '../types/DebugTypes';
 import requestOptions from '../constants/requestOptions';
+import { IEducationCoursesDTO, IEducationQuestionsDTO } from '../types/EducationTypes';
 
 class API {
   private convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -302,6 +309,17 @@ class API {
     return response.data;
   };
 
+  createPayopInvoice = async (
+    params: CreatePayopInvoiceParams
+  ) => {
+    const response = await axios.post<CreatePayopInvoiceDTO>(
+      `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_PAYOP}`,
+      params,
+      this.clientRequestOptions
+    );
+    return response.data;
+  };
+
   createVoltInvoice = async (params: CreateVoltInvoiceParams) => {
     const response = await axios.post<CreateVoltInvoiceDTO>(
       `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_VOLT}`,
@@ -311,6 +329,15 @@ class API {
     return response.data;
   };
 
+  createMTAccounts = async (apiUrl: string) => {
+    const response = await axios.post<MTCreateAccountDTO>(
+      `${API_STRING || apiUrl}${API_LIST.MT5_ACCOUNTS.GET}`, {},
+      this.clientRequestOptions
+    );
+    return response.data;
+  };
+
+  
   // -------------------
 
   //
@@ -417,11 +444,11 @@ class API {
             aboutUrl: '',
             androidAppLink: '',
             brandCopyrights: '',
-            brandName: '',
+            brandName: 'Monfex',
             brandProperty: BrandEnum.Monfex,
             faqUrl: '',
             withdrawFaqUrl: '',
-            favicon: '',
+            favicon: 'https://trading-test.mnftx.biz/br/favicon.ico',
             gaAsAccount: '',
             iosAppLink: '',
             logo: '',
@@ -490,7 +517,10 @@ class API {
         AUTH_API_LIST.DOCUMENT.POST
       }/${documentType}`,
       formData,
-      this.backgroundRequestOptions
+      {
+        ...this.backgroundRequestOptions,
+        timeout: 600000,
+      }
     );
     return response.data;
   };
@@ -602,26 +632,30 @@ class API {
     return response.data;
   };
 
-  getOnBoardingInfoByStep = async (
-    stepNumber: number,
-    deviceType: number,
-    miscUrl: string
-  ) => {
-    const needToAdd =
-      (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
-    const response = await axios.get<OnBoardingInfo>(
-      `${API_MISC_STRING || miscUrl}${needToAdd}${
-        API_LIST.ONBOARDING.STEPS
-      }/${stepNumber}?deviceTypeId=${deviceType}`,
+  getMTAccounts = async (apiUrl: string) => {
+    const response = await axios.get<MTAccountDTO[]>(
+      `${API_STRING || apiUrl}${API_LIST.MT5_ACCOUNTS.GET}?deviceType=0`,
       this.backgroundRequestOptions
     );
     return response.data;
   };
 
-  postDebug = async (params: DebugTypes, apiUrl: string) => {
-    const response = await axios.post<DebugResponse>(
-      `${API_STRING || apiUrl}${API_LIST.DEBUG.POST}`,
-      params
+  getSubscribe = async (miscUrl: string) => {
+    const needToAdd = ((API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL) ? '' : '/misc';
+    const response = await axios.get(
+      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.ONESIGNAL.SUBSCRIBE}`,
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+
+  getOnBoardingInfoByStep = async (stepNumber: number, deviceType: number, miscUrl: string) => {
+    const needToAdd = ((API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL) ? '' : '/misc';
+    const response = await axios.get<OnBoardingInfo>(
+      `${API_MISC_STRING || miscUrl}${needToAdd}${
+        API_LIST.ONBOARDING.STEPS
+      }/${stepNumber}?deviceTypeId=${deviceType}`,
+      this.backgroundRequestOptions
     );
     return response.data;
   };
@@ -632,6 +666,48 @@ class API {
     const response = await axios.get<IWelcomeBonusDTO>(
       `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.WELCOME_BONUS.GET}`,
       this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+
+  getListOfCourses = async (miscUrl: string) => {
+    const needToAdd =
+      (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
+    const response = await axios.get<IEducationCoursesDTO>(
+      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.EDUCATION.LIST}`,
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+
+  getQuestionsByCourses = async (miscUrl: string, id: string) => {
+    const needToAdd =
+      (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
+    const response = await axios.get<IEducationQuestionsDTO>(
+      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.EDUCATION.LIST}/${id}`,
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+
+  saveProgressEducation = async (miscUrl: string, id: string, index: number) => {
+    const needToAdd =
+      (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
+    const response = await axios.post<IEducationCoursesDTO>(
+      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.EDUCATION.LIST}/${id}/saveProgress`,
+      {
+        lastQuestionId: index
+      },
+      this.backgroundRequestOptions
+    );
+    return response.data;
+  };
+
+
+  postDebug = async (params: DebugTypes, apiUrl: string) => {
+    const response = await axios.post<DebugResponse>(
+      `${API_STRING || apiUrl}${API_LIST.DEBUG.POST}`,
+      params
     );
     return response.data;
   };

@@ -46,6 +46,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import hasValue from '../../helpers/hasValue';
 import ActivePositionToppingUp from '../ActivePositionToppingUp';
 import { SortByProfitEnum } from '../../enums/SortByProfitEnum';
+import IconShield from '../../assets/svg/icon-shield.svg';
+import Colors from '../../constants/Colors';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -446,6 +448,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           };
 
       try {
+        if (
+          (values.sl === position.sl || (!values.sl && !position.sl)) &&
+          (values.tp === position.tp || (!values.tp && !position.tp)) &&
+          values.isToppingUpActive === position.isToppingUpActive
+        ) {
+          return false;
+        }
         const response = await API.updateSLTP(valuesToSubmit);
         if (response.result === OperationApiResponseCodes.Ok) {
           try {
@@ -470,6 +479,11 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               ? Math.abs(response.position.sl!)
               : undefined,
           });
+          position.sl = response.position.sl;
+          position.slType = response.position.slType;
+          position.tp = response.position.tp;
+          position.tpType = response.position.tpType;
+          position.isToppingUpActive = response.position.isToppingUpActive;
           SLTPstore.setTpType(
             response.position.tpType ?? TpSlTypeEnum.Currency
           );
@@ -477,6 +491,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             response.position.slType ?? TpSlTypeEnum.Currency
           );
           quotesStore.setSelectedPositionId(position.id);
+          markersOnChartStore.clearMarkersOnChart();
+          setInstrumentActive(false);
+          localStorage.setItem(LOCAL_POSITION, `${position.id}`);
           mixpanel.track(mixpanelEvents.EDIT_SLTP, {
             [mixapanelProps.AMOUNT]: response.position.investmentAmount,
             [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -610,6 +627,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           quotesStore.setSelectedPositionId(position.id);
           localStorage.setItem(LOCAL_POSITION, `${position.id}`);
           await instrumentsStore.switchInstrument(position.instrument);
+          markersOnChartStore.clearMarkersOnChart();
           tradingViewStore.setActiveOrderLinePosition(
             tradingViewStore.tradingWidget
               ?.chart()
@@ -651,12 +669,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
               )
               .setQuantity('')
               .setPrice(+position.openPrice)
-              .setBodyBorderColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
-              .setBodyTextColor(PnL() > 0 ? '#252636' : '#ffffff')
+              .setBodyBorderColor(PnL() > 0 ? Colors.PRIMARY : Colors.DANGER)
+              .setBodyTextColor(PnL() > 0 ? Colors.DARK_BLACK : Colors.WHITE)
               .setCancelButtonBackgroundColor('#2A2C33')
               .setCancelButtonBorderColor('#494C51')
-              .setCancelButtonIconColor('#ffffff')
-              .setBodyBackgroundColor(PnL() > 0 ? '#00FFDD' : '#ED145B')
+              .setCancelButtonIconColor(Colors.WHITE)
+              .setBodyBackgroundColor(PnL() > 0 ? Colors.PRIMARY : Colors.DANGER)
               .setLineColor('rgba(73,76,81,1)')
               .setLineLength(10)
           );
@@ -713,10 +731,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           .setPrice(getActualPricing(sl, 'sl', slType))
           .setExtendLeft(false)
           .setBodyBorderColor('#494C51')
-          .setBodyTextColor('#ffffff')
+          .setBodyTextColor(Colors.WHITE)
           .setCancelButtonBackgroundColor('#2A2C33')
           .setCancelButtonBorderColor('#494C51')
-          .setCancelButtonIconColor('#ffffff')
+          .setCancelButtonIconColor(Colors.WHITE)
           .setBodyBackgroundColor('#2A2C33')
           .setLineColor('#494C51')
           .setLineLength(10)
@@ -758,10 +776,10 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
           .setPrice(getActualPricing(tp, 'tp', tpType))
           .setExtendLeft(false)
           .setBodyBorderColor('#494C51')
-          .setBodyTextColor('#ffffff')
+          .setBodyTextColor(Colors.WHITE)
           .setCancelButtonBackgroundColor('#2A2C33')
           .setCancelButtonBorderColor('#494C51')
-          .setCancelButtonIconColor('#ffffff')
+          .setCancelButtonIconColor(Colors.WHITE)
           .setBodyBackgroundColor('#2A2C33')
           .setLineColor('#494C51')
           .setLineLength(10)
@@ -834,28 +852,24 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
   const removeSLChart = useCallback(async () => {
     if (quotesStore.selectedPosition) {
-      // setValue(Fields.CLOSED_BY_CHART, true);
-      tradingViewStore.activeOrderLinePositionSL?.remove();
-      tradingViewStore.setActiveOrderLinePositionSL(undefined);
-      removeSL();
       const objectToSend: FormValues = {
         tp: quotesStore.selectedPosition.tp ?? undefined,
         investmentAmount: quotesStore.selectedPosition.investmentAmount,
         isToppingUpActive: position.isToppingUpActive,
       };
       SLTPstore.toggleClosedByChart(true);
+      await updateSLTP(objectToSend);
+      // setValue(Fields.CLOSED_BY_CHART, true);
+      tradingViewStore.activeOrderLinePositionSL?.remove();
+      tradingViewStore.setActiveOrderLinePositionSL(undefined);
+      removeSL();
       quotesStore.selectedPosition.sl = null;
       quotesStore.selectedPosition.slType = null;
-      updateSLTP(objectToSend);
     }
-  }, [quotesStore.selectedPosition]);
+  }, [quotesStore.selectedPosition, position]);
 
   const removeTPChart = useCallback(async () => {
     if (quotesStore.selectedPosition) {
-      SLTPstore.toggleClosedByChart(true);
-      tradingViewStore.activeOrderLinePositionTP?.remove();
-      tradingViewStore.setActiveOrderLinePositionTP(undefined);
-      removeTP();
       const objectToSend: FormValues = {
         sl: hasValue(quotesStore.selectedPosition.sl)
           ? Math.abs(quotesStore.selectedPosition.sl!)
@@ -863,9 +877,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
         investmentAmount: quotesStore.selectedPosition.investmentAmount,
         isToppingUpActive: position.isToppingUpActive,
       };
+      SLTPstore.toggleClosedByChart(true);
+      await updateSLTP(objectToSend);
+      tradingViewStore.activeOrderLinePositionTP?.remove();
+      tradingViewStore.setActiveOrderLinePositionTP(undefined);
+      removeTP();
       quotesStore.selectedPosition.tp = null;
       quotesStore.selectedPosition.tpType = null;
-      updateSLTP(objectToSend);
     }
   }, [quotesStore.selectedPosition]);
 
@@ -907,9 +925,9 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 instrumentsStore.activeInstrument.instrumentItem.id
               ].bid.c
             )
-            .setBodyTextColor(PnL() >= 0 ? '#252636' : '#ffffff')
-            .setBodyBackgroundColor(PnL() >= 0 ? '#00FFDD' : '#ED145B')
-            .setBodyBorderColor(PnL() >= 0 ? '#00FFDD' : '#ED145B')
+            .setBodyTextColor(PnL() >= 0 ? Colors.DARK_BLACK : Colors.WHITE)
+            .setBodyBackgroundColor(PnL() >= 0 ? Colors.PRIMARY : Colors.DANGER)
+            .setBodyBorderColor(PnL() >= 0 ? Colors.PRIMARY : Colors.DANGER)
             .setText(
               `${PnL() >= 0 ? '+' : '-'} $${Math.abs(PnL()).toFixed(2)}`
             );
@@ -1039,15 +1057,15 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       switch (SLTPstore.slType) {
         case TpSlTypeEnum.Currency:
           // TODO: think refactor
-          console.log(
-            'positionStopOut Currency',
-            SLTPstore.positionStopOut(
-              position.investmentAmount,
-              position.instrument
-            ),
-            'sl',
-            sl
-          );
+          // console.log(
+          //   'positionStopOut Currency',
+          //   SLTPstore.positionStopOut(
+          //     position.investmentAmount,
+          //     position.instrument
+          //   ),
+          //   'sl',
+          //   sl
+          // );
           if (
             (hasValue(sl) &&
               sl >
@@ -1077,7 +1095,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
             slPrice: sl || 0,
             commission: position.swap + position.commission,
           });
-          console.log('positionStopOut Price', soValue, 'sl', sl);
+          // console.log('positionStopOut Price', soValue, 'sl', sl);
           if (!isToppingUp) {
             if (
               hasValue(sl) &&
@@ -1138,6 +1156,13 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
       !getValues(Fields.IS_TOPPING_UP) && !position.isToppingUpActive;
     return isSlNull && isTpNull && isToppingUpNull;
   }, [position]);
+
+  useEffect(() => {
+    if (quotesStore.selectedPosition?.id === position.id) {
+      checkSL(SLTPstore.slType, position.sl);
+      checkTP(SLTPstore.tpType, position.tp);
+    }
+  }, [quotesStore.selectedPositionId]);
 
   const methodsForForm = {
     errors,
@@ -1201,12 +1226,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 <FlexContainer margin="0 4px 0 0">
                   <SvgIcon
                     {...Icon}
-                    fillColor={isBuy ? '#00FFDD' : '#ED145B'}
+                    fillColor={isBuy ? Colors.PRIMARY : Colors.DANGER}
                   />
                 </FlexContainer>
                 <PrimaryTextSpan
                   fontSize="10px"
-                  color={isBuy ? '#00FFDD' : '#ED145B'}
+                  color={isBuy ? Colors.PRIMARY : Colors.DANGER}
                   textTransform="uppercase"
                   fontWeight="bold"
                 >
@@ -1214,7 +1239,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 </PrimaryTextSpan>
               </FlexContainer>
               <PrimaryTextSpan
-                color="rgba(255, 255, 255, 0.5)"
+                color={Colors.WHITE_LIGHT}
                 fontSize="10px"
                 lineHeight="12px"
               >
@@ -1231,7 +1256,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 {position.investmentAmount.toFixed(2)}
               </PrimaryTextSpan>
               <PrimaryTextSpan
-                color="rgba(255, 255, 255, 0.5)"
+                color={Colors.WHITE_LIGHT}
                 fontSize="10px"
                 lineHeight="12px"
                 marginBottom="12px"
@@ -1253,12 +1278,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       margin="0 0 8px 0"
                     >
                       <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
+                        color={Colors.WHITE_LIGHT}
                         fontSize="12px"
                       >
                         {t('Price opened')}
                       </PrimaryTextSpan>
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                         {t('at')} {position.openPrice.toFixed(+precision)}
                       </PrimaryTextSpan>
                     </FlexContainer>
@@ -1267,12 +1292,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       margin="0 0 8px 0"
                     >
                       <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
+                        color={Colors.WHITE_LIGHT}
                         fontSize="12px"
                       >
                         {t('Opened')}
                       </PrimaryTextSpan>
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                         {moment(position.openDate).format('DD MMM, HH:mm:ss')}
                       </PrimaryTextSpan>
                     </FlexContainer>
@@ -1281,7 +1306,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       margin="0 0 8px 0"
                     >
                       <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
+                        color={Colors.WHITE_LIGHT}
                         fontSize="12px"
                       >
                         {t('Equity')}
@@ -1293,16 +1318,71 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       margin="0 0 8px 0"
                     >
                       <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
+                        color={Colors.WHITE_LIGHT}
                         fontSize="12px"
                         marginRight="20px"
                       >
                         {t('Overnight fee')}
                       </PrimaryTextSpan>
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                         {getNumberSign(position.swap)}
                         {mainAppStore.activeAccount?.symbol}
-                        {Math.abs(position.swap).toFixed(2)}
+                        {Math.abs(position.swap + position.commission).toFixed(2)}
+                      </PrimaryTextSpan>
+                    </FlexContainer>
+
+                    {position.tp && (
+                      <FlexContainer
+                        justifyContent="space-between"
+                        margin="0 0 8px 0"
+                      >
+                        <PrimaryTextSpan
+                          color={Colors.WHITE_LIGHT}
+                          fontSize="12px"
+                        >
+                          {t('Take profit')}
+                        </PrimaryTextSpan>
+                        <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
+                          {position.tpType === TpSlTypeEnum.Currency
+                            ? `+${mainAppStore.activeAccount?.symbol}${Math.abs(position.tp).toFixed(2)}`
+                            : Math.abs(position.tp).toFixed(+precision)
+                          }
+                        </PrimaryTextSpan>
+                      </FlexContainer>
+                    )}
+
+                    {position.sl && (
+                      <FlexContainer
+                        justifyContent="space-between"
+                        margin="0 0 8px 0"
+                      >
+                        <PrimaryTextSpan
+                          color={Colors.WHITE_LIGHT}
+                          fontSize="12px"
+                        >
+                          {t('Stop loss')}
+                        </PrimaryTextSpan>
+                        <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
+                          {position.slType === TpSlTypeEnum.Currency
+                            ? `-${mainAppStore.activeAccount?.symbol}${Math.abs(position.sl).toFixed(2)}`
+                            : Math.abs(position.sl).toFixed(+precision)
+                          }
+                        </PrimaryTextSpan>
+                      </FlexContainer>
+                    )}
+
+                    <FlexContainer
+                      justifyContent="space-between"
+                      margin="0 0 8px 0"
+                    >
+                      <PrimaryTextSpan
+                        color={Colors.WHITE_LIGHT}
+                        fontSize="12px"
+                      >
+                        {t('Save position')}
+                      </PrimaryTextSpan>
+                      <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
+                        {position.isToppingUpActive ? t('On') : t('Off')}
                       </PrimaryTextSpan>
                     </FlexContainer>
 
@@ -1312,12 +1392,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                         margin="0 0 8px 0"
                       >
                         <PrimaryTextSpan
-                          color="rgba(255, 255, 255, 0.4)"
+                          color={Colors.WHITE_LIGHT}
                           fontSize="12px"
                         >
                           {t('Insurance amount')}
                         </PrimaryTextSpan>
-                        <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                        <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                           {mainAppStore.activeAccount?.symbol}
                           {Math.abs(position.reservedFundsForToppingUp).toFixed(
                             2
@@ -1328,12 +1408,12 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
 
                     <FlexContainer justifyContent="space-between">
                       <PrimaryTextSpan
-                        color="rgba(255, 255, 255, 0.4)"
+                        color={Colors.WHITE_LIGHT}
                         fontSize="12px"
                       >
                         {t('Position ID')}
                       </PrimaryTextSpan>
-                      <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                      <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                         {position.id}
                       </PrimaryTextSpan>
                     </FlexContainer>
@@ -1356,7 +1436,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                 {((formState.touched.sl && errors.sl) ||
                   (formState.touched.tp && errors.tp)) && (
                   <ErropPopup
-                    textColor="#fffccc"
+                    textColor={Colors.ACCENT}
                     bgColor={ColorsPallete.RAZZMATAZZ}
                     classNameTooltip={Fields.INVEST_AMOUNT}
                     direction="left"
@@ -1386,31 +1466,69 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                       positionId={position.id}
                       handleResetLines={handleResetLines}
                       resetFormStateToInitial={resetFormStateToInitial}
+                      amount={position.investmentAmount}
                     >
                       <SetSLTPButton>
-                        <PrimaryTextSpan
-                          fontSize="12px"
-                          lineHeight="14px"
-                          color={
+                        <FlexContainer
+                          background={
                             hasValue(tp)
-                              ? '#fffccc'
-                              : 'rgba(255, 255, 255, 0.6)'
+                              ? 'rgba(255, 255, 255, 0.12)'
+                              : 'transparent'
                           }
+                          padding="1px 2px"
+                          marginRight="1px"
                         >
-                          {t('TP')}
-                        </PrimaryTextSpan>
-                        &nbsp;
-                        <PrimaryTextSpan
-                          fontSize="12px"
-                          lineHeight="14px"
-                          color={
+                          <PrimaryTextSpan
+                            fontSize="12px"
+                            lineHeight="18px"
+                            color={
+                              hasValue(tp)
+                                ? Colors.ACCENT
+                                : 'rgba(255, 255, 255, 0.6)'
+                            }
+                          >
+                            {t('TP')}
+                          </PrimaryTextSpan>
+                        </FlexContainer>
+                        <FlexContainer
+                          background={
                             hasValue(sl)
-                              ? '#fffccc'
-                              : 'rgba(255, 255, 255, 0.6)'
+                              ? 'rgba(255, 255, 255, 0.12)'
+                              : 'transparent'
                           }
+                          padding="1px 2px"
+                          marginRight="1px"
                         >
-                          {t('SL')}
-                        </PrimaryTextSpan>
+                          <PrimaryTextSpan
+                            fontSize="12px"
+                            lineHeight="18px"
+                            color={
+                              hasValue(sl)
+                                ? Colors.ACCENT
+                                : 'rgba(255, 255, 255, 0.6)'
+                            }
+                          >
+                            {t('SL')}
+                          </PrimaryTextSpan>
+                        </FlexContainer>
+                        <FlexContainer
+                          background={
+                            (position.isToppingUpActive || position.reservedFundsForToppingUp !== 0)
+                              ? 'rgba(255, 255, 255, 0.12)'
+                              : 'transparent'
+                          }
+                          padding="1px 2px"
+                          height="20px"
+                          alignItems="center"
+                        >
+                          <SvgIcon {...IconShield} fillColor={
+                            position.reservedFundsForToppingUp !== 0
+                              ? Colors.DANGER
+                              : position.isToppingUpActive
+                              ? Colors.ACCENT
+                              : '#77797D'
+                          } />
+                        </FlexContainer>
                       </SetSLTPButton>
                     </AutoClosePopupSideBar>
                   </CustomForm>
@@ -1425,7 +1543,7 @@ const ActivePositionsPortfolioTab: FC<Props> = ({
                     SLTPstore.closeOpenPrice
                   }
                   isButton
-                ></ClosePositionPopup>
+                />
               </FlexContainer>
             </FlexContainer>
           </InstrumentInfoWrapperForBorder>
@@ -1453,10 +1571,9 @@ const InstrumentInfoWrapperForBorder = styled(FlexContainer)`
 `;
 
 const SetSLTPButton = styled(FlexContainer)`
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.12);
   margin-right: 8px;
   background-color: transparent;
-  padding: 4px 8px;
   transition: background-color 0.2s ease;
   will-change: background-color;
   border-radius: 4px;
@@ -1472,7 +1589,7 @@ const SetSLTPButton = styled(FlexContainer)`
   &:disabled {
     background-color: rgba(255, 255, 255, 0.04);
     & span {
-      color: rgba(255, 255, 255, 0.4);
+      color: ${Colors.WHITE_LIGHT};
     }
   }
 `;

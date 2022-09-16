@@ -18,13 +18,21 @@ import { SortByPendingOrdersEnum } from '../../enums/SortByPendingOrdersEnum';
 import { useTranslation } from 'react-i18next';
 import {
   LOCAL_PENDING_POSITION_SORT,
-  LOCAL_PORTFOLIO_TABS
+  LOCAL_PORTFOLIO_TABS,
 } from '../../constants/global';
+import Colors from '../../constants/Colors';
 
 const Orders: FC = () => {
-  const { sortingStore, tabsStore, mainAppStore, quotesStore } = useStores();
+  const {
+    sortingStore,
+    tabsStore,
+    mainAppStore,
+    quotesStore,
+    markersOnChartStore,
+  } = useStores();
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    markersOnChartStore.renderActivePositionsMarkersOnChart();
     localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
     tabsStore.setPortfolioTab(portfolioTab);
   };
@@ -80,7 +88,7 @@ const Orders: FC = () => {
         padding="10px 16px"
       >
         <PrimaryTextSpan
-          color="rgba(255, 255, 255, 0.4)"
+          color={Colors.WHITE_LIGHT}
           marginRight="4px"
           fontSize="10px"
           textTransform="uppercase"
@@ -88,8 +96,8 @@ const Orders: FC = () => {
           {t('Sort by')}:
         </PrimaryTextSpan>
         <Observer>
-          {
-            () => <SortByDropdown
+          {() => (
+            <SortByDropdown
               opened={on}
               selectedLabel={t(
                 sortByPendingOrdersLabels[sortingStore.pendingOrdersSortBy]
@@ -98,7 +106,7 @@ const Orders: FC = () => {
             >
               {Object.entries(sortByPendingOrdersLabels).map(([key, value]) => (
                 <DropdownItemText
-                  color="#fffccc"
+                  color={Colors.ACCENT}
                   fontSize="12px"
                   key={key}
                   onClick={handleChangeSorting(+key)}
@@ -108,13 +116,13 @@ const Orders: FC = () => {
                 </DropdownItemText>
               ))}
             </SortByDropdown>
-          }
+          )}
         </Observer>
       </SortByWrapper>
       <Observer>
         {() => (
           <ActivePositionsWrapper flexDirection="column">
-            {quotesStore.sortedPendingOrders.map(item => (
+            {quotesStore.sortedPendingOrders.map((item) => (
               <PendingOrder
                 key={item.id}
                 pendingOrder={item}
@@ -131,14 +139,14 @@ const Orders: FC = () => {
                 <FlexContainer margin="0 0 18px 0">
                   <SvgIcon
                     {...IconPortfolioNoDataExpanded}
-                    fillColor="rgba(255,255,255,0.4)"
+                    fillColor={Colors.WHITE_LIGHT}
                     width={40}
                     height={32}
                   />
                 </FlexContainer>
                 <PrimaryTextParagraph
                   fontSize="14px"
-                  color="rgba(255,255,255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                 >
                   {t("You haven't made any order yet")}
                 </PrimaryTextParagraph>
@@ -158,9 +166,9 @@ const TabPortfolitButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
   flex-direction: column;
   padding: 12px 8px;
   font-size: 12px;
-  color: ${props => (props.isActive ? '#fffcbd' : 'rgba(255,255,255,0.4)')};
+  color: ${(props) => (props.isActive ? Colors.ACCENT : Colors.WHITE_LIGHT)};
   text-transform: uppercase;
-  background: ${props =>
+  background: ${(props) =>
     props.isActive
       ? `radial-gradient(
       50.41% 50% at 50% 0%,
@@ -169,21 +177,21 @@ const TabPortfolitButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
     ),
     rgba(255, 255, 255, 0.08)`
       : 'none'};
-  box-shadow: ${props =>
-    props.isActive ? 'inset 0px 1px 0px #00ffdd' : 'none'};
+  box-shadow: ${(props) =>
+    props.isActive ? `inset 0px 1px 0px ${Colors.PRIMARY}` : 'none'};
   border-radius: 0px 0px 4px 4px;
   transition: all 0.2s ease;
   will-change: background;
 
   &:hover {
-    color: #fffcbd;
+    color: ${Colors.ACCENT};
     background: radial-gradient(
         50.41% 50% at 50% 0%,
         rgba(0, 255, 221, 0.08) 0%,
         rgba(0, 255, 221, 0) 100%
       ),
       rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0px 1px 0px #00ffdd;
+    box-shadow: inset 0px 1px 0px ${Colors.PRIMARY};
   }
 `;
 
@@ -207,7 +215,7 @@ const DropdownItemText = styled(PrimaryTextSpan)`
 
   &:hover {
     cursor: pointer;
-    color: #00ffdd;
+    color: ${Colors.PRIMARY};
   }
 
   &:last-of-type {

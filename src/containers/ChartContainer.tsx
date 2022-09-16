@@ -59,17 +59,87 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         backgroundColor: 'transparent',
         foregroundColor: 'transparent',
       },
+      studies_access: {
+        type: 'black',
+        tools: [
+          {
+            name: 'Accumulation/Distribution',
+            grayed: false,
+          },
+          {
+            name: 'Chaikin Oscillator',
+            grayed: false,
+          },
+          {
+            name: 'Ease Of Movement',
+            grayed: false,
+          },
+          {
+            name: "Elder's Force Index",
+            grayed: false,
+          },
+          {
+            name: 'Klinger Oscillator',
+            grayed: false,
+          },
+          {
+            name: 'Money Flow Index',
+            grayed: false,
+          },
+          {
+            name: 'Net Volume',
+            grayed: false,
+          },
+          {
+            name: 'On Balance Volume',
+            grayed: false,
+          },
+          {
+            name: 'Volume',
+            grayed: false,
+          },
+          {
+            name: 'Volume Oscillator',
+            grayed: false,
+          },
+          {
+            name: 'VWAP',
+            grayed: false,
+          },
+          {
+            name: 'VWMA',
+            grayed: false,
+          },
+          {
+            name: 'Zig Zag',
+            grayed: false,
+          },
+          {
+            name: 'Chaikin Money Flow',
+            grayed: false,
+          },
+          { name: 'Price Volume Trend', grayed: false },
+          { name: 'Correlation - Log', grayed: false },
+          { name: 'Correlation Coefficient', grayed: false },
+          { name: 'Ratio', grayed: false },
+        ],
+      },
       interval: supportedResolutions[BASIC_RESOLUTION_KEY] as ResolutionString,
       container_id: containerId,
       library_path: CHARTING_LIBRARY_PATH,
       locale: getLanguageFromURL() || 'en',
       custom_css_url: 'custom_trading_view_styles.css',
       disabled_features: [
-        'header_widget',
+        // 'header_widget',
         'timeframes_toolbar',
-        'use_localstorage_for_settings',
+        'header_symbol_search',
+        'header_compare',
+        // 'header_indicators',
+        // 'use_localstorage_for_settings',
         'border_around_the_chart',
-        'left_toolbar',
+        // 'left_toolbar',
+        'symbol',
+        'symbol_search',
         'symbol_info',
         'context_menus',
         'main_series_scale_menu',
@@ -133,6 +203,8 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
     tvWidget.onChartReady(async () => {
       tradingViewStore.setTradingWidget(tvWidget);
       markersOnChartStore.renderActivePositionsMarkersOnChart();
+
+      console.log(tvWidget.getStudiesList());
     });
     return () => {
       tradingViewStore.setTradingWidget(undefined);

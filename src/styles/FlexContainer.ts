@@ -19,6 +19,7 @@ export interface FlexContainerProps {
   maxWidth?: string;
   padding?: string;
   margin?: string;
+  backgroundImage?: string;
   backgroundColor?: string;
   background?: string;
   textColor?: string;
@@ -38,6 +39,7 @@ export interface FlexContainerProps {
   flex?: string;
   visibilityProp?: 'hidden' | 'visible';
   display?: 'flex' | 'none';
+  cursor?: 'pointer' | 'default';
 }
 
 export const FlexContainer = styled.div<FlexContainerProps>`
@@ -58,6 +60,7 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   flex-wrap: ${(props) => props.flexWrap};
   flex-direction: ${(props) => props.flexDirection};
   background-color: ${(props) => props.backgroundColor};
+  background-image: url('${(props) => props.backgroundImage}');
   background: ${(props) => props.background};
   color: ${(props) => props.textColor};
   top: ${(props) => props.top};
@@ -71,4 +74,5 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   box-shadow: ${(props) => props.boxShadow};
   visibility: ${(props) => props.visibilityProp};
   display: ${(props) => props.display || 'flex'};
+  cursor: ${(props) => props.cursor};
 `;

@@ -23,6 +23,7 @@ import {
   LOCAL_POSITION_SORT,
 } from '../../constants/global';
 import { moneyFormatPart } from '../../helpers/moneyFormat';
+import Colors from '../../constants/Colors';
 
 interface Props {}
 
@@ -33,9 +34,11 @@ const Portfolio: FC<Props> = () => {
     tabsStore,
     quotesStore,
     tradingViewStore,
+    markersOnChartStore,
   } = useStores();
 
   const handleChangePortfolioTab = (portfolioTab: PortfolioTabEnum) => () => {
+    markersOnChartStore.renderActivePositionsMarkersOnChart();
     localStorage.setItem(LOCAL_PORTFOLIO_TABS, `${portfolioTab}`);
     tabsStore.setPortfolioTab(portfolioTab);
   };
@@ -149,7 +152,7 @@ const Portfolio: FC<Props> = () => {
         padding="10px 16px"
       >
         <PrimaryTextSpan
-          color="rgba(255, 255, 255, 0.4)"
+          color={Colors.WHITE_LIGHT}
           marginRight="4px"
           fontSize="10px"
           textTransform="uppercase"
@@ -168,7 +171,7 @@ const Portfolio: FC<Props> = () => {
               {Object.entries(sortByDropdownProfitLabels).map(
                 ([key, value]) => (
                   <DropdownItemText
-                    color="#fffccc"
+                    color={Colors.ACCENT}
                     fontSize="12px"
                     key={key}
                     onClick={handleChangeSorting(+key)}
@@ -204,14 +207,14 @@ const Portfolio: FC<Props> = () => {
                 <FlexContainer margin="0 0 18px 0">
                   <SvgIcon
                     {...IconPortfolioNoDataExpanded}
-                    fillColor="rgba(255,255,255,0.4)"
+                    fillColor={Colors.WHITE_LIGHT}
                     width={40}
                     height={32}
                   />
                 </FlexContainer>
                 <PrimaryTextParagraph
                   fontSize="14px"
-                  color="rgba(255,255,255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                 >
                   {t("You haven't opened any positions yet")}
                 </PrimaryTextParagraph>
@@ -233,7 +236,7 @@ export const TabPortfolitButton = styled(ButtonWithoutStyles)<{
   flex-direction: column;
   padding: 12px 8px;
   font-size: 12px;
-  color: ${(props) => (props.isActive ? '#fffcbd' : 'rgba(255,255,255,0.4)')};
+  color: ${(props) => (props.isActive ? Colors.ACCENT : Colors.WHITE_LIGHT)};
   text-transform: uppercase;
   background: ${(props) =>
     props.isActive
@@ -245,20 +248,20 @@ export const TabPortfolitButton = styled(ButtonWithoutStyles)<{
     rgba(255, 255, 255, 0.08)`
       : 'none'};
   box-shadow: ${(props) =>
-    props.isActive ? 'inset 0px 1px 0px #00ffdd' : 'none'};
+    props.isActive ? `inset 0px 1px 0px ${Colors.PRIMARY}` : 'none'};
   border-radius: 0px 0px 4px 4px;
   transition: all 0.2s ease;
   will-change: background;
 
   &:hover {
-    color: #fffcbd;
+    color: ${Colors.ACCENT};
     background: radial-gradient(
         50.41% 50% at 50% 0%,
         rgba(0, 255, 221, 0.08) 0%,
         rgba(0, 255, 221, 0) 100%
       ),
       rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0px 1px 0px #00ffdd;
+    box-shadow: inset 0px 1px 0px ${Colors.PRIMARY};
   }
 `;
 
@@ -296,7 +299,7 @@ const DropdownItemText = styled(PrimaryTextSpan)`
 
   &:hover {
     cursor: pointer;
-    color: #00ffdd;
+    color: ${Colors.PRIMARY};
   }
 
   &:last-of-type {

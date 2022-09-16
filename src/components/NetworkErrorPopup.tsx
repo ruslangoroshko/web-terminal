@@ -6,11 +6,14 @@ import { FlexContainer } from '../styles/FlexContainer';
 import { PrimaryTextParagraph, PrimaryTextSpan } from '../styles/TextsElements';
 import { useStores } from '../hooks/useStores';
 import { observer, Observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 const NetworkErrorPopup = observer(() => {
   const { badRequestPopupStore, mainAppStore } = useStores();
   const [show, setShow] = useState(false);
   const [shouldRender, setRender] = useState(false);
+
+  const { t } = useTranslation();
 
   const handleLostConnection = () => {
     badRequestPopupStore.setRecconect();
@@ -63,8 +66,8 @@ const NetworkErrorPopup = observer(() => {
       <ModalWrap show={show}>
         <PrimaryTextParagraph color="#ffffff" textAlign="center">
           {badRequestPopupStore.isRecconect && badRequestPopupStore.isNetwork
-            ? 'There is no Internet connection.'
-            : 'Oooopsss'}
+            ? t('There is no Internet connection.')
+            : t('Oooopsss')}
         </PrimaryTextParagraph>
         <PrimaryTextParagraph
           fontSize="12px"
@@ -72,8 +75,8 @@ const NetworkErrorPopup = observer(() => {
           color="rgba(255, 255, 255, 0.4)"
         >
           {badRequestPopupStore.isRecconect && badRequestPopupStore.isNetwork
-            ? 'Please make sure you are connected to the Internet.'
-            : 'We are trying to connect to the server'}
+            ? t('Please make sure you are connected to the Internet.')
+            : t('We are trying to connect to the server')}
         </PrimaryTextParagraph>
 
         <Observer>
@@ -86,7 +89,7 @@ const NetworkErrorPopup = observer(() => {
                   color="rgba(255, 255, 255, 0.4)"
                 >
                   <br />
-                  Reconnecting...
+                  {t('Reconnecting...')}
                 </PrimaryTextParagraph>
               )}
             </>

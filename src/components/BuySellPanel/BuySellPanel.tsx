@@ -42,6 +42,7 @@ import {
 import hasValue from '../../helpers/hasValue';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 import OpenPricePopup from './OpenPricePopup';
+import Colors from '../../constants/Colors';
 
 // TODO: too much code, refactor
 
@@ -104,6 +105,18 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
                 }
               ),
           })
+          .test(
+            Fields.INVEST_AMOUNT,
+            `${t(
+              'Insufficient funds to open a position. You have only'
+            )} $${mainAppStore.activeAccount?.balance}`,
+            (value) => {
+              if (value) {
+                return mainAppStore.activeAccount?.balance !== 0;
+              }
+              return true;
+            }
+          )
 
           .test(
             Fields.INVEST_AMOUNT,
@@ -207,7 +220,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           ),
         openPrice: yup
           .number()
-          .test(Fields.STOP_LOSS, t('Open Price can not be zero'), (value) => {
+          .test(Fields.OPEN_PRICE, t('Open Price can not be zero'), (value) => {
             return value !== 0 || value === null;
           }),
         isToppingUpActive: yup.boolean().required(),
@@ -274,6 +287,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               }`,
             });
             setValue('openPrice', undefined);
+            setValue('isToppingUpActive', false);
             mixpanel.track(mixpanelEvents.LIMIT_ORDER, {
               [mixapanelProps.AMOUNT]: response.order.investmentAmount,
               [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -381,6 +395,8 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             });
             reset();
             setValue('investmentAmount', values.investmentAmount);
+            setValue('openPrice', undefined);
+            setValue('isToppingUpActive', false);
             mixpanel.track(mixpanelEvents.MARKET_ORDER, {
               [mixapanelProps.AMOUNT]: response.position.investmentAmount,
               [mixapanelProps.ACCOUNT_CURRENCY]:
@@ -773,6 +789,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
     }
   }, [isToppingUpActive]);
 
+  useEffect(() => {
+    clearErrors();
+  }, [operation]);
+
   const methods = {
     watch,
     register,
@@ -819,7 +839,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               width="212px"
               direction="left"
             >
-              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+              <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                 {t('The amount you’d like to invest')}
               </PrimaryTextSpan>
             </InformationPopup>
@@ -834,7 +854,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             {(formState.touched.investmentAmount || operation !== null) &&
               errors.investmentAmount && (
                 <ErropPopup
-                  textColor="#fffccc"
+                  textColor={Colors.ACCENT}
                   bgColor={ColorsPallete.RAZZMATAZZ}
                   classNameTooltip={'investmentAmount'}
                   direction="left"
@@ -892,12 +912,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               {t('Multiplier')}
             </PrimaryTextSpan>
             <InformationPopup
-              bgColor="#000000"
+              bgColor={Colors.DARK_BLACK}
               classNameTooltip="leverage"
               width="212px"
               direction="left"
             >
-              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+              <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                 {t(
                   'The coefficient that multiplies the potential profit and level of risk accordingly the value of Multiplier.'
                 )}
@@ -941,7 +961,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               width="212px"
               direction="left"
             >
-              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+              <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                 {t(
                   'When the position reached the specified take profit or stop loss level, the position will be closed automatically.'
                 )}
@@ -949,12 +969,12 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </InformationPopup>
           </FlexContainer>
           <FlexContainer position="relative" flexDirection="column">
-            <AutoClosePopup instrumentId={instrument.id}>
+            <AutoClosePopup instrumentId={instrument.id} amount={investmentAmount}>
               <>
                 {((formState.touched.sl && errors.sl) ||
                   (formState.touched.tp && errors.tp)) && (
                   <ErropPopup
-                    textColor="#fffccc"
+                    textColor={Colors.ACCENT}
                     bgColor={ColorsPallete.RAZZMATAZZ}
                     classNameTooltip="investmentAmount"
                     direction="left"
@@ -977,7 +997,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </PrimaryTextSpan>
             <PrimaryTextSpan
               fontSize="12px"
-              color={isLoading ? '#fffccc00' : '#fffccc'}
+              color={isLoading ? '#fffccc00' : Colors.ACCENT}
             >
               {mainAppStore.activeAccount?.symbol}
               {(investmentAmount * multiplier).toFixed(PRECISION_USD)}
@@ -996,7 +1016,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               {() => (
                 <>
                   {quotesStore.quotes[instrument.id] && (
-                    <PrimaryTextSpan fontSize="12px" color="#fffccc">
+                    <PrimaryTextSpan fontSize="12px" color={Colors.ACCENT}>
                       {Math.abs(
                         quotesStore.quotes[instrument.id].bid.c -
                           quotesStore.quotes[instrument.id].ask.c
@@ -1039,7 +1059,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               onClick={openConfirmBuyingPopup(AskBidEnum.Sell)}
             >
               <FlexContainer margin="0 8px 0 0">
-                <SvgIcon {...IconShevronSell} fillColor="#fff"></SvgIcon>
+                <SvgIcon {...IconShevronSell} fillColor={Colors.WHITE}></SvgIcon>
               </FlexContainer>
               {t('Sell')}
             </ButtonSell>
@@ -1063,7 +1083,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               width="212px"
               direction="left"
             >
-              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+              <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                 {t(
                   'Position will be opened automatically when the price reaches this level.'
                 )}
@@ -1090,14 +1110,14 @@ const InvestInput = styled.input`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #fffccc;
+  color: ${Colors.ACCENT};
 `;
 
 const ButtonSell = styled(ButtonWithoutStyles)`
-  background-color: #ed145b;
+  background-color: ${Colors.DANGER};
   border-radius: 4px;
   height: 56px;
-  color: #fff;
+  color: ${Colors.WHITE};
   font-weight: bold;
   font-size: 20px;
   line-height: 24px;
@@ -1108,12 +1128,8 @@ const ButtonSell = styled(ButtonWithoutStyles)`
   transition: background-color 0.2s ease;
   will-change: background-color;
 
-  &:hover {
-    background-color: #ff557e;
-  }
-
-  &:focus {
-    background-color: #bd1d51;
+  &:hover, &:focus {
+    background-color: ${Colors.DANGER_DARK};
   }
 
   &:disabled {
@@ -1122,18 +1138,12 @@ const ButtonSell = styled(ButtonWithoutStyles)`
 `;
 
 const ButtonBuy = styled(ButtonSell)`
-  background-color: #00ffdd;
-  box-shadow: 0px 4px 8px rgba(0, 255, 242, 0.17),
-    inset 0px -3px 6px rgba(0, 255, 242, 0.26);
-  color: #003a38;
+  background-color: ${Colors.PRIMARY};
+  color: ${Colors.DARK_BLACK};
   margin-bottom: 8px;
 
   &:hover {
-    background-color: #9ffff2;
-  }
-
-  &:focus {
-    background-color: #21b3a4;
+    background-color: ${Colors.PRIMARY_LIGHT};
   }
 
   &:disabled {

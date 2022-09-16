@@ -13,14 +13,10 @@ import { sortByMarketsLabels } from '../../constants/sortByDropdownValues';
 import SortByDropdown from '../SortByDropdown';
 import { useTranslation } from 'react-i18next';
 import { LOCAL_MARKET_TABS } from '../../constants/global';
-import { InstrumentGroupWSDTO } from '../../types/InstrumentsTypes';
+import Colors from '../../constants/Colors';
 
 const Markets = observer(() => {
-  const {
-    instrumentsStore,
-    sortingStore,
-    mainAppStore
-  } = useStores();
+  const { instrumentsStore, sortingStore, mainAppStore } = useStores();
 
   const setActiveInstrumentGroup = (groupId: string) => () => {
     localStorage.setItem(LOCAL_MARKET_TABS, groupId);
@@ -44,24 +40,21 @@ const Markets = observer(() => {
       mainAppStore.paramsMarkets &&
       instrumentsStore.instrumentGroups.length > 0
     ) {
-      const instrumentId = instrumentsStore.instrumentGroups
-        .find(
+      const instrumentId =
+        instrumentsStore.instrumentGroups.find(
           (item) => item.id === mainAppStore.paramsMarkets
         )?.id || instrumentsStore.instrumentGroups[0].id;
       instrumentsStore.setActiveInstrumentGroupId(instrumentId);
       mainAppStore.setParamsMarkets(null);
     }
-  }, [
-    mainAppStore.paramsMarkets,
-    instrumentsStore.instrumentGroups
-  ]);
+  }, [mainAppStore.paramsMarkets, instrumentsStore.instrumentGroups]);
 
   return (
     <FlexContainer flexDirection="column" height="100%">
       <FlexContainer padding="12px 16px" margin="0 0 8px 0">
         <PrimaryTextSpan
           fontSize="12px"
-          color="#fffccc"
+          color={Colors.ACCENT}
           textTransform="uppercase"
         >
           {t('Markets')}
@@ -82,8 +75,8 @@ const Markets = observer(() => {
                   <PrimaryTextSpan
                     color={
                       instrumentsStore.activeInstrumentGroupId === item.id
-                        ? '#fffccc'
-                        : 'rgba(255, 255, 255, 0.6)'
+                        ? Colors.ACCENT
+                        : Colors.WHITE_DARK
                     }
                     fontSize="10px"
                   >
@@ -100,7 +93,7 @@ const Markets = observer(() => {
         padding="10px 16px"
       >
         <PrimaryTextSpan
-          color="rgba(255, 255, 255, 0.4)"
+          color={Colors.WHITE_LIGHT}
           marginRight="4px"
           fontSize="10px"
           textTransform="uppercase"
@@ -114,7 +107,7 @@ const Markets = observer(() => {
         >
           {Object.entries(sortByMarketsLabels).map(([key, value]) => (
             <DropdownItemText
-              color="#fffccc"
+              color={Colors.ACCENT}
               fontSize="12px"
               key={key}
               onClick={handleChangeSorting(+key)}
@@ -134,7 +127,7 @@ const Markets = observer(() => {
         <FlexContainer>
           <FlexContainer margin="0 8px 0 0">
             <ButtonWithoutStyles>
-              <SvgIcon {...IconStar} fillColor="rgba(255, 255, 255, 0.4)" />
+              <SvgIcon {...IconStar} fillColor={Colors.WHITE_LIGHT} />
             </ButtonWithoutStyles>
           </FlexContainer>
           <FlexContainer>
@@ -142,7 +135,7 @@ const Markets = observer(() => {
               <PrimaryTextSpan
                 fontSize="10px"
                 textTransform="uppercase"
-                color="rgba(255, 255, 255, 0.4)"
+                color={Colors.WHITE_LIGHT}
               >
                 {t('market name')}
               </PrimaryTextSpan>
@@ -158,7 +151,7 @@ const Markets = observer(() => {
           >
             <ButtonWithoutStyles>
               <PrimaryTextSpan
-                color="rgba(255,255,255,0.4)"
+                color={Colors.WHITE_LIGHT}
                 fontSize="10px"
                 textTransform="uppercase"
               >
@@ -169,7 +162,7 @@ const Markets = observer(() => {
           <FlexContainer flexDirection="column">
             <ButtonWithoutStyles>
               <PrimaryTextSpan
-                color="rgba(255,255,255,0.4)"
+                color={Colors.WHITE_LIGHT}
                 fontSize="10px"
                 textTransform="uppercase"
               >
@@ -222,7 +215,8 @@ const MarketButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
       rgba(0, 255, 221, 0) 100%
     ),
     rgba(255, 255, 255, 0.08)`};
-  box-shadow: ${(props) => props.isActive && 'inset 0px -1px 0px #00ffdd'};
+  box-shadow: ${(props) =>
+    props.isActive && `inset 0px -1px 0px ${Colors.PRIMARY}`};
   transition: background 0.2s ease;
   padding: 8px;
 
@@ -233,7 +227,7 @@ const MarketButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
         rgba(0, 255, 221, 0) 100%
       ),
       rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0px -1px 0px #00ffdd;
+    box-shadow: inset 0px -1px 0px ${Colors.PRIMARY};
   }
 `;
 
@@ -269,7 +263,7 @@ const DropdownItemText = styled(PrimaryTextSpan)`
   cursor: pointer;
 
   &:hover {
-    color: #00ffdd;
+    color: ${Colors.PRIMARY};
   }
 
   &:last-of-type {

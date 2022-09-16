@@ -1,20 +1,14 @@
 import React, { useEffect, useState, FC } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
-import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import TVChartContainer from '../containers/ChartContainer';
-import SvgIcon from '../components/SvgIcon';
-import IconAddInstrument from '../assets/svg/icon-instrument-add.svg';
 import ActiveInstrument from '../components/ActiveInstrument';
 import BuySellPanel from '../components/BuySellPanel/BuySellPanel';
 import ChartIntervalTimeScale from '../components/Chart/ChartTimeScale';
 import ChartSettingsButtons from '../components/Chart/ChartSettingsButtons';
 import ChartTimeFomat from '../components/Chart/ChartTimeFomat';
 import { useStores } from '../hooks/useStores';
-import Toggle from '../components/Toggle';
-import AddInstrumentsPopup from '../components/AddInstrumentsPopup';
 import { Observer, observer } from 'mobx-react-lite';
-import InstrumentsScrollWrapper from '../components/InstrumentsScrollWrapper';
 import NotificationPopup from '../components/NotificationPopup';
 import DemoRealPopup from '../components/DemoRealPopup';
 import { useLocation } from 'react-router-dom';
@@ -26,6 +20,7 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import ShouldValidatePhonePopup from '../components/ShouldValidatePhonePopup';
 import ConfirmPopup from '../components/ConfirmPopup';
 import FavoriteInstrumetsBar from '../components/FavoriteInstrumetsBar';
+import HintsWrapper from '../components/Hints/HintsWrapper';
 
 const Dashboard: FC = observer(() => {
   const {
@@ -34,6 +29,8 @@ const Dashboard: FC = observer(() => {
     notificationStore,
     phoneVerificationStore,
     tradingViewStore,
+    educationStore,
+    depositFundsStore
   } = useStores();
 
   const { t } = useTranslation();
@@ -59,6 +56,10 @@ const Dashboard: FC = observer(() => {
   useEffect(() => {
     // webt-272 is this works?
     window.scrollTo(0, 0);
+
+    return () => {
+      depositFundsStore.closePopup();
+    }
   }, []);
 
   return (
@@ -84,6 +85,22 @@ const Dashboard: FC = observer(() => {
             {phoneVerificationStore.shouldValidatePhone && (
               <ShouldValidatePhonePopup></ShouldValidatePhonePopup>
             )}
+          </>
+        )}
+      </Observer>
+
+      <Observer>
+        {() => (
+          <>
+            {
+              mainAppStore.canCheckEducation &&
+              !mainAppStore.isPromoAccount &&
+              educationStore.educationHint !== null &&
+              !mainAppStore.isDemoRealPopup &&
+              !phoneVerificationStore.shouldValidatePhone &&
+              !depositFundsStore.isActivePopup &&
+              <HintsWrapper hintType={educationStore.educationHint} />
+            }
           </>
         )}
       </Observer>

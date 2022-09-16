@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import InputMask from 'react-input-mask';
 import { PrimaryTextSpan } from '../styles/TextsElements';
 import ErropPopup from './ErropPopup';
+import Colors from '../constants/Colors';
 
 interface Props {
   labelText: string;
@@ -61,8 +62,8 @@ const LabelInputMasked: FC<Props> = (props) => {
       <Label>{labelText}</Label>
       {hasError && (
         <ErropPopup
-          textColor="#fffccc"
-          bgColor="#ED145B"
+          textColor={Colors.ACCENT}
+          bgColor={Colors.DANGER}
           classNameTooltip={id}
           direction="right"
         >
@@ -92,26 +93,26 @@ const Input = styled(InputMask, {
   border: none;
   outline: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  border-bottom: ${(props) => props.hasError && '1px solid #ED145B !important'};
+  border-bottom: ${(props) => props.hasError && `1px solid ${Colors.DANGER} !important`};
   background-color: transparent;
   width: 100%;
-  caret-color: #fff;
-  color: #fffccc;
+  caret-color: ${Colors.WHITE};
+  color: ${Colors.ACCENT}
   font-size: 14px;
   line-height: 16px;
   padding-bottom: 4px;
   transition: border 0.2s ease;
 
   &:hover {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    border-bottom: 1px solid ${Colors.WHITE_LIGHT};
 
     & + span {
-      color: rgba(255, 255, 255, 0.6);
+      color: ${Colors.WHITE_DARK};
     }
   }
 
   &:focus {
-    border-bottom: 1px solid #00ffdd;
+    border-bottom: 1px solid ${Colors.PRIMARY};
 
     & + span {
       transform: translateY(-30px);
@@ -135,7 +136,7 @@ const Input = styled(InputMask, {
   &:-webkit-autofill:active {
     transition: border 0.2s ease, background-color 50000s ease-in-out 0s;
     font-size: 14px;
-    -webkit-text-fill-color: #fffccc !important;
+    -webkit-text-fill-color: ${Colors.ACCENT} !important;
 
     & + span {
       transform: translateY(-30px);
@@ -151,5 +152,5 @@ const Label = styled(PrimaryTextSpan)`
   transform: translateY(-4px);
   transition: transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.4);
+  color: ${Colors.WHITE_LIGHT};
 `;

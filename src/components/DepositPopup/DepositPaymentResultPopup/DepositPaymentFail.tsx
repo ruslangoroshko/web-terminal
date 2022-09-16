@@ -10,6 +10,7 @@ import HashLocation from '../../../constants/hashLocation';
 import { useTranslation } from 'react-i18next';
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../../constants/mixpanelEvents';
+import Colors from '../../../constants/Colors';
 
 const DepositPaymentFail: FC = () => {
   const { push } = useHistory();
@@ -56,13 +57,13 @@ const DepositPaymentFail: FC = () => {
 export default DepositPaymentFail;
 
 const OtherMethodsButton = styled(ButtonWithoutStyles)`
-  background-color: #00ffdd;
+  background-color: ${Colors.PRIMARY};
   border-radius: 10px;
   width: 100%;
   padding: 20px;
   font-size: 16px;
   font-weight: bold;
-  color: #252636;
+  color: ${Colors.DARK_BLACK};
 `;
 
 const FailText = styled.span`
@@ -70,7 +71,7 @@ const FailText = styled.span`
   font-size: 18px;
   line-height: 18px;
   text-align: center;
-  color: #ffffff;
+  color: ${Colors.WHITE};
   margin-bottom: 18px;
 `;
 
@@ -78,5 +79,5 @@ const FailDescription = styled.span`
   font-size: 13px;
   line-height: 16px;
   text-align: center;
-  color: rgba(255, 255, 255, 0.4);
+  color: ${Colors.WHITE_LIGHT};
 `;

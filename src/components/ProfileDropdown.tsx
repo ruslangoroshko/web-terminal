@@ -10,35 +10,45 @@ import Page from '../constants/Pages';
 import { PersonalDataKYCEnum } from '../enums/PersonalDataKYCEnum';
 import { useTranslation } from 'react-i18next';
 import IconUser from '../assets/svg/icon-user-logo.svg';
-import AchievementStatus from '../constants/achievementStatus';
-import SilverBG from '../assets/images/achievement_status_bg/silver.png';
-import GoldBG from '../assets/images/achievement_status_bg/gold.png';
-import PlatinumBG from '../assets/images/achievement_status_bg/platinum.png';
-import UltraBG from '../assets/images/achievement_status_bg/ultra.png';
+
+import BasicIMG from '../assets/images/achievement_status_bg/new/basic.png';
+import SilverIMG from '../assets/images/achievement_status_bg/new/silver.png';
+import GoldIMG from '../assets/images/achievement_status_bg/new/gold.png';
+import PlatinumIMG from '../assets/images/achievement_status_bg/new/platinum.png';
+import DiamondIMG from '../assets/images/achievement_status_bg/new/diamond.png';
+import VipIMG from '../assets/images/achievement_status_bg/new/vip.png';
+import UltraIMG from '../assets/images/achievement_status_bg/new/ultra.png';
+
 import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import { observer } from 'mobx-react-lite';
+import { AccountStatusEnum } from '../enums/AccountStatusEnum';
+import Colors from '../constants/Colors';
 
 const ProfileDropdown = observer(() => {
-  const { mainAppStore, depositFundsStore, tabsStore, bonusStore } = useStores();
+  const { mainAppStore, depositFundsStore, tabsStore, bonusStore, accountTypeStore } = useStores();
   const { t } = useTranslation();
   const { push } = useHistory();
 
   const getStatusLabel = useCallback(
     (type?: string) => {
-      const key = mainAppStore.accounts.find((acc) => acc.isLive)
-        ?.achievementStatus;
+      const key = accountTypeStore.actualType?.type;
       switch (key) {
-        case AchievementStatus.SILVER:
-          return type === 'color' ? '#C5DDF1' : SilverBG;
-        case AchievementStatus.GOLD:
-          return type === 'color' ? '#fffccc' : GoldBG;
-        case AchievementStatus.PLATINUM:
-          // return type === 'color' ? '#00ffdd' : PlatinumBG;
-          return type === 'color' ? '#AE88FF' : UltraBG;
+        case AccountStatusEnum.Gold:
+          return GoldIMG;
+        case AccountStatusEnum.Silver:
+          return SilverIMG;
+        case AccountStatusEnum.Vip:
+          return VipIMG;
+        case AccountStatusEnum.Platinum:
+          return PlatinumIMG;
+        case AccountStatusEnum.Diamond:
+          return DiamondIMG;
+        case AccountStatusEnum.Ultra:
+          return UltraIMG;
         default:
-          return type === 'color' ? '#C5DDF1' : SilverBG;
+          return BasicIMG;
       }
     },
     [mainAppStore.accounts]
@@ -52,14 +62,33 @@ const ProfileDropdown = observer(() => {
             <CustomeNavLink to={Page.PROOF_OF_IDENTITY}>
               <VerificationButton
                 borderRadius="5px"
-                backgroundColor="#ED145B"
+                backgroundColor={Colors.DANGER}
                 height="21px"
                 alignItems="center"
                 width="100%"
                 justifyContent="center"
               >
-                <PrimaryTextSpan color="#ffffff" fontSize="10px">
-                  {t('Not Verified')}
+                <PrimaryTextSpan color={Colors.WHITE} fontSize="10px">
+                  {t('Account is not Verified')}
+                </PrimaryTextSpan>
+              </VerificationButton>
+            </CustomeNavLink>
+          </FlexContainer>
+        );
+      case PersonalDataKYCEnum.Restricted:
+        return (
+          <FlexContainer margin="20px 0 0" width="100%">
+            <CustomeNavLink to={Page.PROOF_OF_IDENTITY}>
+              <VerificationButton
+                borderRadius="5px"
+                backgroundColor={Colors.DANGER}
+                height="21px"
+                alignItems="center"
+                width="100%"
+                justifyContent="center"
+              >
+                <PrimaryTextSpan color={Colors.WHITE} fontSize="10px">
+                  {t('Verification is Restricted')}
                 </PrimaryTextSpan>
               </VerificationButton>
             </CustomeNavLink>
@@ -67,8 +96,35 @@ const ProfileDropdown = observer(() => {
         );
 
       case PersonalDataKYCEnum.Verified:
+        return <FlexContainer margin="20px 0 0" width="100%">
+          <OnVerificationButton
+            borderRadius="5px"
+            backgroundColor={Colors.PRIMARY}
+            height="21px"
+            alignItems="center"
+            width="100%"
+            justifyContent="center"
+          >
+            <PrimaryTextSpan color="#1C1F26" fontSize="10px">
+              {t('Account is Verified')}
+            </PrimaryTextSpan>
+          </OnVerificationButton>
+        </FlexContainer>;
       case PersonalDataKYCEnum.OnVerification:
-        return null;
+        return <FlexContainer margin="20px 0 0" width="100%">
+            <OnVerificationButton
+              borderRadius="5px"
+              backgroundColor={Colors.ACCENT}
+              height="21px"
+              alignItems="center"
+              width="100%"
+              justifyContent="center"
+            >
+              <PrimaryTextSpan color="#1C1F26" fontSize="10px">
+                {t('Verification on Review')}
+              </PrimaryTextSpan>
+          </OnVerificationButton>
+        </FlexContainer>;
 
       default:
         return null;
@@ -100,37 +156,16 @@ const ProfileDropdown = observer(() => {
       border="1px solid rgba(169, 171, 173, 0.1)"
       boxShadow="0px 34px 44px rgba(0, 0, 0, 0.25)"
     >
-      {!mainAppStore.isPromoAccount &&
-        (mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
-          AchievementStatus.GOLD ||
-          mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
-            AchievementStatus.SILVER ||
-          mainAppStore.accounts.find((acc) => acc.isLive)?.achievementStatus ===
-            AchievementStatus.PLATINUM) && (
-          <StatusLabel
+      {!mainAppStore.isPromoAccount && (
+          <FlexContainer
             width="124px"
             height="24px"
-            padding="5px"
-            borderRadius="0 0 12px 12px"
             alignItems="center"
             justifyContent="center"
             margin="0 auto"
-            background={`url(${getStatusLabel()})`}
           >
-            <PrimaryTextSpan
-              fontSize="12px"
-              textTransform="uppercase"
-              color={getStatusLabel('color')}
-              fontWeight={500}
-            >
-              {mainAppStore.accounts.find((acc) => acc.isLive)
-                ?.achievementStatus === AchievementStatus.PLATINUM
-                // ? AchievementStatus.VIP
-                ? AchievementStatus.ULTRA
-                : mainAppStore.accounts.find((acc) => acc.isLive)
-                    ?.achievementStatus}
-            </PrimaryTextSpan>
-          </StatusLabel>
+            <img src={getStatusLabel()} width="123px" height="24px" />
+          </FlexContainer>
         )}
       <FlexWithBottomBorder
         flexDirection="column"
@@ -159,7 +194,7 @@ const ProfileDropdown = observer(() => {
             {!!mainAppStore.profileName.length && (
               <PrimaryTextSpan
                 fontSize="12px"
-                color="#fffccc"
+                color={Colors.ACCENT}
                 overflow="hidden"
                 textOverflow="ellipsis"
                 whiteSpace="nowrap"
@@ -170,7 +205,7 @@ const ProfileDropdown = observer(() => {
             )}
             <PrimaryTextSpan
               fontSize="12px"
-              color="rgba(255, 255, 255, 0.4)"
+              color={Colors.WHITE_LIGHT}
               overflow="hidden"
               textOverflow="ellipsis"
               title={mainAppStore.profileEmail}
@@ -183,7 +218,7 @@ const ProfileDropdown = observer(() => {
       </FlexWithBottomBorder>
       <FlexContainer margin="0 0 12px">
         <CustomeNavLink to={Page.ACCOUNT_SEQURITY}>
-          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+          <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
             {t('Account Settings')}
           </PrimaryTextSpan>
         </CustomeNavLink>
@@ -193,7 +228,7 @@ const ProfileDropdown = observer(() => {
         <>
           <FlexContainer margin="0 0 12px">
             <DepositButtonWrapper onClick={pushToDeposit}>
-              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+              <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
                 {t('Deposit')}
               </PrimaryTextSpan>
             </DepositButtonWrapper>
@@ -203,22 +238,39 @@ const ProfileDropdown = observer(() => {
               to={Page.ACCOUNT_WITHDRAW}
               activeClassName="is-active"
             >
-              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+              <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
                 {t('Withdraw')}
               </PrimaryTextSpan>
             </CustomeNavLink>
           </FlexContainer>
           <FlexContainer margin="0 0 12px">
             <CustomeNavLink to={Page.ACCOUNT_BALANCE_HISTORY}>
-              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+              <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
                 {t('Balance history')}
               </PrimaryTextSpan>
             </CustomeNavLink>
           </FlexContainer>
+          {
+            accountTypeStore.isMTAvailable &&
+            <FlexContainer margin="0 0 12px">
+              <CustomeNavLink to={Page.ACCOUNT_MT5}>
+                <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
+                  {t('MT5')}
+                </PrimaryTextSpan>
+              </CustomeNavLink>
+            </FlexContainer>
+          }
           <FlexContainer margin="0 0 12px">
             <CustomeNavLink to={Page.BONUS_FAQ}>
-              <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+              <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
                 {t('Bonus FAQ')}
+              </PrimaryTextSpan>
+            </CustomeNavLink>
+          </FlexContainer>
+          <FlexContainer margin="0 0 12px">
+            <CustomeNavLink to={Page.ACCOUNT_TYPE_INFO}>
+              <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
+                {t('My Status')}
               </PrimaryTextSpan>
             </CustomeNavLink>
           </FlexContainer>
@@ -227,7 +279,7 @@ const ProfileDropdown = observer(() => {
 
       <FlexContainer flexDirection="column">
         <LogoutButton onClick={handleLogoutClick}>
-          <PrimaryTextSpan fontSize="13px" color="rgba(255, 255, 255, 0.5)">
+          <PrimaryTextSpan fontSize="13px" color={Colors.WHITE_DARK}>
             {t('Logout')}
           </PrimaryTextSpan>
         </LogoutButton>
@@ -245,15 +297,13 @@ const FlexWithBottomBorder = styled(FlexContainer)`
 const VerificationButton = styled(FlexContainer)`
   transition: 0.4;
   &:hover {
-    background-color: #ff557e;
+    background-color: ${Colors.DANGER_LIGHT};
   }
 `;
 
-const StatusLabel = styled(FlexContainer)`
-  border: 1px solid rgba(169, 171, 173, 0.1);
-  border-top: 0;
-  background-repeat: no-repeat;
-  background-size: cover;
+const OnVerificationButton = styled(FlexContainer)`
+  transition: 0.4;
+  cursor: default;
 `;
 
 const LogoutButton = styled(ButtonWithoutStyles)`
@@ -264,7 +314,7 @@ const LogoutButton = styled(ButtonWithoutStyles)`
   }
   &:hover {
     span {
-      color: #fffccc;
+      color: ${Colors.ACCENT};
     }
   }
 `;
@@ -277,7 +327,7 @@ const CustomeNavLink = styled(NavLink)`
   }
   &:hover {
     span {
-      color: #fffccc;
+      color: ${Colors.ACCENT};
     }
   }
   &:hover,
@@ -294,7 +344,7 @@ const DepositButtonWrapper = styled(ButtonWithoutStyles)`
   }
   &:hover {
     span {
-      color: #fffccc;
+      color: ${Colors.ACCENT};
     }
   }
 `;

@@ -8,13 +8,14 @@ import { css } from '@emotion/core';
 interface Props {
   bgColor: string;
   classNameTooltip: string;
-  direction: 'top' | 'right' | 'left' | 'bottom' | 'bottomLeft';
+  direction: 'top' | 'right' | 'left' | 'bottom' | 'bottomLeft' | 'leftCenter';
   width: string;
   needScroll?: boolean;
+  needOversize?: boolean;
 }
 
 const InformationPopup: FC<Props> = props => {
-  const { bgColor, children, classNameTooltip, direction, width, needScroll } = props;
+  const { bgColor, children, classNameTooltip, direction, width, needScroll, needOversize } = props;
   const infoBlock = useRef<HTMLDivElement>(null);
   const handleHover = () => {
     if (needScroll) {
@@ -35,7 +36,9 @@ const InformationPopup: FC<Props> = props => {
         className={classNameTooltip}
         zIndex="103"
         ref={infoBlock}
+        flexDirection={needOversize ? 'column' : 'row'}
       >
+        {needOversize && <OversizedIcon position="absolute"> </OversizedIcon>}
         {children}
       </TooltipWrapper>
     </FlexContainer>
@@ -100,6 +103,16 @@ const bottomLeftDirection = css`
   }
 `;
 
+const leftCenterDirection = css`
+  bottom: 0;
+  right: 22px;
+
+  &:after {
+    bottom: 0;
+    right: -7px;
+  }
+`;
+
 const TooltipWrapper = styled(FlexContainer)<
   FlexContainerProps & { direction: Props['direction'] }
 >`
@@ -144,6 +157,8 @@ const TooltipWrapper = styled(FlexContainer)<
         return rightDirection;
       case 'bottomLeft':
         return bottomLeftDirection;
+      case 'leftCenter':
+        return leftCenterDirection;
     }
   }}
 
@@ -163,4 +178,11 @@ const InfoIcon = styled(FlexContainer)<
     display: block;
     cursor: default;
   }
+`;
+
+const OversizedIcon = styled(FlexContainer)`
+  width: 100%;
+  top: -20px;
+  left: 0;
+  height: 20px;
 `;

@@ -10,6 +10,7 @@ const depositResponseMessages = {
   [DepositRequestStatusEnum.PaymentDeclined]: 'Payment failed',
   [DepositRequestStatusEnum.ServerError]: 'Server error',
   [DepositRequestStatusEnum.UnsupportedCardType]: 'Unsupported card type',
+  [DepositRequestStatusEnum.PaymentDisabled]: 'The possibility of replenishment is temporarily blocked',
 }
 
 Object.freeze(depositResponseMessages);

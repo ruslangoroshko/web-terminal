@@ -4,7 +4,7 @@ import { initReactI18next } from 'react-i18next';
 import { CountriesEnum } from './src/enums/CountriesEnum';
 import en from './src/locales/en/Web_English.json';
 import pl from './src/locales/pl/Web_app_Polish.json';
-import de from './src/locales/de/Web_app_German.json';
+// import de from './src/locales/de/Web_app_German.json';
 import es from './src/locales/es/Web_app_Spanish.json';
 import ru from './src/locales/ru/Web_app_Russian.json';
 
@@ -18,9 +18,9 @@ const resources = {
   [CountriesEnum.ES]: {
     translation: es,
   },
-  [CountriesEnum.DE]: {
-    translation: de,
-  },
+  // [CountriesEnum.DE]: {
+  //   translation: de,
+  // },
   [CountriesEnum.RU]: {
     translation: ru,
   },
@@ -35,7 +35,13 @@ i18n
     keySeparator: false, // we do not use keys in form messages.welcome
     nsSeparator: false,
     appendNamespaceToMissingKey: false,
-    supportedLngs: [CountriesEnum.EN, CountriesEnum.PL, CountriesEnum.DE, CountriesEnum.ES, CountriesEnum.RU],
+    supportedLngs: [
+      CountriesEnum.EN,
+      CountriesEnum.PL,
+      // CountriesEnum.DE,
+      CountriesEnum.ES,
+      CountriesEnum.RU
+    ],
     interpolation: {
       escapeValue: false, // react already safes from xss
     },

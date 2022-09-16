@@ -11,7 +11,7 @@ import { SideBarTabType } from '../enums/SideBarTabType';
 
 const ResizableContainer: FC = observer(props => {
   const { children } = props;
-  const { tabsStore, dateRangeStore } = useStores();
+  const { tabsStore, dateRangeStore, educationStore } = useStores();
   const toggleExpandtab = () => {
     tabsStore.setTabExpanded(!tabsStore.isTabExpanded);
     if (!tabsStore.isTabExpanded) {
@@ -25,25 +25,37 @@ const ResizableContainer: FC = observer(props => {
       width="100%"
       height="100%"
       zIndex="102"
-      isActive={tabsStore.sideBarTabType !== null}
+      isActive={
+        tabsStore.sideBarTabType !== null &&
+        !(tabsStore.sideBarTabType === SideBarTabType.Education && educationStore.coursesList === null)
+      }
       flexDirection="column"
     >
       <FlexContainer position="absolute" top="12px" right="12px" zIndex="200">
-        {tabsStore.sideBarTabType !== SideBarTabType.Markets && (
-          <IconButton onClick={toggleExpandtab}>
+        {
+          tabsStore.sideBarTabType !== SideBarTabType.Markets &&
+          tabsStore.sideBarTabType !== SideBarTabType.Education &&
+          (
+            <IconButton onClick={toggleExpandtab}>
+              <SvgIcon
+                {...IconExpand}
+                fillColor="rgba(255, 255, 255, 0.6)"
+              ></SvgIcon>
+            </IconButton>
+          )
+        }
+        {
+          !(
+            tabsStore.sideBarTabType === SideBarTabType.Education &&
+            educationStore.activeCourse
+          ) && <IconButton onClick={tabsStore.closeAnyTab}>
             <SvgIcon
-              {...IconExpand}
+              {...IconClose}
               fillColor="rgba(255, 255, 255, 0.6)"
-            ></SvgIcon>
+              hoverFillColor="#00FFDD"
+            > </SvgIcon>
           </IconButton>
-        )}
-        <IconButton onClick={tabsStore.closeAnyTab}>
-          <SvgIcon
-            {...IconClose}
-            fillColor="rgba(255, 255, 255, 0.6)"
-            hoverFillColor="#00FFDD"
-          ></SvgIcon>
-        </IconButton>
+        }
       </FlexContainer>
       {children}
     </RelativeWrapper>

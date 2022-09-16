@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, FC, useState, useCallback } from 'react';
+import React, { useEffect, FC, useState, useCallback } from 'react';
 import calculateFloatingProfitAndLoss from '../../helpers/calculateFloatingProfitAndLoss';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 import { getNumberSign } from '../../helpers/getNumberSign';
@@ -6,6 +6,7 @@ import { useStores } from '../../hooks/useStores';
 import { AskBidEnum } from '../../enums/AskBid';
 import { PositionModelWSDTO } from '../../types/Positions';
 import { autorun } from 'mobx';
+import Colors from '../../constants/Colors';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -48,10 +49,20 @@ const EquityPnL: FC<Props> = ({ position }) => {
   }, []);
 
   return statePnL !== null ? (
-    <PrimaryTextSpan color="#fffccc" fontSize="12px">
-      {getNumberSign(+(statePnL + position.investmentAmount + position.reservedFundsForToppingUp).toFixed(2))}
+    <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
+      {getNumberSign(
+        +(
+          statePnL +
+          position.investmentAmount +
+          position.reservedFundsForToppingUp
+        ).toFixed(2)
+      )}
       {mainAppStore.activeAccount?.symbol}
-      {Math.abs(statePnL + position.investmentAmount + position.reservedFundsForToppingUp).toFixed(2)}
+      {Math.abs(
+        statePnL +
+          position.investmentAmount +
+          position.reservedFundsForToppingUp
+      ).toFixed(2)}
     </PrimaryTextSpan>
   ) : null;
 };

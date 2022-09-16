@@ -19,10 +19,17 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import Page from '../constants/Pages';
+import { HintEnum } from '../enums/HintsEnum';
+import Colors from '../constants/Colors';
 
 function DemoRealPopup() {
   const { push } = useHistory();
-  const { mainAppStore, badRequestPopupStore, bonusStore } = useStores();
+  const {
+    mainAppStore,
+    badRequestPopupStore,
+    bonusStore,
+    educationStore
+  } = useStores();
   const { t } = useTranslation();
 
   const sendMixpanelEvents = (demoRealFunds: 'real' | 'demo') => {
@@ -34,52 +41,40 @@ function DemoRealPopup() {
   const selectDemoAccount = async () => {
     const acc = mainAppStore.accounts.find((item) => !item.isLive);
     if (acc) {
-      try {
-        await API.setKeyValue({
-          key: KeysInApi.ACTIVE_ACCOUNT_ID,
-          value: acc.id,
-        });
-        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: acc.id,
-        });
-        mainAppStore.setActiveAccount(acc);
-        mainAppStore.addTriggerDissableOnboarding();
-        mainAppStore.setIsDemoReal(false);
-        sendMixpanelEvents('demo');
-      } catch (error) {
-      }
+      mainAppStore.setActiveAccount(acc);
+      mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+        [Fields.ACCOUNT_ID]: acc.id,
+      });
+      mainAppStore.addTriggerDissableOnboarding();
+      mainAppStore.setIsDemoReal(false);
+      sendMixpanelEvents('demo');
+      educationStore.setFTopenHint(HintEnum.DemoACC);
     }
   };
 
   const selectRealAccount = async () => {
     const acc = mainAppStore.accounts.find((item) => item.isLive);
     if (acc) {
+      mainAppStore.setActiveAccount(acc);
+      mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+        [Fields.ACCOUNT_ID]: acc.id,
+      });
+      mainAppStore.addTriggerDissableOnboarding();
       try {
-        await API.setKeyValue({
-          key: KeysInApi.ACTIVE_ACCOUNT_ID,
-          value: acc.id,
-        });
-        mainAppStore.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: acc.id,
-        });
-        mainAppStore.setActiveAccount(acc);
-        mainAppStore.addTriggerDissableOnboarding();
-        try {
-          await bonusStore.getUserBonus();
-          if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
-            bonusStore.setShowBonusPopup(true);
-          } else {
-            push(Page.DEPOSIT_POPUP);
-          }
-        } catch (error) {
+        await bonusStore.getUserBonus();
+        if (bonusStore.showBonus() && bonusStore.bonusData !== null) {
+          bonusStore.setShowBonusPopup(true);
+        } else {
           push(Page.DEPOSIT_POPUP);
         }
-        sendMixpanelEvents('real');
-        setTimeout(() => {
-          mainAppStore.setIsDemoReal(false);
-        }, 500);
       } catch (error) {
+        push(Page.DEPOSIT_POPUP);
       }
+      sendMixpanelEvents('real');
+      educationStore.setFTopenHint(HintEnum.Deposit);
+      setTimeout(() => {
+        mainAppStore.setIsDemoReal(false);
+      }, 500);
     }
   };
 
@@ -121,20 +116,20 @@ function DemoRealPopup() {
               fontSize="20px"
               fontWeight="bold"
               marginBottom="10px"
-              color="#fffccc"
+              color={Colors.ACCENT}
             >
               {t('Congratulations!')}
             </PrimaryTextParagraph>
             <PrimaryTextParagraph
               fontSize="11px"
-              color="#fffccc"
+              color={Colors.ACCENT}
               marginBottom="42px"
             >
               {t('You Have Been Successfully Registered')}
             </PrimaryTextParagraph>
             <FlexContainer justifyContent="space-between">
               <DemoButton onClick={selectDemoAccount} isSingle={mainAppStore.isPromoAccount}>
-                <PrimaryTextSpan fontSize="14px" fontWeight="bold" color="#fff">
+                <PrimaryTextSpan fontSize="14px" fontWeight="bold" color={Colors.WHITE}>
                   {t('Practice on Demo')}
                 </PrimaryTextSpan>
               </DemoButton>
@@ -143,7 +138,7 @@ function DemoRealPopup() {
                   <PrimaryTextSpan
                     fontSize="14px"
                     fontWeight="bold"
-                    color="#000"
+                    color={Colors.DARK_BLACK}
                   >
                     {t('Invest Real funds')}
                   </PrimaryTextSpan>
@@ -161,27 +156,27 @@ export default DemoRealPopup;
 
 const DemoButton = styled(ButtonWithoutStyles)<{isSingle: boolean;}>`
   border-radius: 4px;
-  background-color: #ff0764;
+  background-color: ${Colors.DANGER};
   width: 200px;
   height: 40px;
   transition: all 0.2s ease;
   will-change: background-color;
   margin-right: ${props => props.isSingle ? '' : '30px'};
   &:hover {
-    background-color: #ff557e;
+    background-color: ${Colors.DANGER_LIGHT};
   }
 `;
 
 const RealButton = styled(ButtonWithoutStyles)`
   border-radius: 4px;
-  background-color: #00fff2;
+  background-color: ${Colors.PRIMARY};
   width: 200px;
   height: 40px;
   transition: all 0.2s ease;
   will-change: background-color;
 
   &:hover {
-    background-color: #9ffff2;
+    background-color: ${Colors.PRIMARY_LIGHT};
   }
 `;
 

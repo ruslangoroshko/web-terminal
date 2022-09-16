@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import routesList, { RouteLayoutType } from '../constants/routesList';
 import RouteWrapper from '../components/RouteWrapper';
 import { useLocation, matchPath, Switch, useHistory } from 'react-router-dom';
@@ -30,7 +30,7 @@ const RoutingLayout: FC = () => {
   if (currentRoute) {
     layoutType = currentRoute.layoutType;
   } else {
-    push(Page.DASHBOARD);
+    push(Page.NOT_FOUND);
   }
 
   switch (layoutType) {
@@ -57,7 +57,7 @@ const RoutingLayout: FC = () => {
 
     case RouteLayoutType.SignFlow:
       return (
-        <FlexContainer height="100vh" width="100%">
+        <FlexContainer height="100%" width="100%">
           {!location.search && (
             <Redirect to={location.pathname.replace(/\/+$/, '')} />
           )}

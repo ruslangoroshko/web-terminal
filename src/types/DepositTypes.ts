@@ -60,6 +60,12 @@ export interface CreatePayRetailersInvoiceParams {
   processId: string;
 }
 
+export interface CreatePayopInvoiceParams {
+  amount: number;
+  accountId: string;
+  processId: string;
+}
+
 export interface CreateElectronicFundsInvoiceDTO {
   data: {
     redirectLink: string
@@ -75,6 +81,13 @@ export interface CreateDirectaInvoiceDTO {
 }
 
 export interface CreatePayRetailersInvoiceDTO {
+  data: {
+    redirectLink: string
+  };
+  status: DepositRequestStatusEnum;
+}
+
+export interface CreatePayopInvoiceDTO {
   data: {
     redirectLink: string
   };

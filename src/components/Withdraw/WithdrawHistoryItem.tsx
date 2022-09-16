@@ -12,6 +12,7 @@ import API from '../../helpers/API';
 import { useStores } from '../../hooks/useStores';
 import { WithdrawalHistoryResponseStatus } from '../../enums/WithdrawalHistoryResponseStatus';
 import { useTranslation } from 'react-i18next';
+import Colors from '../../constants/Colors';
 
 interface Props {
   data?: WithdrawalHistoryModel;
@@ -48,9 +49,9 @@ const WithdrawHistoryItem = (props: Props) => {
         return '#00FFDD';
       case WithdrawalStatusesEnum.Declined:
         return '#FF557E';
-      case WithdrawalStatusesEnum.Proccesing:   
+      case WithdrawalStatusesEnum.Proccesing:
         return '#fffccc';
-        
+
       default:
         return 'rgba(255, 255, 255, 0.4)';
     }
@@ -62,7 +63,6 @@ const WithdrawHistoryItem = (props: Props) => {
         <FlexContainer alignItems="center">
           <PrimaryTextSpan
             fontSize="12px"
-            color="#FFFCCC"
             whiteSpace="nowrap"
             fontWeight="bold"
           >
@@ -74,7 +74,7 @@ const WithdrawHistoryItem = (props: Props) => {
         <FlexContainer alignItems="center">
           <PrimaryTextSpan
             fontSize="12px"
-            color="rgba(255,255,255,0.4)"
+            color={Colors.WHITE_LIGHT}
             whiteSpace="nowrap"
           >
             {moment(data?.creationDate).format('MMMM Do YYYY, h:mm:ss a')}

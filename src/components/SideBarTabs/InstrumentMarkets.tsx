@@ -20,6 +20,7 @@ import {
 } from '../../constants/global';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import { SideBarTabType } from '../../enums/SideBarTabType';
+import Colors from '../../constants/Colors';
 
 interface Props {
   instrument: InstrumentModelWSDTO;
@@ -89,7 +90,7 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
         <FlexContainer justifyContent="space-between">
           <FlexContainer alignItems="center" margin="0 8px 0 0">
             <ButtonWithoutStyles ref={favouritesButtonRef}>
-              <SvgIcon {...IconStar} fillColor="rgba(255, 255, 255, 0.4)" />
+              <SvgIcon {...IconStar} fillColor={Colors.WHITE_LIGHT} />
             </ButtonWithoutStyles>
           </FlexContainer>
           <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
@@ -98,7 +99,7 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
           <FlexContainer flexDirection="column" width="110px" marginRight="4px">
             <PrimaryTextSpan
               fontSize="12px"
-              color="#fffccc"
+              color={Colors.ACCENT}
               marginBottom="4px"
               overflow="hidden"
               textOverflow="ellipsis"
@@ -108,7 +109,7 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
             </PrimaryTextSpan>
             <PrimaryTextSpan
               fontSize="10px"
-              color="rgba(255, 255, 255, 0.4)"
+              color={Colors.WHITE_LIGHT}
               overflow="hidden"
               textOverflow="ellipsis"
               whiteSpace="nowrap"
@@ -117,7 +118,7 @@ const InstrumentMarkets: FC<Props> = observer((props) => {
             </PrimaryTextSpan>
           </FlexContainer>
           <FlexContainer width="48px" justifyContent="flex-end">
-            <PrimaryTextSpan fontSize="12px" color="#fffccc">
+            <PrimaryTextSpan fontSize="12px" color={Colors.ACCENT}>
               <Observer>
                 {() => (
                   <>

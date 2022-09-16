@@ -42,9 +42,11 @@ import depositResponseMessages from '../../constants/depositResponseMessages';
 import { keyframes } from '@emotion/core';
 import Directa from './Directa';
 import PayRetailers from './PayRetailers';
+import Payop from './Payop';
 import Volt from './Volt';
 import LoaderForComponents from '../LoaderForComponents';
 import EventBonusTimer from '../EventBonusTimer';
+import Colors from '../../constants/Colors';
 
 const depositList = [
   {
@@ -64,6 +66,13 @@ const depositList = [
 
   {
     id: DepositTypeEnum.PayRetailers,
+    name: 'Local Bank Cards',
+    icon: CardIcon,
+    show: false,
+    order: 0,
+  },
+  {
+    id: DepositTypeEnum.Payop,
     name: 'Local Bank Cards',
     icon: CardIcon,
     show: false,
@@ -95,7 +104,7 @@ const DepositPopupWrapper: FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.hash === HashLocation.Deposit) {
+    if (location.hash.includes(HashLocation.Deposit)) {
       depositFundsStore.openPopup();
     }
   }, [location]);
@@ -148,6 +157,9 @@ const DepositPopupInner: FC = () => {
       case DepositTypeEnum.PayRetailers:
         return <PayRetailers />;
 
+      case DepositTypeEnum.Payop:
+        return <Payop />;
+
       case DepositTypeEnum.Volt:
         return <Volt />;
 
@@ -168,6 +180,8 @@ const DepositPopupInner: FC = () => {
       case DepositTypeEnum.ElectronicFundsTransfer:
         return 'ABSA, Nedbank, Capitec, FNB, Standard, Investec';
       case DepositTypeEnum.PayRetailers:
+        return 'Online Transfers Cash Payments';
+      case DepositTypeEnum.Payop:
         return 'Online Transfers Cash Payments';
       case DepositTypeEnum.Volt:
         return 'Few hours';
@@ -260,8 +274,12 @@ const DepositPopupInner: FC = () => {
           <Observer>
             {() => (
               <>
-                {mainAppStore.profileStatus ===
-                  PersonalDataKYCEnum.NotVerified && (
+                {(
+                  mainAppStore.profileStatus ===
+                  PersonalDataKYCEnum.NotVerified ||
+                  mainAppStore.profileStatus ===
+                  PersonalDataKYCEnum.Restricted
+                ) && (
                   <FlexContainer
                     backgroundColor="rgba(0,0,0,0.2)"
                     padding="20px 12px"
@@ -302,7 +320,7 @@ const DepositPopupInner: FC = () => {
                   <SvgIcon
                     {...IconClose}
                     fillColor="rgba(255, 255, 255, 0.6)"
-                    hoverFillColor="#00FFF2"
+                    hoverFillColor={Colors.PRIMARY}
                   />
                 </ButtonWithoutStyles>
               </FlexContainer>
@@ -310,7 +328,7 @@ const DepositPopupInner: FC = () => {
                 <PrimaryTextSpan
                   fontSize="16px"
                   fontWeight="bold"
-                  color="#fffccc"
+                  color={Colors.ACCENT}
                 >
                   {t('Deposit Funds')}
                 </PrimaryTextSpan>
@@ -386,7 +404,7 @@ const DepositPopupInner: FC = () => {
                                         fillColor={
                                           depositFundsStore.activeDepositType ===
                                           item.id
-                                            ? '#fffccc'
+                                            ? Colors.ACCENT
                                             : 'rgba(196, 196, 196, 0.5)'
                                         }
                                       ></SvgIcon>
@@ -398,7 +416,7 @@ const DepositPopupInner: FC = () => {
                                       color={
                                         depositFundsStore.activeDepositType ===
                                         item.id
-                                          ? '#fffccc'
+                                          ? Colors.ACCENT
                                           : 'rgba(196, 196, 196, 0.5)'
                                       }
                                     >
@@ -457,7 +475,7 @@ const DepositPopupInner: FC = () => {
                       </FlexContainer>
                       <FlexContainer flexDirection="column">
                         <PrimaryTextSpan
-                          color="#00FFDD"
+                          color={Colors.PRIMARY}
                           fontWeight={500}
                           fontSize="14px"
                           lineHeight="140%"
@@ -513,7 +531,7 @@ const HeaderDepositPopup = styled(FlexContainer)`
 
 const CustomLink = styled(Link)`
   font-size: 12px;
-  color: #00fff2;
+  color: ${Colors.PRIMARY};
   font-weight: bold;
   line-height: 120%;
   &:hover {
@@ -551,7 +569,7 @@ const ModalBackground = styled(FlexContainer)`
 
 const PaymentIcon = styled(FlexContainer)<{ isActive: boolean }>`
   background-color: ${(props) =>
-    props.isActive ? '#fffccc' : 'rgba(196, 196, 196, 0.5)'};
+    props.isActive ? Colors.ACCENT : 'rgba(196, 196, 196, 0.5)'};
   border-radius: 3px;
   align-items: center;
   justify-content: center;

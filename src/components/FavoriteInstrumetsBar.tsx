@@ -13,6 +13,7 @@ import { useStores } from '../hooks/useStores';
 import { LOCAL_INSTRUMENT_ACTIVE } from '../constants/global';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 import API from '../helpers/API';
+import Colors from '../constants/Colors';
 
 const FavoriteInstrumetsBar = observer(() => {
   const { mainAppStore, instrumentsStore } = useStores();
@@ -42,7 +43,25 @@ const FavoriteInstrumetsBar = observer(() => {
           accountId: mainAppStore.activeAccountId,
         });
         alreadyAdded = true;
-        instrumentsStore.setActiveInstrumentsIds(response);
+        let responseToCheck: string[] = [];
+        response.map((instrumentId) => {
+          if (instrumentsStore.instruments.find(
+            (item) => (item.instrumentItem.id === instrumentId)
+          )) {
+            responseToCheck.push(instrumentId);
+          }
+          return instrumentId;
+        });
+        if (responseToCheck.length === 0) {
+          const newInstruments = [];
+          for (let i = 0; i < 5; i++) {
+            if (instrumentsStore.instruments[i]) {
+              newInstruments.push(instrumentsStore.instruments[i].instrumentItem.id)
+            }
+          }
+          responseToCheck = newInstruments;
+        }
+        instrumentsStore.setActiveInstrumentsIds(responseToCheck);
         const checkAvailable =
           mainAppStore.paramsAsset ||
           localStorage.getItem(LOCAL_INSTRUMENT_ACTIVE);
@@ -69,7 +88,7 @@ const FavoriteInstrumetsBar = observer(() => {
         }
         await instrumentsStore.switchInstrument(
           lastActive ||
-            response[0] ||
+            responseToCheck[0] ||
             instrumentsStore.instruments[0].instrumentItem.id
         );
       } catch (error) {}
@@ -99,7 +118,7 @@ const FavoriteInstrumetsBar = observer(() => {
               {({ on, toggle }) => (
                 <>
                   <AddIntrumentButton onClick={toggle}>
-                    <SvgIcon {...IconAddInstrument} fillColor="#FFFCCC" />
+                    <SvgIcon {...IconAddInstrument} fillColor={Colors.ACCENT} />
                   </AddIntrumentButton>
                   {on && <AddInstrumentsPopup toggle={toggle} />}
                 </>

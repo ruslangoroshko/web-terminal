@@ -22,6 +22,7 @@ import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import NotificationPopup from '../components/NotificationPopup';
 import Page from '../constants/Pages';
 import { useTranslation } from 'react-i18next';
+import Colors from '../constants/Colors';
 
 function AccountSecurity() {
   const { t } = useTranslation();
@@ -164,7 +165,6 @@ function AccountSecurity() {
       )}
       <FlexContainer flexDirection="column" margin="0 0 0 80px">
         <PrimaryTextSpan
-          color="#FFFCCC"
           fontSize="24px"
           fontWeight="bold"
           marginBottom="40px"
@@ -208,8 +208,8 @@ function AccountSecurity() {
 
                 {!!(touched.oldPassword && errors.oldPassword) && (
                   <ErropPopup
-                    textColor="#fffccc"
-                    bgColor="#ED145B"
+                    textColor={Colors.ACCENT}
+                    bgColor={Colors.DANGER}
                     classNameTooltip={Fields.OLD_PASSWORD}
                     direction="right"
                   >
@@ -252,8 +252,8 @@ function AccountSecurity() {
                 ></InputField>
                 {!!(touched.password && errors.password) && (
                   <ErropPopup
-                    textColor="#fffccc"
-                    bgColor="#ED145B"
+                    textColor={Colors.ACCENT}
+                    bgColor={Colors.DANGER}
                     classNameTooltip={Fields.PASSWORD}
                     direction="right"
                   >
@@ -297,8 +297,8 @@ function AccountSecurity() {
 
                 {!!(touched.repeatPassword && errors.repeatPassword) && (
                   <ErropPopup
-                    textColor="#fffccc"
-                    bgColor="#ED145B"
+                    textColor={Colors.ACCENT}
+                    bgColor={Colors.DANGER}
                     classNameTooltip={Fields.REPEAT_PASSWORD}
                     direction="right"
                   >
@@ -357,7 +357,7 @@ const InputField = styled.input`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #fffccc;
+  color: ${Colors.ACCENT};
   padding: 8px 0 8px 8px;
 
   &:-webkit-input-placeholder {
@@ -382,7 +382,7 @@ const InputField = styled.input`
 const InputWrapper = styled(FlexContainer)`
   border-radius: 4px;
   border: 1px solid
-    ${(props) => (props.hasError ? '#ED145B' : 'rgba(255, 255, 255, 0.1)')};
+    ${(props) => (props.hasError ? Colors.DANGER : 'rgba(255, 255, 255, 0.1)')};
   color: #fff;
   background-color: rgba(255, 255, 255, 0.06);
 `;

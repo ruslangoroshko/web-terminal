@@ -25,7 +25,7 @@ const AppWithProviders = () => {
     fetchInit();
   }, []);
 
-  return isLoading ? <LoaderFullscreen isLoading={true} /> : <MainApp></MainApp>;
+  return isLoading ? <LoaderFullscreen isLoading={true} /> : <MainApp />;
 };
 
 export default AppWithProviders;

@@ -19,6 +19,7 @@ const Topics = {
   PENDING_ORDERS: 'pendingorders',
   INSTRUMENT_GROUPS: 'instrumentgroups',
   SERVER_ERROR: 'servererror',
+  UPDATE_ACCOUNT_TYPE: 'updateaccounttype',
 };
 
 Object.freeze(Topics);

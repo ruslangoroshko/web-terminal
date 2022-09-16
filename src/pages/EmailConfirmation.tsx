@@ -12,6 +12,7 @@ import { useStores } from '../hooks/useStores';
 import BadRequestPopup from '../components/BadRequestPopup';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import { useTranslation } from 'react-i18next';
+import Colors from '../constants/Colors';
 
 function EmailConfirmation() {
   const { id } = useParams<{ id: string }>();
@@ -51,28 +52,26 @@ function EmailConfirmation() {
         {isSuccessful ? (
           <>
             <PrimaryTextParagraph
-              color="#fffccc"
               fontSize="24px"
               fontWeight="bold"
               marginBottom="24px"
             >
               {t('Thank you!')}
             </PrimaryTextParagraph>
-            <PrimaryTextParagraph color="#fffccc" marginBottom="24px">
+            <PrimaryTextParagraph marginBottom="24px">
               {t('You have successfully verified your email.')}
             </PrimaryTextParagraph>
           </>
         ) : (
           <>
             <PrimaryTextParagraph
-              color="#fffccc"
               fontSize="24px"
               fontWeight="bold"
               marginBottom="24px"
             >
               {t('Email verification failed')}
             </PrimaryTextParagraph>
-            <PrimaryTextParagraph color="#fffccc" marginBottom="12px">
+            <PrimaryTextParagraph marginBottom="12px">
               {t(
                 'This link has been expired. Please log in to request a new verification email.'
               )}
@@ -99,17 +98,13 @@ const LinkToDashboard = styled(Link)`
   align-items: center;
   transition: background-color 0.2s ease;
   will-change: background-color;
-  background-color: #00ffdd;
+  background-color: ${Colors.PRIMARY};
   box-shadow: 0px 4px 8px rgba(0, 255, 242, 0.17),
     inset 0px -3px 6px rgba(0, 255, 242, 0.26);
 
   &:hover {
-    background-color: #9ffff2;
+    background-color: ${Colors.PRIMARY_LIGHT};
     text-decoration: none;
-  }
-
-  &:focus {
-    background-color: #21b3a4;
   }
 
   &:disabled {

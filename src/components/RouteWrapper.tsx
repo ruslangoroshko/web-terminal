@@ -17,12 +17,16 @@ type Props = IProps;
 
 const RouteWrapper: FC<Props> = observer((props) => {
   const { component: Component, layoutType, ...otherProps } = props;
-  const { mainAppStore } = useStores();
+  const { mainAppStore, tabsStore, educationStore } = useStores();
   const location = useLocation();
   const { push } = useHistory();
   const isOldUser = localStorage.getItem(LOCAL_STORAGE_IS_NEW_USER);
 
   useEffect(() => {
+    tabsStore.setTabExpanded(false);
+    educationStore.setActiveQuestion(null);
+    educationStore.setActiveCourse(null);
+    educationStore.setQuestionsList(null)
     if (location.search.length > 0) {
       const params = new URLSearchParams(location.search);
       const unParsedData = unparsingSearchUrl(params);
@@ -50,7 +54,6 @@ const RouteWrapper: FC<Props> = observer((props) => {
       !mainAppStore.isAuthorized &&
       [RouteLayoutType.Authorized, RouteLayoutType.KYC].includes(layoutType)
     ) {
-      console.log(layoutType);
       return <Redirect to={isOldUser ? Page.SIGN_IN : Page.SIGN_UP} />;
     }
   }

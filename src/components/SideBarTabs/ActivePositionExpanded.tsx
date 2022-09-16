@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PositionModelWSDTO } from '../../types/Positions';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
@@ -28,6 +28,7 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
 import mixpanelValues from '../../constants/mixpanelValues';
+import Colors from '../../constants/Colors';
 
 interface Props {
   position: PositionModelWSDTO;
@@ -51,6 +52,12 @@ function ActivePositionExpanded(props: Props) {
 
   const isBuy = position.operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
+
+  const positionInstrument = useCallback(() => {
+    return instrumentsStore.instruments.find(
+      (item) => item.instrumentItem.id === position.instrument
+    )?.instrumentItem;
+  }, [props.position]);
 
   const closePosition = async () => {
     try {
@@ -137,10 +144,10 @@ function ActivePositionExpanded(props: Props) {
           <ImageContainer instrumentId={position.instrument} />
         </FlexContainer>
         <FlexContainer flexDirection="column" margin="0 8px 0 0" width="170px">
-          <PrimaryTextSpan fontSize="14px" color="#fffccc" marginBottom="4px">
-            {position.instrument}
+          <PrimaryTextSpan fontSize="14px" color={Colors.ACCENT} marginBottom="4px">
+            {positionInstrument()?.name}
           </PrimaryTextSpan>
-          <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
+          <PrimaryTextSpan fontSize="10px" color={Colors.WHITE_LIGHT}>
             {position.instrument}
           </PrimaryTextSpan>
         </FlexContainer>
@@ -148,13 +155,13 @@ function ActivePositionExpanded(props: Props) {
       <Td>
         <FlexContainer>
           <FlexContainer margin="0 6px 0 0">
-            <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
+            <SvgIcon {...Icon} fillColor={isBuy ? Colors.PRIMARY : Colors.DANGER} />
           </FlexContainer>
           <FlexContainer flexDirection="column">
             <PrimaryTextSpan
               fontSize="14px"
               lineHeight="20px"
-              color={isBuy ? '#00FFDD' : '#ED145B'}
+              color={isBuy ? Colors.PRIMARY : Colors.DANGER}
               textTransform="uppercase"
               marginBottom="2px"
             >
@@ -162,7 +169,7 @@ function ActivePositionExpanded(props: Props) {
             </PrimaryTextSpan>
             <PrimaryTextSpan
               fontSize="11px"
-              color="rgba(255, 255, 255, 0.4)"
+              color={Colors.WHITE_LIGHT}
               whiteSpace="nowrap"
             >
               {t('at')} {position.openPrice.toFixed(+precision)}
@@ -173,7 +180,7 @@ function ActivePositionExpanded(props: Props) {
       <Td>
         <FlexContainer flexDirection="column">
           <PrimaryTextSpan
-            color="#fffccc"
+            color={Colors.ACCENT}
             fontSize="14px"
             lineHeight="20px"
             marginBottom="2px"
@@ -188,7 +195,7 @@ function ActivePositionExpanded(props: Props) {
       <Td justifyContent="flex-end">
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <PrimaryTextSpan
-            color="#fffccc"
+            color={Colors.ACCENT}
             fontSize="14px"
             lineHeight="20px"
             marginBottom="2px"
@@ -216,7 +223,7 @@ function ActivePositionExpanded(props: Props) {
       </Td>
       <Td justifyContent="center" alignItems="center">
         <FlexContainer flexDirection="column" alignItems="center">
-          <PrimaryTextSpan fontSize="12px" color="#fff">
+          <PrimaryTextSpan fontSize="12px" color={Colors.WHITE}>
             {position.tp !== null ? (
               <>
                 {position.tpType !== TpSlTypeEnum.Price &&
@@ -235,7 +242,7 @@ function ActivePositionExpanded(props: Props) {
       </Td>
       <Td justifyContent="center" alignItems="center">
         <FlexContainer flexDirection="column" alignItems="center">
-          <PrimaryTextSpan fontSize="12px" color="#fff">
+          <PrimaryTextSpan fontSize="12px" color={Colors.WHITE}>
             {position.sl !== null ? (
               <>
                 {position.slType !== TpSlTypeEnum.Price &&
@@ -278,29 +285,29 @@ function ActivePositionExpanded(props: Props) {
             <FlexContainer flexDirection="column" width="100%">
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="12px"
                 >
                   {t('Price opened')}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                   {t('at')} {position.openPrice.toFixed(+precision)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="12px"
                 >
                   {t('Opened')}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                   {moment(position.openDate).format('DD MMM, HH:mm')}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="12px"
                 >
                   {t('Equity')}
@@ -309,16 +316,16 @@ function ActivePositionExpanded(props: Props) {
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="12px"
                   marginRight="20px"
                 >
                   {t('Overnight fee')}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                   {getNumberSign(position.swap)}
                   {mainAppStore.activeAccount?.symbol}
-                  {Math.abs(position.swap).toFixed(2)}
+                  {Math.abs(position.swap + position.commission).toFixed(2)}
                 </PrimaryTextSpan>
               </FlexContainer>
 
@@ -328,12 +335,12 @@ function ActivePositionExpanded(props: Props) {
                   margin="0 0 8px 0"
                 >
                   <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.4)"
+                    color={Colors.WHITE_LIGHT}
                     fontSize="12px"
                   >
                     {t('Insurance amount')}
                   </PrimaryTextSpan>
-                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                     {mainAppStore.activeAccount?.symbol}
                     {Math.abs(position.reservedFundsForToppingUp).toFixed(2)}
                   </PrimaryTextSpan>
@@ -342,12 +349,12 @@ function ActivePositionExpanded(props: Props) {
 
               <FlexContainer justifyContent="space-between">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="12px"
                 >
                   {t('Position ID')}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                   {position.id}
                 </PrimaryTextSpan>
               </FlexContainer>

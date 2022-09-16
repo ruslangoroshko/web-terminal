@@ -6,5 +6,6 @@ export enum DepositTypeEnum {
   ElectronicFundsTransfer,
   Directa,
   Volt,
-  PayRetailers
+  PayRetailers,
+  Payop
 }

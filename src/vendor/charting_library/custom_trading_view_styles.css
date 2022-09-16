@@ -18,16 +18,16 @@
   --tv-color-platform-background: transparent;
   --tv-color-pane-background: transparent;
   --tv-color-pane-background-secondary: transparent;
-  --tv-color-toolbar-button-background-hover: rgb(244, 143, 177);
-  --tv-color-toolbar-button-background-secondary-hover: red;
-  --tv-color-toolbar-button-background-expanded: rgb(244, 143, 177);
-  --tv-color-toolbar-button-text: rgb(136, 24, 79);
-  --tv-color-toolbar-button-text-hover: rgb(74, 20, 140);
-  --tv-color-toolbar-button-text-active: red;
-  --tv-color-toolbar-button-text-active-hover: red;
-  --tv-color-item-active-text: rgb(6, 255, 6);
-  --tv-color-toolbar-toggle-button-background-active: red;
-  --tv-color-toolbar-toggle-button-background-active-hover: magenta;
+  --tv-color-toolbar-button-background-hover: rgb(184 184 184);
+  --tv-color-toolbar-button-background-secondary-hover: #464646;
+  --tv-color-toolbar-button-background-expanded: rgb(115 115 115);
+  --tv-color-toolbar-button-text: rgb(230 230 230);
+  --tv-color-toolbar-button-text-hover: rgb(0 0 0);
+  --tv-color-toolbar-button-text-active: #dedede;
+  --tv-color-toolbar-button-text-active-hover: #7d7d7d;
+  --tv-color-item-active-text: rgb(0 0 0);
+  --tv-color-toolbar-toggle-button-background-active: #9b9b9b;
+  --tv-color-toolbar-toggle-button-background-active-hover: #949494;
 }
 
 html.theme-dark .chart-page .chart-container-border {

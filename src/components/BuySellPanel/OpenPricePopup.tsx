@@ -20,6 +20,7 @@ import { useFormContext } from 'react-hook-form';
 import { FormValues } from '../../types/Positions';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 import hasValue from '../../helpers/hasValue';
+import Colors from '../../constants/Colors';
 
 interface Props {
   instrumentId: string;
@@ -61,7 +62,7 @@ const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
   };
 
   const applyOpenPrice = (errors: any) => () => {
-    trigger().then(() => {
+    trigger('openPrice').then(() => {
       if (!Object.keys(errors).length) {
         toggle(false);
       }
@@ -163,16 +164,15 @@ const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
             type="button"
             hasPrice={true}
           >
-            <PrimaryTextSpan color="#fffccc" fontSize="14px">
-              {mainAppStore.activeAccount?.symbol}
+            <PrimaryTextSpan color={Colors.ACCENT} fontSize="14px">
               {openPrice}
             </PrimaryTextSpan>
           </ButtonAutoClosePurchase>
           <ClearOpenPriceButton type="button" onClick={clearOpenPrice}>
             <SvgIcon
               {...IconClose}
-              fillColor="rgba(255, 255, 255, 0.6)"
-              hoverFillColor="#00FFDD"
+              fillColor={Colors.WHITE_DARK}
+              hoverFillColor={Colors.PRIMARY}
             />
           </ClearOpenPriceButton>
         </FlexContainer>
@@ -182,7 +182,7 @@ const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
           type="button"
           hasPrice={false}
         >
-          <PrimaryTextSpan color="#fffccc" fontSize="14px">
+          <PrimaryTextSpan color={Colors.ACCENT} fontSize="14px">
             {t('Set Price')}
           </PrimaryTextSpan>
         </ButtonAutoClosePurchase>
@@ -202,8 +202,8 @@ const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
           <ButtonClose type="button" onClick={handleClosePopup}>
             <SvgIcon
               {...IconClose}
-              fillColor="rgba(255, 255, 255, 0.6)"
-              hoverFillColor="#00FFDD"
+              fillColor={Colors.WHITE_DARK}
+              hoverFillColor={Colors.PRIMARY}
             ></SvgIcon>
           </ButtonClose>
           <PrimaryTextParagraph marginBottom="16px">
@@ -228,7 +228,7 @@ const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
               width="212px"
               direction="left"
             >
-              <PrimaryTextSpan color="#fffccc" fontSize="12px">
+              <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                 {t(
                   'When the position reached the specified take profit or stop loss level, the position will be closed automatically.'
                 )}
@@ -244,7 +244,7 @@ const OpenPricePopup: FC<Props> = observer(({ instrumentId, digits }) => {
           >
             {errors.openPrice && (
               <ErropPopup
-                textColor="#fffccc"
+                textColor={Colors.ACCENT}
                 bgColor={ColorsPallete.RAZZMATAZZ}
                 classNameTooltip={Fields.OPEN_PRICE}
                 direction="left"
@@ -333,23 +333,23 @@ const InputPnL = styled.input`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #fffccc;
+  color: ${Colors.ACCENT};
   padding: 8px 0 8px 8px;
 
   &:-webkit-input-placeholder {
-    color: #fff;
+    color: ${Colors.WHITE};
     opacity: 0.3;
     font-weight: normal;
   }
 
   &:-ms-input-placeholder {
-    color: #fff;
+    color: ${Colors.WHITE};
     opacity: 0.3;
     font-weight: normal;
   }
 
   &::placeholder {
-    color: #fff;
+    color: ${Colors.WHITE};
     opacity: 0.3;
     font-weight: normal;
   }
@@ -358,12 +358,12 @@ const InputPnL = styled.input`
 const InputWrapper = styled(FlexContainer)`
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
+  color: ${Colors.WHITE};
   background-color: rgba(255, 255, 255, 0.06);
 `;
 
 const ButtonApply = styled(ButtonWithoutStyles)`
-  background-color: #00fff2;
+  background-color: ${Colors.PRIMARY};
   border-radius: 4px;
   font-weight: bold;
   font-size: 14px;
@@ -372,11 +372,7 @@ const ButtonApply = styled(ButtonWithoutStyles)`
   height: 32px;
 
   &:hover {
-    background-color: #9ffff2;
-  }
-
-  &:focus {
-    background-color: #21b3a4;
+    background-color: ${Colors.PRIMARY_LIGHT};
   }
 
   &:disabled {

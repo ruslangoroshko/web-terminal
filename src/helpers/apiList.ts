@@ -40,6 +40,7 @@ const API_LIST = {
     CREATE_INVOICE_SWIFFY: '/swiffy/invoice',
     CREATE_INVOICE_DIRECTA: '/directa/invoice',
     CREATE_INVOICE_PAY_RETAILERS: '/payretailers/invoice',
+    CREATE_INVOICE_PAYOP: '/payop/invoice',
     CREATE_INVOICE_VOLT: '/volt/invoice',
     CHECK_PAYMENT_SYSTEMS: '/supported-payment-systems',
   },
@@ -60,6 +61,16 @@ const API_LIST = {
   WELCOME_BONUS: {
     GET: '/v1/welcomeBonus',
   },
+  EDUCATION: {
+    LIST: '/v1/educations',
+  },
+  MT5_ACCOUNTS: {
+    GET: '/api/v1/Mt5Accounts',
+    POST: '/api/v1/Mt5Accounts',
+  },
+  ONESIGNAL: {
+    SUBSCRIBE: '/v1/oneSignal/subscribe',
+  }
 };
 
 Object.freeze(API_LIST);

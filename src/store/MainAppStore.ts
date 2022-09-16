@@ -1,28 +1,30 @@
 import {
-  LOCAL_STORAGE_TOKEN_KEY,
-  LOCAL_STORAGE_REFRESH_TOKEN_KEY,
-  LOCAL_STORAGE_LANGUAGE,
-  LOCAL_STORAGE_SIDEBAR,
-  LOCAL_POSITION,
-  LOCAL_MARKET_TABS,
-  LOCAL_PORTFOLIO_TABS,
-  LOCAL_PENDING_POSITION,
-  LOCAL_HISTORY_POSITION,
-  LOCAL_STORAGE_IS_NEW_USER,
-  LOCAL_HISTORY_TIME,
   LOCAL_HISTORY_DATERANGE,
   LOCAL_HISTORY_PAGE,
-  LOCAL_POSITION_SORT,
+  LOCAL_HISTORY_POSITION,
+  LOCAL_HISTORY_TIME,
+  LOCAL_INSTRUMENT_ACTIVE,
+  LOCAL_MARKET_TABS,
+  LOCAL_PENDING_POSITION,
   LOCAL_PENDING_POSITION_SORT,
+  LOCAL_PORTFOLIO_TABS,
+  LOCAL_POSITION,
+  LOCAL_POSITION_SORT,
+  LOCAL_STORAGE_IS_NEW_USER,
+  LOCAL_STORAGE_LANGUAGE,
+  LOCAL_STORAGE_MT,
+  LOCAL_STORAGE_REFRESH_TOKEN_KEY,
+  LOCAL_STORAGE_SIDEBAR,
+  LOCAL_STORAGE_TOKEN_KEY,
 } from './../constants/global';
 import {
+  LpLoginParams,
   UserAuthenticate,
   UserRegistration,
-  LpLoginParams,
 } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
-import { AccountModelWebSocketDTO } from '../types/AccountsTypes';
-import { action, observable, computed, makeAutoObservable } from 'mobx';
+import { AccountModelWebSocketDTO, AccountUpdateTypeModelWebSocketDTO } from '../types/AccountsTypes';
+import { action, makeAutoObservable } from 'mobx';
 import API from '../helpers/API';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
 import initConnection from '../services/websocketService';
@@ -51,7 +53,6 @@ import moment from 'moment';
 import { PortfolioTabEnum } from '../enums/PortfolioTabEnum';
 import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
-import { polandLocalsList } from '../constants/polandLocalsList';
 import { languagesList } from '../constants/languagesList';
 import { PositionModelWSDTO } from '../types/Positions';
 import { PendingOrderWSDTO } from '../types/PendingOrdersTypes';
@@ -61,6 +62,7 @@ import { debugLevel } from '../constants/debugConstants';
 import { getProcessId } from '../helpers/getProcessId';
 import { getCircularReplacer } from '../helpers/getCircularReplacer';
 import { getStatesSnapshot } from '../helpers/getStatesSnapshot';
+import { HintEnum } from '../enums/HintsEnum';
 
 interface MainAppStoreProps {
   token: string;
@@ -137,6 +139,7 @@ export class MainAppStore implements MainAppStoreProps {
   lpLoginFlag: boolean = false;
   websocketConnectionTries = 0;
   requestErrorStack: string[] = [];
+  canCheckEducation: boolean = false;
 
   paramsAsset: string | null = null;
   paramsMarkets: string | null = null;
@@ -233,6 +236,8 @@ export class MainAppStore implements MainAppStoreProps {
     this.setIsLoading(false);
     this.rootStore.badRequestPopupStore.openModal();
     this.rootStore.badRequestPopupStore.setMessage(response.data.reason);
+
+    this.handleInitConnection(this.token);
   };
 
   handleSocketCloseError = (error: any) => {
@@ -247,9 +252,15 @@ export class MainAppStore implements MainAppStoreProps {
     }
     if (this.isAuthorized) {
       const objectToSend = {
-        message: error?.message,
-        name: error?.name,
-        stack: error?.stack,
+        context: 'socket',
+        urlAPI: this.initModel.tradingUrl,
+        urlMiscAPI: this.initModel.miscUrl,
+        urlAuthAPI: this.initModel.authUrl,
+        platform: 'Web',
+        config: error?.config || 'config is missing',
+        message: error?.message || 'message is empty',
+        name: error?.name || 'name is empty',
+        stack: error?.stack || 'stack is empty',
       };
       const jsonLogObject = {
         error: JSON.stringify(objectToSend),
@@ -289,6 +300,7 @@ export class MainAppStore implements MainAppStoreProps {
         await connection.start();
         try {
           await connection.send(Topics.INIT, token);
+          this.rootStore.badRequestPopupStore.closeModal();
           this.setIsAuthorized(true);
           this.activeSession = connection;
           this.pingPongConnection();
@@ -341,12 +353,52 @@ export class MainAppStore implements MainAppStoreProps {
           this.activeAccount?.id === response.data.id ? response.data : null;
         if (isCurrentAcc !== null) {
           this.setActiveAccount(isCurrentAcc);
+          if (
+            isCurrentAcc.balance !== 0 &&
+            this.rootStore.bonusStore.showBonus() &&
+            this.rootStore.bonusStore.bonusData !== null &&
+            !this.isPromoAccount
+          ) {
+            try {
+              this.rootStore.bonusStore.getUserBonus();
+            } catch (error) {}
+          }
         }
         this.setAccounts(
           this.accounts.map((account) =>
             account.id === response.data.id ? response.data : account
           )
         );
+      }
+    );
+
+    connection.on(
+      Topics.UPDATE_ACCOUNT_TYPE,
+      (response: ResponseFromWebsocket<AccountUpdateTypeModelWebSocketDTO>) => {
+        const actualType = response.data.accountTypeModels.find(
+          (item) => item.id === response.data.currentAccountTypeId
+        ) || null;
+        const sortedListOfAccountTypes = response.data.accountTypeModels.sort(
+          (a, b) => a.order - b.order
+        );
+        const indexOfActualType = actualType !== null
+          ? response.data.accountTypeModels.indexOf(actualType)
+          : null;
+
+        this.rootStore.accountTypeStore.setActualType(actualType);
+        this.rootStore.accountTypeStore.setAllTypes(response.data.accountTypeModels);
+        this.rootStore.accountTypeStore.setAmount(response.data.amountToNextAccountType);
+        this.rootStore.accountTypeStore.setPercentage(response.data.currentAccountTypeProgressPercentage);
+        if (indexOfActualType !== null) {
+          this.rootStore.accountTypeStore.setNextType(sortedListOfAccountTypes[indexOfActualType + 1] || null);
+        }
+
+        this.rootStore.accountTypeStore.checkActiveAccount(
+          response.data.currentAccountTypeId
+        );
+
+        // set default status
+        this.rootStore.accountTypeStore.setKVActiveStatus(response.data.currentAccountTypeId, true);
       }
     );
 
@@ -589,8 +641,22 @@ export class MainAppStore implements MainAppStoreProps {
       const activeAccountTarget = await API.getKeyValue(
         KeysInApi.ACTIVE_ACCOUNT_TARGET
       );
+
+      this.canCheckEducation = true;
+
       if (activeAccountTarget === 'facebook') {
         this.isPromoAccount = true;
+      } else {
+        try {
+          const userActiveHint = await API.getKeyValue(
+            KeysInApi.SHOW_HINT
+          );
+          // @ts-ignore
+          if (Object.values(HintEnum).includes(userActiveHint.trim())) {
+            // @ts-ignore
+            this.rootStore.educationStore.openHint(userActiveHint.trim(), false);
+          }
+        } catch {}
       }
 
       const activeAccountId = await API.getKeyValue(
@@ -678,6 +744,10 @@ export class MainAppStore implements MainAppStoreProps {
     );
     if (response.result === OperationApiResponseCodes.Ok) {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
+      if (response.data.mt5Enabled) {
+        localStorage.setItem(LOCAL_STORAGE_MT, 'true');
+        this.rootStore.accountTypeStore.setMTAvailable(true);
+      }
       this.setIsAuthorized(true);
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.setConnectionTimeout(+response.data.connectionTimeOut);
@@ -734,6 +804,10 @@ export class MainAppStore implements MainAppStoreProps {
     );
     if (response.result === OperationApiResponseCodes.Ok) {
       localStorage.setItem(LOCAL_STORAGE_IS_NEW_USER, 'true');
+      if (response.data.mt5Enabled) {
+        localStorage.setItem(LOCAL_STORAGE_MT, 'true');
+        this.rootStore.accountTypeStore.setMTAvailable(true);
+      }
       this.signalRReconnectTimeOut = response.data.reconnectTimeOut;
       this.setConnectionTimeout(+response.data.connectionTimeOut);
       this.setIsAuthorized(true);
@@ -765,12 +839,16 @@ export class MainAppStore implements MainAppStoreProps {
     localStorage.removeItem(LOCAL_HISTORY_TIME);
     localStorage.removeItem(LOCAL_HISTORY_DATERANGE);
     localStorage.removeItem(LOCAL_HISTORY_PAGE);
+    localStorage.removeItem(LOCAL_INSTRUMENT_ACTIVE);
+    localStorage.removeItem(LOCAL_STORAGE_MT);
     this.isPromoAccount = false;
     this.setInitLoading(false);
     this.setIsLoading(false);
     this.token = '';
     this.refreshToken = '';
     this.setIsAuthorized(false);
+    this.profileName = '';
+    this.profileEmail = '';
     this.rootStore.quotesStore.setActivePositions([]);
     this.rootStore.quotesStore.setPendingOrders([]);
     this.rootStore.tradingViewStore.setSelectedPendingPosition(undefined);
@@ -801,6 +879,17 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.bonusStore.setShowBonusDeposit(false);
     this.rootStore.bonusStore.setBonusIsLoaded(false);
     this.rootStore.bonusStore.refreshBonusParams();
+    this.rootStore.educationStore.setCoursesList(null);
+    this.rootStore.educationStore.setEducationIsLoaded(false);
+    this.rootStore.educationStore.setActiveQuestion(null);
+    this.rootStore.educationStore.setActiveCourse(null);
+    this.rootStore.educationStore.setShowPopup(false);
+    this.rootStore.educationStore.setQuestionsList(null);
+    this.rootStore.educationStore.setHint(null, false);
+    this.rootStore.tabsStore.setTabExpanded(false);
+    this.rootStore.accountTypeStore.resetAccountType();
+    this.rootStore.kycStore.resetKYCStore();
+    this.canCheckEducation = false;
     if (this.activeAccount) {
       this.setParamsAsset(null);
       this.setParamsMarkets(null);

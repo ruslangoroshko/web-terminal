@@ -25,6 +25,7 @@ import {
   LOCAL_HISTORY_TIME,
 } from '../../constants/global';
 import moment from 'moment';
+import Colors from '../../constants/Colors';
 
 const TradingHistoryExpanded: FC = () => {
   const { tabsStore, mainAppStore, historyStore, dateRangeStore } = useStores();
@@ -139,8 +140,8 @@ const TradingHistoryExpanded: FC = () => {
       <ButtonClose onClick={closeExpanded}>
         <SvgIcon
           {...IconClose}
-          fillColor="rgba(255, 255, 255, 0.6)"
-          hoverFillColor="#00FFDD"
+          fillColor={Colors.WHITE_DARK}
+          hoverFillColor={Colors.PRIMARY}
         />
       </ButtonClose>
       <FlexContainer margin="0 0 40px 0" padding="0 0 0 8px">
@@ -156,7 +157,7 @@ const TradingHistoryExpanded: FC = () => {
           >
             <FlexContainer flexDirection="column">
               <PrimaryTextParagraph
-                color="rgba(255, 255, 255, 0.4)"
+                color={Colors.WHITE_LIGHT}
                 marginBottom="4px"
                 fontSize="11px"
                 textTransform="uppercase"
@@ -181,7 +182,7 @@ const TradingHistoryExpanded: FC = () => {
               <Th>
                 <FlexContainer padding="0 0 0 12px">
                   <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.4)"
+                    color={Colors.WHITE_LIGHT}
                     fontSize="11px"
                     textTransform="uppercase"
                   >
@@ -191,7 +192,7 @@ const TradingHistoryExpanded: FC = () => {
               </Th>
               <Th>
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                 >
@@ -200,7 +201,7 @@ const TradingHistoryExpanded: FC = () => {
               </Th>
               <Th>
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                 >
@@ -209,7 +210,7 @@ const TradingHistoryExpanded: FC = () => {
               </Th>
               <Th justifyContent="flex-end">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                 >
@@ -218,7 +219,7 @@ const TradingHistoryExpanded: FC = () => {
               </Th>
               <Th justifyContent="flex-end">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                 >
@@ -227,7 +228,7 @@ const TradingHistoryExpanded: FC = () => {
               </Th>
               <Th justifyContent="center">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="11px"
                   textTransform="uppercase"
                 >
@@ -280,11 +281,11 @@ const TradingHistoryExpanded: FC = () => {
                       <FlexContainer margin="0 0 20px">
                         <SvgIcon
                           {...IconNoTradingHistory}
-                          fillColor="rgba(255, 255, 255, 0.5)"
+                          fillColor={Colors.WHITE_LIGHT}
                         />
                       </FlexContainer>
                       <PrimaryTextSpan
-                        color="rgba(255,255,255,0.17)"
+                        color={Colors.WHITE_TINE}
                         fontWeight="bold"
                       >
                         {t('There is no trading history')}
@@ -309,7 +310,7 @@ const TradingHistoryExpandedWrapper = styled(FlexContainer)`
       rgba(255, 252, 204, 0.08) 0%,
       rgba(255, 252, 204, 0) 100%
     ),
-    #252636;
+    ${Colors.DARK_BLACK};
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.08);
   border-radius: 8px 0px 0px 0px;
 `;

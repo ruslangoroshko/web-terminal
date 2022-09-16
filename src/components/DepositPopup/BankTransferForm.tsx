@@ -20,6 +20,8 @@ import mixpanel from 'mixpanel-browser';
 import mixpanelEvents from '../../constants/mixpanelEvents';
 import mixapanelProps from '../../constants/mixpanelProps';
 import depositMethod from '../../constants/depositMethod';
+import depositApiResponseCodeMessages from '../../constants/depositApiResponseCodeMessages';
+import Colors from '../../constants/Colors';
 
 const BankTransferForm = () => {
   const [currency, setCurrency] = useState(paymentCurrencies[0]);
@@ -38,7 +40,7 @@ const BankTransferForm = () => {
     amount: 500,
   };
 
-  const { mainAppStore, badRequestPopupStore } = useStores();
+  const { mainAppStore, badRequestPopupStore, notificationStore } = useStores();
 
   const investOnBeforeInputHandler = (e: any) => {
     const currTargetValue = e.currentTarget.value;
@@ -58,11 +60,15 @@ const BankTransferForm = () => {
   };
 
   const handleSubmitForm = async () => {
+    const paramsFromLocation = new URLSearchParams(location.search);
+    const accountIdFromParams = paramsFromLocation.get('accountId')?.slice(0, -1);
     const params = {
       paymentMethod: 'BANK_CARDS',
       depositSum: +values.amount,
       currency: 'USD',
-      accountId: mainAppStore.accounts.find(item => item.isLive)?.id || '',
+      accountId: accountIdFromParams
+        ? accountIdFromParams
+        : mainAppStore.accounts.find((acc) => acc.isLive)?.id || '',
     };
     try {
       const response = await API.createDeposit(params);
@@ -75,11 +81,17 @@ const BankTransferForm = () => {
             : mainAppStore.accounts.find(item => item.isLive)?.id || '',
         });
         window.location.href = response.redirectUrl;
+      } else if (response.status === DepositApiResponseCodes.PaymentDisabled){
+        notificationStore.setNotification(
+          t(depositApiResponseCodeMessages[response.status])
+        );
+        notificationStore.setIsSuccessfull(false);
+        notificationStore.openNotification();
       } else {
         mixpanel.track(mixpanelEvents.DEPOSIT_FAILED, {
           [mixapanelProps.SERVER_ERROR]: response.status
         });
-        badRequestPopupStore.setMessage(t('Technical error'));
+        badRequestPopupStore.setMessage(t('System error'));
         badRequestPopupStore.openModal();
       }
     } catch (error) {
@@ -138,7 +150,7 @@ const BankTransferForm = () => {
 
         <FlexContainer
           borderRadius="4px"
-          border="1px solid #FFFCCC"
+          border={`1px solid ${Colors.ACCENT}`}
           backgroundColor="#292C33"
           marginBottom="10px"
           maxHeight="48px"
@@ -204,7 +216,7 @@ const Input = styled.input`
   width: calc(100% - 120px);
   text-align: right;
   height: 48px;
-  color: #fffccc;
+  color: ${Colors.ACCENT};
   font-size: 14px;
   font-weight: bold;
   padding: 24px 16px;
@@ -217,7 +229,7 @@ const ErrorText = styled.span`
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
-  color: #ff557e;
+  color: ${Colors.DANGER_LIGHT};
   position: absolute;
   top: 50%;
   right: 95px;

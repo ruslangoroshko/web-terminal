@@ -7,6 +7,7 @@ import SvgIcon from '../SvgIcon';
 import IconShevron from '../../assets/svg/icon-shevron-down.svg';
 import styled from '@emotion/styled';
 import { useTranslation } from 'react-i18next';
+import Colors from '../../constants/Colors';
 
 interface Props {
   hasError?: boolean;
@@ -70,7 +71,7 @@ function GenderDropdown(props: Props) {
           </PrimaryTextSpan>
           <SvgIcon
             {...IconShevron}
-            fillColor="rgba(255, 255, 255, 0.6)"
+            fillColor={Colors.WHITE_DARK}
             width="6px"
             height="4px"
           />
@@ -88,17 +89,17 @@ function GenderDropdown(props: Props) {
           zIndex="101"
         >
           <GenderItem onClick={handleChooseSex(SexEnum.Male)}>
-            <PrimaryTextSpan color="#fffccc" fontSize="12px">
+            <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
               {SexEnum[SexEnum.Male]}
             </PrimaryTextSpan>
           </GenderItem>
           <GenderItem onClick={handleChooseSex(SexEnum.Female)}>
-            <PrimaryTextSpan color="#fffccc" fontSize="12px">
+            <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
               {SexEnum[SexEnum.Female]}
             </PrimaryTextSpan>
           </GenderItem>
           <GenderItem onClick={handleChooseSex(SexEnum.Unknown)}>
-            <PrimaryTextSpan color="#fffccc" fontSize="12px">
+            <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
               {SexEnum[SexEnum.Unknown]}
             </PrimaryTextSpan>
           </GenderItem>
@@ -116,16 +117,16 @@ const GenderContainer = styled(FlexContainer)<{
 }>`
   padding-top: 23px;
   border-bottom: 1px solid
-    ${props => (props.isActive ? '#21B3A4' : 'rgba(255, 255, 255, 0.2)')};
-  border-bottom: ${props => props.hasError && '1px solid #ED145B !important'};
+    ${props => (props.isActive ? Colors.PRIMARY : 'rgba(255, 255, 255, 0.2)')};
+  border-bottom: ${props => props.hasError && `1px solid ${Colors.DANGER} !important`};
   transition: border 0.2s ease;
   will-change: border;
   cursor: pointer;
 
   &:hover {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    border-bottom: 1px solid ${Colors.WHITE_LIGHT};
     & > span {
-      color: rgba(255, 255, 255, 0.6);
+      color: ${Colors.WHITE_DARK};
     }
   }
 `;
@@ -142,7 +143,7 @@ const GenderItem = styled(ButtonWithoutStyles)`
     > span {
       transition: all 0.2s ease;
       will-change: color;
-      color: #21b3a4;
+      color: ${Colors.PRIMARY_LIGHT};
     }
   }
 `;
@@ -154,6 +155,6 @@ const Label = styled(PrimaryTextSpan)<{ isSelect: boolean }>`
     isSelect ? 'translateY(-30px)' : 'translateY(-4px)'};
   transition: transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
   font-size: ${({ isSelect }) => (isSelect ? '11px' : '14px')};
-  color: rgba(255, 255, 255, 0.4);
+  color: ${Colors.PRIMARY_LIGHT};
   text-transform: ${({ isSelect }) => (isSelect ? 'uppercase' : 'none')};
 `;

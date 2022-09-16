@@ -16,10 +16,12 @@ import mixpanelEvents from '../constants/mixpanelEvents';
 import mixapanelProps from '../constants/mixpanelProps';
 import AUTH_API_LIST from '../helpers/apiListAuth';
 import { CLIENTS_REQUEST } from '../constants/interceptorsConstants';
+import KeysInApi from '../constants/keysInApi';
 
-const openNotification = (errorText: string, mainAppStore: MainAppStore) => {
+const openNotification = (errorText: string, mainAppStore: MainAppStore, needTranslate?: boolean) => {
   mainAppStore.rootStore.notificationStore.setNotification(errorText);
   mainAppStore.rootStore.notificationStore.setIsSuccessfull(false);
+  mainAppStore.rootStore.notificationStore.setNeedTranslate(!!needTranslate);
   mainAppStore.rootStore.notificationStore.openNotification();
 };
 
@@ -85,7 +87,12 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
     }
     const isAuthorized = `${mainAppStore.isAuthorized}`;
     const request_url = getApiUrl(config?.url || "");
-    const initBy = CLIENTS_REQUEST.includes(request_url) ? requestOptions.CLIENT : requestOptions.BACKGROUND;
+    const initBy = (
+      CLIENTS_REQUEST.includes(request_url) &&
+      !(request_url.includes(API_LIST.MT5_ACCOUNTS.GET) && config.method === 'get')
+    )
+      ? requestOptions.CLIENT
+      : requestOptions.BACKGROUND;
     let newData = config.data;
     if (typeof newData === 'object') {
       if (newData instanceof FormData) {
@@ -157,6 +164,8 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         API_LIST.DEBUG.POST,
         API_LIST.ONBOARDING.STEPS,
         API_LIST.WELCOME_BONUS.GET,
+        API_LIST.EDUCATION.LIST,
+        API_LIST.ONESIGNAL.SUBSCRIBE,
       ];
 
       const sendClientLog = () => {
@@ -166,10 +175,16 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           (error.response?.status || error.config?.timeoutErrorMessage)
         ) {
           const objectToSend = {
-            message: error.message,
-            name: error.name,
-            stack: error.stack,
-            status: error.response?.status,
+            context: 'REST',
+            urlAPI: mainAppStore.initModel.tradingUrl,
+            urlMiscAPI: mainAppStore.initModel.miscUrl,
+            urlAuthAPI: mainAppStore.initModel.authUrl,
+            platform: 'Web',
+            config: error.config || 'config is missing',
+            message: error?.message || 'message is empty',
+            name: error?.name || 'name is empty',
+            stack: error?.stack || 'stack is empty',
+            status: error?.response?.status || 'status is empty',
           };
           const jsonLogObject = {
             error: JSON.stringify(objectToSend),
@@ -199,11 +214,36 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         return Promise.reject(error);
       }
       if (
-        (getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS) ||
-        getApiUrl(requestUrl).includes(API_LIST.WELCOME_BONUS.GET)) &&
+        (
+          getApiUrl(requestUrl).includes(API_LIST.ONBOARDING.STEPS) ||
+          getApiUrl(requestUrl).includes(API_LIST.ONESIGNAL.SUBSCRIBE) ||
+          getApiUrl(requestUrl).includes(API_LIST.WELCOME_BONUS.GET) ||
+          (
+            getApiUrl(requestUrl).includes(API_LIST.EDUCATION.LIST) &&
+            !getApiUrl(requestUrl).includes(`${API_LIST.EDUCATION.LIST}/`) &&
+            error.config.method === 'get'
+          ) ||
+          (
+            getApiUrl(requestUrl).includes(API_LIST.KEY_VALUE.GET) &&
+            getApiUrl(requestUrl).includes(KeysInApi.SHOW_HINT) &&
+            error.config.method === 'get'
+          )
+        ) &&
         error.response?.status !== 401 &&
         error.response?.status !== 403
       ) {
+        sendClientLog();
+        return Promise.reject(error);
+      }
+      if (
+        (
+          getApiUrl(requestUrl).includes(API_LIST.EDUCATION.LIST) &&
+          error.config.method === 'post'
+        ) &&
+        error.response?.status !== 401 &&
+        error.response?.status !== 403
+      ) {
+        openNotification('Ooops, something went wrong', mainAppStore, true);
         sendClientLog();
         return Promise.reject(error);
       }
@@ -223,10 +263,16 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
           !(excludeReconectList.includes(getApiUrl(requestUrl)) && error.config.method === 'get') &&
           mainAppStore.requestErrorStack.filter((elem) => elem === getApiUrl(requestUrl)).length > 2
         ) {
-          mainAppStore.rootStore.badRequestPopupStore.setRecconect();
+          if (getApiUrl(requestUrl).includes(AUTH_API_LIST.PERSONAL_DATA.GET)) {
+            mainAppStore.signOut();
+          } else {
+            mainAppStore.rootStore.badRequestPopupStore.setRecconect();
+          }
         }
         setTimeout(() => {
-          callback(originalRequest);
+          if (mainAppStore.requestErrorStack.filter((elem) => elem === getApiUrl(requestUrl)).length) {
+            callback(originalRequest);
+          }
         }, +mainAppStore.connectTimeOut);
       };
 
@@ -247,9 +293,9 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
         finalJSON = error.config.data;
       }
       // ---
-      console.log(finalJSON);
-      console.log(error.message);
-      console.log(error.config);
+      // console.log(finalJSON);
+      // console.log(error.message);
+      // console.log(error.config);
       let isTimeOutError = error.message === requestOptions.TIMEOUT;
       let isReconnectedRequest =
         JSON.parse(finalJSON).initBy === requestOptions.BACKGROUND;
@@ -289,7 +335,7 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       // --- mixpanel
 
       if (isTimeOutError && !isReconnectedRequest) {
-        openNotification('Timeout connection error', mainAppStore);
+        openNotification('Timeout connection error', mainAppStore, true);
       }
 
       if (isTimeOutError && isReconnectedRequest) {

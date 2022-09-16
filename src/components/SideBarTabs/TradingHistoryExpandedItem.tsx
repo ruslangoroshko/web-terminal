@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan, QuoteText } from '../../styles/TextsElements';
 import SvgIcon from '../SvgIcon';
@@ -15,6 +15,8 @@ import { DisplayContents, Td } from '../../styles/TableElements';
 import ImageContainer from '../ImageContainer';
 import { useTranslation } from 'react-i18next';
 import useInstrumentPrecision from '../../hooks/useInstrumentPrecision';
+import { useStores } from '../../hooks/useStores';
+import Colors from '../../constants/Colors';
 
 interface Props {
   tradingHistoryItem: PositionHistoryDTO;
@@ -37,14 +39,22 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
       profit,
       swap: swaps,
       reservedFundsForToppingUp,
+      commission
     },
     currencySymbol,
   } = props;
   const isBuy = operation === AskBidEnum.Buy;
   const Icon = isBuy ? IconShevronUp : IconShevronDown;
+  const { instrumentsStore } = useStores();
   const { t } = useTranslation();
 
   const { precision } = useInstrumentPrecision(instrument);
+
+  const positionInstrument = useCallback(() => {
+    return instrumentsStore.instruments.find(
+      (item) => item.instrumentItem.id === instrument
+    )?.instrumentItem;
+  }, [props.tradingHistoryItem]);
 
   return (
     <DisplayContents>
@@ -53,8 +63,8 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
           <ImageContainer instrumentId={instrument} />
         </FlexContainer>
         <FlexContainer flexDirection="column" width="170px">
-          <PrimaryTextSpan fontSize="14px" color="#fffccc" marginBottom="4px">
-            {instrument}
+          <PrimaryTextSpan fontSize="14px" color={Colors.ACCENT} marginBottom="4px">
+            {positionInstrument()?.name}
           </PrimaryTextSpan>
           <PrimaryTextSpan fontSize="10px" color="rgba(255, 255, 255, 0.4)">
             {instrument}
@@ -64,13 +74,13 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
       <Td>
         <FlexContainer>
           <FlexContainer margin="0 6px 0 0">
-            <SvgIcon {...Icon} fillColor={isBuy ? '#00FFDD' : '#ED145B'} />
+            <SvgIcon {...Icon} fillColor={isBuy ? Colors.PRIMARY : Colors.DANGER} />
           </FlexContainer>
           <FlexContainer flexDirection="column">
             <PrimaryTextSpan
               fontSize="14px"
               lineHeight="20px"
-              color={isBuy ? '#00FFDD' : '#ED145B'}
+              color={isBuy ? Colors.PRIMARY : Colors.DANGER}
               textTransform="uppercase"
               marginBottom="2px"
             >
@@ -78,10 +88,10 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
             </PrimaryTextSpan>
             <PrimaryTextSpan
               fontSize="11px"
-              color="rgba(255, 255, 255, 0.4)"
+              color={Colors.WHITE_LIGHT}
               whiteSpace="nowrap"
             >
-              {openPrice} &mdash; {closePrice}
+              {openPrice.toFixed(+precision)} &mdash; {closePrice.toFixed(+precision)}
             </PrimaryTextSpan>
           </FlexContainer>
         </FlexContainer>
@@ -90,7 +100,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
         <FlexContainer alignItems="center">
           <FlexContainer flexDirection="column" margin="0 10px 0 0">
             <PrimaryTextSpan
-              color="#fffccc"
+              color={Colors.ACCENT}
               fontSize="14px"
               lineHeight="20px"
               marginBottom="2px"
@@ -110,7 +120,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
           </PrimaryTextSpan>
           <FlexContainer flexDirection="column">
             <PrimaryTextSpan
-              color="#fffccc"
+              color={Colors.ACCENT}
               fontSize="14px"
               lineHeight="20px"
               marginBottom="2px"
@@ -126,7 +136,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
       <Td justifyContent="flex-end">
         <FlexContainer flexDirection="column" alignItems="flex-end">
           <PrimaryTextSpan
-            color="#fffccc"
+            color={Colors.ACCENT}
             fontSize="14px"
             lineHeight="20px"
             marginBottom="2px"
@@ -145,7 +155,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
             {() => (
               <>
                 <QuoteText
-                  color="#fffccc"
+                  color={Colors.ACCENT}
                   fontSize="14px"
                   lineHeight="20px"
                   marginBottom="2px"
@@ -157,7 +167,7 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
                 </QuoteText>
                 <PrimaryTextSpan
                   fontSize="11px"
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                 >
                   {profit >= 0 ? '+' : ''}
                   {calculateInPercent(investmentAmount, profit)}%
@@ -187,45 +197,45 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
             <FlexContainer flexDirection="column" width="100%">
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="12px"
                 >
                   {t('Price opened')}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                   {t('at')} {openPrice.toFixed(+precision)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="12px"
                 >
                   {t('Price closed')}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#fffccc" fontSize="12px">
-                  {closePrice}
+                <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
+                  {closePrice.toFixed(+precision)}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="12px"
                 >
                   {t('Opened')}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                   {moment(openDate).format('DD MMM, HH:mm:ss')}
                 </PrimaryTextSpan>
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="12px"
                 >
                   {t('Equity')}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                   {getNumberSign(+equity.toFixed(2))}
                   {currencySymbol}
                   {Math.abs(equity).toFixed(2)}
@@ -233,16 +243,16 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
               </FlexContainer>
               <FlexContainer justifyContent="space-between" margin="0 0 8px 0">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="12px"
                   marginRight="20px"
                 >
                   {t('Overnight fee')}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                   {getNumberSign(swaps)}
                   {currencySymbol}
-                  {Math.abs(swaps).toFixed(2)}
+                  {Math.abs(swaps + commission).toFixed(2)}
                 </PrimaryTextSpan>
               </FlexContainer>
               {reservedFundsForToppingUp !== 0 && (
@@ -251,12 +261,12 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
                   margin="0 0 8px 0"
                 >
                   <PrimaryTextSpan
-                    color="rgba(255, 255, 255, 0.4)"
+                    color={Colors.WHITE_LIGHT}
                     fontSize="12px"
                   >
                     {t('Insurance amount')}
                   </PrimaryTextSpan>
-                  <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                  <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                     {'$'}
                     {Math.abs(reservedFundsForToppingUp).toFixed(2)}
                   </PrimaryTextSpan>
@@ -265,12 +275,12 @@ const TradingHistoryExpandedItem: FC<Props> = (props) => {
 
               <FlexContainer justifyContent="space-between">
                 <PrimaryTextSpan
-                  color="rgba(255, 255, 255, 0.4)"
+                  color={Colors.WHITE_LIGHT}
                   fontSize="12px"
                 >
                   {t('Position ID')}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#fffccc" fontSize="12px">
+                <PrimaryTextSpan color={Colors.ACCENT} fontSize="12px">
                   {id}
                 </PrimaryTextSpan>
               </FlexContainer>

@@ -1,19 +1,15 @@
 import React, { useEffect, FC, useRef } from 'react';
 import { FlexContainer } from '../styles/FlexContainer';
 import styled from '@emotion/styled';
-import { PrimaryTextSpan, PrimaryTextParagraph } from '../styles/TextsElements';
+import { PrimaryTextSpan } from '../styles/TextsElements';
 import { ButtonWithoutStyles } from '../styles/ButtonWithoutStyles';
 import IconDroplistShevron from '../assets/svg/icon-droplist-arrow-down.svg';
 import SvgIcon from './SvgIcon';
-import IconCalendar from '../assets/svg/icon-calendar.svg';
-import IconRightArrow from '../assets/svg/icon-arrow-to-right.svg';
-import IconLeftArrow from '../assets/svg/icon-arrow-to-left.svg';
 import { useStores } from '../hooks/useStores';
 import 'react-dates/initialize';
 import { observer, Observer } from 'mobx-react-lite';
 import { ShowDatesDropdownEnum } from '../enums/ShowDatesDropdownEnum';
 import moment from 'moment';
-import { DayPickerRangeController } from 'react-dates';
 import { useTranslation } from 'react-i18next';
 import {
   LOCAL_HISTORY_DATERANGE,
@@ -21,8 +17,9 @@ import {
   LOCAL_HISTORY_POSITION,
   LOCAL_HISTORY_TIME,
 } from '../constants/global';
+import Colors from '../constants/Colors';
 
- interface Props {
+interface Props {
   datesChangeCallback: () => void;
 }
 
@@ -30,7 +27,7 @@ const DatePickerDropdownNoCustomDates: FC<Props> = observer(
   ({ datesChangeCallback }) => {
     const { dateRangeStore } = useStores();
     const wrapperRef = useRef<HTMLDivElement>(null);
-const {t} = useTranslation()
+    const { t } = useTranslation();
     const toggle = (flag: boolean) => () => {
       dateRangeStore.setOpenedDropdown(flag);
     };
@@ -62,7 +59,10 @@ const {t} = useTranslation()
         default:
           break;
       }
-      localStorage.setItem(LOCAL_HISTORY_TIME, `${moment(dateRangeStore.startDate)}`);
+      localStorage.setItem(
+        LOCAL_HISTORY_TIME,
+        `${moment(dateRangeStore.startDate)}`
+      );
       localStorage.setItem(LOCAL_HISTORY_DATERANGE, `${dateRange}`);
       localStorage.removeItem(LOCAL_HISTORY_PAGE);
       localStorage.removeItem(LOCAL_HISTORY_POSITION);
@@ -91,7 +91,9 @@ const {t} = useTranslation()
             <ButtonDropdown onClick={toggle(!dateRangeStore.openedDropdown)}>
               <PrimaryTextSpan
                 fontSize="10px"
-                color={dateRangeStore.openedDropdown ? '#00FFDD' : '#fffccc'}
+                color={
+                  dateRangeStore.openedDropdown ? Colors.PRIMARY : Colors.ACCENT
+                }
                 textTransform="uppercase"
                 marginRight="4px"
               >
@@ -111,7 +113,7 @@ const {t} = useTranslation()
               <SvgIcon
                 {...IconDroplistShevron}
                 fillColor={
-                  dateRangeStore.openedDropdown ? '#00FFDD' : '#fffccc'
+                  dateRangeStore.openedDropdown ? Colors.PRIMARY : Colors.ACCENT
                 }
                 transformProp={
                   dateRangeStore.openedDropdown ? 'rotate(0)' : 'rotate(180deg)'
@@ -129,90 +131,32 @@ const {t} = useTranslation()
               <DateRangeItemButton
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Today)}
               >
-                <PrimaryTextSpan fontSize="14px" color="#fffccc">
+                <PrimaryTextSpan fontSize="14px" color={Colors.ACCENT}>
                   {t('Today')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
               <DateRangeItemButton
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Week)}
               >
-                <PrimaryTextSpan fontSize="14px" color="#fffccc">
+                <PrimaryTextSpan fontSize="14px" color={Colors.ACCENT}>
                   {t('Week')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
               <DateRangeItemButton
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Month)}
               >
-                <PrimaryTextSpan fontSize="14px" color="#fffccc">
+                <PrimaryTextSpan fontSize="14px" color={Colors.ACCENT}>
                   {t('Month')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
               <DateRangeItemButton
                 onClick={handleSelectRange(ShowDatesDropdownEnum.Year)}
               >
-                <PrimaryTextSpan fontSize="14px" color="#fffccc">
+                <PrimaryTextSpan fontSize="14px" color={Colors.ACCENT}>
                   {t('Year')}
                 </PrimaryTextSpan>
               </DateRangeItemButton>
             </DefinedDaterangeWrapper>
-            {/* <FlexContainer padding="16px 0" position="relative">
-              <SelectDateButton
-                onClick={dataRangeStoreNoCustomDates.toggleDatepicker}
-              >
-                <PrimaryTextSpan>Select Date</PrimaryTextSpan>
-                <SvgIcon
-                  {...IconCalendar}
-                  fillColor="rgba(255, 255, 255, 0.6)"
-                />
-              </SelectDateButton>
-              {dataRangeStoreNoCustomDates.focusedInput && (
-                <FlexContainer position="absolute" top="100%" left="100%">
-                  <DayPickerRangeController
-                    keepOpenOnDateSelect={false}
-                    startDate={dataRangeStoreNoCustomDates.startDate}
-                    endDate={dataRangeStoreNoCustomDates.endDate}
-                    onOutsideClick={dataRangeStoreNoCustomDates.closeDatepicker}
-                    onDatesChange={({ startDate, endDate }) => {
-                      dataRangeStoreNoCustomDates.startDate =
-                        startDate || moment();
-                      dataRangeStoreNoCustomDates.endDate = endDate || moment();
-                      dataRangeStoreNoCustomDates.dropdownValueType =
-                        ShowDatesDropdownEnum.Custom;
-                      datesChangeCallback();
-                    }}
-                    focusedInput={dataRangeStoreNoCustomDates.focusedInput}
-                    onFocusChange={focusedInput => {
-                      dataRangeStoreNoCustomDates.focusedInput = focusedInput;
-                      if (focusedInput === null) {
-                        dataRangeStoreNoCustomDates.closeDropdown();
-                      }
-                    }}
-                    numberOfMonths={2}
-                    navNext={
-                      <ButtonRightArrow>
-                        <SvgIcon
-                          {...IconRightArrow}
-                          fillColor="rgba(255, 255, 255, 0.6)"
-                        ></SvgIcon>
-                      </ButtonRightArrow>
-                    }
-                    navPrev={
-                      <ButtonLeftArrow>
-                        <SvgIcon
-                          {...IconLeftArrow}
-                          fillColor="rgba(255, 255, 255, 0.6)"
-                        ></SvgIcon>
-                      </ButtonLeftArrow>
-                    }
-                    renderMonthElement={({ month }) => (
-                      <PrimaryTextParagraph>
-                        {month.format('MMMM YYYY')}
-                      </PrimaryTextParagraph>
-                    )}
-                  />
-                </FlexContainer>
-              )}
-            </FlexContainer> */}
           </DatePickerWrapper>
         )}
       </FlexContainer>
@@ -236,7 +180,6 @@ const DatePickerWrapper = styled(FlexContainer)`
 `;
 
 const DefinedDaterangeWrapper = styled(FlexContainer)`
-  /* border-bottom: 1px solid rgba(255, 255, 255, 0.16); */
   padding: 16px 0;
 `;
 
@@ -252,7 +195,7 @@ const DateRangeItemButton = styled(ButtonWithoutStyles)`
   }
 
   &:hover > span {
-    color: #00fff2;
+    color: ${Colors.PRIMARY};
   }
 `;
 
@@ -270,22 +213,5 @@ const ButtonRightArrow = styled(ButtonWithoutStyles)`
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.4);
-  }
-`;
-
-const ButtonLeftArrow = styled(ButtonRightArrow)`
-  right: auto;
-  left: 16px;
-`;
-
-const SelectDateButton = styled(ButtonWithoutStyles)`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  transition: color 0.2s ease;
-  will-change: color;
-
-  &:hover > span {
-    color: #00fff2;
   }
 `;

@@ -14,6 +14,7 @@ import {
 } from '../../constants/chartValues';
 import { LOCAL_CHART_TYPE } from '../../constants/global';
 import { useTranslation } from 'react-i18next';
+import Colors from '../../constants/Colors';
 
 interface Props {}
 
@@ -63,7 +64,7 @@ const ChartTypeDropdown: FC<Props> = (props) => {
             {instrumentsStore.activeInstrument && (
               <SettingsButton onClick={handleToggle}>
                 <SvgIcon
-                  fillColor={on ? '#00FFDD' : 'rgba(255, 255, 255, 0.5)'}
+                  fillColor={on ? Colors.PRIMARY : 'rgba(255, 255, 255, 0.5)'}
                   {...getChartIconByType(
                     instrumentsStore.activeInstrument.chartType
                   )}
@@ -88,13 +89,13 @@ const ChartTypeDropdown: FC<Props> = (props) => {
                   >
                     <FlexContainer margin="0 4px 0 0">
                       <SvgIcon
-                        fillColor="#fffccc"
+                        fillColor={Colors.ACCENT}
                         {...getChartIconByType(chartType)}
                       ></SvgIcon>
                     </FlexContainer>
                     <PrimaryTextSpan
                       fontSize="12px"
-                      color="#fffccc"
+                      color={Colors.ACCENT}
                       whiteSpace="nowrap"
                     >
                       {t(getChartLabelByType(chartType))}
@@ -144,7 +145,7 @@ const Triangle = styled.div`
 
 const SettingsButton = styled(ButtonWithoutStyles)`
   padding: 8px;
-  color: rgba(255, 255, 255, 0.6);
+  color: ${Colors.WHITE_DARK};
   font-size: 12px;
   line-height: 16px;
 `;
@@ -157,11 +158,11 @@ const ButtonSelectType = styled(ButtonWithoutStyles)`
 
   &:hover {
     span {
-      color: #00ffdd;
+      color: ${Colors.PRIMARY};
     }
 
     svg {
-      fill: #00ffdd;
+      fill: ${Colors.PRIMARY};
     }
   }
 `;
