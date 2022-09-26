@@ -135,6 +135,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         'header_symbol_search',
         'header_compare',
         // 'header_indicators',
+        'header_fullscreen_button',
         // 'use_localstorage_for_settings',
         'border_around_the_chart',
         // 'left_toolbar',

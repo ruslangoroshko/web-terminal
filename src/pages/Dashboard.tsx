@@ -30,7 +30,7 @@ const Dashboard: FC = observer(() => {
     phoneVerificationStore,
     tradingViewStore,
     educationStore,
-    depositFundsStore
+    depositFundsStore,
   } = useStores();
 
   const { t } = useTranslation();
@@ -59,7 +59,7 @@ const Dashboard: FC = observer(() => {
 
     return () => {
       depositFundsStore.closePopup();
-    }
+    };
   }, []);
 
   return (
@@ -92,15 +92,14 @@ const Dashboard: FC = observer(() => {
       <Observer>
         {() => (
           <>
-            {
-              mainAppStore.canCheckEducation &&
+            {mainAppStore.canCheckEducation &&
               !mainAppStore.isPromoAccount &&
               educationStore.educationHint !== null &&
               !mainAppStore.isDemoRealPopup &&
               !phoneVerificationStore.shouldValidatePhone &&
-              !depositFundsStore.isActivePopup &&
-              <HintsWrapper hintType={educationStore.educationHint} />
-            }
+              !depositFundsStore.isActivePopup && (
+                <HintsWrapper hintType={educationStore.educationHint} />
+              )}
           </>
         )}
       </Observer>
@@ -108,13 +107,10 @@ const Dashboard: FC = observer(() => {
       <Observer>
         {() => (
           <>
-            {
-              mainAppStore.isDemoRealPopup &&
+            {mainAppStore.isDemoRealPopup &&
               !mainAppStore.isOnboarding &&
               !mainAppStore.isPromoAccount &&
-              !mainAppStore.isLoading &&
-              <DemoRealPopup></DemoRealPopup>
-            }
+              !mainAppStore.isLoading && <DemoRealPopup></DemoRealPopup>}
           </>
         )}
       </Observer>
@@ -139,8 +135,7 @@ const Dashboard: FC = observer(() => {
         </Observer>
       </FlexContainer>
       <FlexContainer flexDirection="column">
-        
-      <FavoriteInstrumetsBar />
+        <FavoriteInstrumetsBar />
 
         <Observer>
           {() => (
@@ -195,8 +190,11 @@ const Dashboard: FC = observer(() => {
                       />
                     </ChartWrapper>
 
-                    <ChartInstruments justifyContent="space-between">
-                      <ChartSettingsButtons></ChartSettingsButtons>
+                    <ChartInstruments
+                      justifyContent="space-between"
+                      padding="0 0 0 52px"
+                    >
+                      {/* <ChartSettingsButtons></ChartSettingsButtons> */}
                       <ChartIntervalTimeScale></ChartIntervalTimeScale>
                       <ChartTimeFomat></ChartTimeFomat>
                     </ChartInstruments>
@@ -220,8 +218,6 @@ const Dashboard: FC = observer(() => {
 });
 
 export default Dashboard;
-
-
 
 const ChartWrapper = styled(FlexContainer)`
   grid-row: 1 / span 1;
