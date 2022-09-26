@@ -8,9 +8,9 @@ interface PrimaryButtonProps {
 }
 
 export const PrimaryButton = styled(ButtonWithoutStyles)<PrimaryButtonProps>`
-  padding: ${props => props.padding || '4px 8px'};
-  width: ${props => props.width};
-  background-color: ${props => props.backgroundColor || '#00ffdd'};
+  padding: ${(props) => props.padding || '4px 8px'};
+  width: ${(props) => props.width};
+  background-color: ${(props) => props.backgroundColor || '#00ffdd'};
   border-radius: 4px;
   transition: background-color 0.2s ease;
 
@@ -52,5 +52,30 @@ export const SecondaryButton = styled(ButtonWithoutStyles)`
     & span {
       color: rgba(255, 255, 255, 0.4);
     }
+  }
+`;
+
+export const Button = styled(SecondaryButton)<{
+  hasInner?: boolean;
+}>`
+  height: 40px;
+  background-color: ${(props) =>
+    props.hasInner ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.12)'};
+  width: 100%;
+  border: 1px solid
+    ${(props) =>
+      props.hasInner ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0)'};
+
+  display: flex;
+  justify-content: ${(props) => (props.hasInner ? 'space-between' : 'center')};
+  align-items: center;
+
+  &:active,
+  &:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.24) !important;
   }
 `;

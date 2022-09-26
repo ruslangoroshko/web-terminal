@@ -13,6 +13,7 @@ export interface FlexContainerProps {
   flexWrap?: 'wrap' | 'nowrap';
   width?: string;
   height?: string;
+  gap?: string;
   minHeight?: string;
   minWidth?: string;
   maxHeight?: string;
@@ -74,5 +75,6 @@ export const FlexContainer = styled.div<FlexContainerProps>`
   box-shadow: ${(props) => props.boxShadow};
   visibility: ${(props) => props.visibilityProp};
   display: ${(props) => props.display || 'flex'};
+  gap: ${(props) => props.gap};
   cursor: ${(props) => props.cursor};
 `;

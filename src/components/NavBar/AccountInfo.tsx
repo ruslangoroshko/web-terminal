@@ -245,7 +245,7 @@ const AccountInfo: FC<Props> = observer((props) => {
                     fontWeight={700}
                     fontSize="14px"
                     color={
-                      isActiveAccount ? Colors.ACCENT : Colors.DANGER_LIGHT
+                      isActiveAccount ? Colors.ACCENT : Colors.WHITE_LIGHT
                     }
                   >
                     .

@@ -30,10 +30,7 @@ const NavBar = observer(() => {
     if (mainAppStore.canCheckEducation && !mainAppStore.isPromoAccount) {
       checkWelcomeBonus();
     }
-  }, [
-    mainAppStore.canCheckEducation,
-    mainAppStore.isPromoAccount,
-  ]);
+  }, [mainAppStore.canCheckEducation, mainAppStore.isPromoAccount]);
 
   return (
     <FlexContainer
@@ -55,20 +52,15 @@ const NavBar = observer(() => {
           </Link>
         </FlexContainer>
         {!mainAppStore.isPromoAccount && (
-          <Observer>
-            { () => <AccountType /> }
-          </Observer>
+          <Observer>{() => <AccountType />}</Observer>
         )}
       </FlexContainer>
       <FlexContainer alignItems="center">
-        {
-          bonusStore.showBonus() &&
+        {bonusStore.showBonus() &&
           bonusStore.bonusData !== null &&
-          !mainAppStore.isPromoAccount &&
-          <BonusDropdown />
-        }
+          !mainAppStore.isPromoAccount && <BonusDropdown />}
         <FlexContainer alignItems="center" margin="0 20px 0 0">
-          <AccountSwitcherDropdown></AccountSwitcherDropdown>
+          <AccountSwitcherDropdown />
         </FlexContainer>
 
         {!mainAppStore.isPromoAccount && (
