@@ -22,7 +22,7 @@ import API_LIST from './apiList';
 import {
   AccountModelDTO,
   MTAccountDTO,
-  MTCreateAccountDTO
+  MTCreateAccountDTO,
 } from '../types/AccountsTypes';
 import {
   UserAuthenticate,
@@ -33,10 +33,7 @@ import {
   RecoveryPasswordParams,
   IWelcomeBonusDTO,
 } from '../types/UserInfo';
-import {
-  CandleDTO,
-  HistoryCandlesDTOType,
-} from '../types/HistoryTypes';
+import { CandleDTO, HistoryCandlesDTOType } from '../types/HistoryTypes';
 import {
   PositionsHistoryReportDTO,
   BalanceHistoryDTO,
@@ -81,7 +78,10 @@ import { BrandEnum } from '../constants/brandingLinksTranslate';
 import { OnBoardingInfo } from '../types/OnBoardingTypes';
 import { DebugResponse, DebugTypes } from '../types/DebugTypes';
 import requestOptions from '../constants/requestOptions';
-import { IEducationCoursesDTO, IEducationQuestionsDTO } from '../types/EducationTypes';
+import {
+  IEducationCoursesDTO,
+  IEducationQuestionsDTO,
+} from '../types/EducationTypes';
 
 class API {
   private convertParamsToFormData = (params: { [key: string]: any }) => {
@@ -309,9 +309,7 @@ class API {
     return response.data;
   };
 
-  createPayopInvoice = async (
-    params: CreatePayopInvoiceParams
-  ) => {
+  createPayopInvoice = async (params: CreatePayopInvoiceParams) => {
     const response = await axios.post<CreatePayopInvoiceDTO>(
       `${API_DEPOSIT_STRING}${API_LIST.DEPOSIT.CREATE_INVOICE_PAYOP}`,
       params,
@@ -331,13 +329,13 @@ class API {
 
   createMTAccounts = async (apiUrl: string) => {
     const response = await axios.post<MTCreateAccountDTO>(
-      `${API_STRING || apiUrl}${API_LIST.MT5_ACCOUNTS.GET}`, {},
+      `${API_STRING || apiUrl}${API_LIST.MT5_ACCOUNTS.GET}`,
+      {},
       this.clientRequestOptions
     );
     return response.data;
   };
 
-  
   // -------------------
 
   //
@@ -375,14 +373,15 @@ class API {
   };
 
   getPriceHistory = async (params: HistoryCandlesDTOType) => {
-    const response = await axios.get<{ candles: CandleDTO[] }>(
+    // const response = await axios.get<{ candles: CandleDTO[] }>(
+    const response = await axios.get<CandleDTO[]>(
       `${API_STRING}${API_LIST.PRICE_HISTORY.CANDLES}`,
       {
         params,
         ...this.backgroundRequestOptions,
       }
     );
-    const bars = response.data.candles.map((item) => ({
+    const bars = response.data.map((item) => ({
       time: item.d,
       low: item.l,
       high: item.h,
@@ -641,16 +640,24 @@ class API {
   };
 
   getSubscribe = async (miscUrl: string) => {
-    const needToAdd = ((API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL) ? '' : '/misc';
+    const needToAdd =
+      (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
     const response = await axios.get(
-      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.ONESIGNAL.SUBSCRIBE}`,
+      `${API_MISC_STRING || miscUrl}${needToAdd}${
+        API_LIST.ONESIGNAL.SUBSCRIBE
+      }`,
       this.backgroundRequestOptions
     );
     return response.data;
   };
 
-  getOnBoardingInfoByStep = async (stepNumber: number, deviceType: number, miscUrl: string) => {
-    const needToAdd = ((API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL) ? '' : '/misc';
+  getOnBoardingInfoByStep = async (
+    stepNumber: number,
+    deviceType: number,
+    miscUrl: string
+  ) => {
+    const needToAdd =
+      (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
     const response = await axios.get<OnBoardingInfo>(
       `${API_MISC_STRING || miscUrl}${needToAdd}${
         API_LIST.ONBOARDING.STEPS
@@ -684,25 +691,32 @@ class API {
     const needToAdd =
       (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
     const response = await axios.get<IEducationQuestionsDTO>(
-      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.EDUCATION.LIST}/${id}`,
+      `${API_MISC_STRING || miscUrl}${needToAdd}${
+        API_LIST.EDUCATION.LIST
+      }/${id}`,
       this.backgroundRequestOptions
     );
     return response.data;
   };
 
-  saveProgressEducation = async (miscUrl: string, id: string, index: number) => {
+  saveProgressEducation = async (
+    miscUrl: string,
+    id: string,
+    index: number
+  ) => {
     const needToAdd =
       (API_MISC_STRING || miscUrl).includes('/misc') || IS_LOCAL ? '' : '/misc';
     const response = await axios.post<IEducationCoursesDTO>(
-      `${API_MISC_STRING || miscUrl}${needToAdd}${API_LIST.EDUCATION.LIST}/${id}/saveProgress`,
+      `${API_MISC_STRING || miscUrl}${needToAdd}${
+        API_LIST.EDUCATION.LIST
+      }/${id}/saveProgress`,
       {
-        lastQuestionId: index
+        lastQuestionId: index,
       },
       this.backgroundRequestOptions
     );
     return response.data;
   };
-
 
   postDebug = async (params: DebugTypes, apiUrl: string) => {
     const response = await axios.post<DebugResponse>(
