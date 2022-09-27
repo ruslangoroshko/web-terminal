@@ -81,7 +81,7 @@ const PositionCalculator = () => {
     let grow = profitFiat > 0 ? 1 : -1;
     profitPercent = ((Math.abs(profitFiat) * 100) / invest) * grow;
 
-    liquidationPrice = +entryPrice - (+entryPrice / 1000)
+    liquidationPrice = ( ()/(invest * leverage * 0.9)) / +entryPrice
     setFieldValue('profitFiat', profitFiat.toFixed(2));
     setFieldValue('profitPercent', profitPercent.toFixed(2));
     setFieldValue('liquidationPrice', liquidationPrice);
