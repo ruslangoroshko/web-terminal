@@ -33,7 +33,7 @@ import {
   RecoveryPasswordParams,
   IWelcomeBonusDTO,
 } from '../types/UserInfo';
-import { CandleDTO, HistoryCandlesDTOType } from '../types/HistoryTypes';
+import { CandleDTO, HistoryCandlesDTOType, HistoryCandlesType } from '../types/HistoryTypes';
 import {
   PositionsHistoryReportDTO,
   BalanceHistoryDTO,
@@ -372,7 +372,7 @@ class API {
     return response.data;
   };
 
-  getPriceHistory = async (params: HistoryCandlesDTOType) => {
+  getPriceHistory = async (params: HistoryCandlesType) => {
     // const response = await axios.get<{ candles: CandleDTO[] }>(
     const response = await axios.get<CandleDTO[]>(
       `${API_STRING}${API_LIST.PRICE_HISTORY.CANDLES}`,
