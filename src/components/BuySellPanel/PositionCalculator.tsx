@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import Colors from '../../constants/Colors';
 import { Button, PrimaryButton } from '../../styles/Buttons';
 import { FlexContainer } from '../../styles/FlexContainer';
@@ -21,11 +21,11 @@ type CalculatorData = {
   operation: string;
   invest: number;
   leverage: number;
-  entryPrice?: string;
-  exitPrice?: string;
-  profitFiat?: string;
-  profitPercent?: string;
-  liquidationPrice?: string;
+  entryPrice: number;
+  exitPrice: number | null;
+  profitFiat?: number;
+  profitPercent?: number;
+  liquidationPrice?: number;
 };
 
 const PositionCalculator = () => {
@@ -38,19 +38,67 @@ const PositionCalculator = () => {
       operation: yup.string().oneOf(['buy', 'sell']).required(),
       invest: yup.number().required(),
       leverage: yup.number().required(),
+      entryPrice: yup.number().required(),
+      exitPrice: yup.number().nullable().required(),
+      profitFiat: yup.number(),
+      profitPercent: yup.number(),
+      liquidationPrice: yup.number(),
     });
 
-  const initialValues: CalculatorData = {
-    operation: 'buy',
-    invest: 1000,
-    leverage: 50,
-  };
+  const initialValues = useCallback((): CalculatorData => {
+    return {
+      operation: 'buy',
+      invest: 1000,
+      leverage: 50,
+      entryPrice:
+        instrumentsStore.calcActiveInstrument?.ask ||
+        instrumentsStore.activeInstrument?.instrumentItem.ask ||
+        0,
+      exitPrice: null,
+    };
+  }, [
+    instrumentsStore.calcActiveInstrument,
+    instrumentsStore.activeInstrument,
+  ]);
 
   const setMultiplier = (lev: number) => {
     setFieldValue('leverage', lev);
   };
 
-  const handleCalculate = () => {};
+  const handleCalculate = () => {
+    const { invest, leverage, operation, entryPrice, exitPrice } = values;
+    if (exitPrice === null) {
+      return;
+    }
+    console.log(values);
+
+    let profitFiat, profitPercent, liquidationPrice, deltaPrice, side;
+
+    side = operation === 'buy' ? 1 : -1;
+
+    profitFiat = (+exitPrice / entryPrice - 1) * invest * leverage * side;
+
+    let grow = profitFiat > 0 ? 1 : -1;
+    profitPercent = ((Math.abs(profitFiat) * 100) / invest) * grow;
+
+    liquidationPrice = +entryPrice - (+entryPrice / 1000)
+    setFieldValue('profitFiat', profitFiat.toFixed(2));
+    setFieldValue('profitPercent', profitPercent.toFixed(2));
+    setFieldValue('liquidationPrice', liquidationPrice);
+
+    console.log(deltaPrice);
+
+    profitFiat = invest * leverage;
+  };
+
+
+/*
+soPrice = openPrice - (openPrice / 1000);
+
+
+*/ 
+
+
 
   const handleChangeRadio = (input: any) => {
     console.log(input);
@@ -65,18 +113,20 @@ const PositionCalculator = () => {
     handleChange,
     getFieldProps,
     errors,
+    isValid,
     touched,
     isSubmitting,
   } = useFormik({
-    initialValues,
+    initialValues: initialValues(),
     onSubmit: handleCalculate,
     validationSchema: validationSchema(),
-    validateOnBlur: false,
+    validateOnBlur: true,
     enableReinitialize: true,
-    validateOnChange: false,
+    validateOnChange: true,
+    validateOnMount: true,
   });
 
-  const investOnBeforeInputHandler = (e: any) => {
+  const onBeforeInputHandler = (e: any, precision = 2) => {
     const currTargetValue = e.currentTarget.value;
     if (!e.data.match(/^[0-9.,]*$/g)) {
       e.preventDefault();
@@ -96,7 +146,7 @@ const PositionCalculator = () => {
       }
     }
     // see another regex
-    const regex = `^[0-9]{1,7}([,.][0-9]{1,2})?$`;
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,${precision}})?$`;
     const splittedValue =
       currTargetValue.substring(0, e.currentTarget.selectionStart) +
       e.data +
@@ -127,6 +177,26 @@ const PositionCalculator = () => {
     setFieldValue('leverage', instrument.multiplier[0]);
     instrumentsStore.setCalcActiveInstrument(instrument);
   };
+
+  const handlerClickSubmit = async () => {
+    const curErrors = await validateForm();
+    const curErrorsKeys = Object.keys(curErrors);
+    if (curErrorsKeys.length) {
+      const el = document.getElementById(curErrorsKeys[0]);
+      if (el) el.focus();
+    }
+  };
+
+  const instrument = useMemo(() => {
+    return (
+      instrumentsStore.calcActiveInstrument ||
+      instrumentsStore.activeInstrument?.instrumentItem ||
+      null
+    );
+  }, [
+    instrumentsStore.calcActiveInstrument,
+    instrumentsStore.activeInstrument,
+  ]);
 
   return (
     <FlexContainer marginBottom="12px" position="relative">
@@ -202,7 +272,7 @@ const PositionCalculator = () => {
                 )}
               </Observer>
             </FlexContainer>
-            <form>
+            <form noValidate onSubmit={handleSubmit}>
               <FlexContainer
                 width="100%"
                 borderRadius="8px"
@@ -239,120 +309,140 @@ const PositionCalculator = () => {
                   </TabLabel>
                 </TabLabelWrap>
               </FlexContainer>
+
+              <InputWrapper>
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  color="rgba(255, 255, 255, 0.3)"
+                  textTransform="uppercase"
+                >
+                  {t('Invest')}
+                </PrimaryTextSpan>
+                <Input
+                  placeholder="Invest"
+                  name="invest"
+                  id="invest"
+                  onBeforeInput={onBeforeInputHandler}
+                  value={values.invest}
+                  onChange={handleChange}
+                />
+              </InputWrapper>
+
+              <InputWrapper>
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  color="rgba(255, 255, 255, 0.3)"
+                  textTransform="uppercase"
+                >
+                  {t('Leverage')}
+                </PrimaryTextSpan>
+
+                <div className="inputWrap">
+                  <Observer>
+                    {() => (
+                      <MultiplierDropdown
+                        onToggle={() => {}}
+                        multipliers={
+                          instrumentsStore.calcActiveInstrument?.multiplier ||
+                          instrumentsStore.activeInstrument?.instrumentItem
+                            .multiplier || [50]
+                        }
+                        selectedMultiplier={values.leverage}
+                        setMultiplier={setMultiplier}
+                      ></MultiplierDropdown>
+                    )}
+                  </Observer>
+                </div>
+              </InputWrapper>
+
+              <InputWrapper>
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  color="rgba(255, 255, 255, 0.3)"
+                  textTransform="uppercase"
+                >
+                  {t('Entry price')}
+                </PrimaryTextSpan>
+                <Input
+                  name="entryPrice"
+                  value={values.entryPrice}
+                  onChange={handleChange}
+                  onBeforeInput={(e: any) =>
+                    onBeforeInputHandler(e, instrument?.digits)
+                  }
+                />
+              </InputWrapper>
+
+              <InputWrapper>
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  color="rgba(255, 255, 255, 0.3)"
+                  textTransform="uppercase"
+                >
+                  {t('Exit price')}
+                </PrimaryTextSpan>
+                <Input
+                  name="exitPrice"
+                  value={values.exitPrice === null ? '' : values.exitPrice}
+                  onChange={handleChange}
+                  onBeforeInput={(e: any) =>
+                    onBeforeInputHandler(e, instrument?.digits)
+                  }
+                />
+              </InputWrapper>
+
+              <InputWrapper>
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  color="rgba(255, 255, 255, 0.3)"
+                  textTransform="uppercase"
+                >
+                  {t('Profit/Loss, USD')}
+                </PrimaryTextSpan>
+                <Input value={values.profitFiat} />
+              </InputWrapper>
+
+              <InputWrapper>
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  color="rgba(255, 255, 255, 0.3)"
+                  textTransform="uppercase"
+                >
+                  {t('Profit/Loss, %')}
+                </PrimaryTextSpan>
+
+                <Input value={values.profitPercent} />
+              </InputWrapper>
+
+              <InputWrapper>
+                <PrimaryTextSpan
+                  fontSize="11px"
+                  lineHeight="12px"
+                  color="rgba(255, 255, 255, 0.3)"
+                  textTransform="uppercase"
+                >
+                  {t('Liquidation price')}
+                </PrimaryTextSpan>
+
+                <Input readOnly value={values.liquidationPrice} />
+              </InputWrapper>
+
+              <FlexContainer width="100%" flexDirection="column">
+                <ButtonAction
+                  disabled={!isValid}
+                  onClick={handlerClickSubmit}
+                  className={values.operation === 'buy' ? 'buy' : ''}
+                >
+                  Calculate
+                </ButtonAction>
+              </FlexContainer>
             </form>
-
-            <InputWrapper>
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                color="rgba(255, 255, 255, 0.3)"
-                textTransform="uppercase"
-              >
-                {t('Invest')}
-              </PrimaryTextSpan>
-              <Input
-                placeholder="Invest"
-                name="invest"
-                id="invest"
-                onBeforeInput={investOnBeforeInputHandler}
-                value={values.invest}
-                onChange={handleChange}
-              />
-            </InputWrapper>
-
-            <InputWrapper>
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                color="rgba(255, 255, 255, 0.3)"
-                textTransform="uppercase"
-              >
-                {t('Leverage')}
-              </PrimaryTextSpan>
-
-              <div className="inputWrap">
-                <Observer>
-                  {() => (
-                    <MultiplierDropdown
-                      onToggle={() => {}}
-                      multipliers={
-                        instrumentsStore.calcActiveInstrument?.multiplier ||
-                        instrumentsStore.activeInstrument?.instrumentItem
-                          .multiplier || [50]
-                      }
-                      selectedMultiplier={values.leverage}
-                      setMultiplier={setMultiplier}
-                    ></MultiplierDropdown>
-                  )}
-                </Observer>
-              </div>
-            </InputWrapper>
-
-            <InputWrapper>
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                color="rgba(255, 255, 255, 0.3)"
-                textTransform="uppercase"
-              >
-                {t('Entry price')}
-              </PrimaryTextSpan>
-              <Input  />
-            </InputWrapper>
-
-            <InputWrapper>
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                color="rgba(255, 255, 255, 0.3)"
-                textTransform="uppercase"
-              >
-                {t('Exit price')}
-              </PrimaryTextSpan>
-              <Input />
-            </InputWrapper>
-
-            <InputWrapper>
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                color="rgba(255, 255, 255, 0.3)"
-                textTransform="uppercase"
-              >
-                {t('Profit/Loss, USD')}
-              </PrimaryTextSpan>
-              <Input  />
-            </InputWrapper>
-
-            <InputWrapper>
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                color="rgba(255, 255, 255, 0.3)"
-                textTransform="uppercase"
-              >
-                {t('Profit/Loss, %')}
-              </PrimaryTextSpan>
-
-              <Input />
-            </InputWrapper>
-
-            <InputWrapper>
-              <PrimaryTextSpan
-                fontSize="11px"
-                lineHeight="12px"
-                color="rgba(255, 255, 255, 0.3)"
-                textTransform="uppercase"
-              >
-                {t('Liquidation price')}
-              </PrimaryTextSpan>
-
-              <Input readOnly />
-            </InputWrapper>
-
-            <ButtonAction className={values.operation === 'buy' ? 'buy' : ''}>
-              Calculate
-            </ButtonAction>
           </Wrapper>
         </ModalWrapper>
       )}
@@ -392,6 +482,7 @@ const ButtonAction = styled(ButtonWithoutStyles)`
     }
     &:disabled {
       background-color: rgba(255, 255, 255, 0.04);
+      color: ${Colors.WHITE};
     }
   }
 `;
