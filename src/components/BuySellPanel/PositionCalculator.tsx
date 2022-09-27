@@ -81,7 +81,9 @@ const PositionCalculator = () => {
     let grow = profitFiat > 0 ? 1 : -1;
     profitPercent = ((Math.abs(profitFiat) * 100) / invest) * grow;
 
-    liquidationPrice = ( ()/(invest * leverage * 0.9)) / +entryPrice
+    liquidationPrice =
+      (((invest * leverage * 0.9 * -1) / invest) * leverage * side) /
+      +entryPrice;
     setFieldValue('profitFiat', profitFiat.toFixed(2));
     setFieldValue('profitPercent', profitPercent.toFixed(2));
     setFieldValue('liquidationPrice', liquidationPrice);
@@ -91,14 +93,11 @@ const PositionCalculator = () => {
     profitFiat = invest * leverage;
   };
 
-
-/*
+  /*
 soPrice = openPrice - (openPrice / 1000);
 
 
-*/ 
-
-
+*/
 
   const handleChangeRadio = (input: any) => {
     console.log(input);
