@@ -11,11 +11,52 @@ import InformationPopup from '../InformationPopup';
 import { useTranslation } from 'react-i18next';
 import AssetSelectorInput from '../AssetSelectorInput';
 import { useStores } from '../../hooks/useStores';
+import { InstrumentModelWSDTO } from '../../types/InstrumentsTypes';
+import { Observer } from 'mobx-react-lite';
+import { FormikHelpers, useFormik } from 'formik';
+import * as yup from 'yup';
 
 const PositionCalculator = () => {
-  const {} = useStores();
+  const { instrumentsStore } = useStores();
   const [on, setToggle] = React.useState(false);
   const { t } = useTranslation();
+
+  const validationSchema = () =>
+    yup.object().shape<any>({
+      operation: yup.string().oneOf(['buy', 'sell']).required(),
+      invest: yup.number().required(),
+    });
+
+  const initialValues: any = {
+    operation: 'buy',
+    invest: 1000,
+  };
+
+  const handleCalculate = () => {};
+
+  const handleChangeRadio = (input: any) => {
+    console.dir(input);
+  };
+
+  const {
+    values,
+    setFieldError,
+    setFieldValue,
+    validateForm,
+    handleSubmit,
+    handleChange,
+    getFieldProps,
+    errors,
+    touched,
+    isSubmitting,
+  } = useFormik({
+    initialValues,
+    onSubmit: handleCalculate,
+    validationSchema: validationSchema(),
+    validateOnBlur: false,
+    enableReinitialize: true,
+    validateOnChange: false,
+  });
 
   const handleToggleBtn = () => {
     setToggle(!on);
@@ -23,6 +64,10 @@ const PositionCalculator = () => {
 
   const handleClosePopup = () => {
     setToggle(false);
+  };
+
+  const onSelectIntrument = (instrument: InstrumentModelWSDTO) => {
+    instrumentsStore.setCalcActiveInstrument(instrument);
   };
 
   return (
@@ -86,7 +131,18 @@ const PositionCalculator = () => {
                 {t('Select instrument')}
               </PrimaryTextSpan>
 
-              <AssetSelectorInput />
+              <Observer>
+                {() => (
+                  <AssetSelectorInput
+                    onSelectInstrument={onSelectIntrument}
+                    activeInstrument={
+                      instrumentsStore.calcActiveInstrument ||
+                      instrumentsStore.activeInstrument?.instrumentItem ||
+                      null
+                    }
+                  />
+                )}
+              </Observer>
             </FlexContainer>
 
             <FlexContainer
@@ -98,11 +154,11 @@ const PositionCalculator = () => {
               <TabLabelWrap>
                 <TabInput
                   type="radio"
-                  id="tab-calc-buy"
-                  name="tab-calc"
-                  value="buy"
+                  id="buy"
+                  name="operation"
                   operation="buy"
-                  defaultChecked={true}
+                  onChange={handleChangeRadio}
+                  value="buy"
                 />
                 <TabLabel operation="buy">Buy/Long</TabLabel>
               </TabLabelWrap>
@@ -110,10 +166,11 @@ const PositionCalculator = () => {
               <TabLabelWrap>
                 <TabInput
                   type="radio"
-                  id="tab-calc-sell"
-                  name="tab-calc"
-                  value="sell"
+                  id="sell"
+                  name="operation"
                   operation="sell"
+                  onChange={handleChangeRadio}
+                  value="sell"
                 />
                 <TabLabel operation="sell">Sell/Short</TabLabel>
               </TabLabelWrap>
@@ -125,7 +182,6 @@ const PositionCalculator = () => {
                 lineHeight="12px"
                 color="rgba(255, 255, 255, 0.3)"
                 textTransform="uppercase"
-                marginBottom="4px"
               >
                 {t('Invest')}
               </PrimaryTextSpan>
@@ -190,7 +246,6 @@ const PositionCalculator = () => {
                 {t('Profit/Loss, %')}
               </PrimaryTextSpan>
 
-              {/* <PrimaryTextSpan fontSize="16px">$1000</PrimaryTextSpan> */}
               <Input placeholder="Profit/Loss, %" />
             </InputWrapper>
 
@@ -291,16 +346,12 @@ const Input = styled.input`
 `;
 
 const InputWrapper = styled(FlexContainer)`
-  /* flex-direction: column; */
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  gap: 8px;
   input {
-    width 50%;
-  }
-
-  &.half {
-    width: 50%;
+    width: 140px;
   }
 `;
 

@@ -49,7 +49,7 @@ export class InstrumentsStore implements ContextProps {
   hiddenChart: boolean = false;
   pricesChange: IPriceChange = {};
 
-  calcActiveInstrument: InstrumentGroupWSDTO | null = null;
+  calcActiveInstrument: InstrumentModelWSDTO | null = null;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {

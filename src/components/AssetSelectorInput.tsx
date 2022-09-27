@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import React, {
   ChangeEvent,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -19,24 +20,34 @@ import ImageContainer from './ImageContainer';
 import { InstrumentModelWSDTO } from '../types/InstrumentsTypes';
 
 type Props = {
-  selectInstrument?: (instrument: InstrumentModelWSDTO) => void;
+  onSelectInstrument: (instrument: InstrumentModelWSDTO) => void;
+  activeInstrument: InstrumentModelWSDTO | null;
 };
-const AssetSelectorInput = observer(({ selectInstrument }: Props) => {
-  const { instrumentsStore } = useStores();
+
+const AssetSelectorInput = ({
+  onSelectInstrument,
+  activeInstrument,
+}: Props) => {
+  console.log(JSON.parse(JSON.stringify(activeInstrument)));
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const { instrumentsStore } = useStores();
 
   const [showList, setShowList] = useState(false);
-
   const [isFocus, setIsFocus] = useState(false);
 
   const [searchValue, setSearchValue] = useState('');
-  const activeInstrumentId = instrumentsStore.activeInstrumentId;
+
   const onInputFocus = () => {
+    if (activeInstrument) {
+      setSearchValue(`${activeInstrument.base}/${activeInstrument.quote}`);
+    }
     setIsFocus(true);
     setShowList(true);
   };
+
   const onInputBlur = () => {
-    setShowList(false);
+    setSearchValue('');
+    setIsFocus(false);
   };
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
@@ -57,25 +68,19 @@ const AssetSelectorInput = observer(({ selectInstrument }: Props) => {
   };
 
   const handleSelectInstrument = (instrument: InstrumentModelWSDTO) => () => {
-    console.log(instrument);
-
-    setSearchValue('');
+    onSelectInstrument(instrument);
     setShowList(false);
   };
 
-  const handleClickOutside = (e: any) => {
-    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-      setShowList(false);
-    }
-  };
-
-  const instrument = useMemo(() => {
-    return instrumentsStore.instruments.find(
-      (instr) => instr.instrumentItem.id === activeInstrumentId
-    )?.instrumentItem;
-  }, [
-    instrumentsStore.activeInstrument
-  ]);
+  const handleClickOutside = useCallback(
+    (e: any) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setSearchValue('');
+        setShowList(false);
+      }
+    },
+    [activeInstrument]
+  );
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -91,85 +96,104 @@ const AssetSelectorInput = observer(({ selectInstrument }: Props) => {
         .map((item) => item.instrumentItem)
     );
   }, []);
+  console.log(isFocus);
 
   return (
-    <FlexContainer position="relative" ref={wrapperRef}>
-      <SearachInputWrap width="100%" position="relative">
-        <FlexContainer
-          width="22px"
-          height="22px"
-          position="absolute"
-          left="6px"
-          top="6px"
-        >
-          <ImageContainer instrumentId={activeInstrumentId} />
-        </FlexContainer>
-        <Input
-          defaultValue={`${instrument?.base}/${instrument?.quote}`}
-          // value={""}
-          onFocus={onInputFocus}
-          onChange={handleChangeSearch}
-        />
-
-        <SvgIcon
-          {...IconShevron}
-          fillColor={Colors.WHITE_DARK}
-          width={6}
-          height={4}
-        />
-      </SearachInputWrap>
-
-      {showList && (
-        <InstrumentsWrapper
-          position="absolute"
-          flexDirection="column"
-          left="0"
-          top="calc(100% + 8px)"
-          right="0"
-          zIndex="2"
-          maxHeight="300px"
-        >
-          {instrumentsStore.filteredInstrumentsSearch.map((instr) => (
-            <SelectInstrumentBtn
-              key={instr.id}
-              onClick={handleSelectInstrument(instr)}
+    <>
+      {activeInstrument ? (
+        <FlexContainer position="relative" ref={wrapperRef}>
+          <SearachInputWrap width="100%" position="relative">
+            <FlexContainer
+              width="22px"
+              height="22px"
+              position="absolute"
+              left="6px"
+              top="6px"
             >
-              <FlexContainer width="32px" height="32px" margin="0 8px 0 0">
-                <ImageContainer instrumentId={instr.id} />
-              </FlexContainer>
-              <FlexContainer
-                flexDirection="column"
-                width="110px"
-                marginRight="4px"
-                alignItems="flex-start"
-              >
-                <PrimaryTextSpan
-                  fontSize="12px"
-                  color={Colors.ACCENT}
-                  marginBottom="4px"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                  whiteSpace="nowrap"
-                >
-                  {instr.name}
-                </PrimaryTextSpan>
-                <PrimaryTextSpan
-                  fontSize="10px"
-                  color={Colors.WHITE_LIGHT}
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                  whiteSpace="nowrap"
-                >
-                  {instr.base}/{instr.quote}
-                </PrimaryTextSpan>
-              </FlexContainer>
-            </SelectInstrumentBtn>
-          ))}
-        </InstrumentsWrapper>
-      )}
-    </FlexContainer>
+              <ImageContainer instrumentId={activeInstrument.id} />
+            </FlexContainer>
+            <Input
+              value={
+                isFocus
+                  ? searchValue
+                  : `${activeInstrument?.base}/${activeInstrument?.quote}`
+              }
+              onFocus={onInputFocus}
+              onBlur={onInputBlur}
+              onChange={handleChangeSearch}
+            />
+
+            <SvgIcon
+              {...IconShevron}
+              fillColor={Colors.WHITE_DARK}
+              width={6}
+              height={4}
+            />
+          </SearachInputWrap>
+
+          {showList && (
+            <InstrumentsWrapper
+              position="absolute"
+              flexDirection="column"
+              left="0"
+              top="calc(100% + 8px)"
+              right="0"
+              zIndex="2"
+              maxHeight="300px"
+            >
+              <Observer>
+                {() => (
+                  <>
+                    {instrumentsStore.filteredInstrumentsSearch.map((instr) => (
+                      <SelectInstrumentBtn
+                        key={instr.id}
+                        onClick={handleSelectInstrument(instr)}
+                      >
+                        <FlexContainer
+                          width="32px"
+                          height="32px"
+                          margin="0 8px 0 0"
+                        >
+                          <ImageContainer instrumentId={instr.id} />
+                        </FlexContainer>
+                        <FlexContainer
+                          flexDirection="column"
+                          width="110px"
+                          marginRight="4px"
+                          alignItems="flex-start"
+                        >
+                          <PrimaryTextSpan
+                            fontSize="12px"
+                            color={Colors.ACCENT}
+                            marginBottom="4px"
+                            overflow="hidden"
+                            textOverflow="ellipsis"
+                            whiteSpace="nowrap"
+                          >
+                            {instr.name}
+                          </PrimaryTextSpan>
+                          <PrimaryTextSpan
+                            fontSize="10px"
+                            color={Colors.WHITE_LIGHT}
+                            overflow="hidden"
+                            textOverflow="ellipsis"
+                            whiteSpace="nowrap"
+                          >
+                            {instr.base}/{instr.quote}
+                          </PrimaryTextSpan>
+                        </FlexContainer>
+                      </SelectInstrumentBtn>
+                    ))}
+                  </>
+                )}
+              </Observer>
+            </InstrumentsWrapper>
+          )}
+        </FlexContainer>
+      ) : null}
+    </>
   );
-});
+};
 
 export default AssetSelectorInput;
 
