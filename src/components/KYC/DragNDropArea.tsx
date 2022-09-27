@@ -22,24 +22,26 @@ interface Props {
 }
 
 const FIVE_MB = 5242880;
-const allowedFileTypes = ['image/png', 'image/jpg', 'image/jpeg', 'application/pdf'];
+const allowedFileTypes = [
+  'image/png',
+  'image/jpg',
+  'image/jpeg',
+  'application/pdf',
+];
 
 function DragNDropArea(props: Props) {
   const { onFileReceive, file, fileUrl, hasError = false, typeForEnum } = props;
 
-  const {
-    kycStore,
-  } = useStores();
+  const { kycStore } = useStores();
 
   const [inputError, setError] = React.useState(false);
   React.useEffect(() => {
     setError(hasError);
   }, [hasError]);
 
-  const onDrop = useCallback(acceptedFiles => {
+  const onDrop = useCallback((acceptedFiles) => {
     setError(false);
     const file = acceptedFiles[0];
-    console.log(file);
 
     if (file.size <= FIVE_MB && allowedFileTypes.includes(file.type)) {
       onFileReceive(acceptedFiles[0]);
@@ -50,7 +52,7 @@ function DragNDropArea(props: Props) {
 
   const handleFileRemove = () => {
     onFileReceive(new Blob());
-    if (typeForEnum !== undefined)  {
+    if (typeForEnum !== undefined) {
       kycStore.setFile(null, typeForEnum);
     }
   };
@@ -88,20 +90,42 @@ function DragNDropArea(props: Props) {
             <SvgIcon {...IconFileUpload} fillColor={Colors.ACCENT} />
           </FlexContainer>
           <FlexContainer alignItems="center" marginBottom="6px">
-            <PrimaryTextSpan color={Colors.WHITE} fontSize="16px" lineHeight="24px">
+            <PrimaryTextSpan
+              color={Colors.WHITE}
+              fontSize="16px"
+              lineHeight="24px"
+            >
               {t('Drop')}&nbsp;
             </PrimaryTextSpan>
-            <PrimaryTextSpan color={Colors.ACCENT} fontSize="16px" lineHeight="24px" fontWeight={700}>
+            <PrimaryTextSpan
+              color={Colors.ACCENT}
+              fontSize="16px"
+              lineHeight="24px"
+              fontWeight={700}
+            >
               '{t(props.typeOfFile || '')} {t('Photo')}'&nbsp;
             </PrimaryTextSpan>
-            <PrimaryTextSpan color={Colors.WHITE} fontSize="16px" lineHeight="24px">
+            <PrimaryTextSpan
+              color={Colors.WHITE}
+              fontSize="16px"
+              lineHeight="24px"
+            >
               {t('here to upload or')}&nbsp;
             </PrimaryTextSpan>
-            <PrimaryTextSpan color={Colors.PRIMARY} fontSize="16px" lineHeight="24px" textDecoration="underline">
+            <PrimaryTextSpan
+              color={Colors.PRIMARY}
+              fontSize="16px"
+              lineHeight="24px"
+              textDecoration="underline"
+            >
               {t('choose file')}
             </PrimaryTextSpan>
           </FlexContainer>
-          <PrimaryTextSpan fontSize="13px" lineHeight="17px" color={Colors.WHITE_DARK}>
+          <PrimaryTextSpan
+            fontSize="13px"
+            lineHeight="17px"
+            color={Colors.WHITE_DARK}
+          >
             {t('File size must be less 5 MB in PNG, JPEG, PDF format')}
           </PrimaryTextSpan>
         </FlexContainer>
@@ -133,10 +157,18 @@ function DragNDropArea(props: Props) {
           <img src={fileUrl} width="100%" />
         </FlexContainer>
         <FlexContainer flexDirection="column">
-          <FileNameText color={Colors.WHITE_LIGHT} fontSize="16px" lineHeight="24px">
+          <FileNameText
+            color={Colors.WHITE_LIGHT}
+            fontSize="16px"
+            lineHeight="24px"
+          >
             {file.name}
           </FileNameText>
-          <PrimaryTextSpan fontSize="12px" lineHeight="18px" color={Colors.WHITE_LIGHT}>
+          <PrimaryTextSpan
+            fontSize="12px"
+            lineHeight="18px"
+            color={Colors.WHITE_LIGHT}
+          >
             {Math.round(file.size / 1024)}kb
           </PrimaryTextSpan>
         </FlexContainer>

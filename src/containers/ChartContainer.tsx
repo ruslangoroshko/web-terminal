@@ -204,8 +204,6 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
     tvWidget.onChartReady(async () => {
       tradingViewStore.setTradingWidget(tvWidget);
       markersOnChartStore.renderActivePositionsMarkersOnChart();
-
-      console.log(tvWidget.getStudiesList());
     });
     return () => {
       tradingViewStore.setTradingWidget(undefined);

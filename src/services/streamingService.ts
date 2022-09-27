@@ -102,12 +102,10 @@ class StreamingService {
 
   unsubscribeBars = (listenerGuid: string) => {
     delete this._subscribers[listenerGuid];
-    console.log(`DataPulseProvider: unsubscribed for #${listenerGuid}`);
   };
 
   _updateBar = (bar: Bar, { lastBar, resolution }: DataSubscriber) => {
     const MINUTE = 60000;
-    // console.log('_updateBar resolution', resolution)
     let time = MINUTE;
 
     switch (resolution) {

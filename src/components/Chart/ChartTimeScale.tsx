@@ -19,82 +19,79 @@ interface Props {}
 const ChartIntervalTimeScale: FC<Props> = observer(() => {
   const { instrumentsStore, tradingViewStore } = useStores();
 
-  const handleChangeResolution =
-    (newInterval: SupportedIntervalsType) => () => {
-      let from = moment();
-      let newResolutionKey: SupportedResolutionsType = '1 minute';
-      switch (newInterval) {
-        case supportedInterval['1D']:
-          from = moment().subtract(1, 'd');
-          newResolutionKey = '1 minute';
-          break;
+  const handleChangeResolution = (
+    newInterval: SupportedIntervalsType
+  ) => () => {
+    let from = moment();
+    let newResolutionKey: SupportedResolutionsType = '1 minute';
+    switch (newInterval) {
+      case supportedInterval['1D']:
+        from = moment().subtract(1, 'd');
+        newResolutionKey = '1 minute';
+        break;
 
-        case supportedInterval['5D']:
-          from = moment().subtract(5, 'd');
-          newResolutionKey = '30 minutes';
-          break;
+      case supportedInterval['5D']:
+        from = moment().subtract(5, 'd');
+        newResolutionKey = '30 minutes';
+        break;
 
-        case supportedInterval['1M']:
-          from = moment().subtract(1, 'M');
-          newResolutionKey = '1 hour';
-          break;
+      case supportedInterval['1M']:
+        from = moment().subtract(1, 'M');
+        newResolutionKey = '1 hour';
+        break;
 
-        case supportedInterval['YTD']:
-          from = moment().subtract(new Date().getUTCMonth(), 'M');
-          newResolutionKey = '1 day';
-          break;
+      case supportedInterval['YTD']:
+        from = moment().subtract(new Date().getUTCMonth(), 'M');
+        newResolutionKey = '1 day';
+        break;
 
-        case supportedInterval['1Y']:
-          from = moment().subtract(1, 'year');
-          newResolutionKey = '1 day';
-          break;
+      case supportedInterval['1Y']:
+        from = moment().subtract(1, 'year');
+        newResolutionKey = '1 day';
+        break;
 
-        case supportedInterval['3Y']:
-          from = moment().subtract(1, 'y');
-          newResolutionKey = '1 month';
-          break;
+      case supportedInterval['3Y']:
+        from = moment().subtract(1, 'y');
+        newResolutionKey = '1 month';
+        break;
 
-        case supportedInterval['All']:
-          from = moment().subtract(1, 'y');
-          newResolutionKey = '1 month';
-          break;
+      case supportedInterval['All']:
+        from = moment().subtract(1, 'y');
+        newResolutionKey = '1 month';
+        break;
 
-        default:
-          break;
-      }
-      if (!instrumentsStore.activeInstrument) {
-        return;
-      }
+      default:
+        break;
+    }
+    if (!instrumentsStore.activeInstrument) {
+      return;
+    }
 
-      const newActiveInstrument: IActiveInstrument = {
-        ...instrumentsStore.activeInstrument,
-        interval: newInterval,
-      };
-      if (newResolutionKey === instrumentsStore.activeInstrument?.resolution) {
-        tradingViewStore.tradingWidget?.activeChart().setVisibleRange({
-          from: from.valueOf(),
-          to: moment().valueOf(),
-        });
-      } else {
-        newActiveInstrument.resolution = newResolutionKey;
-        tradingViewStore.tradingWidget
-          ?.activeChart()
-          .setResolution(
-            supportedResolutions[newResolutionKey] as ResolutionString,
-            () => {
-              console.log(
-                'resolution has changed',
-                supportedResolutions[newResolutionKey]
-              );
-              tradingViewStore.tradingWidget?.activeChart().setVisibleRange({
-                from: from.valueOf(),
-                to: moment().valueOf(),
-              });
-            }
-          );
-      }
-      instrumentsStore.editActiveInstrument(newActiveInstrument);
+    const newActiveInstrument: IActiveInstrument = {
+      ...instrumentsStore.activeInstrument,
+      interval: newInterval,
     };
+    if (newResolutionKey === instrumentsStore.activeInstrument?.resolution) {
+      tradingViewStore.tradingWidget?.activeChart().setVisibleRange({
+        from: from.valueOf(),
+        to: moment().valueOf(),
+      });
+    } else {
+      newActiveInstrument.resolution = newResolutionKey;
+      tradingViewStore.tradingWidget
+        ?.activeChart()
+        .setResolution(
+          supportedResolutions[newResolutionKey] as ResolutionString,
+          () => {
+            tradingViewStore.tradingWidget?.activeChart().setVisibleRange({
+              from: from.valueOf(),
+              to: moment().valueOf(),
+            });
+          }
+        );
+    }
+    instrumentsStore.editActiveInstrument(newActiveInstrument);
+  };
 
   return (
     <ChartTimeScaleWrapper padding="2px" alignItems="center">
@@ -125,11 +122,11 @@ export const TimeScaleItem = styled(FlexContainer)<{ isActive?: boolean }>`
       rgba(0, 255, 221, 0) 100%
     ),
     rgba(255, 255, 255, 0.1)`};
-  box-shadow: ${(props) => props.isActive && `inset 0px -1px 0px ${Colors.PRIMARY}`};
+  box-shadow: ${(props) =>
+    props.isActive && `inset 0px -1px 0px ${Colors.PRIMARY}`};
   border-radius: 2px 2px 0px 0px;
   text-transform: uppercase;
-  color: ${(props) =>
-    props.isActive ? Colors.ACCENT : Colors.WHITE_DARK};
+  color: ${(props) => (props.isActive ? Colors.ACCENT : Colors.WHITE_DARK)};
   justify-content: center;
   align-items: center;
   font-family: 'Roboto', sans-serif;

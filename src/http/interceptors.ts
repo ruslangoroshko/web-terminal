@@ -303,10 +303,6 @@ const injectInerceptors = (mainAppStore: MainAppStore) => {
       } else {
         finalJSON = error.config.data;
       }
-      // ---
-      // console.log(finalJSON);
-      // console.log(error.message);
-      // console.log(error.config);
       let isTimeOutError = error.message === requestOptions.TIMEOUT;
       let isReconnectedRequest =
         JSON.parse(finalJSON).initBy === requestOptions.BACKGROUND;
