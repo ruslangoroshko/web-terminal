@@ -73,17 +73,15 @@ const PositionCalculator = () => {
     console.log(values);
 
     let profitFiat, profitPercent, liquidationPrice, deltaPrice, side;
-
     side = operation === 'buy' ? 1 : -1;
-
     profitFiat = (+exitPrice / entryPrice - 1) * invest * leverage * side;
 
     let grow = profitFiat > 0 ? 1 : -1;
     profitPercent = ((Math.abs(profitFiat) * 100) / invest) * grow;
 
     liquidationPrice =
-      (((invest * leverage * 0.9 * -1) / invest) * leverage * side) /
-      +entryPrice;
+      +entryPrice + (+entryPrice * (side * ((90 / leverage) * -1))) / 100;
+
     setFieldValue('profitFiat', profitFiat.toFixed(2));
     setFieldValue('profitPercent', profitPercent.toFixed(2));
     setFieldValue('liquidationPrice', liquidationPrice);
@@ -105,16 +103,11 @@ soPrice = openPrice - (openPrice / 1000);
 
   const {
     values,
-    setFieldError,
     setFieldValue,
     validateForm,
     handleSubmit,
     handleChange,
-    getFieldProps,
-    errors,
     isValid,
-    touched,
-    isSubmitting,
   } = useFormik({
     initialValues: initialValues(),
     onSubmit: handleCalculate,
@@ -271,7 +264,7 @@ soPrice = openPrice - (openPrice / 1000);
                 )}
               </Observer>
             </FlexContainer>
-            <form noValidate onSubmit={handleSubmit}>
+            <Form noValidate onSubmit={handleSubmit}>
               <FlexContainer
                 width="100%"
                 borderRadius="8px"
@@ -403,7 +396,7 @@ soPrice = openPrice - (openPrice / 1000);
                 >
                   {t('Profit/Loss, USD')}
                 </PrimaryTextSpan>
-                <Input value={values.profitFiat} />
+                <Input readOnly value={values.profitFiat} />
               </InputWrapper>
 
               <InputWrapper>
@@ -416,7 +409,7 @@ soPrice = openPrice - (openPrice / 1000);
                   {t('Profit/Loss, %')}
                 </PrimaryTextSpan>
 
-                <Input value={values.profitPercent} />
+                <Input readOnly value={values.profitPercent} />
               </InputWrapper>
 
               <InputWrapper>
@@ -441,7 +434,7 @@ soPrice = openPrice - (openPrice / 1000);
                   Calculate
                 </ButtonAction>
               </FlexContainer>
-            </form>
+            </Form>
           </Wrapper>
         </ModalWrapper>
       )}
@@ -451,6 +444,9 @@ soPrice = openPrice - (openPrice / 1000);
 
 export default PositionCalculator;
 
+const Form = styled.form`
+  margin: 0;
+`;
 const ButtonAction = styled(ButtonWithoutStyles)`
   background-color: ${Colors.DANGER};
   border-radius: 4px;
@@ -462,9 +458,9 @@ const ButtonAction = styled(ButtonWithoutStyles)`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 18px;
   transition: background-color 0.2s ease;
   will-change: background-color;
+
   &:hover,
   &:focus {
     background-color: ${Colors.DANGER_DARK};
@@ -501,6 +497,9 @@ const Input = styled.input`
   color: ${Colors.WHITE};
   background-color: rgba(255, 255, 255, 0.06);
 
+  &:read-only {
+    background-color: transparent;
+  }
   &:-webkit-input-placeholder {
     color: ${Colors.WHITE};
     opacity: 0.3;
