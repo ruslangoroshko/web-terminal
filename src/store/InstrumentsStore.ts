@@ -32,6 +32,7 @@ interface ContextProps {
   instrumentGroups: InstrumentGroupWSDTO[];
   activeInstrumentGroupId?: InstrumentGroupWSDTO['id'];
   sortByField: string | null;
+  calcActiveInstrument: InstrumentGroupWSDTO | null;
 }
 
 export class InstrumentsStore implements ContextProps {
@@ -47,6 +48,8 @@ export class InstrumentsStore implements ContextProps {
   sortByField: string | null = null;
   hiddenChart: boolean = false;
   pricesChange: IPriceChange = {};
+
+  calcActiveInstrument: InstrumentModelWSDTO | null = null;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -67,6 +70,10 @@ export class InstrumentsStore implements ContextProps {
       );
 
     return filteredActiveInstruments;
+  }
+
+  setCalcActiveInstrument = (instrument: InstrumentModelWSDTO) => {
+    this.calcActiveInstrument = instrument;
   }
 
   @action

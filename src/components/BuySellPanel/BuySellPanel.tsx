@@ -43,6 +43,7 @@ import hasValue from '../../helpers/hasValue';
 import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 import OpenPricePopup from './OpenPricePopup';
 import Colors from '../../constants/Colors';
+import PositionCalculator from './PositionCalculator';
 
 // TODO: too much code, refactor
 
@@ -107,9 +108,9 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           })
           .test(
             Fields.INVEST_AMOUNT,
-            `${t(
-              'Insufficient funds to open a position. You have only'
-            )} $${mainAppStore.activeAccount?.balance}`,
+            `${t('Insufficient funds to open a position. You have only')} $${
+              mainAppStore.activeAccount?.balance
+            }`,
             (value) => {
               if (value) {
                 return mainAppStore.activeAccount?.balance !== 0;
@@ -350,8 +351,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
             });
           }
-        } catch (error) {
-        }
+        } catch (error) {}
       } else {
         const modelToSubmit: OpenPositionModel = {
           ...values,
@@ -463,8 +463,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               [mixapanelProps.EVENT_REF]: mixpanelValues.PORTFOLIO,
             });
           }
-        } catch (error) {
-        }
+        } catch (error) {}
       }
     },
     [
@@ -811,6 +810,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
+      <PositionCalculator />
       <FormProvider {...methods}>
         <CustomForm
           autoComplete="off"
@@ -969,7 +969,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
             </InformationPopup>
           </FlexContainer>
           <FlexContainer position="relative" flexDirection="column">
-            <AutoClosePopup instrumentId={instrument.id} amount={investmentAmount}>
+            <AutoClosePopup
+              instrumentId={instrument.id}
+              amount={investmentAmount}
+            >
               <>
                 {((formState.touched.sl && errors.sl) ||
                   (formState.touched.tp && errors.tp)) && (
@@ -1059,7 +1062,10 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               onClick={openConfirmBuyingPopup(AskBidEnum.Sell)}
             >
               <FlexContainer margin="0 8px 0 0">
-                <SvgIcon {...IconShevronSell} fillColor={Colors.WHITE}></SvgIcon>
+                <SvgIcon
+                  {...IconShevronSell}
+                  fillColor={Colors.WHITE}
+                ></SvgIcon>
               </FlexContainer>
               {t('Sell')}
             </ButtonSell>
@@ -1128,7 +1134,8 @@ const ButtonSell = styled(ButtonWithoutStyles)`
   transition: background-color 0.2s ease;
   will-change: background-color;
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background-color: ${Colors.DANGER_DARK};
   }
 
