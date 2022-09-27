@@ -15,6 +15,18 @@ import { InstrumentModelWSDTO } from '../../types/InstrumentsTypes';
 import { Observer } from 'mobx-react-lite';
 import { FormikHelpers, useFormik } from 'formik';
 import * as yup from 'yup';
+import MultiplierDropdown from './MultiplierDropdown';
+
+type CalculatorData = {
+  operation: string;
+  invest: number;
+  leverage: number;
+  entryPrice?: string;
+  exitPrice?: string;
+  profitFiat?: string;
+  profitPercent?: string;
+  liquidationPrice?: string;
+};
 
 const PositionCalculator = () => {
   const { instrumentsStore } = useStores();
@@ -22,20 +34,26 @@ const PositionCalculator = () => {
   const { t } = useTranslation();
 
   const validationSchema = () =>
-    yup.object().shape<any>({
+    yup.object().shape<CalculatorData>({
       operation: yup.string().oneOf(['buy', 'sell']).required(),
       invest: yup.number().required(),
+      leverage: yup.number().required(),
     });
 
-  const initialValues: any = {
+  const initialValues: CalculatorData = {
     operation: 'buy',
     invest: 1000,
+    leverage: 50,
+  };
+
+  const setMultiplier = (lev: number) => {
+    setFieldValue('leverage', lev);
   };
 
   const handleCalculate = () => {};
 
   const handleChangeRadio = (input: any) => {
-    console.dir(input);
+    console.log(input);
   };
 
   const {
@@ -58,6 +76,45 @@ const PositionCalculator = () => {
     validateOnChange: false,
   });
 
+  const investOnBeforeInputHandler = (e: any) => {
+    const currTargetValue = e.currentTarget.value;
+    if (!e.data.match(/^[0-9.,]*$/g)) {
+      e.preventDefault();
+      return;
+    }
+    if (!currTargetValue && [',', '.'].includes(e.data)) {
+      e.preventDefault();
+      return;
+    }
+    if ([',', '.'].includes(e.data)) {
+      if (
+        !currTargetValue ||
+        (currTargetValue && currTargetValue.includes('.'))
+      ) {
+        e.preventDefault();
+        return;
+      }
+    }
+    // see another regex
+    const regex = `^[0-9]{1,7}([,.][0-9]{1,2})?$`;
+    const splittedValue =
+      currTargetValue.substring(0, e.currentTarget.selectionStart) +
+      e.data +
+      currTargetValue.substring(e.currentTarget.selectionStart);
+    if (
+      currTargetValue &&
+      ![',', '.'].includes(e.data) &&
+      !splittedValue.match(regex)
+    ) {
+      e.preventDefault();
+      return;
+    }
+    if (e.data.length > 1 && !splittedValue.match(regex)) {
+      e.preventDefault();
+      return;
+    }
+  };
+
   const handleToggleBtn = () => {
     setToggle(!on);
   };
@@ -67,6 +124,7 @@ const PositionCalculator = () => {
   };
 
   const onSelectIntrument = (instrument: InstrumentModelWSDTO) => {
+    setFieldValue('leverage', instrument.multiplier[0]);
     instrumentsStore.setCalcActiveInstrument(instrument);
   };
 
@@ -144,37 +202,44 @@ const PositionCalculator = () => {
                 )}
               </Observer>
             </FlexContainer>
+            <form>
+              <FlexContainer
+                width="100%"
+                borderRadius="8px"
+                overflow="hidden"
+                marginBottom="16px"
+              >
+                <TabLabelWrap>
+                  <TabInput
+                    type="radio"
+                    id="radio-buy"
+                    name="operation"
+                    operation="buy"
+                    onChange={handleChange}
+                    value="buy"
+                    checked={values.operation === 'buy'}
+                  />
+                  <TabLabel operation="buy" htmlFor="radio-buy">
+                    Buy/Long
+                  </TabLabel>
+                </TabLabelWrap>
 
-            <FlexContainer
-              width="100%"
-              borderRadius="8px"
-              overflow="hidden"
-              marginBottom="16px"
-            >
-              <TabLabelWrap>
-                <TabInput
-                  type="radio"
-                  id="buy"
-                  name="operation"
-                  operation="buy"
-                  onChange={handleChangeRadio}
-                  value="buy"
-                />
-                <TabLabel operation="buy">Buy/Long</TabLabel>
-              </TabLabelWrap>
-
-              <TabLabelWrap>
-                <TabInput
-                  type="radio"
-                  id="sell"
-                  name="operation"
-                  operation="sell"
-                  onChange={handleChangeRadio}
-                  value="sell"
-                />
-                <TabLabel operation="sell">Sell/Short</TabLabel>
-              </TabLabelWrap>
-            </FlexContainer>
+                <TabLabelWrap>
+                  <TabInput
+                    type="radio"
+                    id="radio-sell"
+                    name="operation"
+                    operation="sell"
+                    onChange={handleChange}
+                    value="sell"
+                    checked={values.operation === 'sell'}
+                  />
+                  <TabLabel operation="sell" htmlFor="radio-sell">
+                    Sell/Short
+                  </TabLabel>
+                </TabLabelWrap>
+              </FlexContainer>
+            </form>
 
             <InputWrapper>
               <PrimaryTextSpan
@@ -185,7 +250,14 @@ const PositionCalculator = () => {
               >
                 {t('Invest')}
               </PrimaryTextSpan>
-              <Input placeholder="Invest" />
+              <Input
+                placeholder="Invest"
+                name="invest"
+                id="invest"
+                onBeforeInput={investOnBeforeInputHandler}
+                value={values.invest}
+                onChange={handleChange}
+              />
             </InputWrapper>
 
             <InputWrapper>
@@ -197,7 +269,23 @@ const PositionCalculator = () => {
               >
                 {t('Leverage')}
               </PrimaryTextSpan>
-              <Input placeholder="Leverage" />
+
+              <div className="inputWrap">
+                <Observer>
+                  {() => (
+                    <MultiplierDropdown
+                      onToggle={() => {}}
+                      multipliers={
+                        instrumentsStore.calcActiveInstrument?.multiplier ||
+                        instrumentsStore.activeInstrument?.instrumentItem
+                          .multiplier || [50]
+                      }
+                      selectedMultiplier={values.leverage}
+                      setMultiplier={setMultiplier}
+                    ></MultiplierDropdown>
+                  )}
+                </Observer>
+              </div>
             </InputWrapper>
 
             <InputWrapper>
@@ -209,7 +297,7 @@ const PositionCalculator = () => {
               >
                 {t('Entry price')}
               </PrimaryTextSpan>
-              <Input placeholder="Entry price" />
+              <Input  />
             </InputWrapper>
 
             <InputWrapper>
@@ -221,7 +309,7 @@ const PositionCalculator = () => {
               >
                 {t('Exit price')}
               </PrimaryTextSpan>
-              <Input placeholder="Exit price" />
+              <Input />
             </InputWrapper>
 
             <InputWrapper>
@@ -233,7 +321,7 @@ const PositionCalculator = () => {
               >
                 {t('Profit/Loss, USD')}
               </PrimaryTextSpan>
-              <Input placeholder="Profit/Loss, USD" />
+              <Input  />
             </InputWrapper>
 
             <InputWrapper>
@@ -246,7 +334,7 @@ const PositionCalculator = () => {
                 {t('Profit/Loss, %')}
               </PrimaryTextSpan>
 
-              <Input placeholder="Profit/Loss, %" />
+              <Input />
             </InputWrapper>
 
             <InputWrapper>
@@ -259,10 +347,12 @@ const PositionCalculator = () => {
                 {t('Liquidation price')}
               </PrimaryTextSpan>
 
-              <Input placeholder="Profit/Loss, %" />
+              <Input readOnly />
             </InputWrapper>
 
-            <ButtonBuy>Calculate</ButtonBuy>
+            <ButtonAction className={values.operation === 'buy' ? 'buy' : ''}>
+              Calculate
+            </ButtonAction>
           </Wrapper>
         </ModalWrapper>
       )}
@@ -272,7 +362,7 @@ const PositionCalculator = () => {
 
 export default PositionCalculator;
 
-const ButtonSell = styled(ButtonWithoutStyles)`
+const ButtonAction = styled(ButtonWithoutStyles)`
   background-color: ${Colors.DANGER};
   border-radius: 4px;
   height: 40px;
@@ -286,28 +376,23 @@ const ButtonSell = styled(ButtonWithoutStyles)`
   margin-bottom: 18px;
   transition: background-color 0.2s ease;
   will-change: background-color;
-
   &:hover,
   &:focus {
     background-color: ${Colors.DANGER_DARK};
   }
-
   &:disabled {
     background-color: rgba(255, 255, 255, 0.04);
   }
-`;
 
-const ButtonBuy = styled(ButtonSell)`
-  background-color: ${Colors.PRIMARY};
-  color: ${Colors.DARK_BLACK};
-  margin-bottom: 8px;
-
-  &:hover {
-    background-color: ${Colors.PRIMARY_LIGHT};
-  }
-
-  &:disabled {
-    background-color: rgba(255, 255, 255, 0.04);
+  &.buy {
+    background-color: ${Colors.PRIMARY};
+    color: ${Colors.DARK_BLACK};
+    &:hover {
+      background-color: ${Colors.PRIMARY_LIGHT};
+    }
+    &:disabled {
+      background-color: rgba(255, 255, 255, 0.04);
+    }
   }
 `;
 
@@ -316,7 +401,7 @@ const Input = styled.input`
   border: none;
   outline: none;
   width: 100%;
-  height: 100%;
+  height: 40px;
   font-weight: bold;
   font-size: 14px;
   line-height: 16px;
@@ -350,8 +435,12 @@ const InputWrapper = styled(FlexContainer)`
   align-items: center;
   margin-bottom: 12px;
   gap: 8px;
+  .inputWrap,
   input {
     width: 140px;
+  }
+  .inputWrap > div {
+    margin: 0;
   }
 `;
 

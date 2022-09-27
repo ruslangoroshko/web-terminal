@@ -28,13 +28,11 @@ const AssetSelectorInput = ({
   onSelectInstrument,
   activeInstrument,
 }: Props) => {
-  console.log(JSON.parse(JSON.stringify(activeInstrument)));
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { instrumentsStore } = useStores();
 
   const [showList, setShowList] = useState(false);
   const [isFocus, setIsFocus] = useState(false);
-
   const [searchValue, setSearchValue] = useState('');
 
   const onInputFocus = () => {
@@ -96,7 +94,6 @@ const AssetSelectorInput = ({
         .map((item) => item.instrumentItem)
     );
   }, []);
-  console.log(isFocus);
 
   return (
     <>
