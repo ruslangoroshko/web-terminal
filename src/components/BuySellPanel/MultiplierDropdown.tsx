@@ -10,6 +10,7 @@ interface Props {
   selectedMultiplier: number;
   setMultiplier: (value: number) => void;
   onToggle: (arg0: boolean) => void;
+  inputColor?: string;
 }
 
 function MultiplierDropdown(props: Props) {
@@ -18,6 +19,7 @@ function MultiplierDropdown(props: Props) {
     selectedMultiplier,
     setMultiplier: setFieldValue,
     onToggle,
+    inputColor,
   } = props;
   const [on, toggle] = useState(false);
   const handleChangeMultiplier = (multiplier: number) => () => {
@@ -46,7 +48,7 @@ function MultiplierDropdown(props: Props) {
   return (
     <FlexContainer position="relative" margin="0 0 14px 0" ref={wrapperRef}>
       <MultiplierButton isActive={on} onClick={handleToggle} type="button">
-        <PrimaryTextSpan fontWeight="bold" color={Colors.ACCENT}>
+        <PrimaryTextSpan fontWeight="bold" color={inputColor}>
           &times;{selectedMultiplier}
         </PrimaryTextSpan>
       </MultiplierButton>
@@ -73,7 +75,7 @@ function MultiplierDropdown(props: Props) {
                 <PrimaryTextSpan
                   fontSize="16px"
                   fontWeight="bold"
-                  color={Colors.ACCENT}
+                  color={inputColor}
                 >
                   &times;{multiplier}
                 </PrimaryTextSpan>

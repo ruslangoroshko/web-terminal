@@ -338,6 +338,7 @@ soPrice = openPrice - (openPrice / 1000);
                   <Observer>
                     {() => (
                       <MultiplierDropdown
+                        inputColor={Colors.WHITE}
                         onToggle={() => {}}
                         multipliers={
                           instrumentsStore.calcActiveInstrument?.multiplier ||
@@ -346,7 +347,7 @@ soPrice = openPrice - (openPrice / 1000);
                         }
                         selectedMultiplier={values.leverage}
                         setMultiplier={setMultiplier}
-                      ></MultiplierDropdown>
+                      />
                     )}
                   </Observer>
                 </div>
