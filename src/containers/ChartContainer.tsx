@@ -135,7 +135,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         'header_symbol_search',
         'header_compare',
         // 'header_indicators',
-        'header_fullscreen_button',
+        // 'header_fullscreen_button',
         // 'use_localstorage_for_settings',
         'border_around_the_chart',
         // 'left_toolbar',
@@ -146,7 +146,11 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         'main_series_scale_menu',
         'popup_hints',
       ],
-      enabled_features: ['remove_library_container_border'],
+      enabled_features: [
+        'remove_library_container_border',
+        'side_toolbar_in_fullscreen_mode',
+        'header_in_fullscreen_mode',
+      ],
       fullscreen: false,
       autosize: true,
       overrides: {
