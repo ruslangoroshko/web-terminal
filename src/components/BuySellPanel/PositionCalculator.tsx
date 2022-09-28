@@ -33,6 +33,17 @@ const PositionCalculator = () => {
   const [on, setToggle] = React.useState(false);
   const { t } = useTranslation();
 
+  const instrument = useMemo(() => {
+    return (
+      instrumentsStore.calcActiveInstrument ||
+      instrumentsStore.activeInstrument?.instrumentItem ||
+      null
+    );
+  }, [
+    instrumentsStore.calcActiveInstrument,
+    instrumentsStore.activeInstrument,
+  ]);
+
   const validationSchema = () =>
     yup.object().shape<CalculatorData>({
       operation: yup.string().oneOf(['buy', 'sell']).required(),
@@ -84,7 +95,10 @@ const PositionCalculator = () => {
 
     setFieldValue('profitFiat', profitFiat.toFixed(2));
     setFieldValue('profitPercent', profitPercent.toFixed(2));
-    setFieldValue('liquidationPrice', liquidationPrice);
+    setFieldValue(
+      'liquidationPrice',
+      liquidationPrice.toFixed(instrument?.digits)
+    );
 
     console.log(deltaPrice);
 
@@ -179,22 +193,11 @@ soPrice = openPrice - (openPrice / 1000);
     }
   };
 
-  const instrument = useMemo(() => {
-    return (
-      instrumentsStore.calcActiveInstrument ||
-      instrumentsStore.activeInstrument?.instrumentItem ||
-      null
-    );
-  }, [
-    instrumentsStore.calcActiveInstrument,
-    instrumentsStore.activeInstrument,
-  ]);
-
   return (
     <FlexContainer marginBottom="12px" position="relative">
       <Button onClick={handleToggleBtn} type="button">
         <PrimaryTextSpan color={Colors.ACCENT} fontSize="14px">
-          Calculator
+          PnL Calculator
         </PrimaryTextSpan>
       </Button>
 
@@ -328,7 +331,7 @@ soPrice = openPrice - (openPrice / 1000);
                   color="rgba(255, 255, 255, 0.3)"
                   textTransform="uppercase"
                 >
-                  {t('Leverage')}
+                  {t('Multiplier')}
                 </PrimaryTextSpan>
 
                 <div className="inputWrap">
