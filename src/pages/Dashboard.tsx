@@ -134,11 +134,16 @@ const Dashboard: FC = observer(() => {
           )}
         </Observer>
       </FlexContainer>
-      <FlexContainer flexDirection="column">
-        <FavoriteInstrumetsBar />
 
-        <Observer>
-          {() => (
+      <FlexContainer
+        width="100%"
+        height="100%"
+        maxHeight="calc(100vh - 48px)"
+        flex="1"
+      >
+        <FlexContainer width="100%" flex="1" flexDirection="column">
+          <FlexContainer flexDirection="column">
+            <FavoriteInstrumetsBar />
             <FlexContainer position="relative">
               {instrumentsStore.activeInstrument && (
                 <ActiveInstrument
@@ -146,73 +151,59 @@ const Dashboard: FC = observer(() => {
                 />
               )}
             </FlexContainer>
+          </FlexContainer>
+
+          {instrumentsStore.activeInstrument && (
+            <FlexContainer width="100%" flex="1" flexDirection="column">
+              <ChartWrapper
+                padding="0 0 0 0"
+                height="100%"
+                maxHeight="calc(100vh - 200px)"
+                minHeight="445px"
+                position="relative"
+              >
+                {tradingViewStore.activePositionPopup && (
+                  <ClosePopupWrapper>
+                    <ConfirmPopup
+                      toggle={tradingViewStore.toggleActivePositionPopup}
+                      applyHandler={tradingViewStore.applyHandler}
+                      confirmText={t(tradingViewStore?.confirmText)}
+                    ></ConfirmPopup>
+                  </ClosePopupWrapper>
+                )}
+                <TVChartContainer
+                  instrumentId={
+                    instrumentsStore.activeInstrument.instrumentItem.id
+                  }
+                  instruments={instrumentsStore.instruments}
+                />
+              </ChartWrapper>
+
+              <ChartInstruments
+                justifyContent="space-between"
+                padding="0 0 0 52px"
+              >
+                {/* <ChartSettingsButtons></ChartSettingsButtons> */}
+                <ChartIntervalTimeScale></ChartIntervalTimeScale>
+                <ChartTimeFomat></ChartTimeFomat>
+              </ChartInstruments>
+            </FlexContainer>
           )}
-        </Observer>
+        </FlexContainer>
+
+        <FlexContainer
+          flexDirection="column"
+          width="320px"
+          maxHeight="calc(100vh - 48px)"
+          justifyContent="center"
+        >
+          {instrumentsStore.activeInstrument && (
+            <BuySellPanel
+              instrument={instrumentsStore.activeInstrument.instrumentItem}
+            />
+          )}
+        </FlexContainer>
       </FlexContainer>
-
-      <Observer>
-        {() => (
-          <>
-            {instrumentsStore.activeInstrument && (
-              <>
-                <FlexContainer
-                  width="100%"
-                  height="100%"
-                  maxHeight="calc(100vh - 123px)"
-                >
-                  <FlexContainer
-                    width="100%"
-                    maxWidth="calc(100% - 320px)"
-                    maxHeight="calc(100vh - 175px)"
-                    flexDirection="column"
-                  >
-                    <ChartWrapper
-                      padding="0 0 0 0"
-                      height="100%"
-                      maxHeight="calc(100vh - 200px)"
-                      minHeight="445px"
-                      position="relative"
-                    >
-                      {tradingViewStore.activePositionPopup && (
-                        <ClosePopupWrapper>
-                          <ConfirmPopup
-                            toggle={tradingViewStore.toggleActivePositionPopup}
-                            applyHandler={tradingViewStore.applyHandler}
-                            confirmText={t(tradingViewStore?.confirmText)}
-                          ></ConfirmPopup>
-                        </ClosePopupWrapper>
-                      )}
-                      <TVChartContainer
-                        instrumentId={
-                          instrumentsStore.activeInstrument.instrumentItem.id
-                        }
-                        instruments={instrumentsStore.instruments}
-                      />
-                    </ChartWrapper>
-
-                    <ChartInstruments
-                      justifyContent="space-between"
-                      padding="0 0 0 52px"
-                    >
-                      {/* <ChartSettingsButtons></ChartSettingsButtons> */}
-                      <ChartIntervalTimeScale></ChartIntervalTimeScale>
-                      <ChartTimeFomat></ChartTimeFomat>
-                    </ChartInstruments>
-                  </FlexContainer>
-
-                  <FlexContainer flexDirection="column" width="320px">
-                    <BuySellPanel
-                      instrument={
-                        instrumentsStore.activeInstrument.instrumentItem
-                      }
-                    ></BuySellPanel>
-                  </FlexContainer>
-                </FlexContainer>
-              </>
-            )}
-          </>
-        )}
-      </Observer>
     </FlexContainer>
   );
 });

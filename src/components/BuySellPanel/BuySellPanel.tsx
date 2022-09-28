@@ -44,6 +44,7 @@ import setValueAsNullIfEmpty from '../../helpers/setValueAsNullIfEmpty';
 import OpenPricePopup from './OpenPricePopup';
 import Colors from '../../constants/Colors';
 import PositionCalculator from './PositionCalculator';
+import OrdersBooks from '../OrdersBook/OrdersBooks';
 
 // TODO: too much code, refactor
 
@@ -806,7 +807,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
   };
 
   return (
-    <FlexContainer padding="16px" flexDirection="column">
+    <BuySellWraper padding="16px" flexDirection="column">
       <Observer>
         {() => <>{badRequestPopupStore.isActive && <BadRequestPopup />}</>}
       </Observer>
@@ -866,7 +867,11 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               {mainAppStore.activeAccount?.symbol}
             </PrimaryTextSpan>
 
-            <FlexContainer alignItems="center" ref={investAmountRef} width="100%">
+            <FlexContainer
+              alignItems="center"
+              ref={investAmountRef}
+              width="100%"
+            >
               <InvestInput
                 onBeforeInput={investOnBeforeInputHandler}
                 onFocus={investOnFocusHandler}
@@ -1102,11 +1107,27 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
           ></OpenPricePopup>
         </CustomForm>
       </FormProvider>
-    </FlexContainer>
+
+      <OrdersBooks />
+    </BuySellWraper>
   );
 };
 
 export default BuySellPanel;
+
+const BuySellWraper = styled(FlexContainer)`
+  overflow-y: auto;
+  ::-webkit-scrollbar {
+    width: 4px;
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+  }
+  ::-webkit-scrollbar-thumb:vertical {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+`;
 
 const InvestInput = styled.input`
   width: calc(100% - 27px);
