@@ -866,7 +866,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
               {mainAppStore.activeAccount?.symbol}
             </PrimaryTextSpan>
 
-            <FlexContainer alignItems="center" ref={investAmountRef}>
+            <FlexContainer alignItems="center" ref={investAmountRef} width="100%">
               <InvestInput
                 onBeforeInput={investOnBeforeInputHandler}
                 onFocus={investOnFocusHandler}

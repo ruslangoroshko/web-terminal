@@ -162,7 +162,7 @@ const Dashboard: FC = observer(() => {
                 >
                   <FlexContainer
                     width="100%"
-                    maxWidth="calc(100% - 175px)"
+                    maxWidth="calc(100% - 320px)"
                     maxHeight="calc(100vh - 175px)"
                     flexDirection="column"
                   >
@@ -200,7 +200,7 @@ const Dashboard: FC = observer(() => {
                     </ChartInstruments>
                   </FlexContainer>
 
-                  <FlexContainer flexDirection="column" width="175px">
+                  <FlexContainer flexDirection="column" width="320px">
                     <BuySellPanel
                       instrument={
                         instrumentsStore.activeInstrument.instrumentItem
