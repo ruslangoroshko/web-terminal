@@ -1,11 +1,14 @@
 import styled from '@emotion/styled';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import Colors from '../../constants/Colors';
 import { AskBidEnum } from '../../enums/AskBid';
+import { useStores } from '../../hooks/useStores';
 import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 
-const OrdersBooks = () => {
+const OrdersBooks = observer(() => {
+  const { orderBookStore } = useStores();
   return (
     <FlexContainer padding="20px 0 12px" flexDirection="column" width="100%">
       <FlexContainer padding="4px 0">
@@ -39,135 +42,31 @@ const OrdersBooks = () => {
         <FlexContainer>
           {/* left */}
           <FlexContainer width="50%" flexDirection="column">
-            <OrderItem operation={AskBidEnum.Buy} fillPercent={20}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#00ffdd">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Buy} fillPercent={23}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#00ffdd">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Buy} fillPercent={30}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#00ffdd">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Buy} fillPercent={43}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#00ffdd">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Buy} fillPercent={50}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#00ffdd">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Buy} fillPercent={60}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#00ffdd">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Buy} fillPercent={76}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#00ffdd">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Buy} fillPercent={80}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#00ffdd">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Buy} fillPercent={90}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#00ffdd">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Buy} fillPercent={100}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#00ffdd">19 278.49</PrimaryTextSpan>
-            </OrderItem>
+            {orderBookStore.bids.map((bid) => (
+              <OrderItem operation={AskBidEnum.Buy} fillPercent={20}>
+                <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
+                  {bid[1].toFixed(3)}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan color="#00ffdd">{bid[0].toFixed(3)}</PrimaryTextSpan>
+              </OrderItem>
+            ))}
           </FlexContainer>
           {/* right  */}
           <FlexContainer width="50%" flexDirection="column">
-            <OrderItem operation={AskBidEnum.Sell} fillPercent={20}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#ed145b">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Sell} fillPercent={20}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#ed145b">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Sell} fillPercent={30}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#ed145b">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Sell} fillPercent={40}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#ed145b">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Sell} fillPercent={50}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#ed145b">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Sell} fillPercent={70}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#ed145b">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Sell} fillPercent={76}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#ed145b">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Sell} fillPercent={80}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#ed145b">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Sell} fillPercent={80}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#ed145b">19 278.49</PrimaryTextSpan>
-            </OrderItem>
-            <OrderItem operation={AskBidEnum.Sell} fillPercent={100}>
-              <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                542
-              </PrimaryTextSpan>
-              <PrimaryTextSpan color="#ed145b">19 278.49</PrimaryTextSpan>
-            </OrderItem>
+            {orderBookStore.asks.map((ask) => (
+              <OrderItem operation={AskBidEnum.Sell} fillPercent={20}>
+                <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
+                  {ask[1].toFixed(3)}
+                </PrimaryTextSpan>
+                <PrimaryTextSpan color="#ed145b">{ask[0].toFixed(3)}</PrimaryTextSpan>
+              </OrderItem>
+            ))}
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
     </FlexContainer>
   );
-};
+});
 
 export default OrdersBooks;
 

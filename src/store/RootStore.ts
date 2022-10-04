@@ -20,6 +20,7 @@ import { BonusStore } from './BonusStore';
 import { EducationStore } from './EducationStore';
 import { AccountTypeStore } from './AccountTypeStore';
 import { makeAutoObservable } from 'mobx';
+import { OrderBookStore } from './OrderBookStore';
 
 export class RootStore {
   quotesStore: QuotesStore;
@@ -43,6 +44,7 @@ export class RootStore {
   bonusStore: BonusStore;
   educationStore: EducationStore;
   accountTypeStore: AccountTypeStore;
+  orderBookStore: OrderBookStore;
 
   constructor() {
     this.quotesStore = new QuotesStore(this);
@@ -66,5 +68,6 @@ export class RootStore {
     this.bonusStore = new BonusStore(this);
     this.educationStore = new EducationStore(this);
     this.accountTypeStore = new AccountTypeStore(this);
+    this.orderBookStore = new OrderBookStore();
   }
 }

@@ -20,6 +20,7 @@ const Topics = {
   INSTRUMENT_GROUPS: 'instrumentgroups',
   SERVER_ERROR: 'servererror',
   UPDATE_ACCOUNT_TYPE: 'updateaccounttype',
+  ORDER_BOOK: 'orderbook',
 };
 
 Object.freeze(Topics);
