@@ -22,7 +22,7 @@ import ConfirmPopup from '../components/ConfirmPopup';
 import FavoriteInstrumetsBar from '../components/FavoriteInstrumetsBar';
 import HintsWrapper from '../components/Hints/HintsWrapper';
 
-// import ImageTerminalBg from '../assets/images/terminal-bg/bg8.jpeg';
+import ImageTerminalBg from '../assets/images/terminal-bg/bg7.jpeg';
 
 const Dashboard: FC = observer(() => {
   const {
@@ -136,89 +136,104 @@ const Dashboard: FC = observer(() => {
           )}
         </Observer>
       </FlexContainer>
-      <FlexContainer flexDirection="column" position="relative" zIndex="1">
-        <FavoriteInstrumetsBar />
-
-        <Observer>
-          {() => (
-            <FlexContainer>
-              {instrumentsStore.activeInstrument && (
-                <ActiveInstrument
-                  instrument={instrumentsStore.activeInstrument.instrumentItem}
-                />
-              )}
-            </FlexContainer>
-          )}
-        </Observer>
-      </FlexContainer>
 
       <Observer>
         {() => (
           <>
-            {instrumentsStore.activeInstrument && (
-              <>
-                <FlexContainer
+            <>
+              <FlexContainer
+                width="100%"
+                height="100%"
+                maxHeight="calc(100vh - 48px)"
+                position="relative"
+                zIndex="1"
+              >
+                <TerminalWrap
                   width="100%"
-                  height="100%"
-                  maxHeight="calc(100vh - 123px)"
-                  position="relative"
-                  zIndex="1"
+                  maxWidth="calc(100% - 175px)"
+                  maxHeight="calc(100vh - 48px)"
+                  flexDirection="column"
                 >
                   <FlexContainer
-                    width="100%"
-                    maxWidth="calc(100% - 175px)"
-                    maxHeight="calc(100vh - 175px)"
                     flexDirection="column"
-                  >
-                    <ChartWrapper
-                      padding="0 0 0 0"
-                      height="100%"
-                      maxHeight="calc(100vh - 200px)"
-                      minHeight="445px"
-                      position="relative"
-                    >
-                      {tradingViewStore.activePositionPopup && (
-                        <ClosePopupWrapper>
-                          <ConfirmPopup
-                            toggle={tradingViewStore.toggleActivePositionPopup}
-                            applyHandler={tradingViewStore.applyHandler}
-                            confirmText={t(tradingViewStore?.confirmText)}
-                          ></ConfirmPopup>
-                        </ClosePopupWrapper>
-                      )}
-                      <TVChartContainer
-                        instrumentId={
-                          instrumentsStore.activeInstrument.instrumentItem.id
-                        }
-                        instruments={instrumentsStore.instruments}
-                      />
-                    </ChartWrapper>
-
-                    <ChartInstruments
-                      justifyContent="space-between"
-                      padding="0 0 0 52px"
-                    >
-                      {/* <ChartSettingsButtons></ChartSettingsButtons> */}
-                      <ChartIntervalTimeScale></ChartIntervalTimeScale>
-                      <ChartTimeFomat></ChartTimeFomat>
-                    </ChartInstruments>
-                  </FlexContainer>
-
-                  <FlexContainer
-                    flexDirection="column"
-                    width="175px"
                     position="relative"
-                    zIndex="1"
+                    zIndex="2"
                   >
+                    <FavoriteInstrumetsBar />
+
+                    <Observer>
+                      {() => (
+                        <FlexContainer>
+                          {instrumentsStore.activeInstrument && (
+                            <ActiveInstrument
+                              instrument={
+                                instrumentsStore.activeInstrument.instrumentItem
+                              }
+                            />
+                          )}
+                        </FlexContainer>
+                      )}
+                    </Observer>
+                  </FlexContainer>
+                  {instrumentsStore.activeInstrument && (
+                    <>
+                      <ChartWrapper
+                        zIndex="2"
+                        padding="0 0 0 0"
+                        height="100%"
+                        maxHeight="calc(100vh - 200px)"
+                        minHeight="445px"
+                        position="relative"
+                      >
+                        {tradingViewStore.activePositionPopup && (
+                          <ClosePopupWrapper>
+                            <ConfirmPopup
+                              toggle={
+                                tradingViewStore.toggleActivePositionPopup
+                              }
+                              applyHandler={tradingViewStore.applyHandler}
+                              confirmText={t(tradingViewStore?.confirmText)}
+                            ></ConfirmPopup>
+                          </ClosePopupWrapper>
+                        )}
+                        <TVChartContainer
+                          instrumentId={
+                            instrumentsStore.activeInstrument.instrumentItem.id
+                          }
+                          instruments={instrumentsStore.instruments}
+                        />
+                      </ChartWrapper>
+
+                      <ChartInstruments
+                        zIndex="2"
+                        justifyContent="space-between"
+                        padding="0 0 0 52px"
+                      >
+                        {/* <ChartSettingsButtons></ChartSettingsButtons> */}
+                        <ChartIntervalTimeScale></ChartIntervalTimeScale>
+                        <ChartTimeFomat></ChartTimeFomat>
+                      </ChartInstruments>
+                    </>
+                  )}
+                </TerminalWrap>
+
+                <FlexContainer
+                  flexDirection="column"
+                  width="175px"
+                  position="relative"
+                  justifyContent="center"
+                  zIndex="1"
+                >
+                  {instrumentsStore.activeInstrument && (
                     <BuySellPanel
                       instrument={
                         instrumentsStore.activeInstrument.instrumentItem
                       }
-                    ></BuySellPanel>
-                  </FlexContainer>
+                    />
+                  )}
                 </FlexContainer>
-              </>
-            )}
+              </FlexContainer>
+            </>
           </>
         )}
       </Observer>
@@ -245,6 +260,7 @@ const TerminalWrap = styled(FlexContainer)`
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
+    background-image: ${`url(${ImageTerminalBg})`};
     z-index: -1;
   }
 

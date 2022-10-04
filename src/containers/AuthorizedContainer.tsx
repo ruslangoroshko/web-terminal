@@ -335,12 +335,7 @@ const TabsLayoutWrapper = styled(FlexContainer)<
 `;
 
 const SideBarAndPageContentWrapper = styled(FlexContainer)`
-  background: radial-gradient(
-      92.11% 100% at 0% 0%,
-      rgba(255, 252, 204, 0.08) 0%,
-      rgba(255, 252, 204, 0) 100%
-    ),
-    ${Colors.DARK_BLACK};
+  background: #222232;
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.08);
   overflow: hidden;
   border-top-left-radius: 8px;
