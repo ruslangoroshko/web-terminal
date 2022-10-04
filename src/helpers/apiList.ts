@@ -16,8 +16,8 @@ const API_LIST = {
     REGISTER: '/api/v1/Trader/Register',
   },
   PRICE_HISTORY: {
-    CANDLES: '/api/candles/v1',
-    // CANDLES: '/api/v1/PriceHistory/Candles',
+    // CANDLES: '/api/candles/v1',
+    CANDLES: '/api/v1/PriceHistory/Candles',
   },
   KEY_VALUE: {
     GET: '/api/v1/KeyValue',
@@ -54,7 +54,7 @@ const API_LIST = {
     CANCEL: '/withdrawal/cancel',
   },
   ONBOARDING: {
-    STEPS: '/v1/OnboardingSteps'
+    STEPS: '/v1/OnboardingSteps',
   },
   DEBUG: {
     POST: '/api/Debug/ClientLog',
@@ -71,7 +71,7 @@ const API_LIST = {
   },
   ONESIGNAL: {
     SUBSCRIBE: '/v1/oneSignal/subscribe',
-  }
+  },
 };
 
 Object.freeze(API_LIST);

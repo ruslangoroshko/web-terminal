@@ -5,7 +5,8 @@ import {
 import API from '../helpers/API';
 import { CandleTypeEnum } from '../enums/CandleType';
 import {
-  HistoryCandlesDTOType, HistoryCandlesType,
+  HistoryCandlesDTOType,
+  HistoryCandlesType,
 } from '../types/HistoryTypes';
 import { AskBidEnum } from '../enums/AskBid';
 import { supportedResolutions } from '../constants/supportedTimeScales';
@@ -51,20 +52,20 @@ export default {
         break;
     }
 
-    const params: HistoryCandlesDTOType = {
-      CandleType: resolutionEnum,
-      BidOrAsk: AskBidEnum.Buy,
-      From: rangeStartDate,
-      To: rangeEndDate,
-      InstrumentId: instrumentId,
-    };
-    // const params: HistoryCandlesType = {
-    //   candleType: resolutionEnum,
-    //   bidOrAsk: AskBidEnum.Buy,
-    //   fromDate: rangeStartDate,
-    //   toDate: rangeEndDate,
-    //   instrumentId: instrumentId,
+    // const params: HistoryCandlesDTOType = {
+    //   CandleType: resolutionEnum,
+    //   BidOrAsk: AskBidEnum.Buy,
+    //   From: rangeStartDate,
+    //   To: rangeEndDate,
+    //   InstrumentId: instrumentId,
     // };
+    const params: HistoryCandlesType = {
+      candleType: resolutionEnum,
+      bidOrAsk: AskBidEnum.Buy,
+      fromDate: rangeStartDate,
+      toDate: rangeEndDate,
+      instrumentId: instrumentId,
+    };
 
     return API.getPriceHistory(params);
   },

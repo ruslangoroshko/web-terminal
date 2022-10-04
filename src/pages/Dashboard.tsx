@@ -22,6 +22,8 @@ import ConfirmPopup from '../components/ConfirmPopup';
 import FavoriteInstrumetsBar from '../components/FavoriteInstrumetsBar';
 import HintsWrapper from '../components/Hints/HintsWrapper';
 
+// import ImageTerminalBg from '../assets/images/terminal-bg/bg8.jpeg';
+
 const Dashboard: FC = observer(() => {
   const {
     mainAppStore,
@@ -134,12 +136,12 @@ const Dashboard: FC = observer(() => {
           )}
         </Observer>
       </FlexContainer>
-      <FlexContainer flexDirection="column">
+      <FlexContainer flexDirection="column" position="relative" zIndex="1">
         <FavoriteInstrumetsBar />
 
         <Observer>
           {() => (
-            <FlexContainer position="relative">
+            <FlexContainer>
               {instrumentsStore.activeInstrument && (
                 <ActiveInstrument
                   instrument={instrumentsStore.activeInstrument.instrumentItem}
@@ -159,6 +161,8 @@ const Dashboard: FC = observer(() => {
                   width="100%"
                   height="100%"
                   maxHeight="calc(100vh - 123px)"
+                  position="relative"
+                  zIndex="1"
                 >
                   <FlexContainer
                     width="100%"
@@ -200,7 +204,12 @@ const Dashboard: FC = observer(() => {
                     </ChartInstruments>
                   </FlexContainer>
 
-                  <FlexContainer flexDirection="column" width="175px">
+                  <FlexContainer
+                    flexDirection="column"
+                    width="175px"
+                    position="relative"
+                    zIndex="1"
+                  >
                     <BuySellPanel
                       instrument={
                         instrumentsStore.activeInstrument.instrumentItem
@@ -218,6 +227,32 @@ const Dashboard: FC = observer(() => {
 });
 
 export default Dashboard;
+
+const TerminalWrap = styled(FlexContainer)`
+  position: relative;
+  z-index: 0;
+  &:before,
+  &:after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &:before {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    z-index: -1;
+  }
+
+  &:after {
+    z-index: 0;
+    background-color: rgba(37, 38, 54, 0.9);
+  }
+`;
 
 const ChartWrapper = styled(FlexContainer)`
   grid-row: 1 / span 1;
