@@ -43,22 +43,40 @@ const OrdersBooks = observer(() => {
           {/* left */}
           <FlexContainer width="50%" flexDirection="column">
             {orderBookStore.bids.map((bid) => (
-              <OrderItem operation={AskBidEnum.Buy} fillPercent={20}>
+              <OrderItem
+                key={`order-item-bid-${bid[0]}`}
+                operation={AskBidEnum.Buy}
+                fillPercent={orderBookStore.getOrderPercent(
+                  AskBidEnum.Buy,
+                  bid[0]
+                )}
+              >
                 <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
                   {bid[1].toFixed(3)}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#00ffdd">{bid[0].toFixed(3)}</PrimaryTextSpan>
+                <PrimaryTextSpan color="#00ffdd">
+                  {bid[0].toFixed(3)}
+                </PrimaryTextSpan>
               </OrderItem>
             ))}
           </FlexContainer>
           {/* right  */}
           <FlexContainer width="50%" flexDirection="column">
             {orderBookStore.asks.map((ask) => (
-              <OrderItem operation={AskBidEnum.Sell} fillPercent={20}>
+              <OrderItem
+                key={`order-item-ask-${ask[0]}`}
+                operation={AskBidEnum.Sell}
+                fillPercent={orderBookStore.getOrderPercent(
+                  AskBidEnum.Sell,
+                  ask[0]
+                )}
+              >
                 <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
                   {ask[1].toFixed(3)}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#ed145b">{ask[0].toFixed(3)}</PrimaryTextSpan>
+                <PrimaryTextSpan color="#ed145b">
+                  {ask[0].toFixed(3)}
+                </PrimaryTextSpan>
               </OrderItem>
             ))}
           </FlexContainer>
