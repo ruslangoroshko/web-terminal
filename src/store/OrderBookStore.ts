@@ -20,22 +20,12 @@ export class OrderBookStore implements OrderBookStoreProps {
   getOrderPercent(type: AskBidEnum, price: number) {
     const list: OrderBookItemType[] =
       type === AskBidEnum.Buy ? this.bids : this.asks;
-
     if (!list.length) {
       return 0;
     }
-
-    const sortedByValueList = list.slice().sort(
-      (a: OrderBookItemType, b: OrderBookItemType) => b[1] - a[1]
-    );
-
-    const index = sortedByValueList.findIndex((a) => a[0] === price);
-
-    if (index === 0) {
-      return 100;
-    }
-
-    return (sortedByValueList[index][1] * 100) / sortedByValueList[0][1];
+    const totalVolume = list.slice().reduce((sum, item) => sum + item[1], 0);
+    const index = list.findIndex((a) => a[0] === price);
+    return (list[index][1] * 100) / totalVolume;
   }
 
   setBids(bids: OrderBookItemType[]) {
@@ -45,7 +35,7 @@ export class OrderBookStore implements OrderBookStoreProps {
   }
   setAsks(asks: OrderBookItemType[]) {
     this.asks = asks.sort(
-      (a: OrderBookItemType, b: OrderBookItemType) => b[0] - a[0]
+      (a: OrderBookItemType, b: OrderBookItemType) => a[0] - b[0]
     );
   }
   setMarket(market: string) {
