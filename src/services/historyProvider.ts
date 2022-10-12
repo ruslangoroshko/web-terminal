@@ -59,6 +59,7 @@ export default {
     //   toDate: rangeEndDate,
     //   instrumentId: instrumentId,
     // };
+    
 
     const params: HistoryCandlesDTOType = {
       CandleType: resolutionEnum,
