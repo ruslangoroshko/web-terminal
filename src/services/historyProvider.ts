@@ -52,21 +52,21 @@ export default {
         break;
     }
 
-    // const params: HistoryCandlesDTOType = {
-    //   CandleType: resolutionEnum,
-    //   BidOrAsk: AskBidEnum.Buy,
-    //   From: rangeStartDate,
-    //   To: rangeEndDate,
-    //   InstrumentId: instrumentId,
+    // const params: HistoryCandlesType = {
+    //   candleType: resolutionEnum,
+    //   bidOrAsk: AskBidEnum.Buy,
+    //   fromDate: rangeStartDate,
+    //   toDate: rangeEndDate,
+    //   instrumentId: instrumentId,
     // };
-    const params: HistoryCandlesType = {
-      candleType: resolutionEnum,
-      bidOrAsk: AskBidEnum.Buy,
-      fromDate: rangeStartDate,
-      toDate: rangeEndDate,
-      instrumentId: instrumentId,
-    };
 
+    const params: HistoryCandlesDTOType = {
+      CandleType: resolutionEnum,
+      BidOrAsk: AskBidEnum.Buy,
+      From: rangeStartDate,
+      To: rangeEndDate,
+      InstrumentId: instrumentId,
+    };
     return API.getPriceHistory(params);
   },
 };

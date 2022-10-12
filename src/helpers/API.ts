@@ -376,16 +376,16 @@ class API {
     return response.data;
   };
 
-  getPriceHistory = async (params: HistoryCandlesType) => {
-    // const response = await axios.get<{ candles: CandleDTO[] }>(
-    const response = await axios.get<CandleDTO[]>(
+  getPriceHistory = async (params: HistoryCandlesDTOType) => {
+    const response = await axios.get<{ candles: CandleDTO[] }>(
+    // const response = await axios.get<CandleDTO[]>(
       `${API_STRING}${API_LIST.PRICE_HISTORY.CANDLES}`,
       {
         params,
         ...this.backgroundRequestOptions,
       }
     );
-    const bars = response.data.map((item) => ({
+    const bars = response.data.candles.map((item) => ({
       time: item.d,
       low: item.l,
       high: item.h,
