@@ -135,7 +135,7 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         'header_symbol_search',
         'header_compare',
         // 'header_indicators',
-        'header_fullscreen_button',
+        // 'header_fullscreen_button',
         // 'use_localstorage_for_settings',
         'border_around_the_chart',
         // 'left_toolbar',
@@ -146,7 +146,11 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
         'main_series_scale_menu',
         'popup_hints',
       ],
-      enabled_features: ['remove_library_container_border'],
+      enabled_features: [
+        'remove_library_container_border',
+        'side_toolbar_in_fullscreen_mode',
+        'header_in_fullscreen_mode',
+      ],
       fullscreen: false,
       autosize: true,
       overrides: {
@@ -201,9 +205,48 @@ const ChartContainer: FC<IProps> = observer(({ instrumentId, instruments }) => {
 
     const tvWidget = new widget(widgetOptions);
 
+    function isFullScreen() {
+      return !!(
+        document.fullscreenElement ||
+        //@ts-ignore
+        document.mozFullScreenElement ||
+        //@ts-ignore
+        document.webkitFullscreenElement ||
+        //@ts-ignore
+        document.msFullscreenElement
+      );
+    }
+
     tvWidget.onChartReady(async () => {
       tradingViewStore.setTradingWidget(tvWidget);
       markersOnChartStore.renderActivePositionsMarkersOnChart();
+    });
+
+    tvWidget.headerReady().then(function () {
+      // @ts-ignore
+      const fullScreenBtn = document
+        .querySelector('#tv_chart_container iframe')
+        // @ts-ignore
+        .contentWindow.document.getElementById('header-toolbar-fullscreen');
+
+      fullScreenBtn.addEventListener('mousedown', function () {
+        if (isFullScreen()) {
+          fullScreenBtn.dispatchEvent(
+            new KeyboardEvent('keydown', { key: 'esc' })
+          );
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+            // @ts-ignore
+          } else if (document.mozCancelFullScreen) {
+            // @ts-ignore
+            document.mozCancelFullScreen();
+            // @ts-ignore
+          } else if (document.webkitCancelFullScreen) {
+            // @ts-ignore
+            document.webkitCancelFullScreen();
+          }
+        }
+      });
     });
     return () => {
       tradingViewStore.setTradingWidget(undefined);
