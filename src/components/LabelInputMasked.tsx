@@ -97,7 +97,7 @@ const Input = styled(InputMask, {
   background-color: transparent;
   width: 100%;
   caret-color: ${Colors.WHITE};
-  color: ${Colors.ACCENT}
+  color: ${Colors.ACCENT};
   font-size: 14px;
   line-height: 16px;
   padding-bottom: 4px;
