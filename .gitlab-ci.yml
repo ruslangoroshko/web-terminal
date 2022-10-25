@@ -271,3 +271,4 @@ lock-image:
     - az acr repository update --name $DOCKER_CONTAINER_REGISTRY_NAME --image ${DOCKER_IMAGE_TAG} --write-enabled false
   only:
     - master
+    - master-monfex
