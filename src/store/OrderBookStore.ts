@@ -23,9 +23,18 @@ export class OrderBookStore implements OrderBookStoreProps {
     if (!list.length) {
       return 0;
     }
+
+    const sortedList = list
+      .slice()
+      .sort((a: OrderBookItemType, b: OrderBookItemType) => a[1] - b[1]);
+
+    const indexSort = sortedList.findIndex((a) => a[0] === price);
     const totalVolume = list.slice().reduce((sum, item) => sum + item[1], 0);
-    const index = list.findIndex((a) => a[0] === price);
-    return (list[index][1] * 100) / totalVolume;
+    const itemTotal = sortedList
+      .slice(indexSort, sortedList.length)
+      .reduce((sum, item) => sum + item[1], 0);
+
+    return (itemTotal * 100) / totalVolume;
   }
 
   setBids(bids: OrderBookItemType[]) {
