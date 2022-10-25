@@ -209,7 +209,7 @@ publish-kubernetes-stg-monfex:
     - kubectl set image deployments/${K8S_STG_SELECTOR_NAME_HP} ${K8S_STG_SELECTOR_NAME_HP}=$DOCKER_REGISTRY_HOST/${DOCKER_IMAGE_TAG} --namespace=$K8S_STG_NAMESPACE
     - kubectl patch deployment ${K8S_STG_SELECTOR_NAME_HP} -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"date\":\"`date +'%s'`\"}}}}}" --namespace=$K8S_STG_NAMESPACE
   only:
-    - stg-monfex-off
+    - stg-monfex
 
 run-autotests-stg-monfex:
   stage: run-autotests
@@ -218,9 +218,6 @@ run-autotests-stg-monfex:
     - docker:dind
   script:
     - Xvfb -ac :99 -screen 0 1280x1024x16 &
-    - pwd
-    - ls -la
-    - ls -la /
     - cd /autotests
     - pytest tests/test_log_in.py
   only:
