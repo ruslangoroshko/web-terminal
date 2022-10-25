@@ -143,8 +143,8 @@ const Dashboard: FC = observer(() => {
         maxHeight="calc(100vh - 48px)"
         flex="1"
       >
-        <FlexContainer width="100%" flex="1" flexDirection="column">
-          <FlexContainer flexDirection="column">
+        <TerminalWrap width="100%" flex="1" flexDirection="column">
+          <FlexContainer flexDirection="column" zIndex="9">
             <FavoriteInstrumetsBar />
             <FlexContainer position="relative">
               {instrumentsStore.activeInstrument && (
@@ -156,7 +156,12 @@ const Dashboard: FC = observer(() => {
           </FlexContainer>
 
           {instrumentsStore.activeInstrument && (
-            <FlexContainer width="100%" flex="1" flexDirection="column">
+            <FlexContainer
+              width="100%"
+              flex="1"
+              flexDirection="column"
+              zIndex="9"
+            >
               <ChartWrapper
                 padding="0 0 0 0"
                 height="100%"
@@ -191,7 +196,7 @@ const Dashboard: FC = observer(() => {
               </ChartInstruments>
             </FlexContainer>
           )}
-        </FlexContainer>
+        </TerminalWrap>
 
         <FlexContainer
           flexDirection="column"

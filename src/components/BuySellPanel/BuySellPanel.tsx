@@ -1116,7 +1116,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
 export default BuySellPanel;
 
 const BuySellWraper = styled(FlexContainer)`
-  overflow-y: auto;
+  /* overflow-y: auto; */
   ::-webkit-scrollbar {
     width: 4px;
     border-radius: 2px;
