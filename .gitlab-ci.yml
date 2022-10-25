@@ -221,7 +221,7 @@ run-autotests-stg-monfex:
     - pwd
     - ls -la
     - ls -la /   
-    - pytest tests/test_log_in.py
+    - pytest /autotests/tests/test_log_in.py
   only:
     - stg-monfex
 #
