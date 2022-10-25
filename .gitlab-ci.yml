@@ -218,6 +218,8 @@ run-autotests-stg-monfex:
     - docker:dind
   script:
     - Xvfb -ac :99 -screen 0 1280x1024x16 &
+    - pwd
+    - ls -la
     - pytest tests/test_log_in.py
   only:
     - stg-monfex
