@@ -137,106 +137,75 @@ const Dashboard: FC = observer(() => {
         </Observer>
       </FlexContainer>
 
-      <Observer>
-        {() => (
-          <>
-            <>
-              <FlexContainer
-                width="100%"
+      <FlexContainer
+        width="100%"
+        height="100%"
+        maxHeight="calc(100vh - 48px)"
+        flex="1"
+      >
+        <FlexContainer width="100%" flex="1" flexDirection="column">
+          <FlexContainer flexDirection="column">
+            <FavoriteInstrumetsBar />
+            <FlexContainer position="relative">
+              {instrumentsStore.activeInstrument && (
+                <ActiveInstrument
+                  instrument={instrumentsStore.activeInstrument.instrumentItem}
+                />
+              )}
+            </FlexContainer>
+          </FlexContainer>
+
+          {instrumentsStore.activeInstrument && (
+            <FlexContainer width="100%" flex="1" flexDirection="column">
+              <ChartWrapper
+                padding="0 0 0 0"
                 height="100%"
-                maxHeight="calc(100vh - 48px)"
+                maxHeight="calc(100vh - 200px)"
+                minHeight="445px"
                 position="relative"
-                zIndex="1"
               >
-                <TerminalWrap
-                  width="100%"
-                  maxWidth="calc(100% - 175px)"
-                  maxHeight="calc(100vh - 48px)"
-                  flexDirection="column"
-                >
-                  <FlexContainer
-                    flexDirection="column"
-                    position="relative"
-                    zIndex="2"
-                  >
-                    <FavoriteInstrumetsBar />
+                {tradingViewStore.activePositionPopup && (
+                  <ClosePopupWrapper>
+                    <ConfirmPopup
+                      toggle={tradingViewStore.toggleActivePositionPopup}
+                      applyHandler={tradingViewStore.applyHandler}
+                      confirmText={t(tradingViewStore?.confirmText)}
+                    ></ConfirmPopup>
+                  </ClosePopupWrapper>
+                )}
+                <TVChartContainer
+                  instrumentId={
+                    instrumentsStore.activeInstrument.instrumentItem.id
+                  }
+                  instruments={instrumentsStore.instruments}
+                />
+              </ChartWrapper>
 
-                    <Observer>
-                      {() => (
-                        <FlexContainer>
-                          {instrumentsStore.activeInstrument && (
-                            <ActiveInstrument
-                              instrument={
-                                instrumentsStore.activeInstrument.instrumentItem
-                              }
-                            />
-                          )}
-                        </FlexContainer>
-                      )}
-                    </Observer>
-                  </FlexContainer>
-                  {instrumentsStore.activeInstrument && (
-                    <>
-                      <ChartWrapper
-                        zIndex="2"
-                        padding="0 0 0 0"
-                        height="100%"
-                        maxHeight="calc(100vh - 200px)"
-                        minHeight="445px"
-                        position="relative"
-                      >
-                        {tradingViewStore.activePositionPopup && (
-                          <ClosePopupWrapper>
-                            <ConfirmPopup
-                              toggle={
-                                tradingViewStore.toggleActivePositionPopup
-                              }
-                              applyHandler={tradingViewStore.applyHandler}
-                              confirmText={t(tradingViewStore?.confirmText)}
-                            ></ConfirmPopup>
-                          </ClosePopupWrapper>
-                        )}
-                        <TVChartContainer
-                          instrumentId={
-                            instrumentsStore.activeInstrument.instrumentItem.id
-                          }
-                          instruments={instrumentsStore.instruments}
-                        />
-                      </ChartWrapper>
+              <ChartInstruments
+                justifyContent="space-between"
+                padding="0 0 0 52px"
+              >
+                {/* <ChartSettingsButtons></ChartSettingsButtons> */}
+                <ChartIntervalTimeScale></ChartIntervalTimeScale>
+                <ChartTimeFomat></ChartTimeFomat>
+              </ChartInstruments>
+            </FlexContainer>
+          )}
+        </FlexContainer>
 
-                      <ChartInstruments
-                        zIndex="2"
-                        justifyContent="space-between"
-                        padding="0 0 0 52px"
-                      >
-                        {/* <ChartSettingsButtons></ChartSettingsButtons> */}
-                        <ChartIntervalTimeScale></ChartIntervalTimeScale>
-                        <ChartTimeFomat></ChartTimeFomat>
-                      </ChartInstruments>
-                    </>
-                  )}
-                </TerminalWrap>
-
-                <FlexContainer
-                  flexDirection="column"
-                  width="175px"
-                  position="relative"
-                  justifyContent="center"
-                  zIndex="1"
-                >
-                  {instrumentsStore.activeInstrument && (
-                    <BuySellPanel
-                      instrument={
-                        instrumentsStore.activeInstrument.instrumentItem
-                      }
-                    />
-                  )}
-                </FlexContainer>
-              </FlexContainer>
-            </>
-          </>
-        )}
-      </Observer>
+        <FlexContainer
+          flexDirection="column"
+          width="320px"
+          maxHeight="calc(100vh - 48px)"
+          justifyContent="center"
+        >
+          {instrumentsStore.activeInstrument && (
+            <BuySellPanel
+              instrument={instrumentsStore.activeInstrument.instrumentItem}
+            />
+          )}
+        </FlexContainer>
+      </FlexContainer>
     </FlexContainer>
   );
 });

@@ -74,10 +74,12 @@ export class InstrumentsStore implements ContextProps {
 
   setCalcActiveInstrument = (instrument: InstrumentModelWSDTO) => {
     this.calcActiveInstrument = instrument;
-  }
+  };
 
   @action
-  setFilteredInstrumentsSearch = (newFilteredInstrumentsSearch: InstrumentModelWSDTO[]) => {
+  setFilteredInstrumentsSearch = (
+    newFilteredInstrumentsSearch: InstrumentModelWSDTO[]
+  ) => {
     this.filteredInstrumentsSearch = newFilteredInstrumentsSearch;
   };
 
@@ -100,7 +102,9 @@ export class InstrumentsStore implements ContextProps {
 
   @action
   setInstrumentGroups = (newInstrumentGroups: InstrumentGroupWSDTO[]) => {
-    this.instrumentGroups = newInstrumentGroups.sort((a: InstrumentGroupWSDTO, b: InstrumentGroupWSDTO) => a.weight - b.weight);
+    this.instrumentGroups = newInstrumentGroups.sort(
+      (a: InstrumentGroupWSDTO, b: InstrumentGroupWSDTO) => a.weight - b.weight
+    );
   };
 
   @action
@@ -118,9 +122,19 @@ export class InstrumentsStore implements ContextProps {
     }
   };
 
+  setActiveInstrument(id: string) {
+    if (this.activeInstrumentId) {
+      this.rootStore.mainAppStore.deleteOrderBookInstrument(
+        this.activeInstrumentId
+      );
+    }
+    this.rootStore.mainAppStore.setOrderBookInstrument(id);
+    this.activeInstrumentId = id;
+  }
+
   @action
   editActiveInstrument = (activeInstrument: IActiveInstrument) => {
-    this.activeInstrumentId = activeInstrument.instrumentItem.id;
+    this.setActiveInstrument(activeInstrument.instrumentItem.id);
     const instrumentIndex = this.instruments.findIndex(
       (item) => item.instrumentItem.id === this.activeInstrumentId
     );
@@ -218,7 +232,7 @@ export class InstrumentsStore implements ContextProps {
       if (addToFavorites) {
         this.addActiveInstrumentId(instrumentId);
       }
-      this.activeInstrumentId = instrumentId;
+      this.setActiveInstrument(instrumentId);
 
       const tvWidget = this.rootStore.tradingViewStore.tradingWidget;
       if (tvWidget) {

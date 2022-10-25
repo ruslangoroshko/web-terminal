@@ -23,7 +23,10 @@ import {
   UserRegistration,
 } from '../types/UserInfo';
 import { HubConnection } from '@aspnet/signalr';
-import { AccountModelWebSocketDTO, AccountUpdateTypeModelWebSocketDTO } from '../types/AccountsTypes';
+import {
+  AccountModelWebSocketDTO,
+  AccountUpdateTypeModelWebSocketDTO,
+} from '../types/AccountsTypes';
 import { action, makeAutoObservable } from 'mobx';
 import API from '../helpers/API';
 import { OperationApiResponseCodes } from '../enums/OperationApiResponseCodes';
@@ -63,6 +66,7 @@ import { getProcessId } from '../helpers/getProcessId';
 import { getCircularReplacer } from '../helpers/getCircularReplacer';
 import { getStatesSnapshot } from '../helpers/getStatesSnapshot';
 import { HintEnum } from '../enums/HintsEnum';
+import { OrderBookDTOType } from '../types/OrderBookTypes';
 
 interface MainAppStoreProps {
   token: string;
@@ -372,25 +376,37 @@ export class MainAppStore implements MainAppStoreProps {
       }
     );
 
+    connection.stream;
+
     connection.on(
       Topics.UPDATE_ACCOUNT_TYPE,
       (response: ResponseFromWebsocket<AccountUpdateTypeModelWebSocketDTO>) => {
-        const actualType = response.data.accountTypeModels.find(
-          (item) => item.id === response.data.currentAccountTypeId
-        ) || null;
+        const actualType =
+          response.data.accountTypeModels.find(
+            (item) => item.id === response.data.currentAccountTypeId
+          ) || null;
         const sortedListOfAccountTypes = response.data.accountTypeModels.sort(
           (a, b) => a.order - b.order
         );
-        const indexOfActualType = actualType !== null
-          ? response.data.accountTypeModels.indexOf(actualType)
-          : null;
+        const indexOfActualType =
+          actualType !== null
+            ? response.data.accountTypeModels.indexOf(actualType)
+            : null;
 
         this.rootStore.accountTypeStore.setActualType(actualType);
-        this.rootStore.accountTypeStore.setAllTypes(response.data.accountTypeModels);
-        this.rootStore.accountTypeStore.setAmount(response.data.amountToNextAccountType);
-        this.rootStore.accountTypeStore.setPercentage(response.data.currentAccountTypeProgressPercentage);
+        this.rootStore.accountTypeStore.setAllTypes(
+          response.data.accountTypeModels
+        );
+        this.rootStore.accountTypeStore.setAmount(
+          response.data.amountToNextAccountType
+        );
+        this.rootStore.accountTypeStore.setPercentage(
+          response.data.currentAccountTypeProgressPercentage
+        );
         if (indexOfActualType !== null) {
-          this.rootStore.accountTypeStore.setNextType(sortedListOfAccountTypes[indexOfActualType + 1] || null);
+          this.rootStore.accountTypeStore.setNextType(
+            sortedListOfAccountTypes[indexOfActualType + 1] || null
+          );
         }
 
         this.rootStore.accountTypeStore.checkActiveAccount(
@@ -398,7 +414,10 @@ export class MainAppStore implements MainAppStoreProps {
         );
 
         // set default status
-        this.rootStore.accountTypeStore.setKVActiveStatus(response.data.currentAccountTypeId, true);
+        this.rootStore.accountTypeStore.setKVActiveStatus(
+          response.data.currentAccountTypeId,
+          true
+        );
       }
     );
 
@@ -530,6 +549,34 @@ export class MainAppStore implements MainAppStoreProps {
         this.rootStore.badRequestPopupStore.stopRecconect();
       }
     });
+
+    connection.on(
+      Topics.ORDER_BOOK,
+      (response: ResponseFromWebsocket<OrderBookDTOType>) => {
+        const { market, bids, asks, isUpdate } = response.data;
+        if (!isUpdate) {
+          this.rootStore.orderBookStore.setMarket(market);
+          this.rootStore.orderBookStore.setBids(bids);
+          this.rootStore.orderBookStore.setAsks(asks);
+        }
+      }
+    );
+  };
+
+  deleteOrderBookInstrument = async (instrumentId: string) => {
+    if (this.activeSession) {
+      try {
+        await this.activeSession.send('UnsubscribeOrderBook', instrumentId);
+      } catch (error) {}
+    }
+  };
+
+  setOrderBookInstrument = async (instrumentId: string) => {
+    if (this.activeSession) {
+      try {
+        await this.activeSession.send('SubscribeOrderBook', instrumentId);
+      } catch (error) {}
+    }
   };
 
   handleInitConnection = async (token = this.token) => {
@@ -648,13 +695,15 @@ export class MainAppStore implements MainAppStoreProps {
         this.isPromoAccount = true;
       } else {
         try {
-          const userActiveHint = await API.getKeyValue(
-            KeysInApi.SHOW_HINT
-          );
+          const userActiveHint = await API.getKeyValue(KeysInApi.SHOW_HINT);
           // @ts-ignore
           if (Object.values(HintEnum).includes(userActiveHint.trim())) {
             // @ts-ignore
-            this.rootStore.educationStore.openHint(userActiveHint.trim(), false);
+            this.rootStore.educationStore.openHint(
+              // @ts-ignore
+              userActiveHint.trim(),
+              false
+            );
           }
         } catch {}
       }
