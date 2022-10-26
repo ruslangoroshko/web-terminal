@@ -24,9 +24,7 @@ export class OrderBookStore implements OrderBookStoreProps {
       return 0;
     }
 
-    const sortedList = list
-      .slice()
-      .sort((a: OrderBookItemType, b: OrderBookItemType) => a[1] - b[1]);
+    const sortedList = list.slice();
 
     const indexSort = sortedList.findIndex((a) => a[0] === price);
     const totalVolume = list.slice().reduce((sum, item) => sum + item[1], 0);
@@ -37,8 +35,9 @@ export class OrderBookStore implements OrderBookStoreProps {
         .slice(0, indexSort)
         .reduce((sum, item) => sum + item[1], 0);
     }
-
-
+    if (indexSort === sortedList.length) {
+      itemTotal = sortedList.reduce((sum, item) => sum + item[1], 0);
+    }
     return (itemTotal * 100) / totalVolume;
   }
 

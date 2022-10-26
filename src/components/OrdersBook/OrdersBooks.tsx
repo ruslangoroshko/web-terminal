@@ -8,7 +8,11 @@ import { FlexContainer } from '../../styles/FlexContainer';
 import { PrimaryTextSpan } from '../../styles/TextsElements';
 
 const OrdersBooks = observer(() => {
-  const { orderBookStore } = useStores();
+  const { orderBookStore, instrumentsStore } = useStores();
+
+  const instrumentDigits =
+    instrumentsStore.activeInstrument?.instrumentItem.digits;
+
   return (
     <FlexContainer padding="20px 0 12px" flexDirection="column" width="100%">
       <FlexContainer padding="4px 0">
@@ -51,12 +55,20 @@ const OrdersBooks = observer(() => {
                   bid[0]
                 )}
               >
-                <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                  {/* [{orderBookStore.getOrderPercent(AskBidEnum.Buy, bid[0]).toFixed(0)}]&nbsp; */}
-                  {bid[1].toFixed(3)}
+                <PrimaryTextSpan
+                  color={Colors.WHITE}
+                  fontSize="12px"
+                  fontWeight={500}
+                >
+                  [
+                  {orderBookStore
+                    .getOrderPercent(AskBidEnum.Buy, bid[0])
+                    .toFixed(0)}
+                  ]&nbsp;
+                  {bid[1].toFixed(2)}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#00ffdd">
-                  {bid[0].toFixed(3)}
+                <PrimaryTextSpan fontSize="12px" color="#00ffdd">
+                  {bid[0].toFixed(instrumentDigits)}
                 </PrimaryTextSpan>
               </OrderItem>
             ))}
@@ -72,11 +84,15 @@ const OrdersBooks = observer(() => {
                   ask[0]
                 )}
               >
-                <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
-                  {ask[1].toFixed(3)}
+                <PrimaryTextSpan
+                  fontSize="12px"
+                  color={Colors.WHITE}
+                  fontWeight={500}
+                >
+                  {ask[1].toFixed(2)}
                 </PrimaryTextSpan>
-                <PrimaryTextSpan color="#ed145b">
-                  {ask[0].toFixed(3)}
+                <PrimaryTextSpan fontSize="12px" color="#ed145b">
+                  {ask[0].toFixed(instrumentDigits)}
                 </PrimaryTextSpan>
               </OrderItem>
             ))}
