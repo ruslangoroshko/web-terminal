@@ -52,6 +52,7 @@ const OrdersBooks = observer(() => {
                 )}
               >
                 <PrimaryTextSpan color={Colors.WHITE} fontWeight={500}>
+                  {/* [{orderBookStore.getOrderPercent(AskBidEnum.Buy, bid[0]).toFixed(0)}]&nbsp; */}
                   {bid[1].toFixed(3)}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan color="#00ffdd">
