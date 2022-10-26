@@ -60,11 +60,6 @@ const OrdersBooks = observer(() => {
                   fontSize="12px"
                   fontWeight={500}
                 >
-                  [
-                  {orderBookStore
-                    .getOrderPercent(AskBidEnum.Buy, bid[0])
-                    .toFixed(0)}
-                  ]&nbsp;
                   {bid[1].toFixed(2)}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan fontSize="12px" color="#00ffdd">
