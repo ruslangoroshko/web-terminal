@@ -40,12 +40,12 @@ export class OrderBookStore implements OrderBookStoreProps {
   setBids(bids: OrderBookItemType[]) {
     this.bids = bids.sort(
       (a: OrderBookItemType, b: OrderBookItemType) => b[0] - a[0]
-    );
+    ).slice(0, 10);
   }
   setAsks(asks: OrderBookItemType[]) {
     this.asks = asks.sort(
       (a: OrderBookItemType, b: OrderBookItemType) => a[0] - b[0]
-    );
+    ).slice(0, 10);
   }
   setMarket(market: string) {
     this.market = market;
