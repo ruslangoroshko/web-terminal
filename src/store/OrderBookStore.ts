@@ -32,7 +32,7 @@ export class OrderBookStore implements OrderBookStoreProps {
     let itemTotal = sortedList[indexSort][1];
     if (indexSort !== 0) {
       itemTotal = sortedList
-        .slice(0, indexSort)
+        .slice(0, indexSort + 1)
         .reduce((sum, item) => sum + item[1], 0);
     }
     if (indexSort === sortedList.length) {

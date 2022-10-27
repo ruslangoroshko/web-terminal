@@ -60,7 +60,7 @@ const OrdersBooks = observer(() => {
                   fontSize="12px"
                   fontWeight={500}
                 >
-                  {bid[1].toFixed(2)}
+                  {bid[1].toFixed(3)}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan fontSize="12px" color="#00ffdd">
                   {bid[0].toFixed(instrumentDigits)}
@@ -84,7 +84,7 @@ const OrdersBooks = observer(() => {
                   color={Colors.WHITE}
                   fontWeight={500}
                 >
-                  {ask[1].toFixed(2)}
+                  {ask[1].toFixed(3)}
                 </PrimaryTextSpan>
                 <PrimaryTextSpan fontSize="12px" color="#ed145b">
                   {ask[0].toFixed(instrumentDigits)}
