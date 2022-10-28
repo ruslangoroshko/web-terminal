@@ -14,6 +14,7 @@ import SortByDropdown from '../SortByDropdown';
 import { useTranslation } from 'react-i18next';
 import { LOCAL_MARKET_TABS } from '../../constants/global';
 import Colors from '../../constants/Colors';
+import MarketIntrumentList from './Markets/MarketIntrumentList';
 
 const Markets = observer(() => {
   const { instrumentsStore, sortingStore, mainAppStore } = useStores();
@@ -172,18 +173,7 @@ const Markets = observer(() => {
           </FlexContainer>
         </FlexContainer>
       </SortingWrapper>
-      <Observer>
-        {() => (
-          <MarketsWrapper flexDirection="column">
-            {instrumentsStore.sortedInstruments.map((item) => (
-              <InstrumentMarkets
-                instrument={item}
-                key={item.id}
-              ></InstrumentMarkets>
-            ))}
-          </MarketsWrapper>
-        )}
-      </Observer>
+      <MarketIntrumentList />
     </FlexContainer>
   );
 });
@@ -235,22 +225,6 @@ const SortingWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;
 
-const MarketsWrapper = styled(FlexContainer)`
-  overflow-y: auto;
-  max-height: calc(100% - 160px);
-
-  ::-webkit-scrollbar {
-    width: 4px;
-    border-radius: 2px;
-  }
-
-  ::-webkit-scrollbar-track-piece {
-    background-color: transparent;
-  }
-  ::-webkit-scrollbar-thumb:vertical {
-    background-color: rgba(0, 0, 0, 0.6);
-  }
-`;
 
 const SortByWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
