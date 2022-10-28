@@ -218,6 +218,7 @@ run-autotests-stg-monfex:
     - docker:dind
   script:
     - Xvfb -ac :99 -screen 0 1280x1024x16 &
+    - cd /autotests
     - pytest tests/test_log_in.py
   only:
     - stg-monfex
@@ -251,6 +252,7 @@ run-autotests-stg-welltrade:
     - docker:dind
   script:
     - Xvfb -ac :99 -screen 0 1280x1024x16 &
+    - cd /autotests
     - pytest tests/test_log_in.py
   only:
     - stg-welltrade
@@ -269,3 +271,4 @@ lock-image:
     - az acr repository update --name $DOCKER_CONTAINER_REGISTRY_NAME --image ${DOCKER_IMAGE_TAG} --write-enabled false
   only:
     - master
+    - master-monfex
