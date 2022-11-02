@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 import { useStores } from '../../../hooks/useStores';
 import { FlexContainer } from '../../../styles/FlexContainer';
@@ -12,50 +12,56 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { autorun } from 'mobx';
+import API from '../../../helpers/API';
+import KeysInApi from '../../../constants/keysInApi';
+import { InstrumentModelWSDTO } from '../../../types/InstrumentsTypes';
+import { SortByMarketsEnum } from '../../../enums/SortByMarketsEnum';
 
 // a little function to help us with reordering the result
-const reorder = (list: any, startIndex: number, endIndex: number) => {
+const reorder = (
+  list: InstrumentModelWSDTO[],
+  startIndex: number,
+  endIndex: number
+) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
-
   return result;
 };
-
 const getItemStyle = (isDragging: any, draggableStyle: any) => ({
-  // some basic styles to make the items look a bit nicer
   userSelect: 'none',
-  // styles we need to apply on draggables
   ...draggableStyle,
 });
 
-const getListStyle = (isDraggingOver: boolean) => ({
-  // background: isDraggingOver ? 'lightblue' : 'lightgrey',
-});
+const MarketIntrumentList = () => {
+  const { instrumentsStore, sortingStore } = useStores();
 
-const MarketIntrumentList = observer(() => {
-  const { instrumentsStore } = useStores();
-
-  const [list, setList] = useState<any[]>([]);
   const onDragEnd = (result: DropResult) => {
-    // dropped outside the list
     if (!result.destination) {
       return;
     }
-    const items: any[] = reorder(
-      list,
+    const items: InstrumentModelWSDTO[] = reorder(
+      instrumentsStore.sortedInstruments,
       result.source.index,
       result.destination.index
     );
-    setList(items);
+
+    const savedSort = {
+      ...instrumentsStore.activeInstrumentsSortRule,
+      [items[0].groupId]: items.map((item, i) => ({ id: item.id, weight: i })),
+    };
+    try {
+      API.setKeyValue({
+        key: KeysInApi.MARKET_SORT_LIST,
+        value: JSON.stringify(savedSort),
+      });
+    } catch (error) {}
+    sortingStore.setMarketsSortBy(SortByMarketsEnum.Custom);
+    instrumentsStore.setActiveInstrumentsSortRule(savedSort);
   };
 
   useEffect(() => {
-    autorun(() => {
-      if (instrumentsStore.sortedInstruments) {
-        setList(instrumentsStore.sortedInstruments);
-      }
-    });
+    instrumentsStore.getCustomMarketSortList();
   }, []);
 
   return (
@@ -63,28 +69,37 @@ const MarketIntrumentList = observer(() => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              style={getListStyle(snapshot.isDraggingOver)}
-            >
-              {list.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style
-                      )}
-                    >
-                      <InstrumentMarkets instrument={item} key={item.id} />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              <Observer>
+                {() => (
+                  <>
+                    {instrumentsStore.sortedInstruments.map((item, index) => (
+                      <Draggable
+                        key={item.id}
+                        draggableId={item.id}
+                        index={index}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(
+                              snapshot.isDragging,
+                              provided.draggableProps.style
+                            )}
+                          >
+                            <InstrumentMarkets
+                              instrument={item}
+                              key={item.id}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                  </>
+                )}
+              </Observer>
               {provided.placeholder}
             </div>
           )}
@@ -92,7 +107,7 @@ const MarketIntrumentList = observer(() => {
       </DragDropContext>
     </MarketsWrapper>
   );
-});
+};
 
 export default MarketIntrumentList;
 

@@ -163,7 +163,7 @@ const Portfolio: FC<Props> = () => {
           {() => (
             <SortByDropdown
               selectedLabel={t(
-                sortByDropdownProfitLabels[sortingStore.activePositionsSortBy]
+                sortByDropdownProfitLabels[sortingStore.activePositionsSortBy] 
               )}
               opened={on}
               toggle={handleToggle}

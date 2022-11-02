@@ -4,4 +4,5 @@ export enum SortByMarketsEnum {
   PriceChangeDesc,
   NameAsc,
   NameDesc,
+  Custom,
 }

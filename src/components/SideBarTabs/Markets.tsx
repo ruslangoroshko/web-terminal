@@ -12,7 +12,7 @@ import { SortByMarketsEnum } from '../../enums/SortByMarketsEnum';
 import { sortByMarketsLabels } from '../../constants/sortByDropdownValues';
 import SortByDropdown from '../SortByDropdown';
 import { useTranslation } from 'react-i18next';
-import { LOCAL_MARKET_TABS } from '../../constants/global';
+import { LOCAL_MARKET_SORT, LOCAL_MARKET_TABS } from '../../constants/global';
 import Colors from '../../constants/Colors';
 import MarketIntrumentList from './Markets/MarketIntrumentList';
 
@@ -49,6 +49,15 @@ const Markets = observer(() => {
       mainAppStore.setParamsMarkets(null);
     }
   }, [mainAppStore.paramsMarkets, instrumentsStore.instrumentGroups]);
+
+  useEffect(() => {
+    const activeSort = localStorage.getItem(LOCAL_MARKET_SORT);
+    console.log('active sort ', activeSort)
+    if (!!activeSort) {
+      console.log('set market sort')
+      sortingStore.setMarketsSortBy(parseFloat(activeSort));
+    }
+  }, []);
 
   return (
     <FlexContainer flexDirection="column" height="100%">
@@ -224,7 +233,6 @@ const MarketButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
 const SortingWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;
-
 
 const SortByWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);

@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 import Colors from '../../../constants/Colors';
 import { useStores } from '../../../hooks/useStores';
@@ -17,13 +16,21 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { autorun } from 'mobx';
+import { PositionModelWSDTO } from '../../../types/Positions';
+import API from '../../../helpers/API';
+import KeysInApi from '../../../constants/keysInApi';
+import { SortByProfitEnum } from '../../../enums/SortByProfitEnum';
+import { observer } from 'mobx-react-lite';
 
 // a little function to help us with reordering the result
-const reorder = (list: any, startIndex: number, endIndex: number) => {
+const reorder = (
+  list: PositionModelWSDTO[],
+  startIndex: number,
+  endIndex: number
+) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
-
   return result;
 };
 
@@ -38,30 +45,32 @@ const getListStyle = (isDraggingOver: boolean) => ({
   // background: isDraggingOver ? 'transparent' : '#222232',
 });
 
-const PortfolioInstrumentList = () => {
-  const { quotesStore, tradingViewStore } = useStores();
+const PortfolioInstrumentList = observer(() => {
+  const { quotesStore, tradingViewStore, sortingStore } = useStores();
   const { t } = useTranslation();
 
-  const [list, setList] = useState<any[]>([]);
   const onDragEnd = (result: DropResult) => {
-    // dropped outside the list
     if (!result.destination) {
       return;
     }
-    const items: any[] = reorder(
-      list,
+    const items: PositionModelWSDTO[] = reorder(
+      quotesStore.sortedActivePositions,
       result.source.index,
       result.destination.index
     );
-    setList(items);
+    const savedSort = items.map((item, i) => ({ id: item.id, weight: i }));
+    try {
+      API.setKeyValue({
+        key: KeysInApi.PORTFOLIO_SORT_LIST,
+        value: JSON.stringify(savedSort),
+      });
+    } catch (error) {}
+    quotesStore.setActivePositionSortRule(savedSort);
+    sortingStore.setActivePositionsSortBy(SortByProfitEnum.Custom);
   };
 
   useEffect(() => {
-    autorun(() => {
-      if (quotesStore.sortedActivePositions) {
-        setList(quotesStore.sortedActivePositions);
-      }
-    });
+    quotesStore.getCustomPortfolioSortList();
   }, []);
 
   return (
@@ -74,7 +83,7 @@ const PortfolioInstrumentList = () => {
               ref={provided.innerRef}
               style={getListStyle(snapshot.isDraggingOver)}
             >
-              {list.map((item, index) => (
+              {quotesStore.sortedActivePositions.map((item, index) => (
                 <Draggable
                   key={`drag-item-${item.id}`}
                   draggableId={`drag-item-${item.id}`}
@@ -91,9 +100,10 @@ const PortfolioInstrumentList = () => {
                       )}
                     >
                       <ActivePositionsPortfolioTab
-                        needScroll={index >= list.length - 2}
+                        needScroll={
+                          index >= quotesStore.sortedActivePositions.length - 2
+                        }
                         ready={tradingViewStore.tradingWidgetReady}
-                        // key={item.id}
                         position={item}
                       />
                     </div>
@@ -105,7 +115,7 @@ const PortfolioInstrumentList = () => {
           )}
         </Droppable>
       </DragDropContext>
-      {!list.length && (
+      {!quotesStore.sortedActivePositions.length && (
         <FlexContainer
           flexDirection="column"
           alignItems="center"
@@ -126,7 +136,7 @@ const PortfolioInstrumentList = () => {
       )}
     </ActivePositionsWrapper>
   );
-};
+});
 
 export default PortfolioInstrumentList;
 

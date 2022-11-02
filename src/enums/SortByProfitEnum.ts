@@ -5,4 +5,5 @@ export enum SortByProfitEnum {
   InvestmentDesc,
   ProfitAsc,
   ProfitDesc,
+  Custom,
 }

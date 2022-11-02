@@ -10,6 +10,9 @@ const KeysInApi = {
   SHOW_ONBOARDING: 'Onboarding',
   SHOW_HINT: 'educationHint',
   ACTIVE_ACCOUNT_STATUS: 'activeAccStatus',
+
+  PORTFOLIO_SORT_LIST: 'portfolioSortList',
+  MARKET_SORT_LIST: 'marketSortList',
 };
 
 Object.freeze(KeysInApi);
