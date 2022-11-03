@@ -9,6 +9,7 @@ export const sortByDropdownProfitLabels = {
   [SortByProfitEnum.InvestmentDesc]: 'Investment: Small to Large',
   [SortByProfitEnum.ProfitAsc]: 'Profit: Small to Large',
   [SortByProfitEnum.ProfitDesc]: 'Profit: Large to Small',
+  [SortByProfitEnum.Custom]: 'Custom',
 };
 
 export const sortByPendingOrdersLabels = {
@@ -24,4 +25,5 @@ export const sortByMarketsLabels = {
   [SortByMarketsEnum.PriceChangeDesc]: 'By price change 24h Low High',
   [SortByMarketsEnum.NameAsc]: 'By asset name A-Z',
   [SortByMarketsEnum.NameDesc]: 'By asset name Z-A',
+  [SortByMarketsEnum.Custom]: 'Custom',
 };

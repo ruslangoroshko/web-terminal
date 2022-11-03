@@ -3,6 +3,7 @@ import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { action, makeAutoObservable, observable } from 'mobx';
 import { SortByMarketsEnum } from '../enums/SortByMarketsEnum';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
+import { LOCAL_MARKET_SORT, LOCAL_POSITION_SORT } from '../constants/global';
 
 interface ISortingStore {
   activePositionsSortBy: SortByProfitEnum;
@@ -25,6 +26,7 @@ export class SortingStore implements ISortingStore {
 
   @action
   setActivePositionsSortBy = (newValue: SortByProfitEnum) => {
+    localStorage.setItem(LOCAL_POSITION_SORT, `${newValue}`);
     this.activePositionsSortBy = newValue;
   };
 
@@ -35,6 +37,7 @@ export class SortingStore implements ISortingStore {
 
   @action
   setMarketsSortBy = (newValue: SortByMarketsEnum) => {
+    localStorage.setItem(LOCAL_MARKET_SORT, `${newValue}`);
     this.marketsSortBy = newValue;
   };
 }

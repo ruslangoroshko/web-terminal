@@ -8,6 +8,9 @@ import { SortByProfitEnum } from '../enums/SortByProfitEnum';
 import { RootStore } from './RootStore';
 import { SortByPendingOrdersEnum } from '../enums/SortByPendingOrdersEnum';
 import hasValue from '../helpers/hasValue';
+import API from '../helpers/API';
+import KeysInApi from '../constants/keysInApi';
+import { SortRuleListType } from '../types/SortRuleList';
 
 interface IQuotesStore {
   quotes: BidAskKeyValueList;
@@ -26,6 +29,8 @@ export class QuotesStore implements IQuotesStore {
   rootStore: RootStore;
   selectedPositionId: PositionModelWSDTO['id'] | null = null;
 
+  activePositionSortRule: SortRuleListType[] = [];
+
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, { rootStore: false });
     this.rootStore = rootStore;
@@ -42,6 +47,21 @@ export class QuotesStore implements IQuotesStore {
       ...item,
       sl: hasValue(item.sl) ? Math.abs(item.sl!) : item.sl,
     }));
+  };
+
+  setActivePositionSortRule = (list: SortRuleListType[]) => {
+    this.activePositionSortRule = list;
+  };
+
+  getCustomPortfolioSortList = async () => {
+    try {
+      const response = await API.getKeyValue(KeysInApi.PORTFOLIO_SORT_LIST);
+      const sortList = JSON.parse(response || '');
+      console.table(sortList);
+      if (Array.isArray(sortList)) {
+        this.setActivePositionSortRule(sortList);
+      }
+    } catch (error) {}
   };
 
   get profit() {
@@ -73,7 +93,7 @@ export class QuotesStore implements IQuotesStore {
 
   get totalReservedFoundsForToppingUp() {
     let value: number = 0;
-    this.activePositions.map((pos) => value += pos.reservedFundsForToppingUp);
+    this.activePositions.map((pos) => (value += pos.reservedFundsForToppingUp));
     return value;
   }
 
@@ -81,7 +101,8 @@ export class QuotesStore implements IQuotesStore {
     return (
       this.profit +
       (this.rootStore.mainAppStore.activeAccount?.balance || 0) +
-      this.invest + this.totalReservedFoundsForToppingUp
+      this.invest +
+      this.totalReservedFoundsForToppingUp
     );
   }
 
@@ -117,6 +138,29 @@ export class QuotesStore implements IQuotesStore {
       case SortByProfitEnum.InvestmentDesc:
         filterByFunc = this.sortByInvestment(false);
         break;
+
+      case SortByProfitEnum.Custom:
+        const sortedList: PositionModelWSDTO[] = [];
+        const listWithOutSort: PositionModelWSDTO[] = [];
+
+        this.activePositions.map((position) => {
+          const savedPos = this.activePositionSortRule.find(
+            (item) => item.id === position.id
+          );
+          if (!savedPos) {
+            listWithOutSort.push(position);
+          }
+        });
+
+        this.activePositionSortRule.map((item) => {
+          const position = this.activePositions.find(
+            (position) => position.id === item.id
+          );
+          if (position) {
+            sortedList.push(position);
+          }
+        });
+        return [...listWithOutSort, ...sortedList];
 
       default:
         break;

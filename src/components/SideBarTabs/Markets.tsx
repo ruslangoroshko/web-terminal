@@ -12,8 +12,9 @@ import { SortByMarketsEnum } from '../../enums/SortByMarketsEnum';
 import { sortByMarketsLabels } from '../../constants/sortByDropdownValues';
 import SortByDropdown from '../SortByDropdown';
 import { useTranslation } from 'react-i18next';
-import { LOCAL_MARKET_TABS } from '../../constants/global';
+import { LOCAL_MARKET_SORT, LOCAL_MARKET_TABS } from '../../constants/global';
 import Colors from '../../constants/Colors';
+import MarketIntrumentList from './Markets/MarketIntrumentList';
 
 const Markets = observer(() => {
   const { instrumentsStore, sortingStore, mainAppStore } = useStores();
@@ -48,6 +49,15 @@ const Markets = observer(() => {
       mainAppStore.setParamsMarkets(null);
     }
   }, [mainAppStore.paramsMarkets, instrumentsStore.instrumentGroups]);
+
+  useEffect(() => {
+    const activeSort = localStorage.getItem(LOCAL_MARKET_SORT);
+    console.log('active sort ', activeSort)
+    if (!!activeSort) {
+      console.log('set market sort')
+      sortingStore.setMarketsSortBy(parseFloat(activeSort));
+    }
+  }, []);
 
   return (
     <FlexContainer flexDirection="column" height="100%">
@@ -172,18 +182,7 @@ const Markets = observer(() => {
           </FlexContainer>
         </FlexContainer>
       </SortingWrapper>
-      <Observer>
-        {() => (
-          <MarketsWrapper flexDirection="column">
-            {instrumentsStore.sortedInstruments.map((item) => (
-              <InstrumentMarkets
-                instrument={item}
-                key={item.id}
-              ></InstrumentMarkets>
-            ))}
-          </MarketsWrapper>
-        )}
-      </Observer>
+      <MarketIntrumentList />
     </FlexContainer>
   );
 });
@@ -233,23 +232,6 @@ const MarketButton = styled(ButtonWithoutStyles)<{ isActive?: boolean }>`
 
 const SortingWrapper = styled(FlexContainer)`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-`;
-
-const MarketsWrapper = styled(FlexContainer)`
-  overflow-y: auto;
-  max-height: calc(100% - 160px);
-
-  ::-webkit-scrollbar {
-    width: 4px;
-    border-radius: 2px;
-  }
-
-  ::-webkit-scrollbar-track-piece {
-    background-color: transparent;
-  }
-  ::-webkit-scrollbar-thumb:vertical {
-    background-color: rgba(0, 0, 0, 0.6);
-  }
 `;
 
 const SortByWrapper = styled(FlexContainer)`

@@ -7,12 +7,11 @@ import {
 } from '../../styles/TextsElements';
 import styled from '@emotion/styled';
 import { useStores } from '../../hooks/useStores';
-import ActivePositionsPortfolioTab from './ActivePositions';
+
 import { Observer } from 'mobx-react-lite';
 import { PortfolioTabEnum } from '../../enums/PortfolioTabEnum';
 import SortByDropdown from '../SortByDropdown';
-import IconPortfolioNoDataExpanded from '../../assets/svg/icon-portfolio-no-data-expanded.svg';
-import SvgIcon from '../SvgIcon';
+
 import { sortByDropdownProfitLabels } from '../../constants/sortByDropdownValues';
 import { SortByProfitEnum } from '../../enums/SortByProfitEnum';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +23,7 @@ import {
 } from '../../constants/global';
 import { moneyFormatPart } from '../../helpers/moneyFormat';
 import Colors from '../../constants/Colors';
+import PortfolioInstrumentList from './Portfolio/PortfolioInstrumentList';
 
 interface Props {}
 
@@ -163,7 +163,7 @@ const Portfolio: FC<Props> = () => {
           {() => (
             <SortByDropdown
               selectedLabel={t(
-                sortByDropdownProfitLabels[sortingStore.activePositionsSortBy]
+                sortByDropdownProfitLabels[sortingStore.activePositionsSortBy] 
               )}
               opened={on}
               toggle={handleToggle}
@@ -185,44 +185,8 @@ const Portfolio: FC<Props> = () => {
           )}
         </Observer>
       </SortByWrapper>
-      <Observer>
-        {() => (
-          <ActivePositionsWrapper flexDirection="column">
-            {quotesStore.sortedActivePositions.map((item, index) => (
-              <ActivePositionsPortfolioTab
-                needScroll={
-                  index >= quotesStore.sortedActivePositions.length - 2
-                }
-                ready={tradingViewStore.tradingWidgetReady}
-                key={item.id}
-                position={item}
-              />
-            ))}
-            {!quotesStore.sortedActivePositions.length && (
-              <FlexContainer
-                flexDirection="column"
-                alignItems="center"
-                padding="30px 0 0 0"
-              >
-                <FlexContainer margin="0 0 18px 0">
-                  <SvgIcon
-                    {...IconPortfolioNoDataExpanded}
-                    fillColor={Colors.WHITE_LIGHT}
-                    width={40}
-                    height={32}
-                  />
-                </FlexContainer>
-                <PrimaryTextParagraph
-                  fontSize="14px"
-                  color={Colors.WHITE_LIGHT}
-                >
-                  {t("You haven't opened any positions yet")}
-                </PrimaryTextParagraph>
-              </FlexContainer>
-            )}
-          </ActivePositionsWrapper>
-        )}
-      </Observer>
+      
+      <PortfolioInstrumentList />
     </PortfolioWrapper>
   );
 };
@@ -267,25 +231,6 @@ export const TabPortfolitButton = styled(ButtonWithoutStyles)<{
 
 const PortfolioWrapper = styled(FlexContainer)`
   min-width: 320px;
-`;
-
-const ActivePositionsWrapper = styled(FlexContainer)`
-  overflow-y: auto;
-  height: 100%;
-  max-height: calc(100% - 205px);
-  scroll-behavior: smooth;
-
-  ::-webkit-scrollbar {
-    width: 4px;
-    border-radius: 2px;
-  }
-
-  ::-webkit-scrollbar-track-piece {
-    background-color: transparent;
-  }
-  ::-webkit-scrollbar-thumb:vertical {
-    background-color: rgba(0, 0, 0, 0.6);
-  }
 `;
 
 const SortByWrapper = styled(FlexContainer)`

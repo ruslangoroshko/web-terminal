@@ -6,6 +6,7 @@ export const LOCAL_STORAGE_SIDEBAR = 'sidebar';
 export const LOCAL_CHART_TYPE = 'chart-type-desktop';
 export const LOCAL_POSITION = 'active-position';
 export const LOCAL_POSITION_SORT = 'active-position-sort';
+export const LOCAL_MARKET_SORT = 'active-market-sort';
 export const LOCAL_PENDING_POSITION = 'active-pending-position';
 export const LOCAL_PENDING_POSITION_SORT = 'active-pending-position-sort';
 export const LOCAL_MARKET_TABS = 'active-market';

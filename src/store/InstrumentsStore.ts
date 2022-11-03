@@ -18,6 +18,8 @@ import { getIntervalByKey } from '../helpers/getIntervalByKey';
 import moment from 'moment';
 import { AccountTypeEnum } from '../enums/AccountTypeEnum';
 import API from '../helpers/API';
+import KeysInApi from '../constants/keysInApi';
+import { SortRuleListType } from '../types/SortRuleList';
 interface IPriceChange {
   [key: string]: number;
 }
@@ -35,6 +37,10 @@ interface ContextProps {
   calcActiveInstrument: InstrumentGroupWSDTO | null;
 }
 
+type ActiveInstrumentsSortRulesType = {
+  [key: string]: SortRuleListType[];
+};
+
 export class InstrumentsStore implements ContextProps {
   rootStore: RootStore;
   instruments: IActiveInstrument[] = [];
@@ -50,6 +56,8 @@ export class InstrumentsStore implements ContextProps {
   pricesChange: IPriceChange = {};
 
   calcActiveInstrument: InstrumentModelWSDTO | null = null;
+
+  activeInstrumentsSortRule: ActiveInstrumentsSortRulesType | null = null;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, {
@@ -74,6 +82,21 @@ export class InstrumentsStore implements ContextProps {
 
   setCalcActiveInstrument = (instrument: InstrumentModelWSDTO) => {
     this.calcActiveInstrument = instrument;
+  };
+
+  getCustomMarketSortList = async () => {
+    try {
+      const response = await API.getKeyValue(KeysInApi.MARKET_SORT_LIST);
+      const sortList = JSON.parse(response || '');
+      console.table(sortList);
+      if (sortList) {
+        this.setActiveInstrumentsSortRule(sortList);
+      }
+    } catch (error) {}
+  };
+
+  setActiveInstrumentsSortRule = (list: ActiveInstrumentsSortRulesType) => {
+    this.activeInstrumentsSortRule = list;
   };
 
   @action
@@ -192,6 +215,35 @@ export class InstrumentsStore implements ContextProps {
       case SortByMarketsEnum.PriceChangeDesc:
         filterByFunc = this.sortByPriceChange(false);
         break;
+
+      case SortByMarketsEnum.Custom:
+        const instrumentList = this.instruments
+          .filter(
+            (item) =>
+              item.instrumentItem.groupId === this.activeInstrumentGroupId
+          )
+          .map((item) => item.instrumentItem);
+
+        const sortedList: InstrumentModelWSDTO[] = [];
+        // TODO: Add to end of list new instruments
+        if (
+          this.activeInstrumentGroupId &&
+          this.activeInstrumentsSortRule &&
+          this.activeInstrumentsSortRule[this.activeInstrumentGroupId]
+        ) {
+          this.activeInstrumentsSortRule[this.activeInstrumentGroupId].map(
+            (market) => {
+              const marketItem = instrumentList.find(
+                (item) => item.id === market.id
+              );
+              if (marketItem) {
+                sortedList.push(marketItem);
+              }
+            }
+          );
+        }
+
+        return sortedList.length ? sortedList : instrumentList;
 
       default:
         return this.instruments.map((item) => item.instrumentItem);
