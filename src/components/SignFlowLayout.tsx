@@ -31,7 +31,7 @@ const SignFlowLayout: FC<Props> = (props) => {
       padding="60px 48px 12px"
       justifyContent="space-between"
       width="100vw"
-      height="100%"
+      height="100vh"
       position="relative"
     >
       <FlexContainer position="absolute" top="16px" right="16px">
