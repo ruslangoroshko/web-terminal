@@ -10,12 +10,10 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x.x]
+        node: [14]
 
     steps:
     - uses: actions/checkout@v2
-      with: 
-        node-version: 14
     
     - name: Set env var
       run: |
@@ -23,9 +21,6 @@ jobs:
         echo "IMAGE=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
         echo "DATE=$(date -u '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
         echo "TIMESTAMP=$(date --utc +%F.%H%M%S)" >> $GITHUB_ENV
-        
-    - name: Npm install
-      run: npm i
 
     - name: Run ls
       run: |
@@ -33,6 +28,9 @@ jobs:
         node -v
         pwd
         ls -la
+
+    - name: Npm install
+      run: npm i
 
     - name: Npm build
       run: npm run buildProd
