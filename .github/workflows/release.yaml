@@ -13,9 +13,7 @@ jobs:
         node-version: [14]
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        node-version: ${{ matrix.node-version }}
+    - uses: actions/checkout@v3
     
     - name: Set env var
       run: |
@@ -24,18 +22,26 @@ jobs:
         echo "DATE=$(date -u '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
         echo "TIMESTAMP=$(date --utc +%F.%H%M%S)" >> $GITHUB_ENV
 
-    - name: Run ls
-      run: |
-        npm -v
-        node -v
-        pwd
-        ls -la
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: node -v
+#       run: |
+#         npm -v
+#         node -v
+#         pwd
+#         ls -la
 
     - name: Npm install
-      run: npm i
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm i
+    - run: npm run buildProd
 
-    - name: Npm build
-      run: npm run buildProd
+#     - name: Npm build
+#       run: npm run buildProd
 
     - name: Publish image
       uses: docker/build-push-action@v1
