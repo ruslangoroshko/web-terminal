@@ -23,11 +23,11 @@ jobs:
         echo "DATE=$(date -u '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
         echo "TIMESTAMP=$(date --utc +%F.%H%M%S)" >> $GITHUB_ENV
         
-    - name: Npm install
-      run: npm install
+    - name: npm install
+      run: npm i
 
     - name: Npm build
-      run: npm run build
+      run: npm run buildTest
 
     - name: Publish image
       uses: docker/build-push-action@v1
