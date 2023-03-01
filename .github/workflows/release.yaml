@@ -23,11 +23,12 @@ jobs:
         echo "DATE=$(date -u '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
         echo "TIMESTAMP=$(date --utc +%F.%H%M%S)" >> $GITHUB_ENV
         
-    - name: npm install
+    - name: Npm install
       run: npm i
 
     - name: Run ls
       run: |
+        npm -v
         pwd
         ls -la
 
