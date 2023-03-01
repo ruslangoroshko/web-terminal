@@ -6,17 +6,18 @@ on:
 jobs:
   build:
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [14.x.x]
 
     steps:
     - uses: actions/checkout@v2
+      with: 
+        node-version: 14
     
     - name: Set env var
-      id: string
       run: |
         echo "BRANCH=$(echo ${GITHUB_REF_NAME,,})" >> $GITHUB_ENV
         echo "IMAGE=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
