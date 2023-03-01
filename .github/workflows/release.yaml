@@ -29,6 +29,7 @@ jobs:
     - name: Run ls
       run: |
         npm -v
+        node -v
         pwd
         ls -la
 
