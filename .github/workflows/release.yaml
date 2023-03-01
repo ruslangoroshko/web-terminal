@@ -27,7 +27,7 @@ jobs:
       run: npm i
 
     - name: Npm build
-      run: npm run buildTest
+      run: npm run buildProd
 
     - name: Publish image
       uses: docker/build-push-action@v1
