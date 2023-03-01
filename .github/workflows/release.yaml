@@ -49,6 +49,6 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         path: ./
-        repository: my-cfd-platform/${{ env.IMAGE }}
+        repository: mycfdplatform/${{ env.IMAGE }}
         tags: ${{ env.BRANCH }}
         build_args: BUILD_VERSION=${{ env.BRANCH }}
