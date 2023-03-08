@@ -20,8 +20,8 @@ const API_LIST = {
     // CANDLES: '/api/v1/PriceHistory/Candles',
   },
   KEY_VALUE: {
-    GET: '/api/v1/KeyValue',
-    POST: '/api/v1/KeyValue',
+    GET: '/api/keyvalue/v1',
+    POST: '/api/keyvalue/v1',
   },
   PENDING_ORDERS: {
     ADD: '/api/v1/PendingOrders/Add',
