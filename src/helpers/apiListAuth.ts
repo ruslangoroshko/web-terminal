@@ -1,13 +1,13 @@
 const AUTH_API_LIST = {
   TRADER: {
-    REGISTER: '/api/auth/v1/Trader/Register',
-    AUTHENTICATE: '/api/auth/v1/Trader/Authenticate',
-    CHANGE_PASSWORD: '/api/auth/v1/Trader/ChangePassword',
-    FORGOT_PASSWORD: '/api/auth/v1/Trader/ForgotPassword',
-    PASSWORD_RECOVERY: '/api/auth/v1/Trader/PasswordRecovery',
-    REFRESH_TOKEN: '/api/auth/v1/Trader/RefreshToken',
-    LP_LOGIN: '/api/auth/v1/Trader/LpLogin',
-    ADDITIONAL_FIELDS: '/api/auth/v1/Trader/AdditionalRegistrationFields',
+    REGISTER: '/api/auth/v1/Register',
+    AUTHENTICATE: '/api/auth/v1/Authenticate',
+    CHANGE_PASSWORD: '/api/auth/v1/ChangePassword',
+    FORGOT_PASSWORD: '/api/auth/v1/ForgotPassword',
+    PASSWORD_RECOVERY: '/api/auth/v1/PasswordRecovery',
+    REFRESH_TOKEN: '/api/auth/v1/RefreshToken',
+    LP_LOGIN: '/api/auth/v1/LpLogin',
+    ADDITIONAL_FIELDS: '/api/auth/v1/AdditionalRegistrationFields',
   },
   PERSONAL_DATA: {
     CONFIRM: '/api/personaldata/v1/Confirm',
