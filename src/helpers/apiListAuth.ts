@@ -10,9 +10,9 @@ const AUTH_API_LIST = {
     ADDITIONAL_FIELDS: '/auth/v1/Trader/AdditionalRegistrationFields',
   },
   PERSONAL_DATA: {
-    CONFIRM: '/personaldata/v1/Confirm',
-    GET: '/personaldata/v1',
-    POST: '/personaldata/v1',
+    CONFIRM: '/api/personaldata/v1/Confirm',
+    GET: '/api/personaldata/v1',
+    POST: '/api/personaldata/v1',
     ON_VERIFICATION: '/personaldata/v1/OnVerification',
   },
   COMMON: {
