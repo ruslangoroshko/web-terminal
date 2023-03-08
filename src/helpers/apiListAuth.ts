@@ -7,13 +7,13 @@ const AUTH_API_LIST = {
     PASSWORD_RECOVERY: '/api/auth/v1/PasswordRecovery',
     REFRESH_TOKEN: '/api/auth/v1/RefreshToken',
     LP_LOGIN: '/api/auth/v1/LpLogin',
-    ADDITIONAL_FIELDS: '/api/auth/v1/AdditionalRegistrationFields',
+    ADDITIONAL_FIELDS: '/api/personaldata/v1/AdditionalFields',
   },
   PERSONAL_DATA: {
     CONFIRM: '/api/personaldata/v1/Confirm',
     GET: '/api/personaldata/v1',
     POST: '/api/personaldata/v1',
-    ON_VERIFICATION: '/personaldata/v1/OnVerification',
+    ON_VERIFICATION: '/api/personaldata/v1/OnVerification',
   },
   COMMON: {
     COUNTRIES: '/api/common/v1/Countries',
