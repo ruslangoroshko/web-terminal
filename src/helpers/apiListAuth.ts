@@ -10,15 +10,15 @@ const AUTH_API_LIST = {
     ADDITIONAL_FIELDS: '/auth/v1/Trader/AdditionalRegistrationFields',
   },
   PERSONAL_DATA: {
-    CONFIRM: '/auth/v1/PersonalData/Confirm',
-    GET: '/auth/v1/PersonalData',
-    POST: '/auth/v1/PersonalData',
-    ON_VERIFICATION: '/auth/v1/PersonalData/Kyc/OnVerification',
+    CONFIRM: '/personaldata/v1/Confirm',
+    GET: '/personaldata/v1',
+    POST: '/personaldata/v1',
+    ON_VERIFICATION: '/personaldata/v1/OnVerification',
   },
   COMMON: {
-    COUNTRIES: '/auth/v1/Common/Countries',
-    SERVER_INFO: '/auth/v1/Common/ServerInfo',
-    GEOLOCATION_INFO: '/auth/v1/Common/GeolocationInfo',
+    COUNTRIES: '/api/common/v1/Countries',
+    SERVER_INFO: '/api/common/v1/ServerInfo',
+    GEOLOCATION_INFO: '/api/common/v1/GeolocationInfo',
   },
   DOCUMENT: {
     POST: '/auth/v1/Documents/Identity',
