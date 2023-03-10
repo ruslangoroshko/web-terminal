@@ -459,7 +459,7 @@ export class MainAppStore implements MainAppStoreProps {
       }
     );
 
-    connection.onclose((error) => {
+    connection.onclose((error: any) => {
       this.handleSocketCloseError(error);
 
       //this.socketError = true;
@@ -708,12 +708,7 @@ export class MainAppStore implements MainAppStoreProps {
         } catch {}
       }
 
-      const activeAccountId = await API.getKeyValue(
-        KeysInApi.ACTIVE_ACCOUNT_ID
-      );
-      const activeAccount =
-        this.accounts.find((acc) => acc.id === activeAccountId) ||
-        this.accounts.find((acc) => !acc.isLive);
+      const activeAccount = this.accounts[0];
 
       if (activeAccount) {
         this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
@@ -778,10 +773,6 @@ export class MainAppStore implements MainAppStoreProps {
     this.rootStore.historyStore.setPositionsHistoryReport({
       ...this.rootStore.historyStore.positionsHistoryReport,
       positionsHistory: [],
-    });
-    API.setKeyValue({
-      key: KeysInApi.ACTIVE_ACCOUNT_ID,
-      value: account.id,
     });
   };
 
