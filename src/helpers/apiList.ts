@@ -32,7 +32,7 @@ const API_LIST = {
     BALANCE_HISTORY: '/api/v1/Reports/BalanceHistory',
   },
   INSTRUMENTS: {
-    FAVOURITES: '/api/v1/Instruments/Favorites',
+    FAVOURITES: '/api/dict/v1/FavoriteInstruments',
   },
   DEPOSIT: {
     CREATE: '/Create',
