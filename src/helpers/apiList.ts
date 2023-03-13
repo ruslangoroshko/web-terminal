@@ -1,9 +1,9 @@
 const API_LIST = {
   POSITIONS: {
-    OPEN: '/api/v1/Positions/Open',
-    CLOSE: '/api/v1/Positions/Close',
-    UPDATE_SL_TP: '/api/v1/Positions/UpdateTpSl',
-    UPDATE_TOPPING_UP: '/api/v1/Positions/UpdateToppingUp',
+    OPEN: '/api/trading/v1/Positions/Open',
+    CLOSE: '/api/trading/v1/Positions/Close',
+    UPDATE_SL_TP: '/api/trading/v1/Positions/UpdateTpSl',
+    UPDATE_TOPPING_UP: '/api/trading/v1/Positions/UpdateToppingUp',
   },
   ACCOUNTS: {
     GET_ACCOUNTS: '/api/v1/Accounts',
