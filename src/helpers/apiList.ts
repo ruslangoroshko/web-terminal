@@ -28,8 +28,8 @@ const API_LIST = {
     REMOVE: '/api/v1/PendingOrders/Remove',
   },
   REPORTS: {
-    POSITIONS_HISTORY: '/api/v1/Reports/PositionsHistory',
-    BALANCE_HISTORY: '/api/v1/Reports/BalanceHistory',
+    POSITIONS_HISTORY: '/api/reports/v1/PositionsHistory',
+    BALANCE_HISTORY: '/api/reports/v1/BalanceHistory',
   },
   INSTRUMENTS: {
     FAVOURITES: '/api/dict/v1/FavoriteInstruments',
