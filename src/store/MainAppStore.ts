@@ -708,12 +708,9 @@ export class MainAppStore implements MainAppStoreProps {
         } catch {}
       }
 
-      const activeAccount = this.accounts[0];
+      const activeAccount = this.accounts.find((acc) => acc.isLive);
 
       if (activeAccount) {
-        this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
-          [Fields.ACCOUNT_ID]: activeAccount.id,
-        });
         if (this.activeAccountId !== activeAccount.id) {
           this.setActiveAccountId(activeAccount.id);
         }
@@ -962,11 +959,13 @@ export class MainAppStore implements MainAppStoreProps {
   };
 
   get sortedAccounts() {
-    return this.accounts.reduce(
-      (acc, prev) =>
-        prev.id === this.activeAccount?.id ? [prev, ...acc] : [...acc, prev],
-      [] as AccountModelWebSocketDTO[]
-    );
+    // return this.accounts.reduce(
+    //   (acc, prev) =>
+    //     prev.id === this.activeAccount?.id ? [prev, ...acc] : [...acc, prev],
+    //   [] as AccountModelWebSocketDTO[]
+    // );
+
+    return this.accounts;
   }
 
   @action
