@@ -144,7 +144,7 @@ const Dashboard: FC = observer(() => {
         flex="1"
       >
         <TerminalWrap width="100%" flex="1" flexDirection="column">
-          <FlexContainer flexDirection="column" zIndex="9">
+          <FlexContainer flexDirection="column" zIndex="10">
             <FavoriteInstrumetsBar />
             <FlexContainer position="relative">
               {instrumentsStore.activeInstrument && (
