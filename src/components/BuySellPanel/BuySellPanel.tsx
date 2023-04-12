@@ -1108,7 +1108,7 @@ const BuySellPanel: FC<Props> = ({ instrument }) => {
         </CustomForm>
       </FormProvider>
 
-      <OrdersBooks />
+      {/* <OrdersBooks /> */}
     </BuySellWraper>
   );
 };
