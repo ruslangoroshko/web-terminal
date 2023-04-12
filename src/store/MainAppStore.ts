@@ -711,6 +711,9 @@ export class MainAppStore implements MainAppStoreProps {
       const activeAccount = this.accounts.find((acc) => acc.isLive);
 
       if (activeAccount) {
+        this.activeSession?.send(Topics.SET_ACTIVE_ACCOUNT, {
+          [Fields.ACCOUNT_ID]: activeAccount.id,
+        });
         if (this.activeAccountId !== activeAccount.id) {
           this.setActiveAccountId(activeAccount.id);
         }
